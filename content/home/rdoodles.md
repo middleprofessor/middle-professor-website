@@ -17,4 +17,4 @@ weight = 20
 
 **What is an R doodle?** An R doodle is a short script to check intuition or understanding. Almost always, this involves generating fake data.
 
-**Where can I find R doodles?** [Here](https://rdoodles.rbind.io). Some of these will be expanded into longer quasi-preprints. Some of these might be fleshed out into manuscripts for archiving at [PeerJ preprints](https://peerj.com/preprints/) or [bioR$\chi$iv](https://www.biorxiv.org). Others will be expanded into [Shiny apps](https://shiny.rstudio.com/gallery/). Some I might even submit for publication in a journal.
+**Where can I find R doodles?** [Here](https://rdoodles.rbind.io). Some of these will be expanded into longer, interactive quasi-publications. Some of these might be fleshed out into manuscripts for archiving at [PeerJ preprints](https://peerj.com/preprints/) or [bioR$\chi$iv](https://www.biorxiv.org). Others will be expanded into [Shiny apps](https://shiny.rstudio.com/gallery/). Some I might even submit for publication in a journal.
