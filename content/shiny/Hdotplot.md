@@ -3,7 +3,7 @@
 date = "2018-03-14"
 
 # Project title.
-title = "HarrelPlot"
+title = "HarrellPlot"
 
 # Project summary to display on homepage.
 summary = "A plotting tool for researchers, instructors, and students combining data, distribution summary, model effects, and uncertainty in a single plot"

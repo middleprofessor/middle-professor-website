@@ -15,6 +15,10 @@ weight = 30
 
 +++
 
+Combining data, distribution summary, model effects, and uncertainty in a single plot
+<a class="btn" href="/files/quasipubs/harrell_plot_intro.html">Pre-preprint</a>
+<a class="btn" href="https://middleprofessor.shinyapps.io/HarrellPlot/">Shiny</a>
+
 Bias in pre-post designs -- An example from the Turnbaugh et al (2006) mouse fecal transplant study
-<a class="btn" href="/files/quasipubs/change_scores.html">Interactive</a>
+<a class="btn" href="/files/quasipubs/change_scores.html">Pre-preprint</a>
 
