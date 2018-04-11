@@ -1,0 +1,68 @@
+---
+title: "Exponential functions in growth"
+author: "Jeffrey A. Walker"
+date: "4/4/2018"
+output: html_document
+---
+```{r, echo=FALSE, fig.cap="Graph of the function "}
+library(ggplot2)
+library(data.table)
+```
+
+The population size at time $t$ is $N_t$. One day later, the population has doubled in size -- it is two times ($2 \times$) bigger. And one day later, the population is again $2 \times$ bigger than the day before. That is, the rate that the population is increasing is constant. This is the rate constant $k$ Here $k=2$. The function to describe this growth is
+
+$N_{t+1} = 2N_t$
+
+Here we plot the function
+```{r f1}
+k <- 2
+t_inc <- 1
+t0 <- 0
+tf <- 10
+t <- seq(t0, tf, by=t_inc)
+No <- 1
+N <- rep(No,length(t))
+for(i in 2:length(t)){
+  N[i] <- k*N[i-1]
+}
+qplot(t, N)
+```
+
+What is the rate constant if the output is the same (after 1 day, the size is twice that the day before) but the time increment is $\Delta t = 1/2$ day? The size after one day ($t+1$) is the size 1/2 day before times the new rate constant $k_2$
+
+$$N_{t+1} = k_2N_{t + \Delta t}$$
+and the size 1/2 day ago was the size one day ago times $k_2$
+
+$$N_{t + \Delta t} = k_2N_{t}$$
+
+Putting these together, the population size after one day (and two time increments that are each 1/2 day) is
+
+$$N_{t+1} = k_2(k_2N_{t})$$
+or
+
+$$N_{t+1} = k_2^2N_{t}$$
+
+If $N_{t+1}$ is the same regardless of the time increment then
+
+$$k_2^2=k$$
+
+and
+
+$$k_2=k^\frac{1}{2} = k^{\Delta t}$$
+Since in this example, $k=2$, the new rate constant is $\sqrt{2}$.
+
+This can be generalized. Here $t+1$ means time $t$ plus one time increment ($\Delta t$), which isn't necessarily one day. And, lets let $h=\Delta t$. Then
+
+$$N_{t+1} = k^hN_t$$
+How does N change over time generally? Subtract $N_t$ from both sides and divide both sides by $\Delta t$.
+
+$$\frac{N_{t+1} - N_t}{\Delta t} = \frac{k^hN_t - N_t}{h}$$
+
+(since, again, $h=\Delta t$). Substitute and re-arrange to get
+
+$$\frac{\Delta N}{\Delta t} = \frac{k^h - 1}{h}N$$
+Using calculus, when $\Delta t = h$ is infinitely small, then 
+
+$$\frac{dN}{dt} = \lim_{h\to 0} \frac{k^h - 1}{h}N = \textrm{ln}k$$
+
+$k$ is the *finite growth rate* -- the rate constant using discrete time steps. ln$k$ is the *intrinsic growth rate* -- the rate constant for continuous growth.

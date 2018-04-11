@@ -11,7 +11,7 @@ title = "Recent Publications and working papers"
 subtitle = ""
 
 # Order that this section will appear in.
-weight = 30
+weight = 40
 
 +++
 A full-list is found at my [Google Scholar](https://scholar.google.com/citations?user=W58TmakAAAAJ&hl=en) page. PDFs can be found at my [Research Gate](https://www.researchgate.net/profile/Jeffrey_Walker4/contributions) page.
