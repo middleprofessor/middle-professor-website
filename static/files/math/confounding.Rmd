@@ -1,0 +1,123 @@
+---
+title: "A very simple explanation of confounding"
+author: "Jeffrey A. Walker"
+date: "4/12/2018"
+output:
+  bookdown::html_document2:
+    code_folding: hide
+    fig_caption: yes
+    toc: yes
+    toc_float: yes
+
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(ggplot2)
+library(data.table)
+```
+Original version posted April 12, 2018
+
+We want to know the causal effect of dietary animal fat on the risk of developing cardiovascular disease (CVD). This causal effect is the **effect coefficient** $\beta_1$. This coefficient tells us how our expected risk changes if we make the lifestyle intervention of changing the amount of animal fat in our diet. This is a pretty common type of question in human medicine.
+
+To understand how hard it is to estimate this causal effect, let's pretend that only two things in the world cause cardiovascular disease: 1) the amount of dietary animal fat (the variable *Diet*) and 2) how long we take off of work to enjoy lunch (the variable *Siesta*). This is a graphical model of the truth.
+
+```{r path, fig.cap="xxx", out.width = "50%", fig.align = 'center'}
+fd <- data.table(x<-seq(1:3), y=seq(0:5))
+x1 <- 'Diet'
+x1.h <- 1
+x1.v <- 3
+x2 <- 'Siesta'
+x2.h <- 1
+x2.v <- 1
+y <- 'CVD'
+y.h <- 3.5
+y.v <- 2
+base <- 14
+gg <- ggplot(data=fd, aes(x=x, y=y)) +
+  # variables
+  annotate(geom="text", x=x1.h, y=x1.v, label=x1, size=base) +
+  annotate(geom="text", x=x2.h, y=x2.v, label=x2, size=base) +
+  annotate(geom="text", x=y.h, y=y.v, label=y, size=base) +
+  # paths
+  geom_segment(aes(x = x1.h+0.5, y = x1.v - 0.00, xend = y.h-0.5, yend = y.v+0.1), size=2, arrow = arrow(length = unit(0.4,"cm"))) +
+  geom_segment(aes(x = x2.h+0.7, y = x2.v + 0.00, xend = y.h-0.5, yend = y.v-0.1), size=2, arrow = arrow(length = unit(0.4,"cm"))) +
+  geom_curve(aes(x = x1.h-0.5, y = x1.v - 0.05, xend = x2.h-0.7, yend = x2.v+0.05), curvature = 0.5, size=2, arrow = arrow(length = unit(0.4,"cm"))) +
+  geom_curve(aes(xend = x1.h-0.5, yend = x1.v - 0.05, x = x2.h-0.7, y = x2.v+0.05), curvature = -0.5, size=2, arrow = arrow(length = unit(0.4,"cm"))) +
+  # parameters
+   annotate(geom="text", x=(x1.h + y.h)/2+0.25, y=(x1.v+y.v)/2+0.25, label="beta[1]", size=base, parse=TRUE) +
+   annotate(geom="text", x=(x1.h + y.h)/2+0.25, y=(x2.v+y.v)/2-0.25, label="beta[2]", size=base, parse=TRUE) +
+   annotate(geom="text", x=x1.h-1.25, y=(x1.v+x2.v)/2, label="rho", size=base, parse=TRUE) +
+  xlim(0-0.5, (y.h + 0.5)) +
+  ylim(0.5, 3.5) +
+  theme_minimal() 
+gg
+```
+
+A single-headed arrow indicates the **direction** of a causal effect and the the greek letter $\beta$ ("beta") represents the magnitude of the causal effect. The true causal effect of dietary animal fat is $\beta_1$ and the true effect of siesta duration is $\beta_2$. In addition, the **correlation** between *Diet* and *Siesta* is $\rho$ (the greek letter "rho"). I haven't given you numbers for these parameters, but we can come up with a plausible story where $\beta_1$ is a positive number (the more animal fat in your diet the higher the risk of CVD) and $\beta_2$ is a negative number (the longer the siesta the less risk of CVD -- yay siesta!), and $\rho$ is a negative number (people that take short lunch breaks eat fast food such as hamburgers or pepperoni pizza). We can also right this model of the true effects using the equation
+
+$$CVD = \beta_0 + \beta_1 Diet + \beta_2 Siesta$$
+
+$\beta_0$ is the **intercept** -- it is the base rate, or the rate of CVD in people that eat zero animal fat and take zero break for lunch. A one unit increase (1 gram per day) of animal fat adds $\beta_1$ risk to this base rate. If $\beta_1 < 0$ then risk is decreased. A one unit increase (1 minute per day) of siesta adds $\beta_2$ risk to this base rate. Again, if $\beta_2 < 0$ then risk is decreased. This looks like a regression equation, but it isn't. It is the equation describing the true causal effect of *Diet* and *Siesta* on CVD risk (again, in our pretend world).
+
+Let's do a pretend study of the effects of dietary animal fat and lunch duration on CVD using an **observational design**. In this study, we measure daily intake of dietary fat in the variable *Diet* and measure the duration of the daily lunch break in the variable *Siesta* in a bunch of people. And we follow those people over time to see who does and who does not have CVD events.
+
+Given our data that we've collected, we estimate the effects of *Diet* and *Siesta* on CVD risk using **regression**. Here is the regression equation
+
+$$E(CVD) = b_0 + b_1 Diet + b_2 Siesta$$
+where $E(CVD)$ is the mean CVD risk for someone with a particular value of $Diet$ and a particular value of $Siesta$. $E$ stands for "expectation". This regression equation looks a lot like the equation above but there is a fundamental difference. The coefficients in the regression equation are not effect coefficients but regression coefficients. The regression coefficient $b_1$ gives the expected difference in CVD given a one unit increase in *Diet* for people who are have the exact same value of $Siesta$ (this is usually described as the "effect of diet on CVD holding siesta constant", but a regression coefficient is not an effect and siesta isn't held constant in any interventional or experimental sense).
+
+Here is what is super important about the regression equation: If (and this is a *big* if) dietary animal fat and lunch duration are the only two things in the world that causally effect CVD risk, then the regression coefficients are **unbiased** estimates of the effect coefficients. This means that if we do the study on a bunch more people, our regression coefficients will be closer to the truth (the effect coefficients). In our pretend world then, the regression can be used to get these causal effects.
+
+What if in our pretend world, it just doesn't occur to us that lunch duration effects CVD risk and so we don't bother measuring $Siesta$. A causal variable that is not included in the regression model is a **missing confounder**. The consequence is that the regression coefficient $b_1$ of $Diet$ is no longer an unbiased estimate of the causal effect of $Diet$ ($\beta_1$). In other words, we think we are estimating the causal effect $\beta_1$ but we are really estimating
+
+$E[b_1] = \beta_1 + \rho \beta_2$
+
+where $\rho \beta_2$ is the **omitted variable bias**.
+
+Here are some consequences of this
+
+1. If the correlation between $Diet$ and $Siesta$ is zero then $\rho \beta_2$ is zero and there is no bias. The regression works, yaaay!
+
+2. If there is no effect of lunch duration on CVD risk then $\rho \beta_2$ is zero and, again, there is no bias. The regression works, yaaay!
+
+3. If $\rho$ and $\beta_2$ are anything other than zero, there will be omitted variable bias. How bad this bias will be depends on the magnitude of the correlation and the effect of lunch duration. If these are big, then a regression will not come close to estimating the true effect. Here are examples
+
+4. The true effect of $Diet$ is relatively big $\beta_1 = 0.8$, while the true effect of $Siesta$ is relatively small $\beta_2 = -0.2$ and the correlation between the two is small ($\rho = 0.2$). The expected regression coefficient for $Diet$ is $.8 + -.2 \times .2 = 0.76$ -- that's pretty close to the true value. But what if
+
+5. The true effect of $Diet$ is relatively small $\beta_1 = 0.2$, while the true effect of $Siesta$ is relatively big $\beta_2 = -0.8$ and the correlation between the two is big ($\rho = 0.7$). The expected regression coefficient for $Diet$ is now $.2 + -.8 \times .7 = -0.36$ -- In other words we think dietary animal fat as a *negative* effect on CVD -- that is, the more fat in the diet the lower the risk of CVD. This is opposite of the truth in our pretend world.
+
+So here is the deal. Observational studies will *always* have missing confounders. Consequently, estimates of causal effects in observational studies will *always* be biased and we generally won't know how big this bias is because we don't know what is missing -- if we did we would include it in the model. And again, increasing sample size *does not* decrease this bias. We can guess at what the big confounders are and measure them and include them in a regression model and hope that any remaining bias is small. More importantly, we can do good fundamental physiology and generate rigorously probed working models for how the potential causal effects cause the outcomes of interest. For some things, we can also
+
+6. Do a randomized controlled trial (RCT). In a RCT, people are randomly assigned to either a "low animal fat" or a "High animal fat" diet and then followed for some time and then CVD events are counted. The $Diet$ variable here is either 0 (low fat) or 1 (high fat) instead of grams of fat per day. So we have a long column of zeros and ones, representing the random assignment of treamtent to people, and the order of the zeros and ones is random. This is super important, because it means that the expected correlation with this variable and anything else we measure about these people is zero -- that is the definition of random. This means that in a RCT, $E(\rho)$ is zero and the measured effects using regression are unbiased estimates of the true causal effects. Yaaay!
+
+```{r ovb, echo=FALSE, eval=FALSE}
+library(ggplot2)
+# set up correlated variables
+n <- 1000
+z <- rnorm(n)
+r12 <- 0.6
+bz <- sqrt(r12)
+x1 <- bz*z + sqrt(1-r12)*rnorm(n)
+x2 <- bz*z + sqrt(1-r12)*rnorm(n)
+qplot(x1, x2)
+cor(x1, x2)
+
+# "cause" y
+beta1 <- 0.6
+beta2 <- -0.6
+
+y <- beta1*x1 + beta2*x2 + sqrt(1-beta1^2-beta2^2-2*r12*beta1*beta2)*rnorm(n)
+var(y)
+
+# expected is beta1, beta2
+coefficients(lm(y~x1 + x2))
+
+# expected is beta1 + r12*beta2
+beta1 + r12*beta2
+coefficients(lm(y~x1))
+
+```
+
+```
+

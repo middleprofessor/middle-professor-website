@@ -19,3 +19,5 @@ Lots more to come
 Physics for Introductory Biology
 <a class="btn" href="/files/physics_for_biologists/index.html">HTML</a>
 
+An elementary explanation of confounding (a very working explanation)
+<a class="btn" href="/files/math/confounding.html">HTML</a>
