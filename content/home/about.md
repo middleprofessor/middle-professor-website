@@ -10,27 +10,31 @@ weight = 5
 # List your academic interests.
 [interests]
   interests = [
-    "Performance Trade-offs",
-    "Quantitative Methods and Modeling",
-    "Statistical Best Practices"
+    "Artificial Intelligence",
+    "Computational Linguistics",
+    "Information Retrieval"
   ]
 
 # List your qualifications (such as academic degrees).
 [[education.courses]]
-  course = "PhD in Anatomical Sciences"
-  institution = "Stony Brook University"
-  year = 1995
+  course = "PhD in Artificial Intelligence"
+  institution = "Stanford University"
+  year = 2012
 
 [[education.courses]]
-  course = "BA in Geological Sciences"
-  institution = "University of Pennsylvania"
-  year = 1988
+  course = "MEng in Artificial Intelligence"
+  institution = "Massachusetts Institute of Technology"
+  year = 2009
+
+[[education.courses]]
+  course = "BSc in Artificial Intelligence"
+  institution = "Massachusetts Institute of Technology"
+  year = 2008
  
 +++
 
 # Biography
 
-I am a Professor of Biological Sciences at the University of Southern Maine. My research background is in evolutionary and ecological morphology, whole-animal performance, and biomechanics of swimming and flying. Most of my current research is in statistical best practices applied to problems in ecology and physiology /cell biology. These research problems are largely motivated by the classes that I teach, which include the Ecology/Evolution/Diversity semester of our Introductory Biology sequence, Human Physiology (a year-long sequence for Biology majors), and Applied Biostatistics.
+Lena Smith is a professor of artificial intelligence at the Stanford AI Lab. Her research interests include distributed robotics, mobile computing and programmable matter. She leads the Robotic Neurobiology group, which develops self-reconfiguring robots, systems of self-organizing robots, and mobile sensor networks.
 
-
-
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed neque elit, tristique placerat feugiat ac, facilisis vitae arcu. Proi
