@@ -1,0 +1,129 @@
+---
+title: Model-averaged coefficients of a GLM
+author: Jeff Walker
+date: '2018-05-04'
+slug: model-averaged-coefficients-of-a-glm
+categories: []
+tags:
+  - glm
+  - model-averaged coefficients
+  - ecology
+---
+
+
+
+<pre class="r"><code>library(MuMIn)
+library(data.table)</code></pre>
+<p>This is a very quick post as a comment to the statement</p>
+<p>“For linear models, predicting from a parameter-averaged model is mathematically identical to averaging predictions, but this is not the case for non-linear models…For non-linear models, such as GLMs with log or logit link functions g(x)<a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a>, such coefficient averaging is not equivalent to prediction averaging.”</p>
+<p>from the supplement of Dormann et al. <a href="https://esajournals.onlinelibrary.wiley.com/doi/abs/10.1002/ecm.1309">Model averaging in ecology: a review of Bayesian, information‐theoretic and tactical approaches for predictive inference</a>.</p>
+<p>I think the authors are arguing that for GLMs, we cannot use model-averaged predictions to justify interpreting model-averaged coefficients since modeled-averaged coefficients are not the same thing that produced the model-averaged predictions. I think this is wrong, but my response assumes that <strong>the model-averaged coefficients were first averaged on the link-scale and then back-transformed to the response scale</strong>.</p>
+<p>Their equation S2 is true but irrelevant. Model-averaged coefficients should be averaged on the link scale and then backtransformed to the response scale. It would indeed be wrong to “interpret” coefficients that are model-averaged on the response scale. One can model average the coefficients on the link scale and then compute the predictions or one can compute the predictions on the link scale for all models and then average these. These are the same, that is, “predicting from a parameter-averaged model is mathematically identical to averaging predictions.” For interpretation of either coefficients or the predictions, we backtransform the averaged values.</p>
+Here is their equation S2
+<span class="math display">\[\begin{equation}
+\frac{1}{m} \sum_{i=1}^m{g^{-1}(Xb_i)} \ne g^{-1}(X \frac{\sum_{i=1}^m{b_i}}{m})
+\end{equation}\]</span>
+<p>The RHS averages the coefficients on the link scale, then computes the model-averaged prediction on the link scale, and then backtransforms these to the response scale. This is a correct way to get model-averaged predictions on the response scale. The LHS backtransforms the predictions from each model and then averages over these to get the model-averaged prediction. This is a wrong way to get the model averaged prediction on the response scale.</p>
+<p>Here is a correct version of their S2, with all averaging on the link scale</p>
+<span class="math display">\[\begin{equation}
+g^{-1}(\frac{1}{m} \sum_{i=1}^m{(Xb_i)}) = g^{-1}(X \frac{\sum_{i=1}^m{b_i}}{m})
+\end{equation}\]</span>
+<p>The RHS is the same as their S2. The LHS computes the prediction for each model on the link scale, then averages over these on the link scale, and then backtransforms to the response scale. This is another way to get the correct predictions. Both the LHS and RHS are equivalent and show that “predicting from a parameter-averaged model is mathematically identical to averaging predictions.”</p>
+<p>Here is a short R-doodle showing that “predicting from a parameter-averaged model is mathematically identical to averaging predictions” for a GLM, as long as one is doing all the averaging in the link space.</p>
+<pre class="r"><code>expit &lt;- function(x) {exp(x)/(1+exp(x))} # the inverse logit function. This generates the probability of the event p
+logit &lt;- function(p) {log(p/(1-p))} # the log of the odds or &quot;logodds&quot; given the probability of an event p. This is NOT the odds ratio, which is the ratio of two odds.
+p2odd &lt;- function(p) {p/(1-p)} # the odds of the probability of an event
+odd2p &lt;- function(x) {x/(1+x)} # the probability associated with an odds</code></pre>
+<pre class="r"><code>n &lt;- 100
+z &lt;- rnorm(n)
+# create two correlated variables, x1 and x2, with E[cor] = zeta^2
+zeta &lt;- 0.7
+sigma &lt;- 0.3
+x1 &lt;- zeta*z + sqrt(1-zeta^2)*rnorm(n)
+x2 &lt;- zeta*z + sqrt(1-zeta^2)*rnorm(n)
+
+# create a performance measure as function of x1 and x2
+perf &lt;- x1 + x2 + rnorm(n)*sigma # coefficients both = 1
+
+# transform performance to probability of survival
+
+# create fake data
+p.survival &lt;- expit(perf)
+y &lt;- rbinom(n, 1, p.survival)
+dt &lt;- data.table(y=y,x1=x1,x2=x2)
+
+# fit
+fit &lt;- glm(y ~ x1 + x2, data=dt, family=binomial(link=&#39;logit&#39;), na.action=na.fail)
+
+# all subsets regression and model average using MuMIn
+fit.all &lt;- dredge(fit)</code></pre>
+<pre><code>## Fixed term is &quot;(Intercept)&quot;</code></pre>
+<pre class="r"><code>fit.avg &lt;- model.avg(fit.all, fit=TRUE)
+
+model_set &lt;- get.models(fit.all, subset=TRUE) # all models
+X &lt;- model.matrix(fit)
+
+# (0) MuMIn predict
+yhat0.response_scale &lt;- predict(fit.avg, backtransform=TRUE)
+
+# RHS eq. S2
+# verify &quot;by hand&quot; by predicting on link scale then back transforming to response scale
+yhat0.link_scale &lt;- predict(fit.avg, backtransform=FALSE)
+yhat0.response_scale2 &lt;- expit(yhat0.link_scale) 
+head(data.table(yhat0.response_scale, yhat0.response_scale2)) # these should be equal</code></pre>
+<pre><code>##    yhat0.response_scale yhat0.response_scale2
+## 1:          0.011561638           0.011561638
+## 2:          0.895048448           0.895048448
+## 3:          0.007077540           0.007077540
+## 4:          0.002716573           0.002716573
+## 5:          0.075673822           0.075673822
+## 6:          0.817915332           0.817915332</code></pre>
+<pre class="r"><code>yhat0 &lt;- yhat0.response_scale # predictions using MuMIn package
+
+
+# (1) use model averaged B to get prediction on link scale. Backtransform to response scale
+# this is RHS eq. S2 RHS of appendix
+# I use MuMIn model.avg function to model average coefficients on link scale
+# then I compute predictions on link scale
+# then I backtransform predictions to response scale 
+# This should equal yhat0 from above
+b &lt;- model.avg(model_set)$coefficients[&#39;full&#39;,][colnames(X)]
+yhat1.link_scale &lt;- X%*%b
+yhat1 &lt;- expit(yhat1.link_scale)
+MSE1 &lt;- sqrt(mean((yhat1 - dt[, y])^2))
+
+# (2) a variant of yhat1 and yhat0 - I am &quot;by hand&quot; computing the average prediction on the link scale
+# then backtransforming to response scale
+# this can be thought of as the corrected LHS of S2
+w &lt;- fit.all$weight
+yhat2.each_model.link_scale &lt;- sapply(model_set, predict)
+yhat2.link_scale &lt;- yhat2.each_model.link_scale%*%w
+yhat2 &lt;- expit(yhat2.link_scale)
+MSE2 &lt;- sqrt(mean((yhat2 - dt[, y])^2))
+
+# (3) Thisis the &quot;incorrect&quot; method of model averaging&quot;
+# LHS of S2
+# model average predictions on response scale (i.e. backtransform each prediction to response scale and then model average)
+# I need the first two calculations from #(2) above to get yhat2.each_model.link_scale
+yhat3.each_model.response_scale &lt;- expit(yhat2.each_model.link_scale)
+yhat3 &lt;- yhat3.each_model.response_scale%*%w
+MSE3 &lt;- sqrt(mean((yhat3-dt[, y])^2))
+
+head(data.table(yhat0=yhat0, yhat1=yhat1[,1], yhat2=yhat2[,1], yhat3=yhat3[,1]))</code></pre>
+<pre><code>##          yhat0       yhat1       yhat2       yhat3
+## 1: 0.011561638 0.011561638 0.011561638 0.011826898
+## 2: 0.895048448 0.895048448 0.895048448 0.894943865
+## 3: 0.007077540 0.007077540 0.007077540 0.007096791
+## 4: 0.002716573 0.002716573 0.002716573 0.002724797
+## 5: 0.075673822 0.075673822 0.075673822 0.075962729
+## 6: 0.817915332 0.817915332 0.817915332 0.817903826</code></pre>
+<pre class="r"><code>#yhat0 = MuMIn model averaged predictions (correct method)
+#yhat1 = RHS of equation s2 in appendix (correct method)
+#yhat2 = Corrected LHS of s2 in appendix (correct method)
+#yhat3 = LHS of s2 in appendix (incorrect?)</code></pre>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>understood but awkward and confusing. It is unconventional to call a GLM a non-linear model, especially given the name “General Linear Model”<a href="#fnref1">↩</a></p></li>
+</ol>
+</div>
