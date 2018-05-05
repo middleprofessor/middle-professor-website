@@ -5,12 +5,10 @@ date: "4/14/2018"
 output: html_document
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
+
 
 How do I interpret the AIC?
-<a class="btn" href="/files/bio413/external/interpret_aic.html">Archive</a>
+<a class="btn" href="/files/quasipubs/harrell_plot_intro.html">Archive</a>
 <a class="btn" href="http://www.seascapemodels.org/rstats/2018/04/13/how-to-use-the-AIC.html">Original</a>
 
 How do I interpret coefficients from generalized linear models?

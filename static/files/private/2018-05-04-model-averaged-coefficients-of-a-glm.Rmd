@@ -1,0 +1,136 @@
+---
+title: "Model-averaged coefficients of a GLM"
+author: "Jeff Walker"
+date: '2018-05-04'
+slug: model-averaged-coefficients-of-a-glm
+tags:
+- glm
+- model-averaged coefficients
+- ecology
+categories: []
+---
+```{r image, echo=FALSE, fig.cap="p1 of supplement of Dormann et al"}
+image_folder_path <- '../../images/2018-05-04-model-averaging-coeffcients-of-a-glm' # kniter
+# image_folder_path <- 'content/images/2018-05-04-model-averaging-coeffcients-of-a-glm/'
+fn <- 's2.png'
+image_path <- paste(image_folder_path, fn, sep="/")
+# knitr::include_graphics(image_path)
+
+```
+
+```{r load libraries, warning=FALSE}
+library(MuMIn)
+library(data.table)
+```
+
+This is a very quick post as a comment to the statement
+
+"For linear models, predicting from a parameter-averaged model is mathematically identical to averaging predictions, but this is not the case for non-linear models...For non-linear models, such as GLMs with log or logit link functions g(x)^[understood but awkward and confusing. It is unconventional to call a GLM a non-linear model, especially given the name "General Linear Model"], such coefficient averaging is not equivalent to prediction averaging."
+
+from the supplement of Dormann et al. [Model averaging in ecology: a review of Bayesian, information‐theoretic and tactical approaches for predictive inference](https://esajournals.onlinelibrary.wiley.com/doi/abs/10.1002/ecm.1309).
+
+I think the authors are arguing that for GLMs, we cannot use model-averaged predictions to justify interpreting model-averaged coefficients since modeled-averaged coefficients are not the same thing that produced the model-averaged predictions. I think this is wrong, model-averaged coefficients *are* the same thing that produced the model-averaged predictions, but only if  both are averaged in the link scale and then back-transformed to the response scale.
+
+Here is their equation S2
+
+\begin{equation}
+\frac{1}{m} \sum_{i=1}^m{g^{-1}(Xb_i)} \ne g^{-1}(X \frac{\sum_{i=1}^m{b_i}}{m})
+\end{equation}
+
+This equation is true but irrelevant. The RHS averages the coefficients on the link scale, then computes the model-averaged prediction on the link scale, and then backtransforms these to the response scale. This is a correct way to get model-averaged predictions on the response scale. The LHS backtransforms the predictions from each model and then *averages over these on the response scale* to get the model-averaged prediction. This is a wrong way to get the model averaged prediction on the response scale. This equation is comparing apples and oranges
+
+Here is a correct version of their equation S2, with all averaging on the link scale
+
+\begin{equation}
+g^{-1}(\frac{1}{m} \sum_{i=1}^m{(Xb_i)}) = g^{-1}(X \frac{\sum_{i=1}^m{b_i}}{m})
+\end{equation}
+
+The RHS is the same as their S2. The LHS computes the prediction for each model on the link scale, then averages over these on the link scale, and then backtransforms to the response scale. This is another way to get the correct predictions. Both the LHS and RHS are equivalent and show that "predicting from a parameter-averaged model is mathematically identical to averaging predictions."
+
+**In short.** model-averaged coefficients should be averaged on the link scale and then backtransformed to the response scale for interpretation. It would indeed be wrong to "interpret" coefficients that are model-averaged on the response scale. One can model average the coefficients on the link scale and then compute the predictions or one can compute the predictions on the link scale for all models and then average these. These are the same, that is, "predicting from a parameter-averaged model is mathematically identical to averaging predictions." For interpretation of either coefficients or the predictions, we backtransform the averaged values.
+
+Here is a short R-doodle showing that "predicting from a parameter-averaged model is mathematically identical to averaging predictions" for a GLM, as long as one is doing all the averaging in the link space.
+
+```{r functions}
+expit <- function(x) {exp(x)/(1+exp(x))} # the inverse logit function. This generates the probability of the event p
+logit <- function(p) {log(p/(1-p))} # the log of the odds or "logodds" given the probability of an event p. This is NOT the odds ratio, which is the ratio of two odds.
+p2odd <- function(p) {p/(1-p)} # the odds of the probability of an event
+odd2p <- function(x) {x/(1+x)} # the probability associated with an odds
+```
+
+```{r main}
+n <- 100
+z <- rnorm(n)
+# create two correlated variables, x1 and x2, with E[cor] = zeta^2
+zeta <- 0.7
+sigma <- 0.3
+x1 <- zeta*z + sqrt(1-zeta^2)*rnorm(n)
+x2 <- zeta*z + sqrt(1-zeta^2)*rnorm(n)
+
+# create a performance measure as function of x1 and x2
+perf <- x1 + x2 + rnorm(n)*sigma # coefficients both = 1
+
+# transform performance to probability of survival
+
+# create fake data
+p.survival <- expit(perf)
+y <- rbinom(n, 1, p.survival)
+dt <- data.table(y=y,x1=x1,x2=x2)
+
+# fit
+fit <- glm(y ~ x1 + x2, data=dt, family=binomial(link='logit'), na.action=na.fail)
+
+# all subsets regression and model average using MuMIn
+fit.all <- dredge(fit)
+fit.avg <- model.avg(fit.all, fit=TRUE)
+
+model_set <- get.models(fit.all, subset=TRUE) # all models
+X <- model.matrix(fit)
+
+# (0) MuMIn predict
+yhat0.response_scale <- predict(fit.avg, backtransform=TRUE)
+
+# RHS eq. S2
+# verify "by hand" by predicting on link scale then back transforming to response scale
+yhat0.link_scale <- predict(fit.avg, backtransform=FALSE)
+yhat0.response_scale2 <- expit(yhat0.link_scale) 
+head(data.table(yhat0.response_scale, yhat0.response_scale2)) # these should be equal
+yhat0 <- yhat0.response_scale # predictions using MuMIn package
+
+
+# (1) use model averaged B to get prediction on link scale. Backtransform to response scale
+# this is RHS eq. S2 RHS of appendix
+# I use MuMIn model.avg function to model average coefficients on link scale
+# then I compute predictions on link scale
+# then I backtransform predictions to response scale 
+# This should equal yhat0 from above
+b <- model.avg(model_set)$coefficients['full',][colnames(X)]
+yhat1.link_scale <- X%*%b
+yhat1 <- expit(yhat1.link_scale)
+MSE1 <- sqrt(mean((yhat1 - dt[, y])^2))
+
+# (2) a variant of yhat1 and yhat0 - I am "by hand" computing the average prediction on the link scale
+# then backtransforming to response scale
+# this can be thought of as the corrected LHS of S2
+w <- fit.all$weight
+yhat2.each_model.link_scale <- sapply(model_set, predict)
+yhat2.link_scale <- yhat2.each_model.link_scale%*%w
+yhat2 <- expit(yhat2.link_scale)
+MSE2 <- sqrt(mean((yhat2 - dt[, y])^2))
+
+# (3) Thisis the "incorrect" method of model averaging"
+# LHS of S2
+# model average predictions on response scale (i.e. backtransform each prediction to response scale and then model average)
+# I need the first two calculations from #(2) above to get yhat2.each_model.link_scale
+yhat3.each_model.response_scale <- expit(yhat2.each_model.link_scale)
+yhat3 <- yhat3.each_model.response_scale%*%w
+MSE3 <- sqrt(mean((yhat3-dt[, y])^2))
+
+# Predicted values computed 4 different ways
+head(data.table(yhat0=yhat0, yhat1=yhat1[,1], yhat2=yhat2[,1], yhat3=yhat3[,1]))
+#yhat0 = MuMIn model averaged predictions (correct method)
+#yhat1 = RHS of equation s2 in appendix (correct method)
+#yhat2 = Corrected LHS of s2 in appendix (correct method)
+#yhat3 = LHS of s2 in appendix (incorrect?)
+```
+
