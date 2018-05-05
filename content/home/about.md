@@ -11,8 +11,8 @@ weight = 5
 [interests]
   interests = [
     "good science in ecology, evolution, and cell biology",
-    "being a research parasite",
-    "data stalking"
+    "developing tools for best statistical practics",
+    "being a research parasite"
   ]
 
 # List your qualifications (such as academic degrees).
