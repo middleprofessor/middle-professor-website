@@ -11,7 +11,7 @@ weight = 5
 [interests]
   interests = [
     "good science in ecology, evolution, and cell biology",
-    "developing tools for best statistical practics",
+    "developing tools for best statistical practices",
     "being a research parasite"
   ]
 
