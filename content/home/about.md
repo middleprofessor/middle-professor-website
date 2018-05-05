@@ -30,4 +30,4 @@ weight = 5
 
 # Biography
 
-Jeff Walker is a Professor of Biological Sciences at the University of Southern Maine.
+Jeff Walker is a Professor of Biological Sciences at the University of Southern Maine with a background in geometric morphometrics, biomechanical modeling of swimming and flying animals, and modeling performance trade-offs in functional systems. More recent work is devoted to developing tools for best statistical practices in biology.
