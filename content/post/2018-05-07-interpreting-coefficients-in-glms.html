@@ -4,7 +4,7 @@ author: Jeff Walker
 date: '2018-05-07'
 slug: interpreting-coefficients-in-glms
 categories:
-  - bio413
+  - statistics-links
 tags:
   - glm
 header:
@@ -37,10 +37,10 @@ Y &lt;- rpois(N, lambda = mu)
 glm1 &lt;- glm(Y~x, family = poisson)
 glm1$coefficients</code></pre>
 <pre><code>## (Intercept)           x 
-##   1.0270765   0.2404027</code></pre>
+##   1.0628067   0.1278092</code></pre>
 <pre class="r"><code>exp(glm1$coefficients[2])</code></pre>
 <pre><code>##        x 
-## 1.271761</code></pre>
+## 1.136336</code></pre>
 <p>So here increasing <span class="math inline">\(x\)</span> by 1 unit multiplies the mean value of Y by <span class="math inline">\(exp( \beta_1 ) = 1.25\)</span>. The same thing is true for negative binomial glms as they have the same link function. <br><br></p>
 </div>
 <div id="binomial-glms" class="section level3">
@@ -59,22 +59,22 @@ summary(bin1)</code></pre>
 ## 
 ## Deviance Residuals: 
 ##     Min       1Q   Median       3Q      Max  
-## -2.2269   0.1920   0.3433   0.5092   1.2519  
+## -2.4383   0.3373   0.3465   0.3526   0.3861  
 ## 
 ## Coefficients:
 ##             Estimate Std. Error z value Pr(&gt;|z|)    
-## (Intercept)   2.4971     0.4037   6.186 6.16e-10 ***
-## x             1.0747     0.3433   3.131  0.00174 ** 
+## (Intercept)  2.78857    0.39303   7.095 1.29e-12 ***
+## x            0.06468    0.37057   0.175    0.861    
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
 ## (Dispersion parameter for binomial family taken to be 1)
 ## 
-##     Null deviance: 86.455  on 119  degrees of freedom
-## Residual deviance: 74.014  on 118  degrees of freedom
-## AIC: 78.014
+##     Null deviance: 53.366  on 119  degrees of freedom
+## Residual deviance: 53.335  on 118  degrees of freedom
+## AIC: 57.335
 ## 
-## Number of Fisher Scoring iterations: 6</code></pre>
+## Number of Fisher Scoring iterations: 5</code></pre>
 <p>So when we increase <span class="math inline">\(x\)</span> by one unit, the odds of Y are multiplied by <span class="math inline">\(exp( \beta_1 ) = 2.11\)</span> <br><br></p>
 <div id="complementary-log-log" class="section level4">
 <h4>Complementary log-log</h4>
@@ -84,9 +84,9 @@ summary(bin1)</code></pre>
 <pre class="r"><code>library(mvabund)
 bin2 &lt;- manyglm(bY~x, family = binomial(link = &quot;cloglog&quot;))
 coef(bin2)</code></pre>
-<pre><code>##                    bY
-## (Intercept) 0.9693061
-## x           0.5491260</code></pre>
+<pre><code>##                     bY
+## (Intercept) 1.04635177
+## x           0.02013689</code></pre>
 <p>The interpretation is now the same as in the Poisson case, when we increase <span class="math inline">\(x\)</span> by 1, the mean of the underlying count is multiplied by <span class="math inline">\(exp( \beta_1 )\)</span>. <br><br></p>
 </div>
 <div id="log-binomial-model" class="section level4">
@@ -114,21 +114,21 @@ summary(off_mod)</code></pre>
 ## glm(formula = Y ~ depth + offset(log(soil)), family = poisson)
 ## 
 ## Deviance Residuals: 
-##      Min        1Q    Median        3Q       Max  
-## -2.57549  -1.02350  -0.01541   0.62174   2.39965  
+##     Min       1Q   Median       3Q      Max  
+## -2.4974  -0.6830  -0.1568   0.5521   2.5910  
 ## 
 ## Coefficients:
 ##             Estimate Std. Error z value Pr(&gt;|z|)   
-## (Intercept)  0.15377    0.05402   2.847  0.00442 **
-## depth        0.02772    0.05483   0.505  0.61322   
+## (Intercept)  0.16048    0.05368   2.989   0.0028 **
+## depth        0.03153    0.05458   0.578   0.5635   
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
 ## (Dispersion parameter for poisson family taken to be 1)
 ## 
-##     Null deviance: 184.33  on 119  degrees of freedom
-## Residual deviance: 184.07  on 118  degrees of freedom
-## AIC: 499.15
+##     Null deviance: 141.22  on 119  degrees of freedom
+## Residual deviance: 140.88  on 118  degrees of freedom
+## AIC: 470.36
 ## 
 ## Number of Fisher Scoring iterations: 5</code></pre>
 <p>If we ignored the soil amount, we could have misleading conclusions. If the soil amount is correlated with another variable in your model, then leaving out the offset will affect the coefficient of that variable, as in the discussion of conditional/marginal interpretations <a href="http://environmentalcomputing.net/how-to-interpret-linear-models/">here</a>. The offset will also often account for a lot of the variation in the response, so including it will give you a better model overall. What if you’re not sure if the relationship is exactly proportional? In that case just include the variable in your model as a coefficient, and the model will decide the best relationship between it and your response.</p>
@@ -139,22 +139,20 @@ summary(coef_mod)</code></pre>
 ## glm(formula = Y ~ depth + log(soil), family = poisson)
 ## 
 ## Deviance Residuals: 
-##      Min        1Q    Median        3Q       Max  
-## -2.48661  -1.12491  -0.01434   0.68966   2.26422  
+##     Min       1Q   Median       3Q      Max  
+## -2.4669  -0.6503  -0.2537   0.5792   2.6574  
 ## 
 ## Coefficients:
-##             Estimate Std. Error z value Pr(&gt;|z|)    
-## (Intercept)  1.85852    0.55361   3.357 0.000788 ***
-## depth        0.02618    0.05406   0.484 0.628171    
-## log(soil)   -0.90482    0.62037  -1.459 0.144694    
-## ---
-## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+##             Estimate Std. Error z value Pr(&gt;|z|)
+## (Intercept)  0.48414    0.61501   0.787    0.431
+## depth        0.03267    0.05469   0.597    0.550
+## log(soil)    0.64191    0.67865   0.946    0.344
 ## 
 ## (Dispersion parameter for poisson family taken to be 1)
 ## 
-##     Null deviance: 177.51  on 119  degrees of freedom
-## Residual deviance: 175.21  on 117  degrees of freedom
-## AIC: 492.29
+##     Null deviance: 141.93  on 119  degrees of freedom
+## Residual deviance: 140.61  on 117  degrees of freedom
+## AIC: 472.08
 ## 
 ## Number of Fisher Scoring iterations: 5</code></pre>
 <p>The coefficient the model estimated is close to 1, which would be equivalent to an offset. <br><br></p>
