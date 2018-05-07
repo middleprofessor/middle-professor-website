@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="theme" content="hugo-academic">
+  <meta name="generator" content="Hugo 0.37" />
+  <meta name="author" content="Jeffrey A. Walker">
+
+  
+  
+  
+  
+    
+      
+    
+  
+  <meta name="description" content="This is an archive of an external source
+Hierarchical modeling is a powerful tool for making inferences about multiple groups in clinical trials, whether these groups are multiple indications or tumor types in an oncology study, multiple sites in a device clinical trial, or any other source of patient heterogeneity.
+Hierarchical models that share information across groups form a backbone of modern Bayesian thinking. We currently employ hierarchical modeling most commonly in our oncology basket trials, see for example Berry et.">
+
+  
+  <link rel="alternate" hreflang="en-us" href="/post/some-intuition-behind-hierarchical-modeling/">
+
+  
+
+
+  
+
+  
+  
+  <meta name="theme-color" content="#0095eb">
+  
+  
+  
+  
+    
+  
+  
+    
+    
+      
+        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+      
+    
+  
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha512-6MXa8B6uaO18Hid6blRMetEIoPqHf7Ux1tnyIQdpt9qI5OACx7C+O3IVTr98vwGnlcg0LOLa02i9Y1HpVhlfiw==" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.1/css/academicons.min.css" integrity="sha512-NThgw3XKQ1absAahW6to7Ey42uycrVvfNfyjqcFNgCmOCQ5AR4AO0SiXrN+8ZtYeappp56lk1WtvjVmEa+VR6A==" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha512-SfTiTlX6kk+qitfevl/7LibUOeJWlt9rbyDn92a1DqWOw9vWG2MFoays0sgObmWazO5BQPiFucnnEAjpAB+/Sw==" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" integrity="sha256-ygkqlh3CYSUri3LhQxzdcm0n1EQvH2Y+U5S2idbLtxs=" crossorigin="anonymous">
+  
+  
+  
+  
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Montserrat:400,700%7cRoboto:400,400italic,700%7cRoboto&#43;Mono">
+  
+  <link rel="stylesheet" href="/styles.css">
+  
+
+  
+
+  
+  <link rel="alternate" href="/index.xml" type="application/rss+xml" title="Jeffrey A. Walker">
+  <link rel="feed" href="/index.xml" type="application/rss+xml" title="Jeffrey A. Walker">
+  
+
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="icon" type="image/png" href="/img/icon.png">
+  <link rel="apple-touch-icon" type="image/png" href="/img/icon-192.png">
+
+  <link rel="canonical" href="/post/some-intuition-behind-hierarchical-modeling/">
+
+  <meta property="twitter:card" content="summary_large_image">
+  
+  <meta property="twitter:site" content="@jwalkrunski">
+  <meta property="twitter:creator" content="@jwalkrunski">
+  
+  <meta property="og:site_name" content="Jeffrey A. Walker">
+  <meta property="og:url" content="/post/some-intuition-behind-hierarchical-modeling/">
+  <meta property="og:title" content="Some Intuition Behind Hierarchical Modeling | Jeffrey A. Walker">
+  <meta property="og:description" content="This is an archive of an external source
+Hierarchical modeling is a powerful tool for making inferences about multiple groups in clinical trials, whether these groups are multiple indications or tumor types in an oncology study, multiple sites in a device clinical trial, or any other source of patient heterogeneity.
+Hierarchical models that share information across groups form a backbone of modern Bayesian thinking. We currently employ hierarchical modeling most commonly in our oncology basket trials, see for example Berry et.">
+  <meta property="og:locale" content="en-us">
+  
+  <meta property="article:published_time" content="2018-05-07T00:00:00&#43;00:00">
+  
+  <meta property="article:modified_time" content="2018-05-07T00:00:00&#43;00:00">
+  
+
+  
+
+  <title>Some Intuition Behind Hierarchical Modeling | Jeffrey A. Walker</title>
+
+</head>
+<body id="top" data-spy="scroll" data-target="#toc" data-offset="71" >
+
+<nav class="navbar navbar-default navbar-fixed-top" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="navbar-header">
+      
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+              data-target=".navbar-collapse" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      
+      <a class="navbar-brand" href="/">Jeffrey A. Walker</a>
+    </div>
+
+    
+    <div class="collapse navbar-collapse">
+
+      
+      
+      <ul class="nav navbar-nav navbar-right">
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#about">
+            
+            <span>About</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#shiny">
+            
+            <span>Shiny</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#rdoodles">
+            
+            <span>R Doodles</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#prepreprints">
+            
+            <span>Quasi-Pubs</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#pubs">
+            
+            <span>Recent Publications</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#teaching">
+            
+            <span>Teaching</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#contact">
+            
+            <span>Contact</span>
+            
+          </a>
+        </li>
+
+        
+        
+      
+
+      
+      </ul>
+
+    </div>
+  </div>
+</nav>
+
+
+<article class="article" itemscope itemtype="http://schema.org/Article">
+
+  
+
+
+  <div class="article-container">
+    <h1 itemprop="name">Some Intuition Behind Hierarchical Modeling</h1>
+
+    
+
+<div class="article-metadata">
+
+  <span class="article-date">
+    
+    <time datetime="2018-05-07 00:00:00 &#43;0000 UTC" itemprop="datePublished dateModified">
+      May 7, 2018
+    </time>
+  </span>
+  <span itemscope itemprop="author publisher" itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Jeffrey A. Walker">
+  </span>
+
+  
+  <span class="middot-divider"></span>
+  <span class="article-reading-time">
+    9 min read
+  </span>
+  
+
+  
+  
+
+  
+  
+  
+  <span class="middot-divider"></span>
+  <span class="article-categories">
+    <i class="fa fa-folder"></i>
+    
+    <a href="/categories/bio413">bio413</a
+    >
+    
+  </span>
+  
+  
+
+  
+  
+<div class="share-box" aria-hidden="true">
+  <ul class="share">
+    <li>
+      <a class="twitter"
+         href="https://twitter.com/intent/tweet?text=Some%20Intuition%20Behind%20Hierarchical%20Modeling&amp;url=%2fpost%2fsome-intuition-behind-hierarchical-modeling%2f"
+         target="_blank" rel="noopener">
+        <i class="fa fa-twitter"></i>
+      </a>
+    </li>
+    <li>
+      <a class="facebook"
+         href="https://www.facebook.com/sharer.php?u=%2fpost%2fsome-intuition-behind-hierarchical-modeling%2f"
+         target="_blank" rel="noopener">
+        <i class="fa fa-facebook"></i>
+      </a>
+    </li>
+    <li>
+      <a class="linkedin"
+         href="https://www.linkedin.com/shareArticle?mini=true&amp;url=%2fpost%2fsome-intuition-behind-hierarchical-modeling%2f&amp;title=Some%20Intuition%20Behind%20Hierarchical%20Modeling"
+         target="_blank" rel="noopener">
+        <i class="fa fa-linkedin"></i>
+      </a>
+    </li>
+    <li>
+      <a class="weibo"
+         href="http://service.weibo.com/share/share.php?url=%2fpost%2fsome-intuition-behind-hierarchical-modeling%2f&amp;title=Some%20Intuition%20Behind%20Hierarchical%20Modeling"
+         target="_blank" rel="noopener">
+        <i class="fa fa-weibo"></i>
+      </a>
+    </li>
+    <li>
+      <a class="email"
+         href="mailto:?subject=Some%20Intuition%20Behind%20Hierarchical%20Modeling&amp;body=%2fpost%2fsome-intuition-behind-hierarchical-modeling%2f">
+        <i class="fa fa-envelope"></i>
+      </a>
+    </li>
+  </ul>
+</div>
+
+
+  
+
+</div>
+
+
+    <div class="article-style" itemprop="articleBody">
+      <p><a href="https://www.berryconsultants.com/intuition-behind-hierarchical-modeling/">This is an archive of an external source</a></p>
+<p>Hierarchical modeling is a powerful tool for making inferences about multiple groups in clinical trials, whether these groups are multiple indications or tumor types in an oncology study, multiple sites in a device clinical trial, or any other source of patient heterogeneity.</p>
+<p>Hierarchical models that share information across groups form a backbone of modern Bayesian thinking. We currently employ hierarchical modeling most commonly in our oncology basket trials, see for example Berry et. al (2013)</p>
+<p><a href="https://www.ncbi.nlm.nih.gov/pubmed/23983156" class="uri">https://www.ncbi.nlm.nih.gov/pubmed/23983156</a>.</p>
+<p>We also employ hierarchical modeling in recent work on the ADAPT antibiotic platform trial, where we share information across multiple body sites</p>
+<p><a href="https://www.berryconsultants.com/antibiotic-platform-design/" class="uri">https://www.berryconsultants.com/antibiotic-platform-design/</a>.</p>
+<p>Hierarchical modeling promises to decrease sample sizes and increase the power of clinical trials but also requires care in implementation. Our goal here is to explain some of the intuition behind hierarchical modeling and how that relates to the advantages and disadvantages of inferences for multiple groups.</p>
+<p>Suppose I’m running an oncology basket trial where success rates on standard of care run about 10%. These are trials that investigate a targeted agent against tumors in multiple body sites, under the assumption that if the targeted agent is effective against a particular mutation, then the agent should generally (but not always) be effective against tumors throughout the body regardless of location. These trials are also referred to as enrichment or umbrella trials in the literature, see for example Woodcock and LaVange (2016)</p>
+<p><a href="http://www.nejm.org/doi/full/10.1056/NEJMra1510062#t=article" class="uri">http://www.nejm.org/doi/full/10.1056/NEJMra1510062#t=article</a></p>
+<p>If I observe four tumor types, 20 patients each, and the data indicate 3/20, 4/20, 5/20, and 6/20 successes in the four groups, then what is my best guess of the success rate for the group with 6/20 successes? Is it greater than 10%?</p>
+<p>The standard estimate for a binomial rate is to take the observed proportion 6/20=30%. If I had only collected data in that group, this estimate would be unbiased (on average it’s equal to the true rate for the group) and have the greatest precision. Statisticians have a fancy name for such an estimate, the minimum variance unbiased estimate (MVUE). And for one group, the MVUE is essentially the best estimate you can make, absent prior information. After all, being unbiased and minimum variance are really good things.</p>
+<p>But I didn’t collect data from one tumor type, I collected data from 4 types and I also know that 6/20 is the highest result among the 4 types. Should that change my estimate? And if so, how?</p>
+<p>It is well established that testing multiple hypotheses is prone to multiplicity errors. Multiple methods (Bonferroni corrections, false discovery rates, gatekeeping strategies) exist which emphasize that p=0.024 means something very different in a group of p-values as opposed to the single primary analysis from a study. See for example Yadav and Lewis (2017).</p>
+<p><a href="https://jamanetwork.com/journals/jama/article-abstract/2656795" class="uri">https://jamanetwork.com/journals/jama/article-abstract/2656795</a></p>
+<p>Within a basket trial, we do not need to control family wise type I error. A sponsor could run separate trials in each indication and would not need to adjust alpha. Nevertheless, a sponsor would be wise to interpret the result taking into account multiplicities, both negative, in that one spurious result may be a random high, and positive, in that repeated good results are highly suggestive of a real positive trend. For example, all four groups above have observed rates in excess of 10%.</p>
+<p>Clearly, taking account of the extra information in multiple groups is fundamental to hypothesis testing. Similar phenomena apply to estimation and suggest our usual definitions of bias are limited when considering multiple groups. If I want to estimate the underlying true rates of the 4 groups from the data 3/20, 4/20, 5/20, and 6/20, the standard estimates are the sample proportions 15%, 20%, 25%, and 30%. Within each group, these estimates are unbiased and have the smallest possible variance.</p>
+<p>In the 1950s, Charles Stein made a startling discovery that, once multiple groups were considered, biased estimates are superior in terms of accuracy (mean square error). In other words, while alternative estimates may be biased, they will tend to be closer to the right answer. Their reduction in variance outweighs the bias. Stein’s arguments were technical, but we do have intuition for the results and a motivation for why hierarchical models present a natural inferential framework.</p>
+<p>One basic observation in statistics is that whenever you add noise to a system, variation increases. This seems obvious but has fundamental ramifications. Whenever we observe multiple groups, the highest observed value from the groups is likely biased high and the lower observed value from the groups is likely biased low. Returning to our example with 3/20, 4/20, 5/20, and 6/20 in the four groups, the 30% estimate for the highest group is likely an overestimate, and the 15% in the lowest group is likely an underestimate.</p>
+<p>This phenomenon is commonly seen in sports, for example in baseball where we see batting averages from multiple players. Early in the season we often see several players batting over 0.400 and can observe some extreme slumps at the same time. Neither of these extremes is likely to be real. The highest batting averages are most likely to be good players, but players who are both good and lucky. If you want to estimate how good they really are, you need to remove the luck. For the players with the highest observed averages, their estimates should be lower than their observed rates.</p>
+<p>Whenever we observe multiple groups, either at bats within batters or success rates within tumor types, the observed rates are likely farther apart than the underlying truth. If we want to estimate that underlying truth, it makes sense to move those observed rates together.</p>
+<p>Suppose the true underlying rates were 19%, 21%, 24%, and 26% in the four groups. The true standard deviation for the four groups is 3.11%. If we observe 20 observations in each group, we might get 4/20 in each and no variation, but it’s more likely we get a broader range. In fact, with random sampling the expected observed standard deviation is 9.06%, almost triple the standard deviation of the underlying truth. On average, the largest of the 4 observed rates is 32.8%, far higher than the true highest 26%. The lowest of the 4 observed rates is, on average, 12.8%, much lower than the true lowest 19%.</p>
+<p>In this example, it clearly makes sense to estimate the lowest group higher than the observed rate (after all, it’s clearly biased low) and estimate the highest group as lower than it’s observed rate (it’s clearly biased high). In effect, the estimates should be moved closer together. The resulting estimators are typically called “shrinkage estimators”.</p>
+<p>But how far to shrink? With N=20 per group and true rates of 19%, 21%, 24%, and 26%, we found</p>
+<p>–average observed SD 9.06%, almost triple SD of true rates 3.11%</p>
+<p>–average observed high rate 32.8%, true high rate 26%</p>
+<p>–average observed low rate 12.8%, true low rate 19%.</p>
+<p>What about N=200 per group? The results are a lot closer</p>
+<p>–average observed SD 4.0%, much closer to 3.11%</p>
+<p>–average observed high 27.0%, much closer to 26%</p>
+<p>–average observed low 18.1%, much closer to 19%</p>
+<p>Thus, with a large sample size, we should “shrink” far less. Suppose our true rates were farther apart, with true rates of 5%, 20%, 35%, and 50%, and we observed 20 per group. The standard deviation of the true rates is 19.4%</p>
+<p>–average observed SD 20.9%, close to true SD</p>
+<p>–average observed high 51.4%, not far from 50%</p>
+<p>–average observed low 4.7%, not far from 5%</p>
+<p>In the later examples, we should clearly shrink less than in the earlier example given the observed results (standard deviation, minimum and maximum) are much closer to their true counterparts.</p>
+<p>The key to determining the appropriate amount of shrinkage is the ratio of the true across group variance to the within group variation (the variation resulting from the sampling variation in observed N=20, or 200, observations per group). When the within group variability is much larger than the across group variability, as in our first example, we should shrink our estimates considerably. In the later examples, we should shrink less, either because the N=200 samples resulted in far less within group variation in the second example, or because the large discrepancy in underlying true rates in the third example results in large across group variation. To return to our baseball analogy, the within group variability is the “luck”, while the true across group variation determines whether groups are truly “good” or “bad”. We want to estimate away the random within group variability and leave the true across group variability.</p>
+<p>Hierarchical models estimate the appropriate amount of shrinkage by expressly modeling the within and across group variability.</p>
+<p>Part of the inferential structure describes the likelihood, where each group’s data arises from a Binomial distribution. A higher level of the prior (the levels of this structure motivate the term “hierarchical”) describes how the groups are related. If the underlying parameters in the G groups are theta_1,theta_2,…,theta_G (often these are transformed, for example to logodds), then we often model</p>
+<p>theta_1,theta_2,..,theta_G ~ N(eta,tau^2)</p>
+<p>The thetas are the true parameters, and tau is the across group variance. To finalize the model within a Bayesian perspective, we place priors on eta and tau and estimate them on the basis of the data. The resulting inference provides estimates of the within group and across group variation, and provides shrinkage estimates appropriate for the ratio between them.</p>
+<p>The details of the pros and cons of this design are longer than this blog post will allow (we may revisit it in another). Generally speaking, shrinkage estimators perform admirably and decrease required sample sizes whenever the true parameters approximately obey the N(eta,tau^2) assumption. As with any model, remember “all models are wrong, but some are useful” and, thus, exact normality is not required. Results are particularly strong in the joint null, where a drug has no effect in any group. Shrinkage estimates act as automatic multiplicity adjustments, reducing type I error. When there are consistent strong effects, the use of across group estimates greatly increases power within each group, allowing repeated promising results in multiple groups to be combined into a conclusive narrative of effectiveness. When a large range of true effects is present, the large across group variation essentially eliminates shrinkage in favor of separate estimates per group, with no gain or loss relative to standard analyses. The model above will perform poorly when the N(eta,tau^2) assumption clearly does not fit, which occurs in what we call “nugget” situations, where all groups are null, save for a single group where the drug is effective, or vice versa where the drug is effective in all but a single null group. In such situations, outlying groups are not modeled well by the across group normal distribution and performance suffers, either in terms of reduced power for a single effective group, or inflated type I error for a single effective group. Balancing the pros and cons relative to the expected performance of the groups is a key part of the design process involving any clinical trial with a hierarchical model. The design can be calibrated to properly balance these risks.</p>
+<p>(Many thanks to Anna McGlothlin and Barbara Wendelberger for helpful comments)</p>
+
+    </div>
+
+    
+
+
+<div class="article-tags">
+  
+  <a class="btn btn-primary btn-outline" href="/tags/multilevel-model">multilevel model</a>
+  
+</div>
+
+
+
+
+    
+    
+
+    
+
+    
+
+
+  </div>
+</article>
+
+<footer class="site-footer">
+  <div class="container">
+    <p class="powered-by">
+
+      &copy; 2018 &middot; 
+
+      Powered by the
+      <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for
+      <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a>.
+
+      <span class="pull-right" aria-hidden="true">
+        <a href="#" id="back_to_top">
+          <span class="button_icon">
+            <i class="fa fa-chevron-up fa-2x"></i>
+          </span>
+        </a>
+      </span>
+
+    </p>
+  </div>
+</footer>
+
+
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close btn-large" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Cite</h4>
+      </div>
+      <div>
+        <pre><code class="modal-body tex"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-primary btn-outline js-copy-cite" href="#" target="_blank">
+          <i class="fa fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-primary btn-outline js-download-cite" href="#" target="_blank">
+          <i class="fa fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+    
+
+    
+
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js" integrity="sha512-3P8rXCuGJdNZOnUx/03c1jOTnMn3rP63nBip5gOP2qmUh5YAdVAvFZ1E+QLZZbC1rtMrQb+mah3AfYW11RUrWA==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.3/imagesloaded.pkgd.min.js" integrity="sha512-umsR78NN0D23AzgoZ11K7raBD+R6hqKojyBZs1w8WvYlsI+QuKRGBx3LFCwhatzBunCjDuJpDHwxD13sLMbpRA==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha512-iztkobsvnjKfAtTNdHkGVjAYTrrtlC7mGp/54c40wowO7LhURYl3gVzzcEqGl/qKXQltJ2HwMrdLcNUdo+N/RQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.4/isotope.pkgd.min.js" integrity="sha512-VDBOIlDbuC4VWxGJNmuFRQ0Li0SKkDpmGyuhAG5LTDLd/dJ/S0WMVxriR2Y+CyPL5gzjpN4f/6iqWVBJlht0tQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" integrity="sha256-X5PoE3KU5l+JcX+w09p/wHl9AzK333C4hJ2I9S5mD4M=" crossorigin="anonymous"></script>
+    
+    
+    <script src="/js/hugo-academic.js"></script>
+    
+
+    
+    
+      
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js" integrity="sha256-/BfiIkHlHoVihZdc6TFuj7MmJ0TWcWsMXkeDFwhi0zw=" crossorigin="anonymous"></script>
+      
+
+      
+
+      
+
+      <script>hljs.initHighlightingOnLoad();</script>
+    
+
+    
+    
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ['\\(','\\)']] } });
+    </script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS_CHTML" integrity="sha512-tOav5w1OjvsSJzePRtt2uQPFwBoHt1VZcUq8l8nm5284LEKE9FSJBQryzMBzHxY5P0zRdNqEcpLIRVYFNgu1jw==" crossorigin="anonymous"></script>
+    
+    
+
+  </body>
+</html>
+
