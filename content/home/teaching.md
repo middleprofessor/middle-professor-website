@@ -24,4 +24,4 @@ An elementary explanation of confounding (a very working explanation)
 
 External Links for
 
-[BIO 413 / 513 Applied Biostatistics](files/bio413/bio413_links.html)
+[BIO 413 / 513 Applied Biostatistics](post/applied-biostatistics-links)

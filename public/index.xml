@@ -17,8 +17,173 @@
       
       <guid>/post/applied-biostatistics-links/</guid>
       <description>&lt;p&gt;&lt;a href=&#34;/post/some-intuition-behind-hierarchical-modeling/&#34;&gt;Some Intuition Behind Hierarchical Modeling&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;How do I interpret the AIC? &lt;a class=&#34;btn&#34; href=&#34;http://www.seascapemodels.org/rstats/2018/04/13/how-to-use-the-AIC.html&#34;&gt;Original&lt;/a&gt; &lt;a class=&#34;btn&#34; href=&#34;/files/bio413/external/interpret_aic.html&#34;&gt;Archive&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;How do I interpret coefficients from generalized linear models? &lt;a class=&#34;btn&#34; href=&#34;http://environmentalcomputing.net/interpreting-coefficients-in-glms/&#34;&gt;Original&lt;/a&gt; &lt;a class=&#34;btn&#34; href=&#34;/files/bio413/external/interpreting-coefficients-in-glms.html&#34;&gt;Archive&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;/post/interpreting-coefficients-in-glms/&#34;&gt;Interpreting coefficients in GLMs&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;/post/how-do-i-interpret-the-aic/&#34;&gt;How do I interpret the AIC?&lt;/a&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>How do I interpret the AIC?</title>
+      <link>/post/how-do-i-interpret-the-aic/</link>
+      <pubDate>Mon, 07 May 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/post/how-do-i-interpret-the-aic/</guid>
+      <description>&lt;p&gt;&lt;a href=&#34;http://www.seascapemodels.org/rstats/2018/04/13/how-to-use-the-AIC.html&#34;&gt;This is an archive of an external source. The original is here&lt;/a&gt; Date: xxx Author: Chris Brown&lt;/p&gt;
+&lt;p&gt;How do I interpret the AIC?&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Interpreting coefficients in GLMs</title>
+      <link>/post/interpreting-coefficients-in-glms/</link>
+      <pubDate>Mon, 07 May 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/post/interpreting-coefficients-in-glms/</guid>
+      <description>&lt;p&gt;&lt;a href=&#34;http://environmentalcomputing.net/interpreting-coefficients-in-glms/&#34;&gt;This is an archive of an external source. The original is here&lt;/a&gt; Date: November 11, 2016 Author: Gordana Popovic&lt;/p&gt;
+&lt;p&gt;In linear models, the interpretation of model parameters is linear. For example, if a you were modelling plant height against altitude and your coefficient for altitude was -0.9, then plant height will decrease by 1.09 for every increase in altitude of 1 unit.&lt;/p&gt;
+&lt;p&gt;For generalised linear models, the interpretation is not this straightforward. Here, I will explain how to interpret the co-efficients in generalised linear models (glms). First you will want to read our pages on glms for &lt;a href=&#34;http://environmentalcomputing.net/generalised-linear-models-1/&#34;&gt;binary&lt;/a&gt; and &lt;a href=&#34;http://environmentalcomputing.net/generalised-linear-models-1/&#34;&gt;count&lt;/a&gt; data page on &lt;a href=&#34;http://environmentalcomputing.net/how-to-interpret-linear-models/&#34;&gt;interpreting coefficients in linear models&lt;/a&gt;. &lt;br&gt;&lt;br&gt;&lt;/p&gt;
+&lt;div id=&#34;poisson-and-negative-binomial-glms&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Poisson and negative binomial GLMs&lt;/h3&gt;
+&lt;p&gt;&lt;br&gt; In Poisson and negative binomial glms, we use a log link. The actual model we fit with one covariate &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt; looks like this&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[ Y \sim \text{Poisson} (\lambda) \]&lt;/span&gt; &lt;span class=&#34;math display&#34;&gt;\[  log(\lambda) = \beta_0 + \beta_1 x \]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;here &lt;span class=&#34;math inline&#34;&gt;\(\lambda\)&lt;/span&gt; is the mean of Y. So if we have an initial value of the covariate &lt;span class=&#34;math inline&#34;&gt;\(x_0\)&lt;/span&gt;, then the predicted value of the mean &lt;span class=&#34;math inline&#34;&gt;\(\lambda_0\)&lt;/span&gt; is given by&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[  log(\lambda_0) = \beta_0 + \beta_1 x_0 \]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;If we now increase the covariate by 1, we get a new mean &lt;span class=&#34;math inline&#34;&gt;\(\lambda_1\)&lt;/span&gt;,&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[  log(\lambda_1) = \beta_0 + \beta_1 (x_0 +1) = \beta_0 + \beta_1 x_0 +\beta_1 = log(\lambda_0) + \beta_1\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;So the log of the mean of Y increases by &lt;span class=&#34;math inline&#34;&gt;\(\beta_1\)&lt;/span&gt; when we increase x by 1. But we are not really interested in how the log mean changes, we would like to know on average how Y changes. If we take the exponential of both sides&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[  \lambda_1 = \lambda_0 exp(\beta_1)\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;So the mean of Y is multiplied by &lt;span class=&#34;math inline&#34;&gt;\(exp( \beta_1 )\)&lt;/span&gt; when we increase &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt; by 1 unit.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;N &amp;lt;- 120
+x &amp;lt;- rnorm(N)
+mu &amp;lt;- exp(1+0.2*x)
+Y &amp;lt;- rpois(N, lambda = mu)
+glm1 &amp;lt;- glm(Y~x, family = poisson)
+glm1$coefficients&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## (Intercept)           x 
+##   0.9900113   0.2431779&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;exp(glm1$coefficients[2])&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##        x 
+## 1.275295&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;So here increasing &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt; by 1 unit multiplies the mean value of Y by &lt;span class=&#34;math inline&#34;&gt;\(exp( \beta_1 ) = 1.25\)&lt;/span&gt;. The same thing is true for negative binomial glms as they have the same link function. &lt;br&gt;&lt;br&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;binomial-glms&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Binomial GLMs&lt;/h3&gt;
+&lt;p&gt;&lt;br&gt; #### Logistic regression &lt;br&gt; Things become much more complicated in binomial glms. The model here is actually a model of log odds, so we need to start with an explanation of those. The odds of an event are the probability success divided by the probability of failure. So if the probability of success is &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt; then the odds are:&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[\text{Odds} = \frac{p}{1-p} \]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;As p increases, so do the odds. The equation for a logistic regression looks like this:&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[ Y \sim \text{binomial} (p) \]&lt;/span&gt; &lt;span class=&#34;math display&#34;&gt;\[  log\left(\frac{p}{1-p}\right)  =  \beta_0 + \beta_1 x \]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Skipping some maths that is very similar to the above, we can obtain an interpretation for the coefficient of &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt; in the model in terms of the odds. When we increase &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt; by one unit the odds are multiplied by &lt;span class=&#34;math inline&#34;&gt;\(exp( \beta_1 )\)&lt;/span&gt;. Odds are not the most intuitive thing to interpret, but they do increase when p increases, so that if your coefficient &lt;span class=&#34;math inline&#34;&gt;\(\beta_1\)&lt;/span&gt; is positive, increasing &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt; will increase your probability.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;bY &amp;lt;- Y&amp;gt;0 #turning counts into presence absence
+bin1 &amp;lt;- glm(bY~x,family = binomial)
+summary(bin1)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## 
+## Call:
+## glm(formula = bY ~ x, family = binomial)
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -2.5591   0.1067   0.1656   0.2360   0.7281  
+## 
+## Coefficients:
+##             Estimate Std. Error z value Pr(&amp;gt;|z|)    
+## (Intercept)   4.1331     0.8269   4.998 5.78e-07 ***
+## x             1.3275     0.7339   1.809   0.0705 .  
+## ---
+## Signif. codes:  0 &amp;#39;***&amp;#39; 0.001 &amp;#39;**&amp;#39; 0.01 &amp;#39;*&amp;#39; 0.05 &amp;#39;.&amp;#39; 0.1 &amp;#39; &amp;#39; 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 28.058  on 119  degrees of freedom
+## Residual deviance: 24.398  on 118  degrees of freedom
+## AIC: 28.398
+## 
+## Number of Fisher Scoring iterations: 7&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;So when we increase &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt; by one unit, the odds of Y are multiplied by &lt;span class=&#34;math inline&#34;&gt;\(exp( \beta_1 ) = 2.11\)&lt;/span&gt; &lt;br&gt;&lt;br&gt;&lt;/p&gt;
+&lt;div id=&#34;complementary-log-log&#34; class=&#34;section level4&#34;&gt;
+&lt;h4&gt;Complementary log-log&lt;/h4&gt;
+&lt;p&gt;&lt;br&gt; Possibly a more intuitive model is a binomial regression with a complementary log-log link function. This link function is based on the assumption that you have some counts, which are Poisson distributed, but you’ve decided to turn them into presence/absence.&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[ Y \sim \text{binomial} (p) \]&lt;/span&gt; &lt;span class=&#34;math display&#34;&gt;\[  log(-log(1-p)) = \beta_0 + \beta_1 x \]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;In that case you can interpret your coefficients in a similar way as the Poisson regression. When you increase &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt; by 1, the mean of your underlying count (which you have turned into presence/absence) is multiplied by &lt;span class=&#34;math inline&#34;&gt;\(exp( \beta_1 )\)&lt;/span&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(mvabund)
+bin2 &amp;lt;- manyglm(bY~x, family = binomial(link = &amp;quot;cloglog&amp;quot;))
+coef(bin2)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##                    bY
+## (Intercept) 1.5074349
+## x           0.5388818&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The interpretation is now the same as in the Poisson case, when we increase &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt; by 1, the mean of the underlying count is multiplied by &lt;span class=&#34;math inline&#34;&gt;\(exp( \beta_1 )\)&lt;/span&gt;. &lt;br&gt;&lt;br&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;log-binomial-model&#34; class=&#34;section level4&#34;&gt;
+&lt;h4&gt;Log binomial model&lt;/h4&gt;
+&lt;p&gt;&lt;br&gt; It is possible to use a log link function with the binomial distribution &lt;code&gt;family = binomial(link = log)&lt;/code&gt;. In this case you can interpret the coefficients as multiplying the probabilities by &lt;span class=&#34;math inline&#34;&gt;\(exp( \beta_1 )\)&lt;/span&gt;, however these models can give you predicted probabilities greater than 1, and often don’t converge (don’t give an answer). &lt;br&gt;&lt;br&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;offsets&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Offsets&lt;/h3&gt;
+&lt;p&gt;&lt;br&gt; Sometimes we know the effect of a particular variable (call it &lt;span class=&#34;math inline&#34;&gt;\(z\)&lt;/span&gt;) on the response is proportional, so that when we double &lt;span class=&#34;math inline&#34;&gt;\(z\)&lt;/span&gt; we expect the response to double on average. The most common time you see this is with sampling intensity.&lt;/p&gt;
+&lt;div class=&#34;figure&#34;&gt;
+&lt;img src=&#34;glm_coefficients_image.jpg&#34; /&gt;
+
+&lt;/div&gt;
+&lt;p&gt;If you sample soil and count critters, all other things being equal, you would expect twice the critters in twice the amount of soil. If you have a variable like this it is tempting to divide your response (count) by the amount of soil to standardise the data. Unfortunately this will take counts, which we know how to model with glms, and turn them into something we do not know how to model. Fortunately this situation is easily dealt with using offsets. First, let’s simulate some data for amount of soil, depth (our predictor variable) and count data (with a poisson distribution) where the couunts depend on how much soil was sampled.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;soil &amp;lt;- exp(rbeta(N, shape1 = 8, shape2 = 1))
+depth &amp;lt;- rnorm(N)
+mu &amp;lt;- soil*exp(0.5+0.5*depth)
+count &amp;lt;- rpois(N, lambda = mu)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Now, we can model counts with depth as our predictor and soil quantity as an offset.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;off_mod &amp;lt;- glm(Y~depth+offset(log(soil)), family = poisson)
+summary(off_mod)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## 
+## Call:
+## glm(formula = Y ~ depth + offset(log(soil)), family = poisson)
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -2.3924  -0.9488  -0.0576   0.5753   2.5984  
+## 
+## Coefficients:
+##             Estimate Std. Error z value Pr(&amp;gt;|z|)   
+## (Intercept)  0.14481    0.05418   2.673  0.00752 **
+## depth       -0.04579    0.04937  -0.927  0.35373   
+## ---
+## Signif. codes:  0 &amp;#39;***&amp;#39; 0.001 &amp;#39;**&amp;#39; 0.01 &amp;#39;*&amp;#39; 0.05 &amp;#39;.&amp;#39; 0.1 &amp;#39; &amp;#39; 1
+## 
+## (Dispersion parameter for poisson family taken to be 1)
+## 
+##     Null deviance: 129.85  on 119  degrees of freedom
+## Residual deviance: 128.98  on 118  degrees of freedom
+## AIC: 461.58
+## 
+## Number of Fisher Scoring iterations: 5&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;If we ignored the soil amount, we could have misleading conclusions. If the soil amount is correlated with another variable in your model, then leaving out the offset will affect the coefficient of that variable, as in the discussion of conditional/marginal interpretations &lt;a href=&#34;http://environmentalcomputing.net/how-to-interpret-linear-models/&#34;&gt;here&lt;/a&gt;. The offset will also often account for a lot of the variation in the response, so including it will give you a better model overall. What if you’re not sure if the relationship is exactly proportional? In that case just include the variable in your model as a coefficient, and the model will decide the best relationship between it and your response.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;coef_mod &amp;lt;- glm(Y~depth+log(soil), family = poisson)
+summary(coef_mod)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## 
+## Call:
+## glm(formula = Y ~ depth + log(soil), family = poisson)
+## 
+## Deviance Residuals: 
+##      Min        1Q    Median        3Q       Max  
+## -2.43747  -1.15721   0.00747   0.57807   2.58419  
+## 
+## Coefficients:
+##             Estimate Std. Error z value Pr(&amp;gt;|z|)  
+## (Intercept)  0.87107    0.47087   1.850   0.0643 .
+## depth       -0.05379    0.04997  -1.076   0.2817  
+## log(soil)    0.19363    0.52176   0.371   0.7106  
+## ---
+## Signif. codes:  0 &amp;#39;***&amp;#39; 0.001 &amp;#39;**&amp;#39; 0.01 &amp;#39;*&amp;#39; 0.05 &amp;#39;.&amp;#39; 0.1 &amp;#39; &amp;#39; 1
+## 
+## (Dispersion parameter for poisson family taken to be 1)
+## 
+##     Null deviance: 128.10  on 119  degrees of freedom
+## Residual deviance: 126.69  on 117  degrees of freedom
+## AIC: 461.29
+## 
+## Number of Fisher Scoring iterations: 5&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The coefficient the model estimated is close to 1, which would be equivalent to an offset. &lt;br&gt;&lt;br&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Author&lt;/strong&gt;: Gordana Popovic&lt;/p&gt;
+&lt;p&gt;```&lt;/p&gt;
+&lt;/div&gt;
 </description>
     </item>
     
@@ -29,6 +194,7 @@
       
       <guid>/post/some-intuition-behind-hierarchical-modeling/</guid>
       <description>&lt;p&gt;&lt;a href=&#34;https://www.berryconsultants.com/intuition-behind-hierarchical-modeling/&#34;&gt;This is an archive of an external source&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Date: November 13, 2017 Author: Kert Viele&lt;/p&gt;
 &lt;p&gt;Hierarchical modeling is a powerful tool for making inferences about multiple groups in clinical trials, whether these groups are multiple indications or tumor types in an oncology study, multiple sites in a device clinical trial, or any other source of patient heterogeneity.&lt;/p&gt;
 &lt;p&gt;Hierarchical models that share information across groups form a backbone of modern Bayesian thinking. We currently employ hierarchical modeling most commonly in our oncology basket trials, see for example Berry et. al (2013)&lt;/p&gt;
 &lt;p&gt;&lt;a href=&#34;https://www.ncbi.nlm.nih.gov/pubmed/23983156&#34; class=&#34;uri&#34;&gt;https://www.ncbi.nlm.nih.gov/pubmed/23983156&lt;/a&gt;.&lt;/p&gt;
