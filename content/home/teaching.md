@@ -22,6 +22,9 @@ Physics for Introductory Biology
 An elementary explanation of confounding (a very working explanation)
 <a class="btn" href="/files/math/confounding.html">HTML</a>
 
+Getting started with R
+<a class="btn" href="/files/lab/Getting_started_with_R.html">HTML</a>
+
 External Links for
 
 [BIO 413 / 513 Applied Biostatistics](/categories/statistics-links/)
