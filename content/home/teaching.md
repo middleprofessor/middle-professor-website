@@ -16,6 +16,9 @@ weight = 50
 +++
 Lots more to come
 
+Elementary Statistical Modeling for Applied Biostatistics
+<a class="btn" href="/files/applied-biostatistics_bookdown/_book/index.html">HTML</a>
+
 Physics for Introductory Biology
 <a class="btn" href="/files/physics_for_biologists/index.html">HTML</a>
 
