@@ -124,7 +124,7 @@
   \postauthor{\par}
   \predate{\centering\large\emph}
   \postdate{\par}
-  \date{2018-09-10}
+  \date{2018-09-11}
 
 \usepackage{booktabs}
 \usepackage{amsthm}
@@ -467,570 +467,6 @@ Michaelis-Menten model is a nonlinear model
 \begin{equation}
 Y = \frac{\beta_1 X}{\beta_2 + X} + \varepsilon
 \end{equation}
-
-\chapter{Variability and Uncertainty (Standard Deviations and Standard
-Errors)}\label{variability-and-uncertainty-standard-deviations-and-standard-errors}
-
-\textbf{Uncertainty} is the stuff of science. A major goal of statistics
-is measuring uncertainty. What do we mean by uncertainty? Uncertainty is
-the error in estimating a parameter, such as the mean of a sample, or
-the difference in means between two experimental treatments, or the
-predicted response given a certain change in conditions. Uncertainty is
-measured with a \textbf{variance} or its square root, which is a
-\textbf{standard deviation}. The standard deviation of a statistic is
-also (and more commonly) called a \textbf{standard error}.
-
-Uncertainty emerges because of variability. In any introductory
-statistics class, students are introduced to two measures of
-variability, the ``standard deviation'' and the ``standard error.''
-These terms are absolutely fundamental to statistics -- they are the
-start of everything else. Yet, many biology professors confuse these
-terms and certainly, introductory students do too.
-
-When a research biologist uses the term ``standard deviation,'' they are
-probably referring to the sample standard deviation which is a measure
-of the variability of a sample. When a research biologist uses the term
-``standard error,'' they are probably referring to the standard error of
-a mean, but it could be the standard error of another statistics, such
-as a regression slope. An important point to remember and understand is
-that all standard errors \emph{are} standard deviations. This will make
-more sense soon.
-
-\section{The sample standard deviation vs.~the standard error of the
-mean}\label{the-sample-standard-deviation-vs.the-standard-error-of-the-mean}
-
-\subsection{Sample standard deviation}\label{sample-standard-deviation}
-
-The sample standard deviation is a measure of the variability of a
-sample. For example, were we to look at a histological section of
-skeletal muscle we would see that the diameter of the fibers (the muscle
-cells) is variable. We could use imaging software to measure the
-diameter of a sample of 100 cells and get a \textbf{distribution} like
-this
-
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/histogram-1.pdf}
-
-The mean of this sample is 69.4 and the standard deviation is 2.8. The
-standard deviation is the square root of the variance, and so computed
-by
-
-\begin{equation}
-s_y = \sqrt{\frac{\sum_{i=1}^n{(y_i - \overline{y})^2}}{n-1}}
-\label{eq:variance}
-\end{equation}
-
-Memorize this equation. To understand the logic of this measure of
-variability, note that \(y_i - \overline{y}\) is the deviation of the
-\(i\)th value from the sample mean, so the numerator is the sum of
-squared deviations. The numerator is a sum over \(n\) items and the
-denominator is \(n-1\) so the variance is (almost!) an averaged squared
-deviation. More variable samples will have bigger deviations and,
-therefore, bigger average squared deviations. Since the standard
-deviation is the square root of the variance, a standard deviation is
-the square root of the average squared deviation, it can be thought of
-as a (not ``the'') measure of an average deviation.
-
-Notes on the variance and standard deviation 1. Variances are additive
-but standard deviations are not. This means that the variance of the sum
-of two independent (uncorrelated) random variables is simply the sum of
-the variances of each of the variables. This is important for many
-statistical analyses. 2. The units of variance are the square of the
-original units, which is awkward for interpretation. The units of a
-standard deviation is the same as that of the original variable, and so
-is much easier to interpet. 3. For variables that are approximately
-normally distributed, we can map the standard deviation to the quantiles
-of the distribution. For example, 68\% of the values are within one
-standard deviation of the mean, 95\% of the values are within two
-standard deviations, and 99\% of the values are within three standard
-deviations.
-
-\subsection{Standard error of the
-mean}\label{standard-error-of-the-mean}
-
-A standard error of a statistic is a measure of the precision of the
-statistic. The standard error of the mean is a measure of the precision
-of the mean. The smaller the value the more precise the estimate. The
-standard error of the mean (SEM) is computed as
-
-\begin{equation}
-SEM = \frac{s_y}{\sqrt{n}}
-\label{eq:se}
-\end{equation}
-
-The SEM is often denoted \(s_{\bar{y}}\) to indicate that it is a
-standard deviation of the mean (\(\bar{y}\)). In what sense is a
-standard error a measure of variability? This is kinda weird. If we
-sample 100 cells cells in the slide one time and compute the mean
-diameter, how can the mean have a standard deviation? There is only one
-value! To understand how the SEM is a standard deviation, imagine
-resampling 100 cells and recomputing a mean an infinite number of times
-and each time, you write down the newly computed mean. The standard
-error of the mean is the standard deviation of this infinitely long
-column of means.
-
-Notes on standard errors 1. The SEM is only one kind of standard error.
-A standard deviation can be computed for any statistics -- these are all
-standard errors. For some statistics, such as the mean, the standard
-error can be computed directly using an equation, such as that for the
-SEM (equation @ref\{eq:se\}). For other statistics, a computer intensive
-method such as the \textbf{bootstrap} is necessary to compute a standard
-error. We will return to the bootstrap shortly. 2. The units of a
-standard error are the units of the measured variable. 3. A standard
-error is proportional to sample variability (the sample standard
-deviation, \(s_y\)) and inversely proportional to sample size (\(n\)).
-Sample variability is a function of both natural variation (there really
-is variation in diameter among fibers in the quadriceps muscle) and
-measurement error (imaging software with higher resolution can measure a
-diameter with less error). Since the SEM is a measure of the precision
-of estimating a mean, this means this precision will increase (or the
-SEM will decrease) if 1) an investigator uses methods that reduce
-measurement error and 2) an investigator computes the mean from a larger
-sample. 4. This last point (the SEM decreases with sample size) seems
-obvious when looking at equation @ref\{eq:se\}, since \(n\) is in the
-denominator. Of course \(n\) is also in the denominator of equation
-@ref\{eq:variance\} for the sample standard deviation (eq) but the
-standard deviation does not decrease as sample size increases. First
-this would make any sense -- variability is variability. A sample of
-10,000 cell diameters should be no more variable than a sample of 100
-cell diameters. Second, this should also be obvious from equation
-@ref\{eq:variance\}. The standard deviation is the square root of an
-average and averages don't increase with the number of things measured
-since both the the numerator (a sum) and denominator increase with
-\(n\).
-
-\section{Using Google Sheets to generate fake data to explore
-uncertainty}\label{using-google-sheets-to-generate-fake-data-to-explore-uncertainty}
-
-In statistics we are interested in estimated parameters of a
-\textbf{population} using measures from a \textbf{sample}. The goal in
-this section is to use Google Sheets (or Microsoft Excel) to use fake
-data to discover the behavior of sampling and to gain some intuition
-about uncertainty using standard errors.
-
-\subsection{Steps}\label{steps}
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\tightlist
-\item
-  Open Google Sheets
-\item
-  In cell A1 type ``mu''. mu is the greek letter \(\mu\) and is very
-  common notation for the poplation value (the TRUE value!) of the mean
-  of some hypothetical measure. In cell B1, insert some number as the
-  value of \(\mu\). Any number! It can be negative or positive.
-\item
-  In cell A2 type ``sigma''. sigma is the greek letter \(\sigma\).
-  \(\sigma^2\) is very common (universal!) notation for the population
-  (TRUE) variance of some measure or parameter. Notice that the true
-  (population) values of the mean and variance are greek letters. This
-  is pretty standard in statistics. In cell B2, insert some positive
-  number (standard deviations are the positive square roots of the
-  variance).
-\item
-  In cell A8 type the number 1
-\item
-  In cell A9 insert the equation ``=A8 + 1''. What is this equation
-  doing? It is adding the number 1 to to the value in the cell above, so
-  the resulting value should be 2.
-\item
-  In Cell B8, insert the equation ``=normsinv(rand())*\$B\$2 + \$B\$1``.
-  The first part of the equation creates a random normal variable with
-  mean 0 and standard deviation 1. multiplication and addition transform
-  this to a random normal variable with mean \(\mu\) and standard
-  deviation \(\sigma\) (the values you set in cells B1 and B2).
-\item
-  copy cell B8 and paste into cell B9. Now Higlight cells A9:B9 and copy
-  the equations down to row 107. You now have 100 random variables
-  sampled from a infinite population with mean \(\mu\) and standard
-  deviation \(\sigma\).
-\item
-  In cell A4 write ``mean 10''. In cell B4 insert the equation
-  ``=average(B8:B17)''. The resulting value is the \textbf{sample mean}
-  of the first 10 random variables you created. Is the mean close to
-  \(\mu\)?
-\item
-  In cell A5 write ``sd 10''. In cell B5 insert the equation
-  ``stdev(B8:B17)''. The result is the \textbf{sample standard
-  deviation} of the first 10 random variables. Is this close to
-  \(\sigma\)?
-\item
-  In cell A6 write ``mean 100''. In cell B6 insert the equation
-  ``=average(B8:B107)''. The resulting value is the \textbf{sample mean}
-  of the all 100 random variables you created. Is this mean closer to
-  \(\mu\) than mean 10?
-\item
-  In cell A7 write ``sd 100''. In cell B7 insert the equation
-  ``=stdev(B8:B107)''. The resulting value is the \textbf{sample
-  standard deviation} of the all 100 random variables you created. Is
-  this SD closer to \(\sigma\) than sd 10?
-\end{enumerate}
-
-The sample standard deviation is a measure of the variability of the
-sample. The more spread out the sample (the further each value is from
-the mean), the bigger the sample standard deviation. The sample standard
-deviation is most often simply known as ``The'' standard deviation,
-which is a bit misleading since there are many kinds of standard
-deviations!
-
-Remember that your computed mean and standard deviations are estimates
-computed from a sample. They are estimates of the true values \(\mu\)
-and \(\sigma\). Explore the behavior of the sample mean and standard
-deviation by re-calculating the spreadsheet. In Excel, a spreadsheet is
-re-calculated by simultaneously pressing the command and equal key. In
-Google, command-R recalculates but is painfully slow. Instead, if using
-Google Sheets, just type the number 1 into a blank cell, and the sheet
-recalculates quickly. Do it again. And again.
-
-Each time you re-calculate, a new set of random numbers are generated
-and the new means and standard deviations are computed. Compare mean 10
-and mean 100 each re-calculation. Notice that these estimates are
-variable. They change with each re-calculation. How variable is mean 10
-compared to mean 100? The variability of the estimate of the mean is a
-measure of \textbf{uncertainty} in the estimate. Are we more uncertain
-with mean 10 or with mean 100? This variability is measured by a
-standard deviation. This \textbf{standard deviation of the mean} is also
-called the \textbf{standard error of the mean}. Many researchers are
-loose with terms and use ``The'' standard error to mean the standard
-error of the mean, even though there are many kinds of standard errors.
-In general, ``standard error''" is abbreviated as ``SE.'' Sometimes
-``standard error of the mean'' is specifically abbreviated to ``SEM.''
-
-The standard error of the mean is a measure of the precision in
-estimating the mean. The smaller the value the more precise the
-estimate. The standard error of the mean \emph{is} a standard deviation
-of the mean. This is kinda weird. If we sample a population one time and
-compute a mean, how can the mean have a standard deviation? There is
-only one value! And we compute this value using the sample standard
-deviation: \(SEM = \frac{SD}{\sqrt{N}}\). To understand how the SEM is a
-standard deviation, Imagine recalculating the spread sheet an infinite
-number of times and each time, you write down the newly computed mean.
-The standard error of the mean is the standard deviation of this
-infinitely long column of means.
-
-\section{Using R to generate fake data to explore
-uncertainty}\label{using-r-to-generate-fake-data-to-explore-uncertainty}
-
-due by the beginning of our next class
-
-note that I use ``standard deviation'' to refer to the sample standard
-deviation and ``standard error'' to refer to the standard error of the
-mean (again, we can compute standard errors as a standard deviation of
-any kind of estimate)
-
-\subsection{part I}\label{part-i}
-
-In the exercise above, you used Google Sheets to generate \(p\) columns
-of fake data. Each column had \(n\) elements, so the matrix of fake data
-was \(n \times m\) (it is standard in most fields to specify a matrix as
-rows by columns). This is \emph{much} easier to do in R and how much
-grows exponentially as the size of the matrix grows.
-
-To start, we just generate a \(n \times m\) matrix of normal random
-numbers.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{# R script to gain some intuition about standard deviation (sd) and standard error (se)}
-\CommentTok{# you will probably need to install ggplot2 using library(ggplot2) }
-\NormalTok{n <-}\StringTok{ }\DecValTok{6} \CommentTok{# sample size}
-\NormalTok{p <-}\StringTok{ }\DecValTok{100} \CommentTok{# number of columns of fake data to generate}
-\NormalTok{fake_data <-}\StringTok{ }\KeywordTok{matrix}\NormalTok{(}\KeywordTok{rnorm}\NormalTok{(n}\OperatorTok{*}\NormalTok{p, }\DataTypeTok{mean=}\DecValTok{0}\NormalTok{, }\DataTypeTok{sd=}\DecValTok{1}\NormalTok{), }\DataTypeTok{nrow=}\NormalTok{n, }\DataTypeTok{ncol=}\NormalTok{p) }\CommentTok{# create a matrix}
-\end{Highlighting}
-\end{Shaded}
-
-the 3rd line is the cool thing about R. In one line I'm creating a
-dataset with \(n\) rows and \(p\) columns. Each column is a sample of
-the standard normal distribution which by definition has mean zero and
-standard deviation of 1. But, and this is important, any sample from
-this distribution will not have exactly mean zero and standard deviation
-of 1, because it's a sample, the mean and standard deviation will have
-some small errror from the truth. The line has two parts to it: first
-I'm using the function ``rnorm'' (for random normal) to create a vector
-of n*m random, normal deviates (draws from the random normal
-distribution) and then I'm organizing these into a matrix (using the
-function ``matrix'')
-
-To compute the vector of means, standard deviations, and standard errors
-for each column of \texttt{fake\_data}, use the \texttt{apply()}
-function.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{means <-}\StringTok{ }\KeywordTok{apply}\NormalTok{(fake_data,}\DecValTok{2}\NormalTok{,mean) }\CommentTok{# the apply function is super useful}
-\NormalTok{sds <-}\StringTok{ }\KeywordTok{apply}\NormalTok{(fake_data,}\DecValTok{2}\NormalTok{,sd)}
-\NormalTok{sems <-}\StringTok{ }\NormalTok{sds}\OperatorTok{/}\KeywordTok{sqrt}\NormalTok{(n)}
-\end{Highlighting}
-\end{Shaded}
-
-\texttt{apply()} is a workhorse in many R scripts. Learn it. Know it.
-Live it.
-
-The SEM is the standard deviation of the mean, so let's see if the
-standard deviation of the means is close to the true standard error. We
-sampled from a normal distribution with SD=1 so the true standard is
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\DecValTok{1}\OperatorTok{/}\KeywordTok{sqrt}\NormalTok{(n)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-## [1] 0.4082483
-\end{verbatim}
-
-and the standard deviation of the \(p\) means is
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{sd}\NormalTok{(means)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-## [1] 0.3731974
-\end{verbatim}
-
-Questions
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\tightlist
-\item
-  how close is \texttt{sd(means)} to the true SE?
-\item
-  change p above to 1000. Now how close is sd(means) to the true SE?
-\item
-  change p above to 10,000. Now how close is sd(means) to the true SE?
-\end{enumerate}
-
-\subsection{part II - means}\label{part-ii---means}
-
-This is a visualization of the spread, or variability, of the sampled
-means
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{qplot}\NormalTok{(means)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
-\end{verbatim}
-
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-4-1.pdf}
-
-Compute the mean of the means
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{mean}\NormalTok{(means)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-## [1] -0.039961
-\end{verbatim}
-
-Questions
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\tightlist
-\item
-  Remember that the true mean is zero. How close, in general, are the
-  sampled means to the true mean. How variable are the means? How is
-  this quantified?
-\item
-  change n to 100, then replot. Are the means, in general, closer to the
-  true mean? How variable are the means now?
-\item
-  Is the mean estimated with \(n=100\) closer to the truth, in general,
-  then the mean estimated with \(n=6\)?
-\item
-  Redo with \(n=10000\)
-\end{enumerate}
-
-\subsection{part III - how do SD and SE change as sample size (n)
-increases?}\label{part-iii---how-do-sd-and-se-change-as-sample-size-n-increases}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{mean}\NormalTok{(sds)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-## [1] 1.017144
-\end{verbatim}
-
-Questions
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\tightlist
-\item
-  what is the mean of the standard deviations when n=6 (set p=1000)
-\item
-  what is the mean of the standard deviations when n=100 (set p=1000)
-\item
-  when n = 1000? (set p=1000)
-\item
-  when n = 10000? (set p=1000)
-\item
-  how does the mean of the standard deviations change as n increases
-  (does it get smaller? or stay about the same size)
-\item
-  repeat the above with SEM
-\end{enumerate}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{mean}\NormalTok{(sems)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-## [1] 0.4152472
-\end{verbatim}
-
-Congratulations, you have just done a Monte Carlo simulation!
-
-\subsection{\texorpdfstring{Part IV -- Generating fake data with ``for
-loops''}{Part IV -- Generating fake data with for loops}}\label{part-iv-generating-fake-data-with-for-loops}
-
-There are many other strategies for generating fake data -- two that
-will be used extensively here are the funtion \texttt{rmvnorm()} and
-\textbf{for loops}
-
-\subsubsection{rmvnorm and a Covariance
-Matrix}\label{rmvnorm-and-a-covariance-matrix}
-
-We used the base R function \texttt{rnorm} above to generate
-\texttt{fake\_data}, a matrix of random normal values. The columns are
-generated independently of each other so the expected correlation
-between any two columns is zero. The \texttt{rmvnorm()} (``random
-multivariate normal'') function from the package \texttt{mvtnorm}
-(``multivariate normal'') returns a matrix of random values drawn from a
-multiviate normal distribution with a specified \textbf{covariance
-matrix}. A covariance matrix is matrix of the variances and covariances
-of the \(p\) columns of a data matrix. The \textbf{diagonal} of the
-covariance matrix contains the variances of the \(p\) columns of the
-data matrix and the off-diagonal elements contain the \(p(p-1)\)
-pairwise covariances. The upper right set of covariances is the mirror
-of the lower left set of covariates, so there are \(p(p-1)/2\) unique
-covariances.
-
-For our fake data, we want columns that are independent (E(COV) = 0) and
-have expected variance of 1. This covariance matrix has a special name
--- the \textbf{identity matrix} (or sometimes ``unit'' matrix). Thus we
-could use this script to generate fake data
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{n <-}\StringTok{ }\DecValTok{6} \CommentTok{# sample size}
-\NormalTok{p <-}\StringTok{ }\DecValTok{10}\OperatorTok{^}\DecValTok{2} \CommentTok{# number of columns of fake data to generate}
-\NormalTok{fake_data <-}\StringTok{  }\NormalTok{mvtnorm}\OperatorTok{::}\KeywordTok{rmvnorm}\NormalTok{(n, }\DataTypeTok{mean=}\KeywordTok{rep}\NormalTok{(}\DecValTok{0}\NormalTok{, p), }\DataTypeTok{sigma=}\KeywordTok{diag}\NormalTok{(p))}
-
-\CommentTok{# compute the vectors of means, sds, and sems and the sd of the means}
-\NormalTok{means <-}\StringTok{ }\KeywordTok{apply}\NormalTok{(fake_data,}\DecValTok{2}\NormalTok{,mean) }\CommentTok{# the apply function is super useful}
-\NormalTok{sds <-}\StringTok{ }\KeywordTok{apply}\NormalTok{(fake_data,}\DecValTok{2}\NormalTok{,sd)}
-\NormalTok{sems <-}\StringTok{ }\NormalTok{sds}\OperatorTok{/}\KeywordTok{sqrt}\NormalTok{(n)}
-\KeywordTok{sd}\NormalTok{(means)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-## [1] 0.4539342
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{mean}\NormalTok{(sems)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-## [1] 0.4083748
-\end{verbatim}
-
-The vector of column means is specified using \texttt{mean=} and the
-multivariate covariance matrix is specified with \texttt{sigma=} (the
-lower case greek letter sigma (\(\sigma\)) is often used to denote a
-population standard deviation. The upper case greek letter sigma
-(\(\Sigma\)) is often used to denote a population covariance matrix).
-This raises two questions
-
-Questions.
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\tightlist
-\item
-  without using the console, what is returned with \texttt{rep(0,\ p)}?
-\item
-  without using the console, what is returned with \texttt{diag(p)}?
-\item
-  What are the \texttt{sd(means)} and \texttt{mean(sems)} comparing?
-  What is the pedagogical purpose for adding this?
-\end{enumerate}
-
-Now use the console to check your answers.
-
-\subsubsection{A for loop}\label{a-for-loop}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{n <-}\StringTok{ }\DecValTok{6} \CommentTok{# sample size}
-\NormalTok{n_iter <-}\StringTok{ }\DecValTok{10}\OperatorTok{^}\DecValTok{5} \CommentTok{# number of iterations of loop (equivalent to p)}
-\NormalTok{means <-}\StringTok{ }\KeywordTok{numeric}\NormalTok{(n_iter)}
-\NormalTok{sds <-}\StringTok{ }\KeywordTok{numeric}\NormalTok{(n_iter)}
-\NormalTok{sems <-}\StringTok{ }\KeywordTok{numeric}\NormalTok{(n_iter)}
-\ControlFlowTok{for}\NormalTok{(i }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\NormalTok{n_iter)\{}
-\NormalTok{  y <-}\StringTok{ }\KeywordTok{rnorm}\NormalTok{(n) }\CommentTok{# mean=0 and sd=1 are default so not necessary to specify}
-\NormalTok{  means[i] <-}\StringTok{ }\KeywordTok{mean}\NormalTok{(y)}
-\NormalTok{  sds[i] <-}\StringTok{ }\KeywordTok{sd}\NormalTok{(y)}
-\NormalTok{  sems[i] <-}\StringTok{ }\KeywordTok{sd}\NormalTok{(y)}\OperatorTok{/}\KeywordTok{sqrt}\NormalTok{(n)}
-\NormalTok{\}}
-\KeywordTok{sd}\NormalTok{(means)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-## [1] 0.4090381
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{mean}\NormalTok{(sems)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-## [1] 0.3883677
-\end{verbatim}
-
-Questions
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\tightlist
-\item
-  What do \texttt{sd(means)} and \texttt{mean(sems)} converge to as
-  \texttt{n\_iter} is increased from 100 to 1000 to 10,000?
-\item
-  Do they converge to the same number?
-\item
-  Should they?
-\item
-  What is the correct number?
-\end{enumerate}
-
-Question number 4 is asking what is E(SEM), the ``expected standard
-error of the mean''. There is a very easy formula to compute this. What
-is it?
 
 \chapter*{Appendix 1: Organization -- R Projects and R
 Notebooks}\label{appendix-1-organization-r-projects-and-r-notebooks}
@@ -1838,6 +1274,590 @@ your Fake\_Data folder and open the file in a text editor.
 \includegraphics[width=0.50000\textwidth]{images/Dung_beetles_reduce_livestock-fig_1.png}
 \caption{Fig. 1 from ``Dung beetles reduce livestock\ldots{}''}
 \end{figure}
+
+\chapter{Variability and Uncertainty (Standard Deviations and Standard
+Errors)}\label{variability-and-uncertainty-standard-deviations-and-standard-errors}
+
+\textbf{Uncertainty} is the stuff of science. A major goal of statistics
+is measuring uncertainty. What do we mean by uncertainty? Uncertainty is
+the error in estimating a parameter, such as the mean of a sample, or
+the difference in means between two experimental treatments, or the
+predicted response given a certain change in conditions. Uncertainty is
+measured with a \textbf{variance} or its square root, which is a
+\textbf{standard deviation}. The standard deviation of a statistic is
+also (and more commonly) called a \textbf{standard error}.
+
+Uncertainty emerges because of variability. In any introductory
+statistics class, students are introduced to two measures of
+variability, the ``standard deviation'' and the ``standard error.''
+These terms are absolutely fundamental to statistics -- they are the
+start of everything else. Yet, many biology professors confuse these
+terms and certainly, introductory students do too.
+
+When a research biologist uses the term ``standard deviation,'' they are
+probably referring to the sample standard deviation which is a measure
+of the variability of a sample. When a research biologist uses the term
+``standard error,'' they are probably referring to the standard error of
+a mean, but it could be the standard error of another statistics, such
+as a regression slope. An important point to remember and understand is
+that all standard errors \emph{are} standard deviations. This will make
+more sense soon.
+
+\section{The sample standard deviation vs.~the standard error of the
+mean}\label{the-sample-standard-deviation-vs.the-standard-error-of-the-mean}
+
+\subsection{Sample standard deviation}\label{sample-standard-deviation}
+
+The sample standard deviation is a measure of the variability of a
+sample. For example, were we to look at a histological section of
+skeletal muscle we would see that the diameter of the fibers (the muscle
+cells) is variable. We could use imaging software to measure the
+diameter of a sample of 100 cells and get a \textbf{distribution} like
+this
+
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/histogram-1.pdf}
+
+The mean of this sample is 69.4 and the standard deviation is 2.8. The
+standard deviation is the square root of the variance, and so computed
+by
+
+\begin{equation}
+s_y = \sqrt{\frac{\sum_{i=1}^n{(y_i - \overline{y})^2}}{n-1}}
+\label{eq:variance}
+\end{equation}
+
+Memorize this equation. To understand the logic of this measure of
+variability, note that \(y_i - \overline{y}\) is the deviation of the
+\(i\)th value from the sample mean, so the numerator is the sum of
+squared deviations. The numerator is a sum over \(n\) items and the
+denominator is \(n-1\) so the variance is (almost!) an averaged squared
+deviation. More variable samples will have bigger deviations and,
+therefore, bigger average squared deviations. Since the standard
+deviation is the square root of the variance, a standard deviation is
+the square root of the average squared deviation, it can be thought of
+as a (not ``the'') measure of an average deviation.
+
+Notes on the variance and standard deviation
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Variances are additive but standard deviations are not. This means
+  that the variance of the sum of two independent (uncorrelated) random
+  variables is simply the sum of the variances of each of the variables.
+  This is important for many statistical analyses.
+\item
+  The units of variance are the square of the original units, which is
+  awkward for interpretation. The units of a standard deviation is the
+  same as that of the original variable, and so is much easier to
+  interpet.
+\item
+  For variables that are approximately normally distributed, we can map
+  the standard deviation to the quantiles of the distribution. For
+  example, 68\% of the values are within one standard deviation of the
+  mean, 95\% of the values are within two standard deviations, and 99\%
+  of the values are within three standard deviations.
+\end{enumerate}
+
+\subsection{Standard error of the
+mean}\label{standard-error-of-the-mean}
+
+A standard error of a statistic is a measure of the precision of the
+statistic. The standard error of the mean is a measure of the precision
+of the mean. The smaller the value the more precise the estimate. The
+standard error of the mean (SEM) is computed as
+
+\begin{equation}
+SEM = \frac{s_y}{\sqrt{n}}
+\label{eq:se}
+\end{equation}
+
+The SEM is often denoted \(s_{\bar{y}}\) to indicate that it is a
+standard deviation of the mean (\(\bar{y}\)). In what sense is a
+standard error a measure of variability? This is kinda weird. If we
+sample 100 cells cells in the slide one time and compute the mean
+diameter, how can the mean have a standard deviation? There is only one
+value! To understand how the SEM is a standard deviation, imagine
+resampling 100 cells and recomputing a mean an infinite number of times
+and each time, you write down the newly computed mean. The standard
+error of the mean is the standard deviation of this infinitely long
+column of means.
+
+Notes on standard errors
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  The SEM is only one kind of standard error. A standard deviation can
+  be computed for any statistics -- these are all standard errors. For
+  some statistics, such as the mean, the standard error can be computed
+  directly using an equation, such as that for the SEM (equation
+  @ref\{eq:se\}). For other statistics, a computer intensive method such
+  as the \textbf{bootstrap} is necessary to compute a standard error. We
+  will return to the bootstrap shortly.
+\item
+  The units of a standard error are the units of the measured variable.
+\item
+  A standard error is proportional to sample variability (the sample
+  standard deviation, \(s_y\)) and inversely proportional to sample size
+  (\(n\)). Sample variability is a function of both natural variation
+  (there really is variation in diameter among fibers in the quadriceps
+  muscle) and measurement error (imaging software with higher resolution
+  can measure a diameter with less error). Since the SEM is a measure of
+  the precision of estimating a mean, this means this precision will
+  increase (or the SEM will decrease) if 1) an investigator uses methods
+  that reduce measurement error and 2) an investigator computes the mean
+  from a larger sample.
+\item
+  This last point (the SEM decreases with sample size) seems obvious
+  when looking at equation @ref\{eq:se\}, since \(n\) is in the
+  denominator. Of course \(n\) is also in the denominator of equation
+  @ref\{eq:variance\} for the sample standard deviation (eq) but the
+  standard deviation does not decrease as sample size increases. First
+  this would make any sense -- variability is variability. A sample of
+  10,000 cell diameters should be no more variable than a sample of 100
+  cell diameters. Second, this should also be obvious from equation
+  @ref\{eq:variance\}. The standard deviation is the square root of an
+  average and averages don't increase with the number of things measured
+  since both the the numerator (a sum) and denominator increase with
+  \(n\).
+\end{enumerate}
+
+\section{Using Google Sheets to generate fake data to explore
+uncertainty}\label{using-google-sheets-to-generate-fake-data-to-explore-uncertainty}
+
+In statistics we are interested in estimated parameters of a
+\textbf{population} using measures from a \textbf{sample}. The goal in
+this section is to use Google Sheets (or Microsoft Excel) to use fake
+data to discover the behavior of sampling and to gain some intuition
+about uncertainty using standard errors.
+
+\subsection{Steps}\label{steps}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Open Google Sheets
+\item
+  In cell A1 type ``mu''. mu is the greek letter \(\mu\) and is very
+  common notation for the poplation value (the TRUE value!) of the mean
+  of some hypothetical measure. In cell B1, insert some number as the
+  value of \(\mu\). Any number! It can be negative or positive.
+\item
+  In cell A2 type ``sigma''. sigma is the greek letter \(\sigma\).
+  \(\sigma^2\) is very common (universal!) notation for the population
+  (TRUE) variance of some measure or parameter. Notice that the true
+  (population) values of the mean and variance are greek letters. This
+  is pretty standard in statistics. In cell B2, insert some positive
+  number (standard deviations are the positive square roots of the
+  variance).
+\item
+  In cell A8 type the number 1
+\item
+  In cell A9 insert the equation ``=A8 + 1''. What is this equation
+  doing? It is adding the number 1 to to the value in the cell above, so
+  the resulting value should be 2.
+\item
+  In Cell B8, insert the equation ``=normsinv(rand())*\$B\$2 + \$B\$1``.
+  The first part of the equation creates a random normal variable with
+  mean 0 and standard deviation 1. multiplication and addition transform
+  this to a random normal variable with mean \(\mu\) and standard
+  deviation \(\sigma\) (the values you set in cells B1 and B2).
+\item
+  copy cell B8 and paste into cell B9. Now Higlight cells A9:B9 and copy
+  the equations down to row 107. You now have 100 random variables
+  sampled from a infinite population with mean \(\mu\) and standard
+  deviation \(\sigma\).
+\item
+  In cell A4 write ``mean 10''. In cell B4 insert the equation
+  ``=average(B8:B17)''. The resulting value is the \textbf{sample mean}
+  of the first 10 random variables you created. Is the mean close to
+  \(\mu\)?
+\item
+  In cell A5 write ``sd 10''. In cell B5 insert the equation
+  ``stdev(B8:B17)''. The result is the \textbf{sample standard
+  deviation} of the first 10 random variables. Is this close to
+  \(\sigma\)?
+\item
+  In cell A6 write ``mean 100''. In cell B6 insert the equation
+  ``=average(B8:B107)''. The resulting value is the \textbf{sample mean}
+  of the all 100 random variables you created. Is this mean closer to
+  \(\mu\) than mean 10?
+\item
+  In cell A7 write ``sd 100''. In cell B7 insert the equation
+  ``=stdev(B8:B107)''. The resulting value is the \textbf{sample
+  standard deviation} of the all 100 random variables you created. Is
+  this SD closer to \(\sigma\) than sd 10?
+\end{enumerate}
+
+The sample standard deviation is a measure of the variability of the
+sample. The more spread out the sample (the further each value is from
+the mean), the bigger the sample standard deviation. The sample standard
+deviation is most often simply known as ``The'' standard deviation,
+which is a bit misleading since there are many kinds of standard
+deviations!
+
+Remember that your computed mean and standard deviations are estimates
+computed from a sample. They are estimates of the true values \(\mu\)
+and \(\sigma\). Explore the behavior of the sample mean and standard
+deviation by re-calculating the spreadsheet. In Excel, a spreadsheet is
+re-calculated by simultaneously pressing the command and equal key. In
+Google, command-R recalculates but is painfully slow. Instead, if using
+Google Sheets, just type the number 1 into a blank cell, and the sheet
+recalculates quickly. Do it again. And again.
+
+Each time you re-calculate, a new set of random numbers are generated
+and the new means and standard deviations are computed. Compare mean 10
+and mean 100 each re-calculation. Notice that these estimates are
+variable. They change with each re-calculation. How variable is mean 10
+compared to mean 100? The variability of the estimate of the mean is a
+measure of \textbf{uncertainty} in the estimate. Are we more uncertain
+with mean 10 or with mean 100? This variability is measured by a
+standard deviation. This \textbf{standard deviation of the mean} is also
+called the \textbf{standard error of the mean}. Many researchers are
+loose with terms and use ``The'' standard error to mean the standard
+error of the mean, even though there are many kinds of standard errors.
+In general, ``standard error''" is abbreviated as ``SE.'' Sometimes
+``standard error of the mean'' is specifically abbreviated to ``SEM.''
+
+The standard error of the mean is a measure of the precision in
+estimating the mean. The smaller the value the more precise the
+estimate. The standard error of the mean \emph{is} a standard deviation
+of the mean. This is kinda weird. If we sample a population one time and
+compute a mean, how can the mean have a standard deviation? There is
+only one value! And we compute this value using the sample standard
+deviation: \(SEM = \frac{SD}{\sqrt{N}}\). To understand how the SEM is a
+standard deviation, Imagine recalculating the spread sheet an infinite
+number of times and each time, you write down the newly computed mean.
+The standard error of the mean is the standard deviation of this
+infinitely long column of means.
+
+\section{Using R to generate fake data to explore
+uncertainty}\label{using-r-to-generate-fake-data-to-explore-uncertainty}
+
+due by the beginning of our next class
+
+note that I use ``standard deviation'' to refer to the sample standard
+deviation and ``standard error'' to refer to the standard error of the
+mean (again, we can compute standard errors as a standard deviation of
+any kind of estimate)
+
+\subsection{part I}\label{part-i}
+
+In the exercise above, you used Google Sheets to generate \(p\) columns
+of fake data. Each column had \(n\) elements, so the matrix of fake data
+was \(n \times m\) (it is standard in most fields to specify a matrix as
+rows by columns). This is \emph{much} easier to do in R and how much
+grows exponentially as the size of the matrix grows.
+
+To start, we just generate a \(n \times m\) matrix of normal random
+numbers.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# R script to gain some intuition about standard deviation (sd) and standard error (se)}
+\CommentTok{# you will probably need to install ggplot2 using library(ggplot2) }
+\NormalTok{n <-}\StringTok{ }\DecValTok{6} \CommentTok{# sample size}
+\NormalTok{p <-}\StringTok{ }\DecValTok{100} \CommentTok{# number of columns of fake data to generate}
+\NormalTok{fake_data <-}\StringTok{ }\KeywordTok{matrix}\NormalTok{(}\KeywordTok{rnorm}\NormalTok{(n}\OperatorTok{*}\NormalTok{p, }\DataTypeTok{mean=}\DecValTok{0}\NormalTok{, }\DataTypeTok{sd=}\DecValTok{1}\NormalTok{), }\DataTypeTok{nrow=}\NormalTok{n, }\DataTypeTok{ncol=}\NormalTok{p) }\CommentTok{# create a matrix}
+\end{Highlighting}
+\end{Shaded}
+
+the 3rd line is the cool thing about R. In one line I'm creating a
+dataset with \(n\) rows and \(p\) columns. Each column is a sample of
+the standard normal distribution which by definition has mean zero and
+standard deviation of 1. But, and this is important, any sample from
+this distribution will not have exactly mean zero and standard deviation
+of 1, because it's a sample, the mean and standard deviation will have
+some small errror from the truth. The line has two parts to it: first
+I'm using the function ``rnorm'' (for random normal) to create a vector
+of n*m random, normal deviates (draws from the random normal
+distribution) and then I'm organizing these into a matrix (using the
+function ``matrix'')
+
+To compute the vector of means, standard deviations, and standard errors
+for each column of \texttt{fake\_data}, use the \texttt{apply()}
+function.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{means <-}\StringTok{ }\KeywordTok{apply}\NormalTok{(fake_data,}\DecValTok{2}\NormalTok{,mean) }\CommentTok{# the apply function is super useful}
+\NormalTok{sds <-}\StringTok{ }\KeywordTok{apply}\NormalTok{(fake_data,}\DecValTok{2}\NormalTok{,sd)}
+\NormalTok{sems <-}\StringTok{ }\NormalTok{sds}\OperatorTok{/}\KeywordTok{sqrt}\NormalTok{(n)}
+\end{Highlighting}
+\end{Shaded}
+
+\texttt{apply()} is a workhorse in many R scripts. Learn it. Know it.
+Live it.
+
+The SEM is the standard deviation of the mean, so let's see if the
+standard deviation of the means is close to the true standard error. We
+sampled from a normal distribution with SD=1 so the true standard is
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DecValTok{1}\OperatorTok{/}\KeywordTok{sqrt}\NormalTok{(n)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0.4082483
+\end{verbatim}
+
+and the standard deviation of the \(p\) means is
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{sd}\NormalTok{(means)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0.3731974
+\end{verbatim}
+
+Questions
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  how close is \texttt{sd(means)} to the true SE?
+\item
+  change p above to 1000. Now how close is sd(means) to the true SE?
+\item
+  change p above to 10,000. Now how close is sd(means) to the true SE?
+\end{enumerate}
+
+\subsection{part II - means}\label{part-ii---means}
+
+This is a visualization of the spread, or variability, of the sampled
+means
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{qplot}\NormalTok{(means)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+\end{verbatim}
+
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-6-1.pdf}
+
+Compute the mean of the means
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{mean}\NormalTok{(means)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] -0.039961
+\end{verbatim}
+
+Questions
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Remember that the true mean is zero. How close, in general, are the
+  sampled means to the true mean. How variable are the means? How is
+  this quantified?
+\item
+  change n to 100, then replot. Are the means, in general, closer to the
+  true mean? How variable are the means now?
+\item
+  Is the mean estimated with \(n=100\) closer to the truth, in general,
+  then the mean estimated with \(n=6\)?
+\item
+  Redo with \(n=10000\)
+\end{enumerate}
+
+\subsection{part III - how do SD and SE change as sample size (n)
+increases?}\label{part-iii---how-do-sd-and-se-change-as-sample-size-n-increases}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{mean}\NormalTok{(sds)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 1.017144
+\end{verbatim}
+
+Questions
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  what is the mean of the standard deviations when n=6 (set p=1000)
+\item
+  what is the mean of the standard deviations when n=100 (set p=1000)
+\item
+  when n = 1000? (set p=1000)
+\item
+  when n = 10000? (set p=1000)
+\item
+  how does the mean of the standard deviations change as n increases
+  (does it get smaller? or stay about the same size)
+\item
+  repeat the above with SEM
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{mean}\NormalTok{(sems)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0.4152472
+\end{verbatim}
+
+Congratulations, you have just done a Monte Carlo simulation!
+
+\subsection{\texorpdfstring{Part IV -- Generating fake data with ``for
+loops''}{Part IV -- Generating fake data with for loops}}\label{part-iv-generating-fake-data-with-for-loops}
+
+There are many other strategies for generating fake data -- two that
+will be used extensively here are the funtion \texttt{rmvnorm()} and
+\textbf{for loops}
+
+\subsubsection{rmvnorm and a Covariance
+Matrix}\label{rmvnorm-and-a-covariance-matrix}
+
+We used the base R function \texttt{rnorm} above to generate
+\texttt{fake\_data}, a matrix of random normal values. The columns are
+generated independently of each other so the expected correlation
+between any two columns is zero. The \texttt{rmvnorm()} (``random
+multivariate normal'') function from the package \texttt{mvtnorm}
+(``multivariate normal'') returns a matrix of random values drawn from a
+multiviate normal distribution with a specified \textbf{covariance
+matrix}. A covariance matrix is matrix of the variances and covariances
+of the \(p\) columns of a data matrix. The \textbf{diagonal} of the
+covariance matrix contains the variances of the \(p\) columns of the
+data matrix and the off-diagonal elements contain the \(p(p-1)\)
+pairwise covariances. The upper right set of covariances is the mirror
+of the lower left set of covariates, so there are \(p(p-1)/2\) unique
+covariances.
+
+For our fake data, we want columns that are independent (E(COV) = 0) and
+have expected variance of 1. This covariance matrix has a special name
+-- the \textbf{identity matrix} (or sometimes ``unit'' matrix). Thus we
+could use this script to generate fake data
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{n <-}\StringTok{ }\DecValTok{6} \CommentTok{# sample size}
+\NormalTok{p <-}\StringTok{ }\DecValTok{10}\OperatorTok{^}\DecValTok{2} \CommentTok{# number of columns of fake data to generate}
+\NormalTok{fake_data <-}\StringTok{  }\NormalTok{mvtnorm}\OperatorTok{::}\KeywordTok{rmvnorm}\NormalTok{(n, }\DataTypeTok{mean=}\KeywordTok{rep}\NormalTok{(}\DecValTok{0}\NormalTok{, p), }\DataTypeTok{sigma=}\KeywordTok{diag}\NormalTok{(p))}
+
+\CommentTok{# compute the vectors of means, sds, and sems and the sd of the means}
+\NormalTok{means <-}\StringTok{ }\KeywordTok{apply}\NormalTok{(fake_data,}\DecValTok{2}\NormalTok{,mean) }\CommentTok{# the apply function is super useful}
+\NormalTok{sds <-}\StringTok{ }\KeywordTok{apply}\NormalTok{(fake_data,}\DecValTok{2}\NormalTok{,sd)}
+\NormalTok{sems <-}\StringTok{ }\NormalTok{sds}\OperatorTok{/}\KeywordTok{sqrt}\NormalTok{(n)}
+\KeywordTok{sd}\NormalTok{(means)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0.4539342
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{mean}\NormalTok{(sems)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0.4083748
+\end{verbatim}
+
+The vector of column means is specified using \texttt{mean=} and the
+multivariate covariance matrix is specified with \texttt{sigma=} (the
+lower case greek letter sigma (\(\sigma\)) is often used to denote a
+population standard deviation. The upper case greek letter sigma
+(\(\Sigma\)) is often used to denote a population covariance matrix).
+This raises two questions
+
+Questions.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  without using the console, what is returned with \texttt{rep(0,\ p)}?
+\item
+  without using the console, what is returned with \texttt{diag(p)}?
+\item
+  What are the \texttt{sd(means)} and \texttt{mean(sems)} comparing?
+  What is the pedagogical purpose for adding this?
+\end{enumerate}
+
+Now use the console to check your answers.
+
+\subsubsection{A for loop}\label{a-for-loop}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{n <-}\StringTok{ }\DecValTok{6} \CommentTok{# sample size}
+\NormalTok{n_iter <-}\StringTok{ }\DecValTok{10}\OperatorTok{^}\DecValTok{5} \CommentTok{# number of iterations of loop (equivalent to p)}
+\NormalTok{means <-}\StringTok{ }\KeywordTok{numeric}\NormalTok{(n_iter)}
+\NormalTok{sds <-}\StringTok{ }\KeywordTok{numeric}\NormalTok{(n_iter)}
+\NormalTok{sems <-}\StringTok{ }\KeywordTok{numeric}\NormalTok{(n_iter)}
+\ControlFlowTok{for}\NormalTok{(i }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\NormalTok{n_iter)\{}
+\NormalTok{  y <-}\StringTok{ }\KeywordTok{rnorm}\NormalTok{(n) }\CommentTok{# mean=0 and sd=1 are default so not necessary to specify}
+\NormalTok{  means[i] <-}\StringTok{ }\KeywordTok{mean}\NormalTok{(y)}
+\NormalTok{  sds[i] <-}\StringTok{ }\KeywordTok{sd}\NormalTok{(y)}
+\NormalTok{  sems[i] <-}\StringTok{ }\KeywordTok{sd}\NormalTok{(y)}\OperatorTok{/}\KeywordTok{sqrt}\NormalTok{(n)}
+\NormalTok{\}}
+\KeywordTok{sd}\NormalTok{(means)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0.4090381
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{mean}\NormalTok{(sems)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0.3883677
+\end{verbatim}
+
+Questions
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  What do \texttt{sd(means)} and \texttt{mean(sems)} converge to as
+  \texttt{n\_iter} is increased from 100 to 1000 to 10,000?
+\item
+  Do they converge to the same number?
+\item
+  Should they?
+\item
+  What is the correct number?
+\end{enumerate}
+
+Question number 4 is asking what is E(SEM), the ``expected standard
+error of the mean''. There is a very easy formula to compute this. What
+is it?
 
 \chapter*{Appendix 3: Getting Started with
 R}\label{appendix-3-getting-started-with-r}
