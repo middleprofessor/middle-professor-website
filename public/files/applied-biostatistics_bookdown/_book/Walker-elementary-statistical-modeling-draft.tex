@@ -124,7 +124,7 @@
   \postauthor{\par}
   \predate{\centering\large\emph}
   \postdate{\par}
-  \date{2018-09-11}
+  \date{2018-09-12}
 
 \usepackage{booktabs}
 \usepackage{amsthm}
@@ -1323,15 +1323,17 @@ s_y = \sqrt{\frac{\sum_{i=1}^n{(y_i - \overline{y})^2}}{n-1}}
 \end{equation}
 
 Memorize this equation. To understand the logic of this measure of
-variability, note that \(y_i - \overline{y}\) is the deviation of the
-\(i\)th value from the sample mean, so the numerator is the sum of
-squared deviations. The numerator is a sum over \(n\) items and the
+variability, note that \(y_i - \overline{y}\) is the \textbf{deviation}
+of the \(i\)th value from the sample mean, so the numerator is the sum
+of squared deviations. The numerator is a sum over \(n\) items and the
 denominator is \(n-1\) so the variance is (almost!) an averaged squared
 deviation. More variable samples will have bigger deviations and,
 therefore, bigger average squared deviations. Since the standard
 deviation is the square root of the variance, a standard deviation is
-the square root of the average squared deviation, it can be thought of
-as a (not ``the'') measure of an average deviation.
+the square root of an average squared deviation. This makes it similar
+in value to the averaged deviation (or average of the absolute values of
+the deviations since the average deviation is, by definition of a mean,
+zero).
 
 Notes on the variance and standard deviation
 
@@ -1361,8 +1363,9 @@ mean}\label{standard-error-of-the-mean}
 
 A standard error of a statistic is a measure of the precision of the
 statistic. The standard error of the mean is a measure of the precision
-of the mean. The smaller the value the more precise the estimate. The
-standard error of the mean (SEM) is computed as
+of the estimate of the mean. The smaller the standard error, the more
+precise the estimate. The standard error of the mean (SEM) is computed
+as
 
 \begin{equation}
 SEM = \frac{s_y}{\sqrt{n}}
@@ -1372,13 +1375,15 @@ SEM = \frac{s_y}{\sqrt{n}}
 The SEM is often denoted \(s_{\bar{y}}\) to indicate that it is a
 standard deviation of the mean (\(\bar{y}\)). In what sense is a
 standard error a measure of variability? This is kinda weird. If we
-sample 100 cells cells in the slide one time and compute the mean
+sample 100 cells in the slide of muscle tissue and compute the mean
 diameter, how can the mean have a standard deviation? There is only one
-value! To understand how the SEM is a standard deviation, imagine
-resampling 100 cells and recomputing a mean an infinite number of times
-and each time, you write down the newly computed mean. The standard
-error of the mean is the standard deviation of this infinitely long
-column of means.
+value! To understand how the SEM is a standard deviation, imagine 1)
+resampling 100 cells and 2) recomputing a mean from the re-sampled data
+an infinite number of times and each time, you write down the newly
+computed mean. The true standard error of the mean is the standard
+deviation of this infinitely long column of means. This means that a
+standard error of the mean, computed from a single sample using equation
+\eqref{eq:se} is itself a sample statistic.
 
 Notes on standard errors
 
@@ -1387,12 +1392,12 @@ Notes on standard errors
 \tightlist
 \item
   The SEM is only one kind of standard error. A standard deviation can
-  be computed for any statistics -- these are all standard errors. For
+  be computed for any statistic -- these are all standard errors. For
   some statistics, such as the mean, the standard error can be computed
   directly using an equation, such as that for the SEM (equation
   @ref\{eq:se\}). For other statistics, a computer intensive method such
   as the \textbf{bootstrap} is necessary to compute a standard error. We
-  will return to the bootstrap shortly.
+  will return to the bootstrap at the end of this chapter.
 \item
   The units of a standard error are the units of the measured variable.
 \item
@@ -1534,8 +1539,6 @@ infinitely long column of means.
 \section{Using R to generate fake data to explore
 uncertainty}\label{using-r-to-generate-fake-data-to-explore-uncertainty}
 
-due by the beginning of our next class
-
 note that I use ``standard deviation'' to refer to the sample standard
 deviation and ``standard error'' to refer to the standard error of the
 mean (again, we can compute standard errors as a standard deviation of
@@ -1549,7 +1552,7 @@ was \(n \times m\) (it is standard in most fields to specify a matrix as
 rows by columns). This is \emph{much} easier to do in R and how much
 grows exponentially as the size of the matrix grows.
 
-To start, we just generate a \(n \times m\) matrix of normal random
+To start, we just generate a \(n \times p\) matrix of normal random
 numbers.
 
 \begin{Shaded}
@@ -1724,86 +1727,6 @@ Congratulations, you have just done a Monte Carlo simulation!
 \subsection{\texorpdfstring{Part IV -- Generating fake data with ``for
 loops''}{Part IV -- Generating fake data with for loops}}\label{part-iv-generating-fake-data-with-for-loops}
 
-There are many other strategies for generating fake data -- two that
-will be used extensively here are the funtion \texttt{rmvnorm()} and
-\textbf{for loops}
-
-\subsubsection{rmvnorm and a Covariance
-Matrix}\label{rmvnorm-and-a-covariance-matrix}
-
-We used the base R function \texttt{rnorm} above to generate
-\texttt{fake\_data}, a matrix of random normal values. The columns are
-generated independently of each other so the expected correlation
-between any two columns is zero. The \texttt{rmvnorm()} (``random
-multivariate normal'') function from the package \texttt{mvtnorm}
-(``multivariate normal'') returns a matrix of random values drawn from a
-multiviate normal distribution with a specified \textbf{covariance
-matrix}. A covariance matrix is matrix of the variances and covariances
-of the \(p\) columns of a data matrix. The \textbf{diagonal} of the
-covariance matrix contains the variances of the \(p\) columns of the
-data matrix and the off-diagonal elements contain the \(p(p-1)\)
-pairwise covariances. The upper right set of covariances is the mirror
-of the lower left set of covariates, so there are \(p(p-1)/2\) unique
-covariances.
-
-For our fake data, we want columns that are independent (E(COV) = 0) and
-have expected variance of 1. This covariance matrix has a special name
--- the \textbf{identity matrix} (or sometimes ``unit'' matrix). Thus we
-could use this script to generate fake data
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{n <-}\StringTok{ }\DecValTok{6} \CommentTok{# sample size}
-\NormalTok{p <-}\StringTok{ }\DecValTok{10}\OperatorTok{^}\DecValTok{2} \CommentTok{# number of columns of fake data to generate}
-\NormalTok{fake_data <-}\StringTok{  }\NormalTok{mvtnorm}\OperatorTok{::}\KeywordTok{rmvnorm}\NormalTok{(n, }\DataTypeTok{mean=}\KeywordTok{rep}\NormalTok{(}\DecValTok{0}\NormalTok{, p), }\DataTypeTok{sigma=}\KeywordTok{diag}\NormalTok{(p))}
-
-\CommentTok{# compute the vectors of means, sds, and sems and the sd of the means}
-\NormalTok{means <-}\StringTok{ }\KeywordTok{apply}\NormalTok{(fake_data,}\DecValTok{2}\NormalTok{,mean) }\CommentTok{# the apply function is super useful}
-\NormalTok{sds <-}\StringTok{ }\KeywordTok{apply}\NormalTok{(fake_data,}\DecValTok{2}\NormalTok{,sd)}
-\NormalTok{sems <-}\StringTok{ }\NormalTok{sds}\OperatorTok{/}\KeywordTok{sqrt}\NormalTok{(n)}
-\KeywordTok{sd}\NormalTok{(means)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-## [1] 0.4539342
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{mean}\NormalTok{(sems)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-## [1] 0.4083748
-\end{verbatim}
-
-The vector of column means is specified using \texttt{mean=} and the
-multivariate covariance matrix is specified with \texttt{sigma=} (the
-lower case greek letter sigma (\(\sigma\)) is often used to denote a
-population standard deviation. The upper case greek letter sigma
-(\(\Sigma\)) is often used to denote a population covariance matrix).
-This raises two questions
-
-Questions.
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\tightlist
-\item
-  without using the console, what is returned with \texttt{rep(0,\ p)}?
-\item
-  without using the console, what is returned with \texttt{diag(p)}?
-\item
-  What are the \texttt{sd(means)} and \texttt{mean(sems)} comparing?
-  What is the pedagogical purpose for adding this?
-\end{enumerate}
-
-Now use the console to check your answers.
-
-\subsubsection{A for loop}\label{a-for-loop}
-
 \begin{Shaded}
 \begin{Highlighting}[]
 \NormalTok{n <-}\StringTok{ }\DecValTok{6} \CommentTok{# sample size}
@@ -1822,7 +1745,7 @@ Now use the console to check your answers.
 \end{Shaded}
 
 \begin{verbatim}
-## [1] 0.4090381
+## [1] 0.4090702
 \end{verbatim}
 
 \begin{Shaded}
@@ -1832,7 +1755,7 @@ Now use the console to check your answers.
 \end{Shaded}
 
 \begin{verbatim}
-## [1] 0.3883677
+## [1] 0.3883867
 \end{verbatim}
 
 Questions
@@ -1854,6 +1777,97 @@ Questions
 Question number 4 is asking what is E(SEM), the ``expected standard
 error of the mean''. There is a very easy formula to compute this. What
 is it?
+
+\section{Bootstrapped standard
+errors}\label{bootstrapped-standard-errors}
+
+The bootstrap is the best invention since duct tape. Really.
+
+A standard error is the standard deviation of an infinite number of
+hypothetically re-sampled means. A bootstrap standard error of a
+statistic is the standard deviation of the statistic from a finite
+number of resamples of the data! Wait what?
+
+Let's download some data to explore this concept. The data are archived
+at Dryad Repository.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  URL: \url{https://datadryad.org//resource/doi:10.5061/dryad.31cc4}
+\item
+  file: RSBL-2013-0432 vole data.xlsx
+\item
+  sheet: COLD VOLES LIFESPAN
+\end{enumerate}
+
+The data are the measured lifespans of the short-tailed field vole
+(\emph{Microtus agrestis}) under three different experimental
+treatments: vitamin E supplementation, vitamin C supplementation, and
+control (no vitamin supplementation). Vitamins C and E are antioxidants,
+which are thought to be protective of basic cell function since they
+bind to the cell-damaging reactive oxygen species that result from cell
+metabolism.
+
+I've read in the file using read\_excel and converted to a data.table
+named \texttt{vole}. I used \texttt{setnames} to rename the columns to
+lifespan, control, vitamin\_E, and vitamin\_C. The data are in a
+\textbf{wide format} -- that is instead of a single ``treatment''
+column, there are three columns (``control'', ``vitamin C'', ``vitamin
+E'') with value = 1, if that row (or lifespan) was assigned the
+treatment of the column label and zero otherwise. In general, we want
+data.tables to be in long format. Wide formats can be useful for some
+computations but not really for these data.
+
+Compute the standard error of the mean of the lifespan for the control
+group using equation \eqref{eq:se}. One simple way to do this for the
+control group is to extract the subset of the data satisfying the
+condition control = 1 (the value in the column ``control'' equals 1). In
+R, these conditional querries use \texttt{==}.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{y <-}\StringTok{ }\KeywordTok{na.omit}\NormalTok{(vole[control}\OperatorTok{==}\DecValTok{1}\NormalTok{, lifespan]) }\CommentTok{# subset of data satisfying condition and omitting missing data, if these exist}
+\NormalTok{n <-}\StringTok{ }\KeywordTok{length}\NormalTok{(y) }\CommentTok{# the sample size}
+\NormalTok{se <-}\StringTok{ }\KeywordTok{sd}\NormalTok{(y)}\OperatorTok{/}\KeywordTok{sqrt}\NormalTok{(n}\OperatorTok{-}\DecValTok{1}\NormalTok{) }\CommentTok{# standard error of the mean}
+\end{Highlighting}
+\end{Shaded}
+
+Okay, the SEM using equation \eqref{eq:se} is 31.9. Let's compare this
+with a bootstrap estimate of the SEM.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{n_iter <-}\StringTok{ }\DecValTok{2000} \CommentTok{# number of bootstrap iterations}
+\NormalTok{means <-}\StringTok{ }\KeywordTok{numeric}\NormalTok{(n_iter) }\CommentTok{# we will save the means each iteration to this}
+\NormalTok{inc <-}\StringTok{ }\DecValTok{1}\OperatorTok{:}\NormalTok{n }\CommentTok{# the first sample is the actual sample}
+\ControlFlowTok{for}\NormalTok{(iter }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\NormalTok{n_iter)\{ }\CommentTok{# the for loop}
+\NormalTok{  means[iter] <-}\StringTok{ }\KeywordTok{mean}\NormalTok{(y[inc])}
+\NormalTok{  inc <-}\StringTok{ }\KeywordTok{sample}\NormalTok{(}\DecValTok{1}\OperatorTok{:}\NormalTok{n, }\DataTypeTok{replace=}\OtherTok{TRUE}\NormalTok{) }\CommentTok{# re-sample for the next iteration}
+\NormalTok{\}}
+\NormalTok{se_boot <-}\StringTok{ }\KeywordTok{sd}\NormalTok{(means)}
+
+\CommentTok{#compare}
+\NormalTok{se}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 31.89536
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{se_boot}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 30.93843
+\end{verbatim}
+
+dayum!
 
 \chapter*{Appendix 1: Getting Started with
 R}\label{appendix-1-getting-started-with-r}
