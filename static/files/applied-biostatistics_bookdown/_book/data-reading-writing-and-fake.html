@@ -336,13 +336,13 @@ bee[, Treatment<span class="op">:</span><span class="er">=</span><span class="kw
 <p>Again, there are spaces in the column names. <strong>Here I’ll leave it to you to change this</strong></p>
 <p>Here is a reproduction of Fig 2.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggbarplot</span>(<span class="dt">data=</span>bee, <span class="dt">x=</span><span class="st">&quot;Treatment&quot;</span>, <span class="dt">y=</span><span class="st">&quot;New_queens&quot;</span>, <span class="dt">add =</span> <span class="kw">c</span>(<span class="st">&quot;mean_se&quot;</span>))</code></pre></div>
-<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/plot%20bee%20fig.%202-1.png" width="576" /></p>
+<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/plot-bee-fig-2-1.png" width="576" /></p>
 <p>The plot suggests immediately some problems with the plot itself and the associated analysis. First, the y-axis is counts, which means that negative values are impossible. But the standard error bars look like they use standard errors computed from a model that allows infinetly large negative values, and the illustrated standard error bars imply that negative values exist. So these error bars are misleading. Second, it is good practice, especially if sample sizes are modest or small, to “show the data”, which means, show the individual data points and not just a summary of the distribution.</p>
 <p>Here are three alternative plots for exploratory purposes. The first simply “shows the data” but still uses the misleading standard error bars. The second uses a box plot. The last plots the means and 95% confidence intervals modeled with a GLM (generalized linear model) to account for the count data (the model used could be improved). Notice that the bar length above the mean is longer than the bar length below the mean (that is the interval is asymmetric about the mean). In order to stay focussed on importing data, I leave explanation of these plots and analysis to later chapters.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggbarplot</span>(<span class="dt">data=</span>bee, <span class="dt">x=</span><span class="st">&quot;Treatment&quot;</span>, <span class="dt">y=</span><span class="st">&quot;New_queens&quot;</span>, <span class="dt">add =</span> <span class="kw">c</span>(<span class="st">&quot;mean_se&quot;</span>, <span class="st">&quot;point&quot;</span>))</code></pre></div>
-<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/alternative%20plots-1.png" width="576" /></p>
+<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/alternative-plots-1.png" width="576" /></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggboxplot</span>(<span class="dt">data=</span>bee, <span class="dt">x=</span><span class="st">&quot;Treatment&quot;</span>, <span class="dt">y=</span><span class="st">&quot;New_queens&quot;</span>)</code></pre></div>
-<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/alternative%20plots-2.png" width="576" /></p>
+<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/alternative-plots-2.png" width="576" /></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fit.glm &lt;-<span class="st"> </span><span class="kw">glm</span>(New_queens <span class="op">~</span><span class="st"> </span>Treatment, <span class="dt">data=</span>bee, <span class="dt">family=</span><span class="kw">poisson</span>())
 means.glm &lt;-<span class="st"> </span><span class="kw">emmeans</span>(fit.glm, <span class="dt">specs=</span><span class="st">&quot;Treatment&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;response&quot;</span>)
 gg &lt;-<span class="st"> </span><span class="kw">ggplot</span>(<span class="dt">data=</span><span class="kw">data.frame</span>(means.glm), <span class="kw">aes</span>(<span class="dt">x=</span>Treatment, <span class="dt">y=</span>rate)) <span class="op">+</span>
@@ -351,7 +351,7 @@ gg &lt;-<span class="st"> </span><span class="kw">ggplot</span>(<span class="dt"
 <span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;New queens&quot;</span>) <span class="op">+</span>
 <span class="st">  </span><span class="ot">NULL</span>
 gg</code></pre></div>
-<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/alternative%20plots-3.png" width="576" /></p>
+<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/alternative-plots-3.png" width="576" /></p>
 </div>
 </div>
 <div id="creating-fake-data" class="section level2">
@@ -366,7 +366,7 @@ sigma &lt;-<span class="st"> </span><span class="dv">2</span>
 x &lt;-<span class="st"> </span><span class="kw">rnorm</span>(n)
 y &lt;-<span class="st"> </span>beta_<span class="dv">0</span> <span class="op">+</span><span class="st"> </span>beta_<span class="dv">1</span><span class="op">*</span>x <span class="op">+</span><span class="st"> </span><span class="kw">rnorm</span>(n, <span class="dt">sd=</span>sigma)
 <span class="kw">qplot</span>(x, y)</code></pre></div>
-<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/continuous%20X-1.png" width="576" /></p>
+<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/continuous-X-1.png" width="576" /></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">knitr<span class="op">::</span><span class="kw">kable</span>(<span class="kw">coefficients</span>(<span class="kw">summary</span>(<span class="kw">lm</span>(y <span class="op">~</span><span class="st"> </span>x))), <span class="dt">digits=</span><span class="dv">2</span>)</code></pre></div>
 <table>
 <thead>
@@ -415,7 +415,7 @@ beta &lt;-<span class="st"> </span><span class="kw">c</span>(beta_<span class="d
 fake_data[, Response<span class="op">:</span><span class="er">=</span>X<span class="op">%*%</span>beta <span class="op">+</span><span class="st"> </span><span class="kw">rnorm</span>(n, <span class="dt">sd=</span>sigma)]
 <span class="co"># plot it with a strip chart (often called a &quot;dot plot&quot;)</span>
 <span class="kw">ggstripchart</span>(<span class="dt">data=</span>fake_data, <span class="dt">x=</span><span class="st">&quot;Treatment&quot;</span>, <span class="dt">y=</span><span class="st">&quot;Response&quot;</span>, <span class="dt">add =</span> <span class="kw">c</span>(<span class="st">&quot;mean_se&quot;</span>))</code></pre></div>
-<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/categorical%20X-1.png" width="576" /></p>
+<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/categorical-X-1.png" width="576" /></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># fit using base R linear model function</span>
 fit &lt;-<span class="st"> </span><span class="kw">lm</span>(Response <span class="op">~</span><span class="st"> </span>Treatment, <span class="dt">data=</span>fake_data)
 <span class="co"># display a pretty table of the coefficients</span>
