@@ -32,8 +32,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   
   
-<link rel="prev" href="data-reading-writing-and-fake.html">
-<link rel="next" href="a-linear-model-with-a-single-continous-x.html">
+<link rel="prev" href="least-squares-estimation.html">
+<link rel="next" href="inference.html">
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
@@ -240,196 +240,189 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="variability-and-uncertainty-standard-deviations-and-standard-errors" class="section level1">
-<h1><span class="header-section-number">Chapter 4</span> Variability and Uncertainty (Standard Deviations and Standard Errors)</h1>
-<p><strong>Uncertainty</strong> is the stuff of science. A major goal of statistics is measuring uncertainty. What do we mean by uncertainty? Uncertainty is the error in estimating a parameter, such as the mean of a sample, or the difference in means between two experimental treatments, or the predicted response given a certain change in conditions. Uncertainty is measured with a <strong>variance</strong> or its square root, which is a <strong>standard deviation</strong>. The standard deviation of a statistic is also (and more commonly) called a <strong>standard error</strong>.</p>
-<p>Uncertainty emerges because of variability. In any introductory statistics class, students are introduced to two measures of variability, the “standard deviation” and the “standard error.” These terms are absolutely fundamental to statistics – they are the start of everything else. Yet, many biology professors confuse these terms and certainly, introductory students do too.</p>
-<p>When a research biologist uses the term “standard deviation,” they are probably referring to the sample standard deviation which is a measure of the variability of a sample. When a research biologist uses the term “standard error,” they are probably referring to the standard error of a mean, but it could be the standard error of another statistics, such as a regression slope. An important point to remember and understand is that all standard errors <em>are</em> standard deviations. This will make more sense soon.</p>
-<div id="the-sample-standard-deviation-vs.the-standard-error-of-the-mean" class="section level2">
-<h2><span class="header-section-number">4.1</span> The sample standard deviation vs. the standard error of the mean</h2>
-<div id="sample-standard-deviation" class="section level3">
-<h3><span class="header-section-number">4.1.1</span> Sample standard deviation</h3>
-<p>The sample standard deviation is a measure of the variability of a sample. For example, were we to look at a histological section of skeletal muscle we would see that the diameter of the fibers (the muscle cells) is variable. We could use imaging software to measure the diameter of a sample of 100 cells and get a <strong>distribution</strong> like this</p>
-<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/histogram-1.png" width="576" /></p>
-<p>The mean of this sample is 69.4 and the standard deviation is 2.8. The standard deviation is the square root of the variance, and so computed by</p>
-<span class="math display" id="eq:variance">\[\begin{equation}
-s_y = \sqrt{\frac{\sum_{i=1}^n{(y_i - \overline{y})^2}}{n-1}}
-\tag{4.1}
+<div id="a-linear-model-with-a-single-categorical-x" class="section level1">
+<h1><span class="header-section-number">Chapter 7</span> A linear model with a single, categorical <em>X</em></h1>
+<div id="a-linear-model-with-a-single-categorical-x-is-classical-t-test-or-anova" class="section level2">
+<h2><span class="header-section-number">7.1</span> A linear model with a single, categorical <em>X</em> is classical “t-test” or “ANOVA”</h2>
+<p>To introduce modeling with a single, categorical <span class="math inline">\(X\)</span> variable, I’ll use the vole data from</p>
+<ol style="list-style-type: decimal">
+<li>Source: Dryad Digital Repository. <a href="https://doi.org/10.5061/dryad.31cc4/1" class="uri">https://doi.org/10.5061/dryad.31cc4/1</a></li>
+<li>File: “RSBL-2013-0432 vole data.xlsx”</li>
+<li>Sheet: “COLD VOLES LIFESPAN”</li>
+</ol>
+<p>Normal cellular metabolism creates reactive oxygen species (ROS) that can disrupt cell function and potentially cause cell damage. Anti-oxidants are molecules that bind ROS, inhibiting their ability to disrupt cell activity. A working hypothesis for many years is that supplemental anti-oxidants should improve cell function and, scaling up, whole-animal function (such as lifespan). The vole data explores this with supplemental Vitamins C and E, which are anti-oxidants, in the diet of the short-tailed field vole (<em>Microtus agrestis</em>).</p>
+<p>The goal of the study is to measure the effect of anti-oxidants on lifespan. The researchers randomly assigned the voles to one of thre treatment levels: “control”, “vitamin E”, and “vitamin C”. The variable <span class="math inline">\(treatment\)</span>, is a single, categorical <span class="math inline">\(X\)</span> variable. Categorical variables are often called <strong>factors</strong> and the treatment levels are often called <strong>factor levels</strong>. There are no units to a categorical <span class="math inline">\(X\)</span> variable (even though a certain amount of each anti-oxidant was supplemented). The response (<span class="math inline">\(Y\)</span>) is <span class="math inline">\(lifespan\)</span> measured in days.</p>
+<p>The linear model with a categorical <span class="math inline">\(X\)</span> variable with three levels is not immediately obvious, and so I don’t present the model until after showing the table of model coefficients</p>
+<div id="table-of-model-coefficients" class="section level3">
+<h3><span class="header-section-number">7.1.1</span> Table of model coefficients</h3>
+<p>Here is the table of coefficients from the linear model fit</p>
+<table>
+<thead>
+<tr class="header">
+<th></th>
+<th align="right">Estimate</th>
+<th align="right">Std. Error</th>
+<th align="right">t value</th>
+<th align="right">Pr(&gt;|t|)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>(Intercept)</td>
+<td align="right">503.4</td>
+<td align="right">27.4</td>
+<td align="right">18.4</td>
+<td align="right">0.000</td>
+</tr>
+<tr class="even">
+<td>treatmentvitamin_E</td>
+<td align="right">-89.9</td>
+<td align="right">52.5</td>
+<td align="right">-1.7</td>
+<td align="right">0.090</td>
+</tr>
+<tr class="odd">
+<td>treatmentvitamin_C</td>
+<td align="right">-115.1</td>
+<td align="right">54.5</td>
+<td align="right">-2.1</td>
+<td align="right">0.037</td>
+</tr>
+</tbody>
+</table>
+<p>The table has estimates for three parameters. The first estimate (the intercept) is the mean response in the reference level. Here the reference level is the “control” group. The additional estimates are the differences in the mean between each of the other treatment levels and the reference level. These are the “effects” in the model. So typically with categorical <span class="math inline">\(X\)</span>, when we speak of an  we mean a difference in means.</p>
+<p>(note. The default in R is to set the level that is first alphabetically as the reference level. In the vole data, “control” comes before “vitamin_E” and “vitamin_C” alphabetically, and so by default, it is the reference level. This makes sense for these data – we want to compare the lifespan of the vitamins E and C groups to that of the control group. The reference level can be changed of course.)</p>
+</div>
+<div id="the-linear-model" class="section level3">
+<h3><span class="header-section-number">7.1.2</span> The linear model</h3>
+<p>We can see an immediate difference between the coefficient table for a linear model fit to a single, categorical <span class="math inline">\(X\)</span> and that for a single, continuous <span class="math inline">\(X\)</span>. For the latter, there is a single coefficient for <span class="math inline">\(X\)</span>. For the former, there is a coefficient for each level of the categorical <span class="math inline">\(X\)</span> <em>except</em> the “reference” level.</p>
+<p>The linear model for a single, continuous <span class="math inline">\(X\)</span> with three factor levels is</p>
+<span class="math display">\[\begin{equation}
+lifespan = \beta_0 + \beta_1 vitamin\_E + \beta_2 vitamin\_C + \varepsilon
 \end{equation}\]</span>
-<p>Memorize this equation. To understand the logic of this measure of variability, note that <span class="math inline">\(y_i - \overline{y}\)</span> is the <strong>deviation</strong> of the <span class="math inline">\(i\)</span>th value from the sample mean, so the numerator is the sum of squared deviations. The numerator is a sum over <span class="math inline">\(n\)</span> items and the denominator is <span class="math inline">\(n-1\)</span> so the variance is (almost!) an averaged squared deviation. More variable samples will have bigger deviations and, therefore, bigger average squared deviations. Since the standard deviation is the square root of the variance, a standard deviation is the square root of an average squared deviation. This makes it similar in value to the averaged deviation (or average of the absolute values of the deviations since the average deviation is, by definition of a mean, zero).</p>
-<p>Notes on the variance and standard deviation</p>
-<ol style="list-style-type: decimal">
-<li>Variances are additive but standard deviations are not. This means that the variance of the sum of two independent (uncorrelated) random variables is simply the sum of the variances of each of the variables. This is important for many statistical analyses.</li>
-<li>The units of variance are the square of the original units, which is awkward for interpretation. The units of a standard deviation is the same as that of the original variable, and so is much easier to interpet.</li>
-<li>For variables that are approximately normally distributed, we can map the standard deviation to the quantiles of the distribution. For example, 68% of the values are within one standard deviation of the mean, 95% of the values are within two standard deviations, and 99% of the values are within three standard deviations.</li>
-</ol>
-</div>
-<div id="standard-error-of-the-mean" class="section level3">
-<h3><span class="header-section-number">4.1.2</span> Standard error of the mean</h3>
-<p>A standard error of a statistic is a measure of the precision of the statistic. The standard error of the mean is a measure of the precision of the estimate of the mean. The smaller the standard error, the more precise the estimate. The standard error of the mean (SEM) is computed as</p>
-<span class="math display" id="eq:se">\[\begin{equation}
-SEM = \frac{s_y}{\sqrt{n}}
-\tag{4.2}
+<p>and the estimates in the coefficient table are the coefficients of the fit model</p>
+<span class="math display">\[\begin{equation}
+lifespan_i = b_0 + b_1 vitamin\_E + b_2 vitamin\_C + e_i
 \end{equation}\]</span>
-<p>The SEM is often denoted <span class="math inline">\(s_{\bar{y}}\)</span> to indicate that it is a standard deviation of the mean (<span class="math inline">\(\bar{y}\)</span>). In what sense is a standard error a measure of variability? This is kinda weird. If we sample 100 cells in the slide of muscle tissue and compute the mean diameter, how can the mean have a standard deviation? There is only one value! To understand how the SEM is a standard deviation, imagine 1) resampling 100 cells and 2) recomputing a mean from the re-sampled data an infinite number of times and each time, you write down the newly computed mean. The true standard error of the mean is the standard deviation of this infinitely long column of means. This means that a standard error of the mean, computed from a single sample using equation <a href="variability-and-uncertainty-standard-deviations-and-standard-errors.html#eq:se">(4.2)</a> is itself a sample statistic.</p>
-<p>Notes on standard errors</p>
+<p>Remember, <span class="math inline">\(b_0\)</span> is the mean of the control group, <span class="math inline">\(b_1\)</span> is the difference in means between the vitamin E and control groups, and <span class="math inline">\(b_2\)</span> is the difference in means between the vitamin C and control groups.</p>
+<p>In this model, <span class="math inline">\(vitamin\_E\)</span> and <span class="math inline">\(vitamin\_C\)</span> are <strong>dummy variables</strong> that contain a one, if the data is from that treatment level, and zero otherwise. This is called dummy coding or treatment coding. There are alternative coding methods. Dummy coding is the default in R. Note that the method of coding can make a difference in an ANOVA table, and many published papers using R have published incorrect interpretations of ANOVA table outputs. This is both getting ahead of ourselves and somewhat moot, because I don’t advocate publishing ANOVA tables.</p>
+</div>
+<div id="reporting-results-1" class="section level3">
+<h3><span class="header-section-number">7.1.3</span> Reporting results</h3>
+<p>What should be reported for the analyis of effects of anti-oxidant supplements on vole lifespan. Best practice includes reporting the raw data with a summary distribution and treatment effects with CIs. “Raw data” means the individual lifespans as a function of treatment level.</p>
+<div id="harrel-plot-of-the-data" class="section level4">
+<h4><span class="header-section-number">7.1.3.1</span> Harrel Plot of the data</h4>
+<div class="figure"><span id="fig:harrellplot"></span>
+<img src="Walker-elementary-statistical-modeling-draft_files/figure-html/harrellplot-1.png" alt="HarrellPlot of the raw data, distribution, and effects of the vole lifespan data." width="576" />
+<p class="caption">
+Figure 7.1: HarrellPlot of the raw data, distribution, and effects of the vole lifespan data.
+</p>
+</div>
+<p>The raw data, the distributions within treatment level, and the effects (difference in means) of treatment can be combined into a single plot that I call a Harrell plot (Figure <a href="#fig:voles"><strong>??</strong></a>). Notice that the <em>x</em>-axis and <em>y</em> axes are flipped so that <span class="math inline">\(lifespan\)</span> is on the <em>x</em>-axis. It is still the “response” or “Y” variable! The Harrell plot contains two parts</p>
 <ol style="list-style-type: decimal">
-<li>The SEM is only one kind of standard error. A standard deviation can be computed for any statistic – these are all standard errors. For some statistics, such as the mean, the standard error can be computed directly using an equation, such as that for the SEM (equation <a href="variability-and-uncertainty-standard-deviations-and-standard-errors.html#eq:se">(4.2)</a>. For other statistics, a computer intensive method such as the <strong>bootstrap</strong> is necessary to compute a standard error. We will return to the bootstrap at the end of this chapter.</li>
-<li>The units of a standard error are the units of the measured variable.</li>
-<li>A standard error is proportional to sample variability (the sample standard deviation, <span class="math inline">\(s_y\)</span>) and inversely proportional to sample size (<span class="math inline">\(n\)</span>). Sample variability is a function of both natural variation (there really is variation in diameter among fibers in the quadriceps muscle) and measurement error (imaging software with higher resolution can measure a diameter with less error). Since the SEM is a measure of the precision of estimating a mean, this means this precision will increase (or the SEM will decrease) if 1) an investigator uses methods that reduce measurement error and 2) an investigator computes the mean from a larger sample.</li>
-<li>This last point (the SEM decreases with sample size) seems obvious when looking at equation <a href="variability-and-uncertainty-standard-deviations-and-standard-errors.html#eq:se">(4.2)</a>, since <span class="math inline">\(n\)</span> is in the denominator. Of course <span class="math inline">\(n\)</span> is also in the denominator of equation <a href="variability-and-uncertainty-standard-deviations-and-standard-errors.html#eq:variance">(4.1)</a> for the sample standard deviation but the standard deviation does not decrease as sample size increases. First this wouldn’t make any sense – variability is variability. A sample of 10,000 cell diameters should be no more variable than a sample of 100 cell diameters (think about if you agree with this or not). Second, this should also be obvious from equation <a href="variability-and-uncertainty-standard-deviations-and-standard-errors.html#eq:variance">(4.1)</a>. The standard deviation is the square root of an average and averages don’t increase with the number of things summed since both the the numerator (a sum) and denominator increase with <span class="math inline">\(n\)</span>.</li>
+<li>The bottom contains a <strong>strip chart</strong> (often called a “dot plot”) of the raw response measures grouped by factor level. Superimposed over the strip chart is a <strong>box plot</strong> summarizing the distribution of each factor level. The line in the center of a box is the median <span class="math inline">\(lifespan\)</span> for that group, the left and right edges of the box are the 25% and 75% quantiles of <span class="math inline">\(lifespan\)</span> for that grop, and the lines extending to the left and right of the box are the “whiskers”, which are the smallest and largest value within <span class="math inline">\(1.5 IQR\)</span> (inter-quartile range, which is the interval bounded by box).</li>
+<li>The top is a <strong>forest plot</strong> of the effects and the 95% CI of the effects. For categorical <span class="math inline">\(X\)</span>, the effects could be model coefficients or treatment <strong>contrasts</strong>, which are differences in means between treatment levels. Model coefficients are a subset of possible treatment contrasts.</li>
 </ol>
+<p>The Harrell plot above shows the effects as model coefficients, which (again!) are differences between the mean of the response in a specific treatment level and the mean of the response in a reference level. Here the reference level is the control group.</p>
+</div>
+<div id="in-text-reporting" class="section level4">
+<h4><span class="header-section-number">7.1.3.2</span> In-text reporting</h4>
+<p>“The mean lifespan of cold-reared voles supplmented with vitamin E was -89.9 days shorter than the mean lifespan for the control group (95% CI: -194.1, 14.3). The mean lifespan of cold-reared voles supplmented with vitamin C was -115.1 days shorter than the mean lifespan for the control group (95% CI: -223.2, -6.9).</p>
+</div>
+<div id="correct-interpretation-of-the-confidence-interval-is-key" class="section level4">
+<h4><span class="header-section-number">7.1.3.3</span> Correct interpretation of the Confidence Interval is key</h4>
+<p>Remember, that the CI contains the range of parameter values that are consistent with the data (in the sense that a t-test wouldn’t reject the hypothesis test). This means that a true value at the low end or the high end of the CI is consistent with the data. Your technical report/manuscript should discuss the consequences of this. For example, A small, increase in lifespan is consistant with the Vitamin E but not Vitamin C supplementation, if we use the 95% CI as a pretty good range for inferring “consistent with”. Both a 223 day and a 7 day decrease in lifespan are consistant with the Vitamin C effect. 223 days seems like a huge effect, especially for a short lived vole. 7 days is certainly a much smaller effect, but this doesn’t mean that it doesn’t have important ecological, behavioral, or fitness consequences.</p>
 </div>
 </div>
-<div id="using-google-sheets-to-generate-fake-data-to-explore-uncertainty" class="section level2">
-<h2><span class="header-section-number">4.2</span> Using Google Sheets to generate fake data to explore uncertainty</h2>
-<p>In statistics we are interested in estimated parameters of a <strong>population</strong> using measures from a <strong>sample</strong>. The goal in this section is to use Google Sheets (or Microsoft Excel) to use fake data to discover the behavior of sampling and to gain some intuition about uncertainty using standard errors.</p>
-<div id="steps" class="section level3">
-<h3><span class="header-section-number">4.2.1</span> Steps</h3>
-<ol style="list-style-type: decimal">
-<li>Open Google Sheets</li>
-<li>In cell A1 type “mu”. mu is the greek letter <span class="math inline">\(\mu\)</span> and is very common notation for the poplation value (the TRUE value!) of the mean of some hypothetical measure. In cell B1, insert some number as the value of <span class="math inline">\(\mu\)</span>. Any number! It can be negative or positive.</li>
-<li>In cell A2 type “sigma”. sigma is the greek letter <span class="math inline">\(\sigma\)</span>. <span class="math inline">\(\sigma^2\)</span> is very common (universal!) notation for the population (TRUE) variance of some measure or parameter. Notice that the true (population) values of the mean and variance are greek letters. This is pretty standard in statistics. In cell B2, insert some positive number (standard deviations are the positive square roots of the variance).</li>
-<li>In cell A8 type the number 1</li>
-<li>In cell A9 insert the equation “=A8 + 1”. What is this equation doing? It is adding the number 1 to to the value in the cell above, so the resulting value should be 2.</li>
-<li>In Cell B8, insert the equation “=normsinv(rand())*$B$2 + $B$1“. The first part of the equation creates a random normal variable with mean 0 and standard deviation 1. multiplication and addition transform this to a random normal variable with mean <span class="math inline">\(\mu\)</span> and standard deviation <span class="math inline">\(\sigma\)</span> (the values you set in cells B1 and B2).</li>
-<li>copy cell B8 and paste into cell B9. Now Higlight cells A9:B9 and copy the equations down to row 107. You now have 100 random variables sampled from a infinite population with mean <span class="math inline">\(\mu\)</span> and standard deviation <span class="math inline">\(\sigma\)</span>.</li>
-<li>In cell A4 write “mean 10”. In cell B4 insert the equation “=average(B8:B17)”. The resulting value is the <strong>sample mean</strong> of the first 10 random variables you created. Is the mean close to <span class="math inline">\(\mu\)</span>?</li>
-<li>In cell A5 write “sd 10”. In cell B5 insert the equation “stdev(B8:B17)”. The result is the <strong>sample standard deviation</strong> of the first 10 random variables. Is this close to <span class="math inline">\(\sigma\)</span>?</li>
-<li>In cell A6 write “mean 100”. In cell B6 insert the equation “=average(B8:B107)”. The resulting value is the <strong>sample mean</strong> of the all 100 random variables you created. Is this mean closer to <span class="math inline">\(\mu\)</span> than mean 10?</li>
-<li>In cell A7 write “sd 100”. In cell B7 insert the equation “=stdev(B8:B107)”. The resulting value is the <strong>sample standard deviation</strong> of the all 100 random variables you created. Is this SD closer to <span class="math inline">\(\sigma\)</span> than sd 10?</li>
-</ol>
-<p>The sample standard deviation is a measure of the variability of the sample. The more spread out the sample (the further each value is from the mean), the bigger the sample standard deviation. The sample standard deviation is most often simply known as “The” standard deviation, which is a bit misleading since there are many kinds of standard deviations!</p>
-<p>Remember that your computed mean and standard deviations are estimates computed from a sample. They are estimates of the true values <span class="math inline">\(\mu\)</span> and <span class="math inline">\(\sigma\)</span>. Explore the behavior of the sample mean and standard deviation by re-calculating the spreadsheet. In Excel, a spreadsheet is re-calculated by simultaneously pressing the command and equal key. In Google, command-R recalculates but is painfully slow. Instead, if using Google Sheets, just type the number 1 into a blank cell, and the sheet recalculates quickly. Do it again. And again.</p>
-<p>Each time you re-calculate, a new set of random numbers are generated and the new means and standard deviations are computed. Compare mean 10 and mean 100 each re-calculation. Notice that these estimates are variable. They change with each re-calculation. How variable is mean 10 compared to mean 100? The variability of the estimate of the mean is a measure of <strong>uncertainty</strong> in the estimate. Are we more uncertain with mean 10 or with mean 100? This variability is measured by a standard deviation. This <strong>standard deviation of the mean</strong> is also called the <strong>standard error of the mean</strong>. Many researchers are loose with terms and use “The” standard error to mean the standard error of the mean, even though there are many kinds of standard errors. In general, “standard error”&quot; is abbreviated as “SE.” Sometimes “standard error of the mean” is specifically abbreviated to “SEM.”</p>
-<p>The standard error of the mean is a measure of the precision in estimating the mean. The smaller the value the more precise the estimate. The standard error of the mean <em>is</em> a standard deviation of the mean. This is kinda weird. If we sample a population one time and compute a mean, how can the mean have a standard deviation? There is only one value! And we compute this value using the sample standard deviation: <span class="math inline">\(SEM = \frac{SD}{\sqrt{N}}\)</span>. To understand how the SEM is a standard deviation, Imagine recalculating the spread sheet an infinite number of times and each time, you write down the newly computed mean. The standard error of the mean is the standard deviation of this infinitely long column of means.</p>
 </div>
-</div>
-<div id="using-r-to-generate-fake-data-to-explore-uncertainty" class="section level2">
-<h2><span class="header-section-number">4.3</span> Using R to generate fake data to explore uncertainty</h2>
-<p>note that I use “standard deviation” to refer to the sample standard deviation and “standard error” to refer to the standard error of the mean (again, we can compute standard errors as a standard deviation of any kind of estimate)</p>
-<div id="part-i" class="section level3">
-<h3><span class="header-section-number">4.3.1</span> part I</h3>
-<p>In the exercise above, you used Google Sheets to generate <span class="math inline">\(p\)</span> columns of fake data. Each column had <span class="math inline">\(n\)</span> elements, so the matrix of fake data was <span class="math inline">\(n \times m\)</span> (it is standard in most fields to specify a matrix as rows by columns). This is <em>much</em> easier to do in R and how much grows exponentially as the size of the matrix grows.</p>
-<p>To start, we just generate a <span class="math inline">\(n \times p\)</span> matrix of normal random numbers.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># R script to gain some intuition about standard deviation (sd) and standard error (se)</span>
-<span class="co"># you will probably need to install ggplot2 using library(ggplot2) </span>
-n &lt;-<span class="st"> </span><span class="dv">6</span> <span class="co"># sample size</span>
-p &lt;-<span class="st"> </span><span class="dv">100</span> <span class="co"># number of columns of fake data to generate</span>
-fake_data &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">rnorm</span>(n<span class="op">*</span>p, <span class="dt">mean=</span><span class="dv">0</span>, <span class="dt">sd=</span><span class="dv">1</span>), <span class="dt">nrow=</span>n, <span class="dt">ncol=</span>p) <span class="co"># create a matrix</span></code></pre></div>
-<p>the 3rd line is the cool thing about R. In one line I’m creating a dataset with <span class="math inline">\(n\)</span> rows and <span class="math inline">\(p\)</span> columns. Each column is a sample of the standard normal distribution which by definition has mean zero and standard deviation of 1. But, and this is important, any sample from this distribution will not have exactly mean zero and standard deviation of 1, because it’s a sample, the mean and standard deviation will have some small errror from the truth. The line has two parts to it: first I’m using the function “rnorm” (for random normal) to create a vector of n*m random, normal deviates (draws from the random normal distribution) and then I’m organizing these into a matrix (using the function “matrix”)</p>
-<p>To compute the vector of means, standard deviations, and standard errors for each column of <code>fake_data</code>, use the <code>apply()</code> function.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">means &lt;-<span class="st"> </span><span class="kw">apply</span>(fake_data,<span class="dv">2</span>,mean) <span class="co"># the apply function is super useful</span>
-sds &lt;-<span class="st"> </span><span class="kw">apply</span>(fake_data,<span class="dv">2</span>,sd)
-sems &lt;-<span class="st"> </span>sds<span class="op">/</span><span class="kw">sqrt</span>(n)</code></pre></div>
-<p><code>apply()</code> is a workhorse in many R scripts. Learn it. Know it. Live it.</p>
-<p>The SEM is the standard deviation of the mean, so let’s see if the standard deviation of the means is close to the true standard error. We sampled from a normal distribution with SD=1 so the true standard is</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="dv">1</span><span class="op">/</span><span class="kw">sqrt</span>(n)</code></pre></div>
-<pre><code>## [1] 0.4082483</code></pre>
-<p>and the standard deviation of the <span class="math inline">\(p\)</span> means is</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sd</span>(means)</code></pre></div>
-<pre><code>## [1] 0.3731974</code></pre>
+<div id="working-in-r-1" class="section level2">
+<h2><span class="header-section-number">7.2</span> Working in R</h2>
+<div id="exploring-the-relationship-between-y-and-x" class="section level3">
+<h3><span class="header-section-number">7.2.1</span> Exploring the relationship between <em>Y</em> and <em>X</em></h3>
 <p>Questions</p>
 <ol style="list-style-type: decimal">
-<li>how close is <code>sd(means)</code> to the true SE?</li>
-<li>change p above to 1000. Now how close is sd(means) to the true SE?</li>
-<li>change p above to 10,000. Now how close is sd(means) to the true SE?</li>
+<li>Import the vole data from the Dryad repository as the data.table <code>vole_wide</code>. Replace the spaces in the column labels with the underscore “_“.</li>
 </ol>
-</div>
-<div id="part-ii---means" class="section level3">
-<h3><span class="header-section-number">4.3.2</span> part II - means</h3>
-<p>This is a visualization of the spread, or variability, of the sampled means</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">qplot</span>(means)</code></pre></div>
-<pre><code>## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
-<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/unnamed-chunk-6-1.png" width="576" /></p>
-<p>Compute the mean of the means</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">mean</span>(means)</code></pre></div>
-<pre><code>## [1] -0.039961</code></pre>
+<p>The data are in “wide” format. A pretty good script for for converting these to long format is</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">vole_long &lt;-<span class="st"> </span><span class="kw">melt</span>(vole_wide, <span class="dt">measure.vars=</span><span class="kw">c</span>(<span class="st">&quot;control&quot;</span>, <span class="st">&quot;vitamin_E&quot;</span>, <span class="st">&quot;vitamin_C&quot;</span>), <span class="dt">variable.name=</span><span class="st">&quot;treatment&quot;</span>)
+vole &lt;-<span class="st"> </span><span class="kw">na.omit</span>(vole_long)
+<span class="co"># melt is from reshape2 package and is a workhorse in R</span>
+<span class="co"># the resulting data frame has 3 stacked copies of the same rows</span>
+<span class="co"># na.omit removes the superfluous two extra sets of rows created by melt</span>
+<span class="co"># the more compact way to do this is combine the steps:</span>
+<span class="co"># vole &lt;- na.omit(melt(vole_wide, measure.vars=c(&quot;control&quot;, &quot;vitamin_E&quot;, &quot;vitamin_C&quot;))</span>
+<span class="co"># but I suggest two steps so you can see what melt does. This isn&#39;t the best example of using melt.</span></code></pre></div>
+<p>Use the ggpubr package to create a box plot, grouped by treatment, with superimposed strip chart (“dots”)</p>
 <p>Questions</p>
-<ol style="list-style-type: decimal">
-<li>Remember that the true mean is zero. How close, in general, are the sampled means to the true mean. How variable are the means? How is this quantified?</li>
-<li>change n to 100, then replot. Are the means, in general, closer to the true mean? How variable are the means now?</li>
-<li>Is the mean estimated with <span class="math inline">\(n=100\)</span> closer to the truth, in general, then the mean estimated with <span class="math inline">\(n=6\)</span>?</li>
-<li>Redo with <span class="math inline">\(n=10000\)</span></li>
+<ol start="2" style="list-style-type: decimal">
+<li>Do the response as a function of group look fairly normally distributed or are there red flags such as skewness, outliers, bimodal clusters, etc.</li>
+<li>Is the direction of the effect consistent with the expected direction?</li>
 </ol>
 </div>
-<div id="part-iii---how-do-sd-and-se-change-as-sample-size-n-increases" class="section level3">
-<h3><span class="header-section-number">4.3.3</span> part III - how do SD and SE change as sample size (n) increases?</h3>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">mean</span>(sds)</code></pre></div>
-<pre><code>## [1] 1.017144</code></pre>
+<div id="fitting-the-model" class="section level3">
+<h3><span class="header-section-number">7.2.2</span> Fitting the model</h3>
+<p>As with a single, continuous <span class="math inline">\(X\)</span>, we fit the model using the <code>lm</code> function and with the model formula of the form <code>y ~ x</code>. Note that the R formula can use the single categorical variable <span class="math inline">\(treatment\)</span>. The code underneath lm will note that <span class="math inline">\(treatment\)</span> is a factor with three levels and will automatically create the two dummy variables noted above in the linear model.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fit &lt;-<span class="st"> </span><span class="kw">lm</span>(lifespan <span class="op">~</span><span class="st"> </span>treatment, <span class="dt">data=</span>vole)</code></pre></div>
+<p>All of the same scripts to access the information in <code>fit</code> that we used with the continuous <span class="math inline">\(X\)</span> analysis are the same. For example, the base R <code>summary</code> function gives the same information as in the continuous <span class="math inline">\(X\)</span> example.</p>
 <p>Questions</p>
-<ol style="list-style-type: decimal">
-<li>what is the mean of the standard deviations when n=6 (set p=1000)</li>
-<li>what is the mean of the standard deviations when n=100 (set p=1000)</li>
-<li>when n = 1000? (set p=1000)</li>
-<li>when n = 10000? (set p=1000)</li>
-<li>how does the mean of the standard deviations change as n increases (does it get smaller? or stay about the same size)</li>
-<li>repeat the above with SEM</li>
+<ol start="4" style="list-style-type: decimal">
+<li>Review different output in the <code>summary</code> function and list which are useful and which are not so useful and why.</li>
 </ol>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">mean</span>(sems)</code></pre></div>
-<pre><code>## [1] 0.4152472</code></pre>
-<p>Congratulations, you have just done a Monte Carlo simulation!</p>
+<p>Other useful functions on the lm object (“fit”) are <code>coefficients(summary())</code>, <code>coef()</code> or <code>coefficients()</code> and <code>confint</code>. Assigning the output of these functions to an R object allows you to increase reproducibility. For example, if I assign the coefficients to <code>b</code></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">b &lt;-<span class="st"> </span><span class="kw">coef</span>(fit)</code></pre></div>
+<p>then I can report these in R markdown text by embedding r code directly in the text. For example, if I embed “r round(b[“treatmentvitamin_E”], 1)” between a pair of single accent characters, then r markdown inserts -89.9 into the rendered text.</p>
 </div>
-<div id="part-iv-generating-fake-data-with-for-loops" class="section level3">
-<h3><span class="header-section-number">4.3.4</span> Part IV – Generating fake data with “for loops”</h3>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">n &lt;-<span class="st"> </span><span class="dv">6</span> <span class="co"># sample size</span>
-n_iter &lt;-<span class="st"> </span><span class="dv">10</span><span class="op">^</span><span class="dv">5</span> <span class="co"># number of iterations of loop (equivalent to p)</span>
-means &lt;-<span class="st"> </span><span class="kw">numeric</span>(n_iter)
-sds &lt;-<span class="st"> </span><span class="kw">numeric</span>(n_iter)
-sems &lt;-<span class="st"> </span><span class="kw">numeric</span>(n_iter)
-<span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>n_iter){
-  y &lt;-<span class="st"> </span><span class="kw">rnorm</span>(n) <span class="co"># mean=0 and sd=1 are default so not necessary to specify</span>
-  means[i] &lt;-<span class="st"> </span><span class="kw">mean</span>(y)
-  sds[i] &lt;-<span class="st"> </span><span class="kw">sd</span>(y)
-  sems[i] &lt;-<span class="st"> </span><span class="kw">sd</span>(y)<span class="op">/</span><span class="kw">sqrt</span>(n)
-}
-<span class="kw">sd</span>(means)</code></pre></div>
-<pre><code>## [1] 0.4090702</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">mean</span>(sems)</code></pre></div>
-<pre><code>## [1] 0.3883867</code></pre>
-<p>Questions</p>
+<div id="an-introduction-to-contrasts" class="section level3">
+<h3><span class="header-section-number">7.2.3</span> An introduction to contrasts</h3>
+<p>We often want to compare more than just the non-reference levels to the reference level. For example, we might want to compare the effects of the vitamin E supplementation to vitamin C supplementation. Or, we might want to combine (or “pool”) vitamin C and vitamin E levels effects into a single “anti-oxidant” level and compare to the control. These comparisons of means are called linear <strong>contrasts</strong>. The emmeans package is a good package for obtaining contrasts for both simple linear models computed with <code>lm</code> and for more complicated statistical models. If you haven’t already, download the emmeans package.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fit.em &lt;-<span class="st"> </span><span class="kw">emmeans</span>(fit, <span class="dt">spec=</span><span class="st">&quot;treatment&quot;</span>)
+fit.em</code></pre></div>
+<pre><code>##  treatment   emmean       SE df lower.CL upper.CL
+##  control   503.3929 27.40978 93 448.9625 557.8233
+##  vitamin_E 413.4762 44.75999 93 324.5917 502.3607
+##  vitamin_C 388.3158 47.05685 93 294.8702 481.7614
+## 
+## Confidence level used: 0.95</code></pre>
+<p>The <code>emmeans()</code> function returns various estimated means, depending on what is specified with the <code>spec=</code> parameter. Here the grouping variable “treatment” is specified, so the means returned are estimates of <span class="math inline">\(\mathroom{E}(lifespan | treatment)\)</span>, the modeled means for each level of treatment. For this simple analysis, the modeled means are simply the group means. Note that the default value returned is a table with the standard error and 95% confidence limits of the estimates.</p>
+<p>Let’s use the emmeans object to get the contrasts for all combinations of treatment levels.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(<span class="kw">contrast</span>(fit.em, <span class="dt">method=</span><span class="st">&quot;revpairwise&quot;</span>, <span class="dt">adjust=</span><span class="st">&quot;none&quot;</span>), <span class="dt">infer=</span><span class="kw">c</span>(<span class="ot">TRUE</span>, <span class="ot">TRUE</span>))</code></pre></div>
+<pre><code>##  contrast                estimate       SE df  lower.CL   upper.CL t.ratio
+##  vitamin_E - control    -89.91667 52.48574 93 -194.1429  14.309609  -1.713
+##  vitamin_C - control   -115.07707 54.45772 93 -223.2193  -6.934834  -2.113
+##  vitamin_C - vitamin_E  -25.16040 64.94462 93 -154.1275 103.806738  -0.387
+##  p.value
+##   0.0900
+##   0.0373
+##   0.6993
+## 
+## Confidence level used: 0.95</code></pre>
+<p>I’ve sent to parameters to the contrast function and one to the summary function</p>
 <ol style="list-style-type: decimal">
-<li>What do <code>sd(means)</code> and <code>mean(sems)</code> converge to as <code>n_iter</code> is increased from 100 to 1000 to 10,000?</li>
-<li>Do they converge to the same number?</li>
-<li>Should they?</li>
-<li>What is the correct number?</li>
+<li>method=“revpairwise”. Contrast will create various differences. Here I’ve specified all pairwise differences (the “rev” reverses the order of the subtraction). Notice that the statistics (estimate, SE, etc) are equal to the same statistics for <span class="math inline">\(b_1\)</span> and <span class="math inline">\(b_2\)</span> of the linear model. I said earlier that these coefficients are contrasts!</li>
+<li>adjust=“none”. In classical frequetist hypothesis testing, the p-value of a contrast in what are called “post-hoc tests” is adjusted to reflect “multiple testing” (more than one p-value is being computed). This adjustment is almost standard in biology, but the practice is hugely controversial. The concept of multiple testing is important, and we will retur to this in a future chapter, but here I have chosen to show the unadjusted p-value. The reason is that I want the unadjusted confidence interval and the adjustment would adjust these as well.</li>
+<li>infer=c(TRUE, TRUE). This parameter controls what kind of inference to put in the table. The first value specifies if to include the CI or not, the second value specifies to include the <span class="math inline">\(t\)</span> and <span class="math inline">\(p\)</span>-value or not.</li>
 </ol>
-<p>Question number 4 is asking what is E(SEM), the “expected standard error of the mean”. There is a very easy formula to compute this. What is it?</p>
 </div>
-</div>
-<div id="bootstrapped-standard-errors" class="section level2">
-<h2><span class="header-section-number">4.4</span> Bootstrapped standard errors</h2>
-<p>The bootstrap is the best invention since duct tape. Really.</p>
-<p>A standard error is the standard deviation of an infinite number of hypothetically re-sampled means. A bootstrap standard error of a statistic is the standard deviation of the statistic from a finite number of resamples of the data! Wait what?</p>
-<p>Let’s download some data to explore this concept. The data are archived at Dryad Repository.</p>
-<ol style="list-style-type: decimal">
-<li>URL: <a href="https://datadryad.org//resource/doi:10.5061/dryad.31cc4" class="uri">https://datadryad.org//resource/doi:10.5061/dryad.31cc4</a></li>
-<li>file: RSBL-2013-0432 vole data.xlsx</li>
-<li>sheet: COLD VOLES LIFESPAN</li>
+<div id="harrell-plot" class="section level3">
+<h3><span class="header-section-number">7.2.4</span> Harrell plot</h3>
+<div id="installing-the-harrellplot-package" class="section level4">
+<h4><span class="header-section-number">7.2.4.1</span> Installing the HarrellPlot package</h4>
+<p>The HarrellPlot package is available on github but not a cran repository and, therefore, takes a little more work to install. To install a package from a github repository, 1. load library(devtools) – this may need to be installed first using the R Studio Tools &gt; Install Packages… tool 2. HarrellPlot requires lots of other packages. Install these first using R Studio Tools &gt; Install Packages… tool, if you haven’t already - ggplot2 - emmeans - Hmisc - broom - car - data.table - cowplot 3. Now install HarrellPlot from github. In the console, type</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">install_github</span>(<span class="st">&quot;middleprofessor/harrell-plot-R/HarrellPlot&quot;</span>)</code></pre></div>
+<ol start="4" style="list-style-type: decimal">
+<li>load the HarrellPlot package</li>
 </ol>
-<p>The data are the measured lifespans of the short-tailed field vole (<em>Microtus agrestis</em>) under three different experimental treatments: vitamin E supplementation, vitamin C supplementation, and control (no vitamin supplementation). Vitamins C and E are antioxidants, which are thought to be protective of basic cell function since they bind to the cell-damaging reactive oxygen species that result from cell metabolism.</p>
-<p>I’ve read in the file using read_excel and converted to a data.table named <code>vole</code>. I used <code>setnames</code> to rename the columns to lifespan, control, vitamin_E, and vitamin_C. The data are in a <strong>wide format</strong> – that is instead of a single “treatment” column, there are three columns (“control”, “vitamin C”, “vitamin E”) with value = 1, if that row (or lifespan) was assigned the treatment of the column label and zero otherwise. In general, we want data.tables to be in long format. Wide formats can be useful for some computations but not really for these data.</p>
-<p>Compute the standard error of the mean of the lifespan for the control group using equation <a href="variability-and-uncertainty-standard-deviations-and-standard-errors.html#eq:se">(4.2)</a>. One simple way to do this for the control group is to extract the subset of the data satisfying the condition control = 1 (the value in the column “control” equals 1). In R, these conditional querries use <code>==</code>.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">y &lt;-<span class="st"> </span><span class="kw">na.omit</span>(vole[control<span class="op">==</span><span class="dv">1</span>, lifespan]) <span class="co"># subset of data satisfying condition and omitting missing data, if these exist</span>
-n &lt;-<span class="st"> </span><span class="kw">length</span>(y) <span class="co"># the sample size</span>
-se &lt;-<span class="st"> </span><span class="kw">sd</span>(y)<span class="op">/</span><span class="kw">sqrt</span>(n<span class="op">-</span><span class="dv">1</span>) <span class="co"># standard error of the mean</span></code></pre></div>
-<p>Okay, the SEM using equation <a href="variability-and-uncertainty-standard-deviations-and-standard-errors.html#eq:se">(4.2)</a> is 31.9. Let’s compare this with a bootstrap estimate of the SEM.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">n_iter &lt;-<span class="st"> </span><span class="dv">2000</span> <span class="co"># number of bootstrap iterations</span>
-means &lt;-<span class="st"> </span><span class="kw">numeric</span>(n_iter) <span class="co"># we will save the means each iteration to this</span>
-inc &lt;-<span class="st"> </span><span class="dv">1</span><span class="op">:</span>n <span class="co"># the first sample is the actual sample</span>
-<span class="cf">for</span>(iter <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>n_iter){ <span class="co"># the for loop</span>
-  means[iter] &lt;-<span class="st"> </span><span class="kw">mean</span>(y[inc])
-  inc &lt;-<span class="st"> </span><span class="kw">sample</span>(<span class="dv">1</span><span class="op">:</span>n, <span class="dt">replace=</span><span class="ot">TRUE</span>) <span class="co"># re-sample for the next iteration</span>
-}
-se_boot &lt;-<span class="st"> </span><span class="kw">sd</span>(means)
+</div>
+<div id="using-harrellplot-to-make-a-nice-publishable-plot-of-treatment-effects" class="section level4">
+<h4><span class="header-section-number">7.2.4.2</span> Using HarrellPlot to make a nice, publishable plot of treatment effects</h4>
+<p>In the console type `?HarrellPlot to see the many parameters. Unlike ggplot2, variable names need to be specified with quotes in the HarrellPlot function. The HarrellPlot function is a list with several elements.</p>
+<p>Here is the default plot</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">vole.harrellplot &lt;-<span class="st"> </span><span class="kw">HarrellPlot</span>(<span class="dt">x=</span><span class="st">&quot;treatment&quot;</span>, <span class="dt">y=</span><span class="st">&quot;lifespan&quot;</span>, <span class="dt">data=</span>vole)
+vole.harrellplot<span class="op">$</span>gg <span class="co"># gg is the plot object</span></code></pre></div>
+<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/unnamed-chunk-12-1.png" width="576" /></p>
 
-<span class="co">#compare</span>
-se</code></pre></div>
-<pre><code>## [1] 31.89536</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">se_boot</code></pre></div>
-<pre><code>## [1] 30.93843</code></pre>
-<p>dayum!</p>
-
+</div>
+</div>
 </div>
 </div>
             </section>
@@ -437,8 +430,8 @@ se</code></pre></div>
           </div>
         </div>
       </div>
-<a href="data-reading-writing-and-fake.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="a-linear-model-with-a-single-continous-x.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="least-squares-estimation.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="inference.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -468,7 +461,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/rstudio/bookdown-demo/edit/master/notebooks/10-uncertainty_sd_and_se.Rmd",
+"link": "https://github.com/rstudio/bookdown-demo/edit/master/notebooks/20-categorical_X.Rmd",
 "text": "Edit"
 },
 "download": ["Walker-elementary-statistical-modeling-draft.pdf", "Walker-elementary-statistical-modeling-draft.epub"],
