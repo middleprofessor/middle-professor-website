@@ -837,13 +837,20 @@ for Data Science} book.
 ## 4:                        24.53                     23.41429           0.6
 ## 5:                        22.85                     22.91429           0.7
 ## 6:                        23.35                     23.24286           0.6
-##    day1 mass day2 mass day10 mass day13 mass day13 tarsus
-## 1:       1.1       1.2         NA        9.8        14.11
-## 2:       0.8       1.1         NA        9.1        12.90
-## 3:       0.9       1.4         NA        9.3        13.60
-## 4:       0.5       0.9         NA        7.7        13.06
-## 5:         1       1.4        9.4       10.1        14.08
-## 6:       0.9       1.4        8.1        9.6        13.46
+##              day1 mass           day2 mass         day10 mass day13 mass
+## 1:  1.1000000000000001                 1.2                 NA        9.8
+## 2: 0.80000000000000004  1.1000000000000001                 NA        9.1
+## 3: 0.90000000000000002  1.3999999999999999                 NA        9.3
+## 4:                 0.5 0.90000000000000002                 NA        7.7
+## 5:                   1  1.3999999999999999 9.4000000000000004       10.1
+## 6: 0.90000000000000002  1.3999999999999999 8.0999999999999996        9.6
+##    day13 tarsus
+## 1:        14.11
+## 2:        12.90
+## 3:        13.60
+## 4:        13.06
+## 5:        14.08
+## 6:        13.46
 \end{verbatim}
 
 \begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
@@ -2664,6 +2671,465 @@ R^2 = 1- \frac{SS(error)}{SS(total)}
 which is an obvious alternative given the decomposition. I prefer the
 former equation because it emphasizes the model fit instead of model
 ill-fit.
+
+\chapter{\texorpdfstring{A linear model with a single, categorical
+\emph{X}}{A linear model with a single, categorical X}}\label{a-linear-model-with-a-single-categorical-x}
+
+\section{\texorpdfstring{A linear model with a single, categorical
+\emph{X} is classical ``t-test'' or
+``ANOVA''}{A linear model with a single, categorical X is classical t-test or ANOVA}}\label{a-linear-model-with-a-single-categorical-x-is-classical-t-test-or-anova}
+
+To introduce modeling with a single, categorical \(X\) variable, I'll
+use the vole data from
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Source: Dryad Digital Repository.
+  \url{https://doi.org/10.5061/dryad.31cc4/1}
+\item
+  File: ``RSBL-2013-0432 vole data.xlsx''
+\item
+  Sheet: ``COLD VOLES LIFESPAN''
+\end{enumerate}
+
+Normal cellular metabolism creates reactive oxygen species (ROS) that
+can disrupt cell function and potentially cause cell damage.
+Anti-oxidants are molecules that bind ROS, inhibiting their ability to
+disrupt cell activity. A working hypothesis for many years is that
+supplemental anti-oxidants should improve cell function and, scaling up,
+whole-animal function (such as lifespan). The vole data explores this
+with supplemental Vitamins C and E, which are anti-oxidants, in the diet
+of the short-tailed field vole (\emph{Microtus agrestis}).
+
+The goal of the study is to measure the effect of anti-oxidants on
+lifespan. The researchers randomly assigned the voles to one of thre
+treatment levels: ``control'', ``vitamin E'', and ``vitamin C''. The
+variable \(treatment\), is a single, categorical \(X\) variable.
+Categorical variables are often called \textbf{factors} and the
+treatment levels are often called \textbf{factor levels}. There are no
+units to a categorical \(X\) variable (even though a certain amount of
+each anti-oxidant was supplemented). The response (\(Y\)) is
+\(lifespan\) measured in days.
+
+The linear model with a categorical \(X\) variable with three levels is
+not immediately obvious, and so I don't present the model until after
+showing the table of model coefficients
+
+\subsection{Table of model
+coefficients}\label{table-of-model-coefficients}
+
+Here is the table of coefficients from the linear model fit
+
+\begin{tabular}{l|r|r|r|r}
+\hline
+  & Estimate & Std. Error & t value & Pr(>|t|)\\
+\hline
+(Intercept) & 503.4 & 27.4 & 18.4 & 0.000\\
+\hline
+treatmentvitamin\_E & -89.9 & 52.5 & -1.7 & 0.090\\
+\hline
+treatmentvitamin\_C & -115.1 & 54.5 & -2.1 & 0.037\\
+\hline
+\end{tabular}
+
+The table has estimates for three parameters. The first estimate (the
+intercept) is the mean response in the reference level. Here the
+reference level is the ``control'' group. The additional estimates are
+the differences in the mean between each of the other treatment levels
+and the reference level. These are the ``effects'' in the model. So
+typically with categorical \(X\), when we speak of an \emph{effect} we
+mean a difference in means.
+
+(note. The default in R is to set the level that is first alphabetically
+as the reference level. In the vole data, ``control'' comes before
+``vitamin\_E'' and ``vitamin\_C'' alphabetically, and so by default, it
+is the reference level. This makes sense for these data -- we want to
+compare the lifespan of the vitamins E and C groups to that of the
+control group. The reference level can be changed of course.)
+
+\subsection{The linear model}\label{the-linear-model}
+
+We can see an immediate difference between the coefficient table for a
+linear model fit to a single, categorical \(X\) and that for a single,
+continuous \(X\). For the latter, there is a single coefficient for
+\(X\). For the former, there is a coefficient for each level of the
+categorical \(X\) \emph{except} the ``reference'' level.
+
+The linear model for a single, continuous \(X\) with three factor levels
+is
+
+\begin{equation}
+lifespan = \beta_0 + \beta_1 vitamin\_E + \beta_2 vitamin\_C + \varepsilon
+\end{equation}
+
+and the estimates in the coefficient table are the coefficients of the
+fit model
+
+\begin{equation}
+lifespan_i = b_0 + b_1 vitamin\_E + b_2 vitamin\_C + e_i
+\end{equation}
+
+Remember, \(b_0\) is the mean of the control group, \(b_1\) is the
+difference in means between the vitamin E and control groups, and
+\(b_2\) is the difference in means between the vitamin C and control
+groups.
+
+In this model, \(vitamin\_E\) and \(vitamin\_C\) are \textbf{dummy
+variables} that contain a one, if the data is from that treatment level,
+and zero otherwise. This is called dummy coding or treatment coding.
+There are alternative coding methods. Dummy coding is the default in R.
+Note that the method of coding can make a difference in an ANOVA table,
+and many published papers using R have published incorrect
+interpretations of ANOVA table outputs. This is both getting ahead of
+ourselves and somewhat moot, because I don't advocate publishing ANOVA
+tables.
+
+\subsection{Reporting results}\label{reporting-results-1}
+
+What should be reported for the analyis of effects of anti-oxidant
+supplements on vole lifespan. Best practice includes reporting the raw
+data with a summary distribution and treatment effects with CIs. ``Raw
+data'' means the individual lifespans as a function of treatment level.
+
+\subsubsection{Harrel Plot of the data}\label{harrel-plot-of-the-data}
+
+\begin{figure}
+\centering
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/harrellplot-1.pdf}
+\caption{\label{fig:harrellplot}HarrellPlot of the raw data, distribution,
+and effects of the vole lifespan data.}
+\end{figure}
+
+The raw data, the distributions within treatment level, and the effects
+(difference in means) of treatment can be combined into a single plot
+that I call a Harrell plot (Figure \ref{fig:voles}). Notice that the
+\emph{x}-axis and \emph{y} axes are flipped so that \(lifespan\) is on
+the \emph{x}-axis. It is still the ``response'' or ``Y'' variable! The
+Harrell plot contains two parts
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  The bottom contains a \textbf{strip chart} (often called a ``dot
+  plot'') of the raw response measures grouped by factor level.
+  Superimposed over the strip chart is a \textbf{box plot} summarizing
+  the distribution of each factor level. The line in the center of a box
+  is the median \(lifespan\) for that group, the left and right edges of
+  the box are the 25\% and 75\% quantiles of \(lifespan\) for that grop,
+  and the lines extending to the left and right of the box are the
+  ``whiskers'', which are the smallest and largest value within
+  \(1.5 IQR\) (inter-quartile range, which is the interval bounded by
+  box).
+\item
+  The top is a \textbf{forest plot} of the effects and the 95\% CI of
+  the effects. For categorical \(X\), the effects could be model
+  coefficients or treatment \textbf{contrasts}, which are differences in
+  means between treatment levels. Model coefficients are a subset of
+  possible treatment contrasts.
+\end{enumerate}
+
+The Harrell plot above shows the effects as model coefficients, which
+(again!) are differences between the mean of the response in a specific
+treatment level and the mean of the response in a reference level. Here
+the reference level is the control group.
+
+\subsubsection{In-text reporting}\label{in-text-reporting}
+
+``The mean lifespan of cold-reared voles supplmented with vitamin E was
+-89.9 days shorter than the mean lifespan for the control group (95\%
+CI: -194.1, 14.3). The mean lifespan of cold-reared voles supplmented
+with vitamin C was -115.1 days shorter than the mean lifespan for the
+control group (95\% CI: -223.2, -6.9).
+
+\subsubsection{Correct interpretation of the Confidence Interval is
+key}\label{correct-interpretation-of-the-confidence-interval-is-key}
+
+Remember, that the CI contains the range of parameter values that are
+consistent with the data (in the sense that a t-test wouldn't reject the
+hypothesis test). This means that a true value at the low end or the
+high end of the CI is consistent with the data. Your technical
+report/manuscript should discuss the consequences of this. For example,
+A small, increase in lifespan is consistant with the Vitamin E but not
+Vitamin C supplementation, if we use the 95\% CI as a pretty good range
+for inferring ``consistent with''. Both a 223 day and a 7 day decrease
+in lifespan are consistant with the Vitamin C effect. 223 days seems
+like a huge effect, especially for a short lived vole. 7 days is
+certainly a much smaller effect, but this doesn't mean that it doesn't
+have important ecological, behavioral, or fitness consequences.
+
+\section{Working in R}\label{working-in-r-1}
+
+\subsection{\texorpdfstring{Exploring the relationship between \emph{Y}
+and
+\emph{X}}{Exploring the relationship between Y and X}}\label{exploring-the-relationship-between-y-and-x}
+
+Questions
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Import the vole data from the Dryad repository as the data.table
+  \texttt{vole\_wide}. Replace the spaces in the column labels with the
+  underscore ``\_``.
+\end{enumerate}
+
+The data are in ``wide'' format. A pretty good script for for converting
+these to long format is
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{vole_long <-}\StringTok{ }\KeywordTok{melt}\NormalTok{(vole_wide, }\DataTypeTok{measure.vars=}\KeywordTok{c}\NormalTok{(}\StringTok{"control"}\NormalTok{, }\StringTok{"vitamin_E"}\NormalTok{, }\StringTok{"vitamin_C"}\NormalTok{), }\DataTypeTok{variable.name=}\StringTok{"treatment"}\NormalTok{)}
+\NormalTok{vole <-}\StringTok{ }\KeywordTok{na.omit}\NormalTok{(vole_long)}
+\CommentTok{# melt is from reshape2 package and is a workhorse in R}
+\CommentTok{# the resulting data frame has 3 stacked copies of the same rows}
+\CommentTok{# na.omit removes the superfluous two extra sets of rows created by melt}
+\CommentTok{# the more compact way to do this is combine the steps:}
+\CommentTok{# vole <- na.omit(melt(vole_wide, measure.vars=c("control", "vitamin_E", "vitamin_C"))}
+\CommentTok{# but I suggest two steps so you can see what melt does. This isn't the best example of using melt.}
+\end{Highlighting}
+\end{Shaded}
+
+Use the ggpubr package to create a box plot, grouped by treatment, with
+superimposed strip chart (``dots'')
+
+Questions
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{1}
+\tightlist
+\item
+  Do the response as a function of group look fairly normally
+  distributed or are there red flags such as skewness, outliers, bimodal
+  clusters, etc.
+\item
+  Is the direction of the effect consistent with the expected direction?
+\end{enumerate}
+
+\subsection{Fitting the model}\label{fitting-the-model}
+
+As with a single, continuous \(X\), we fit the model using the
+\texttt{lm} function and with the model formula of the form
+\texttt{y\ \textasciitilde{}\ x}. Note that the R formula can use the
+single categorical variable \(treatment\). The code underneath lm will
+note that \(treatment\) is a factor with three levels and will
+automatically create the two dummy variables noted above in the linear
+model.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{fit <-}\StringTok{ }\KeywordTok{lm}\NormalTok{(lifespan }\OperatorTok{~}\StringTok{ }\NormalTok{treatment, }\DataTypeTok{data=}\NormalTok{vole)}
+\end{Highlighting}
+\end{Shaded}
+
+All of the same scripts to access the information in \texttt{fit} that
+we used with the continuous \(X\) analysis are the same. For example,
+the base R \texttt{summary} function gives the same information as in
+the continuous \(X\) example.
+
+Questions
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{3}
+\tightlist
+\item
+  Review different output in the \texttt{summary} function and list
+  which are useful and which are not so useful and why.
+\end{enumerate}
+
+Other useful functions on the lm object (``fit'') are
+\texttt{coefficients(summary())}, \texttt{coef()} or
+\texttt{coefficients()} and \texttt{confint}. Assigning the output of
+these functions to an R object allows you to increase reproducibility.
+For example, if I assign the coefficients to \texttt{b}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{b <-}\StringTok{ }\KeywordTok{coef}\NormalTok{(fit)}
+\end{Highlighting}
+\end{Shaded}
+
+then I can report these in R markdown text by embedding r code directly
+in the text. For example, if I embed ``r
+round(b{[}``treatmentvitamin\_E''{]}, 1)'' between a pair of single
+accent characters, then r markdown inserts -89.9 into the rendered text.
+
+\subsection{An introduction to
+contrasts}\label{an-introduction-to-contrasts}
+
+We often want to compare more than just the non-reference levels to the
+reference level. For example, we might want to compare the effects of
+the vitamin E supplementation to vitamin C supplementation. Or, we might
+want to combine (or ``pool'') vitamin C and vitamin E levels effects
+into a single ``anti-oxidant'' level and compare to the control. These
+comparisons of means are called linear \textbf{contrasts}. The emmeans
+package is a good package for obtaining contrasts for both simple linear
+models computed with \texttt{lm} and for more complicated statistical
+models. If you haven't already, download the emmeans package.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{fit.em <-}\StringTok{ }\KeywordTok{emmeans}\NormalTok{(fit, }\DataTypeTok{spec=}\StringTok{"treatment"}\NormalTok{)}
+\NormalTok{fit.em}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##  treatment   emmean       SE df lower.CL upper.CL
+##  control   503.3929 27.40978 93 448.9625 557.8233
+##  vitamin_E 413.4762 44.75999 93 324.5917 502.3607
+##  vitamin_C 388.3158 47.05685 93 294.8702 481.7614
+## 
+## Confidence level used: 0.95
+\end{verbatim}
+
+The \texttt{emmeans()} function returns various estimated means,
+depending on what is specified with the \texttt{spec=} parameter. Here
+the grouping variable ``treatment'' is specified, so the means returned
+are estimates of \(\mathrm{E}(lifespan | treatment)\), the modeled means
+for each level of treatment. For this simple analysis, the modeled means
+are simply the group means. Note that the default value returned is a
+table with the standard error and 95\% confidence limits of the
+estimates.
+
+Let's use the emmeans object to get the contrasts for all combinations
+of treatment levels.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{summary}\NormalTok{(}\KeywordTok{contrast}\NormalTok{(fit.em, }\DataTypeTok{method=}\StringTok{"revpairwise"}\NormalTok{, }\DataTypeTok{adjust=}\StringTok{"none"}\NormalTok{), }\DataTypeTok{infer=}\KeywordTok{c}\NormalTok{(}\OtherTok{TRUE}\NormalTok{, }\OtherTok{TRUE}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##  contrast                estimate       SE df  lower.CL   upper.CL t.ratio
+##  vitamin_E - control    -89.91667 52.48574 93 -194.1429  14.309609  -1.713
+##  vitamin_C - control   -115.07707 54.45772 93 -223.2193  -6.934834  -2.113
+##  vitamin_C - vitamin_E  -25.16040 64.94462 93 -154.1275 103.806738  -0.387
+##  p.value
+##   0.0900
+##   0.0373
+##   0.6993
+## 
+## Confidence level used: 0.95
+\end{verbatim}
+
+I've sent to parameters to the contrast function and one to the summary
+function
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  method=``revpairwise''. Contrast will create various differences. Here
+  I've specified all pairwise differences (the ``rev'' reverses the
+  order of the subtraction). Notice that the statistics (estimate, SE,
+  etc) are equal to the same statistics for \(b_1\) and \(b_2\) of the
+  linear model. I said earlier that these coefficients are contrasts!
+\item
+  adjust=``none''. In classical frequetist hypothesis testing, the
+  p-value of a contrast in what are called ``post-hoc tests'' is
+  adjusted to reflect ``multiple testing'' (more than one p-value is
+  being computed). This adjustment is almost standard in biology, but
+  the practice is hugely controversial. The concept of multiple testing
+  is important, and we will retur to this in a future chapter, but here
+  I have chosen to show the unadjusted p-value. The reason is that I
+  want the unadjusted confidence interval and the adjustment would
+  adjust these as well.
+\item
+  infer=c(TRUE, TRUE). This parameter controls what kind of inference to
+  put in the table. The first value specifies if to include the CI or
+  not, the second value specifies to include the \(t\) and \(p\)-value
+  or not.
+\end{enumerate}
+
+\subsection{Harrell plot}\label{harrell-plot}
+
+\subsubsection{Installing the harrellplot
+package}\label{installing-the-harrellplot-package}
+
+The harrellplot package is available on github but not a cran repository
+and, therefore, takes a little more work to install. To install a
+package from a github repository, 1. load library(devtools) -- this may
+need to be installed first using the R Studio Tools \textgreater{}
+Install Packages\ldots{} tool 2. install harrellplot from github. In the
+console, type
+
+\texttt{install\_github("middleprofessor/harrellplot")}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{2}
+\tightlist
+\item
+  load the harrellplot package
+\item
+  harrellplot requires other packages including broom, Hmisc, car, lme4,
+  and lmerTest. If you haven't installed these do. load these with the
+  library() function at the start of your notebook.
+\end{enumerate}
+
+\subsubsection{Using harrellplot to make a nice, publishable plot of
+treatment
+effects}\label{using-harrellplot-to-make-a-nice-publishable-plot-of-treatment-effects}
+
+In the console type `?harrellplot to see the many parameters. Unlike
+ggplot2, variable names need to be specified with quotes in the
+harrellplot function. The harrellplot function is a list with several
+elements.
+
+Here is the default plot
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{vole.harrellplot <-}\StringTok{ }\KeywordTok{harrellplot}\NormalTok{(}\DataTypeTok{x=}\StringTok{"treatment"}\NormalTok{, }\DataTypeTok{y=}\StringTok{"lifespan"}\NormalTok{, }\DataTypeTok{data=}\NormalTok{vole)}
+\NormalTok{vole.harrellplot}\OperatorTok{$}\NormalTok{gg }\CommentTok{# gg is the plot object}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-12-1.pdf}
+
+\chapter{Inference}\label{inference}
+
+\section{Inference statistics}\label{inference-statistics}
+
+\subsection{standard errors}\label{standard-errors}
+
+\subsection{confidence intervals}\label{confidence-intervals-1}
+
+\subsection{t-value}\label{t-value}
+
+\subsection{p-value}\label{p-value}
+
+\section{Inference assumptions}\label{inference-assumptions}
+
+\subsection{normal distribution of
+error}\label{normal-distribution-of-error}
+
+\subsubsection{extending the model if not
+normal}\label{extending-the-model-if-not-normal}
+
+\subsection{independence of error}\label{independence-of-error}
+
+\subsubsection{extending the model if not
+independent}\label{extending-the-model-if-not-independent}
+
+\subsection{identical distribution (homogeneity) of
+error}\label{identical-distribution-homogeneity-of-error}
+
+\subsubsection{extending the model if not
+homogenous}\label{extending-the-model-if-not-homogenous}
+
+\section{Classical inference}\label{classical-inference}
+
+\subsection{t-test}\label{t-test}
+
+\subsection{ANOVA F-test}\label{anova-f-test}
 
 \chapter*{Appendix 1: Getting Started with
 R}\label{appendix-1-getting-started-with-r}
