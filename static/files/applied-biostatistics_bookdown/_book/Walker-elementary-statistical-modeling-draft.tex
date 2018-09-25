@@ -124,7 +124,7 @@
   \postauthor{\par}
   \predate{\centering\large\emph}
   \postdate{\par}
-  \date{2018-09-24}
+  \date{2018-09-25}
 
 \usepackage{booktabs}
 \usepackage{amsthm}
@@ -2676,8 +2676,9 @@ ill-fit.
 \emph{X}}{A linear model with a single, categorical X}}\label{a-linear-model-with-a-single-categorical-x}
 
 \section{\texorpdfstring{A linear model with a single, categorical
-\emph{X} is classical ``t-test'' or
-``ANOVA''}{A linear model with a single, categorical X is classical t-test or ANOVA}}\label{a-linear-model-with-a-single-categorical-x-is-classical-t-test-or-anova}
+\emph{X} is the engine behind a single factor (one-way) ANOVA and a
+t-test is a special case of this
+model.}{A linear model with a single, categorical X is the engine behind a single factor (one-way) ANOVA and a t-test is a special case of this model.}}\label{a-linear-model-with-a-single-categorical-x-is-the-engine-behind-a-single-factor-one-way-anova-and-a-t-test-is-a-special-case-of-this-model.}
 
 To introduce modeling with a single, categorical \(X\) variable, I'll
 use the vole data from
@@ -2740,7 +2741,8 @@ reference level is the ``control'' group. The additional estimates are
 the differences in the mean between each of the other treatment levels
 and the reference level. These are the ``effects'' in the model. So
 typically with categorical \(X\), when we speak of an \emph{effect} we
-mean a difference in means.
+mean a difference in means. These estimates and their meaning are
+illustrated in Figure \ref{fig:vole-mean-plot}.
 
 (note. The default in R is to set the level that is first alphabetically
 as the reference level. In the vole data, ``control'' comes before
@@ -2748,6 +2750,19 @@ as the reference level. In the vole data, ``control'' comes before
 is the reference level. This makes sense for these data -- we want to
 compare the lifespan of the vitamins E and C groups to that of the
 control group. The reference level can be changed of course.)
+
+\begin{figure}
+\centering
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/vole-mean-plot-1.pdf}
+\caption{\label{fig:vole-mean-plot}What the coefficients of a linear model
+with a single categorical X mean. The means of the three treatment
+levels for the vole data are shown with the filled circles. The length
+of the double-headed arrows are differences in means. The intercept
+(\(b_0\)) is the mean of the reference treatment level. The coefficients
+(\(b_1\) and \(b_2\)) are the differences between the treatment level's
+mean and the reference mean. As with a linear model with a continuous X,
+the coefficients are effects.}
+\end{figure}
 
 \subsection{The linear model}\label{the-linear-model}
 
@@ -2774,11 +2789,47 @@ lifespan_i = b_0 + b_1 vitamin\_E + b_2 vitamin\_C + e_i
 Remember, \(b_0\) is the mean of the control group, \(b_1\) is the
 difference in means between the vitamin E and control groups, and
 \(b_2\) is the difference in means between the vitamin C and control
-groups.
+groups (Figure \ref{fig:vole-mean-plot}).
 
 In this model, \(vitamin\_E\) and \(vitamin\_C\) are \textbf{dummy
 variables} that contain a one, if the data is from that treatment level,
-and zero otherwise. This is called dummy coding or treatment coding.
+and zero otherwise. This is called dummy coding or treatment coding. The
+\texttt{lm} function creates these dummy variables under the table, in
+something called the model matrix, which we'll cover in the next
+chapter. You won't see these columns in your data. But if you did, it
+would look something like this
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{dt <-}\StringTok{ }\NormalTok{vole[, .SD, .SDcols=}\KeywordTok{c}\NormalTok{(}\StringTok{"lifespan"}\NormalTok{, }\StringTok{"treatment"}\NormalTok{)]}
+\NormalTok{dt <-}\StringTok{ }\KeywordTok{rbind}\NormalTok{(dt[treatment}\OperatorTok{==}\StringTok{"control"}\NormalTok{][}\DecValTok{1}\OperatorTok{:}\DecValTok{2}\NormalTok{,],}
+\NormalTok{            dt[treatment}\OperatorTok{==}\StringTok{"vitamin_E"}\NormalTok{][}\DecValTok{1}\OperatorTok{:}\DecValTok{2}\NormalTok{,],}
+\NormalTok{            dt[treatment}\OperatorTok{==}\StringTok{"vitamin_C"}\NormalTok{][}\DecValTok{1}\OperatorTok{:}\DecValTok{2}\NormalTok{,]}
+\NormalTok{            )}
+\NormalTok{dt[, vitamin_E}\OperatorTok{:}\ErrorTok{=}\KeywordTok{ifelse}\NormalTok{(treatment}\OperatorTok{==}\StringTok{"vitamin_E"}\NormalTok{,}\DecValTok{1}\NormalTok{,}\DecValTok{0}\NormalTok{)]}
+\NormalTok{dt[, vitamin_C}\OperatorTok{:}\ErrorTok{=}\KeywordTok{ifelse}\NormalTok{(treatment}\OperatorTok{==}\StringTok{"vitamin_C"}\NormalTok{,}\DecValTok{1}\NormalTok{,}\DecValTok{0}\NormalTok{)]}
+\NormalTok{knitr}\OperatorTok{::}\KeywordTok{kable}\NormalTok{(dt)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{tabular}{r|l|r|r}
+\hline
+lifespan & treatment & vitamin\_E & vitamin\_C\\
+\hline
+621 & control & 0 & 0\\
+\hline
+865 & control & 0 & 0\\
+\hline
+583 & vitamin\_E & 1 & 0\\
+\hline
+561 & vitamin\_E & 1 & 0\\
+\hline
+315 & vitamin\_C & 0 & 1\\
+\hline
+157 & vitamin\_C & 0 & 1\\
+\hline
+\end{tabular}
+
 There are alternative coding methods. Dummy coding is the default in R.
 Note that the method of coding can make a difference in an ANOVA table,
 and many published papers using R have published incorrect
@@ -2789,7 +2840,7 @@ tables.
 \subsection{Reporting results}\label{reporting-results-1}
 
 What should be reported for the analyis of effects of anti-oxidant
-supplements on vole lifespan. Best practice includes reporting the raw
+supplements on vole lifespan? Best practice includes reporting the raw
 data with a summary distribution and treatment effects with CIs. ``Raw
 data'' means the individual lifespans as a function of treatment level.
 
