@@ -3303,12 +3303,6 @@ function \texttt{ggstripchart} from the ggpubr package (can you make
 this?). I'm going to refer to this kind of chart as a ``dot plot'',
 which is what most biology researchers call this type of chart.
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{ggstripchart}\NormalTok{(}\DataTypeTok{data=}\NormalTok{vole, }\DataTypeTok{x=}\StringTok{"treatment"}\NormalTok{, }\DataTypeTok{y=}\StringTok{"lifespan"}\NormalTok{, }\DataTypeTok{add =} \KeywordTok{c}\NormalTok{(}\StringTok{"mean"}\NormalTok{), }\DataTypeTok{add.params=}\KeywordTok{list}\NormalTok{(}\DataTypeTok{color=}\StringTok{"red"}\NormalTok{))}
-\end{Highlighting}
-\end{Shaded}
-
 \includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/inference-strip-chart-1.pdf}
 
 \subsection{the Null Distribution}\label{the-null-distribution}
@@ -3440,15 +3434,8 @@ sample size (or ``degrees of freedom''). As \(n\) increases a \(t\)
 distribution becomes converges on the standard, normal distribution.
 
 The difference between the mean of the vitamin\_E treatment and the
-control treatment is -89.9. A two-sample \(t\)-test with equal variance
-of this difference is
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{ttest.E <-}\StringTok{ }\KeywordTok{t.test}\NormalTok{(}\DataTypeTok{x=}\NormalTok{vole[treatment}\OperatorTok{==}\StringTok{'vitamin_E'}\NormalTok{, lifespan], }\DataTypeTok{y=}\NormalTok{vole[treatment}\OperatorTok{==}\StringTok{'control'}\NormalTok{, lifespan], }\DataTypeTok{var.equal=}\OtherTok{TRUE}\NormalTok{)}
-\NormalTok{ttest.E}
-\end{Highlighting}
-\end{Shaded}
+control treatment is -89.9. A two-sample \(t\)-test of this difference
+is
 
 \begin{verbatim}
 ## 
@@ -3464,47 +3451,32 @@ of this difference is
 ##  413.4762  503.3929
 \end{verbatim}
 
-The \(p\)-value comes from comparing the observed \(t\) to the \(t\)
+The \(p\)-value comes from comparing the observed \(t\) to a null \(t\)
 distribution and ``counting'' the values that are bigger than the
-observed \(t\) (these are counted in both tails). We can simulate this
-with a finite, instead of infinite, null distribution using the
-t-distribution instead of the distribution of mean differences, as
-above.
+observed \(t\). These are counted in both tails, because \(p\) is the
+probability of a \(t\) more extreme than the observed value, and \(t\)
+can be more extreme in the negative direction and in the positive
+direction. We can simulate this with a finite, instead of infinite, null
+distribution using the t-distribution instead of the distribution of
+mean differences, as above. I hide the script, but its the same as
+above, except that the \(t\)-value is computed for each simulated
+experiment and not just the difference in means.
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{seed <-}\StringTok{ }\DecValTok{1}
-\NormalTok{n_iter <-}\StringTok{ }\DecValTok{10}\OperatorTok{^}\DecValTok{5} \CommentTok{# number of iterations}
-\NormalTok{mu <-}\StringTok{ }\KeywordTok{mean}\NormalTok{(vole[treatment}\OperatorTok{==}\StringTok{'control'}\NormalTok{, lifespan]) }
-\NormalTok{sigma <-}\StringTok{ }\KeywordTok{sd}\NormalTok{(vole[treatment}\OperatorTok{==}\StringTok{'control'}\NormalTok{, lifespan])}
-\NormalTok{n <-}\StringTok{ }\KeywordTok{nrow}\NormalTok{((vole[treatment}\OperatorTok{==}\StringTok{'control'}\NormalTok{,]))}
-\NormalTok{sample1 <-}\StringTok{ }\KeywordTok{matrix}\NormalTok{(}\KeywordTok{rnorm}\NormalTok{(n}\OperatorTok{*}\NormalTok{n_iter, }\DataTypeTok{mean=}\NormalTok{mu, }\DataTypeTok{sd=}\NormalTok{sigma), }\DataTypeTok{nrow=}\NormalTok{n) }\CommentTok{# 100,000 samples (each size n)}
-\NormalTok{sample2 <-}\StringTok{ }\KeywordTok{matrix}\NormalTok{(}\KeywordTok{rnorm}\NormalTok{(n}\OperatorTok{*}\NormalTok{n_iter, }\DataTypeTok{mean=}\NormalTok{mu, }\DataTypeTok{sd=}\NormalTok{sigma), }\DataTypeTok{nrow=}\NormalTok{n) }\CommentTok{# 100,000 samples}
-\NormalTok{mean_diffs <-}\StringTok{ }\KeywordTok{apply}\NormalTok{(sample2, }\DecValTok{2}\NormalTok{, mean) }\OperatorTok{-}\StringTok{ }\KeywordTok{apply}\NormalTok{(sample1, }\DecValTok{2}\NormalTok{, mean)}
-\NormalTok{se_mean_diffs <-}\StringTok{ }\KeywordTok{sqrt}\NormalTok{(}\KeywordTok{apply}\NormalTok{(sample2, }\DecValTok{2}\NormalTok{, sd)}\OperatorTok{^}\DecValTok{2}\OperatorTok{/}\NormalTok{n }\OperatorTok{+}\StringTok{ }\KeywordTok{apply}\NormalTok{(sample2, }\DecValTok{2}\NormalTok{, sd)}\OperatorTok{^}\DecValTok{2}\OperatorTok{/}\NormalTok{n)}
-\NormalTok{t_dis <-}\StringTok{ }\NormalTok{mean_diffs}\OperatorTok{/}\NormalTok{se_mean_diffs}
-\KeywordTok{qplot}\NormalTok{(t_dis)}
-\end{Highlighting}
-\end{Shaded}
-
+\begin{figure}
+\centering
 \includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/null-distribution-t-1.pdf}
+\caption{\label{fig:null-distribution-t}Null distribution of t-values. The
+simulation generated 100,000 t-tests with a true null.}
+\end{figure}
 
-Hey that looks pretty good! Compare the observed \(t\) (-1.6) to this
-distribution. What is the probability of observing this value given this
-distribution?
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{p_vitamin_E <-}\StringTok{ }\NormalTok{(}\KeywordTok{sum}\NormalTok{(}\KeywordTok{abs}\NormalTok{(t_dis) }\OperatorTok{>=}\StringTok{ }\KeywordTok{abs}\NormalTok{(ttest.E}\OperatorTok{$}\NormalTok{statistic)) }\OperatorTok{+}\StringTok{ }\DecValTok{1}\NormalTok{)}\OperatorTok{/}\NormalTok{(n_iter }\OperatorTok{+}\StringTok{ }\DecValTok{1}\NormalTok{)}
-\NormalTok{p_vitamin_E}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-## [1] 0.1090389
-\end{verbatim}
-
-This value is very (very!) close to that computed from the observed
+Hey that looks pretty good! A \(p\) value can be computed by counting
+the number of simulated \(t\)-values, \emph{including the observed
+value}, that are more extreme (in either the positive or negative
+direction) than the observed \(t\). Including the observed \(t\), there
+are 10904 values that are more extreme than that observed. An
+approximate measure of \(p\) is this count divided by 100,001 (why is 1
+added to the denominator?), which is 0.1090389. This simulation-based
+\(p\)-value is very (very!) close to that computed from the observed
 \(t\)-test.
 
 \section{Statistical modeling instead of hypothesis
@@ -3782,14 +3754,14 @@ of power (\(1-\beta\)), and then does the experiment.
 
 In Fisher's interpretation, there is no \(\alpha\), no \(\beta\), no
 alternative hypothesis, and no sharp decision rule. Instead, in Fisher,
-\(p\) is a continuous measure of evidence against the null and it's
-value is interpreted subjectively by an informed and knowledgeable
-expert using additional information to make decisions. Neyman-Pearson
-rejected Fisher's conception of \(p\) as evidence against the null and
-used \(p\) as a tool to make a decision that maintains long-term type I
-error rates at alpha given a certain power. In Neyman-Pearson, \(p\) is
-compared to a threshold, \(\alpha\) and this alone makes the decision.
-In Neyman-Pearson, \(p\) is not treated as continuous information.
+\(p\) is a continuous measure of evidence against the null and its value
+is interpreted subjectively by an informed and knowledgeable expert
+using additional information to make decisions. Neyman-Pearson rejected
+Fisher's conception of \(p\) as evidence against the null and used \(p\)
+as a tool to make a decision that maintains long-term type I error rates
+at alpha given a certain power. In Neyman-Pearson, \(p\) is compared to
+a threshold, \(\alpha\) and this alone makes the decision. In
+Neyman-Pearson, \(p\) is not treated as continuous information.
 \(p=0.00000001\) is no more evidence to use to reject the null than
 \(p=0.049\).
 
@@ -3916,7 +3888,7 @@ Imagine we test
   (\(0.05 \times 400\)) when the null is true
 \item
   power is 25\%. This means we expect to find \(p \le 0.05\) 150 times
-  (\(0.25 \times 600)\) when the null is false
+  (\(0.25 \times 600\)) when the null is false
 \item
   We have made \(20 + 150=170\) ``discoveries'' (all experiments with
   \(p \le 0.05\)), but
