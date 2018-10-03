@@ -25,7 +25,7 @@
 <meta name="author" content="Jeffrey A. Walker">
 
 
-<meta name="date" content="2018-10-02">
+<meta name="date" content="2018-10-03">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -191,6 +191,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="8.2" data-path="p-values.html"><a href="p-values.html#creating-a-null-distribution."><i class="fa fa-check"></i><b>8.2</b> Creating a null distribution.</a><ul>
 <li class="chapter" data-level="8.2.1" data-path="p-values.html"><a href="p-values.html#the-null-distribution"><i class="fa fa-check"></i><b>8.2.1</b> the Null Distribution</a></li>
 <li class="chapter" data-level="8.2.2" data-path="p-values.html"><a href="p-values.html#t-tests"><i class="fa fa-check"></i><b>8.2.2</b> <span class="math inline">\(t\)</span>-tests</a></li>
+<li class="chapter" data-level="8.2.3" data-path="p-values.html"><a href="p-values.html#p-values-from-the-perspective-of-permutation"><i class="fa fa-check"></i><b>8.2.3</b> P-values from the perspective of permutation</a></li>
 </ul></li>
 <li class="chapter" data-level="8.3" data-path="p-values.html"><a href="p-values.html#statistical-modeling-instead-of-hypothesis-testing"><i class="fa fa-check"></i><b>8.3</b> Statistical modeling instead of hypothesis testing</a></li>
 <li class="chapter" data-level="8.4" data-path="p-values.html"><a href="p-values.html#frequentist-probability-and-the-interpretation-of-p-values"><i class="fa fa-check"></i><b>8.4</b> frequentist probability and the interpretation of p-values</a><ul>
@@ -369,6 +370,12 @@ Figure 8.2: Null distribution of t-values. The simulation generated 100,000 t-te
 </div>
 <p>Hey that looks pretty good! A <span class="math inline">\(p\)</span> value can be computed by counting the number of simulated <span class="math inline">\(t\)</span>-values, <em>including the observed value</em>, that are more extreme (in either the positive or negative direction) than the observed <span class="math inline">\(t\)</span>. Including the observed <span class="math inline">\(t\)</span>, there are 10904 values that are more extreme than that observed. An approximate measure of <span class="math inline">\(p\)</span> is this count divided by 100,001 (why is 1 added to the denominator?), which is 0.1090389. This simulation-based <span class="math inline">\(p\)</span>-value is very (very!) close to that computed from the observed <span class="math inline">\(t\)</span>-test.</p>
 </div>
+<div id="p-values-from-the-perspective-of-permutation" class="section level3">
+<h3><span class="header-section-number">8.2.3</span> P-values from the perspective of permutation</h3>
+<p>A very intuitive way to think about <span class="math inline">\(p\)</span>-values is with a permutation test. Consider two of the treatment levels in the vole data, say vitamin E and the vitamin C (I’m bored with the control!). Think about the structure of the dataset: there are two columns, “Treatment”, which contains the assigned treatment, and “Lifespan”. The values in the Treatment column were randomly assigned prior to the start of the experiment. If there is an effect of treatment on lifespan, then assginment matters – the values in the lifespan column for the vitamin E rows will be more or less, on average, than the values in the lifepan column for the vitamin C rows. Or, the lifespan values are what they are <em>because</em> of the values in the treatment column.</p>
+<p>Now let’s leave the values in the treatment column be, and just randomly re-arrange or permute the lifespan values. What is the new expected diference in lifespan between the two treatments? Zero, of course! That is, because the lifespans were randomly re-arranged, they cannot be caused by treatment assignment!</p>
+<p>A permutation is a random re-arrangement of values in a column. Consider the many thousands of permutations of the values in the lifespan column. A difference in means can be computed from each of these permuations and a distribution of differences can be generated. Is the observed difference extreme relative to the other values in this distribution? This is a permutation test – it compares an observed statistic to a distributin of the statistic computed over many thousands of permutations.</p>
+</div>
 </div>
 <div id="statistical-modeling-instead-of-hypothesis-testing" class="section level2">
 <h2><span class="header-section-number">8.3</span> Statistical modeling instead of hypothesis testing</h2>
@@ -451,7 +458,7 @@ Figure 8.3: Variability of <span class="math inline">\(p\)</span>-values when th
 </div>
 <div id="misconception-0.05-is-the-lifetime-rate-of-false-discoveries" class="section level4">
 <h4><span class="header-section-number">8.4.4.3</span> Misconception: 0.05 is the lifetime rate of false discoveries</h4>
-<p>An important and widespread misconception is that if a researcher consistently uses <span class="math inline">\(\alpha=0.05\)</span>, then the frequency of incorrectly concluding an effect exists, or “discovering” an effect, over the lifetime of the researcher, will be 5%. This is incorrect. This “false discovery rate” is the frequency of false positives divided by the frequency of positives. This differs from the the Type I error rate, which is the frequency of false positives dived by the frequency of tests <em>in which the null is true</em>. This frequency depends on the frequency of nulls that are true.</p>
+<p>An important and widespread misconception is that if a researcher consistently uses <span class="math inline">\(\alpha=0.05\)</span>, then the frequency of incorrectly concluding an effect exists, or “discovering” an effect, over the lifetime of the researcher, will be 5%. This is incorrect. This “false discovery rate” is the frequency of false positives divided by the frequency of positives (the sum of false and true positives). This differs from the the Type I error rate, which is the frequency of false positives divided by the frequency of tests <em>in which the null is true</em>.</p>
 <p>Imagine we test</p>
 <ol style="list-style-type: decimal">
 <li>1000 null hypotheses over a lifetime</li>
@@ -462,7 +469,7 @@ Figure 8.3: Variability of <span class="math inline">\(p\)</span>-values when th
 <li>30 of the 130, or 23%, are “false discoveries”.</li>
 </ol>
 <p>That is 11.7% is the “false discovery rate”.</p>
-<p>Think about this. If the null is never true, you cannot have a false discovery–every <span class="math inline">\(p \le 0.05\)</span> is a true discover (the false discovery rate is 0%). And if the null is always true, every <span class="math inline">\(p &lt; 0.05\)</span> is a false discovery (the false discovery rate is 100%).</p>
+<p>Think about this. If the null is never true, you cannot have a false discovery–every <span class="math inline">\(p \le 0.05\)</span> is a true discovery (the false discovery rate is 0%). And if the null is always true, every <span class="math inline">\(p &lt; 0.05\)</span> is a false discovery (the false discovery rate is 100%).</p>
 </div>
 </div>
 <div id="recommendations" class="section level3">
@@ -492,7 +499,8 @@ Figure 8.3: Variability of <span class="math inline">\(p\)</span>-values when th
 <li>What is the distribution? What is the most likely value of <span class="math inline">\(p\)</span>?</li>
 </ol>
 <p>Problem 2 – simulate power. Again, many ways to do this but following up on Problem 1. 1. Create a <span class="math inline">\(2n \times m\)</span> matrix of random normal deviates with mean 0 and sd 1 2. Add an effect to the first <span class="math inline">\(n\)</span> values of each column. Things to think about a. what is a good effect size to add? The effect/sd ratio, known as Cohen’s d, is a relative (or standardized) measure of effect size. Cohen suggest 0.2, 0.5, and 0.8 as small, medium, and large standardized effects. b. should the same effect be added to each individual? Yes! It is the random component that captures the individual variation in the response. 3. Do a <span class="math inline">\(t\)</span>-test on each column of the matrix, using the first <span class="math inline">\(n\)</span> values in group 1 and the remaining <span class="math inline">\(n\)</span> values in group 2. Save the p-values for each. 4. Compute the power, the relative frequency <span class="math inline">\(p \le 0.05\)</span>. 5. Repeat with different values of <span class="math inline">\(n\)</span>, effect size, and sd, but only vary one at a time. How does power vary with these three parameters?</p>
-<p>Problem 3 – grad students only. Simulate the false discovery rate. Explore the parameters: the frequency of true nulls and the power.</p>
+<p>Problem 3 – write a script for a permutation test of the vitamin E and vitamin C levels of the vole data. Compare this to the <span class="math inline">\(t\)</span>-test.</p>
+<p>Problem 4 – grad students only. Simulate the false discovery rate. Explore the parameters: the frequency of true nulls and the power.</p>
 
 </div>
 </div>

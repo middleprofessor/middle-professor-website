@@ -124,7 +124,7 @@
   \postauthor{\par}
   \predate{\centering\large\emph}
   \postdate{\par}
-  \date{2018-10-02}
+  \date{2018-10-03}
 
 \usepackage{booktabs}
 \usepackage{amsthm}
@@ -3479,6 +3479,36 @@ added to the denominator?), which is 0.1090389. This simulation-based
 \(p\)-value is very (very!) close to that computed from the observed
 \(t\)-test.
 
+\subsection{P-values from the perspective of
+permutation}\label{p-values-from-the-perspective-of-permutation}
+
+A very intuitive way to think about \(p\)-values is with a permutation
+test. Consider two of the treatment levels in the vole data, say vitamin
+E and the vitamin C (I'm bored with the control!). Think about the
+structure of the dataset: there are two columns, ``Treatment'', which
+contains the assigned treatment, and ``Lifespan''. The values in the
+Treatment column were randomly assigned prior to the start of the
+experiment. If there is an effect of treatment on lifespan, then
+assginment matters -- the values in the lifespan column for the vitamin
+E rows will be more or less, on average, than the values in the lifepan
+column for the vitamin C rows. Or, the lifespan values are what they are
+\emph{because} of the values in the treatment column.
+
+Now let's leave the values in the treatment column be, and just randomly
+re-arrange or permute the lifespan values. What is the new expected
+diference in lifespan between the two treatments? Zero, of course! That
+is, because the lifespans were randomly re-arranged, they cannot be
+caused by treatment assignment!
+
+A permutation is a random re-arrangement of values in a column. Consider
+the many thousands of permutations of the values in the lifespan column.
+A difference in means can be computed from each of these permuations and
+a distribution of differences can be generated. Is the observed
+difference extreme relative to the other values in this distribution?
+This is a permutation test -- it compares an observed statistic to a
+distributin of the statistic computed over many thousands of
+permutations.
+
 \section{Statistical modeling instead of hypothesis
 testing}\label{statistical-modeling-instead-of-hypothesis-testing}
 
@@ -3871,10 +3901,10 @@ consistently uses \(\alpha=0.05\), then the frequency of incorrectly
 concluding an effect exists, or ``discovering'' an effect, over the
 lifetime of the researcher, will be 5\%. This is incorrect. This ``false
 discovery rate'' is the frequency of false positives divided by the
-frequency of positives. This differs from the the Type I error rate,
-which is the frequency of false positives dived by the frequency of
-tests \emph{in which the null is true}. This frequency depends on the
-frequency of nulls that are true.
+frequency of positives (the sum of false and true positives). This
+differs from the the Type I error rate, which is the frequency of false
+positives divided by the frequency of tests \emph{in which the null is
+true}.
 
 Imagine we test
 
@@ -3988,7 +4018,10 @@ Compute the power, the relative frequency \(p \le 0.05\). 5. Repeat with
 different values of \(n\), effect size, and sd, but only vary one at a
 time. How does power vary with these three parameters?
 
-Problem 3 -- grad students only. Simulate the false discovery rate.
+Problem 3 -- write a script for a permutation test of the vitamin E and
+vitamin C levels of the vole data. Compare this to the \(t\)-test.
+
+Problem 4 -- grad students only. Simulate the false discovery rate.
 Explore the parameters: the frequency of true nulls and the power.
 
 \chapter*{Appendix 1: Getting Started with
