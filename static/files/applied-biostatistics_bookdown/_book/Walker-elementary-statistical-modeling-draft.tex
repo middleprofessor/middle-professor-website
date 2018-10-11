@@ -4232,24 +4232,6 @@ and \(CO2^+\)), which can be verified with the model matrix (which here,
 is computed from the subset of the data that includeds only the first
 two rows of each treatment combination)
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{urchin1 <-}\StringTok{ }\KeywordTok{copy}\NormalTok{(urchin)}
-\CommentTok{# change factor levels for analysis aesthetics}
-\NormalTok{urchin1[, CO2}\OperatorTok{:}\ErrorTok{=}\KeywordTok{factor}\NormalTok{(}\KeywordTok{ifelse}\NormalTok{(CO2}\OperatorTok{==}\DecValTok{400}\NormalTok{,}\StringTok{"-"}\NormalTok{, }\StringTok{"+"}\NormalTok{))]}
-\NormalTok{urchin1[, Temp}\OperatorTok{:}\ErrorTok{=}\KeywordTok{factor}\NormalTok{(}\KeywordTok{ifelse}\NormalTok{(Temp}\OperatorTok{==}\DecValTok{13}\NormalTok{, }\StringTok{"-"}\NormalTok{, }\StringTok{"+"}\NormalTok{))]}
-\NormalTok{dt <-}\StringTok{ }\NormalTok{urchin1[, .SD, .SDcols=}\KeywordTok{c}\NormalTok{(}\StringTok{"Resp"}\NormalTok{, }\StringTok{"Temp"}\NormalTok{, }\StringTok{"CO2"}\NormalTok{)]}
-\NormalTok{dt <-}\StringTok{ }\KeywordTok{rbind}\NormalTok{(dt[Temp}\OperatorTok{==}\StringTok{"-"} \OperatorTok{&}\StringTok{ }\NormalTok{CO2}\OperatorTok{==}\StringTok{"-"}\NormalTok{][}\DecValTok{1}\OperatorTok{:}\DecValTok{2}\NormalTok{,],}
-\NormalTok{            dt[Temp}\OperatorTok{==}\StringTok{"+"} \OperatorTok{&}\StringTok{ }\NormalTok{CO2}\OperatorTok{==}\StringTok{"-"}\NormalTok{][}\DecValTok{1}\OperatorTok{:}\DecValTok{2}\NormalTok{,],}
-\NormalTok{            dt[Temp}\OperatorTok{==}\StringTok{"-"} \OperatorTok{&}\StringTok{ }\NormalTok{CO2}\OperatorTok{==}\StringTok{"+"}\NormalTok{][}\DecValTok{1}\OperatorTok{:}\DecValTok{2}\NormalTok{,],}
-\NormalTok{            dt[Temp}\OperatorTok{==}\StringTok{"+"} \OperatorTok{&}\StringTok{ }\NormalTok{CO2}\OperatorTok{==}\StringTok{"+"}\NormalTok{][}\DecValTok{1}\OperatorTok{:}\DecValTok{2}\NormalTok{,]}
-\NormalTok{            )}
-\NormalTok{fit_dummy <-}\StringTok{ }\KeywordTok{lm}\NormalTok{(Resp }\OperatorTok{~}\StringTok{ }\NormalTok{Temp}\OperatorTok{*}\NormalTok{CO2, }\DataTypeTok{data=}\NormalTok{dt)}
-\NormalTok{model_matrix <-}\StringTok{ }\KeywordTok{model.matrix}\NormalTok{(fit_dummy)}
-\NormalTok{knitr}\OperatorTok{::}\KeywordTok{kable}\NormalTok{(model_matrix)}
-\end{Highlighting}
-\end{Shaded}
-
 \begin{tabular}{r|r|r|r}
 \hline
 (Intercept) & Temp+ & CO2+ & Temp+:CO2+\\
@@ -4683,14 +4665,15 @@ The additive model is specified by the formula
 results. Use the \texttt{merge} function to glue the two tables
 together, keying on the common column ``plant'')
 
-1a. \textbf{file name}: ``canegrub\_feedingtrial.csv'' 1b. \textbf{file
-name}: ``treatments.csv'' 2. \textbf{source}:
-\url{https://datadryad.org/resource/doi:10.5061/dryad.r3s16}
-
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
-\setcounter{enumi}{2}
-\tightlist
+\item
+  \textbf{file name}: ``canegrub\_feedingtrial.csv''
+\item
+  \textbf{file name}: ``treatments.csv''
+\item
+  \textbf{source}:
+  \url{https://datadryad.org/resource/doi:10.5061/dryad.r3s16}
 \item
   Generate a fake experiment! The experiment should have two factors
   each with two levels. Experiment with power by varying sample size and

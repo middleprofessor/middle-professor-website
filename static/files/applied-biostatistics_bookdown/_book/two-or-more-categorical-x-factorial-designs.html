@@ -275,19 +275,6 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 Resp_i = b_0 + b_1 Temp^+ + b_2 CO2^+ + b_3 Temp^+ CO2^+ + e_i
 \end{equation}\]</span>
 <p>% Again, <span class="math inline">\(Temp^+\)</span> and <span class="math inline">\(CO2^+\)</span> are dummy variables. The model also includes <span class="math inline">\(Temp^+ CO2^+\)</span>, which is a dummy variable for the interaction between Temp and CO2. The value of this interaction dummy variable is literally the product of the two main factor dummy variables (<span class="math inline">\(Temp^+\)</span> and <span class="math inline">\(CO2^+\)</span>), which can be verified with the model matrix (which here, is computed from the subset of the data that includeds only the first two rows of each treatment combination)</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">urchin1 &lt;-<span class="st"> </span><span class="kw">copy</span>(urchin)
-<span class="co"># change factor levels for analysis aesthetics</span>
-urchin1[, CO2<span class="op">:</span><span class="er">=</span><span class="kw">factor</span>(<span class="kw">ifelse</span>(CO2<span class="op">==</span><span class="dv">400</span>,<span class="st">&quot;-&quot;</span>, <span class="st">&quot;+&quot;</span>))]
-urchin1[, Temp<span class="op">:</span><span class="er">=</span><span class="kw">factor</span>(<span class="kw">ifelse</span>(Temp<span class="op">==</span><span class="dv">13</span>, <span class="st">&quot;-&quot;</span>, <span class="st">&quot;+&quot;</span>))]
-dt &lt;-<span class="st"> </span>urchin1[, .SD, .SDcols=<span class="kw">c</span>(<span class="st">&quot;Resp&quot;</span>, <span class="st">&quot;Temp&quot;</span>, <span class="st">&quot;CO2&quot;</span>)]
-dt &lt;-<span class="st"> </span><span class="kw">rbind</span>(dt[Temp<span class="op">==</span><span class="st">&quot;-&quot;</span> <span class="op">&amp;</span><span class="st"> </span>CO2<span class="op">==</span><span class="st">&quot;-&quot;</span>][<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>,],
-            dt[Temp<span class="op">==</span><span class="st">&quot;+&quot;</span> <span class="op">&amp;</span><span class="st"> </span>CO2<span class="op">==</span><span class="st">&quot;-&quot;</span>][<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>,],
-            dt[Temp<span class="op">==</span><span class="st">&quot;-&quot;</span> <span class="op">&amp;</span><span class="st"> </span>CO2<span class="op">==</span><span class="st">&quot;+&quot;</span>][<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>,],
-            dt[Temp<span class="op">==</span><span class="st">&quot;+&quot;</span> <span class="op">&amp;</span><span class="st"> </span>CO2<span class="op">==</span><span class="st">&quot;+&quot;</span>][<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>,]
-            )
-fit_dummy &lt;-<span class="st"> </span><span class="kw">lm</span>(Resp <span class="op">~</span><span class="st"> </span>Temp<span class="op">*</span>CO2, <span class="dt">data=</span>dt)
-model_matrix &lt;-<span class="st"> </span><span class="kw">model.matrix</span>(fit_dummy)
-knitr<span class="op">::</span><span class="kw">kable</span>(model_matrix)</code></pre></div>
 <table>
 <thead>
 <tr class="header">
@@ -626,9 +613,11 @@ fit &lt;-<span class="st"> </span><span class="kw">lm</span>(Resp <span class="o
 <li><p>Frew et al. (2017) showed that increasing atomospheric CO2 increases grub activity in the soil which in turn increases root damage to sugarcane. They used a 2 x 2 experiment to then show that silicon added to the soild decreased the damage to the roots by the grubs (silicon minerals are very hard and plants uptake silicon from the soil to mineralize tissues to protect against insect damage). There are lots of analyses in the paper, but I want you to reproduce Fig. 4b, but using gg_interaction_plot and fit the model using lm.</p></li>
 </ol>
 <p>(The treatment assignments are in a different file than the experimental results. Use the <code>merge</code> function to glue the two tables together, keying on the common column “plant”)</p>
-<p>1a. <strong>file name</strong>: “canegrub_feedingtrial.csv” 1b. <strong>file name</strong>: “treatments.csv” 2. <strong>source</strong>: <a href="https://datadryad.org/resource/doi:10.5061/dryad.r3s16" class="uri">https://datadryad.org/resource/doi:10.5061/dryad.r3s16</a></p>
-<ol start="3" style="list-style-type: decimal">
-<li>Generate a fake experiment! The experiment should have two factors each with two levels. Experiment with power by varying sample size and effect size.</li>
+<ol style="list-style-type: decimal">
+<li><strong>file name</strong>: “canegrub_feedingtrial.csv”</li>
+<li><strong>file name</strong>: “treatments.csv”</li>
+<li><p><strong>source</strong>: <a href="https://datadryad.org/resource/doi:10.5061/dryad.r3s16" class="uri">https://datadryad.org/resource/doi:10.5061/dryad.r3s16</a></p></li>
+<li><p>Generate a fake experiment! The experiment should have two factors each with two levels. Experiment with power by varying sample size and effect size.</p></li>
 </ol>
 
 </div>
