@@ -124,7 +124,7 @@
   \postauthor{\par}
   \predate{\centering\large\emph}
   \postdate{\par}
-  \date{2018-10-03}
+  \date{2018-10-11}
 
 \usepackage{booktabs}
 \usepackage{amsthm}
@@ -2786,6 +2786,7 @@ fit model
 
 \begin{equation}
 lifespan_i = b_0 + b_1 vitamin\_E + b_2 vitamin\_C + e_i
+\label{eq:model-cat-x}
 \end{equation}
 
 Remember, \(b_0\) is the mean of the control group, \(b_1\) is the
@@ -2825,6 +2826,52 @@ and many published papers using R have published incorrect
 interpretations of ANOVA table outputs. This is both getting ahead of
 ourselves and somewhat moot, because I don't advocate publishing ANOVA
 tables.
+
+\subsubsection{\texorpdfstring{Some math to convince you that the
+intercept of a linear model with a categorical \(X\) is the mean of the
+reference group \emph{and} the intercept of a line. And some math to
+convince you that the coefficient of a dummy variable in a linear model
+with a categorial \(X\) is a difference in means \emph{and} a
+slope.}{Some math to convince you that the intercept of a linear model with a categorical X is the mean of the reference group and the intercept of a line. And some math to convince you that the coefficient of a dummy variable in a linear model with a categorial X is a difference in means and a slope.}}\label{some-math-to-convince-you-that-the-intercept-of-a-linear-model-with-a-categorical-x-is-the-mean-of-the-reference-group-and-the-intercept-of-a-line.-and-some-math-to-convince-you-that-the-coefficient-of-a-dummy-variable-in-a-linear-model-with-a-categorial-x-is-a-difference-in-means-and-a-slope.}
+
+The interecept of a model is the value of the model when all
+\(X\)-variables are set to zero. The \(X\) variables in the model
+(Equation \eqref{eq:model-cat-x}) are the dummy variables \(vitamin\_E\)
+and \(vitamin\_C\). If we set vitamin\_E\$ and \(vitamin\_C\) in
+Equation \eqref{eq:model-cat-x} to zero, the modeled (or expected) value
+reduces to
+
+\begin{equation}
+\mathrm{E}(lifespan|X_1=0, X_2=0) = b_0
+\end{equation}
+
+\% Since both dummy variables are set to zero, we have modeled the
+expected value or mean of the control group.
+
+The slope of a model is the difference in the modeled value given a one
+unit increase in \(X\). If we increase the dummy variable \(vitamin\_E\)
+from zero to one (that is, if we are modeling the expected value of the
+vitamin E group), we get
+
+\begin{equation}
+\mathrm{E}(lifespan|X_1=1, X_2=0) = b_0 + b_1
+\end{equation}
+
+which can be re-arranged to
+
+\begin{equation}
+b_1 = \mathrm{E}(lifespan|X_1=1, X_2=0) - b_0
+\end{equation}
+
+and since \(\mathrm{E}(lifespan|X_1=0, X_2=0) = b_0\) then
+
+\begin{equation}
+b_1 = \mathrm{E}(lifespan|X_1=1, X_2=0) - \mathrm{E}(lifespan|X_1=0, X_2=0)
+\end{equation}
+
+or, the coefficient of vitamin E is the difference in means between the
+vitamin E and control groups, which is also a slope since this is the
+expected difference given a one unit increase in \(vitamin\_E\).
 
 \subsection{Reporting results}\label{reporting-results-1}
 
@@ -3802,9 +3849,10 @@ Setting the type I error rate \(\alpha\) to 0.05 is so pervasive that
 I'm going to simply use ``0.05'' instead of ``alpha'' in discussing
 misconceptions.
 
-\subsubsection{\texorpdfstring{\(p\) is the probability that the null is
-true; \(1-p\) is probability that the alternative is
-true}{p is the probability that the null is true; 1-p is probability that the alternative is true}}\label{p-is-the-probability-that-the-null-is-true-1-p-is-probability-that-the-alternative-is-true}
+\subsubsection{\texorpdfstring{Misconception: \(p\) is the probability
+that the null is true \emph{and} \(1-p\) is probability that the
+alternative is
+true}{Misconception: p is the probability that the null is true and 1-p is probability that the alternative is true}}\label{misconception-p-is-the-probability-that-the-null-is-true-and-1-p-is-probability-that-the-alternative-is-true}
 
 Many researchers believe that if \(p > 0.05\) then ``there is no
 effect.'' A frequentist hypothesis test cannot show that an effect
@@ -3854,8 +3902,8 @@ Importantly, no single experiment confirms an explanatory hypothesis.
 Instead, alternative explanations require multiple experiments with
 different controls to ``rigrously probe'' the preferred hypothesis.
 
-\subsubsection{\texorpdfstring{The incredible inconsistency of the
-\(p\)-value.}{The incredible inconsistency of the p-value.}}\label{the-incredible-inconsistency-of-the-p-value.}
+\subsubsection{\texorpdfstring{Misconception: a \(p\)-value is
+repeatable}{Misconception: a p-value is repeatable}}\label{misconception-a-p-value-is-repeatable}
 
 Many researchers believe that a \(p\)-value is a precise measure -- that
 if the experiment were replicated, a similar \(p\) would result. This
@@ -3936,23 +3984,103 @@ discovery--every \(p \le 0.05\) is a true discovery (the false discovery
 rate is 0\%). And if the null is always true, every \(p < 0.05\) is a
 false discovery (the false discovery rate is 100\%).
 
-\subsection{Recommendations}\label{recommendations}
+\subsubsection{\texorpdfstring{Misconception: a low \(p\)-value
+indicates an important
+effect}{Misconception: a low p-value indicates an important effect}}\label{misconception-a-low-p-value-indicates-an-important-effect}
 
-\textbf{If you are working on basic science research} simply report the
-exact \(p\)-value, along with a CI. If \(p < 0.05\) (or some other
-\(\alpha\)) do not report this as ``significant'' -- in fact, avoid the
-word ``significant''. In the english language, ``significant'' implies
-big or important. Small \(p\)-values can result even with trivially
-small effects if \(n\) is big or sample variation is small. If \(p\) is
-smaller than say 0.001, then this is pretty good evidence that the data
-is not a fluke of sampling. But if \(p\) is closer to 0.01 or 0.05, this
-is only weak evidence of a fluke because of the sampling variability of
-\(p\).
+Many researchers write results as if they believe that a small
+\(p\)-value means the effect is big or important. This may misconception
+may arise because of the ubiquitous use of ``significant'' to indicate a
+small p-value and ``very'' or ``extremely'' or ``wicked'' significant to
+indicate a really small p-value. Regardless, this is a misconception. A
+small p-value will usually result when there is high power (but can
+occur even if power is low) and power is a function of effect size,
+variability (the standard deviation), and sample size. A small \(p\)
+could result from a large effect size but can also result with a small
+effect size if the sample size is big enough.
 
-\textbf{If you are working on quality control} then a \(p\) value is a
-useful tool, but is only relevant compared to a decision rule with
-well-reasoned values of \(\alpha\) and \(\beta\) -- exact values of
-\(p\) are not very meaningful.
+This is easy to simulate (see script below). Let's model the effect of
+the genotype of a gene on height
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{set.seed}\NormalTok{(}\DecValTok{1}\NormalTok{)}
+\NormalTok{rho <-}\StringTok{ }\FloatTok{0.5}
+\NormalTok{n <-}\StringTok{ }\DecValTok{10}\OperatorTok{^}\DecValTok{4}
+\NormalTok{genotype <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"+/+"}\NormalTok{, }\StringTok{"+/-"}\NormalTok{, }\StringTok{"-/-"}\NormalTok{)}
+\NormalTok{Sigma <-}\StringTok{ }\KeywordTok{diag}\NormalTok{(}\DecValTok{2}\NormalTok{)}
+\NormalTok{Sigma[}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{] <-}\StringTok{ }\NormalTok{Sigma[}\DecValTok{2}\NormalTok{,}\DecValTok{1}\NormalTok{] <-}\StringTok{ }\NormalTok{rho}
+\NormalTok{X <-}\StringTok{ }\KeywordTok{rmvnorm}\NormalTok{(n, }\DataTypeTok{mean=}\KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{,}\DecValTok{0}\NormalTok{), }\DataTypeTok{sigma=}\NormalTok{Sigma)}
+\KeywordTok{colnames}\NormalTok{(X) <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"X1"}\NormalTok{, }\StringTok{"X2"}\NormalTok{)}
+\NormalTok{beta <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\FloatTok{0.05}\NormalTok{, }\FloatTok{0.05}\NormalTok{)}
+\NormalTok{y <-}\StringTok{ }\NormalTok{X}\OperatorTok{%*%}\NormalTok{beta }\OperatorTok{+}\StringTok{ }\KeywordTok{rnorm}\NormalTok{(n)}
+\NormalTok{fit <-}\StringTok{ }\KeywordTok{lm}\NormalTok{(y }\OperatorTok{~}\StringTok{ }\NormalTok{X)}
+\KeywordTok{coefficients}\NormalTok{(}\KeywordTok{summary}\NormalTok{(fit))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##                Estimate Std. Error   t value     Pr(>|t|)
+## (Intercept) 0.007472959 0.01007946 0.7414046 4.584656e-01
+## XX1         0.044304824 0.01154709 3.8368830 1.253725e-04
+## XX2         0.048228101 0.01170855 4.1190490 3.835033e-05
+\end{verbatim}
+
+\subsubsection{\texorpdfstring{Misconception: a low \(p\)-value
+indicates high model fit or high predictive
+capacity}{Misconception: a low p-value indicates high model fit or high predictive capacity}}\label{misconception-a-low-p-value-indicates-high-model-fit-or-high-predictive-capacity}
+
+On page 606, of Lock et al ``Statistics: Unlocking the Power of Data'',
+the authors state in item D ``The p-value from the ANOVA table is 0.000
+so the model as a whole is effective at predicting grade point
+averages.'' This is incorrect. A p-value is not a measure of the
+predictive capacity of a model because the p-value is a function of 1)
+signal, 2) noise (unmodeled error), and 3) sample size while predictive
+capacity is a function of the signal:noise ratio. If the signal:noise
+ratio is tiny, the predictive capacity is small but the p-value can be
+tiny if the sample size is large. This is easy to simulate (see script
+below). The whole-model p-value is exceptionally small (0.00001002) but
+the relative predictive ability, measured by the \(R^2\), is near zero
+(0.002).
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(mvtnorm)}
+\KeywordTok{set.seed}\NormalTok{(}\DecValTok{1}\NormalTok{)}
+\NormalTok{rho <-}\StringTok{ }\FloatTok{0.5}
+\NormalTok{n <-}\StringTok{ }\DecValTok{10}\OperatorTok{^}\DecValTok{4}
+\NormalTok{Sigma <-}\StringTok{ }\KeywordTok{diag}\NormalTok{(}\DecValTok{2}\NormalTok{)}
+\NormalTok{Sigma[}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{] <-}\StringTok{ }\NormalTok{Sigma[}\DecValTok{2}\NormalTok{,}\DecValTok{1}\NormalTok{] <-}\StringTok{ }\NormalTok{rho}
+\NormalTok{X <-}\StringTok{ }\KeywordTok{rmvnorm}\NormalTok{(n, }\DataTypeTok{mean=}\KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{,}\DecValTok{0}\NormalTok{), }\DataTypeTok{sigma=}\NormalTok{Sigma)}
+\KeywordTok{colnames}\NormalTok{(X) <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"X1"}\NormalTok{, }\StringTok{"X2"}\NormalTok{)}
+\NormalTok{beta <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\FloatTok{0.05}\NormalTok{, }\OperatorTok{-}\FloatTok{0.05}\NormalTok{)}
+\NormalTok{y <-}\StringTok{ }\NormalTok{X}\OperatorTok{%*%}\NormalTok{beta }\OperatorTok{+}\StringTok{ }\KeywordTok{rnorm}\NormalTok{(n)}
+\NormalTok{fit <-}\StringTok{ }\KeywordTok{lm}\NormalTok{(y }\OperatorTok{~}\StringTok{ }\NormalTok{X)}
+\KeywordTok{summary}\NormalTok{(fit)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = y ~ X)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -3.6449 -0.6857  0.0148  0.6756  3.6510 
+## 
+## Coefficients:
+##              Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)  0.007473   0.010079   0.741 0.458466    
+## XX1          0.044305   0.011547   3.837 0.000125 ***
+## XX2         -0.051772   0.011709  -4.422  9.9e-06 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 1.008 on 9997 degrees of freedom
+## Multiple R-squared:  0.0023, Adjusted R-squared:  0.002101 
+## F-statistic: 11.52 on 2 and 9997 DF,  p-value: 1.002e-05
+\end{verbatim}
 
 \paragraph{\texorpdfstring{What the \(p\)-value does not
 mean}{What the p-value does not mean}}\label{what-the-p-value-does-not-mean}
@@ -3981,6 +4109,24 @@ mean}{What the p-value does not mean}}\label{what-the-p-value-does-not-mean}
   has \(p > 0.05\), this is not evidence that the treatment levels have
   different effects on the outcome.
 \end{enumerate}
+
+\subsection{Recommendations}\label{recommendations}
+
+\textbf{If you are working on basic science research} simply report the
+exact \(p\)-value, along with a CI. If \(p < 0.05\) (or some other
+\(\alpha\)) do not report this as ``significant'' -- in fact, avoid the
+word ``significant''. In the english language, ``significant'' implies
+big or important. Small \(p\)-values can result even with trivially
+small effects if \(n\) is big or sample variation is small. If \(p\) is
+smaller than say 0.001, then this is pretty good evidence that the data
+is not a fluke of sampling. But if \(p\) is closer to 0.01 or 0.05, this
+is only weak evidence of a fluke because of the sampling variability of
+\(p\).
+
+\textbf{If you are working on quality control} then a \(p\) value is a
+useful tool, but is only relevant compared to a decision rule with
+well-reasoned values of \(\alpha\) and \(\beta\) -- exact values of
+\(p\) are not very meaningful.
 
 \section{Problems}\label{problems-2}
 
@@ -4023,6 +4169,533 @@ vitamin C levels of the vole data. Compare this to the \(t\)-test.
 
 Problem 4 -- grad students only. Simulate the false discovery rate.
 Explore the parameters: the frequency of true nulls and the power.
+
+\chapter{\texorpdfstring{Two (or more) Categorical \(X\) -- Factorial
+designs}{Two (or more) Categorical X -- Factorial designs}}\label{two-or-more-categorical-x-factorial-designs}
+
+\section{Factorial experiments}\label{factorial-experiments}
+
+A factorial experiment is one in which there are two or more categorical
+\(X\) that are \textbf{crossed}, so the groups contain different
+combinations of levels of each factor. Factorial experiments are used to
+estimate the \textbf{interaction} between factors. Let's explore this
+using data from xxx
+
+The urchin data are from an experiment measuring the effect of \(Temp\)
+and \(CO2\) on larval sea urchin metabolic rate (\(Resp\)) (there are
+other outcome measures in the study too). The units of metabolic rate
+are pmol O2/hr/larva. There are two \(Temp\) levels (13C and 18C) and
+two \(CO2\) levels (400 µAtm and 1100) and the factors are crossed, so
+this is a \(2 \times 2\) (crossed or factorial) design. There are
+\(n=6\) replicates for each combination of the levels. A good way to
+visualize the treatment combinations in a crossed design is with a
+\(m \times p\) table showing all combinations of the \(m\) levels of
+factor 1 (\(Temp\)) against the \(p\) levels of factor 2 (\(CO2\))
+
+\begin{figure}
+\centering
+\includegraphics[width=0.50000\textwidth]{images/2x2_table.png}
+\caption{The urchin experimental design as a 2 x 2 table}
+\end{figure}
+
+The upper left cell contains the 13C level with the Temperature factor
+and the 400 µAtm level within the CO2 factor. The replicates in this
+cell were grown with no added treatments, so this cell is the
+``control'' for Temp and the control for CO2, which we will use as the
+``reference'' group for the linear model. The replicates in the lower
+left cell were grown with an added temperature treatment (in this case,
+a 5 C higher temperature). The replicates in the upper right cell were
+grown an added CO2 treatment (a 700 µATM higher CO2). And finally, the
+replicates in the bottom right cell were grown with both the added
+temperature (+5 C) and added CO2 (+700 µATM). Here, I use a ``+'' or
+``-'' to designate the addition (or not) of the treatment, so our
+\(2 \times 2\) treatment levels are Temp-/CO2-, Temp+/CO2-, Temp-/CO2+
+and Temp+/CO2+.
+
+\subsection{Model coefficients: an interaction effect is what is
+leftover after adding the treatment effects to the
+control}\label{model-coefficients-an-interaction-effect-is-what-is-leftover-after-adding-the-treatment-effects-to-the-control}
+
+A factorial design allows a researcher to estimate the interaction
+between two factors. To clarify this, let's fit the factorial model and
+look at the coefficient table. The fit model is
+
+\begin{equation}
+Resp_i = b_0 + b_1 Temp^+ + b_2 CO2^+ + b_3 Temp^+ CO2^+ + e_i
+\end{equation}
+
+\% Again, \(Temp^+\) and \(CO2^+\) are dummy variables. The model also
+includes \(Temp^+ CO2^+\), which is a dummy variable for the interaction
+between Temp and CO2. The value of this interaction dummy variable is
+literally the product of the two main factor dummy variables (\(Temp^+\)
+and \(CO2^+\)), which can be verified with the model matrix (which here,
+is computed from the subset of the data that includeds only the first
+two rows of each treatment combination)
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{urchin1 <-}\StringTok{ }\KeywordTok{copy}\NormalTok{(urchin)}
+\CommentTok{# change factor levels for analysis aesthetics}
+\NormalTok{urchin1[, CO2}\OperatorTok{:}\ErrorTok{=}\KeywordTok{factor}\NormalTok{(}\KeywordTok{ifelse}\NormalTok{(CO2}\OperatorTok{==}\DecValTok{400}\NormalTok{,}\StringTok{"-"}\NormalTok{, }\StringTok{"+"}\NormalTok{))]}
+\NormalTok{urchin1[, Temp}\OperatorTok{:}\ErrorTok{=}\KeywordTok{factor}\NormalTok{(}\KeywordTok{ifelse}\NormalTok{(Temp}\OperatorTok{==}\DecValTok{13}\NormalTok{, }\StringTok{"-"}\NormalTok{, }\StringTok{"+"}\NormalTok{))]}
+\NormalTok{dt <-}\StringTok{ }\NormalTok{urchin1[, .SD, .SDcols=}\KeywordTok{c}\NormalTok{(}\StringTok{"Resp"}\NormalTok{, }\StringTok{"Temp"}\NormalTok{, }\StringTok{"CO2"}\NormalTok{)]}
+\NormalTok{dt <-}\StringTok{ }\KeywordTok{rbind}\NormalTok{(dt[Temp}\OperatorTok{==}\StringTok{"-"} \OperatorTok{&}\StringTok{ }\NormalTok{CO2}\OperatorTok{==}\StringTok{"-"}\NormalTok{][}\DecValTok{1}\OperatorTok{:}\DecValTok{2}\NormalTok{,],}
+\NormalTok{            dt[Temp}\OperatorTok{==}\StringTok{"+"} \OperatorTok{&}\StringTok{ }\NormalTok{CO2}\OperatorTok{==}\StringTok{"-"}\NormalTok{][}\DecValTok{1}\OperatorTok{:}\DecValTok{2}\NormalTok{,],}
+\NormalTok{            dt[Temp}\OperatorTok{==}\StringTok{"-"} \OperatorTok{&}\StringTok{ }\NormalTok{CO2}\OperatorTok{==}\StringTok{"+"}\NormalTok{][}\DecValTok{1}\OperatorTok{:}\DecValTok{2}\NormalTok{,],}
+\NormalTok{            dt[Temp}\OperatorTok{==}\StringTok{"+"} \OperatorTok{&}\StringTok{ }\NormalTok{CO2}\OperatorTok{==}\StringTok{"+"}\NormalTok{][}\DecValTok{1}\OperatorTok{:}\DecValTok{2}\NormalTok{,]}
+\NormalTok{            )}
+\NormalTok{fit_dummy <-}\StringTok{ }\KeywordTok{lm}\NormalTok{(Resp }\OperatorTok{~}\StringTok{ }\NormalTok{Temp}\OperatorTok{*}\NormalTok{CO2, }\DataTypeTok{data=}\NormalTok{dt)}
+\NormalTok{model_matrix <-}\StringTok{ }\KeywordTok{model.matrix}\NormalTok{(fit_dummy)}
+\NormalTok{knitr}\OperatorTok{::}\KeywordTok{kable}\NormalTok{(model_matrix)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{tabular}{r|r|r|r}
+\hline
+(Intercept) & Temp+ & CO2+ & Temp+:CO2+\\
+\hline
+1 & 0 & 0 & 0\\
+\hline
+1 & 0 & 0 & 0\\
+\hline
+1 & 1 & 0 & 0\\
+\hline
+1 & 1 & 0 & 0\\
+\hline
+1 & 0 & 1 & 0\\
+\hline
+1 & 0 & 1 & 0\\
+\hline
+1 & 1 & 1 & 1\\
+\hline
+1 & 1 & 1 & 1\\
+\hline
+\end{tabular}
+
+The coefficient table is
+
+\begin{tabular}{l|r|r|r|r}
+\hline
+  & Estimate & Std. Error & t value & Pr(>|t|)\\
+\hline
+(Intercept) & 8.23 & 0.73 & 11.3 & 0.000\\
+\hline
+Temp+ & 4.51 & 1.03 & 4.4 & 0.000\\
+\hline
+CO2+ & -0.32 & 1.03 & -0.3 & 0.761\\
+\hline
+Temp+:CO2+ & -2.68 & 1.45 & -1.9 & 0.079\\
+\hline
+\end{tabular}
+
+The Intercept (\(b_0\)) is the mean (8.23) of the reference (Temp-/CO2-)
+group, and so the mean of the upper left cell in Table 1). The Temp+
+coefficient (\(b_1\)) is the estimate of the added temperature effect
+relative to the reference, and so is the mean of the lower left cell
+minus the mean of the upper left cell
+(\(b_1=\bar{Y}_{Temp^+}-\bar{Y}_{-/-}\)). The CO2+ coefficient (\(b_2\))
+is the estimate of the added CO2 effect relative to the reference, and
+so is the mean of the upper right cell minus the mean of the upper left
+cell (\(b_2=\bar{Y}_{CO2^+}-\bar{Y}_{-/-}\)). The Temp+:CO2+ coefficient
+(\(b_3\)) is the estimate of the \textbf{interaction effect}, which is
+the effect in addition to the Temp\(^+\) and CO2\(^+\) effects. If you
+added \(b_1\) and \(b_2\) to \(b_0\), you would get the mean of the
+Temp\(^+\)/CO2\(^+\) group \emph{if the effects were purely additive}.
+So the interaction effect is the difference between the mean of the
+bottom right cell and the sum of the coefficients of the other three
+cells (\(b_3 = \bar{Y}_{Temp^+CO2^+} - (b0 + b1 + b2)\)). An interaction
+is a \textbf{non-additive effect}. Think about this. Adding 5 C
+increases respiration by 4.51 units. Adding 700 \(\mu\)ATM CO2 decreases
+respiration by .32 units. If these effects were purely additive, then
+adding both 5 C and 700 \(\mu\)ATM should result in a mean of 8.23 +
+4.51 - .32 = 12.42 units for the Temp\(^+\)/CO2\(^+\) group. What is the
+mean of this group?
+
+9.74! So the difference between the ``additive expectation'' and the
+actual mean is \(9.74 - 12.42 = -2.68\), which is the interaction effect
+(coefficient).
+
+\subsection{What is the biological meaning of an interaction
+effect?}\label{what-is-the-biological-meaning-of-an-interaction-effect}
+
+I can dead lift 150 pounds and my friend Jake can deadlift 175 pounds.
+Working together, we should be able to lift 325 pounds. What if
+together, we could actually lift 400 pounds? If this were the case, this
+would be an interaction with an effect equal to 75 pounds. Is this
+biologically plausible? If so, what is the mechanism? Here is a possible
+mechanism (although I am highly skeptical of it having a magnitude of 75
+pounds): when lifting an object as part of a group, the central nervous
+system allows increased motor unit recruitment, and so each person can
+lift more weight than they could if lifting alone. A positive
+interaction like this is called \emph{synergistic}. Always think about
+the biological meaning of an interaction effect.
+
+\subsection{What about models with more than two
+factors?}\label{what-about-models-with-more-than-two-factors}
+
+A factorial model can have more than two factors, for example, a model
+with three factors (A, B, and C), each with two levels (which I'll
+designate with a ``+''), is
+
+\begin{equation}
+Y = \beta_0 + \beta_1 A^+ + \beta_1 B^+ + \beta_3 C^+ + \beta_4 A^+ B^+ + \beta_5 A^+ C^+ + \beta_6 B^+ C^+ + \beta_7 A^+ B^+ C^+ + \varepsilon
+\end{equation}
+
+It is easy enough to get an ANOVA table with \(p\)-values for this model
+but I don't recommend it because
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  If space and/or time and/or materials are limited then it typically
+  makes more sense to prioritize the power to estimate standard errors
+  by choosing one of the two-factor models and increasing sample size
+\item
+  Interaction effects in 2-factor models are hard enough to interpret. A
+  3-way interaction is very, very tough to interpret. If all we did was
+  table up \(F\)-ratios and \(p\)-values, this wouldn't matter. But it
+  does matter.
+\end{enumerate}
+
+\subsection{The additive model}\label{the-additive-model}
+
+Sometimes researchers fit reduced models. For example, the \(p\)-value
+for the interaction effect in the full model is 0.079, which is not
+statististically significant. This would lead some researchers to
+explicitly conclude (mistakenly), that there is no interaction between
+CO2 and Temp and that the effects of CO2 and Temp on metabolism are
+\textbf{additive} (see below). This would lead others (controversially)
+to refit the model excluding the interaction term:
+
+\begin{equation}
+Resp_i = b_0 + b_1Temp^+ + b_2CO2^+ + e_i
+\end{equation}
+
+\% This particular reduced model is often referred to as the
+\textbf{additive model}, since it excludes the the interaction term,
+which is a \emph{product} of other terms. Indeed, the title of the
+urchin paper is ``Temperature and CO2 additively regulate physiology,
+morphology and genomic responses of larval sea urchins,
+\emph{Strongylocentrotus purpuratus}.'' It is important to recognize
+that unless the interaction effect is precisely zero, the coefficients
+of Temp+ and CO2+ will change. Here are the coefficients of the additive
+model
+
+\begin{tabular}{l|r|r|r|r}
+\hline
+  & Estimate & Std. Error & t value & Pr(>|t|)\\
+\hline
+(Intercept) & 8.90 & 0.66 & 13.4 & 0.000\\
+\hline
+Temp+ & 3.17 & 0.77 & 4.1 & 0.000\\
+\hline
+CO2+ & -1.66 & 0.77 & -2.2 & 0.042\\
+\hline
+\end{tabular}
+
+For several reasons, one should not drop a term because \(p>0.05\).
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  The \(p\)-value is an arbitrary dichotomization of a continuous
+  variable. Would it make sense to behave differently if \(p=0.051\) vs.
+  \(p=0.049\), given that these two p-values are effectively identical?
+\item
+  A \(p\)-value is not evidence that an effect is zero, or ``doesn't
+  exist'', or event that an effect is ``trivially small''. This is
+  because \(p\)-values are a function of measurement error, sampling
+  error, and sample size, in addition to effect size.
+\end{enumerate}
+
+\subsection{Contrasts -- simple vs.~main
+effects}\label{contrasts-simple-vs.main-effects}
+
+In a \(m \times p\) design, there are \(mp\) cell means and, therefore,
+\(mp(mp-1)/2\) pairwise contrasts. For the urchin data, these are
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Temp+/CO2- - Temp-/CO2- (bottom left - top left)
+\item
+  Temp+/CO2+ - Temp-/CO2+ (bottom right - top right)
+\item
+  Temp-/CO2+ - Temp-/CO2- (top right - top left)
+\item
+  Temp+/CO2+ - Temp+/CO2- (bottom right - bottom left)
+\item
+  Temp-/CO2+ - Temp+/CO2- (top right - bottom left)
+\item
+  Temp+/CO2+ - Temp-/CO2- (bottom right - top left)
+\end{enumerate}
+
+\begin{enumerate}
+\def\labelenumi{(\arabic{enumi})}
+\tightlist
+\item
+  and (2) are the \textbf{simple effects} of Temp at each level of CO2.
+  (3) and (4) are the simple effects of CO2 at each level of Temp. (5)
+  is the response of the CO2 treatment at the reference level of Temp
+  minus the response of the Temp treatment at the reference level of
+  CO2. This probably is not a very interesting contrast. (6) is the
+  combined response of Temp and CO2, including the interaction, minus
+  the control. This also is unlikely to be of much interest.
+\end{enumerate}
+
+\begin{tabular}{l|r|r|r|r|r|r|r}
+\hline
+contrast & estimate & SE & df & lower.CL & upper.CL & t.ratio & p.value\\
+\hline
+Temp+,CO2- - Temp-,CO2- & 4.51 & 1.03 & 20 & 2.4 & 6.7 & 4.4 & 0.000\\
+\hline
+Temp-,CO2+ - Temp-,CO2- & -0.32 & 1.03 & 20 & -2.5 & 1.8 & -0.3 & 0.761\\
+\hline
+Temp-,CO2+ - Temp+,CO2- & -4.83 & 1.03 & 20 & -7.0 & -2.7 & -4.7 & 0.000\\
+\hline
+Temp+,CO2+ - Temp-,CO2- & 1.51 & 1.03 & 20 & -0.6 & 3.6 & 1.5 & 0.157\\
+\hline
+Temp+,CO2+ - Temp+,CO2- & -3.00 & 1.03 & 20 & -5.1 & -0.9 & -2.9 & 0.008\\
+\hline
+Temp+,CO2+ - Temp-,CO2+ & 1.82 & 1.03 & 20 & -0.3 & 4.0 & 1.8 & 0.091\\
+\hline
+\end{tabular}
+
+\textbf{Main effects} are contrasts between
+
+\section{Reporting results}\label{reporting-results-2}
+
+\subsection{Text results}\label{text-results}
+
+The effect of the increased temperature at the control CO2 level was 4.5
+(95\% CI: 2.4, 6.7; \(p < 0.001\)) pmol O2/hr/larva. The effect of
+increased CO2 at the control temperature was -0.3 (95\% CI: -2.4, 1.8;
+\(p=.76\)) pmol O2/hr/larva. The interaction effect was -2.7 (95\% CI:
+-5.7, 0.3; \(p = 0.079\)) pmol O2/hr/larva. Because of the relatively
+large interaction, the effect of temperature at the high level of CO2
+was less than half the effect at the low level of CO2 (estimate: 1.82;
+95\% CI: -0.3, 4.0; \(p = 0.091\)) and the effect of CO2 at the high
+level of Temp was 10 times greater than that at the low level of Temp
+(estimate: -3.0; 95\% CI: -5.1, -.9; \(p = 0.0084\)).
+
+The CI on the interaction includes both large negative values and
+trivially small values, including zero, and, consequently, our data is
+compatible with both scientific models (that is, we can neither support
+nor reject the predictions of the scientific model using these results).
+
+\subsection{Harrellplot}\label{harrellplot}
+
+If the focus is on the interaction, then a Harrell Plot of coefficients
+is a good choice for communicating this.
+
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/urchin-harrellplot1-1.pdf}
+
+The plot shows that a relatively big and positive Temp effect, a
+relatively small CO2 effect (and one with too much noise to have any
+confidence of the sign) and a intermediate interaction effect. In the
+original paper, the researchers were testing a scientific (not
+statistical!) model that predicted no interaction, and the researchers
+argued that these data support this model because of the small p-value
+for this effect (see the table above). Well, the data do support that
+model (one end of the 95\% CI for the interaction includes zero, and
+other very small values) but they also support a model of a large
+interaction (the other end of the 95\% CI includes large negative
+effects). The data are too course (or the signal:noise ratio is to
+small) to have much confidence in the size of the interaction effect.
+Some comments:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  It is not valid to claim that an effect ``doesn't'' exist because p
+  \textgreater{} 0.05 (see chapter xxx)
+\item
+  Researchers need to draw conclusions based on \emph{both} ends of the
+  CI, as well as the mean!
+\item
+  A sample size of 6 will generally be very low power to get a precise
+  estimate of the interaction unless the sampling variability is very
+  small.
+\end{enumerate}
+
+If we are more interested in differences between the different treatment
+combinations, then a Harrell plot with the contrasts is a good way to
+communicate this.
+
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/urchin-harrellplot2-1.pdf}
+The four contrasts are differences between the means of pairs of cells
+in the \(2 \times 2\) table:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  ``Temp+: CO2+ - CO2-'' -- lower right - lower left
+\item
+  ``Temp-: CO2+ - CO2-'' -- upper right - upper left
+\item
+  ``CO2+: Temp+ - Temp-'' -- lower right - upper right
+\item
+  ``CO2-: Temp+ - Temp-'' -- lower left - upper left
+\end{enumerate}
+
+\subsection{Interaction plots}\label{interaction-plots}
+
+A common way to plot the results of the model is with an
+\textbf{interaction plot}.
+
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/urchin-interaction-plot-1.pdf}
+
+In this interaction plot, the \(X\)-axis contains the two \(Temp\)
+treatment levels and the \(Y\)-axis is the outcome (\(Resp\)). The plot
+shows the four cell means indicated by the circles (low CO2 levels) or
+triangles (high CO2 levels). The solid lines connect the cell means
+\emph{across Temp levels within CO2 levels}.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  The slope of a line is the effect of \(Temp\) on \(Resp\)
+\item
+  The relative \emph{elevation} of the lines is the effect of \(CO2\) on
+  \(Resp\)
+\item
+  The difference in slope \emph{or} the relative elevation at each level
+  of \(Temp\) is the interaction effect
+\end{enumerate}
+
+Let's deconstruct this. The top (CO2-) line is the effect of \(Temp\) at
+the control (400 \(\mu\)ATM) value of \(CO2\). The slope of the bottom
+(CO2+) line is the effect of \(Temp\) at the high (1100 \(\mu\)ATM)
+value of \(CO2\). \emph{These lines have different slopes}, or the slope
+\emph{is conditional on} the level of CO2. This means that the effect of
+\(Temp\) on respiration is \emph{conditional on the value of \(CO2\)}.
+Think about this. This is what an interaction implies--conditional
+effects.
+
+At the reference temperature (13 C), the CO2+ line is barely below the
+CO2- line. But at the high temperature (18 C), the CO2+ line is far
+below the CO2- line. That is, the relative elevation (the \(CO2\)
+effect) is conditional on the level of \(Temp\). It will always be the
+case that if the effect of Factor A is conditional on the levels of
+Factor B, then the effect of Factor B will be conditional on the levels
+of Factor A.
+
+An interaction plot is an okay plot. It doesn't show the data, only a
+descriptive summary (means and standard errors). If we are interested in
+the interaction effect, it doesn't give us a very good sense of the
+error in this effect. And \emph{that} is a problem because with real
+data, two lines are never precisely parallel. Our interpretation of the
+similarity of the slopes would probably mostly reflect our pre-conceived
+scientific model.
+
+\section{Recommendations}\label{recommendations-1}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Should an interaction term be dropped from a model? In biological
+  data, there will almost certainly be an interaction effect with
+  everything. The goal, then, should be to model the effect and use the
+  estimate and the uncertainty in the effect, \emph{in combination with
+  the goals of the analysis}, to make any decision about dropping a
+  term.
+\end{enumerate}
+
+\section{Working in R}\label{working-in-r-2}
+
+A \textbf{full-factorial} model with two factors is specified in the
+model formula as \texttt{y\ \textasciitilde{}\ A*B} where A is the first
+factor, and B is the second factor. R expands this formula to
+\texttt{y\ \textasciitilde{}\ A\ +\ B\ +\ A:B} where the colon indicates
+an interaction (multiplicative) effect.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# re-label levels and convert to factors.}
+\NormalTok{urchin1 <-}\StringTok{ }\KeywordTok{copy}\NormalTok{(urchin)}
+\NormalTok{urchin1[, CO2}\OperatorTok{:}\ErrorTok{=}\KeywordTok{factor}\NormalTok{(}\KeywordTok{ifelse}\NormalTok{(CO2}\OperatorTok{==}\DecValTok{400}\NormalTok{,}\StringTok{"-"}\NormalTok{, }\StringTok{"+"}\NormalTok{))]}
+\NormalTok{urchin1[, Temp}\OperatorTok{:}\ErrorTok{=}\KeywordTok{factor}\NormalTok{(}\KeywordTok{ifelse}\NormalTok{(Temp}\OperatorTok{==}\DecValTok{13}\NormalTok{, }\StringTok{"-"}\NormalTok{, }\StringTok{"+"}\NormalTok{))]}
+\NormalTok{fit <-}\StringTok{ }\KeywordTok{lm}\NormalTok{(Resp }\OperatorTok{~}\StringTok{ }\NormalTok{Temp}\OperatorTok{*}\NormalTok{CO2, }\DataTypeTok{data=}\NormalTok{urchin1) }\CommentTok{# use urchin1 data with relabeled levels}
+\KeywordTok{coef}\NormalTok{(}\KeywordTok{summary}\NormalTok{(fit))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##               Estimate Std. Error    t value     Pr(>|t|)
+## (Intercept)  8.2333333  0.7255577 11.3475922 3.626935e-10
+## Temp+        4.5100000  1.0260936  4.3953106 2.792573e-04
+## CO2+        -0.3166667  1.0260936 -0.3086138 7.608069e-01
+## Temp+:CO2+  -2.6850000  1.4511155 -1.8503007 7.910035e-02
+\end{verbatim}
+
+The first thing this script does is to re-label the levels of Temp and
+CO2. The relabeling is more aesthically pleasing in the tabled output.
+If we didn't relable, it would be necessary to convert CO2 and Temp to
+factors or else R would treat these as numeric and not factors.
+
+The additive model is specified by the formula
+\texttt{y\ \textasciitilde{}\ A\ +\ B}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{fit <-}\StringTok{ }\KeywordTok{lm}\NormalTok{(Resp }\OperatorTok{~}\StringTok{ }\NormalTok{Temp }\OperatorTok{+}\StringTok{ }\NormalTok{CO2, }\DataTypeTok{data=}\NormalTok{urchin1) }\CommentTok{# use urchin1 data with relabeled levels}
+\KeywordTok{coef}\NormalTok{(}\KeywordTok{summary}\NormalTok{(fit))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##              Estimate Std. Error   t value     Pr(>|t|)
+## (Intercept)  8.904583  0.6636207 13.418183 9.038657e-12
+## Temp+        3.167500  0.7662831  4.133590 4.721000e-04
+## CO2+        -1.659167  0.7662831 -2.165214 4.203445e-02
+\end{verbatim}
+
+\section{Problems}\label{problems-3}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  Draw four \(2 \times 2\) tables and label the row and column headers
+  using the levels of the urchin treatment. In the first table, insert
+  the cell means. In the 2nd table, insert the equation for the
+  coefficient. In the third table, solve the equations. And in the
+  fourth column, insert the estimates from the table above. Are tables 3
+  and 4 the same? If not, you've goofed somewhere.
+\item
+  Frew et al. (2017) showed that increasing atomospheric CO2 increases
+  grub activity in the soil which in turn increases root damage to
+  sugarcane. They used a 2 x 2 experiment to then show that silicon
+  added to the soild decreased the damage to the roots by the grubs
+  (silicon minerals are very hard and plants uptake silicon from the
+  soil to mineralize tissues to protect against insect damage). There
+  are lots of analyses in the paper, but I want you to reproduce Fig.
+  4b, but using gg\_interaction\_plot and fit the model using lm.
+\end{enumerate}
+
+(The treatment assignments are in a different file than the experimental
+results. Use the \texttt{merge} function to glue the two tables
+together, keying on the common column ``plant'')
+
+1a. \textbf{file name}: ``canegrub\_feedingtrial.csv'' 1b. \textbf{file
+name}: ``treatments.csv'' 2. \textbf{source}:
+\url{https://datadryad.org/resource/doi:10.5061/dryad.r3s16}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{2}
+\tightlist
+\item
+  Generate a fake experiment! The experiment should have two factors
+  each with two levels. Experiment with power by varying sample size and
+  effect size.
+\end{enumerate}
 
 \chapter*{Appendix 1: Getting Started with
 R}\label{appendix-1-getting-started-with-r}
