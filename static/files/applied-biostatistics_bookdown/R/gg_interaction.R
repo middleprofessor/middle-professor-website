@@ -2,7 +2,7 @@
 # Jeffrey A Walker
 # October 10, 2018
 
-gg_interaction_plot <- function(x, y, data){
+gg_interaction <- function(x, y, data){
   # x is a vector of the column labels of categorical variables
   # y is the response
   dt <- data.table(data)
