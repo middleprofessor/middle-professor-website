@@ -32,8 +32,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   
   
-<link rel="prev" href="a-linear-model-with-a-single-continous-x.html">
-<link rel="next" href="a-linear-model-with-a-single-categorical-x.html">
+<link rel="prev" href="variability-and-uncertainty-standard-deviations-and-standard-errors.html">
+<link rel="next" href="a-linear-model-with-a-single-continous-x.html">
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
@@ -293,64 +293,118 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="least-squares-estimation" class="section level1">
-<h1><span class="header-section-number">Chapter 7</span> Least Squares Estimation</h1>
-<p>The linear models in the last chapter and for much of this book are fit to data using a method called “ordinary least squares” (OLS). This chapter explores the meaning of OLS and related statistics, including <span class="math inline">\(R^2\)</span>, as well as some alternative methods for bivariate regression.</p>
-<div id="ols-regression" class="section level2">
-<h2><span class="header-section-number">7.1</span> OLS regression</h2>
-<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/fake-data-ma-1.png" width="576" /></p>
-<p>The fake data illustrated in the scatterplot above (Figure <a href="#fig:fake-data-ma"><strong>??</strong></a>) were modeled to look something like the squirrel fecal cortisol metabolite data in the previous chapter. If a typical student is asked to draw a regression line through the scatter, they typically draw a line similar to that in Figure <a href="#fig:fake-data-ma"><strong>??</strong></a>. This line is not the OLS regression line but the major axis of an elipse that encloses the scatter of points–that students invariably draw this line suggests that the brain interprets the major axis of an elliptical scatter of points as a trend (This major axis line is an alternative method for estimating a slope and is known as standard major-axis regression. More about this at the end of this chapter.)</p>
-<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/fake-data-ols-1.png" width="576" /></p>
-<p>The OLS regression line is the red line in Figure <a href="#fig:fake-data-ols"><strong>??</strong></a> – the standard major axis line is left for comparison). The OLS regression line</p>
-<ol style="list-style-type: decimal">
-<li>passes through the bivariate mean (<span class="math inline">\(\bar{x}\)</span>, <span class="math inline">\(\bar{y}\)</span>) of the scatter, and</li>
-<li>minimizes the sum of the squared deviations from each point to it’s modeled value <span class="math inline">\(\sum{(y_i - \hat{y}_i)^2}\)</span></li>
-</ol>
-<p>There are an infinite number of lines that pass through the bivariate mean (think of anchoring a line at the bivariate mean and spinning it). The OLS line is the line that minimizes the squared (vertical) deviations (“least squares”).</p>
-<p>For a bivariate regression, the slope (coefficient <span class="math inline">\(b_1\)</span> of <span class="math inline">\(X\)</span>) of the OLS model fit is computed by</p>
-<span class="math display">\[\begin{equation}
-b_1 = \frac{\mathrm{COV}(X, Y)}{\mathrm{VAR}(X)}
-\end{equation}\]</span>
-<p>This equation is worth memorizing. We will generalize this into a more flexible equation in a few chapters.</p>
+<div id="plotting" class="section level1">
+<h1><span class="header-section-number">Chapter 5</span> Plotting</h1>
+<div id="plots-should-be-the-center-of-your-papers-universe" class="section level2">
+<h2><span class="header-section-number">5.1</span> Plots should be the center of your paper’s universe</h2>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(ggplot2)
+<span class="kw">library</span>(ggpubr)
+<span class="kw">library</span>(emmeans)
+<span class="kw">library</span>(data.table)
+
+data_path &lt;-<span class="st"> &quot;../data&quot;</span></code></pre></div>
 </div>
-<div id="how-well-does-the-model-fit-the-data-r2-and-variance-explained" class="section level2">
-<h2><span class="header-section-number">7.2</span> How well does the model fit the data? <span class="math inline">\(R^2\)</span> and “variance explained”</h2>
-<p>Let’s switch to real data.</p>
-<ol style="list-style-type: decimal">
-<li>Source: Dryad Digital Repository. <a href="https://doi.org/10.5061/dryad.056r5" class="uri">https://doi.org/10.5061/dryad.056r5</a></li>
-<li>File: “Diet-shift data.xls”</li>
-</ol>
-<p>Fish require arachidonic acid (ARA) and other highyly unsaturated fatty acids in their diet and embryo and yolk-stage larvae obtain these from yolk. Fuiman and Faulk (xxx) designed an experiment to investigate if red drum (<em>Sciaenops ocellatus</em>) mothers provision the yolk with ARA from recent dietary intake or from stored sources in somatic tissues. The data below are from experiment 8. The <em>x</em>-axis is the days since a diet shift to more and less ARA (<span class="math inline">\(days\)</span>) and the <em>y</em>-axis is the ARA content of the eggs (<span class="math inline">\(ARA\)</span>).</p>
-<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/egg-data-1.png" width="576" /></p>
-<p>The statistic <span class="math inline">\(R^2\)</span> is a measure of the fit of a model to data. The <span class="math inline">\(R^2\)</span> for the fit of the egg data is 0.42. <span class="math inline">\(R^2\)</span> is the fraction of two variances <span class="math inline">\(\frac{\mathrm{VAR}(Model)}{\mathrm{VAR}(Y)}\)</span>, or, the fraction of the variance of <span class="math inline">\(Y\)</span> “explained by the model.” The value of <span class="math inline">\(R^2\)</span> ranges from zero (the fit cannot be any worse) to one (the fit is “pefect”).</p>
-<p>To understand <span class="math inline">\(R^2\)</span>, and its computation, a bit more, let’s look at three kinds of deviations.</p>
-<div class="figure"><span id="fig:ols-deviations"></span>
-<img src="Walker-elementary-statistical-modeling-draft_files/figure-html/ols-deviations-1.png" alt="Three kinds of deviations from a fit model. A. Deviations of the measured values from the mean. These are in the numerator of the equation of the sample variance. The dashed line is the mean ARA content. B. Deviations of the measured values from the modeled values. The sum of these deviations squared is what is minimized in an OLS fit. C. Deviations of the modeled values from the mean ARA content. The measured values are in gray, the modeled values in black" width="576" />
+<div id="pretty-good-plots-show-the-data" class="section level2">
+<h2><span class="header-section-number">5.2</span> Pretty good plots show the data</h2>
+<p>The first plot combines 1. “Cleveland dot plot” of the group means 2. unconditional 1 SE error bar.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggerrorplot</span>(<span class="dt">x=</span><span class="st">&quot;treatment&quot;</span>, <span class="dt">y=</span><span class="st">&quot;Y&quot;</span>, <span class="dt">data=</span>fd, <span class="dt">add=</span><span class="st">&quot;mean&quot;</span>, <span class="dt">desc_stat =</span> <span class="st">&quot;mean_se&quot;</span>, <span class="dt">error.plot =</span> <span class="st">&quot;errorbar&quot;</span>)</code></pre></div>
+<div class="figure"><span id="fig:ggplot-cleveland-dotplot1"></span>
+<img src="Walker-elementary-statistical-modeling-draft_files/figure-html/ggplot-cleveland-dotplot1-1.png" alt="A simple Cleveland dot plot of group means and standard error. The standard error bars are the unconditional or unmodeled SE." width="576" />
 <p class="caption">
-Figure 7.1: Three kinds of deviations from a fit model. A. Deviations of the measured values from the mean. These are in the numerator of the equation of the sample variance. The dashed line is the mean ARA content. B. Deviations of the measured values from the modeled values. The sum of these deviations squared is what is minimized in an OLS fit. C. Deviations of the modeled values from the mean ARA content. The measured values are in gray, the modeled values in black
+Figure 5.1: A simple Cleveland dot plot of group means and standard error. The standard error bars are the unconditional or unmodeled SE.
 </p>
 </div>
-<p>Figure <a href="least-squares-estimation.html#fig:ols-deviations">7.1</a>A shows the deviations from the measured values to the mean value (dashed line). These are the deviations in the numerator of the equation to compute the variance of <span class="math inline">\(ARA_EGG_MG\)</span>. Figure <a href="least-squares-estimation.html#fig:ols-deviations">7.1</a>B shows the deviations of the measured values from the modeled values. The sum of these deviations squared is what is minimized by the OLS fit. The bigger these deviations are, the worse the model fit. Figure <a href="least-squares-estimation.html#fig:ols-deviations">7.1</a>C shows the deviations of the modeled values to the mean value. The bigger these deviations are, the better the model fit.</p>
-<p>The sums of the squares of these deviations (or “sums of squares”) have names:</p>
-<span class="math display">\[\begin{equation}
-\mathrm{SS(total)} = \sum{(y_i - \bar{y})^2}
-\end{equation}\]</span>
-<span class="math display">\[\begin{equation}
-\mathrm{SS(error)} = \sum{(y_i - \hat{y_i})^2}
-\end{equation}\]</span>
-<span class="math display">\[\begin{equation}
-\mathrm{SS(model)} = \sum{(\hat{y_i} - \bar{y})^2}
-\end{equation}\]</span>
-<p>Again, <span class="math inline">\(\mathrm{SS(total)}\)</span> is the numerator of the equation for the sample variance. It is called “s-s-total” because <span class="math inline">\(\mathrm{SS(total)} = \mathrm{SS(model)} + \mathrm{SS(error)}\)</span>. That is, the total sums of squares can be <strong>decomposed</strong> into two <strong>components</strong>: the modeled sums of squares and the error sums of squares. Given these components, it’s easy to understand <span class="math inline">\(R^2\)</span></p>
-<span class="math display">\[\begin{equation}
-R^2 = \frac{SS(model)}{SS(total)}
-\end{equation}\]</span>
-<p><span class="math inline">\(R^2\)</span> is the fraction of the total sums of squares that is due to (or “explained by”) the model sums of squares. Above I said that <span class="math inline">\(R^2\)</span> is the fraction of <em>variance</em> explained by the model. Equation xxx is a ratio of variance, but the <span class="math inline">\((n-1)^{-1}\)</span> in both the numerator and the denominator cancel out. Finally, many sources give the equation for <span class="math inline">\(R^2\)</span> as</p>
-<span class="math display">\[\begin{equation}
-R^2 = 1- \frac{SS(error)}{SS(total)}
-\end{equation}\]</span>
-<p>which is an obvious alternative given the decomposition. I prefer the former equation because it emphasizes the model fit instead of model ill-fit.</p>
+<p>The second plot combines 1. “Cleveland dot plot” of the group means 2. unconditional 1 SE error bar. 3. jittered dots of the raw data points</p>
+<p>The advantage of this plot of</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggerrorplot</span>(<span class="dt">x=</span><span class="st">&quot;treatment&quot;</span>, <span class="dt">y=</span><span class="st">&quot;Y&quot;</span>, <span class="dt">data=</span>fd, <span class="dt">add=</span><span class="kw">c</span>(<span class="st">&quot;mean&quot;</span>, <span class="st">&quot;jitter&quot;</span>), <span class="dt">desc_stat =</span> <span class="st">&quot;mean_se&quot;</span>, <span class="dt">error.plot =</span> <span class="st">&quot;errorbar&quot;</span>)</code></pre></div>
+<div class="figure"><span id="fig:ggplot-cleveland-dotplot2"></span>
+<img src="Walker-elementary-statistical-modeling-draft_files/figure-html/ggplot-cleveland-dotplot2-1.png" alt="A Cleveland dot plot of group means and standard error.with superimposed dot plot of raw values that &quot;show the data&quot;." width="576" />
+<p class="caption">
+Figure 5.2: A Cleveland dot plot of group means and standard error.with superimposed dot plot of raw values that “show the data”.
+</p>
+</div>
+</div>
+<div id="even-better-plots" class="section level2">
+<h2><span class="header-section-number">5.3</span> Even better plots…</h2>
+<div id="let-interaction-plots-be-interaction-plots" class="section level3">
+<h3><span class="header-section-number">5.3.1</span> Let interaction plots be interaction plots</h3>
+<p>The levels of the treatment variable indicate that the experimental design is <strong>factorial</strong> with all four combinations of two factors (<span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span>) each with two treatment levels. The two plots above fail to capture this aspect of the data. There are several ways of doing this, including using different colors or shapes for the different levels of one factor and spatially clustering the levels of one factor within the other on the graph. Additionally, the whole purpose of a factorial design is to measure the interaction effect. The magnitude of the interaction can be qualitatively visualized by comparing the lines connecting the group means among the levels of one factor within a level of the other factor. I don’t think ggpubr does this, so here is a function.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">gg_interaction &lt;-<span class="st"> </span><span class="cf">function</span>(x, y, <span class="dt">random=</span><span class="ot">NULL</span>, data, <span class="dt">se=</span><span class="st">&quot;model&quot;</span>){
+  <span class="co"># x is a vector of the column labels of categorical variables</span>
+  <span class="co"># y is the response column</span>
+  <span class="co"># random is a column name of a blocking factor</span>
+  <span class="co"># data is a data.frame or data.table</span>
+  <span class="co"># se is &quot;model&quot; or &quot;sample&quot;</span>
+  dt &lt;-<span class="st"> </span><span class="kw">na.omit</span>(<span class="kw">data.table</span>(data[, .SD, <span class="dt">.SDcols=</span><span class="kw">c</span>(x,y)]))
+  fixed_part &lt;-<span class="st"> </span><span class="kw">paste</span>(y, <span class="st">&quot;~&quot;</span>, <span class="kw">paste</span>(x[<span class="dv">1</span>], x[<span class="dv">2</span>], <span class="dt">sep=</span><span class="st">&quot;*&quot;</span>))
+  <span class="cf">if</span>(<span class="kw">is.null</span>(random)){ <span class="co"># linear model</span>
+    lm_formula &lt;-<span class="st"> </span><span class="kw">formula</span>(fixed_part)
+    fit &lt;-<span class="st"> </span><span class="kw">lm</span>(lm_formula, <span class="dt">data=</span>dt)
+  }<span class="cf">else</span>{ ## linear mixed model
+    random_part &lt;-<span class="st"> </span><span class="kw">paste</span>(<span class="st">&quot;(1|&quot;</span>, random, <span class="st">&quot;)&quot;</span>, <span class="dt">sep=</span><span class="st">&quot;&quot;</span>)
+    lmm_formula &lt;-<span class="st"> </span><span class="kw">formula</span>(<span class="kw">paste</span>(fixed_part, random_part, <span class="dt">sep=</span><span class="st">&quot; + &quot;</span>))
+    fit &lt;-<span class="st"> </span><span class="kw">lmer</span>(lmm_formula, <span class="dt">data=</span>dt)
+  }
+  
+  <span class="co"># get modeled means and se</span>
+  fit.emm &lt;-<span class="st"> </span><span class="kw">data.table</span>(<span class="kw">summary</span>(<span class="kw">emmeans</span>(fit, <span class="dt">specs=</span>x)))
+  new_names &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;f1&quot;</span>, <span class="st">&quot;f2&quot;</span>)
+  <span class="kw">setnames</span>(fit.emm, <span class="dt">old=</span>x, <span class="dt">new=</span>new_names)
+  
+  <span class="co"># get sampled means and se</span>
+  dt_sum &lt;-<span class="st"> </span>dt[, .(<span class="dt">emmean=</span><span class="kw">mean</span>(<span class="kw">get</span>(y)), <span class="co"># conditional mean but giving the name in fit.emm</span>
+                   <span class="dt">sd=</span><span class="kw">sd</span>(<span class="kw">get</span>(y)),
+                   <span class="dt">SE=</span><span class="kw">sd</span>(<span class="kw">get</span>(y))<span class="op">/</span><span class="kw">sqrt</span>(.N)),
+               by=.(<span class="kw">get</span>(x[<span class="dv">1</span>]), <span class="kw">get</span>(x[<span class="dv">2</span>]))]
+  <span class="kw">setnames</span>(dt_sum, <span class="dt">old=</span><span class="kw">c</span>(<span class="st">&quot;get&quot;</span>, <span class="st">&quot;get.1&quot;</span>), <span class="dt">new=</span>new_names)
+  
+  <span class="cf">if</span>(se<span class="op">==</span><span class="st">&quot;model&quot;</span>){dt_sum &lt;-<span class="st"> </span>fit.emm}
+  
+  pd &lt;-<span class="st"> </span><span class="kw">position_dodge</span>(.<span class="dv">3</span>)
+  gg &lt;-<span class="st"> </span><span class="kw">ggplot</span>(<span class="dt">data=</span>dt_sum, <span class="kw">aes</span>(<span class="dt">x=</span>f1, <span class="dt">y=</span>emmean, <span class="dt">shape=</span>f2, <span class="dt">group=</span>f2)) <span class="op">+</span>
+<span class="st">    </span><span class="co">#geom_jitter(position=pd, color=&#39;gray&#39;, size=2) +</span>
+<span class="st">    </span><span class="kw">geom_point</span>(<span class="dt">color=</span><span class="st">&#39;black&#39;</span>, <span class="dt">size=</span><span class="dv">4</span>, <span class="dt">position=</span>pd) <span class="op">+</span>
+<span class="st">    </span><span class="kw">geom_errorbar</span>(<span class="kw">aes</span>(<span class="dt">ymin=</span>(emmean<span class="op">-</span>SE), <span class="dt">ymax=</span>(emmean<span class="op">+</span>SE)), 
+                  <span class="dt">color=</span><span class="st">&#39;black&#39;</span>, <span class="dt">width=</span>.<span class="dv">2</span>, <span class="dt">position=</span>pd) <span class="op">+</span>
+<span class="st">    </span><span class="kw">geom_line</span>(<span class="dt">position=</span>pd) <span class="op">+</span>
+<span class="st">    </span><span class="kw">xlab</span>(x[<span class="dv">1</span>]) <span class="op">+</span>
+<span class="st">    </span><span class="kw">ylab</span>(y) <span class="op">+</span>
+<span class="st">    </span><span class="kw">theme_bw</span>() <span class="op">+</span>
+<span class="st">    </span><span class="kw">guides</span>(<span class="dt">shape=</span><span class="kw">guide_legend</span>(<span class="dt">title=</span>x[<span class="dv">2</span>])) <span class="op">+</span>
+<span class="st">    </span><span class="kw">theme</span>(<span class="dt">axis.title=</span><span class="kw">element_text</span>(<span class="dt">size =</span> <span class="kw">rel</span>(<span class="fl">1.5</span>)),
+          <span class="dt">axis.text=</span><span class="kw">element_text</span>(<span class="dt">size =</span> <span class="kw">rel</span>(<span class="fl">1.5</span>)),
+          <span class="dt">legend.title=</span><span class="kw">element_text</span>(<span class="dt">size =</span> <span class="kw">rel</span>(<span class="fl">1.3</span>)),
+          <span class="dt">legend.text=</span><span class="kw">element_text</span>(<span class="dt">size =</span> <span class="kw">rel</span>(<span class="fl">1.3</span>))) <span class="op">+</span>
+<span class="st">    </span><span class="ot">NULL</span>
+  <span class="kw">return</span>(gg)
+}</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">gg_interaction</span>(<span class="dt">x=</span><span class="kw">c</span>(<span class="st">&quot;A&quot;</span>,<span class="st">&quot;B&quot;</span>), <span class="dt">y=</span><span class="st">&quot;Y&quot;</span>, <span class="dt">data=</span>fd, <span class="dt">se=</span><span class="st">&quot;sample&quot;</span>)</code></pre></div>
+<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/ggplot-gginteractionplot1-1.png" width="576" /></p>
+<p>Figure xxx, with lines connecting cell means, is often called an “interaction plot” and this plot type is common in ecology and organismal biology but not so common in cell biology and physiology. A Harrell plot (see below) is even better for communicating interaction effects.</p>
+</div>
+<div id="even-better-plots-continuedshow-the-model" class="section level3">
+<h3><span class="header-section-number">5.3.2</span> Even better plots (continued)…Show the model</h3>
+<p>The SE error bars above are computed for each group independently. If we are going to bother fitting a model to the data and reporting modeled statistics in the text, it makes sense to also report these modeled statistcs in the figures since…figures should be the center of the paper’s universe.</p>
+<p>The plots below, use modeled SEs from the the fit model. Think about it like this, the linear model has some error <span class="math inline">\(\varepsilon\)</span> which has some standard deviation <span class="math inline">\(\sigma\)</span>. The standard error computed for a group is <span class="math inline">\(\frac{s_k}{\sqrt{n}}\)</span> where <span class="math inline">\(s_k\)</span> is the sampled estimate of <span class="math inline">\(\sigma\)</span> for that group. The modeled SE for a group uses the modeled estimate of <span class="math inline">\(\sigma\)</span> for every group instead of that group’s sampled <span class="math inline">\(s_k\)</span>. So, if <span class="math inline">\(n\)</span> is the same in each group then the modeled SE is the same for each group. So what is the modeled SE? If is the standard deviation of the residuals of the model, of course.</p>
+<p>Pretending the four treatment levels are not from a factorial design:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># pretend the four treatment levels are not from a factorial design</span>
+fit &lt;-<span class="st"> </span><span class="kw">lm</span>(Y<span class="op">~</span>treatment, <span class="dt">data=</span>fd)
+fit.emm &lt;-<span class="st"> </span><span class="kw">data.table</span>(<span class="kw">summary</span>(<span class="kw">emmeans</span>(fit, <span class="dt">specs=</span><span class="st">&quot;treatment&quot;</span>)))
+fit.emm[, treatment<span class="op">:</span><span class="er">=</span><span class="kw">factor</span>(treatment, <span class="kw">as.character</span>(<span class="kw">levels</span>(fd<span class="op">$</span>treatment)))]
+<span class="co"># the modeled SE is right there in fit.emm</span>
+gg &lt;-<span class="st"> </span><span class="kw">ggplot</span>(<span class="dt">data=</span>fit.emm, <span class="kw">aes</span>(<span class="dt">x=</span>treatment, <span class="dt">y=</span>emmean)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">size=</span><span class="dv">3</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_errorbar</span>(<span class="kw">aes</span>(<span class="dt">ymin=</span>emmean<span class="op">-</span>SE, <span class="dt">ymax=</span>emmean<span class="op">+</span>SE), <span class="dt">width=</span><span class="fl">0.2</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">theme_classic</span>(<span class="dt">base_size=</span><span class="dv">14</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_jitter</span>(<span class="dt">data=</span>fd, <span class="kw">aes</span>(<span class="dt">x=</span>treatment, <span class="dt">y=</span>Y), <span class="dt">width=</span><span class="fl">0.2</span>) <span class="op">+</span>
+<span class="st">  </span><span class="ot">NULL</span>
+gg</code></pre></div>
+<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/gg_better_mean_plot-1.png" width="576" /></p>
+<p>Interaction plot</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">gg_interaction</span>(<span class="dt">x=</span><span class="kw">c</span>(<span class="st">&quot;A&quot;</span>,<span class="st">&quot;B&quot;</span>), <span class="dt">y=</span><span class="st">&quot;Y&quot;</span>, <span class="dt">data=</span>fd, <span class="dt">se=</span><span class="st">&quot;model&quot;</span>)</code></pre></div>
+<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/ggplot-gginteractionplot2-1.png" width="576" /></p>
 
+</div>
 </div>
 </div>
             </section>
@@ -358,8 +412,8 @@ R^2 = 1- \frac{SS(error)}{SS(total)}
           </div>
         </div>
       </div>
-<a href="a-linear-model-with-a-single-continous-x.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="a-linear-model-with-a-single-categorical-x.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="variability-and-uncertainty-standard-deviations-and-standard-errors.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="a-linear-model-with-a-single-continous-x.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -389,7 +443,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/rstudio/bookdown-demo/edit/master/notebooks/18-least_squares.Rmd",
+"link": "https://github.com/rstudio/bookdown-demo/edit/master/notebooks/12-ggplots.Rmd",
 "text": "Edit"
 },
 "download": ["Walker-elementary-statistical-modeling-draft.pdf", "Walker-elementary-statistical-modeling-draft.epub"],
