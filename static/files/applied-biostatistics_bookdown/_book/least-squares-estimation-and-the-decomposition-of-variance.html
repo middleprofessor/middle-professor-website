@@ -32,8 +32,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   
   
-<link rel="prev" href="least-squares-estimation-and-the-decomposition-of-variance.html">
-<link rel="next" href="p-values.html">
+<link rel="prev" href="a-linear-model-with-a-single-continous-x.html">
+<link rel="next" href="a-linear-model-with-a-single-categorical-x.html">
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
@@ -294,267 +294,64 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="a-linear-model-with-a-single-categorical-x" class="section level1">
-<h1><span class="header-section-number">Chapter 8</span> A linear model with a single, categorical <em>X</em></h1>
-<div id="a-linear-model-with-a-single-categorical-x-is-the-engine-behind-a-single-factor-one-way-anova-and-a-t-test-is-a-special-case-of-this-model." class="section level2">
-<h2><span class="header-section-number">8.1</span> A linear model with a single, categorical <em>X</em> is the engine behind a single factor (one-way) ANOVA and a t-test is a special case of this model.</h2>
-<p>To introduce modeling with a single, categorical <span class="math inline">\(X\)</span> variable, I’ll use the vole data from</p>
+<div id="least-squares-estimation-and-the-decomposition-of-variance" class="section level1">
+<h1><span class="header-section-number">Chapter 7</span> Least Squares Estimation and the Decomposition of Variance</h1>
+<p>The linear models in the last chapter and for much of this book are fit to data using a method called “ordinary least squares” (OLS). This chapter explores the meaning of OLS and related statistics, including <span class="math inline">\(R^2\)</span>, as well as some alternative methods for bivariate regression.</p>
+<div id="ols-regression" class="section level2">
+<h2><span class="header-section-number">7.1</span> OLS regression</h2>
+<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/fake-data-ma-1.png" width="576" /></p>
+<p>The fake data illustrated in the scatterplot above (Figure <a href="#fig:fake-data-ma"><strong>??</strong></a>) were modeled to look something like the squirrel fecal cortisol metabolite data in the previous chapter. If a typical student is asked to draw a regression line through the scatter, they typically draw a line similar to that in Figure <a href="#fig:fake-data-ma"><strong>??</strong></a>. This line is not the OLS regression line but the major axis of an elipse that encloses the scatter of points–that students invariably draw this line suggests that the brain interprets the major axis of an elliptical scatter of points as a trend (This major axis line is an alternative method for estimating a slope and is known as standard major-axis regression. More about this at the end of this chapter.)</p>
+<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/fake-data-ols-1.png" width="576" /></p>
+<p>The OLS regression line is the red line in Figure <a href="#fig:fake-data-ols"><strong>??</strong></a> – the standard major axis line is left for comparison). The OLS regression line</p>
 <ol style="list-style-type: decimal">
-<li>Source: Dryad Digital Repository. <a href="https://doi.org/10.5061/dryad.31cc4/1" class="uri">https://doi.org/10.5061/dryad.31cc4/1</a></li>
-<li>File: “RSBL-2013-0432 vole data.xlsx”</li>
-<li>Sheet: “COLD VOLES LIFESPAN”</li>
+<li>passes through the bivariate mean (<span class="math inline">\(\bar{x}\)</span>, <span class="math inline">\(\bar{y}\)</span>) of the scatter, and</li>
+<li>minimizes the sum of the squared deviations from each point to it’s modeled value <span class="math inline">\(\sum{(y_i - \hat{y}_i)^2}\)</span></li>
 </ol>
-<p>Normal cellular metabolism creates reactive oxygen species (ROS) that can disrupt cell function and potentially cause cell damage. Anti-oxidants are molecules that bind ROS, inhibiting their ability to disrupt cell activity. A working hypothesis for many years is that supplemental anti-oxidants should improve cell function and, scaling up, whole-animal function (such as lifespan). The vole data explores this with supplemental Vitamins C and E, which are anti-oxidants, in the diet of the short-tailed field vole (<em>Microtus agrestis</em>).</p>
-<p>The goal of the study is to measure the effect of anti-oxidants on lifespan. The researchers randomly assigned the voles to one of thre treatment levels: “control”, “vitamin E”, and “vitamin C”. The variable <span class="math inline">\(treatment\)</span>, is a single, categorical <span class="math inline">\(X\)</span> variable. Categorical variables are often called <strong>factors</strong> and the treatment levels are often called <strong>factor levels</strong>. There are no units to a categorical <span class="math inline">\(X\)</span> variable (even though a certain amount of each anti-oxidant was supplemented). The response (<span class="math inline">\(Y\)</span>) is <span class="math inline">\(lifespan\)</span> measured in days.</p>
-<p>The linear model with a categorical <span class="math inline">\(X\)</span> variable with three levels is not immediately obvious, and so I don’t present the model until after showing the table of model coefficients</p>
-<div id="table-of-model-coefficients" class="section level3">
-<h3><span class="header-section-number">8.1.1</span> Table of model coefficients</h3>
-<p>Here is the table of coefficients from the linear model fit</p>
-<table>
-<thead>
-<tr class="header">
-<th></th>
-<th align="right">Estimate</th>
-<th align="right">Std. Error</th>
-<th align="right">t value</th>
-<th align="right">Pr(&gt;|t|)</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>(Intercept)</td>
-<td align="right">503.4</td>
-<td align="right">27.4</td>
-<td align="right">18.4</td>
-<td align="right">0.000</td>
-</tr>
-<tr class="even">
-<td>treatmentvitamin_E</td>
-<td align="right">-89.9</td>
-<td align="right">52.5</td>
-<td align="right">-1.7</td>
-<td align="right">0.090</td>
-</tr>
-<tr class="odd">
-<td>treatmentvitamin_C</td>
-<td align="right">-115.1</td>
-<td align="right">54.5</td>
-<td align="right">-2.1</td>
-<td align="right">0.037</td>
-</tr>
-</tbody>
-</table>
-<p>The table has estimates for three parameters. The first estimate (the intercept) is the mean response in the reference level. Here the reference level is the “control” group. The additional estimates are the differences in the mean between each of the other treatment levels and the reference level. These are the “effects” in the model. So typically with categorical <span class="math inline">\(X\)</span>, when we speak of an  we mean a difference in means. These estimates and their meaning are illustrated in Figure <a href="a-linear-model-with-a-single-categorical-x.html#fig:vole-mean-plot">8.1</a>.</p>
-<p>(note. The default in R is to set the level that is first alphabetically as the reference level. In the vole data, “control” comes before “vitamin_E” and “vitamin_C” alphabetically, and so by default, it is the reference level. This makes sense for these data – we want to compare the lifespan of the vitamins E and C groups to that of the control group. The reference level can be changed of course.)</p>
-<div class="figure"><span id="fig:vole-mean-plot"></span>
-<img src="Walker-elementary-statistical-modeling-draft_files/figure-html/vole-mean-plot-1.png" alt="What the coefficients of a linear model with a single categorical X mean. The means of the three treatment levels for the vole data are shown with the filled circles. The length of the double-headed arrows are differences in means. The intercept ($b_0$) is the mean of the reference treatment level. The coefficients ($b_1$ and $b_2$) are the differences between the treatment level's mean and the reference mean. As with a linear model with a continuous X, the coefficients are effects." width="576" />
+<p>There are an infinite number of lines that pass through the bivariate mean (think of anchoring a line at the bivariate mean and spinning it). The OLS line is the line that minimizes the squared (vertical) deviations (“least squares”).</p>
+<p>For a bivariate regression, the slope (coefficient <span class="math inline">\(b_1\)</span> of <span class="math inline">\(X\)</span>) of the OLS model fit is computed by</p>
+<span class="math display">\[\begin{equation}
+b_1 = \frac{\mathrm{COV}(X, Y)}{\mathrm{VAR}(X)}
+\end{equation}\]</span>
+<p>This equation is worth memorizing. We will generalize this into a more flexible equation in a few chapters.</p>
+</div>
+<div id="how-well-does-the-model-fit-the-data-r2-and-variance-explained" class="section level2">
+<h2><span class="header-section-number">7.2</span> How well does the model fit the data? <span class="math inline">\(R^2\)</span> and “variance explained”</h2>
+<p>Let’s switch to real data.</p>
+<ol style="list-style-type: decimal">
+<li>Source: Dryad Digital Repository. <a href="https://doi.org/10.5061/dryad.056r5" class="uri">https://doi.org/10.5061/dryad.056r5</a></li>
+<li>File: “Diet-shift data.xls”</li>
+</ol>
+<p>Fish require arachidonic acid (ARA) and other highyly unsaturated fatty acids in their diet and embryo and yolk-stage larvae obtain these from yolk. Fuiman and Faulk (xxx) designed an experiment to investigate if red drum (<em>Sciaenops ocellatus</em>) mothers provision the yolk with ARA from recent dietary intake or from stored sources in somatic tissues. The data below are from experiment 8. The <em>x</em>-axis is the days since a diet shift to more and less ARA (<span class="math inline">\(days\)</span>) and the <em>y</em>-axis is the ARA content of the eggs (<span class="math inline">\(ARA\)</span>).</p>
+<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/egg-data-1.png" width="576" /></p>
+<p>The statistic <span class="math inline">\(R^2\)</span> is a measure of the fit of a model to data. The <span class="math inline">\(R^2\)</span> for the fit of the egg data is 0.42. <span class="math inline">\(R^2\)</span> is the fraction of two variances <span class="math inline">\(\frac{\mathrm{VAR}(Model)}{\mathrm{VAR}(Y)}\)</span>, or, the fraction of the variance of <span class="math inline">\(Y\)</span> “explained by the model.” The value of <span class="math inline">\(R^2\)</span> ranges from zero (the fit cannot be any worse) to one (the fit is “pefect”).</p>
+<p>To understand <span class="math inline">\(R^2\)</span>, and its computation, a bit more, let’s look at three kinds of deviations.</p>
+<div class="figure"><span id="fig:ols-deviations"></span>
+<img src="Walker-elementary-statistical-modeling-draft_files/figure-html/ols-deviations-1.png" alt="Three kinds of deviations from a fit model. A. Deviations of the measured values from the mean. These are in the numerator of the equation of the sample variance. The dashed line is the mean ARA content. B. Deviations of the measured values from the modeled values. The sum of these deviations squared is what is minimized in an OLS fit. C. Deviations of the modeled values from the mean ARA content. The measured values are in gray, the modeled values in black" width="576" />
 <p class="caption">
-Figure 8.1: What the coefficients of a linear model with a single categorical X mean. The means of the three treatment levels for the vole data are shown with the filled circles. The length of the double-headed arrows are differences in means. The intercept (<span class="math inline">\(b_0\)</span>) is the mean of the reference treatment level. The coefficients (<span class="math inline">\(b_1\)</span> and <span class="math inline">\(b_2\)</span>) are the differences between the treatment level’s mean and the reference mean. As with a linear model with a continuous X, the coefficients are effects.
+Figure 7.1: Three kinds of deviations from a fit model. A. Deviations of the measured values from the mean. These are in the numerator of the equation of the sample variance. The dashed line is the mean ARA content. B. Deviations of the measured values from the modeled values. The sum of these deviations squared is what is minimized in an OLS fit. C. Deviations of the modeled values from the mean ARA content. The measured values are in gray, the modeled values in black
 </p>
 </div>
-</div>
-<div id="the-linear-model" class="section level3">
-<h3><span class="header-section-number">8.1.2</span> The linear model</h3>
-<p>We can see an immediate difference between the coefficient table for a linear model fit to a single, categorical <span class="math inline">\(X\)</span> and that for a single, continuous <span class="math inline">\(X\)</span>. For the latter, there is a single coefficient for <span class="math inline">\(X\)</span>. For the former, there is a coefficient for each level of the categorical <span class="math inline">\(X\)</span> <em>except</em> the “reference” level.</p>
-<p>The linear model for a single, continuous <span class="math inline">\(X\)</span> with three factor levels is</p>
+<p>Figure <a href="least-squares-estimation-and-the-decomposition-of-variance.html#fig:ols-deviations">7.1</a>A shows the deviations from the measured values to the mean value (dashed line). These are the deviations in the numerator of the equation to compute the variance of <span class="math inline">\(ARA_EGG_MG\)</span>. Figure <a href="least-squares-estimation-and-the-decomposition-of-variance.html#fig:ols-deviations">7.1</a>B shows the deviations of the measured values from the modeled values. The sum of these deviations squared is what is minimized by the OLS fit. The bigger these deviations are, the worse the model fit. Figure <a href="least-squares-estimation-and-the-decomposition-of-variance.html#fig:ols-deviations">7.1</a>C shows the deviations of the modeled values to the mean value. The bigger these deviations are, the better the model fit.</p>
+<p>The sums of the squares of these deviations (or “sums of squares”) have names:</p>
 <span class="math display">\[\begin{equation}
-lifespan = \beta_0 + \beta_1 vitamin\_E + \beta_2 vitamin\_C + \varepsilon
+\mathrm{SS(total)} = \sum{(y_i - \bar{y})^2}
 \end{equation}\]</span>
-<p>and the estimates in the coefficient table are the coefficients of the fit model</p>
-<span class="math display" id="eq:model-cat-x">\[\begin{equation}
-lifespan_i = b_0 + b_1 vitamin\_E + b_2 vitamin\_C + e_i
-\tag{8.1}
-\end{equation}\]</span>
-<p>Remember, <span class="math inline">\(b_0\)</span> is the mean of the control group, <span class="math inline">\(b_1\)</span> is the difference in means between the vitamin E and control groups, and <span class="math inline">\(b_2\)</span> is the difference in means between the vitamin C and control groups (Figure <a href="a-linear-model-with-a-single-categorical-x.html#fig:vole-mean-plot">8.1</a>).</p>
-<p>In this model, <span class="math inline">\(vitamin\_E\)</span> and <span class="math inline">\(vitamin\_C\)</span> are <strong>dummy variables</strong> that contain a one, if the data is from that treatment level, and zero otherwise. This is called dummy coding or treatment coding. The <code>lm</code> function creates these dummy variables under the table, in something called the <strong>model matrix</strong>, which we’ll cover in the next chapter. You won’t see these columns in your data. But if you did, it would look something like this</p>
-<table>
-<thead>
-<tr class="header">
-<th align="right">lifespan</th>
-<th align="left">treatment</th>
-<th align="right">vitamin_E</th>
-<th align="right">vitamin_C</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="right">621</td>
-<td align="left">control</td>
-<td align="right">0</td>
-<td align="right">0</td>
-</tr>
-<tr class="even">
-<td align="right">865</td>
-<td align="left">control</td>
-<td align="right">0</td>
-<td align="right">0</td>
-</tr>
-<tr class="odd">
-<td align="right">583</td>
-<td align="left">vitamin_E</td>
-<td align="right">1</td>
-<td align="right">0</td>
-</tr>
-<tr class="even">
-<td align="right">561</td>
-<td align="left">vitamin_E</td>
-<td align="right">1</td>
-<td align="right">0</td>
-</tr>
-<tr class="odd">
-<td align="right">315</td>
-<td align="left">vitamin_C</td>
-<td align="right">0</td>
-<td align="right">1</td>
-</tr>
-<tr class="even">
-<td align="right">157</td>
-<td align="left">vitamin_C</td>
-<td align="right">0</td>
-<td align="right">1</td>
-</tr>
-</tbody>
-</table>
-<p>There are alternative coding methods. Dummy coding is the default in R. Note that the method of coding can make a difference in an ANOVA table, and many published papers using R have published incorrect interpretations of ANOVA table outputs. This is both getting ahead of ourselves and somewhat moot, because I don’t advocate publishing ANOVA tables.</p>
-<div id="some-math-to-convince-you-that-the-intercept-of-a-linear-model-with-a-categorical-x-is-the-mean-of-the-reference-group-and-the-intercept-of-a-line.-and-some-math-to-convince-you-that-the-coefficient-of-a-dummy-variable-in-a-linear-model-with-a-categorial-x-is-a-difference-in-means-and-a-slope." class="section level4">
-<h4><span class="header-section-number">8.1.2.1</span> Some math to convince you that the intercept of a linear model with a categorical <span class="math inline">\(X\)</span> is the mean of the reference group <em>and</em> the intercept of a line. And some math to convince you that the coefficient of a dummy variable in a linear model with a categorial <span class="math inline">\(X\)</span> is a difference in means <em>and</em> a slope.</h4>
-<p>The interecept of a model is the value of the model when all <span class="math inline">\(X\)</span>-variables are set to zero. The <span class="math inline">\(X\)</span> variables in the model (Equation <a href="a-linear-model-with-a-single-categorical-x.html#eq:model-cat-x">(8.1)</a>) are the dummy variables <span class="math inline">\(vitamin\_E\)</span> and <span class="math inline">\(vitamin\_C\)</span>. If we set vitamin_E$ and <span class="math inline">\(vitamin\_C\)</span> in Equation <a href="a-linear-model-with-a-single-categorical-x.html#eq:model-cat-x">(8.1)</a> to zero, the modeled (or expected) value reduces to</p>
 <span class="math display">\[\begin{equation}
-\mathrm{E}(lifespan|X_1=0, X_2=0) = b_0
+\mathrm{SS(error)} = \sum{(y_i - \hat{y_i})^2}
 \end{equation}\]</span>
-<p>% Since both dummy variables are set to zero, we have modeled the expected value or mean of the control group.</p>
-<p>The slope of a model is the difference in the modeled value given a one unit increase in <span class="math inline">\(X\)</span>. If we increase the dummy variable <span class="math inline">\(vitamin\_E\)</span> from zero to one (that is, if we are modeling the expected value of the vitamin E group), we get</p>
 <span class="math display">\[\begin{equation}
-\mathrm{E}(lifespan|X_1=1, X_2=0) = b_0 + b_1
+\mathrm{SS(model)} = \sum{(\hat{y_i} - \bar{y})^2}
 \end{equation}\]</span>
-<p>which can be re-arranged to</p>
+<p>Again, <span class="math inline">\(\mathrm{SS(total)}\)</span> is the numerator of the equation for the sample variance. It is called “s-s-total” because <span class="math inline">\(\mathrm{SS(total)} = \mathrm{SS(model)} + \mathrm{SS(error)}\)</span>. That is, the total sums of squares can be <strong>decomposed</strong> into two <strong>components</strong>: the modeled sums of squares and the error sums of squares. Given these components, it’s easy to understand <span class="math inline">\(R^2\)</span></p>
 <span class="math display">\[\begin{equation}
-b_1 = \mathrm{E}(lifespan|X_1=1, X_2=0) - b_0
+R^2 = \frac{SS(model)}{SS(total)}
 \end{equation}\]</span>
-<p>and since <span class="math inline">\(\mathrm{E}(lifespan|X_1=0, X_2=0) = b_0\)</span> then</p>
+<p><span class="math inline">\(R^2\)</span> is the fraction of the total sums of squares that is due to (or “explained by”) the model sums of squares. Above I said that <span class="math inline">\(R^2\)</span> is the fraction of <em>variance</em> explained by the model. Equation xxx is a ratio of variance, but the <span class="math inline">\((n-1)^{-1}\)</span> in both the numerator and the denominator cancel out. Finally, many sources give the equation for <span class="math inline">\(R^2\)</span> as</p>
 <span class="math display">\[\begin{equation}
-b_1 = \mathrm{E}(lifespan|X_1=1, X_2=0) - \mathrm{E}(lifespan|X_1=0, X_2=0)
+R^2 = 1- \frac{SS(error)}{SS(total)}
 \end{equation}\]</span>
-<p>or, the coefficient of vitamin E is the difference in means between the vitamin E and control groups, which is also a slope since this is the expected difference given a one unit increase in <span class="math inline">\(vitamin\_E\)</span>.</p>
-</div>
-</div>
-<div id="reporting-results-1" class="section level3">
-<h3><span class="header-section-number">8.1.3</span> Reporting results</h3>
-<p>What should be reported for the analyis of effects of anti-oxidant supplements on vole lifespan? Best practice includes reporting the raw data with a summary distribution and treatment effects with CIs. “Raw data” means the individual lifespans as a function of treatment level.</p>
-<div id="harrel-plot-of-the-data" class="section level4">
-<h4><span class="header-section-number">8.1.3.1</span> Harrel Plot of the data</h4>
-<div class="figure"><span id="fig:harrellplot"></span>
-<img src="Walker-elementary-statistical-modeling-draft_files/figure-html/harrellplot-1.png" alt="HarrellPlot of the raw data, distribution, and effects of the vole lifespan data." width="576" />
-<p class="caption">
-Figure 8.2: HarrellPlot of the raw data, distribution, and effects of the vole lifespan data.
-</p>
-</div>
-<p>The raw data, the distributions within treatment level, and the effects (difference in means) of treatment can be combined into a single plot that I call a Harrell plot (Figure <a href="#fig:voles"><strong>??</strong></a>). Notice that the <em>x</em>-axis and <em>y</em> axes are flipped so that <span class="math inline">\(lifespan\)</span> is on the <em>x</em>-axis. It is still the “response” or “Y” variable! The Harrell plot contains two parts</p>
-<ol style="list-style-type: decimal">
-<li>The bottom contains a <strong>strip chart</strong> (often called a “dot plot”) of the raw response measures grouped by factor level. Superimposed over the strip chart is a <strong>box plot</strong> summarizing the distribution of each factor level. The line in the center of a box is the median <span class="math inline">\(lifespan\)</span> for that group, the left and right edges of the box are the 25% and 75% quantiles of <span class="math inline">\(lifespan\)</span> for that grop, and the lines extending to the left and right of the box are the “whiskers”, which are the smallest and largest value within <span class="math inline">\(1.5 IQR\)</span> (inter-quartile range, which is the interval bounded by box).</li>
-<li>The top is a <strong>forest plot</strong> of the effects and the 95% CI of the effects. For categorical <span class="math inline">\(X\)</span>, the effects could be model coefficients or treatment <strong>contrasts</strong>, which are differences in means between treatment levels. Model coefficients are a subset of possible treatment contrasts.</li>
-</ol>
-<p>The Harrell plot above shows the effects as model coefficients, which (again!) are differences between the mean of the response in a specific treatment level and the mean of the response in a reference level. Here the reference level is the control group.</p>
-</div>
-<div id="in-text-reporting" class="section level4">
-<h4><span class="header-section-number">8.1.3.2</span> In-text reporting</h4>
-<p>“The mean lifespan of cold-reared voles supplmented with vitamin E was -89.9 days shorter than the mean lifespan for the control group (95% CI: -194.1, 14.3). The mean lifespan of cold-reared voles supplmented with vitamin C was -115.1 days shorter than the mean lifespan for the control group (95% CI: -223.2, -6.9).</p>
-</div>
-<div id="correct-interpretation-of-the-confidence-interval-is-key" class="section level4">
-<h4><span class="header-section-number">8.1.3.3</span> Correct interpretation of the Confidence Interval is key</h4>
-<p>Remember, that the CI contains the range of parameter values that are consistent with the data (in the sense that a t-test wouldn’t reject the hypothesis test). This means that a true value at the low end or the high end of the CI is consistent with the data. Your technical report/manuscript should discuss the consequences of this. For example, A small, increase in lifespan is consistant with the Vitamin E but not Vitamin C supplementation, if we use the 95% CI as a pretty good range for inferring “consistent with”. Both a 223 day and a 7 day decrease in lifespan are consistant with the Vitamin C effect. 223 days seems like a huge effect, especially for a short lived vole. 7 days is certainly a much smaller effect, but this doesn’t mean that it doesn’t have important ecological, behavioral, or fitness consequences.</p>
-</div>
-</div>
-</div>
-<div id="working-in-r-1" class="section level2">
-<h2><span class="header-section-number">8.2</span> Working in R</h2>
-<div id="exploring-the-relationship-between-y-and-x" class="section level3">
-<h3><span class="header-section-number">8.2.1</span> Exploring the relationship between <em>Y</em> and <em>X</em></h3>
-<p>Questions</p>
-<ol style="list-style-type: decimal">
-<li>Import the vole data from the Dryad repository as the data.table <code>vole_wide</code>. Replace the spaces in the column labels with the underscore “_“.</li>
-</ol>
-<p>The data are in “wide” format. A pretty good script for for converting these to long format is</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">vole_long &lt;-<span class="st"> </span><span class="kw">melt</span>(vole_wide, <span class="dt">measure.vars=</span><span class="kw">c</span>(<span class="st">&quot;control&quot;</span>, <span class="st">&quot;vitamin_E&quot;</span>, <span class="st">&quot;vitamin_C&quot;</span>), <span class="dt">variable.name=</span><span class="st">&quot;treatment&quot;</span>)
-vole &lt;-<span class="st"> </span><span class="kw">na.omit</span>(vole_long)
-<span class="co"># melt is from reshape2 package and is a workhorse in R</span>
-<span class="co"># the resulting data frame has 3 stacked copies of the same rows</span>
-<span class="co"># na.omit removes the superfluous two extra sets of rows created by melt</span>
-<span class="co"># the more compact way to do this is combine the steps:</span>
-<span class="co"># vole &lt;- na.omit(melt(vole_wide, measure.vars=c(&quot;control&quot;, &quot;vitamin_E&quot;, &quot;vitamin_C&quot;))</span>
-<span class="co"># but I suggest two steps so you can see what melt does. This isn&#39;t the best example of using melt.</span></code></pre></div>
-<p>Use the ggpubr package to create a box plot, grouped by treatment, with superimposed strip chart (“dots”)</p>
-<p>Questions</p>
-<ol start="2" style="list-style-type: decimal">
-<li>Do the response as a function of group look fairly normally distributed or are there red flags such as skewness, outliers, bimodal clusters, etc.</li>
-<li>Is the direction of the effect consistent with the expected direction?</li>
-</ol>
-</div>
-<div id="fitting-the-model" class="section level3">
-<h3><span class="header-section-number">8.2.2</span> Fitting the model</h3>
-<p>As with a single, continuous <span class="math inline">\(X\)</span>, we fit the model using the <code>lm</code> function and with the model formula of the form <code>y ~ x</code>. Note that the R formula can use the single categorical variable <span class="math inline">\(treatment\)</span>. The code underneath lm will note that <span class="math inline">\(treatment\)</span> is a factor with three levels and will automatically create the two dummy variables noted above in the linear model.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fit &lt;-<span class="st"> </span><span class="kw">lm</span>(lifespan <span class="op">~</span><span class="st"> </span>treatment, <span class="dt">data=</span>vole)</code></pre></div>
-<p>All of the same scripts to access the information in <code>fit</code> that we used with the continuous <span class="math inline">\(X\)</span> analysis are the same. For example, the base R <code>summary</code> function gives the same information as in the continuous <span class="math inline">\(X\)</span> example.</p>
-<p>Questions</p>
-<ol start="4" style="list-style-type: decimal">
-<li>Review different output in the <code>summary</code> function and list which are useful and which are not so useful and why.</li>
-</ol>
-<p>Other useful functions on the lm object (“fit”) are <code>coefficients(summary())</code>, <code>coef()</code> or <code>coefficients()</code> and <code>confint</code>. Assigning the output of these functions to an R object allows you to increase reproducibility. For example, if I assign the coefficients to <code>b</code></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">b &lt;-<span class="st"> </span><span class="kw">coef</span>(fit)</code></pre></div>
-<p>then I can report these in R markdown text by embedding r code directly in the text. For example, if I embed “r round(b[“treatmentvitamin_E”], 1)” between a pair of single accent characters, then r markdown inserts -89.9 into the rendered text.</p>
-</div>
-<div id="an-introduction-to-contrasts" class="section level3">
-<h3><span class="header-section-number">8.2.3</span> An introduction to contrasts</h3>
-<p>We often want to compare more than just the non-reference levels to the reference level. For example, we might want to compare the effects of the vitamin E supplementation to vitamin C supplementation. Or, we might want to combine (or “pool”) vitamin C and vitamin E levels effects into a single “anti-oxidant” level and compare to the control. These comparisons of means are called linear <strong>contrasts</strong>. The emmeans package is a good package for obtaining contrasts for both simple linear models computed with <code>lm</code> and for more complicated statistical models. If you haven’t already, download the emmeans package.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fit.em &lt;-<span class="st"> </span><span class="kw">emmeans</span>(fit, <span class="dt">spec=</span><span class="st">&quot;treatment&quot;</span>)
-fit.em</code></pre></div>
-<pre><code>##  treatment   emmean       SE df lower.CL upper.CL
-##  control   503.3929 27.40978 93 448.9625 557.8233
-##  vitamin_E 413.4762 44.75999 93 324.5917 502.3607
-##  vitamin_C 388.3158 47.05685 93 294.8702 481.7614
-## 
-## Confidence level used: 0.95</code></pre>
-<p>The <code>emmeans()</code> function returns various estimated means, depending on what is specified with the <code>spec=</code> parameter. Here the grouping variable “treatment” is specified, so the means returned are estimates of <span class="math inline">\(\mathrm{E}(lifespan | treatment)\)</span>, the modeled means for each level of treatment. For this simple analysis, the modeled means are simply the group means. Note that the default value returned is a table with the standard error and 95% confidence limits of the estimates.</p>
-<p>Let’s use the emmeans object to get the contrasts for all combinations of treatment levels.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(<span class="kw">contrast</span>(fit.em, <span class="dt">method=</span><span class="st">&quot;revpairwise&quot;</span>, <span class="dt">adjust=</span><span class="st">&quot;none&quot;</span>), <span class="dt">infer=</span><span class="kw">c</span>(<span class="ot">TRUE</span>, <span class="ot">TRUE</span>))</code></pre></div>
-<pre><code>##  contrast                estimate       SE df  lower.CL   upper.CL t.ratio
-##  vitamin_E - control    -89.91667 52.48574 93 -194.1429  14.309609  -1.713
-##  vitamin_C - control   -115.07707 54.45772 93 -223.2193  -6.934834  -2.113
-##  vitamin_C - vitamin_E  -25.16040 64.94462 93 -154.1275 103.806738  -0.387
-##  p.value
-##   0.0900
-##   0.0373
-##   0.6993
-## 
-## Confidence level used: 0.95</code></pre>
-<p>I’ve sent to parameters to the contrast function and one to the summary function</p>
-<ol style="list-style-type: decimal">
-<li>method=“revpairwise”. <code>contrast</code> can create different combinations of differences between means. Here I’ve specified all pairwise differences (the “rev” reverses the order of the subtraction). Notice that the statistics (estimate, SE, etc) are equal to the same statistics for <span class="math inline">\(b_1\)</span> and <span class="math inline">\(b_2\)</span> of the linear model. I said earlier that these coefficients are contrasts!</li>
-<li>adjust=“none”. In classical frequentist hypothesis testing, the p-value of a contrast in what are called “post-hoc tests” is adjusted to reflect “multiple testing” (more than one p-value is being computed). This adjustment is almost standard in biology, but the practice is hugely controversial. The concept of multiple testing is important, and we will return to this in a future chapter, but here I have chosen to show the unadjusted p-value. The reason is that I want the unadjusted confidence interval and the adjustment would adjust these as well. If deleted <code>adjust=&quot;none&quot;</code> from the script, the contrast function would default to the <strong>Tukey HSD</strong> (Honestly Significant Difference) test. There are literally dozens and dozens of post-hoc tests, which largely reflects the misplaced emphasis on “better” <span class="math inline">\(p\)</span>-values rather than parameter estimates and their uncertainty.</li>
-<li>infer=c(TRUE, TRUE). This parameter controls what kind of inference to put in the table. The first value specifies the inclusion of the CI (emmeans uses “CL” for confidence limit), the second value specifies the inclusion of <span class="math inline">\(t\)</span> and <span class="math inline">\(p\)</span>-values.</li>
-</ol>
-</div>
-<div id="harrell-plot" class="section level3">
-<h3><span class="header-section-number">8.2.4</span> Harrell plot</h3>
-<div id="installing-the-harrellplot-package" class="section level4">
-<h4><span class="header-section-number">8.2.4.1</span> Installing the harrellplot package</h4>
-<p>The harrellplot package is available on github but not a cran repository and, therefore, takes a little more work to install. To install a package from a github repository, 1. load library(devtools) – this may need to be installed first using the R Studio Tools &gt; Install Packages… tool 2. install harrellplot from github. In the console, type</p>
-<p><code>install_github(&quot;middleprofessor/harrellplot&quot;)</code></p>
-<ol start="3" style="list-style-type: decimal">
-<li>load the harrellplot package</li>
-<li>harrellplot requires other packages including broom, Hmisc, car, lme4, and lmerTest. If you haven’t installed these do. load these with the library() function at the start of your notebook.</li>
-</ol>
-</div>
-<div id="using-harrellplot-to-make-a-nice-publishable-plot-of-treatment-effects" class="section level4">
-<h4><span class="header-section-number">8.2.4.2</span> Using harrellplot to make a nice, publishable plot of treatment effects</h4>
-<p>In the console type `?harrellplot to see the many parameters. Unlike ggplot2, variable names need to be specified with quotes in the harrellplot function. The harrellplot function is a list with several elements.</p>
-<p>Here is the default plot</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">vole.harrellplot &lt;-<span class="st"> </span><span class="kw">harrellplot</span>(<span class="dt">x=</span><span class="st">&quot;treatment&quot;</span>, <span class="dt">y=</span><span class="st">&quot;lifespan&quot;</span>, <span class="dt">data=</span>vole)
-vole.harrellplot<span class="op">$</span>gg <span class="co"># gg is the plot object</span></code></pre></div>
-<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/unnamed-chunk-13-1.png" width="576" /></p>
+<p>which is an obvious alternative given the decomposition. I prefer the former equation because it emphasizes the model fit instead of model ill-fit.</p>
 
-</div>
-</div>
 </div>
 </div>
             </section>
@@ -562,8 +359,8 @@ vole.harrellplot<span class="op">$</span>gg <span class="co"># gg is the plot ob
           </div>
         </div>
       </div>
-<a href="least-squares-estimation-and-the-decomposition-of-variance.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="p-values.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="a-linear-model-with-a-single-continous-x.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="a-linear-model-with-a-single-categorical-x.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -593,7 +390,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/rstudio/bookdown-demo/edit/master/notebooks/20-categorical_X.Rmd",
+"link": "https://github.com/rstudio/bookdown-demo/edit/master/notebooks/18-least_squares.Rmd",
 "text": "Edit"
 },
 "download": ["Walker-elementary-statistical-modeling-draft.pdf", "Walker-elementary-statistical-modeling-draft.epub"],
