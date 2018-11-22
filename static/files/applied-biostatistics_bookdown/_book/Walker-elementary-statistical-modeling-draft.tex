@@ -412,8 +412,8 @@ which is simply the mean of \(Y\), or, more specifically, the
 \textbf{unconditional mean} of \(Y\), since its value is not conditional
 on any value of \(X\).
 
-\section{Assumptions for inference with statistical
-models}\label{assumptions-for-inference-with-statistical-models}
+\section{Assumptions for inference with a linear
+model}\label{assumptions-for-inference-with-a-linear-model}
 
 Here is the linear model above (equation \eqref{eq:lm}) but I've amended
 the model by explicitly specifying the distribution of the error term.
@@ -435,7 +435,7 @@ Y &\sim N(\mu, \sigma)\\
 
 which basically states that the outcome is a function of a stochastic
 component (a normal distribution with variance \(\sigma^2\)) and a
-deterministic component (the linear predictor \(\beta_0 + beta_1 X\)).
+deterministic component (the linear predictor \(\beta_0 + \beta_1 X\)).
 The alternative, ``stochastic part first'' way to define the statistical
 model is more easily generalized to more complex models, and is the
 preferred method among applied biostatiticians, who are mostly using
@@ -6446,6 +6446,406 @@ model that adjusts for baseline measures to estimate the treatment
 effect in pre-post designs. And, if one isn't planning on taking an
 initial measure, then maybe you should, because the initial measure used
 in a linear model allows a better estimate of the treatment effect!
+
+Biologists frequently count stuff, and design experiments to estimate
+the effects of different factors on these counts. For example, the
+effects of environmental mercury on clutch size in a bird, the effects
+of warming on parasite load in a fish, or the effect of exercise on RNA
+expression.
+
+Count data differ from data with Normal error in many ways, including 1)
+counts are discrete 2) counts tend to bunch up on the small side of the
+range, creating a distribution with a positive skew, 3) counts can be
+zero, and a sample of counts can have an abundance of zeros, and 4) the
+variance of count data tends to increase with the mean (see Figure
+\ref{fig:glm1-plot1} for some of these properties). Some count data can
+be approximated by a normal distribution and reasonably modeled with a
+linear model but more often, count data are modeled with something other
+than a normal distribution using a \textbf{generalized linear model}
+(GLM). Back before modern computing and fast processors, count data were
+often analyzed by either \textbf{transforming} the response or by
+\textbf{non-parametric hypothesis tests}. I prefer a GLM because both
+the analysis of transformed data and non-parametric hypothesis tests are
+really a response to ``correct'' \(p\)-values instead of interpretable
+parameter estimates.
+
+\begin{figure}
+\centering
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/glm1-plot1-1.pdf}
+\caption{\label{fig:glm1-plot1}Histogram of the count of a trematode
+parasite larvae in Control vs.~Infected fish. Fish in the Infected
+treatment are infected with a tapeworm.}
+\end{figure}
+
+\section{The generalized linear
+model}\label{the-generalized-linear-model}
+
+Section {[}Assumptions for inference with statistical models{]} in
+Chapter 1 introduced two ways of defining a statistical model fit to
+data.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Definition using a distribution of the error term
+\end{enumerate}
+
+\begin{align}
+Y &= \beta_0 + \beta_1 X + \varepsilon\\
+\varepsilon &\sim N(0, \sigma)
+\label{eq:lm-again}
+\end{align}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{1}
+\tightlist
+\item
+  Definition using the response as a combination of stochastic and
+  deterministic components
+\end{enumerate}
+
+\begin{align}
+Y &\sim N(\mu, \sigma)\\
+\mu &= \beta_0 + \beta_1 X
+\label{eq:lm-spec2}
+\end{align}
+
+A generalized linear model has has these two parts of the second
+definition but adds a third part
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  A probability distribution from the exponential family (this is the
+  stochastic part)
+
+  \begin{equation}
+  Y \sim P(\mu)
+  \end{equation}
+\item
+  a linear predictor of the form (this is the deterministic part)
+
+  \begin{equation}
+  \eta=\beta_0 + \beta_1 X
+  \end{equation}
+\item
+  a \textbf{link function} connecting the two parts
+
+  \begin{equation}
+  \eta = g(\mu)
+  \end{equation}
+\end{enumerate}
+
+\(mu\) (the Greek symbol mu) is the conditional mean (or expectation
+\(\mathrm{E}(Y|X)\)) of the response on the \textbf{response scale} and
+\(\eta\) is the conditional mean of the response on the \textbf{link
+scale}. A GLM models the response with a distribution specified by the
+probability distribution using the link function. The probability
+distributions introduced here are the Poisson and Negative Binomial for
+count data, and the Binomial for binary data. Note that a linear model
+is a GLM with a link to a Normal distribution.
+
+The link scale is linear (it is the log of the response scale), and so
+the effects are additive on the link scale, while the response scale is
+nonlinear (it is the exponent of the link scale), and so the effects are
+multiplicative on the response scale. If this doesn't make sense now, an
+example is worked out below. The inverse of the link function
+backtransforms the parameters from the link scale back to the response
+scale. So, for example, a prediction on the response sale is
+\(\mathrm{exp}(\hat{\eta})\) and a coefficient on the response scale is
+\(\mathrm{exp}(b_j)\).
+
+\section{Count data example}\label{count-data-example}
+
+The example is an experiment measuring the effect of the parasitic
+tapeworm \emph{Schistocephalus solidus} infection on the susceptibility
+of infection from a second parasite, the trematode \emph{Diplostomum
+pseudospathaceum}, in the threespine stickleback fish \emph{Gasterosteus
+aculeatus}. The treatment levels are ``Control'' (unexposed to the
+tapeworm), ``Uninfected'' " (exposed to the tapeworm but uninfected),
+``Infected LG'' (exposed and infected with the low growth population of
+the tapeworm), and ``Infected HG'' (exposed and infected with the high
+growth population of tapeworm). The response is the number of trematode
+larvae counted in the eyes (right and left combined) of the fish. A
+histogram of the counts is shown in Figure \ref{fig:glm1-plot1} for the
+control and Infected HG treatment levels.
+
+I start the analysis by fitting a linear model to the worm data and then
+\emph{model checking}, to gain some insight on how well the linear model
+fits the data
+
+\textbf{NHST blues} Students are often encouraged by textbooks,
+colleagues, or the literature to start the analysis by first ``testing''
+assumptions with hypothesis tests -- for example using a Shaprio-Wilks
+test of normality as a decision rule to decide if to use a parametric
+test such as a \(t\)-test or ANOVA if the null hypothesis of normality
+is not rejected, or a non-parametric test such as a Mann-Whitney U test
+if the null hypothesis of normality is rejected. I advise against this,
+because 1) this pre-test filtering automatically invalidates the
+\(p\)-value of the hypothesis test as it does not adjust for the
+filtering procedure, 2) real data are only approximately normal and as
+\(n\) increses, a normality test will reject any real dataset, and 3)
+hypothesis tests are pretty robust to non-normality anyway.
+
+The model is
+
+\begin{align}
+Y &= N(\mu, \sigma)\\
+\mu &= \beta_0 + \beta_1 Treatment
+\end{align}
+
+Which models the parasite count conditional on \(Treatment\) with a
+Normal distribution. Remember, this is equivalent to a model with an
+error term with a Normal distribution (now might be a good time to go
+back to Chapter 1 and review the section {[}Assumptions for inference
+with statistical models{]}).
+
+\subsection{Checking the model I -- a Normal Q-Q
+plot}\label{checking-the-model-i-a-normal-q-q-plot}
+
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/glm1-plot2-1.pdf}
+
+Figure \ref{fig:glm1-plot2}A shows a histogram of the residuals from the
+fit linear model. The plot shows that the residuals are clumped at the
+negative end of the range, which suggests that a model with a normally
+distributed conditional outcome (or normal error) is not well
+approximated.
+
+A better way to investigate this is with the \textbf{Normal Q-Q} plot in
+Figure \ref{fig:glm1-plot2}B, which plots the sample quantiles for a
+variable against their theoretical quantiles. If the conditional outcome
+approximates a normal distribution, the points should roughly follow the
+line. Instead, for the worm data, the points are above the line at both
+ends. At the left (negative) end, this means that we aren't seeing the
+most negative values that would be expected (the observed values are
+more positive than the theoretical values). Remembering that this plot
+is of residuals, if we think about this as counts, this means that our
+smallest counts are not as small as we would expect given the mean and a
+normal distribution. This shouldn't be surprising -- the counts range
+down to zero and counts cannot be below zero. At the positive end, the
+sample values are again more positive than the theoretical values.
+Thinking about this as counts, this means that are largest counts are
+larger than expected given the mean and a normal distribution. This
+pattern is exactly what we'd expect of count data, or at least count
+data that borders zero.
+
+\textbf{Intuition Pump} Let's construct a Normal Q-Q plot. A
+\textbf{quantile} (or percentile) of a vector of numbers is the value of
+the point at a specified percentage rank. The median is the 50\%
+quantile. The 95\% confidence intervals are at the 2.5\% and 97.5\%
+quantiles. In a Normal Q-Q plot, we want to plot the quantiles of the
+residuals against a set of theoretical quantiles.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  To get the observed quantiles, rank the residuals of the fit linear
+  model from most negative to most positive -- these are your quantiles!
+  For example, if you have \(n=145\) residuals, then the 73rd point is
+  the 50\% quantile.
+\item
+  A theoretical quantile from the Normal distribution can be constructed
+  using the \texttt{qnorm} function which returns the Normal quantiles
+  for a specified vector of percents. Alternatively, one could randomly
+  sample \(n\) points using \texttt{rnorm}. These of course will be
+  sampled quantiles so will only approximate the expected theoretical
+  quantiles, but I add this here because we use this method below.
+\end{enumerate}
+
+Now simply plot the observed against theoretical quantiles. Often, the
+\textbf{standardized} quantiles are plotted. A standardized variable has
+a mean of zero and a standard deviation of one and is computed by 1)
+centering the vector at zero by subtracting the mean from every value,
+and 2) dividing each value by the standard deviation of the vector.
+Recognize that because a standard deviation is a function of deviations
+from the mean, it doesn't matter which of these operations is done
+first. A standardized theoretical quantile is specified by
+\texttt{qnorm(p,\ mean\ =\ 0,\ sd\ =\ 1)}, which is the default.
+
+Below, I've plotted the standardized observed and theoretical quantiles
+against the vector of percents (from 0 to 100\%). This plot also nicely
+shows how the residuals of the worm data deviate from that expected if
+these had a normal distribution. The plot nicely shows that the most
+negative observed quintiles are not as negative as expected given a
+normal distribution, which again makes sense because this would imply
+negative counts since the mean is close to zero. And it nicely shows
+that the most positive observed quantiles are more positive than
+expected given a normal distribution, again this makes sense in right
+skewed count data. Finally, the plot nicely shows that the median is
+less positive than that expected given a normal distribution, which is
+at the mean (a right skew tends to pull the mean to the right of the
+median).
+
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/glm1-qqplot-sim-1.pdf}
+
+\subsection{Checking the model II -- scale-location plot for checking
+homoskedasticity}\label{checking-the-model-ii-scale-location-plot-for-checking-homoskedasticity}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{worm[, scale_y}\OperatorTok{:}\ErrorTok{=}\StringTok{ }\KeywordTok{sqrt}\NormalTok{(}\KeywordTok{abs}\NormalTok{(}\KeywordTok{scale}\NormalTok{(Diplo_intensity_residual)))]}
+\NormalTok{worm[, fitted_y}\OperatorTok{:}\ErrorTok{=}\KeywordTok{fitted}\NormalTok{(fit.lm)]}
+\KeywordTok{ggscatter}\NormalTok{(}\DataTypeTok{data=}\NormalTok{worm, }
+          \DataTypeTok{x=}\StringTok{"fitted_y"}\NormalTok{, }
+          \DataTypeTok{y=}\StringTok{"scale_y"}\NormalTok{, }
+          \DataTypeTok{add=}\StringTok{"reg.line"}\NormalTok{,}
+          \DataTypeTok{conf.int =} \OtherTok{TRUE}\NormalTok{,}
+          \DataTypeTok{add.params =} \KeywordTok{list}\NormalTok{(}\DataTypeTok{color =} \StringTok{"blue"}\NormalTok{,}
+          \DataTypeTok{fill =} \StringTok{"lightgray"}\NormalTok{),}
+          \DataTypeTok{title=}\StringTok{"Scale-Location"}\NormalTok{,}
+          \DataTypeTok{ylab=}\StringTok{"Square root standardized residuals"}\NormalTok{,}
+          \DataTypeTok{xlab=}\StringTok{"Fitted value"}
+\NormalTok{          )}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-16-1.pdf}
+
+A linear model also assumes the error has constant variance (that is,
+the error variance is not a function of the value of \(X\)), or
+homoskedasticity. The fit model can be checked for homoskedasticity
+using a scale-location plot, which is a scatterplot of the positive
+square-root of the standardized residuals against the fitted
+values\footnote{fitted values are the predicted values, \(\hat{Y}\)}. If
+the residuals approximate a normal distribution, then a regression line
+through the scatter should be close to horizontal. The regression line
+in the scale-location plot of the fit of the linear model to the worm
+data shows a distinct increase in the ``scale'' (the square root of the
+standardized residuals) with increased fitted value, which is expected
+of data that are lognormally, Poisson, or negative binomially
+distributed.
+
+\subsection{Two distributions for count data -- Poisson and Negative
+Binomial}\label{two-distributions-for-count-data-poisson-and-negative-binomial}
+
+The pattern in the Normal Q-Q plot in Figure \ref{fig:glm1-plot2}B
+should discourage one from modeling the data with a normal distribution
+and instead model the data with an alternative distribution using a
+Generalized Linear Model. There is no unique mapping between how data
+are generated and a specific distribution, so this decision is not as
+easy as thinking about the data generation mechanism and then simply
+choosing the ``correct'' distribution. Section 4.5 in Bolker (xxx) is an
+excellent summary of how to think about the generating processes for
+different distributions in the context of ecological data. Since the
+response in the worm data are counts, we need to choose a distribution
+that generates integer values, such as the Poisson or the negative
+binomial.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Poisson -- A Poisson distribution is the probability distribution of
+  the number of occurrences of some thing (an egg, a parasite, or a
+  specific mRNA transcript) generated by a process that generates the
+  thing at a constant rate per unit effort (duration or space). This
+  constant rate is \(\lambda\), which is the expectation, so
+  \(\mathrm{E}(Y) = \mu = \lambda\). Because the rate per effort is
+  constant, \emph{the variance of a Poisson variable equals the mean},
+  \(\sigma^2 = \mu = \lambda\). Figure \ref{fig:glm1-poisson} shows
+  three samples from a Poisson distribution with \(\lambda\) set to 1,
+  5, and 10. The plots show that, as the mean count (\(\lambda\)) moves
+  away from zero, a Poisson distribution 1) becomes less skewed and more
+  closely approximates a normal distribution and 2) has an increasingly
+  low probability of including zero (less than 1\% zeros when the mean
+  is 5).
+\end{enumerate}
+
+A Poisson link function, then, is useful for count data in which the
+conditional variance is close to the conditional mean. Very often,
+biological count data are not well approximated by a Poisson
+distribution because the variance is either less than the mean, an
+example of \textbf{underdispersion}\footnote{the variance is less than
+  that expected by the probability model}, or greater than the mean, an
+example of \textbf{overdispersion}\footnote{the variance is greater than
+  that expected by the probability model}. A useful distribution for
+count data with overdispersion is the negative binomial.
+
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/glm1-poisson-1.pdf}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{1}
+\tightlist
+\item
+  Negative Binomial -- The negative binomial distribution is a discrete
+  probability distribution of the number of successes that occur before
+  a specified number of failures \(k\) given a probability \(p\) of
+  success. This isn't a very useful way of thinking about modeling count
+  data in biology. What is useful is that the Negative Binomial
+  distribution can be used simply as way of modeling an
+  ``overdispersed'' Poisson process. The mean of a negative binomial
+  variable is \(\mu = k\frac{p}{1-p}\) and the variance is
+  \(\sigma^2 = \mu + \mu^2/k\). As a method for modeling an
+  overdispersed Poisson variable, \(k\) functions as a parameter
+  controlling the amount of overdispersion and can be any real, positive
+  value (not simply a positive integer), including values less than 1.
+\end{enumerate}
+
+\subsection{Fitting a GLM with a Poisson link to the worm
+data}\label{fitting-a-glm-with-a-poisson-link-to-the-worm-data}
+
+Let's fit a GLM with a Poisson lin to the worm data. The model is
+
+\begin{align}
+Diplo\_intensity &\sim Poisson(\mu)\\
+\mathrm{E}({Diplo\_intensity|Treatment}) &= \mu\\
+\mu &= \mathrm{exp}(\eta)\\
+\eta &= \beta_0 + \beta_1 Uninfected + \beta_2 Infected\_LG + \beta_3 Infected\_HG
+\end{align}
+
+A common misconception is that if the distribution of the response
+approximates a Poisson distribution, then the residuals of a GLM fit
+with a Poisson link should be normally distributed, which could then be
+checked with a Normal Q-Q plot, and homoskedastic, which could be
+checked with scale-location plot. Neither of these is true because a GLM
+does not transform the data and, in fact, the model definition does not
+specify anything about the distribution of an ``error'' term -- there is
+no \(\varepsilon\) in the model defintion above! This is why thinking
+about the definition of a linear model by specifying an error term with
+a normal distribution can be confusing and lead to misconceptions when
+learning GLMs.
+
+An alternative to a Normal Q-Q plot is a plot of \textbf{quantile
+residuals}.
+
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/glm1-worm-poisson-1.pdf}
+
+\subsection{Fitting a GLM with a Negative Binomial link to the worm
+data}\label{fitting-a-glm-with-a-negative-binomial-link-to-the-worm-data}
+
+\begin{verbatim}
+## DHARMa::plotResiduals - low number of unique predictor values, consider setting asFactor = T
+## DHARMa::plotResiduals - low number of unique predictor values, consider setting asFactor = T
+\end{verbatim}
+
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/glm1-worm-nb-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/glm1-worm-nb-2.pdf}
+
+\begin{verbatim}
+## 
+##  One-sample Kolmogorov-Smirnov test
+## 
+## data:  simulationOutput$scaledResiduals
+## D = 0.044362, p-value = 0.7772
+## alternative hypothesis: two-sided
+\end{verbatim}
+
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/glm1-worm-nb-3.pdf}
+
+\begin{verbatim}
+## 
+##  DHARMa nonparametric dispersion test via sd of residuals fitted
+##  vs. simulated
+## 
+## data:  simulationOutput
+## ratioObsSim = 1.0153, p-value = 0.816
+## alternative hypothesis: two.sided
+\end{verbatim}
 
 \chapter*{Appendix 1: Getting Started with
 R}\label{appendix-1-getting-started-with-r}
