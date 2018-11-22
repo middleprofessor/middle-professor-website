@@ -125,7 +125,7 @@
   \postauthor{\par}
       \predate{\centering\large\emph}
   \postdate{\par}
-    \date{2018-11-10}
+    \date{2018-11-22}
 
 \usepackage{booktabs}
 \usepackage{amsthm}
@@ -412,8 +412,117 @@ which is simply the mean of \(Y\), or, more specifically, the
 \textbf{unconditional mean} of \(Y\), since its value is not conditional
 on any value of \(X\).
 
-\subsection{\texorpdfstring{``Statistical model'' not ``regression
-model''}{Statistical model not regression model}}\label{statistical-model-not-regression-model}
+\section{Assumptions for inference with statistical
+models}\label{assumptions-for-inference-with-statistical-models}
+
+Here is the linear model above (equation \eqref{eq:lm}) but I've amended
+the model by explicitly specifying the distribution of the error term.
+
+\begin{align}
+Y &= \beta_0 + \beta_1 X + \varepsilon\\
+\varepsilon &\sim N(0, \sigma)
+\label{eq:lm-again}
+\end{align}
+
+where \(N(0, \sigma)\) is read as ``normal distribution with mean zero
+and standard deviation sigma''. Another way of specifying this model is
+
+\begin{align}
+Y &\sim N(\mu, \sigma)\\
+\mu &= \beta_0 + \beta_1 X
+\label{eq:lm-spec2}
+\end{align}
+
+which basically states that the outcome is a function of a stochastic
+component (a normal distribution with variance \(\sigma^2\)) and a
+deterministic component (the linear predictor \(\beta_0 + beta_1 X\)).
+The alternative, ``stochastic part first'' way to define the statistical
+model is more easily generalized to more complex models, and is the
+preferred method among applied biostatiticians, who are mostly using
+these more complex models.
+
+An inference about the parameter \(\beta_1\) (such as confidence
+intervals or hypothesis tests) assumes that the error (\(\varepsilon\))
+is IID Normal where IID is \textbf{independent and identically
+distributed} and Normal refers to the Normal (or Gaussian) distribution.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Independent means that the error for one case cannot be predicted from
+  the error of any other case. There are lots or reasons that errors
+  might be correlated. For example, measures that are taken from sites
+  that are closer together or measures taken closer in time or measures
+  from more closely related biological species will tend to have more
+  similar error than measures taken from sites that are further apart or
+  from times that are further apart or from species that are less
+  closely related. Space and time and phylogeny create \textbf{spatial
+  and temporal and phylogenetic autocorrelation}. Correlated error due
+  to space or time or phylogeny can be modeled with \textbf{Generalized
+  Least Squares} (GLS) models. A GLS model is a variation of model
+  \eqref{eq:lm-again}.
+\end{enumerate}
+
+If there are measures both within and among field sites (or humans or
+rats) then we'd expect the measures within the same site (or human or
+rat) to err from the model in the same direction. Multiple measures
+within experimental units (a site or individual) creates ``clusters'' of
+error. Lack of independence or clustered error can be modeled using
+models with \textbf{random effects}. These models go by many names
+including linear mixed models (common in Ecology), hierarchical models,
+multilevel models, and random effects models. A linear mixed model is a
+variation of model \eqref{eq:lm-again}.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{1}
+\item
+  Identical means that the errors are ``drawn'' from the same
+  distribution. Since the model is a linear model, this distribution is
+  a Normal distribution. A consequence of ``indentical'' is that the
+  error variance is \textbf{homoskedastic}, or constant, or independent
+  of \(X\). If the error variance differs among the \(X\) then the
+  errors are \textbf{heteroskedastic}. Many biological processes
+  generate data in which the error is a function of the mean. For
+  example, measures of biological variables that grow, such as lengths
+  of body parts or population size, have variances that are ``grow''
+  with the mean. Or, measures of counts, such as the number of cells
+  damaged by toxin, the number of eggs in a nest, or the number of mRNA
+  transcripts per cell have variances that are a function of the mean.
+  Both growth and count measures can be reasonably modeled using a
+  linear model they are more often modeled using a \textbf{generalized
+  linear model} (GLM), which is an extension of the linear model in
+  equation \eqref{eq:lm-again}. Heteroskedasitc error arising for other
+  reasons, both biological and experimental, can be modeled with
+  Generalized Least Squares (GLS) or with linear mixed models. GLS
+  models are variations of model \eqref{eq:lm-again}.
+\item
+  Normal (Gaussian) error means that 1) the response is continuous and
+  2) the probability of sampling an individual measuring 0.5 units below
+  the population mean is the same as the probability of sampling an
+  individual measuring 0.5 units above the population mean. Counts
+  (number of cells, number of eggs, number of mRNA transcripts) and
+  binary responses (sucessful escape or sucessful infestation of host)
+  are not continous and often often have asymmetric probablity
+  distributions that are skewed to the right and while sometimes both
+  can be reasonably modeled using a linear model they are more often
+  modeled using a \textbf{generalized linear model} (GLM), which, again,
+  is an extension of the linear model in equation \eqref{eq:lm-again}.
+\end{enumerate}
+
+A common misconception is that inference from a linear model assumes
+that the \emph{response} (\(Y\)) is normally distributed. Models
+\eqref{eq:lm-again} and \eqref{eq:lm-spec2} show precisely why this
+conception is wrong. Model \eqref{eq:lm-again} states explicitly that it
+is the error that has the normal distribution -- the distribution of
+\(Y\) is a mix of the distribution of \(X\) and the error. Model
+\eqref{eq:lm-spec2} states that the conditional outcome has a normal
+distribution, that is, the distribution after adjusting for variation in
+\(X\).
+
+\subsection{\texorpdfstring{``Statistical model'' or ``regression
+model''?}{Statistical model or regression model?}}\label{statistical-model-or-regression-model}
 
 Statistical modeling terminology can be confusing. The \(X\) variables
 in a statistical model may be quantitative (continuous or integers) or
@@ -430,8 +539,6 @@ thinking of statistical analysis as ``regression vs.~ANOVA'', I will
 most often use the term ``statistical model'' for general usage, and use
 a more specific term only to emphasize something about the model in that
 particluar context.
-
-\section{Multilevel models}\label{multilevel-models}
 
 \section{Linear models versus non-linear
 models}\label{linear-models-versus-non-linear-models}
@@ -1891,7 +1998,8 @@ universe}\label{plots-should-be-the-center-of-your-papers-universe}
 \KeywordTok{library}\NormalTok{(emmeans)}
 \KeywordTok{library}\NormalTok{(data.table)}
 
-\NormalTok{data_path <-}\StringTok{ "../data"}
+\NormalTok{data_path <-}\StringTok{ "../data"} \CommentTok{# notebook}
+\NormalTok{data_path <-}\StringTok{ "data"} \CommentTok{# bookdown}
 \end{Highlighting}
 \end{Shaded}
 
