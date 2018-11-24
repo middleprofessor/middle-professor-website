@@ -25,7 +25,7 @@
 \usepackage{hyperref}
 \hypersetup{unicode=true,
             pdftitle={Elementary Statistical Modeling for Applied Biostatistics},
-            pdfauthor={Jeffrey A. Walker},
+            pdfauthor={Copyright 2018 Jeffrey A. Walker},
             pdfborder={0 0 0},
             breaklinks=true}
 \urlstyle{same}  % don't use monospace font for urls
@@ -120,12 +120,12 @@
   \title{Elementary Statistical Modeling for Applied Biostatistics}
     \pretitle{\vspace{\droptitle}\centering\huge}
   \posttitle{\par}
-    \author{Jeffrey A. Walker}
+    \author{Copyright 2018 Jeffrey A. Walker}
     \preauthor{\centering\large\emph}
   \postauthor{\par}
       \predate{\centering\large\emph}
   \postdate{\par}
-    \date{2018-11-22}
+    \date{Draft: 2018-11-24}
 
 \usepackage{booktabs}
 \usepackage{amsthm}
@@ -157,7 +157,8 @@
 \setcounter{tocdepth}{1}
 \tableofcontents
 }
-\chapter{Statistical Modeling}\label{statistical-modeling}
+\chapter*{Preface}\label{preface}
+\addcontentsline{toc}{chapter}{Preface}
 
 \emph{More cynically, one could also well ask ``Why has medicine not
 adopted frequentist inference, even though everyone presents P-values
@@ -171,7 +172,7 @@ We use statistics to learn from data with uncertainty. Traditional
 introductory textbooks in biostatistics implicitly or explicitly train
 students and researchers to ``discover by p-value'' using hypothesis
 tests (Chapter \ref{p-values}). Over the course of many chapters, the
-student is trained to use something like a dichotomous key to choose the
+student learns to use something like a dichotomous key to choose the
 correct ``test'' for the data at hand, compute a test statistic for
 their data, compute a \(p\)-value based on the test statistic, and
 compare the \emph{p}-value to 0.05. Textbooks typically give very little
@@ -200,18 +201,16 @@ both biologists and statisticians continue to organize textbooks around
 a collection of hypothesis tests, with little emphasis on estimation and
 uncertainty.
 
-\section{Statistical modeling with linear
-models}\label{statistical-modeling-with-linear-models}
-
 This book is an introduction to the analysis of biological data using a
 statistical modeling approach. As an introduction, the focus will be
 linear models and extensions of the linear models including linear mixed
-models and generalized linear models. Here, I refer to all of these as
-``linear models'' because all are a function of a linear predictor.
-Linear models are the engine behind many hypothesis tests but the
-emphasis in statistical modeling is estimation and uncertainty instead
-of test statistics and \(p\)-values. A modeling view of statistics is
-also more coherent than a dichotomous key strategy.
+models and generalized linear models. Linear models are the engine
+behind many hypothesis tests but the emphasis in statistical modeling is
+estimation and uncertainty instead of test statistics and \(p\)-values.
+A modeling view of statistics is also more coherent than a dichotomous
+key strategy.
+
+\chapter{Statistical Modeling}\label{statistical-modeling}
 
 \begin{figure}
 \centering
@@ -239,8 +238,13 @@ A linear model is a function, like that in equation \eqref{eq:line}, that
 is fit to a set of data, often to model a process that generated the
 data or something like the data. The line in Figure \ref{fig:line}A is
 just that, a line, but the line in Figure \ref{fig:line}B is a model of
-the data in Figure \ref{fig:line}B. The basic structure of a linear
-model is
+the data in Figure \ref{fig:line}B.
+
+\section{\texorpdfstring{Two specifications of a linear model I: the
+``linear model''
+way}{Two specifications of a linear model I: the linear model way}}\label{two-specifications-of-a-linear-model-i-the-linear-model-way}
+
+The basic structure of a linear model is
 
 \begin{equation}
 Y = \beta_0 + \beta_1 X + \varepsilon
@@ -258,12 +262,15 @@ more complicated linear models. For example
 where \(Y\) is a function of two \(X\) variables.
 
 As with the equation for a line, the linear predictor part of a linear
-model is a function that maps a value of \(X\) to a specific value of
+model is a function that maps a specific value of \(X\) to a value of
 \(Y\). This mapped value is the \textbf{expected value} given a specific
-input value of \(X\). This is often written as \(\mathrm{E}[Y|X]\). The
-error part of a linear model is a random variable that adds some random
-value to this expected value. Nothing about the model part of a linear
-model can predict its value.
+input value of \(X\). This is often written as \(\mathrm{E}[Y|X]\),
+which is read as ``the expected value of \(Y\) given \(X\)''.
+Importantly, \(\mathrm{E}[Y|X]\) is the \textbf{conditional mean}, which
+is the \emph{modeled} mean value of \(Y\) for all observations in which
+\(X\) takes some specific value \(x\). The error part of a linear model
+is a random variable that adds some random value to this expected value.
+Nothing about the model part of a linear model can predict its value.
 
 The inputs to a linear model (the \(X\) variables) have many names
 including ``independent variables,'' ``predictor variables,'',
@@ -271,10 +278,12 @@ including ``independent variables,'' ``predictor variables,'',
 The output of a linear model (the \(Y\) variable or variables if the
 model is multivariate) is the ``dependent variable,'' ``response,'' or
 ``outcome.'' The \(\beta\) in the linear model are model
-\textbf{parameters} There can be additional parameters in more
-sophisticated models. The coefficients of the \(X\) in a linear model
-(\(\beta_1\) in model \eqref{eq:lm}) are often called ``the effects'' (so
-\(\beta_1\) is the effect of \(X_1\)).
+\textbf{parameters} and if a parameter is multiplied by an \(X\)
+variable then it is a \textbf{coefficient} (for example, \(\beta_1\) in
+model \eqref{eq:lm} is a coefficient). There can be additional parameters
+in more sophisticated models. The coefficients of the \(X\) in a linear
+model (\(\beta_1\) in model \eqref{eq:lm}) are often called ``the
+effects'' (so \(\beta_1\) is the effect of \(X_1\)).
 
 Although a linear model is a model of a data-generating process, linear
 models are not typically used to actually generate any data. Instead,
@@ -286,10 +295,35 @@ least two reasons: to probe our understanding of statistical modeling
 generally and, more specifically, to check that a model actually creates
 data like that in the real dataset that we are analyzing.
 
-\subsection{Linear models are used for prediction, explanation, and
-description}\label{linear-models-are-used-for-prediction-explanation-and-description}
+\section{\texorpdfstring{Two specifications of a linear model II: the
+``statistical model''
+way}{Two specifications of a linear model II: the statistical model way}}\label{two-specifications-of-a-linear-model-ii-the-statistical-model-way}
 
-Researchers typically use linear models to understand relationships
+Another way of specifying a linear model is
+
+\begin{align}
+Y &\sim N(\mu, \sigma)\\
+\mathrm{E}(Y|X) = \mu
+\mu &= \beta_0 + \beta_1 X
+\label{eq:lm-spec2}
+\end{align}
+
+The first line states that an outcome is a function of a deterministic
+component (the \textbf{conditional mean} \(\mu\)) and a random component
+(the square root of the unmodeled variance \(\sigma\)). This first line
+is the \textbf{stochastic} part of the statistical model. The second
+line simply states that \(\mu\) (the greek letter ``mu'') from the first
+line is the conditional mean or conditional expectation. The third line
+is the \textbf{deterministic} part, which is the linear predictor. This
+alternative way to define the linear model is easily generalized to more
+complex models, including hierarchical models, generalized linear
+models, and Bayesian models, which is why I call it the ``statistical
+model'' way of specification.
+
+\section{Statistical models are used for prediction, explanation, and
+description}\label{statistical-models-are-used-for-prediction-explanation-and-description}
+
+Researchers typically use statistical models to understand relationships
 between one or more \(Y\) variables and one or more \(X\) variables.
 These relationships include
 
@@ -355,9 +389,9 @@ model's goal and assumptions.
 
 \section{Model fitting}\label{model-fitting}
 
-In order to use a linear model to describe, predict, or explain, we need
-to fit a model to data in order to estimate the parameters. If we fit
-model \eqref{eq:conditional-expectation} to some data, the estimated
+In order to use a statistical model to describe, predict, or explain, we
+need to fit a model to data in order to estimate the parameters. If we
+fit model \eqref{eq:conditional-expectation} to some data, the estimated
 parameters are the coefficients (\(b_0\) and \(b_1\)) of the fit model
 
 \begin{equation}
@@ -391,15 +425,15 @@ categorical. A simple example is the experiment of antioxidants
 this experiment, the \(X\) variable is categorical, with three
 \textbf{levels}: ``Control'', ``Vitamin\_E'' and ``Vitamin\_C''.
 Categorical \(X\) variables are often called \textbf{factors}. The trick
-to using a linear model with categorical \(X\) is to recode the factor
-levels into numbers -- how this is done is explained in Chapter xxx.
-When the \(X\) variable is categorical, the coefficients of the \(X\)
-are \emph{differences in group means}. The linear model fit to the vole
-data has two coefficients, one for Vitamin E and one for vitamin C. The
-estimate and uncertainty of the these two coefficients are shown in the
-top part of Figure \ref{fig:coldVoles}. The bottom part shows the raw
-data, as well as the group (factor level) means and the uncertainty in
-the estimate of these means.
+to using a statistical model with categorical \(X\) is to recode the
+factor levels into numbers -- how this is done is explained in Chapter
+xxx. When the \(X\) variable is categorical, the coefficients of the
+\(X\) are \emph{differences in group means}. The linear model fit to the
+vole data has two coefficients, one for Vitamin E and one for vitamin C.
+The estimate and uncertainty of the these two coefficients are shown in
+the top part of Figure \ref{fig:coldVoles}. The bottom part shows the
+raw data, as well as the group (factor level) means and the uncertainty
+in the estimate of these means.
 
 The simplest possible model that can be fit to the data is
 
@@ -425,26 +459,11 @@ Y &= \beta_0 + \beta_1 X + \varepsilon\\
 \end{align}
 
 where \(N(0, \sigma)\) is read as ``normal distribution with mean zero
-and standard deviation sigma''. Another way of specifying this model is
-
-\begin{align}
-Y &\sim N(\mu, \sigma)\\
-\mu &= \beta_0 + \beta_1 X
-\label{eq:lm-spec2}
-\end{align}
-
-which basically states that the outcome is a function of a stochastic
-component (a normal distribution with variance \(\sigma^2\)) and a
-deterministic component (the linear predictor \(\beta_0 + \beta_1 X\)).
-The alternative, ``stochastic part first'' way to define the statistical
-model is more easily generalized to more complex models, and is the
-preferred method among applied biostatiticians, who are mostly using
-these more complex models.
-
-An inference about the parameter \(\beta_1\) (such as confidence
-intervals or hypothesis tests) assumes that the error (\(\varepsilon\))
-is IID Normal where IID is \textbf{independent and identically
-distributed} and Normal refers to the Normal (or Gaussian) distribution.
+and standard deviation sigma''. Any inference about the parameter
+\(\beta_1\) (such as confidence intervals or hypothesis tests) assumes
+that the error (\(\varepsilon\)) is IID Normal where IID is
+\textbf{independent and identically distributed} and Normal refers to
+the Normal (or Gaussian) distribution.
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
@@ -543,11 +562,13 @@ particluar context.
 \section{Linear models versus non-linear
 models}\label{linear-models-versus-non-linear-models}
 
-In this text, I use ``linear model'' for any model that is linear in the
-parameters, which means that the different components of the model are
-added together. Or, using the language of matrix algebra, the predictor
-is a simple dot product of the model matrix and the coefficients. For
-example, a cubic polynomial model
+All statistical models in this text are linear in the parameters, which
+means that the different components of the model are added together.
+This additive part of the model containing the parameters is the linear
+predictor in specifications \eqref{eq:lm} and \eqref{eq:lm-spec2} above. Or,
+using the language of matrix algebra, the linear predictor is a simple
+dot product of the model matrix and the coefficients. For example, a
+cubic polynomial model
 
 \begin{equation}
 Y = \beta_0 + \beta_1 X + \beta_2 X^2 + \beta_3 X^3 + \varepsilon
@@ -558,16 +579,11 @@ different components are added (or, using matrix algebra, the predictor
 is \(\mathbf{X}\boldsymbol{\beta}\)).
 
 A generalized linear model (GLM) has the form \(g(\mu_i) = \eta_i\)
-where \(\eta\) (the greek letter eta) is the linear predictor, which is
-linear in the parameters.
+where \(\eta\) (the greek letter ``eta'') is the linear predictor
 
 \begin{equation}
 \eta = \mathbf{X}\boldsymbol{\beta} 
 \end{equation}
-
-Many sources do not consider a GLM to be a ``linear model'' but an
-``extension'' of a linear model. Regardless, a GLM is linear in the
-parameters and here, I include GLMs under the ``linear model'' umbrella.
 
 Non-linear models, in conrast to a GLM or classical linear model, are
 not linear in the parameters (the predictor is not a simple dot product
@@ -1404,7 +1420,7 @@ Uncertainty emerges because of variability. In any introductory
 statistics class, students are introduced to two measures of
 variability, the ``standard deviation'' and the ``standard error.''
 These terms are absolutely fundamental to statistics -- they are the
-start of everything else. Yet, many biology professors confuse these
+start of everything else. Yet, many biology researchers confuse these
 terms and certainly, introductory students do too.
 
 When a research biologist uses the term ``standard deviation,'' they are
@@ -1412,9 +1428,9 @@ probably referring to the sample standard deviation which is a measure
 of the variability of a sample. When a research biologist uses the term
 ``standard error,'' they are probably referring to the standard error of
 a mean, but it could be the standard error of another statistics, such
-as a regression slope. An important point to remember and understand is
-that all standard errors \emph{are} standard deviations. This will make
-more sense soon.
+as a difference between means or a regression slope. An important point
+to remember and understand is that all standard errors \emph{are}
+standard deviations. This will make more sense soon.
 
 \section{The sample standard deviation vs.~the standard error of the
 mean}\label{the-sample-standard-deviation-vs.the-standard-error-of-the-mean}
@@ -1495,12 +1511,13 @@ standard error a measure of variability? This is kinda weird. If we
 sample 100 cells in the slide of muscle tissue and compute the mean
 diameter, how can the mean have a standard deviation? There is only one
 value! To understand how the SEM is a standard deviation, imagine 1)
-resampling 100 cells and 2) recomputing a mean from the re-sampled data
-an infinite number of times and each time, you write down the newly
-computed mean. The true standard error of the mean is the standard
-deviation of this infinitely long column of means. This means that a
-standard error of the mean, computed from a single sample using equation
-\eqref{eq:se} is itself a sample statistic.
+resampling 100 cells and 2) recomputing a mean from the re-sampled data,
+then repeating this resampling and recomputation an infinite number of
+times and each time, you write down the newly computed mean. The true
+standard error of the mean is the standard deviation of this infinitely
+long column of means. This means that a standard error of the mean,
+computed from a single sample using equation \eqref{eq:se} is itself a
+sample statistic.
 
 Notes on standard errors
 
@@ -6542,7 +6559,7 @@ definition but adds a third part
   \end{equation}
 \end{enumerate}
 
-\(mu\) (the Greek symbol mu) is the conditional mean (or expectation
+\(\mu\) (the Greek symbol mu) is the conditional mean (or expectation
 \(\mathrm{E}(Y|X)\)) of the response on the \textbf{response scale} and
 \(\eta\) is the conditional mean of the response on the \textbf{link
 scale}. A GLM models the response with a distribution specified by the
@@ -6693,20 +6710,20 @@ homoskedasticity}\label{checking-the-model-ii-scale-location-plot-for-checking-h
 \NormalTok{worm[, scale_y}\OperatorTok{:}\ErrorTok{=}\StringTok{ }\KeywordTok{sqrt}\NormalTok{(}\KeywordTok{abs}\NormalTok{(}\KeywordTok{scale}\NormalTok{(Diplo_intensity_residual)))]}
 \NormalTok{worm[, fitted_y}\OperatorTok{:}\ErrorTok{=}\KeywordTok{fitted}\NormalTok{(fit.lm)]}
 \KeywordTok{ggscatter}\NormalTok{(}\DataTypeTok{data=}\NormalTok{worm, }
-          \DataTypeTok{x=}\StringTok{"fitted_y"}\NormalTok{, }
-          \DataTypeTok{y=}\StringTok{"scale_y"}\NormalTok{, }
+          \DataTypeTok{x=}\StringTok{"fitted_y"}\NormalTok{,}
+          \DataTypeTok{y=}\StringTok{"scale_y"}\NormalTok{,}
+          \DataTypeTok{title=}\StringTok{"Scale-Location"}\NormalTok{,}
+          \DataTypeTok{xlab=}\StringTok{"Fitted value"}\NormalTok{,}
+          \DataTypeTok{ylab=}\StringTok{"sqrt(standardized residual)"}\NormalTok{,}
           \DataTypeTok{add=}\StringTok{"reg.line"}\NormalTok{,}
           \DataTypeTok{conf.int =} \OtherTok{TRUE}\NormalTok{,}
           \DataTypeTok{add.params =} \KeywordTok{list}\NormalTok{(}\DataTypeTok{color =} \StringTok{"blue"}\NormalTok{,}
-          \DataTypeTok{fill =} \StringTok{"lightgray"}\NormalTok{),}
-          \DataTypeTok{title=}\StringTok{"Scale-Location"}\NormalTok{,}
-          \DataTypeTok{ylab=}\StringTok{"Square root standardized residuals"}\NormalTok{,}
-          \DataTypeTok{xlab=}\StringTok{"Fitted value"}
+                            \DataTypeTok{fill =} \StringTok{"lightgray"}\NormalTok{)}
 \NormalTok{          )}
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-16-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/glm1-worm-scale-location-1.pdf}
 
 A linear model also assumes the error has constant variance (that is,
 the error variance is not a function of the value of \(X\)), or
@@ -6801,53 +6818,307 @@ Diplo\_intensity &\sim Poisson(\mu)\\
 \eta &= \beta_0 + \beta_1 Uninfected + \beta_2 Infected\_LG + \beta_3 Infected\_HG
 \end{align}
 
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  The first line of the model is the stochastic part stating the
+  response is modeled as a random Poisson variable with mean and
+  variance \(\mu\) (the rate parameter \(\lambda\) of the Poisson
+  distribution).
+\item
+  The second line states the \(\mu\) is the conditional mean or
+  conditional expectation
+\item
+  The third line connects the conditional mean on the link scale
+  (\(\eta\)) with the conditional mean on the response scale (\(\mu\))
+\item
+  The fourth line is the linear predictor, and includes three dummy
+  variables.
+\end{enumerate}
+
+For model checking a GLM model fit, an alternative to a Normal Q-Q plot
+is a Quantile residual Q-Q plot of observed vs.~expected
+\textbf{quantile residuals}. The basic algorithm for this is
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Use the model parameters to simulate \(p\) fake values of the response
+  for each row of the data. This will be a \(n \times p\) matrix of fake
+  data where each column is a new, random sample of a population with
+  parameters equal to that estimated by the observed data.
+\item
+  For each observation (each row of the matrix of fake data), compute
+  the fraction of simulated values smaller than the observed value of
+  the response variable for that row. This fraction is the observed
+  \textbf{quantile residual}, which ranges in value from 0 to 1. If the
+  true data are distribitued as that specified by the model, then
+  quantile residuals will have a uniform distribution -- any value
+  within the range 0 to 1 is equally likely.
+\item
+  Sort the observed quantile residuals from smallest to largest and plot
+  against theoretical quantile residuals from a uniform distribution.
+  One could transform the quantile residuals to standard, normal
+  residuals and then plot using a traditional Normal Q-Q plot but this
+  step isn't necessary (if reported, a Normal Q-Q plot of transformed
+  quantile residuals might confuse readers who failed to read the fine
+  print).
+\end{enumerate}
+
 A common misconception is that if the distribution of the response
 approximates a Poisson distribution, then the residuals of a GLM fit
 with a Poisson link should be normally distributed, which could then be
 checked with a Normal Q-Q plot, and homoskedastic, which could be
-checked with scale-location plot. Neither of these is true because a GLM
-does not transform the data and, in fact, the model definition does not
-specify anything about the distribution of an ``error'' term -- there is
-no \(\varepsilon\) in the model defintion above! This is why thinking
-about the definition of a linear model by specifying an error term with
-a normal distribution can be confusing and lead to misconceptions when
-learning GLMs.
+checked with a scale-location plot. Neither of these is true because a
+GLM does not transform the data and, in fact, the model definition does
+not specify anything about the distribution of an ``error'' term --
+there is no \(\varepsilon\) in the model defintion above! This is why
+thinking about the definition of a linear model by specifying an error
+term with a normal distribution can be confusing and lead to
+misconceptions when learning GLMs.
 
-An alternative to a Normal Q-Q plot is a plot of \textbf{quantile
-residuals}.
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/glm1-worm-poisson-qr-1.pdf}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/glm1-worm-poisson-1.pdf}
+The Q-Q plot using quantile residuals with a Poisson link indicates that
+the counts of \emph{Diplostomum} larvae in the eyes of the threespine
+stickleback are not well approximated by a Poisson distribution.
 
 \subsection{Fitting a GLM with a Negative Binomial link to the worm
 data}\label{fitting-a-glm-with-a-negative-binomial-link-to-the-worm-data}
 
-\begin{verbatim}
-## DHARMa::plotResiduals - low number of unique predictor values, consider setting asFactor = T
-## DHARMa::plotResiduals - low number of unique predictor values, consider setting asFactor = T
-\end{verbatim}
+The model is
+
+\begin{align}
+Diplo\_intensity &\sim NB(\mu, k)\\
+\mathrm{E}({Diplo\_intensity|Treatment}) &= \mu\\
+\mu &= \mathrm{exp}(\eta)\\
+\eta &= \beta_0 + \beta_1 Uninfected + \beta_2 Infected\_LG + \beta_3 Infected\_HG
+\end{align}
+
+This model specifies a negative binomial link but otherwise is just like
+that above specifying a Poisson link.
+
+\subsubsection{Model checking}\label{model-checking-1}
 
 \includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/glm1-worm-nb-1.pdf}
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/glm1-worm-nb-2.pdf}
+
+A quantile residual Q-Q plot of the GLM model fit with negative binomial
+link is illustrated above. This looks pretty good.
+
+\subsubsection{Model means and
+coefficients}\label{model-means-and-coefficients}
+
+In a Generalized Linear Model of counts using either a Poisson or
+negative binomial link, modeled means, coefficients, and contrasts can
+be reported either on the link or response scale. Remember, the response
+scale is a count, while the link scale is a log(count).
+
+The modeled means on the link scale are
 
 \begin{verbatim}
+##  Treatment     emmean         SE  df asymp.LCL asymp.UCL
+##  Control     1.821408 0.08038710 Inf  1.663852  1.978964
+##  Uninfected  1.504077 0.10930511 Inf  1.289843  1.718311
+##  Infected LG 1.624144 0.13615796 Inf  1.357279  1.891009
+##  Infected HG 2.361096 0.07141332 Inf  2.221128  2.501063
 ## 
-##  One-sample Kolmogorov-Smirnov test
-## 
-## data:  simulationOutput$scaledResiduals
-## D = 0.044362, p-value = 0.7772
-## alternative hypothesis: two-sided
+## Results are given on the log (not the response) scale. 
+## Confidence level used: 0.95
 \end{verbatim}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/glm1-worm-nb-3.pdf}
+While the means on response scale are
 
 \begin{verbatim}
+##  Treatment    response        SE  df asymp.LCL asymp.UCL
+##  Control      6.180556 0.4968369 Inf  5.279611  7.235243
+##  Uninfected   4.500000 0.4918730 Inf  3.632217  5.575107
+##  Infected LG  5.074074 0.6908756 Inf  3.885608  6.626049
+##  Infected HG 10.602564 0.7571643 Inf  9.217726 12.195456
 ## 
-##  DHARMa nonparametric dispersion test via sd of residuals fitted
-##  vs. simulated
+## Confidence level used: 0.95 
+## Intervals are back-transformed from the log scale
+\end{verbatim}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  A mean on the response scale is simply the exponent of the mean on the
+  link scale. For example, the mean of the Control treatment level on
+  the response scale is \(\mathrm{exp}(1.821408) = 6.180555\).
+\item
+  The CIs on the link scale are symmetric around the mean but those on
+  the response scale are not. This is a feature, not a bug. Remember
+  that counts are right skewed which means a CI will have a wider right
+  than left interval. Check this!
+\item
+  If a plot includes a 1 SE error bar on the response scale, this is
+  technically correct but it encourages the practice of computing CIs
+  using the 2*SE rule of thumb. This rule breaks down for count data
+  with right skewed distributions.
+\item
+  Plotting the response scale CIs is both technically correct and makes
+  the 2*SE rule of thumb unnecessary.
+\end{enumerate}
+
+The model coefficients on the link scale are
+
+\begin{verbatim}
+##  contrast                estimate        SE  df  asymp.LCL  asymp.UCL
+##  Uninfected - Control  -0.3173308 0.1356823 Inf -0.5832632 -0.0513983
+##  Infected LG - Control -0.1972641 0.1581173 Inf -0.5071683  0.1126401
+##  Infected HG - Control  0.5396877 0.1075265 Inf  0.3289396  0.7504358
+##  z.ratio p.value
+##   -2.339  0.0193
+##   -1.248  0.2122
+##    5.019  <.0001
 ## 
-## data:  simulationOutput
-## ratioObsSim = 1.0153, p-value = 0.816
-## alternative hypothesis: two.sided
+## Results are given on the log (not the response) scale. 
+## Confidence level used: 0.95
+\end{verbatim}
+
+and on the response scale
+
+\begin{verbatim}
+##  contrast                  ratio         SE  df asymp.LCL asymp.UCL
+##  Uninfected / Control  0.7280899 0.09878893 Inf 0.5580743 0.9499002
+##  Infected LG / Control 0.8209738 0.12981015 Inf 0.6021984 1.1192290
+##  Infected HG / Control 1.7154710 0.18445860 Inf 1.3894940 2.1179227
+##  z.ratio p.value
+##   -2.339  0.0193
+##   -1.248  0.2122
+##    5.019  <.0001
+## 
+## Confidence level used: 0.95 
+## Intervals are back-transformed from the log scale 
+## Tests are performed on the log scale
+\end{verbatim}
+
+Notice that the emmeans package reports the name of the term as the
+ratio of the coefficient term to the intercept term (the reference
+treatment level). This is because the coefficients on the response scale
+\emph{are} ratios and effects are not additive but multiplicative! So,
+for example, the mean of the Infected HG treatment level on the response
+scale is \(b_0*b_3\) (remember that with a linear model the mean would
+be \(b_0 + b_3\)). Check and see if this works.
+
+The effects (the coefficients) could be reported as these ratios in a
+table, or in the text it could be reported something like ``Infected HG
+fish had 71.5\% (95\%CI: 38.9\% - 111.8\%) more \emph{Diplostomum}
+larvae than Control fish.'' Where do these percents come from? The
+percent effect is \(100(b_j - 1)\) larger than the reference mean if the
+\(b_j > 1\) or \(100(1 - b_j)\) smaller than the reference mean if the
+\(b_j < 1\).
+
+\section{Working in R}\label{working-in-r-4}
+
+Source publication: Benesh, D. P., \& Kalbe, M. (2016). Experimental
+parasite community ecology: intraspecific variation in a large tapeworm
+affects community assembly. Journal of Animal Ecology, 85(4), 1004-1013.
+
+Source data URL:
+\url{https://datadryad.org/resource/doi:10.5061/dryad.bq8j8}
+
+Source file: ``Lab\_exp.csv''
+
+Poisson fit. The quantile residual Q-Q plot is from the package DHARMa
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{fit.pois <-}\StringTok{ }\KeywordTok{glm}\NormalTok{(Diplo_intensity }\OperatorTok{~}\StringTok{ }\NormalTok{Treatment, }\DataTypeTok{family=}\StringTok{"poisson"}\NormalTok{, }\DataTypeTok{data=}\NormalTok{worm)}
+
+\CommentTok{# from the DHARMa package}
+\NormalTok{  n_sim <-}\StringTok{ }\DecValTok{250}
+\NormalTok{  simulationOutput <-}\StringTok{ }\KeywordTok{simulateResiduals}\NormalTok{(}\DataTypeTok{fittedModel =}\NormalTok{ fit.pois, }\DataTypeTok{n =}\NormalTok{ n_sim)}
+  \KeywordTok{plot}\NormalTok{(simulationOutput, }\DataTypeTok{asFactor =}\NormalTok{ F)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## DHARMa::plotResiduals - low number of unique predictor values, consider setting asFactor = T
+## DHARMa::plotResiduals - low number of unique predictor values, consider setting asFactor = T
+\end{verbatim}
+
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/glm1-working-in-r-1.pdf}
+
+Negative binomial fit.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{fit.nb <-}\StringTok{ }\KeywordTok{glm.nb}\NormalTok{(Diplo_intensity }\OperatorTok{~}\StringTok{ }\NormalTok{Treatment, }\DataTypeTok{data=}\NormalTok{worm)}
+\CommentTok{# from the DHARMa package}
+\NormalTok{  simulationOutput <-}\StringTok{ }\KeywordTok{simulateResiduals}\NormalTok{(}\DataTypeTok{fittedModel =}\NormalTok{ fit.nb, }\DataTypeTok{n =}\NormalTok{ n_sim)}
+  \KeywordTok{plot}\NormalTok{(simulationOutput, }\DataTypeTok{asFactor =}\NormalTok{ F)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## DHARMa::plotResiduals - low number of unique predictor values, consider setting asFactor = T
+## DHARMa::plotResiduals - low number of unique predictor values, consider setting asFactor = T
+\end{verbatim}
+
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-16-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# link scale}
+\NormalTok{emm <-}\StringTok{ }\KeywordTok{emmeans}\NormalTok{(fit.nb, }\DataTypeTok{specs=}\StringTok{"Treatment"}\NormalTok{)}
+\NormalTok{emm}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##  Treatment     emmean         SE  df asymp.LCL asymp.UCL
+##  Control     1.821408 0.08038710 Inf  1.663852  1.978964
+##  Uninfected  1.504077 0.10930511 Inf  1.289843  1.718311
+##  Infected LG 1.624144 0.13615796 Inf  1.357279  1.891009
+##  Infected HG 2.361096 0.07141332 Inf  2.221128  2.501063
+## 
+## Results are given on the log (not the response) scale. 
+## Confidence level used: 0.95
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{summary}\NormalTok{(}\KeywordTok{contrast}\NormalTok{(emm, }\DataTypeTok{method=}\StringTok{"trt.vs.ctrl"}\NormalTok{, }\DataTypeTok{adjust=}\StringTok{"none"}\NormalTok{), }\DataTypeTok{infer=}\KeywordTok{c}\NormalTok{(}\OtherTok{TRUE}\NormalTok{, }\OtherTok{TRUE}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##  contrast                estimate        SE  df  asymp.LCL  asymp.UCL
+##  Uninfected - Control  -0.3173308 0.1356823 Inf -0.5832632 -0.0513983
+##  Infected LG - Control -0.1972641 0.1581173 Inf -0.5071683  0.1126401
+##  Infected HG - Control  0.5396877 0.1075265 Inf  0.3289396  0.7504358
+##  z.ratio p.value
+##   -2.339  0.0193
+##   -1.248  0.2122
+##    5.019  <.0001
+## 
+## Results are given on the log (not the response) scale. 
+## Confidence level used: 0.95
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{emm.response <-}\StringTok{ }\KeywordTok{emmeans}\NormalTok{(fit.nb, }\DataTypeTok{specs=}\StringTok{"Treatment"}\NormalTok{, }\DataTypeTok{type=}\StringTok{"response"}\NormalTok{)}
+\KeywordTok{summary}\NormalTok{(}\KeywordTok{contrast}\NormalTok{(emm, }\DataTypeTok{method=}\StringTok{"trt.vs.ctrl"}\NormalTok{, }\DataTypeTok{adjust=}\StringTok{"none"}\NormalTok{, }\DataTypeTok{type=}\StringTok{"response"}\NormalTok{), }\DataTypeTok{infer=}\KeywordTok{c}\NormalTok{(}\OtherTok{TRUE}\NormalTok{, }\OtherTok{TRUE}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##  contrast                  ratio         SE  df asymp.LCL asymp.UCL
+##  Uninfected / Control  0.7280899 0.09878893 Inf 0.5580743 0.9499002
+##  Infected LG / Control 0.8209738 0.12981015 Inf 0.6021984 1.1192290
+##  Infected HG / Control 1.7154710 0.18445860 Inf 1.3894940 2.1179227
+##  z.ratio p.value
+##   -2.339  0.0193
+##   -1.248  0.2122
+##    5.019  <.0001
+## 
+## Confidence level used: 0.95 
+## Intervals are back-transformed from the log scale 
+## Tests are performed on the log scale
 \end{verbatim}
 
 \chapter*{Appendix 1: Getting Started with

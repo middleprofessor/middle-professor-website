@@ -31,8 +31,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   
   
-<link rel="prev" href="statistical-modeling.html">
-<link rel="next" href="data-reading-writing-and-fake.html">
+<link rel="prev" href="index.html">
+<link rel="next" href="organization-r-projects-and-r-notebooks.html">
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
@@ -305,92 +305,116 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="organization-r-projects-and-r-notebooks" class="section level1">
-<h1><span class="header-section-number">Chapter 2</span> Organization – R Projects and R Notebooks</h1>
-<div id="importing-packages" class="section level2">
-<h2><span class="header-section-number">2.1</span> Importing Packages</h2>
-<p>The R scripts you write will include functions in packages that are not included in Base R. These packages need to be downloaded from an internet server to your computer. You only need to do this once. But, each time you start a new R session, you will need to load a package using the <code>library()</code> function. Now is a good time to import packages that we will use</p>
-<ol style="list-style-type: decimal">
-<li>Open R Studio and choose the menu item “Tools” &gt; “Install Packages”</li>
-<li>In the “packages” input box, insert “ggplot2, data.table, emmeans, lme4, reshape2”. Make sure that “install dependencies” is clicked before you click “Install”</li>
-</ol>
-<p>Again, once these are installed, you don’t need to do this again. You simply need to use the <code>library()</code> function at the start of a script.</p>
+<div id="statistical-modeling" class="section level1">
+<h1><span class="header-section-number">Chapter 1</span> Statistical Modeling</h1>
+<div class="figure"><span id="fig:line"></span>
+<img src="Walker-elementary-statistical-modeling-draft_files/figure-html/line-1.png" alt="A line vs. a linear model. (A) the line $y=-3.48X + 105.7 is drawn. (B) A linear model fit to the data. The model coefficients are numerically equal to the slope and intercept of the line in A." width="672" />
+<p class="caption">
+Figure 1.1: A line vs. a linear model. (A) the line $y=-3.48X + 105.7 is drawn. (B) A linear model fit to the data. The model coefficients are numerically equal to the slope and intercept of the line in A.
+</p>
 </div>
-<div id="create-an-r-studio-project-for-this-class" class="section level2">
-<h2><span class="header-section-number">2.2</span> Create an R Studio Project for this Class</h2>
-<ol style="list-style-type: decimal">
-<li>Create a folder named “BIO_413”</li>
-<li>Within this folder, create new folders named
-<ol style="list-style-type: decimal">
-<li>“notebooks” – this is where your R notebooks are stored</li>
-<li>“R” – this is where R scripts are stored</li>
-<li>“data” – this is where data that we download from public archives are stored</li>
-<li>“output” – this is where you will store fake data generated in this class</li>
-<li>“images” – this is where image files are stored</li>
-</ol></li>
-<li>Open R Studio and click the menu item File &gt; New Project…</li>
-<li>Choose “Existing Directory” and navigate to your BIO_413 folder</li>
-<li>Choose “Create Project”</li>
-<li>Check that a file named “BIO_413.Rproj” is in your BIO_413 folder</li>
-</ol>
+<p>All students are familiar with the idea of a linear model from learning the equation of a line, which is</p>
+<span class="math display" id="eq:line">\[\begin{equation}
+Y = mX + b
+\tag{1.1}
+\end{equation}\]</span>
+<p>where <span class="math inline">\(m\)</span> is the slope of the line and <span class="math inline">\(b\)</span> is the <span class="math inline">\(Y\)</span>-intercept. It is useful to think of equation <a href="statistical-modeling.html#eq:line">(1.1)</a> as a function that maps values of <span class="math inline">\(X\)</span> to values of <span class="math inline">\(Y\)</span>. Using this function, if we input some value of <span class="math inline">\(X\)</span>, we always get the same value of Y as the output.</p>
+<p>A linear model is a function, like that in equation <a href="statistical-modeling.html#eq:line">(1.1)</a>, that is fit to a set of data, often to model a process that generated the data or something like the data. The line in Figure <a href="statistical-modeling.html#fig:line">1.1</a>A is just that, a line, but the line in Figure <a href="statistical-modeling.html#fig:line">1.1</a>B is a model of the data in Figure <a href="statistical-modeling.html#fig:line">1.1</a>B.</p>
+<div id="two-specifications-of-a-linear-model-i-the-linear-model-way" class="section level2">
+<h2><span class="header-section-number">1.1</span> Two specifications of a linear model I: the “linear model” way</h2>
+<p>The basic structure of a linear model is</p>
+<span class="math display" id="eq:lm">\[\begin{equation}
+Y = \beta_0 + \beta_1 X + \varepsilon
+\tag{1.2}
+\end{equation}\]</span>
+<p>A linear model has two parts: the “linear predictor” (<span class="math inline">\(Y = \beta_0 + \beta_1 X\)</span>) and the “error” (<span class="math inline">\(\varepsilon\)</span>). The linear predictor part looks like the equation for a line except that I’ve used <span class="math inline">\(\beta_0\)</span> for the intercept and <span class="math inline">\(\beta_1\)</span> for the slope and I’ve put the intercept term first. This re-labeling and re-arrangement make the notation for a linear model more flexible for more complicated linear models. For example <span class="math inline">\(Y = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \varepsilon\)</span> is a model where <span class="math inline">\(Y\)</span> is a function of two <span class="math inline">\(X\)</span> variables.</p>
+<p>As with the equation for a line, the linear predictor part of a linear model is a function that maps a specific value of <span class="math inline">\(X\)</span> to a value of <span class="math inline">\(Y\)</span>. This mapped value is the <strong>expected value</strong> given a specific input value of <span class="math inline">\(X\)</span>. This is often written as <span class="math inline">\(\mathrm{E}[Y|X]\)</span>, which is read as “the expected value of <span class="math inline">\(Y\)</span> given <span class="math inline">\(X\)</span>”. Importantly, <span class="math inline">\(\mathrm{E}[Y|X]\)</span> is the <strong>conditional mean</strong>, which is the <em>modeled</em> mean value of <span class="math inline">\(Y\)</span> for all observations in which <span class="math inline">\(X\)</span> takes some specific value <span class="math inline">\(x\)</span>. The error part of a linear model is a random variable that adds some random value to this expected value. Nothing about the model part of a linear model can predict its value.</p>
+<p>The inputs to a linear model (the <span class="math inline">\(X\)</span> variables) have many names including “independent variables,” “predictor variables,”, “explanatory variables,” “treatment variables,” and “covariates”. The output of a linear model (the <span class="math inline">\(Y\)</span> variable or variables if the model is multivariate) is the “dependent variable,” “response,” or “outcome.” The <span class="math inline">\(\beta\)</span> in the linear model are model <strong>parameters</strong> and if a parameter is multiplied by an <span class="math inline">\(X\)</span> variable then it is a <strong>coefficient</strong> (for example, <span class="math inline">\(\beta_1\)</span> in model <a href="statistical-modeling.html#eq:lm">(1.2)</a> is a coefficient). There can be additional parameters in more sophisticated models. The coefficients of the <span class="math inline">\(X\)</span> in a linear model (<span class="math inline">\(\beta_1\)</span> in model <a href="statistical-modeling.html#eq:lm">(1.2)</a>) are often called “the effects” (so <span class="math inline">\(\beta_1\)</span> is the effect of <span class="math inline">\(X_1\)</span>).</p>
+<p>Although a linear model is a model of a data-generating process, linear models are not typically used to actually generate any data. Instead, when we use a linear model to understand something about a real dataset, we think of our data as one realization of a process that generates data like ours. A linear model is a model of that process. That said, it is incredibly useful to use linear models to create fake datasets for at least two reasons: to probe our understanding of statistical modeling generally and, more specifically, to check that a model actually creates data like that in the real dataset that we are analyzing.</p>
 </div>
-<div id="r-notebooks" class="section level2">
-<h2><span class="header-section-number">2.3</span> R Notebooks</h2>
-<p>A typical statistical modeling project will consist of:</p>
-<ol style="list-style-type: decimal">
-<li>reading data from Excel or text (.csv or .txt) files</li>
-<li>cleaning data</li>
-<li>analysis</li>
-<li>generating plots</li>
-<li>generating tables</li>
-<li>writing text to describe the project, the methods, the analysis, and the interpretation of the results (plots and tables)</li>
-</ol>
-<p>The best practice for reproducible research is to have all six of these steps in your R Notebook. Too many research projects are not reproducible because the data were cleaned in Excel, and then different parts of the data were separately imported into a GUI statistics software for analysis, and then output from the statistics software was transcribed to Excel to make a table. And other parts of the analysis are used to create a plot in some plotting software. And then the tables and plots are pasted into Microsoft Word to create a report. Any change at any step in this process will require the researcher to remember all the downstream parts that are dependent on the change and to re-do an analysis, or a table, or a plot, etc. etc.</p>
-<p>The goal with an R Studio Notebook is to explicitly link all this so that changes in earlier steps automatically flow into the later steps. So, at the end of a project, a researcher can choose “run all” from the menu and the data are read, cleaned, analyzed, ploted, tabled, and put into a report with the text.</p>
-<p>This means that you have to think of the organization of the R code that your write in a Notebook. Your cannot simply append new code to the end of a script if something earlier (or above) is dependent on it. You need to go back up and insert the new code at some earlier (and meaningful) point.</p>
-<p>For example, an R chunk generates 100 random normal values and then plots these with a histogram. This was the chunk that I wrote</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">x &lt;-<span class="st"> </span><span class="kw">rnorm</span>(n)
-<span class="kw">qplot</span>(x)</code></pre></div>
-<p>When I ran the chunk, I got the error “Error in rnorm(n) : object n not found”. I was using the function <code>rnorm()</code> to generate values but I hadn’t assigned any value to <code>n</code> yet, so I got the error. To get this to work properly, I could have just typed <code>n &lt;- 100</code> in the console and then re-run the script but I want it to work properly on a fresh run of the chunk (after quitting and re-opening R Studio) so I instead inserted <code>n &lt;- 100</code> at the start of the chunk, like this:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">n &lt;-<span class="st"> </span><span class="dv">100</span>
-x &lt;-<span class="st"> </span><span class="kw">rnorm</span>(n)
-<span class="kw">qplot</span>(x)</code></pre></div>
-<div id="create-an-r-notebook-for-this-chapter" class="section level3">
-<h3><span class="header-section-number">2.3.1</span> Create an R Notebook for this Chapter</h3>
-<ol style="list-style-type: decimal">
-<li>The top-left icon in R Studio is a little plus sign within a green circle. Click this and choose “R Notebook” from the pull-down menu.</li>
-<li>Change the title of the notebook to “Notebook_01-organization”</li>
-<li>Delete the default R Markdown text starting with “This is an [R Markdown]…”</li>
-</ol>
-<p>Now write some text documenting which packages you installed.</p>
+<div id="two-specifications-of-a-linear-model-ii-the-statistical-model-way" class="section level2">
+<h2><span class="header-section-number">1.2</span> Two specifications of a linear model II: the “statistical model” way</h2>
+<p>Another way of specifying a linear model is</p>
+<span class="math display" id="eq:lm-spec2">\[\begin{align}
+Y &amp;\sim N(\mu, \sigma)\\
+\mathrm{E}(Y|X) = \mu
+\mu &amp;= \beta_0 + \beta_1 X
+\tag{1.3}
+\end{align}\]</span>
+<p>The first line states that an outcome is a function of a deterministic component (the <strong>conditional mean</strong> <span class="math inline">\(\mu\)</span>) and a random component (the square root of the unmodeled variance <span class="math inline">\(\sigma\)</span>). This first line is the <strong>stochastic</strong> part of the statistical model. The second line simply states that <span class="math inline">\(\mu\)</span> (the greek letter “mu”) from the first line is the conditional mean or conditional expectation. The third line is the <strong>deterministic</strong> part, which is the linear predictor. This alternative way to define the linear model is easily generalized to more complex models, including hierarchical models, generalized linear models, and Bayesian models, which is why I call it the “statistical model” way of specification.</p>
 </div>
-<div id="create-a-setup-chunk" class="section level3">
-<h3><span class="header-section-number">2.3.2</span> Create a “setup” chunk</h3>
+<div id="statistical-models-are-used-for-prediction-explanation-and-description" class="section level2">
+<h2><span class="header-section-number">1.3</span> Statistical models are used for prediction, explanation, and description</h2>
+<p>Researchers typically use statistical models to understand relationships between one or more <span class="math inline">\(Y\)</span> variables and one or more <span class="math inline">\(X\)</span> variables. These relationships include</p>
 <ol style="list-style-type: decimal">
-<li>Click on the “Insert” menu on the right hand side of the script (R Markdown) pane and choose “R”. This will insert an R code chunk into your R markdown document.</li>
-<li>The first R chunk of a notebook should be a setup chunk. Name the chunk “setup”</li>
-<li>load the libraries ggplot2 and data.table and click the chunk’s run button (the green triangle to the right of the chunk)</li>
+<li><p>Descriptive modeling. Sometimes a researcher merely wants to describe the relationship between <span class="math inline">\(Y\)</span> and a set of <span class="math inline">\(X\)</span> variables, perhaps to discover patterns. For example, the arrival of a spring migrant bird (<span class="math inline">\(Y\)</span>) as a function of sex (<span class="math inline">\(X_1\)</span>) and age (<span class="math inline">\(X_2\)</span>) might show that males and younger individuals arrive earlier. Importantly, if another <span class="math inline">\(X\)</span> variable is added to the model (or one dropped), the coefficients, and therefore, the precise description, will change. That is, the interpretation of a coefficient as a descriptor is <em>conditional</em> on the other covariates (<span class="math inline">\(X\)</span> variables) in the model. In a descriptive model, there is no implication of causal effects and the goal is not prediction. Nevertheless, it is very hard for humans to discuss a descriptive model without using causal language, which probably means that it is hard for us to think of these models as <em>mere description</em>. Like natural history, descriptive models are useful as patterns in want of an explanation, using more explicit causal models including experiments.</p></li>
+<li><p>Predictive modeling. Predictive modeling is very common in applied research. For example, fisheries researchers might model the relationship between population density and habitat variables to predict which subset of ponds in a region are most suitable for brook trout (<em>Salvelinus fontinalis</em>) reintroduction. The goal is to build a model with minimal prediction error, which is the error between predicted and actual values for a future sample. In predictive modeling, the <span class="math inline">\(X\)</span> (“predictor”) variables are largely instrumental – how these are related to <span class="math inline">\(Y\)</span> is not a goal of the modeling, although sometimes an investigator may be interested in the relative importance among the <span class="math inline">\(X\)</span> for predicting <span class="math inline">\(Y\)</span> (for example, collecting the data may be time consuming, or expensive, or enviromentally destructive, so know which subset of <span class="math inline">\(X\)</span> are most important for predicting <span class="math inline">\(Y\)</span> is a useful strategy).</p></li>
+<li><p>Explanatory (causal) modeling. Very often, researchers are explicitly interested in <em>how</em> the <span class="math inline">\(X\)</span> variables are causally related to <span class="math inline">\(Y\)</span>. The fisheries researchers that want to reintroduce trout may want to develop and manage a set of ponds to maintain healthy trout populations. This active management requires intervention to change habitat traits in a direction, and with a magnitude, to cause the desired response. This model is predictive – a specific change in <span class="math inline">\(X\)</span> predicts a specific response in <span class="math inline">\(Y\)</span> – because the coefficients of the model provide knowledge on how the system functions – how changes in the inputs <em>cause</em> change in the output. Causal interpretation of model coefficients requires a set of strong assumptions about the <span class="math inline">\(X\)</span> variables in the model. These assumptions are typically met in <strong>experimental designs</strong> but not <strong>observational designs</strong>.</p></li>
 </ol>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(ggplot2)
-<span class="kw">library</span>(data.table)</code></pre></div>
-<p>I added the chunk option “message=FALSE”. Run your chunk with and without this as an option.</p>
+<p>With observational designs, biologists are often not very explicit about which of these is the goal of the modeling and use a combination of descriptive, predictive, and causal language to describe and discuss results. Many papers read as if the researchers intend explanatory inference but because of norms within the biology community, mask this intention with “predictive” language. Here, I advocate embracing explicit, explanatory modeling by being very transparent about the model’s goal and assumptions.</p>
 </div>
-<div id="create-a-simple-plot-chunk" class="section level3">
-<h3><span class="header-section-number">2.3.3</span> Create a “simple plot” chunk</h3>
-<ol start="4" style="list-style-type: decimal">
-<li>Create a new chunk and label it “simple plot”</li>
-<li>insert the following R script and then click the chunk’s run button. Do you get a plot?</li>
+<div id="model-fitting" class="section level2">
+<h2><span class="header-section-number">1.4</span> Model fitting</h2>
+<p>In order to use a statistical model to describe, predict, or explain, we need to fit a model to data in order to estimate the parameters. If we fit model <a href="statistical-modeling.html#eq:conditional-expectation">(1.4)</a> to some data, the estimated parameters are the coefficients (<span class="math inline">\(b_0\)</span> and <span class="math inline">\(b_1\)</span>) of the fit model</p>
+<span class="math display" id="eq:conditional-expectation">\[\begin{equation}
+\mathrm{E}[Y|X] = b_0 + b_1 X
+\tag{1.4}
+\end{equation}\]</span>
+<p>The left-hand side of equation <a href="statistical-modeling.html#eq:conditional-expectation">(1.4)</a> is the <strong>conditional expectation</strong> and is read as “the expectation of Y given X” or “the expected value of Y given X”. Throughout this book, I use the greek <span class="math inline">\(\beta\)</span> to refer to a theoretical, data-generating parameter and the roman “b” to refer its estimate.</p>
+<p>The goal of descriptive and explanatory modeling is the estimate of the coefficients of the <span class="math inline">\(X\)</span> variables and their uncertainty. The goal of predictive modeling is the estimate of predicted values, and their uncertainty, given specific values of <span class="math inline">\(X\)</span>. These predicted values are the conditional expectations.</p>
+<div class="figure"><span id="fig:coldVoles"></span>
+<img src="Walker-elementary-statistical-modeling-draft_files/figure-html/coldVoles-1.png" alt="HarrellPlot of vole data." width="672" />
+<p class="caption">
+Figure 1.2: HarrellPlot of vole data.
+</p>
+</div>
+<p>For the model fit to the data in Figure <a href="statistical-modeling.html#fig:line">1.1</a>B, the coefficient of <span class="math inline">\(X\)</span> is the slope of the line. Perhaps surprisingly, we can fit a model like equation <a href="statistical-modeling.html#eq:lm">(1.2)</a> to data in which the <span class="math inline">\(X\)</span> variable is categorical. A simple example is the experiment of antioxidants (vitamins C and E) on lifespan in Voles (Fig. <a href="statistical-modeling.html#fig:coldVoles">1.2</a>). In this experiment, the <span class="math inline">\(X\)</span> variable is categorical, with three <strong>levels</strong>: “Control”, “Vitamin_E” and “Vitamin_C”. Categorical <span class="math inline">\(X\)</span> variables are often called <strong>factors</strong>. The trick to using a statistical model with categorical <span class="math inline">\(X\)</span> is to recode the factor levels into numbers – how this is done is explained in Chapter xxx. When the <span class="math inline">\(X\)</span> variable is categorical, the coefficients of the <span class="math inline">\(X\)</span> are <em>differences in group means</em>. The linear model fit to the vole data has two coefficients, one for Vitamin E and one for vitamin C. The estimate and uncertainty of the these two coefficients are shown in the top part of Figure <a href="statistical-modeling.html#fig:coldVoles">1.2</a>. The bottom part shows the raw data, as well as the group (factor level) means and the uncertainty in the estimate of these means.</p>
+<p>The simplest possible model that can be fit to the data is</p>
+<span class="math display" id="eq:unconditional">\[\begin{equation}
+\mathrm{E}[Y] = b_0
+\tag{1.5}
+\end{equation}\]</span>
+<p>which is simply the mean of <span class="math inline">\(Y\)</span>, or, more specifically, the <strong>unconditional mean</strong> of <span class="math inline">\(Y\)</span>, since its value is not conditional on any value of <span class="math inline">\(X\)</span>.</p>
+</div>
+<div id="assumptions-for-inference-with-a-linear-model" class="section level2">
+<h2><span class="header-section-number">1.5</span> Assumptions for inference with a linear model</h2>
+<p>Here is the linear model above (equation <a href="statistical-modeling.html#eq:lm">(1.2)</a>) but I’ve amended the model by explicitly specifying the distribution of the error term.</p>
+<span class="math display" id="eq:lm-again">\[\begin{align}
+Y &amp;= \beta_0 + \beta_1 X + \varepsilon\\
+\varepsilon &amp;\sim N(0, \sigma)
+\tag{1.6}
+\end{align}\]</span>
+<p>where <span class="math inline">\(N(0, \sigma)\)</span> is read as “normal distribution with mean zero and standard deviation sigma”. Any inference about the parameter <span class="math inline">\(\beta_1\)</span> (such as confidence intervals or hypothesis tests) assumes that the error (<span class="math inline">\(\varepsilon\)</span>) is IID Normal where IID is <strong>independent and identically distributed</strong> and Normal refers to the Normal (or Gaussian) distribution.</p>
+<ol style="list-style-type: decimal">
+<li>Independent means that the error for one case cannot be predicted from the error of any other case. There are lots or reasons that errors might be correlated. For example, measures that are taken from sites that are closer together or measures taken closer in time or measures from more closely related biological species will tend to have more similar error than measures taken from sites that are further apart or from times that are further apart or from species that are less closely related. Space and time and phylogeny create <strong>spatial and temporal and phylogenetic autocorrelation</strong>. Correlated error due to space or time or phylogeny can be modeled with <strong>Generalized Least Squares</strong> (GLS) models. A GLS model is a variation of model <a href="statistical-modeling.html#eq:lm-again">(1.6)</a>.</li>
 </ol>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">n &lt;-<span class="st"> </span><span class="dv">100</span>
-x &lt;-<span class="st"> </span><span class="kw">rnorm</span>(n)
-<span class="kw">qplot</span>(x)</code></pre></div>
-<pre><code>## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
-<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/simple-plot-1.png" width="672" /></p>
+<p>If there are measures both within and among field sites (or humans or rats) then we’d expect the measures within the same site (or human or rat) to err from the model in the same direction. Multiple measures within experimental units (a site or individual) creates “clusters” of error. Lack of independence or clustered error can be modeled using models with <strong>random effects</strong>. These models go by many names including linear mixed models (common in Ecology), hierarchical models, multilevel models, and random effects models. A linear mixed model is a variation of model <a href="statistical-modeling.html#eq:lm-again">(1.6)</a>.</p>
+<ol start="2" style="list-style-type: decimal">
+<li><p>Identical means that the errors are “drawn” from the same distribution. Since the model is a linear model, this distribution is a Normal distribution. A consequence of “indentical” is that the error variance is <strong>homoskedastic</strong>, or constant, or independent of <span class="math inline">\(X\)</span>. If the error variance differs among the <span class="math inline">\(X\)</span> then the errors are <strong>heteroskedastic</strong>. Many biological processes generate data in which the error is a function of the mean. For example, measures of biological variables that grow, such as lengths of body parts or population size, have variances that are “grow” with the mean. Or, measures of counts, such as the number of cells damaged by toxin, the number of eggs in a nest, or the number of mRNA transcripts per cell have variances that are a function of the mean. Both growth and count measures can be reasonably modeled using a linear model they are more often modeled using a <strong>generalized linear model</strong> (GLM), which is an extension of the linear model in equation <a href="statistical-modeling.html#eq:lm-again">(1.6)</a>. Heteroskedasitc error arising for other reasons, both biological and experimental, can be modeled with Generalized Least Squares (GLS) or with linear mixed models. GLS models are variations of model <a href="statistical-modeling.html#eq:lm-again">(1.6)</a>.</p></li>
+<li><p>Normal (Gaussian) error means that 1) the response is continuous and 2) the probability of sampling an individual measuring 0.5 units below the population mean is the same as the probability of sampling an individual measuring 0.5 units above the population mean. Counts (number of cells, number of eggs, number of mRNA transcripts) and binary responses (sucessful escape or sucessful infestation of host) are not continous and often often have asymmetric probablity distributions that are skewed to the right and while sometimes both can be reasonably modeled using a linear model they are more often modeled using a <strong>generalized linear model</strong> (GLM), which, again, is an extension of the linear model in equation <a href="statistical-modeling.html#eq:lm-again">(1.6)</a>.</p></li>
+</ol>
+<p>A common misconception is that inference from a linear model assumes that the <em>response</em> (<span class="math inline">\(Y\)</span>) is normally distributed. Models <a href="statistical-modeling.html#eq:lm-again">(1.6)</a> and <a href="statistical-modeling.html#eq:lm-spec2">(1.3)</a> show precisely why this conception is wrong. Model <a href="statistical-modeling.html#eq:lm-again">(1.6)</a> states explicitly that it is the error that has the normal distribution – the distribution of <span class="math inline">\(Y\)</span> is a mix of the distribution of <span class="math inline">\(X\)</span> and the error. Model <a href="statistical-modeling.html#eq:lm-spec2">(1.3)</a> states that the conditional outcome has a normal distribution, that is, the distribution after adjusting for variation in <span class="math inline">\(X\)</span>.</p>
+<div id="statistical-model-or-regression-model" class="section level3">
+<h3><span class="header-section-number">1.5.1</span> “Statistical model” or “regression model”?</h3>
+<p>Statistical modeling terminology can be confusing. The <span class="math inline">\(X\)</span> variables in a statistical model may be quantitative (continuous or integers) or categorical (names or qualitative amounts) or some mix of the two. Linear models with all quantitative independent variables are often called “regression models.” Linear models with all categorical independent variables are often called “ANOVA models.” Linear models with a mix of quantitative and categorical variables are often called “ANCOVA models” if the focus is on one of the categorical <span class="math inline">\(X\)</span> or “regression models” if there tend to be many independent variables. Other patterns occur. For example “ANCOVA models” often include interaction effects but “regression models” rarely do. To avoid thinking of statistical analysis as “regression vs. ANOVA”, I will most often use the term “statistical model” for general usage, and use a more specific term only to emphasize something about the model in that particluar context.</p>
 </div>
-<div id="create-more-r-chunks-and-explore-options-and-play-with-r-code" class="section level3">
-<h3><span class="header-section-number">2.3.4</span> Create more R chunks and explore options and play with R code</h3>
+</div>
+<div id="linear-models-versus-non-linear-models" class="section level2">
+<h2><span class="header-section-number">1.6</span> Linear models versus non-linear models</h2>
+<p>All statistical models in this text are linear in the parameters, which means that the different components of the model are added together. This additive part of the model containing the parameters is the linear predictor in specifications <a href="statistical-modeling.html#eq:lm">(1.2)</a> and <a href="statistical-modeling.html#eq:lm-spec2">(1.3)</a> above. Or, using the language of matrix algebra, the linear predictor is a simple dot product of the model matrix and the coefficients. For example, a cubic polynomial model</p>
+<span class="math display">\[\begin{equation}
+Y = \beta_0 + \beta_1 X + \beta_2 X^2 + \beta_3 X^3 + \varepsilon
+\end{equation}\]</span>
+<p>is a linear model, even though the function is non-linear, because the different components are added (or, using matrix algebra, the predictor is <span class="math inline">\(\mathbf{X}\boldsymbol{\beta}\)</span>).</p>
+<p>A generalized linear model (GLM) has the form <span class="math inline">\(g(\mu_i) = \eta_i\)</span> where <span class="math inline">\(\eta\)</span> (the greek letter “eta”) is the linear predictor</p>
+<span class="math display">\[\begin{equation}
+\eta = \mathbf{X}\boldsymbol{\beta} 
+\end{equation}\]</span>
+<p>Non-linear models, in conrast to a GLM or classical linear model, are not linear in the parameters (the predictor is not a simple dot product of the model matrix and a vector of parameters). For example, the Michaelis-Menten model is a nonlinear model</p>
+<span class="math display">\[\begin{equation}
+Y = \frac{\beta_1 X}{\beta_2 + X} + \varepsilon
+\end{equation}\]</span>
 
-</div>
 </div>
 </div>
             </section>
@@ -398,8 +422,8 @@ x &lt;-<span class="st"> </span><span class="kw">rnorm</span>(n)
           </div>
         </div>
       </div>
-<a href="statistical-modeling.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="data-reading-writing-and-fake.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="index.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="organization-r-projects-and-r-notebooks.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -429,7 +453,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/rstudio/bookdown-demo/edit/master/notebooks/04-setup.Rmd",
+"link": "https://github.com/rstudio/bookdown-demo/edit/master/notebooks/01-statistical-modeling.Rmd",
 "text": "Edit"
 },
 "download": ["Walker-elementary-statistical-modeling-draft.pdf", "Walker-elementary-statistical-modeling-draft.epub"],
