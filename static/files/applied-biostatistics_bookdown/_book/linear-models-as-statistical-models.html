@@ -31,8 +31,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   
   
-<link rel="prev" href="adding-covariates-to-a-linear-model-i-ancova.html">
-<link rel="next" href="appendix-1-getting-started-with-r.html">
+<link rel="prev" href="index.html">
+<link rel="next" href="organization-r-projects-and-r-notebooks.html">
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
@@ -306,289 +306,140 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="generalized-linear-models-i-count-data" class="section level1">
-<h1><span class="header-section-number">Chapter 13</span> Generalized linear models I: Count data</h1>
-<p>Biologists frequently count stuff, and design experiments to estimate the effects of different factors on these counts. For example, the effects of environmental mercury on clutch size in a bird, the effects of warming on parasite load in a fish, or the effect of exercise on RNA expression.</p>
-<p>Count data differ from data with Normal error in many ways, including 1) counts are discrete 2) counts tend to bunch up on the small side of the range, creating a distribution with a positive skew, 3) counts can be zero, and a sample of counts can have an abundance of zeros, and 4) the variance of count data tends to increase with the mean (see Figure <a href="generalized-linear-models-i-count-data.html#fig:glm1-plot1">13.1</a> for some of these properties). Some count data can be approximated by a normal distribution and reasonably modeled with a linear model but more often, count data are modeled with something other than a normal distribution using a <strong>generalized linear model</strong> (GLM). Back before modern computing and fast processors, count data were often analyzed by either <strong>transforming</strong> the response or by <strong>non-parametric hypothesis tests</strong>. I prefer a GLM because both the analysis of transformed data and non-parametric hypothesis tests are really a response to “correct” <span class="math inline">\(p\)</span>-values instead of interpretable parameter estimates.</p>
-<div class="figure"><span id="fig:glm1-plot1"></span>
-<img src="Walker-elementary-statistical-modeling-draft_files/figure-html/glm1-plot1-1.png" alt="Histogram of the count of a trematode parasite larvae in Control vs. Infected fish. Fish in the Infected treatment are infected with a tapeworm." width="576" />
+<div id="linear-models-as-statistical-models" class="section level1">
+<h1><span class="header-section-number">Chapter 1</span> Linear models as statistical models</h1>
+<p>This chapter introduces statistical modeling using the <strong>linear model</strong>. All students are familiar with the idea of a linear model from learning the equation of a line, which is</p>
+<span class="math display" id="eq:line">\[\begin{equation}
+Y = mX + b
+\tag{1.1}
+\end{equation}\]</span>
+<p>where <span class="math inline">\(m\)</span> is the slope of the line and <span class="math inline">\(b\)</span> is the <span class="math inline">\(Y\)</span>-intercept. It is useful to think of equation <a href="linear-models-as-statistical-models.html#eq:line">(1.1)</a> as a function that maps values of <span class="math inline">\(X\)</span> to values of <span class="math inline">\(Y\)</span>. Using this function, if we input some value of <span class="math inline">\(X\)</span>, we always get the same value of Y as the output.</p>
+<p>A linear model is a function, like that in equation <a href="linear-models-as-statistical-models.html#eq:line">(1.1)</a>, that is fit to a set of data, often to model a process that generated the data or something like the data. The line in Figure <a href="linear-models-as-statistical-models.html#fig:line">1.1</a>A is just that, a line, but the line in Figure <a href="linear-models-as-statistical-models.html#fig:line">1.1</a>B is a linear model fit to the data in Figure <a href="linear-models-as-statistical-models.html#fig:line">1.1</a>B.</p>
+<div class="figure"><span id="fig:line"></span>
+<img src="Walker-elementary-statistical-modeling-draft_files/figure-html/line-1.png" alt="A line vs. a linear model. (A) the line $y=-3.48X + 105.7$ is drawn. (B) A linear model fit to the data. The model coefficients are numerically equal to the slope and intercept of the line in A." width="672" />
 <p class="caption">
-Figure 13.1: Histogram of the count of a trematode parasite larvae in Control vs. Infected fish. Fish in the Infected treatment are infected with a tapeworm.
+Figure 1.1: A line vs. a linear model. (A) the line <span class="math inline">\(y=-3.48X + 105.7\)</span> is drawn. (B) A linear model fit to the data. The model coefficients are numerically equal to the slope and intercept of the line in A.
 </p>
 </div>
-<div id="the-generalized-linear-model" class="section level2">
-<h2><span class="header-section-number">13.1</span> The generalized linear model</h2>
-<p>Section [Assumptions for inference with statistical models] in Chapter 1 introduced two ways of defining a statistical model.</p>
-<ol style="list-style-type: decimal">
-<li>Definition using a distribution of the error term (the “linear model way”)</li>
-</ol>
-<span class="math display" id="eq:lm-again">\[\begin{align}
-Y &amp;= \beta_0 + \beta_1 X + \varepsilon\\
-\varepsilon &amp;\sim N(0, \sigma)
-\tag{13.1}
+<div id="two-specifications-of-a-linear-model-i-the-linear-model-way" class="section level2">
+<h2><span class="header-section-number">1.1</span> Two specifications of a linear model I: the “linear model” way</h2>
+<p>The basic <strong>structure</strong> of a linear model is</p>
+<span class="math display" id="eq:lm">\[\begin{align}
+Y &amp;= \beta_0 + \beta_1 X + \varepsilon
+\varepsilon \sim N(0, \sigma)
+\tag{1.2}
 \end{align}\]</span>
-<ol start="2" style="list-style-type: decimal">
-<li>Definition using the response as a combination of stochastic and deterministic components (the “statistical model way”)</li>
-</ol>
+<p>A linear model has two parts: the “linear predictor” (<span class="math inline">\(Y = \beta_0 + \beta_1 X\)</span>) and the “error” (<span class="math inline">\(\varepsilon\)</span>). The linear predictor part looks like the equation for a line except that I’ve used <span class="math inline">\(\beta_0\)</span> for the intercept and <span class="math inline">\(\beta_1\)</span> for the slope and I’ve put the intercept term first. This re-labeling and re-arrangement make the notation for a linear model more flexible for more complicated linear models. For example <span class="math inline">\(Y = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \varepsilon\)</span> is a model where <span class="math inline">\(Y\)</span> is a function of two <span class="math inline">\(X\)</span> variables.</p>
+<p>As with the equation for a line, the linear predictor part of a linear model is a function that maps a specific value of <span class="math inline">\(X\)</span> to a value of <span class="math inline">\(Y\)</span>. This mapped value is the <strong>expected value</strong> given a specific input value of <span class="math inline">\(X\)</span>. This is often written as <span class="math inline">\(\mathrm{E}[Y|X]\)</span>, which is read as “the expected value of <span class="math inline">\(Y\)</span> given <span class="math inline">\(X\)</span>”. Importantly, <span class="math inline">\(\mathrm{E}[Y|X]\)</span> is the <strong>conditional mean</strong>, which is the <em>modeled</em> value of <span class="math inline">\(Y\)</span> for all observations in which <span class="math inline">\(X\)</span> takes some specific value <span class="math inline">\(x\)</span>.</p>
+<p>The second line of the model (read as “epsilon is distributed as Normal with mean zero and standard deviation sigma”“) specifies the distribution of the error part. The error part of a linear model is a random”draw&quot; from a normal distribution with mean zero and variance <span class="math inline">\(\sigma^2\)</span>. Think of this as adding some random value to the expected value.</p>
+<p>The inputs to a linear model (the <span class="math inline">\(X\)</span> variables) have many names including “independent variables,” “predictor variables,”, “explanatory variables,” “treatment variables,” and “covariates”. The output of a linear model (the <span class="math inline">\(Y\)</span> variable or variables if the model is multivariate) is the “dependent variable,” “response,” or “outcome.” The <span class="math inline">\(\beta\)</span> in the linear model are model <strong>parameters</strong> and if a parameter is multiplied by an <span class="math inline">\(X\)</span> variable then it is a <strong>coefficient</strong> (for example, <span class="math inline">\(\beta_1\)</span> in model <a href="linear-models-as-statistical-models.html#eq:lm">(1.2)</a> is a coefficient) (there are additional parameters that are hidden from this specification of the linear model but show up in the specification below). The coefficients of the <span class="math inline">\(X\)</span> in a linear model (<span class="math inline">\(\beta_1\)</span> in model <a href="linear-models-as-statistical-models.html#eq:lm">(1.2)</a>) are often called “the effects” (so <span class="math inline">\(\beta_1\)</span> is the effect of <span class="math inline">\(X_1\)</span>).</p>
+<p>Although a linear model (or statistical model more generally) is a model of a data-generating process, linear models are not typically used to actually generate any data. Instead, when we use a linear model to understand something about a real dataset, we think of our data as one realization of a process that generates data like ours. A linear model is a model of that process. That said, it is incredibly useful to use linear models to create fake datasets for at least two reasons: to probe our understanding of statistical modeling generally and, more specifically, to check that a model actually creates data like that in the real dataset that we are analyzing.</p>
+</div>
+<div id="two-specifications-of-a-linear-model-ii-the-statistical-model-way" class="section level2">
+<h2><span class="header-section-number">1.2</span> Two specifications of a linear model II: the “statistical model” way</h2>
+<p>A second way of specifying a linear model is</p>
 <span class="math display" id="eq:lm-spec2">\[\begin{align}
 Y &amp;\sim N(\mu, \sigma)\\
 \mathrm{E}(Y|X) &amp;= \mu
 \mu &amp;= \beta_0 + \beta_1 X
 \tag{1.3}
 \end{align}\]</span>
-<p>A generalized linear model has these two parts of the second definition but adds a third part. Here are the parts of a generalized linear model</p>
+<p>The first line states that the response variable <span class="math inline">\(Y\)</span> is a random variable independently drawn from a normal distribution with mean <span class="math inline">\(\mu\)</span> and variance <span class="math inline">\(\sigma^2\)</span>. This first line is the <strong>stochastic</strong> part of the statistical model. The second line simply states that <span class="math inline">\(\mu\)</span> (the greek letter “mu”) from the first line is the conditional mean or conditional expectation. The third line states how <span class="math inline">\(Y\)</span> is generated given a value of <span class="math inline">\(X\)</span>. This is the linear predictor, which is the <strong>deterministic</strong> part of the statistical model.</p>
+<p>These two ways of specifying the model encourage slightly different ways of thinking about how the data (the response varible <span class="math inline">\(Y\)</span>) were generated. The linear model way “generates” data by constructing <span class="math inline">\(Y\)</span> from the <span class="math inline">\(X\)</span> and then adding random, normal error. The statistical model way “generates” data by simply drawing a random variable from a normal distribution with a specified mean and variance. The statistical model way explicitly defines all parameters, including the parameters of the linear predictor (<span class="math inline">\(\beta_0\)</span> and <span class="math inline">\(\beta_1\)</span>), the condtional mean <span class="math inline">\(\mu\)</span> and the variance <span class="math inline">\(\sigma\)</span>. The linear model way only defines the parameters of the linear predictor, and often these are referrred to as “the parameters” in the sense that there are not other parameters. Because of the explicit statement of all parameters, the statistical model way to define the linear model is more useful in that it is easily generalized to more complex models, including hierarchical models, generalized linear models, and Bayesian models. This is why I call it the “statistical model” way of specification.</p>
+</div>
+<div id="statistical-models-are-used-for-prediction-explanation-and-description" class="section level2">
+<h2><span class="header-section-number">1.3</span> Statistical models are used for prediction, explanation, and description</h2>
+<p>Researchers typically use statistical models to understand relationships between one or more <span class="math inline">\(Y\)</span> variables and one or more <span class="math inline">\(X\)</span> variables. These relationships include</p>
 <ol style="list-style-type: decimal">
-<li><strong>The stochastic part</strong>, which is a probability distribution from the exponential family (this is sometimes called the “random part”)
-<span class="math display">\[\begin{equation}
-Y \sim \mathrm{Prob}(\mu)
-\end{equation}\]</span></li>
-<li><strong>the deterministic part</strong>, which is a linear predictor (this is more often called the “systematic part”)
-<span class="math display">\[\begin{equation}
-\eta=\mathbf{X}\boldsymbol{\beta}
-\end{equation}\]</span></li>
-<li>a <strong>link function</strong> connecting the two parts
-<span class="math display">\[\begin{equation}
-\eta = g(\mu)
-\end{equation}\]</span></li>
+<li><p>Descriptive modeling. Sometimes a researcher merely wants to describe the relationship between <span class="math inline">\(Y\)</span> and a set of <span class="math inline">\(X\)</span> variables, perhaps to discover patterns. For example, the arrival of a spring migrant bird (<span class="math inline">\(Y\)</span>) as a function of sex (<span class="math inline">\(X_1\)</span>) and age (<span class="math inline">\(X_2\)</span>) might show that males and younger individuals arrive earlier. Importantly, if another <span class="math inline">\(X\)</span> variable is added to the model (or one dropped), the coefficients, and therefore, the precise description, will change. That is, the interpretation of a coefficient as a descriptor is <em>conditional</em> on the other covariates (<span class="math inline">\(X\)</span> variables) in the model. In a descriptive model, there is no implication of causal effects and the goal is not prediction. Nevertheless, it is very hard for humans to discuss a descriptive model without using causal language, which probably means that it is hard for us to think of these models as <em>mere description</em>. Like natural history, descriptive models are useful as patterns in want of an explanation, using more explicit causal models including experiments.</p></li>
+<li><p>Predictive modeling. Predictive modeling is very common in applied research. For example, fisheries researchers might model the relationship between population density and habitat variables to predict which subset of ponds in a region are most suitable for brook trout (<em>Salvelinus fontinalis</em>) reintroduction. The goal is to build a model with minimal prediction error, which is the error between predicted and actual values for a future sample. In predictive modeling, the <span class="math inline">\(X\)</span> (“predictor”) variables are largely instrumental – how these are related to <span class="math inline">\(Y\)</span> is not a goal of the modeling, although sometimes an investigator may be interested in the relative importance among the <span class="math inline">\(X\)</span> for predicting <span class="math inline">\(Y\)</span> (for example, collecting the data may be time consuming, or expensive, or enviromentally destructive, so know which subset of <span class="math inline">\(X\)</span> are most important for predicting <span class="math inline">\(Y\)</span> is a useful strategy).</p></li>
+<li><p>Explanatory (causal) modeling. Very often, researchers are explicitly interested in <em>how</em> the <span class="math inline">\(X\)</span> variables are causally related to <span class="math inline">\(Y\)</span>. The fisheries researchers that want to reintroduce trout may want to develop and manage a set of ponds to maintain healthy trout populations. This active management requires intervention to change habitat traits in a direction, and with a magnitude, to cause the desired response. This model is predictive – a specific change in <span class="math inline">\(X\)</span> predicts a specific response in <span class="math inline">\(Y\)</span> – because the coefficients of the model provide knowledge on how the system functions – how changes in the inputs <em>cause</em> change in the output. Causal interpretation of model coefficients requires a set of strong assumptions about the <span class="math inline">\(X\)</span> variables in the model. These assumptions are typically met in <strong>experimental designs</strong> but not <strong>observational designs</strong>.</p></li>
 </ol>
-<p><span class="math inline">\(\mu\)</span> (the Greek symbol mu) is the conditional mean (or expectation <span class="math inline">\(\mathrm{E}(Y|X)\)</span>) of the response on the <strong>response scale</strong> and <span class="math inline">\(\eta\)</span> (the Greek symbol eta) is the conditional mean of the response on the <strong>link scale</strong>. A GLM models the response with a distribution specified in the stochastic part. The probability distributions introduced in this chapter are the Poisson and Negative Binomial. The link function for the Poisson and Negative Binomial is <span class="math inline">\(\eta = log(\mu)\)</span>. Note that a linear model is a GLM with a Normal distribution and an Identity link (<span class="math inline">\(\eta = \mu\)</span>).</p>
-<p>When modeling counts using the Poisson or negative binomial distributions, the link scale is linear, and so the effects are additive on the link scale, while the response scale is nonlinear (it is the exponent of the link scale), and so the effects are multiplicative on the response scale. If this doesn’t make sense now, an example is worked out below. The inverse of the link function backtransforms the parameters from the link scale back to the response scale. So, for example, a prediction on the response sale is <span class="math inline">\(\mathrm{exp}(\hat{\eta})\)</span> and a coefficient on the response scale is <span class="math inline">\(\mathrm{exp}(b_j)\)</span>.</p>
+<p>With observational designs, biologists are often not very explicit about which of these is the goal of the modeling and use a combination of descriptive, predictive, and causal language to describe and discuss results. Many papers read as if the researchers intend explanatory inference but because of norms within the biology community, mask this intention with “predictive” language. Here, I advocate embracing explicit, explanatory modeling by being very transparent about the model’s goal and assumptions.</p>
 </div>
-<div id="count-data-example-number-of-trematode-worm-larvae-in-eyes-of-threespine-stickleback-fish" class="section level2">
-<h2><span class="header-section-number">13.2</span> Count data example – number of trematode worm larvae in eyes of threespine stickleback fish</h2>
-<p>The example is an experiment measuring the effect of the parasitic tapeworm <em>Schistocephalus solidus</em> infection on the susceptibility of infection from a second parasite, the trematode <em>Diplostomum pseudospathaceum</em>, in the threespine stickleback fish <em>Gasterosteus aculeatus</em>. The treatment levels are “Control” (unexposed to the tapeworm), “Uninfected” &quot; (exposed to the tapeworm but uninfected), “Infected LG” (exposed and infected with the low growth population of the tapeworm), and “Infected HG” (exposed and infected with the high growth population of tapeworm). The response is the number of trematode larvae counted in the eyes (right and left combined) of the fish. A histogram of the counts is shown in Figure <a href="generalized-linear-models-i-count-data.html#fig:glm1-plot1">13.1</a> for the control and Infected HG treatment levels.</p>
-<p>I start the analysis by fitting a linear model to the worm data and then <em>model checking</em>, to gain some insight on how well the linear model fits the data</p>
-<div style="background-color:#cccccc; text-align:left; vertical-align: middle; padding:20px 47px;">
-<p><strong>NHST blues</strong> – Students are often encouraged by textbooks, colleagues, or the literature to start the analysis by first “testing” assumptions with hypothesis tests – for example using a Shaprio-Wilks test of normality as a decision rule to decide if to use a parametric test such as a <span class="math inline">\(t\)</span>-test or ANOVA if the null hypothesis of normality is not rejected, or a non-parametric test such as a Mann-Whitney U test if the null hypothesis of normality is rejected. I advise against this, because 1) this pre-test filtering automatically invalidates the <span class="math inline">\(p\)</span>-value of the hypothesis test as it does not adjust for the filtering procedure, 2) real data are only approximately normal and as <span class="math inline">\(n\)</span> increses, a normality test will reject any real dataset, and 3) hypothesis tests are pretty robust to non-normality anyway.</p>
-</div>
-<p>The model is</p>
-<span class="math display">\[\begin{align}
-Y &amp;= N(\mu, \sigma)\\
-\mu &amp;= \beta_0 + \beta_1 Treatment
+<div id="model-fitting" class="section level2">
+<h2><span class="header-section-number">1.4</span> Model fitting</h2>
+<p>In order to use a statistical model to describe, predict, or explain, we need to fit a model to data in order to estimate the parameters. A linear model fit to some data is</p>
+<span class="math display" id="eq:yhat">\[\begin{align}
+\hat{y}_i &amp;= b_0 + b_1 x_i\\
+\mathrm{E}[Y|X=x_i] &amp;= \hat{y}_i
+\tag{1.4}
 \end{align}\]</span>
-<p>Which models the parasite count conditional on <span class="math inline">\(Treatment\)</span> with a Normal distribution. Remember, this is equivalent to a model with an error term with a Normal distribution (now might be a good time to go back to Chapter 1 and review the section [Assumptions for inference with statistical models]).</p>
-<div id="checking-the-model-i-a-normal-q-q-plot" class="section level3">
-<h3><span class="header-section-number">13.2.1</span> Checking the model I – a Normal Q-Q plot</h3>
-<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/glm1-plot2-1.png" width="576" /></p>
-<p>Figure <a href="#fig:glm1-plot2"><strong>??</strong></a>A shows a histogram of the residuals from the fit linear model. The plot shows that the residuals are clumped at the negative end of the range, which suggests that a model with a normally distributed conditional outcome (or normal error) is not well approximated.</p>
-<p>A better way to investigate this is with the <strong>Normal Q-Q</strong> plot in Figure <a href="#fig:glm1-plot2"><strong>??</strong></a>B, which plots the sample quantiles for a variable against their theoretical quantiles. If the conditional outcome approximates a normal distribution, the points should roughly follow the line. Instead, for the worm data, the points are above the line at both ends. At the left (negative) end, this means that we aren’t seeing the most negative values that would be expected (the observed values are more positive than the theoretical values). Remembering that this plot is of residuals, if we think about this as counts, this means that our smallest counts are not as small as we would expect given the mean and a normal distribution. This shouldn’t be surprising – the counts range down to zero and counts cannot be below zero. At the positive end, the sample values are again more positive than the theoretical values. Thinking about this as counts, this means that are largest counts are larger than expected given the mean and a normal distribution. This pattern is exactly what we’d expect of count data, or at least count data that borders zero.</p>
-<div style="background-color:#cccccc; text-align:left; vertical-align: middle; padding:20px 47px;">
-<p><strong>Intuition Pump</strong> – Let’s construct a Normal Q-Q plot. A <strong>quantile</strong> (or percentile) of a vector of numbers is the value of the point at a specified percentage rank. The median is the 50% quantile. The 95% confidence intervals are at the 2.5% and 97.5% quantiles. In a Normal Q-Q plot, we want to plot the quantiles of the residuals against a set of theoretical quantiles.</p>
+<p><span class="math inline">\(\hat{y}_i\)</span> (“y hat”) is the <strong>predicted value</strong> of individual <span class="math inline">\(i\)</span> and <span class="math inline">\(b_0\)</span> and <span class="math inline">\(b_1\)</span> are the coefficients of the model fit (though technically <span class="math inline">\(b_0\)</span> is not a coefficient). Sometimes <span class="math inline">\(\hat{y}_i\)</span> is simply called “the prediction”. The second line above simply states the conditional expectation is the prediction (read as “The conditional expectation of <span class="math inline">\(Y\)</span>, given that <span class="math inline">\(X\)</span> is assigned the value <span class="math inline">\(x_i\)</span> is y hat”).</p>
+<p>If our goal is inference – to infer something about the “population” from the sample using the fit model, then <span class="math inline">\(\hat{y}_i\)</span> is the <strong>point estimate</strong> of the parameter <span class="math inline">\(\mu_i\)</span> and the coefficients <span class="math inline">\(b_0\)</span> and <span class="math inline">\(b_1\)</span> are point estimates of the parameters <span class="math inline">\(\beta_0\)</span> and <span class="math inline">\(\beta_1\)</span>. I put “population” in quotes because it is a very abstract concept. Throughout this book, I use Greek letters to refer to a theoretical parameter and Roman letters to refer point estimates.</p>
+<p>Throughout this text, I recommend reporting and interpreting <strong>interval estimates</strong> of the point estimate. A <strong>confidence interval</strong> is a type of interval estimate. A confidence interval of a parameter is a measure of the uncertainty in the estimate. A 95% confidence interval has a 95% probability (in the sense of long-run frequency) of containing the parameter This probability is a property of the population of intervals that could be computed using the same sampling and measuring procedure. It is not correct, without further assumptions, to state that there is a 95% probability that the paramter lies within the interval. Perhaps a more useful interpretation is that the interval is a <strong>compatability interval</strong> in that it contains the range of estimates that are compatible with the data, in the sense that a <span class="math inline">\(t\)</span>-test would not reject the null hypothesis of a difference between the estimate and any value within the interval (this interpretation does not imply anything about the true value).</p>
+<div class="figure"><span id="fig:coldVoles"></span>
+<img src="Walker-elementary-statistical-modeling-draft_files/figure-html/coldVoles-1.png" alt="HarrellPlot of vole data." width="672" />
+<p class="caption">
+Figure 1.2: HarrellPlot of vole data.
+</p>
+</div>
+<p>For the model fit to the data in Figure <a href="linear-models-as-statistical-models.html#fig:line">1.1</a>B, the coefficient of <span class="math inline">\(X\)</span> is the slope of the line. Perhaps surprisingly, we can fit a model like equation <a href="linear-models-as-statistical-models.html#eq:lm">(1.2)</a> to data in which the <span class="math inline">\(X\)</span> variable is categorical. A simple example is the experiment of antioxidants (vitamins C and E) on lifespan in Voles (Fig. <a href="linear-models-as-statistical-models.html#fig:coldVoles">1.2</a>). In this experiment, the <span class="math inline">\(X\)</span> variable is categorical, with three <strong>levels</strong>: “Control”, “Vitamin_E” and “Vitamin_C”. Categorical <span class="math inline">\(X\)</span> variables are often called <strong>factors</strong>. The trick to using a statistical model with categorical <span class="math inline">\(X\)</span> is to recode the factor levels into numbers – how this is done is explained in Chapter xxx. When the <span class="math inline">\(X\)</span> variable is categorical, the coefficients of the <span class="math inline">\(X\)</span> are <em>differences in group means</em>. The linear model fit to the vole data has two coefficients, one for Vitamin E and one for vitamin C. The estimate and uncertainty of the these two coefficients are shown in the top part of Figure <a href="linear-models-as-statistical-models.html#fig:coldVoles">1.2</a>. The bottom part shows the raw data, as well as the group (factor level) means and the uncertainty in the estimate of these means.</p>
+</div>
+<div id="a-mean-is-the-simplest-model" class="section level2">
+<h2><span class="header-section-number">1.5</span> A mean is the simplest model</h2>
+<p>The simplest possible model that can be fit to the data is</p>
+<span class="math display" id="eq:unconditional">\[\begin{equation}
+\mathrm{E}[Y] = b_0
+\tag{1.5}
+\end{equation}\]</span>
+<p>which is simply the mean of <span class="math inline">\(Y\)</span>, or, more specifically, the <strong>unconditional mean</strong> of <span class="math inline">\(Y\)</span>, since its value is not conditional on any value of <span class="math inline">\(X\)</span>.</p>
+</div>
+<div id="assumptions-for-inference-with-a-statistical-model" class="section level2">
+<h2><span class="header-section-number">1.6</span> Assumptions for inference with a statistical model</h2>
+<p><strong>Inference</strong> refers to using the fit model to generalize from the sample to the population, which assumes that the response is drawn from some specified probability distribution (Normal, or Poisson, or Bernouli, etc.). Throughout this text, I emphasize reporting and interpreting point estimates and confidence intervals. Another kind of inference is a <strong>significance test</strong>, which is the computation of the probability of “seeing the data” or something more extreme than the data, given a specified null hypothesis. A significance test results in a <strong>p-value</strong>, which can be reported with the point estimate and confidence interval. Somewhat related to a significance test is a hypothesis test, or what is now often perjoratively called a <strong>Null-Hypothesis Signficance Test</strong> (NHST), in which the <span class="math inline">\(p\)</span>-value from a significance test is compared to a pre-specified error rate called <span class="math inline">\(\alpha\)</span>. NHST may be useful for some very limited kinds of science but, in general, is not useful for most biological research and, instead, leads to large misconceptions. A general rule of thumb is, do not compare a reported <span class="math inline">\(p\)</span>-value to <span class="math inline">\(\alpha\)</span>.</p>
 <ol style="list-style-type: decimal">
-<li>To get the observed quantiles, rank the residuals of the fit linear model from most negative to most positive – these are your quantiles! For example, if you have <span class="math inline">\(n=145\)</span> residuals, then the 73rd point is the 50% quantile.</li>
-<li>A theoretical quantile from the Normal distribution can be constructed using the <code>qnorm</code> function which returns the Normal quantiles for a specified vector of percents. Alternatively, one could randomly sample <span class="math inline">\(n\)</span> points using <code>rnorm</code>. These of course will be sampled quantiles so will only approximate the expected theoretical quantiles, but I add this here because we use this method below.</li>
+<li>The data were generated by a process that is “linear in the parameters”, which means that the different components of the model are added together. This additive part of the model containing the parameters is the linear predictor in specifications <a href="linear-models-as-statistical-models.html#eq:lm">(1.2)</a> and <a href="linear-models-as-statistical-models.html#eq:lm-spec2">(1.3)</a> above. For example, a cubic polynomial model</li>
 </ol>
-<p>Now simply plot the observed against theoretical quantiles. Often, the <strong>standardized</strong> quantiles are plotted. A standardized variable has a mean of zero and a standard deviation of one and is computed by 1) centering the vector at zero by subtracting the mean from every value, and 2) dividing each value by the standard deviation of the vector. Recognize that because a standard deviation is a function of deviations from the mean, it doesn’t matter which of these operations is done first. A standardized theoretical quantile is specified by <code>qnorm(p, mean = 0, sd = 1)</code>, which is the default.</p>
-<p>Below, I’ve plotted the standardized observed and theoretical quantiles against the vector of percents (from 0 to 100%). This plot also nicely shows how the residuals of the worm data deviate from that expected if these had a normal distribution. The plot nicely shows that the most negative observed quintiles are not as negative as expected given a normal distribution, which again makes sense because this would imply negative counts since the mean is close to zero. And it nicely shows that the most positive observed quantiles are more positive than expected given a normal distribution, again this makes sense in right skewed count data. Finally, the plot nicely shows that the median is less positive than that expected given a normal distribution, which is at the mean (a right skew tends to pull the mean to the right of the median).</p>
-<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/glm1-qqplot-sim-1.png" width="576" /></p>
-</div>
-</div>
-<div id="checking-the-model-ii-scale-location-plot-for-checking-homoskedasticity" class="section level3">
-<h3><span class="header-section-number">13.2.2</span> Checking the model II – scale-location plot for checking homoskedasticity</h3>
-<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/glm1-worm-scale-location-1.png" width="576" /></p>
-<p>A linear model also assumes the error has constant variance (that is, the error variance is not a function of the value of <span class="math inline">\(X\)</span>), or homoskedasticity. The fit model can be checked for homoskedasticity using a scale-location plot, which is a scatterplot of the positive square-root of the standardized residuals against the fitted values<a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a>. If the residuals approximate a normal distribution, then a regression line through the scatter should be close to horizontal. The regression line in the scale-location plot of the fit of the linear model to the worm data shows a distinct increase in the “scale” (the square root of the standardized residuals) with increased fitted value, which is expected of data that are lognormally, Poisson, or negative binomially distributed.</p>
-</div>
-<div id="two-distributions-for-count-data-poisson-and-negative-binomial" class="section level3">
-<h3><span class="header-section-number">13.2.3</span> Two distributions for count data – Poisson and Negative Binomial</h3>
-<p>The pattern in the Normal Q-Q plot in Figure <a href="#fig:glm1-plot2"><strong>??</strong></a>B should discourage one from modeling the data with a normal distribution and instead model the data with an alternative distribution using a Generalized Linear Model. There is no unique mapping between how data are generated and a specific distribution, so this decision is not as easy as thinking about the data generation mechanism and then simply choosing the “correct” distribution. Section 4.5 in Bolker (xxx) is an excellent summary of how to think about the generating processes for different distributions in the context of ecological data. Since the response in the worm data are counts, we need to choose a distribution that generates integer values, such as the Poisson or the negative binomial.</p>
-<ol style="list-style-type: decimal">
-<li>Poisson – A Poisson distribution is the probability distribution of the number of occurrences of some thing (an egg, a parasite, or a specific mRNA transcript) generated by a process that generates the thing at a constant rate per unit effort (duration or space). This constant rate is <span class="math inline">\(\lambda\)</span>, which is the expectation, so <span class="math inline">\(\mathrm{E}(Y) = \mu = \lambda\)</span>. Because the rate per effort is constant, <em>the variance of a Poisson variable equals the mean</em>, <span class="math inline">\(\sigma^2 = \mu = \lambda\)</span>. Figure <a href="#fig:glm1-poisson"><strong>??</strong></a> shows three samples from a Poisson distribution with <span class="math inline">\(\lambda\)</span> set to 1, 5, and 10. The plots show that, as the mean count (<span class="math inline">\(\lambda\)</span>) moves away from zero, a Poisson distribution 1) becomes less skewed and more closely approximates a normal distribution and 2) has an increasingly low probability of including zero (less than 1% zeros when the mean is 5).</li>
-</ol>
-<p>A Poisson link function, then, is useful for count data in which the conditional variance is close to the conditional mean. Very often, biological count data are not well approximated by a Poisson distribution because the variance is either less than the mean, an example of <strong>underdispersion</strong><a href="#fn2" class="footnoteRef" id="fnref2"><sup>2</sup></a>, or greater than the mean, an example of <strong>overdispersion</strong><a href="#fn3" class="footnoteRef" id="fnref3"><sup>3</sup></a>. A useful distribution for count data with overdispersion is the negative binomial.</p>
-<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/glm1-poisson-1.png" width="576" /></p>
+<span class="math display">\[\begin{equation}
+\mathrm{E}(Y|X) = \beta_0 + \beta_1 X + \beta_2 X^2 + \beta_3 X^3
+\end{equation}\]</span>
+<p>is a linear model, even though the function is non-linear, because the different components are added. Because a linear predictor is additive, it can be compactly defined using matrix algebra</p>
+<span class="math display">\[\begin{equation}
+\mathrm{E}(Y|X) = \mathbf{X}\boldsymbol{\beta}
+\end{equation}\]</span>
+<p>where <span class="math inline">\(mathbf{X}\)</span> is the <strong>model matrix</strong> and <span class="math inline">\(\boldsymbol{\beta}\)</span> is the vector of parameters. We discuss these more in chapter xxx.</p>
+<p>A <strong>Generalized Linear Model</strong> (GLM) has the form <span class="math inline">\(g(\mu_i) = \eta_i\)</span> where <span class="math inline">\(\eta\)</span> (the Greek letter “eta”) is the linear predictor</p>
+<span class="math display">\[\begin{equation}
+\eta = \mathbf{X}\boldsymbol{\beta} 
+\end{equation}\]</span>
+<p>GLMs are extensions of linear models. There are non-linear models that are not linear in the parameters, that is, the predictor is not a simple dot product of the model matrix and a vector of parameters. For example, the Michaelis-Menten model is a non-linear model</p>
+<span class="math display">\[\begin{equation}
+\mathrm{E}(Y|X)  = \frac{\beta_1 X}{\beta_2 + X}
+\end{equation}\]</span>
+<p>that is non-linear in the parameters because the parts are not added together. This text covers linear models and generalized linear models, but not non-linear models that are also non-linear in the parameters.</p>
 <ol start="2" style="list-style-type: decimal">
-<li>Negative Binomial – The negative binomial distribution is a discrete probability distribution of the number of successes that occur before a specified number of failures <span class="math inline">\(k\)</span> given a probability <span class="math inline">\(p\)</span> of success. This isn’t a very useful way of thinking about modeling count data in biology. What is useful is that the Negative Binomial distribution can be used simply as way of modeling an “overdispersed” Poisson process. The mean of a negative binomial variable is <span class="math inline">\(\mu = k\frac{p}{1-p}\)</span> and the variance is <span class="math inline">\(\sigma^2 = \mu + \mu^2/k\)</span>. As a method for modeling an overdispersed Poisson variable, <span class="math inline">\(k\)</span> functions as a parameter controlling the amount of overdispersion and can be any real, positive value (not simply a positive integer), including values less than 1.</li>
+<li>The draws from the probability distribution are <strong>independent</strong>. Independence implies <strong>uncorrelated</strong> observations (the <span class="math inline">\(Y\)</span>), that is, for any two observations with the same value of <span class="math inline">\(X\)</span>, we cannot predict the value of one given the value of the other. For example, in the vole data above, uncorrelated implies that we cannot predict the lifespan of one vole within the Vitamin E treatment given the lifespan of another vole in the Vitamin E treatment. For linear models, this assumption is often stated as “independent errors” (the <span class="math inline">\(\varepsilon\)</span> in model <a href="linear-models-as-statistical-models.html#eq:lm">(1.2)</a>) instead of independent observations.</li>
+</ol>
+<p>There are lots or reasons that observations might be correlated. In the vole example, perhaps the voles were housed in batches of 5 individuals, and slight differences in the environment among the housing containers, caused all the voles in some containers to have shorter lifespans than expected given their treatment assigment and all voles in other containers to have longer lifespans than expected given their treatment assigment. More generally, if there are measures both within and among experimental units (field sites or humans or rats) then we’d expect the measures within the same unit to err from the model in the same direction. Multiple measures within experimental units (a site or individual) creates “clustered” observations. Lack of independence or clustered observations can be modeled using models with <strong>random effects</strong>. These models go by many names including linear mixed models (common in Ecology), hierarchical models, multilevel models, and random effects models. A linear mixed model is a variation of model <a href="linear-models-as-statistical-models.html#eq:lm">(1.2)</a>. This text introduces linear mixed models in chapter xxx.</p>
+<p>Measures that are taken from sites that are closer together or measures taken closer in time or measures from more closely related biological species will tend to have more similar values than measures taken from sites that are further apart or from times that are further apart or from species that are less closely related. Space and time and phylogeny create <strong>spatial and temporal and phylogenetic autocorrelation</strong>. Correlated error due to space or time or phylogeny can be modeled with <strong>Generalized Least Squares</strong> (GLS) models. A GLS model is a variation of model <a href="linear-models-as-statistical-models.html#eq:lm">(1.2)</a>.</p>
+<ol start="3" style="list-style-type: decimal">
+<li>The random draws are from <strong>identical</strong> probability distributions. Identical essentially means that the parameters in the probability distribution that control the variance are the same for each observation. So, for example, if we model the vole data using the normal probability distribution <span class="math inline">\(N(\mu, \sigma)\)</span> then <span class="math inline">\(\sigma\)</span> is constant for all observations. Indeed, <strong>constant variance</strong>, or <strong>homoskedasticity</strong>, is an assumption of linear models. If the error variance differs among the <span class="math inline">\(X\)</span> then the errors are <strong>heteroskedastic</strong>. Many biological processes generate data in which the error is a function of the mean. For example, measures of biological variables that grow, such as lengths of body parts or population size, have variances that “grow” with the mean. Or, measures of counts, such as the number of cells damaged by toxin, the number of eggs in a nest, or the number of mRNA transcripts per cell have variances that are a function of the mean. Heteroskedastic error does not imply non-identical probability distributions. For example, we could model the number of offspring of voles in the three treatments as independent, random draws from a Poisson distribution <span class="math inline">\(Y \sim Poisson(\mu)\)</span>. For a Poisson distributed variable, the variance equals the mean, so the parameter <span class="math inline">\(mu\)</span> also controls the variance. Let’s say the voles in the Control treatment level have, on average, twice the number of offspring as the voles in the Vitamin E treatment level. The, we’d expect the variance of offspring count in the Control group to be twice that than the Vitamin E group. Despite the difference variances, these are still draws from the same probability distribution. Observations with non-normal distributions, such as the Poisson, are modeled using <strong>Generalized Linear Models</strong> (GLM), which are “extensions” of the classical linear model.</li>
 </ol>
 </div>
-<div id="fitting-a-glm-with-a-poisson-link-to-the-worm-data" class="section level3">
-<h3><span class="header-section-number">13.2.4</span> Fitting a GLM with a Poisson link to the worm data</h3>
-<p>Let’s fit a GLM with a Poisson link to the worm data. The model is</p>
-<span class="math display">\[\begin{align}
-Diplo\_intensity &amp;\sim Poisson(\mu)\\
-\mathrm{E}({Diplo\_intensity|Treatment}) &amp;= \mu\\
-\mu &amp;= \mathrm{exp}(\eta)\\
-\eta &amp;= \beta_0 + \beta_1 Uninfected + \beta_2 Infected\_LG + \beta_3 Infected\_HG
-\end{align}\]</span>
-<ol style="list-style-type: decimal">
-<li>The first line of the model is the stochastic part stating the response is modeled as a random Poisson variable with mean and variance <span class="math inline">\(\mu\)</span> (the rate parameter <span class="math inline">\(\lambda\)</span> of the Poisson distribution).</li>
-<li>The second line states the <span class="math inline">\(\mu\)</span> is the conditional mean or conditional expectation</li>
-<li>The third line connects the conditional mean on the link scale (<span class="math inline">\(\eta\)</span>) with the conditional mean on the response scale (<span class="math inline">\(\mu\)</span>)</li>
-<li>The fourth line is the linear predictor, and includes three dummy variables.</li>
-</ol>
-<div id="model-checking-a-quantile-residual-q-q-plot" class="section level4">
-<h4><span class="header-section-number">13.2.4.1</span> Model checking – a quantile residual Q-Q plot</h4>
-<p>For model checking a GLM model fit, an alternative to a Normal Q-Q plot is a Quantile residual Q-Q plot of observed vs. expected <strong>quantile residuals</strong>. The basic algorithm for this is</p>
-<ol style="list-style-type: decimal">
-<li>Use the model parameters to simulate <span class="math inline">\(p\)</span> fake values of the response for each row of the data. This will be a <span class="math inline">\(n \times p\)</span> matrix of fake data where each column is a new, random sample of a population with parameters equal to that estimated by the observed data.</li>
-<li>For each observation (each row of the matrix of fake data), compute the fraction of simulated values smaller than the observed value of the response variable for that row. This fraction is the observed <strong>quantile residual</strong>, which ranges in value from 0 to 1. If the true data are distribitued as that specified by the model, then quantile residuals will have a uniform distribution – any value within the range 0 to 1 is equally likely.</li>
-<li>Sort the observed quantile residuals from smallest to largest and plot against theoretical quantile residuals from a uniform distribution. One could transform the quantile residuals to standard, normal residuals and then plot using a traditional Normal Q-Q plot but this step isn’t necessary (if reported, a Normal Q-Q plot of transformed quantile residuals might confuse readers who failed to read the fine print).</li>
-</ol>
-<div style="background-color:#cccccc; text-align:left; vertical-align: middle; padding:20px 47px;">
-<p><strong>Misconceivable</strong> – A common misconception is that if the distribution of the response approximates a Poisson distribution, then the residuals of a GLM fit with a Poisson link should be normally distributed, which could then be checked with a Normal Q-Q plot, and homoskedastic, which could be checked with a scale-location plot. Neither of these is true because a GLM does not transform the data and, in fact, the model definition does not specify anything about the distribution of an “error” term – there is no <span class="math inline">\(\varepsilon\)</span> in the model defintion above! This is why thinking about the definition of a linear model by specifying an error term with a normal distribution can be confusing and lead to misconceptions when learning GLMs.</p>
+<div id="specific-assumpations-of-a-linear-model" class="section level2">
+<h2><span class="header-section-number">1.7</span> Specific assumpations of a linear model</h2>
+<p>Linear models specifically assume that the probability distribution is Normal or <strong>Gaussian</strong>. This implies that 1) the response is continuous and 2) the probability of sampling an individual measuring 0.5 units below <span class="math inline">\(\mu\)</span> is the same as the probability of sampling an individual measuring 0.5 units above the population mean. Counts (number of cells, number of eggs, number of mRNA transcripts) and binary responses (sucessful escape or sucessful infestation of host) are not continous and often often have asymmetric probablity distributions that are skewed to the right and while sometimes both can be reasonably modeled using a linear model they are more often modeled using generalized linear models, which, again, is an extension of the linear model in equation <a href="#eq:lm-lm-spec2">(<strong>??</strong>)</a>.</p>
+<p>A common misconception is that inference from a linear model assumes that the <em>response</em> (<span class="math inline">\(Y\)</span>) is normally distributed. Both the “linear model” and “statistical model” ways of specifying the model show precisely why this conception is wrong. Model <a href="linear-models-as-statistical-models.html#eq:lm">(1.2)</a> states explicitly that it is the error that has the normal distribution – the distribution of <span class="math inline">\(Y\)</span> is a mix of the distribution of <span class="math inline">\(X\)</span> and the error. Model <a href="linear-models-as-statistical-models.html#eq:lm-spec2">(1.3)</a> states that the conditional outcome has a normal distribution, that is, the distribution after adjusting for variation in <span class="math inline">\(X\)</span>.</p>
+<p>As stated above in the “identical” assumption, a linear model assumes that <span class="math inline">\(\sigma\)</span> is constant (or “constant error variance” if we think about it using the “linear model” way of specifying the model). This assumption is typically violated in both growth and count measures and while these can sometimes be reasonably modeled using a linear model, they are often better modeled with a Generalized Linear Model. Heteroskedastic error arising in other types of biological data can be modeled with Generalized Least Squares (GLS) models or with linear mixed models, both of which are simple generalizations of the classical linear model.</p>
 </div>
-<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/glm1-worm-poisson-qr-1.png" width="576" /></p>
-<p>The Q-Q plot using quantile residuals with a Poisson link indicates that the counts of <em>Diplostomum</em> larvae in the eyes of the threespine stickleback are not well approximated by a Poisson distribution.</p>
+<div id="statistical-model-or-regression-model" class="section level2">
+<h2><span class="header-section-number">1.8</span> “Statistical model” or “regression model”?</h2>
+<p>Statistical modeling terminology can be confusing. The <span class="math inline">\(X\)</span> variables in a statistical model may be quantitative (continuous or integers) or categorical (names or qualitative amounts) or some mix of the two. Linear models with all quantitative independent variables are often called “regression models.” Linear models with all categorical independent variables are often called “ANOVA models.” Linear models with a mix of quantitative and categorical variables are often called “ANCOVA models” if the focus is on one of the categorical <span class="math inline">\(X\)</span> or “regression models” if there tend to be many independent variables. Other patterns occur. For example “ANCOVA models” often include interaction effects but “regression models” rarely do. To avoid thinking of statistical analysis as “regression vs. ANOVA” (the type of thinking encouraged by many textbooks in biostatistics), I will most often use the term “statistical model” for general usage, and use a more specific term only to emphasize something about the model in that particluar context.</p>
 </div>
-</div>
-<div id="fitting-a-glm-with-a-negative-binomial-link-to-the-worm-data" class="section level3">
-<h3><span class="header-section-number">13.2.5</span> Fitting a GLM with a Negative Binomial link to the worm data</h3>
-<p>The model is</p>
-<span class="math display">\[\begin{align}
-Diplo\_intensity &amp;\sim NB(\mu, k)\\
-\mathrm{E}({Diplo\_intensity|Treatment}) &amp;= \mu\\
-\mu &amp;= \mathrm{exp}(\eta)\\
-\eta &amp;= \beta_0 + \beta_1 Uninfected + \beta_2 Infected\_LG + \beta_3 Infected\_HG
-\end{align}\]</span>
-<p>This model specifies a negative binomial link but otherwise is just like that above specifying a Poisson link.</p>
-<div id="model-checking-1" class="section level4">
-<h4><span class="header-section-number">13.2.5.1</span> Model checking</h4>
-<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/glm1-worm-nb-1.png" width="576" /></p>
-<p>A quantile residual Q-Q plot of the GLM model fit with negative binomial link is illustrated above. This looks pretty good.</p>
-</div>
-<div id="model-means-and-coefficients" class="section level4">
-<h4><span class="header-section-number">13.2.5.2</span> Model means and coefficients</h4>
-<p>In a Generalized Linear Model of counts using either a Poisson or negative binomial link, modeled means, coefficients, and contrasts can be reported either on the link or response scale. Remember, the response scale is a count, while the link scale is a log(count).</p>
-<p>The modeled means on the link scale are</p>
-<pre><code>##  Treatment     emmean         SE  df asymp.LCL asymp.UCL
-##  Control     1.821408 0.08038710 Inf  1.663852  1.978964
-##  Uninfected  1.504077 0.10930511 Inf  1.289843  1.718311
-##  Infected LG 1.624144 0.13615796 Inf  1.357279  1.891009
-##  Infected HG 2.361096 0.07141332 Inf  2.221128  2.501063
-## 
-## Results are given on the log (not the response) scale. 
-## Confidence level used: 0.95</code></pre>
-<p>While the means on response scale are</p>
-<pre><code>##  Treatment    response        SE  df asymp.LCL asymp.UCL
-##  Control      6.180556 0.4968369 Inf  5.279611  7.235243
-##  Uninfected   4.500000 0.4918730 Inf  3.632217  5.575107
-##  Infected LG  5.074074 0.6908756 Inf  3.885608  6.626049
-##  Infected HG 10.602564 0.7571643 Inf  9.217726 12.195456
-## 
-## Confidence level used: 0.95 
-## Intervals are back-transformed from the log scale</code></pre>
-<ol style="list-style-type: decimal">
-<li><p>A mean on the response scale is simply the exponent of the mean on the link scale. For example, the mean of the Control treatment level on the response scale is <span class="math inline">\(\mathrm{exp}(1.821408) = 6.180555\)</span>.</p></li>
-<li><p>The CIs on the link scale are symmetric around the mean but those on the response scale are not. This is a feature, not a bug. Remember that counts are right skewed which means a CI will have a wider right than left interval. Check this!</p></li>
-<li><p>If a plot includes a 1 SE error bar on the response scale, this is technically correct but it encourages the practice of computing CIs using the 2*SE rule of thumb. This rule breaks down for count data with right skewed distributions.</p></li>
-<li><p>Plotting the response scale CIs is both technically correct and makes the 2*SE rule of thumb unnecessary.</p></li>
-</ol>
-<p>The model coefficients on the link scale are</p>
-<pre><code>##  contrast                estimate        SE  df  asymp.LCL  asymp.UCL
-##  Uninfected - Control  -0.3173308 0.1356823 Inf -0.5832632 -0.0513983
-##  Infected LG - Control -0.1972641 0.1581173 Inf -0.5071683  0.1126401
-##  Infected HG - Control  0.5396877 0.1075265 Inf  0.3289396  0.7504358
-##  z.ratio p.value
-##   -2.339  0.0193
-##   -1.248  0.2122
-##    5.019  &lt;.0001
-## 
-## Results are given on the log (not the response) scale. 
-## Confidence level used: 0.95</code></pre>
-<p>and on the response scale</p>
-<pre><code>##  contrast                  ratio         SE  df asymp.LCL asymp.UCL
-##  Uninfected / Control  0.7280899 0.09878893 Inf 0.5580743 0.9499002
-##  Infected LG / Control 0.8209738 0.12981015 Inf 0.6021984 1.1192290
-##  Infected HG / Control 1.7154710 0.18445860 Inf 1.3894940 2.1179227
-##  z.ratio p.value
-##   -2.339  0.0193
-##   -1.248  0.2122
-##    5.019  &lt;.0001
-## 
-## Confidence level used: 0.95 
-## Intervals are back-transformed from the log scale 
-## Tests are performed on the log scale</code></pre>
-<p>Notice that the emmeans package reports the name of the term as the ratio of the coefficient term to the intercept term (the reference treatment level). This is because the coefficients on the response scale <em>are</em> ratios and effects are not additive but multiplicative! So, for example, the mean of the Infected HG treatment level on the response scale is <span class="math inline">\(b_0*b_3\)</span> (remember that with a linear model the mean would be <span class="math inline">\(b_0 + b_3\)</span>). Check and see if this works.</p>
-<p>The effects (the coefficients) could be reported as these ratios in a table, or in the text it could be reported something like “Infected HG fish had 71.5% (95%CI: 38.9% - 111.8%) more <em>Diplostomum</em> larvae than Control fish.” Where do these percents come from? The percent effect is <span class="math inline">\(100(b_j - 1)\)</span> larger than the reference mean if the <span class="math inline">\(b_j &gt; 1\)</span> or <span class="math inline">\(100(1 - b_j)\)</span> smaller than the reference mean if the <span class="math inline">\(b_j &lt; 1\)</span>.</p>
-</div>
-</div>
-</div>
-<div id="working-in-r-4" class="section level2">
-<h2><span class="header-section-number">13.3</span> Working in R</h2>
-<p>Source publication: Benesh, D. P., &amp; Kalbe, M. (2016). Experimental parasite community ecology: intraspecific variation in a large tapeworm affects community assembly. Journal of Animal Ecology, 85(4), 1004-1013.</p>
-<p>Source data URL: <a href="https://datadryad.org/resource/doi:10.5061/dryad.bq8j8" class="uri">https://datadryad.org/resource/doi:10.5061/dryad.bq8j8</a></p>
-<p>Source file: “Lab_exp.csv”</p>
-<p>Poisson fit. The quantile residual Q-Q plot is from the package DHARMa</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fit.pois &lt;-<span class="st"> </span><span class="kw">glm</span>(Diplo_intensity <span class="op">~</span><span class="st"> </span>Treatment, <span class="dt">family=</span><span class="st">&quot;poisson&quot;</span>, <span class="dt">data=</span>worm)
-
-<span class="co"># from the DHARMa package</span>
-  n_sim &lt;-<span class="st"> </span><span class="dv">250</span>
-  simulationOutput &lt;-<span class="st"> </span><span class="kw">simulateResiduals</span>(<span class="dt">fittedModel =</span> fit.pois, <span class="dt">n =</span> n_sim)
-  <span class="kw">plot</span>(simulationOutput, <span class="dt">asFactor =</span> F)</code></pre></div>
-<pre><code>## DHARMa::plotResiduals - low number of unique predictor values, consider setting asFactor = T
-## DHARMa::plotResiduals - low number of unique predictor values, consider setting asFactor = T</code></pre>
-<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/glm1-working-in-r-1.png" width="576" /></p>
-<p>Negative binomial fit.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fit.nb &lt;-<span class="st"> </span><span class="kw">glm.nb</span>(Diplo_intensity <span class="op">~</span><span class="st"> </span>Treatment, <span class="dt">data=</span>worm)
-<span class="co"># from the DHARMa package</span>
-  simulationOutput &lt;-<span class="st"> </span><span class="kw">simulateResiduals</span>(<span class="dt">fittedModel =</span> fit.nb, <span class="dt">n =</span> n_sim)
-  <span class="kw">plot</span>(simulationOutput, <span class="dt">asFactor =</span> F)</code></pre></div>
-<pre><code>## DHARMa::plotResiduals - low number of unique predictor values, consider setting asFactor = T
-## DHARMa::plotResiduals - low number of unique predictor values, consider setting asFactor = T</code></pre>
-<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/glm-working-in-r-2-1.png" width="576" /></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># link scale</span>
-emm &lt;-<span class="st"> </span><span class="kw">emmeans</span>(fit.nb, <span class="dt">specs=</span><span class="st">&quot;Treatment&quot;</span>)
-emm</code></pre></div>
-<pre><code>##  Treatment     emmean         SE  df asymp.LCL asymp.UCL
-##  Control     1.821408 0.08038710 Inf  1.663852  1.978964
-##  Uninfected  1.504077 0.10930511 Inf  1.289843  1.718311
-##  Infected LG 1.624144 0.13615796 Inf  1.357279  1.891009
-##  Infected HG 2.361096 0.07141332 Inf  2.221128  2.501063
-## 
-## Results are given on the log (not the response) scale. 
-## Confidence level used: 0.95</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(<span class="kw">contrast</span>(emm, <span class="dt">method=</span><span class="st">&quot;trt.vs.ctrl&quot;</span>, <span class="dt">adjust=</span><span class="st">&quot;none&quot;</span>), <span class="dt">infer=</span><span class="kw">c</span>(<span class="ot">TRUE</span>, <span class="ot">TRUE</span>))</code></pre></div>
-<pre><code>##  contrast                estimate        SE  df  asymp.LCL  asymp.UCL
-##  Uninfected - Control  -0.3173308 0.1356823 Inf -0.5832632 -0.0513983
-##  Infected LG - Control -0.1972641 0.1581173 Inf -0.5071683  0.1126401
-##  Infected HG - Control  0.5396877 0.1075265 Inf  0.3289396  0.7504358
-##  z.ratio p.value
-##   -2.339  0.0193
-##   -1.248  0.2122
-##    5.019  &lt;.0001
-## 
-## Results are given on the log (not the response) scale. 
-## Confidence level used: 0.95</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># response scale</span>
-emm.response &lt;-<span class="st"> </span><span class="kw">emmeans</span>(fit.nb, <span class="dt">specs=</span><span class="st">&quot;Treatment&quot;</span>, <span class="dt">type=</span><span class="st">&quot;response&quot;</span>)
-<span class="kw">summary</span>(<span class="kw">contrast</span>(emm, <span class="dt">method=</span><span class="st">&quot;trt.vs.ctrl&quot;</span>, <span class="dt">adjust=</span><span class="st">&quot;none&quot;</span>, <span class="dt">type=</span><span class="st">&quot;response&quot;</span>), <span class="dt">infer=</span><span class="kw">c</span>(<span class="ot">TRUE</span>, <span class="ot">TRUE</span>))</code></pre></div>
-<pre><code>##  contrast                  ratio         SE  df asymp.LCL asymp.UCL
-##  Uninfected / Control  0.7280899 0.09878893 Inf 0.5580743 0.9499002
-##  Infected LG / Control 0.8209738 0.12981015 Inf 0.6021984 1.1192290
-##  Infected HG / Control 1.7154710 0.18445860 Inf 1.3894940 2.1179227
-##  z.ratio p.value
-##   -2.339  0.0193
-##   -1.248  0.2122
-##    5.019  &lt;.0001
-## 
-## Confidence level used: 0.95 
-## Intervals are back-transformed from the log scale 
-## Tests are performed on the log scale</code></pre>
-<p>Problems</p>
-<p>Analyze the data that went into Fig 6B of Tena, A., Pekas, A., Cano, D., Wäckers, F. L., &amp; Urbaneja, A. (2015). Sugar provisioning maximizes the biocontrol service of parasitoids. Journal of Applied Ecology, 52(3), 795-804.</p>
-<ol style="list-style-type: decimal">
-<li>Compute contrasts and CIs among all pairs of all three treatment levels</li>
-<li>Make a better plot like 6b including 1) use the modeled mean instead of the simple group mean and 2) use the modeled CI of the mean instead of the SE computed within each group independently.</li>
-</ol>
-<p>source URL: <a href="https://datadryad.org/resource/doi:10.5061/dryad.bj001" class="uri">https://datadryad.org/resource/doi:10.5061/dryad.bj001</a></p>
-<p>source file: “4_Parastism_Fig_6.csv”</p>
+<div id="glm-vs.glm-vs.gls" class="section level2">
+<h2><span class="header-section-number">1.9</span> GLM vs. GLM vs. GLS</h2>
+<p>Linear models are sometimes called “general linear models” with the abbreviation GLM. This is unfortunate because the abbreviation GLM usually refers to <strong>generalized linear models</strong>. Regardless, don’t confuse either version of GLM with GLS, which is the abbreviation of <strong>generalized least squares</strong>. GLS generalizes the linear model to allow for heteroskedastic and/or correlated error (using the “linear model” way of thinking about model specification)</p>
 
 </div>
-</div>
-<div class="footnotes">
-<hr />
-<ol start="1">
-<li id="fn1"><p>fitted values are the predicted values, <span class="math inline">\(\hat{Y}\)</span><a href="generalized-linear-models-i-count-data.html#fnref1">↩</a></p></li>
-<li id="fn2"><p>the variance is less than that expected by the probability model<a href="generalized-linear-models-i-count-data.html#fnref2">↩</a></p></li>
-<li id="fn3"><p>the variance is greater than that expected by the probability model<a href="generalized-linear-models-i-count-data.html#fnref3">↩</a></p></li>
-</ol>
 </div>
             </section>
 
           </div>
         </div>
       </div>
-<a href="adding-covariates-to-a-linear-model-i-ancova.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="appendix-1-getting-started-with-r.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="index.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="organization-r-projects-and-r-notebooks.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -618,7 +469,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/rstudio/bookdown-demo/edit/master/notebooks/40-glm01-counts.Rmd",
+"link": "https://github.com/rstudio/bookdown-demo/edit/master/notebooks/01-statistical-modeling.Rmd",
 "text": "Edit"
 },
 "download": ["Walker-elementary-statistical-modeling-draft.pdf", "Walker-elementary-statistical-modeling-draft.epub"],

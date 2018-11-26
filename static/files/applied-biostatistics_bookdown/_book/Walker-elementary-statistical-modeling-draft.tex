@@ -125,7 +125,7 @@
   \postauthor{\par}
       \predate{\centering\large\emph}
   \postdate{\par}
-    \date{Draft: 2018-11-24}
+    \date{Draft: 2018-11-26}
 
 \usepackage{booktabs}
 \usepackage{amsthm}
@@ -210,10 +210,12 @@ estimation and uncertainty instead of test statistics and \(p\)-values.
 A modeling view of statistics is also more coherent than a dichotomous
 key strategy.
 
-\chapter{Statistical Modeling}\label{statistical-modeling}
+\chapter{Linear models as statistical
+models}\label{linear-models-as-statistical-models}
 
-All students are familiar with the idea of a linear model from learning
-the equation of a line, which is
+This chapter introduces statistical modeling using the \textbf{linear
+model}. All students are familiar with the idea of a linear model from
+learning the equation of a line, which is
 
 \begin{equation}
 Y = mX + b
@@ -244,12 +246,13 @@ the line in A.}
 ``linear model''
 way}{Two specifications of a linear model I: the linear model way}}\label{two-specifications-of-a-linear-model-i-the-linear-model-way}
 
-The basic structure of a linear model is
+The basic \textbf{structure} of a linear model is
 
-\begin{equation}
-Y = \beta_0 + \beta_1 X + \varepsilon
+\begin{align}
+Y &= \beta_0 + \beta_1 X + \varepsilon
+\varepsilon \sim N(0, \sigma)
 \label{eq:lm}
-\end{equation}
+\end{align}
 
 A linear model has two parts: the ``linear predictor''
 (\(Y = \beta_0 + \beta_1 X\)) and the ``error'' (\(\varepsilon\)). The
@@ -267,10 +270,15 @@ model is a function that maps a specific value of \(X\) to a value of
 input value of \(X\). This is often written as \(\mathrm{E}[Y|X]\),
 which is read as ``the expected value of \(Y\) given \(X\)''.
 Importantly, \(\mathrm{E}[Y|X]\) is the \textbf{conditional mean}, which
-is the \emph{modeled} mean value of \(Y\) for all observations in which
-\(X\) takes some specific value \(x\). The error part of a linear model
-is a random variable that adds some random value to this expected value.
-Nothing about the model part of a linear model can predict its value.
+is the \emph{modeled} value of \(Y\) for all observations in which \(X\)
+takes some specific value \(x\).
+
+The second line of the model (read as ``epsilon is distributed as Normal
+with mean zero and standard deviation sigma''``) specifies the
+distribution of the error part. The error part of a linear model is a
+random''draw" from a normal distribution with mean zero and variance
+\(\sigma^2\). Think of this as adding some random value to the expected
+value.
 
 The inputs to a linear model (the \(X\) variables) have many names
 including ``independent variables,'' ``predictor variables,'',
@@ -280,45 +288,62 @@ model is multivariate) is the ``dependent variable,'' ``response,'' or
 ``outcome.'' The \(\beta\) in the linear model are model
 \textbf{parameters} and if a parameter is multiplied by an \(X\)
 variable then it is a \textbf{coefficient} (for example, \(\beta_1\) in
-model \eqref{eq:lm} is a coefficient). There can be additional parameters
-in more sophisticated models. The coefficients of the \(X\) in a linear
+model \eqref{eq:lm} is a coefficient) (there are additional parameters
+that are hidden from this specification of the linear model but show up
+in the specification below). The coefficients of the \(X\) in a linear
 model (\(\beta_1\) in model \eqref{eq:lm}) are often called ``the
 effects'' (so \(\beta_1\) is the effect of \(X_1\)).
 
-Although a linear model is a model of a data-generating process, linear
-models are not typically used to actually generate any data. Instead,
-when we use a linear model to understand something about a real dataset,
-we think of our data as one realization of a process that generates data
-like ours. A linear model is a model of that process. That said, it is
-incredibly useful to use linear models to create fake datasets for at
-least two reasons: to probe our understanding of statistical modeling
-generally and, more specifically, to check that a model actually creates
-data like that in the real dataset that we are analyzing.
+Although a linear model (or statistical model more generally) is a model
+of a data-generating process, linear models are not typically used to
+actually generate any data. Instead, when we use a linear model to
+understand something about a real dataset, we think of our data as one
+realization of a process that generates data like ours. A linear model
+is a model of that process. That said, it is incredibly useful to use
+linear models to create fake datasets for at least two reasons: to probe
+our understanding of statistical modeling generally and, more
+specifically, to check that a model actually creates data like that in
+the real dataset that we are analyzing.
 
 \section{\texorpdfstring{Two specifications of a linear model II: the
 ``statistical model''
 way}{Two specifications of a linear model II: the statistical model way}}\label{two-specifications-of-a-linear-model-ii-the-statistical-model-way}
 
-Another way of specifying a linear model is
+A second way of specifying a linear model is
 
 \begin{align}
 Y &\sim N(\mu, \sigma)\\
-\mathrm{E}(Y|X) = \mu
+\mathrm{E}(Y|X) &= \mu
 \mu &= \beta_0 + \beta_1 X
 \label{eq:lm-spec2}
 \end{align}
 
-The first line states that an outcome is a function of a deterministic
-component (the \textbf{conditional mean} \(\mu\)) and a random component
-(the square root of the unmodeled variance \(\sigma\)). This first line
-is the \textbf{stochastic} part of the statistical model. The second
-line simply states that \(\mu\) (the greek letter ``mu'') from the first
-line is the conditional mean or conditional expectation. The third line
-is the \textbf{deterministic} part, which is the linear predictor. This
-alternative way to define the linear model is easily generalized to more
-complex models, including hierarchical models, generalized linear
-models, and Bayesian models, which is why I call it the ``statistical
-model'' way of specification.
+The first line states that the response variable \(Y\) is a random
+variable independently drawn from a normal distribution with mean
+\(\mu\) and variance \(\sigma^2\). This first line is the
+\textbf{stochastic} part of the statistical model. The second line
+simply states that \(\mu\) (the greek letter ``mu'') from the first line
+is the conditional mean or conditional expectation. The third line
+states how \(Y\) is generated given a value of \(X\). This is the linear
+predictor, which is the \textbf{deterministic} part of the statistical
+model.
+
+These two ways of specifying the model encourage slightly different ways
+of thinking about how the data (the response varible \(Y\)) were
+generated. The linear model way ``generates'' data by constructing \(Y\)
+from the \(X\) and then adding random, normal error. The statistical
+model way ``generates'' data by simply drawing a random variable from a
+normal distribution with a specified mean and variance. The statistical
+model way explicitly defines all parameters, including the parameters of
+the linear predictor (\(\beta_0\) and \(\beta_1\)), the condtional mean
+\(\mu\) and the variance \(\sigma\). The linear model way only defines
+the parameters of the linear predictor, and often these are referrred to
+as ``the parameters'' in the sense that there are not other parameters.
+Because of the explicit statement of all parameters, the statistical
+model way to define the linear model is more useful in that it is easily
+generalized to more complex models, including hierarchical models,
+generalized linear models, and Bayesian models. This is why I call it
+the ``statistical model'' way of specification.
 
 \section{Statistical models are used for prediction, explanation, and
 description}\label{statistical-models-are-used-for-prediction-explanation-and-description}
@@ -390,26 +415,46 @@ model's goal and assumptions.
 \section{Model fitting}\label{model-fitting}
 
 In order to use a statistical model to describe, predict, or explain, we
-need to fit a model to data in order to estimate the parameters. If we
-fit model \eqref{eq:conditional-expectation} to some data, the estimated
-parameters are the coefficients (\(b_0\) and \(b_1\)) of the fit model
+need to fit a model to data in order to estimate the parameters. A
+linear model fit to some data is
 
-\begin{equation}
-\mathrm{E}[Y|X] = b_0 + b_1 X
-\label{eq:conditional-expectation}
-\end{equation}
+\begin{align}
+\hat{y}_i &= b_0 + b_1 x_i\\
+\mathrm{E}[Y|X=x_i] &= \hat{y}_i
+\label{eq:yhat}
+\end{align}
 
-The left-hand side of equation \eqref{eq:conditional-expectation} is the
-\textbf{conditional expectation} and is read as ``the expectation of Y
-given X'' or ``the expected value of Y given X''. Throughout this book,
-I use the greek \(\beta\) to refer to a theoretical, data-generating
-parameter and the roman ``b'' to refer its estimate.
+\(\hat{y}_i\) (``y hat'') is the \textbf{predicted value} of individual
+\(i\) and \(b_0\) and \(b_1\) are the coefficients of the model fit
+(though technically \(b_0\) is not a coefficient). Sometimes
+\(\hat{y}_i\) is simply called ``the prediction''. The second line above
+simply states the conditional expectation is the prediction (read as
+``The conditional expectation of \(Y\), given that \(X\) is assigned the
+value \(x_i\) is y hat'').
 
-The goal of descriptive and explanatory modeling is the estimate of the
-coefficients of the \(X\) variables and their uncertainty. The goal of
-predictive modeling is the estimate of predicted values, and their
-uncertainty, given specific values of \(X\). These predicted values are
-the conditional expectations.
+If our goal is inference -- to infer something about the ``population''
+from the sample using the fit model, then \(\hat{y}_i\) is the
+\textbf{point estimate} of the parameter \(\mu_i\) and the coefficients
+\(b_0\) and \(b_1\) are point estimates of the parameters \(\beta_0\)
+and \(\beta_1\). I put ``population'' in quotes because it is a very
+abstract concept. Throughout this book, I use Greek letters to refer to
+a theoretical parameter and Roman letters to refer point estimates.
+
+Throughout this text, I recommend reporting and interpreting
+\textbf{interval estimates} of the point estimate. A \textbf{confidence
+interval} is a type of interval estimate. A confidence interval of a
+parameter is a measure of the uncertainty in the estimate. A 95\%
+confidence interval has a 95\% probability (in the sense of long-run
+frequency) of containing the parameter This probability is a property of
+the population of intervals that could be computed using the same
+sampling and measuring procedure. It is not correct, without further
+assumptions, to state that there is a 95\% probability that the paramter
+lies within the interval. Perhaps a more useful interpretation is that
+the interval is a \textbf{compatability interval} in that it contains
+the range of estimates that are compatible with the data, in the sense
+that a \(t\)-test would not reject the null hypothesis of a difference
+between the estimate and any value within the interval (this
+interpretation does not imply anything about the true value).
 
 \begin{figure}
 \centering
@@ -435,6 +480,9 @@ the top part of Figure \ref{fig:coldVoles}. The bottom part shows the
 raw data, as well as the group (factor level) means and the uncertainty
 in the estimate of these means.
 
+\section{A mean is the simplest
+model}\label{a-mean-is-the-simplest-model}
+
 The simplest possible model that can be fit to the data is
 
 \begin{equation}
@@ -446,101 +494,192 @@ which is simply the mean of \(Y\), or, more specifically, the
 \textbf{unconditional mean} of \(Y\), since its value is not conditional
 on any value of \(X\).
 
-\section{Assumptions for inference with a linear
-model}\label{assumptions-for-inference-with-a-linear-model}
+\section{Assumptions for inference with a statistical
+model}\label{assumptions-for-inference-with-a-statistical-model}
 
-Here is the linear model above (equation \eqref{eq:lm}) but I've amended
-the model by explicitly specifying the distribution of the error term.
-
-\begin{align}
-Y &= \beta_0 + \beta_1 X + \varepsilon\\
-\varepsilon &\sim N(0, \sigma)
-\label{eq:lm-again}
-\end{align}
-
-where \(N(0, \sigma)\) is read as ``normal distribution with mean zero
-and standard deviation sigma''. Any inference about the parameter
-\(\beta_1\) (such as confidence intervals or hypothesis tests) assumes
-that the error (\(\varepsilon\)) is IID Normal where IID is
-\textbf{independent and identically distributed} and Normal refers to
-the Normal (or Gaussian) distribution.
+\textbf{Inference} refers to using the fit model to generalize from the
+sample to the population, which assumes that the response is drawn from
+some specified probability distribution (Normal, or Poisson, or
+Bernouli, etc.). Throughout this text, I emphasize reporting and
+interpreting point estimates and confidence intervals. Another kind of
+inference is a \textbf{significance test}, which is the computation of
+the probability of ``seeing the data'' or something more extreme than
+the data, given a specified null hypothesis. A significance test results
+in a \textbf{p-value}, which can be reported with the point estimate and
+confidence interval. Somewhat related to a significance test is a
+hypothesis test, or what is now often perjoratively called a
+\textbf{Null-Hypothesis Signficance Test} (NHST), in which the
+\(p\)-value from a significance test is compared to a pre-specified
+error rate called \(\alpha\). NHST may be useful for some very limited
+kinds of science but, in general, is not useful for most biological
+research and, instead, leads to large misconceptions. A general rule of
+thumb is, do not compare a reported \(p\)-value to \(\alpha\).
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
 \tightlist
 \item
-  Independent means that the error for one case cannot be predicted from
-  the error of any other case. There are lots or reasons that errors
-  might be correlated. For example, measures that are taken from sites
-  that are closer together or measures taken closer in time or measures
-  from more closely related biological species will tend to have more
-  similar error than measures taken from sites that are further apart or
-  from times that are further apart or from species that are less
-  closely related. Space and time and phylogeny create \textbf{spatial
-  and temporal and phylogenetic autocorrelation}. Correlated error due
-  to space or time or phylogeny can be modeled with \textbf{Generalized
-  Least Squares} (GLS) models. A GLS model is a variation of model
-  \eqref{eq:lm-again}.
+  The data were generated by a process that is ``linear in the
+  parameters'', which means that the different components of the model
+  are added together. This additive part of the model containing the
+  parameters is the linear predictor in specifications \eqref{eq:lm} and
+  \eqref{eq:lm-spec2} above. For example, a cubic polynomial model
 \end{enumerate}
 
-If there are measures both within and among field sites (or humans or
-rats) then we'd expect the measures within the same site (or human or
-rat) to err from the model in the same direction. Multiple measures
-within experimental units (a site or individual) creates ``clusters'' of
-error. Lack of independence or clustered error can be modeled using
-models with \textbf{random effects}. These models go by many names
-including linear mixed models (common in Ecology), hierarchical models,
-multilevel models, and random effects models. A linear mixed model is a
-variation of model \eqref{eq:lm-again}.
+\begin{equation}
+\mathrm{E}(Y|X) = \beta_0 + \beta_1 X + \beta_2 X^2 + \beta_3 X^3
+\end{equation}
+
+is a linear model, even though the function is non-linear, because the
+different components are added. Because a linear predictor is additive,
+it can be compactly defined using matrix algebra
+
+\begin{equation}
+\mathrm{E}(Y|X) = \mathbf{X}\boldsymbol{\beta}
+\end{equation}
+
+where \(mathbf{X}\) is the \textbf{model matrix} and
+\(\boldsymbol{\beta}\) is the vector of parameters. We discuss these
+more in chapter xxx.
+
+A \textbf{Generalized Linear Model} (GLM) has the form
+\(g(\mu_i) = \eta_i\) where \(\eta\) (the Greek letter ``eta'') is the
+linear predictor
+
+\begin{equation}
+\eta = \mathbf{X}\boldsymbol{\beta} 
+\end{equation}
+
+GLMs are extensions of linear models. There are non-linear models that
+are not linear in the parameters, that is, the predictor is not a simple
+dot product of the model matrix and a vector of parameters. For example,
+the Michaelis-Menten model is a non-linear model
+
+\begin{equation}
+\mathrm{E}(Y|X)  = \frac{\beta_1 X}{\beta_2 + X}
+\end{equation}
+
+that is non-linear in the parameters because the parts are not added
+together. This text covers linear models and generalized linear models,
+but not non-linear models that are also non-linear in the parameters.
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
 \setcounter{enumi}{1}
+\tightlist
 \item
-  Identical means that the errors are ``drawn'' from the same
-  distribution. Since the model is a linear model, this distribution is
-  a Normal distribution. A consequence of ``indentical'' is that the
-  error variance is \textbf{homoskedastic}, or constant, or independent
-  of \(X\). If the error variance differs among the \(X\) then the
-  errors are \textbf{heteroskedastic}. Many biological processes
-  generate data in which the error is a function of the mean. For
-  example, measures of biological variables that grow, such as lengths
-  of body parts or population size, have variances that are ``grow''
-  with the mean. Or, measures of counts, such as the number of cells
-  damaged by toxin, the number of eggs in a nest, or the number of mRNA
-  transcripts per cell have variances that are a function of the mean.
-  Both growth and count measures can be reasonably modeled using a
-  linear model they are more often modeled using a \textbf{generalized
-  linear model} (GLM), which is an extension of the linear model in
-  equation \eqref{eq:lm-again}. Heteroskedasitc error arising for other
-  reasons, both biological and experimental, can be modeled with
-  Generalized Least Squares (GLS) or with linear mixed models. GLS
-  models are variations of model \eqref{eq:lm-again}.
-\item
-  Normal (Gaussian) error means that 1) the response is continuous and
-  2) the probability of sampling an individual measuring 0.5 units below
-  the population mean is the same as the probability of sampling an
-  individual measuring 0.5 units above the population mean. Counts
-  (number of cells, number of eggs, number of mRNA transcripts) and
-  binary responses (sucessful escape or sucessful infestation of host)
-  are not continous and often often have asymmetric probablity
-  distributions that are skewed to the right and while sometimes both
-  can be reasonably modeled using a linear model they are more often
-  modeled using a \textbf{generalized linear model} (GLM), which, again,
-  is an extension of the linear model in equation \eqref{eq:lm-again}.
+  The draws from the probability distribution are \textbf{independent}.
+  Independence implies \textbf{uncorrelated} observations (the \(Y\)),
+  that is, for any two observations with the same value of \(X\), we
+  cannot predict the value of one given the value of the other. For
+  example, in the vole data above, uncorrelated implies that we cannot
+  predict the lifespan of one vole within the Vitamin E treatment given
+  the lifespan of another vole in the Vitamin E treatment. For linear
+  models, this assumption is often stated as ``independent errors'' (the
+  \(\varepsilon\) in model \eqref{eq:lm}) instead of independent
+  observations.
 \end{enumerate}
 
-A common misconception is that inference from a linear model assumes
-that the \emph{response} (\(Y\)) is normally distributed. Models
-\eqref{eq:lm-again} and \eqref{eq:lm-spec2} show precisely why this
-conception is wrong. Model \eqref{eq:lm-again} states explicitly that it
-is the error that has the normal distribution -- the distribution of
-\(Y\) is a mix of the distribution of \(X\) and the error. Model
-\eqref{eq:lm-spec2} states that the conditional outcome has a normal
-distribution, that is, the distribution after adjusting for variation in
-\(X\).
+There are lots or reasons that observations might be correlated. In the
+vole example, perhaps the voles were housed in batches of 5 individuals,
+and slight differences in the environment among the housing containers,
+caused all the voles in some containers to have shorter lifespans than
+expected given their treatment assigment and all voles in other
+containers to have longer lifespans than expected given their treatment
+assigment. More generally, if there are measures both within and among
+experimental units (field sites or humans or rats) then we'd expect the
+measures within the same unit to err from the model in the same
+direction. Multiple measures within experimental units (a site or
+individual) creates ``clustered'' observations. Lack of independence or
+clustered observations can be modeled using models with \textbf{random
+effects}. These models go by many names including linear mixed models
+(common in Ecology), hierarchical models, multilevel models, and random
+effects models. A linear mixed model is a variation of model
+\eqref{eq:lm}. This text introduces linear mixed models in chapter xxx.
 
-\subsection{\texorpdfstring{``Statistical model'' or ``regression
+Measures that are taken from sites that are closer together or measures
+taken closer in time or measures from more closely related biological
+species will tend to have more similar values than measures taken from
+sites that are further apart or from times that are further apart or
+from species that are less closely related. Space and time and phylogeny
+create \textbf{spatial and temporal and phylogenetic autocorrelation}.
+Correlated error due to space or time or phylogeny can be modeled with
+\textbf{Generalized Least Squares} (GLS) models. A GLS model is a
+variation of model \eqref{eq:lm}.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{2}
+\tightlist
+\item
+  The random draws are from \textbf{identical} probability
+  distributions. Identical essentially means that the parameters in the
+  probability distribution that control the variance are the same for
+  each observation. So, for example, if we model the vole data using the
+  normal probability distribution \(N(\mu, \sigma)\) then \(\sigma\) is
+  constant for all observations. Indeed, \textbf{constant variance}, or
+  \textbf{homoskedasticity}, is an assumption of linear models. If the
+  error variance differs among the \(X\) then the errors are
+  \textbf{heteroskedastic}. Many biological processes generate data in
+  which the error is a function of the mean. For example, measures of
+  biological variables that grow, such as lengths of body parts or
+  population size, have variances that ``grow'' with the mean. Or,
+  measures of counts, such as the number of cells damaged by toxin, the
+  number of eggs in a nest, or the number of mRNA transcripts per cell
+  have variances that are a function of the mean. Heteroskedastic error
+  does not imply non-identical probability distributions. For example,
+  we could model the number of offspring of voles in the three
+  treatments as independent, random draws from a Poisson distribution
+  \(Y \sim Poisson(\mu)\). For a Poisson distributed variable, the
+  variance equals the mean, so the parameter \(mu\) also controls the
+  variance. Let's say the voles in the Control treatment level have, on
+  average, twice the number of offspring as the voles in the Vitamin E
+  treatment level. The, we'd expect the variance of offspring count in
+  the Control group to be twice that than the Vitamin E group. Despite
+  the difference variances, these are still draws from the same
+  probability distribution. Observations with non-normal distributions,
+  such as the Poisson, are modeled using \textbf{Generalized Linear
+  Models} (GLM), which are ``extensions'' of the classical linear model.
+\end{enumerate}
+
+\section{Specific assumpations of a linear
+model}\label{specific-assumpations-of-a-linear-model}
+
+Linear models specifically assume that the probability distribution is
+Normal or \textbf{Gaussian}. This implies that 1) the response is
+continuous and 2) the probability of sampling an individual measuring
+0.5 units below \(\mu\) is the same as the probability of sampling an
+individual measuring 0.5 units above the population mean. Counts (number
+of cells, number of eggs, number of mRNA transcripts) and binary
+responses (sucessful escape or sucessful infestation of host) are not
+continous and often often have asymmetric probablity distributions that
+are skewed to the right and while sometimes both can be reasonably
+modeled using a linear model they are more often modeled using
+generalized linear models, which, again, is an extension of the linear
+model in equation \eqref{eq:lm-lm-spec2}.
+
+A common misconception is that inference from a linear model assumes
+that the \emph{response} (\(Y\)) is normally distributed. Both the
+``linear model'' and ``statistical model'' ways of specifying the model
+show precisely why this conception is wrong. Model \eqref{eq:lm} states
+explicitly that it is the error that has the normal distribution -- the
+distribution of \(Y\) is a mix of the distribution of \(X\) and the
+error. Model \eqref{eq:lm-spec2} states that the conditional outcome has a
+normal distribution, that is, the distribution after adjusting for
+variation in \(X\).
+
+As stated above in the ``identical'' assumption, a linear model assumes
+that \(\sigma\) is constant (or ``constant error variance'' if we think
+about it using the ``linear model'' way of specifying the model). This
+assumption is typically violated in both growth and count measures and
+while these can sometimes be reasonably modeled using a linear model,
+they are often better modeled with a Generalized Linear Model.
+Heteroskedastic error arising in other types of biological data can be
+modeled with Generalized Least Squares (GLS) models or with linear mixed
+models, both of which are simple generalizations of the classical linear
+model.
+
+\section{\texorpdfstring{``Statistical model'' or ``regression
 model''?}{Statistical model or regression model?}}\label{statistical-model-or-regression-model}
 
 Statistical modeling terminology can be confusing. The \(X\) variables
@@ -554,45 +693,21 @@ with a mix of quantitative and categorical variables are often called
 ``regression models'' if there tend to be many independent variables.
 Other patterns occur. For example ``ANCOVA models'' often include
 interaction effects but ``regression models'' rarely do. To avoid
-thinking of statistical analysis as ``regression vs.~ANOVA'', I will
-most often use the term ``statistical model'' for general usage, and use
-a more specific term only to emphasize something about the model in that
+thinking of statistical analysis as ``regression vs.~ANOVA'' (the type
+of thinking encouraged by many textbooks in biostatistics), I will most
+often use the term ``statistical model'' for general usage, and use a
+more specific term only to emphasize something about the model in that
 particluar context.
 
-\section{Linear models versus non-linear
-models}\label{linear-models-versus-non-linear-models}
+\section{GLM vs.~GLM vs.~GLS}\label{glm-vs.glm-vs.gls}
 
-All statistical models in this text are linear in the parameters, which
-means that the different components of the model are added together.
-This additive part of the model containing the parameters is the linear
-predictor in specifications \eqref{eq:lm} and \eqref{eq:lm-spec2} above. Or,
-using the language of matrix algebra, the linear predictor is a simple
-dot product of the model matrix and the coefficients. For example, a
-cubic polynomial model
-
-\begin{equation}
-Y = \beta_0 + \beta_1 X + \beta_2 X^2 + \beta_3 X^3 + \varepsilon
-\end{equation}
-
-is a linear model, even though the function is non-linear, because the
-different components are added (or, using matrix algebra, the predictor
-is \(\mathbf{X}\boldsymbol{\beta}\)).
-
-A generalized linear model (GLM) has the form \(g(\mu_i) = \eta_i\)
-where \(\eta\) (the greek letter ``eta'') is the linear predictor
-
-\begin{equation}
-\eta = \mathbf{X}\boldsymbol{\beta} 
-\end{equation}
-
-Non-linear models, in conrast to a GLM or classical linear model, are
-not linear in the parameters (the predictor is not a simple dot product
-of the model matrix and a vector of parameters). For example, the
-Michaelis-Menten model is a nonlinear model
-
-\begin{equation}
-Y = \frac{\beta_1 X}{\beta_2 + X} + \varepsilon
-\end{equation}
+Linear models are sometimes called ``general linear models'' with the
+abbreviation GLM. This is unfortunate because the abbreviation GLM
+usually refers to \textbf{generalized linear models}. Regardless, don't
+confuse either version of GLM with GLS, which is the abbreviation of
+\textbf{generalized least squares}. GLS generalizes the linear model to
+allow for heteroskedastic and/or correlated error (using the ``linear
+model'' way of thinking about model specification)
 
 \chapter{Organization -- R Projects and R
 Notebooks}\label{organization-r-projects-and-r-notebooks}
@@ -6501,14 +6616,14 @@ treatment are infected with a tapeworm.}
 model}\label{the-generalized-linear-model}
 
 Section {[}Assumptions for inference with statistical models{]} in
-Chapter 1 introduced two ways of defining a statistical model fit to
-data.
+Chapter 1 introduced two ways of defining a statistical model.
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
 \tightlist
 \item
-  Definition using a distribution of the error term
+  Definition using a distribution of the error term (the ``linear model
+  way'')
 \end{enumerate}
 
 \begin{align}
@@ -6523,33 +6638,35 @@ Y &= \beta_0 + \beta_1 X + \varepsilon\\
 \tightlist
 \item
   Definition using the response as a combination of stochastic and
-  deterministic components
+  deterministic components (the ``statistical model way'')
 \end{enumerate}
 
 \begin{align}
 Y &\sim N(\mu, \sigma)\\
+\mathrm{E}(Y|X) &= \mu
 \mu &= \beta_0 + \beta_1 X
 \label{eq:lm-spec2}
 \end{align}
 
-A generalized linear model has has these two parts of the second
-definition but adds a third part
+A generalized linear model has these two parts of the second definition
+but adds a third part. Here are the parts of a generalized linear model
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
 \tightlist
 \item
-  A probability distribution from the exponential family (this is the
-  stochastic part)
+  \textbf{The stochastic part}, which is a probability distribution from
+  the exponential family (this is sometimes called the ``random part'')
 
   \begin{equation}
-  Y \sim P(\mu)
+  Y \sim \mathrm{Prob}(\mu)
   \end{equation}
 \item
-  a linear predictor of the form (this is the deterministic part)
+  \textbf{the deterministic part}, which is a linear predictor (this is
+  more often called the ``systematic part'')
 
   \begin{equation}
-  \eta=\beta_0 + \beta_1 X
+  \eta=\mathbf{X}\boldsymbol{\beta}
   \end{equation}
 \item
   a \textbf{link function} connecting the two parts
@@ -6561,24 +6678,28 @@ definition but adds a third part
 
 \(\mu\) (the Greek symbol mu) is the conditional mean (or expectation
 \(\mathrm{E}(Y|X)\)) of the response on the \textbf{response scale} and
-\(\eta\) is the conditional mean of the response on the \textbf{link
-scale}. A GLM models the response with a distribution specified by the
-probability distribution using the link function. The probability
-distributions introduced here are the Poisson and Negative Binomial for
-count data, and the Binomial for binary data. Note that a linear model
-is a GLM with a link to a Normal distribution.
+\(\eta\) (the Greek symbol eta) is the conditional mean of the response
+on the \textbf{link scale}. A GLM models the response with a
+distribution specified in the stochastic part. The probability
+distributions introduced in this chapter are the Poisson and Negative
+Binomial. The link function for the Poisson and Negative Binomial is
+\(\eta = log(\mu)\). Note that a linear model is a GLM with a Normal
+distribution and an Identity link (\(\eta = \mu\)).
 
-The link scale is linear (it is the log of the response scale), and so
-the effects are additive on the link scale, while the response scale is
-nonlinear (it is the exponent of the link scale), and so the effects are
-multiplicative on the response scale. If this doesn't make sense now, an
-example is worked out below. The inverse of the link function
-backtransforms the parameters from the link scale back to the response
-scale. So, for example, a prediction on the response sale is
+When modeling counts using the Poisson or negative binomial
+distributions, the link scale is linear, and so the effects are additive
+on the link scale, while the response scale is nonlinear (it is the
+exponent of the link scale), and so the effects are multiplicative on
+the response scale. If this doesn't make sense now, an example is worked
+out below. The inverse of the link function backtransforms the
+parameters from the link scale back to the response scale. So, for
+example, a prediction on the response sale is
 \(\mathrm{exp}(\hat{\eta})\) and a coefficient on the response scale is
 \(\mathrm{exp}(b_j)\).
 
-\section{Count data example}\label{count-data-example}
+\section{Count data example -- number of trematode worm larvae in eyes
+of threespine stickleback
+fish}\label{count-data-example-number-of-trematode-worm-larvae-in-eyes-of-threespine-stickleback-fish}
 
 The example is an experiment measuring the effect of the parasitic
 tapeworm \emph{Schistocephalus solidus} infection on the susceptibility
@@ -6791,7 +6912,7 @@ count data with overdispersion is the negative binomial.
 \subsection{Fitting a GLM with a Poisson link to the worm
 data}\label{fitting-a-glm-with-a-poisson-link-to-the-worm-data}
 
-Let's fit a GLM with a Poisson lin to the worm data. The model is
+Let's fit a GLM with a Poisson link to the worm data. The model is
 
 \begin{align}
 Diplo\_intensity &\sim Poisson(\mu)\\
@@ -6818,6 +6939,9 @@ Diplo\_intensity &\sim Poisson(\mu)\\
   The fourth line is the linear predictor, and includes three dummy
   variables.
 \end{enumerate}
+
+\subsubsection{Model checking -- a quantile residual Q-Q
+plot}\label{model-checking-a-quantile-residual-q-q-plot}
 
 For model checking a GLM model fit, an alternative to a Normal Q-Q plot
 is a Quantile residual Q-Q plot of observed vs.~expected
@@ -7040,7 +7164,7 @@ Negative binomial fit.
 ## DHARMa::plotResiduals - low number of unique predictor values, consider setting asFactor = T
 \end{verbatim}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-16-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/glm-working-in-r-2-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -7083,6 +7207,7 @@ Negative binomial fit.
 
 \begin{Shaded}
 \begin{Highlighting}[]
+\CommentTok{# response scale}
 \NormalTok{emm.response <-}\StringTok{ }\KeywordTok{emmeans}\NormalTok{(fit.nb, }\DataTypeTok{specs=}\StringTok{"Treatment"}\NormalTok{, }\DataTypeTok{type=}\StringTok{"response"}\NormalTok{)}
 \KeywordTok{summary}\NormalTok{(}\KeywordTok{contrast}\NormalTok{(emm, }\DataTypeTok{method=}\StringTok{"trt.vs.ctrl"}\NormalTok{, }\DataTypeTok{adjust=}\StringTok{"none"}\NormalTok{, }\DataTypeTok{type=}\StringTok{"response"}\NormalTok{), }\DataTypeTok{infer=}\KeywordTok{c}\NormalTok{(}\OtherTok{TRUE}\NormalTok{, }\OtherTok{TRUE}\NormalTok{))}
 \end{Highlighting}
@@ -7102,6 +7227,29 @@ Negative binomial fit.
 ## Intervals are back-transformed from the log scale 
 ## Tests are performed on the log scale
 \end{verbatim}
+
+Problems
+
+Analyze the data that went into Fig 6B of Tena, A., Pekas, A., Cano, D.,
+Wäckers, F. L., \& Urbaneja, A. (2015). Sugar provisioning maximizes the
+biocontrol service of parasitoids. Journal of Applied Ecology, 52(3),
+795-804.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Compute contrasts and CIs among all pairs of all three treatment
+  levels
+\item
+  Make a better plot like 6b including 1) use the modeled mean instead
+  of the simple group mean and 2) use the modeled CI of the mean instead
+  of the SE computed within each group independently.
+\end{enumerate}
+
+source URL: \url{https://datadryad.org/resource/doi:10.5061/dryad.bj001}
+
+source file: ``4\_Parastism\_Fig\_6.csv''
 
 \chapter*{Appendix 1: Getting Started with
 R}\label{appendix-1-getting-started-with-r}
