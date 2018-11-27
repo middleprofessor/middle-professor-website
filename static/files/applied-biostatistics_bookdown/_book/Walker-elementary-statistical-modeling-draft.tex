@@ -125,7 +125,7 @@
   \postauthor{\par}
       \predate{\centering\large\emph}
   \postdate{\par}
-    \date{Draft: 2018-11-26}
+    \date{Draft: 2018-11-27}
 
 \usepackage{booktabs}
 \usepackage{amsthm}
@@ -325,25 +325,26 @@ variable independently drawn from a normal distribution with mean
 simply states that \(\mu\) (the greek letter ``mu'') from the first line
 is the conditional mean or conditional expectation. The third line
 states how \(Y\) is generated given a value of \(X\). This is the linear
-predictor, which is the \textbf{deterministic} part of the statistical
-model.
+predictor, which is the \textbf{systematic} (or deterministic) part of
+the statistical model.
 
 These two ways of specifying the model encourage slightly different ways
 of thinking about how the data (the response varible \(Y\)) were
-generated. The linear model way ``generates'' data by constructing \(Y\)
-from the \(X\) and then adding random, normal error. The statistical
-model way ``generates'' data by simply drawing a random variable from a
-normal distribution with a specified mean and variance. The statistical
-model way explicitly defines all parameters, including the parameters of
-the linear predictor (\(\beta_0\) and \(\beta_1\)), the condtional mean
-\(\mu\) and the variance \(\sigma\). The linear model way only defines
-the parameters of the linear predictor, and often these are referrred to
-as ``the parameters'' in the sense that there are not other parameters.
-Because of the explicit statement of all parameters, the statistical
-model way to define the linear model is more useful in that it is easily
-generalized to more complex models, including hierarchical models,
-generalized linear models, and Bayesian models. This is why I call it
-the ``statistical model'' way of specification.
+generated. The linear model way ``generates'' data by constructing
+\(y_i\) from the \(x_i\) and then adding random, normal error. The
+statistical model way ``generates'' data by simply drawing a random
+variable from a normal distribution with a specified mean and variance.
+The statistical model way explicitly defines all parameters, including
+the parameters of the linear predictor (\(\beta_0\) and \(\beta_1\)),
+the conditional mean \(\mu\) and the variance \(\sigma\). The linear
+model way only defines the parameters of the linear predictor, and often
+these are referrred to as ``the parameters'' in the sense that there are
+not other parameters. Because of the explicit statement of all
+parameters, the statistical model way to define the linear model is more
+useful in that it is easily generalized to more complex models,
+including hierarchical models, generalized linear models, and Bayesian
+models. This is why I call it the ``statistical model'' way of
+specification.
 
 \section{Statistical models are used for prediction, explanation, and
 description}\label{statistical-models-are-used-for-prediction-explanation-and-description}
@@ -448,12 +449,12 @@ confidence interval has a 95\% probability (in the sense of long-run
 frequency) of containing the parameter This probability is a property of
 the population of intervals that could be computed using the same
 sampling and measuring procedure. It is not correct, without further
-assumptions, to state that there is a 95\% probability that the paramter
-lies within the interval. Perhaps a more useful interpretation is that
-the interval is a \textbf{compatability interval} in that it contains
-the range of estimates that are compatible with the data, in the sense
-that a \(t\)-test would not reject the null hypothesis of a difference
-between the estimate and any value within the interval (this
+assumptions, to state that there is a 95\% probability that the
+parameter lies within the interval. Perhaps a more useful interpretation
+is that the interval is a \textbf{compatability interval} in that it
+contains the range of estimates that are compatible with the data, in
+the sense that a \(t\)-test would not reject the null hypothesis of a
+difference between the estimate and any value within the interval (this
 interpretation does not imply anything about the true value).
 
 \begin{figure}
@@ -580,7 +581,7 @@ but not non-linear models that are also non-linear in the parameters.
   observations.
 \end{enumerate}
 
-There are lots or reasons that observations might be correlated. In the
+There are lots of reasons that observations might be correlated. In the
 vole example, perhaps the voles were housed in batches of 5 individuals,
 and slight differences in the environment among the housing containers,
 caused all the voles in some containers to have shorter lifespans than
@@ -607,56 +608,58 @@ Correlated error due to space or time or phylogeny can be modeled with
 \textbf{Generalized Least Squares} (GLS) models. A GLS model is a
 variation of model \eqref{eq:lm}.
 
+\section{Specific assumptions for inference with a linear
+model}\label{specific-assumptions-for-inference-with-a-linear-model}
+
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
-\setcounter{enumi}{2}
 \tightlist
 \item
-  The random draws are from \textbf{identical} probability
-  distributions. Identical essentially means that the parameters in the
-  probability distribution that control the variance are the same for
-  each observation. So, for example, if we model the vole data using the
-  normal probability distribution \(N(\mu, \sigma)\) then \(\sigma\) is
-  constant for all observations. Indeed, \textbf{constant variance}, or
-  \textbf{homoskedasticity}, is an assumption of linear models. If the
-  error variance differs among the \(X\) then the errors are
-  \textbf{heteroskedastic}. Many biological processes generate data in
-  which the error is a function of the mean. For example, measures of
-  biological variables that grow, such as lengths of body parts or
-  population size, have variances that ``grow'' with the mean. Or,
-  measures of counts, such as the number of cells damaged by toxin, the
-  number of eggs in a nest, or the number of mRNA transcripts per cell
-  have variances that are a function of the mean. Heteroskedastic error
-  does not imply non-identical probability distributions. For example,
-  we could model the number of offspring of voles in the three
-  treatments as independent, random draws from a Poisson distribution
-  \(Y \sim Poisson(\mu)\). For a Poisson distributed variable, the
-  variance equals the mean, so the parameter \(mu\) also controls the
-  variance. Let's say the voles in the Control treatment level have, on
-  average, twice the number of offspring as the voles in the Vitamin E
-  treatment level. The, we'd expect the variance of offspring count in
-  the Control group to be twice that than the Vitamin E group. Despite
-  the difference variances, these are still draws from the same
-  probability distribution. Observations with non-normal distributions,
-  such as the Poisson, are modeled using \textbf{Generalized Linear
-  Models} (GLM), which are ``extensions'' of the classical linear model.
+  \textbf{Constant variance} or \textbf{homoskedasticity}. The most
+  common way of thinking about this is the error term \(\varepsilon\)
+  has constant variance, which is a short way of saying that random
+  draws of \(\varepsilon\) in model \eqref{eq:lm} are all from the same
+  (or \textbf{identical}) distribution. This is explicitly stated in the
+  second line of model specification \eqref{eq:lm}. If we were to think
+  about this using model specification \eqref{eq:lm-spec2}, then
+  homoskedasticity means that \(\sigma\) in \(N(\mu, \sigma)\) is
+  constant for all observations (or that the \emph{conditional}
+  probability distributions are identical, where \emph{conditional}
+  would mean adjusted for \(\mu\))
 \end{enumerate}
 
-\section{Specific assumpations of a linear
-model}\label{specific-assumpations-of-a-linear-model}
+Many biological processes generate data in which the error is a function
+of the mean. For example, measures of biological variables that grow,
+such as lengths of body parts or population size, have variances that
+``grow'' with the mean. Or, measures of counts, such as the number of
+cells damaged by toxin, the number of eggs in a nest, or the number of
+mRNA transcripts per cell have variances that are a function of the
+mean. Heteroskedastic error can be modeled with \textbf{Generalized
+Least Squares}, a generalization of the linear model, and with
+\textbf{Generalized Linear Models} (GLM), which are ``extensions'' of
+the classical linear model.
 
-Linear models specifically assume that the probability distribution is
-Normal or \textbf{Gaussian}. This implies that 1) the response is
-continuous and 2) the probability of sampling an individual measuring
-0.5 units below \(\mu\) is the same as the probability of sampling an
-individual measuring 0.5 units above the population mean. Counts (number
-of cells, number of eggs, number of mRNA transcripts) and binary
-responses (sucessful escape or sucessful infestation of host) are not
-continous and often often have asymmetric probablity distributions that
-are skewed to the right and while sometimes both can be reasonably
-modeled using a linear model they are more often modeled using
-generalized linear models, which, again, is an extension of the linear
-model in equation \eqref{eq:lm-lm-spec2}.
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{1}
+\tightlist
+\item
+  Normal or \textbf{Gaussian} probability distribution. As above, the
+  most common way of thinking about this is the error term
+  \(\varepsilon\) is Normal. Using model specification
+  \eqref{eq:lm-spec2}, we'd say the conditional probablity distribution of
+  the response is normal. A normal probability distribution implies that
+  1) the response is continuous and 2) the conditional probability is
+  symmetric around \(mu_i\). If the conditional probability distribution
+  has a long left or right tail it is \textbf{skewed} left or right.
+  Counts (number of cells, number of eggs, number of mRNA transcripts)
+  and binary responses (sucessful escape or sucessful infestation of
+  host) are not continuous and often often have asymmetric probablity
+  distributions that are skewed to the right and while sometimes both
+  can be reasonably modeled using a linear model they are more often
+  modeled using generalized linear models, which, again, is an extension
+  of the linear model in equation \eqref{eq:lm-lm-spec2}.
+\end{enumerate}
 
 A common misconception is that inference from a linear model assumes
 that the \emph{response} (\(Y\)) is normally distributed. Both the
@@ -667,17 +670,6 @@ distribution of \(Y\) is a mix of the distribution of \(X\) and the
 error. Model \eqref{eq:lm-spec2} states that the conditional outcome has a
 normal distribution, that is, the distribution after adjusting for
 variation in \(X\).
-
-As stated above in the ``identical'' assumption, a linear model assumes
-that \(\sigma\) is constant (or ``constant error variance'' if we think
-about it using the ``linear model'' way of specifying the model). This
-assumption is typically violated in both growth and count measures and
-while these can sometimes be reasonably modeled using a linear model,
-they are often better modeled with a Generalized Linear Model.
-Heteroskedastic error arising in other types of biological data can be
-modeled with Generalized Least Squares (GLS) models or with linear mixed
-models, both of which are simple generalizations of the classical linear
-model.
 
 \section{\texorpdfstring{``Statistical model'' or ``regression
 model''?}{Statistical model or regression model?}}\label{statistical-model-or-regression-model}
@@ -6589,20 +6581,25 @@ of warming on parasite load in a fish, or the effect of exercise on RNA
 expression.
 
 Count data differ from data with Normal error in many ways, including 1)
-counts are discrete 2) counts tend to bunch up on the small side of the
-range, creating a distribution with a positive skew, 3) counts can be
-zero, and a sample of counts can have an abundance of zeros, and 4) the
-variance of count data tends to increase with the mean (see Figure
-\ref{fig:glm1-plot1} for some of these properties). Some count data can
-be approximated by a normal distribution and reasonably modeled with a
-linear model but more often, count data are modeled with something other
-than a normal distribution using a \textbf{generalized linear model}
-(GLM). Back before modern computing and fast processors, count data were
-often analyzed by either \textbf{transforming} the response or by
-\textbf{non-parametric hypothesis tests}. I prefer a GLM because both
-the analysis of transformed data and non-parametric hypothesis tests are
-really a response to ``correct'' \(p\)-values instead of interpretable
-parameter estimates.
+counts are discrete, and can be zero or positive integers only, 2)
+counts tend to bunch up on the small side of the range, creating a
+distribution with a positive skew, 3) a sample of counts can have an
+abundance of zeros, and 4) the variance of counts increases with the
+mean (see Figure \ref{fig:glm1-plot1} for some of these properties).
+Some count data can be approximated by a normal distribution and
+reasonably modeled with a linear model but more often, count data are
+modeled with \textbf{Poisson distribution} or \textbf{negative binomial
+distribution} using a \textbf{generalized linear model} (GLM). Poisson
+and negative binomial distributions are \textbf{discrete probability
+distributions} with two important properties: 1) the distribution
+contains only zero and positive integers and 2) the variance is a
+function of the mean. Back before modern computing and fast processors,
+count data were often analyzed by either \textbf{transforming} the
+response or by \textbf{non-parametric hypothesis tests}. One reason to
+prefer a statistical modeling approach with a GLM is that we can get
+interpretable parameter estimates. By contrast, both the analysis of
+transformed data and non-parametric hypothesis tests are really tools
+for computing ``correct'' \(p\)-values.
 
 \begin{figure}
 \centering
@@ -6615,41 +6612,63 @@ treatment are infected with a tapeworm.}
 \section{The generalized linear
 model}\label{the-generalized-linear-model}
 
-Section {[}Assumptions for inference with statistical models{]} in
-Chapter 1 introduced two ways of defining a statistical model.
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\tightlist
-\item
-  Definition using a distribution of the error term (the ``linear model
-  way'')
-\end{enumerate}
+As outlined in section {[}Assumptions for inference with statistical
+models{]} in Chapter 1, a common way that biological researchers think
+about a response variable is
 
 \begin{align}
-Y &= \beta_0 + \beta_1 X + \varepsilon\\
+y_i &= \beta_0 + \beta_1 x_i + \varepsilon_i\\
 \varepsilon &\sim N(0, \sigma)
-\label{eq:lm-again}
+\label{eq:spec1}
 \end{align}
 
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\setcounter{enumi}{1}
-\tightlist
-\item
-  Definition using the response as a combination of stochastic and
-  deterministic components (the ``statistical model way'')
-\end{enumerate}
+That is, we can think of a response as the sum of some systematic part
+and ``random errror'', which is a random draw from a normal distribution
+with mean zero and variance \(\sigma^2\). This way of thinking about the
+generation of the response is useful for linear models but not useful
+for generalized linear models. For example, if we want to model the
+number of parasites that have infected a fish using a Poisson
+distribution, the following is the \textbf{wrong} way to think about the
+data generation
 
 \begin{align}
-Y &\sim N(\mu, \sigma)\\
+y_i &= \beta_0 + \beta_1 x_i + \varepsilon_i\\
+\varepsilon &\sim Poisson(\lambda)
+\label{eq:spec1-poisson}
+\end{align}
+
+That is, we should not think of a count as the sum of some systematic
+part and ``random error'', which here is a random draw from a Poisson
+distribution. Why? First, if we set the mean of the Poisson ``error'' to
+zero (like with a normal distribution), then the error term for every
+observation would be zero (because the only way to get a mean of zero
+with non-negative integers is if every value is zero). Second, if the
+study is modeling the effect of a treatment on the counts (that is, the
+\(X\) are dummy variables) then \(\beta_0\) is the expected mean count
+of the control (or reference) group. But if we add non-zero Poisson
+error to this, then the mean of the control group would be larger than
+\(\beta_0\). This doesn't make sense. Finally, this data generation
+process generates a continuous response because \(beta_0\) and
+\(beta_1\) are continuous (the mean count will typically be something
+other than an integer).
+
+A better way to think about the data generation for a linear model,
+because this naturally leads to the way to think about data generation
+for a generalized linear model, is
+
+\begin{align}
+y_i &\sim N(\mu_i, \sigma)\\
 \mathrm{E}(Y|X) &= \mu
-\mu &= \beta_0 + \beta_1 X
+\mu_i &= \beta_0 + \beta_1 x_i
 \label{eq:lm-spec2}
 \end{align}
 
-A generalized linear model has these two parts of the second definition
-but adds a third part. Here are the parts of a generalized linear model
+That is, a response is a random draw from a normal distribution with
+mean \(mu\) (not zero!) and variance \(\sigma^2\). Line 1 is the
+stochastic part of this specification. Line 3 is the systematic part.
+
+The specification of a generalized linear model has both stochastic and
+systematic parts but adds a third part.
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
@@ -6662,8 +6681,8 @@ but adds a third part. Here are the parts of a generalized linear model
   Y \sim \mathrm{Prob}(\mu)
   \end{equation}
 \item
-  \textbf{the deterministic part}, which is a linear predictor (this is
-  more often called the ``systematic part'')
+  \textbf{the systematic part}, which is a linear predictor (I like to
+  think about this as the deterministic part)
 
   \begin{equation}
   \eta=\mathbf{X}\boldsymbol{\beta}
@@ -6878,7 +6897,7 @@ binomial.
   is 5).
 \end{enumerate}
 
-A Poisson link function, then, is useful for count data in which the
+A Poisson distribution, then, is useful for count data in which the
 conditional variance is close to the conditional mean. Very often,
 biological count data are not well approximated by a Poisson
 distribution because the variance is either less than the mean, an
@@ -6909,10 +6928,11 @@ count data with overdispersion is the negative binomial.
   value (not simply a positive integer), including values less than 1.
 \end{enumerate}
 
-\subsection{Fitting a GLM with a Poisson link to the worm
-data}\label{fitting-a-glm-with-a-poisson-link-to-the-worm-data}
+\subsection{Fitting a GLM with a Poisson distribution to the worm
+data}\label{fitting-a-glm-with-a-poisson-distribution-to-the-worm-data}
 
-Let's fit a GLM with a Poisson link to the worm data. The model is
+Let's fit a GLM with a Poisson distribution to the worm data. The model
+is
 
 \begin{align}
 Diplo\_intensity &\sim Poisson(\mu)\\
@@ -6975,11 +6995,11 @@ is a Quantile residual Q-Q plot of observed vs.~expected
 
 \textbf{Misconceivable} -- A common misconception is that if the
 distribution of the response approximates a Poisson distribution, then
-the residuals of a GLM fit with a Poisson link should be normally
-distributed, which could then be checked with a Normal Q-Q plot, and
-homoskedastic, which could be checked with a scale-location plot.
-Neither of these is true because a GLM does not transform the data and,
-in fact, the model definition does not specify anything about the
+the residuals of a GLM fit with a Poisson distribution should be
+normally distributed, which could then be checked with a Normal Q-Q
+plot, and homoskedastic, which could be checked with a scale-location
+plot. Neither of these is true because a GLM does not transform the data
+and, in fact, the model definition does not specify anything about the
 distribution of an ``error'' term -- there is no \(\varepsilon\) in the
 model defintion above! This is why thinking about the definition of a
 linear model by specifying an error term with a normal distribution can
@@ -6987,12 +7007,14 @@ be confusing and lead to misconceptions when learning GLMs.
 
 \includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/glm1-worm-poisson-qr-1.pdf}
 
-The Q-Q plot using quantile residuals with a Poisson link indicates that
-the counts of \emph{Diplostomum} larvae in the eyes of the threespine
-stickleback are not well approximated by a Poisson distribution.
+The Q-Q plot using quantile residuals with a Poisson distribution
+indicates that the counts of \emph{Diplostomum} larvae in the eyes of
+the threespine stickleback are not well approximated by a Poisson
+distribution.
 
-\subsection{Fitting a GLM with a Negative Binomial link to the worm
-data}\label{fitting-a-glm-with-a-negative-binomial-link-to-the-worm-data}
+\subsection{Fitting a GLM with a Negative Binomial distribution to the
+worm
+data}\label{fitting-a-glm-with-a-negative-binomial-distribution-to-the-worm-data}
 
 The model is
 
@@ -7003,23 +7025,24 @@ Diplo\_intensity &\sim NB(\mu, k)\\
 \eta &= \beta_0 + \beta_1 Uninfected + \beta_2 Infected\_LG + \beta_3 Infected\_HG
 \end{align}
 
-This model specifies a negative binomial link but otherwise is just like
-that above specifying a Poisson link.
+This model specifies a negative binomial distribution but otherwise is
+just like that above specifying a Poisson distribution.
 
 \subsubsection{Model checking}\label{model-checking-1}
 
 \includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/glm1-worm-nb-1.pdf}
 
 A quantile residual Q-Q plot of the GLM model fit with negative binomial
-link is illustrated above. This looks pretty good.
+distribution is illustrated above. This looks pretty good.
 
 \subsubsection{Model means and
 coefficients}\label{model-means-and-coefficients}
 
 In a Generalized Linear Model of counts using either a Poisson or
-negative binomial link, modeled means, coefficients, and contrasts can
-be reported either on the link or response scale. Remember, the response
-scale is a count, while the link scale is a log(count).
+negative binomial distribution, modeled means, coefficients, and
+contrasts can be reported either on the link or response scale.
+Remember, the response scale is a count, while the link scale is a
+log(count).
 
 The modeled means on the link scale are
 
@@ -7228,7 +7251,7 @@ Negative binomial fit.
 ## Tests are performed on the log scale
 \end{verbatim}
 
-Problems
+\section{Problems}\label{problems-4}
 
 Analyze the data that went into Fig 6B of Tena, A., Pekas, A., Cano, D.,
 Wäckers, F. L., \& Urbaneja, A. (2015). Sugar provisioning maximizes the
