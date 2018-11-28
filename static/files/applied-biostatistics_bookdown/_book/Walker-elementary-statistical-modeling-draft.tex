@@ -125,7 +125,7 @@
   \postauthor{\par}
       \predate{\centering\large\emph}
   \postdate{\par}
-    \date{Draft: 2018-11-27}
+    \date{Draft: 2018-11-28}
 
 \usepackage{booktabs}
 \usepackage{amsthm}
@@ -274,9 +274,9 @@ is the \emph{modeled} value of \(Y\) for all observations in which \(X\)
 takes some specific value \(x\).
 
 The second line of the model (read as ``epsilon is distributed as Normal
-with mean zero and standard deviation sigma''``) specifies the
+with mean zero and standard deviation sigma'') specifies the
 distribution of the error part. The error part of a linear model is a
-random''draw" from a normal distribution with mean zero and variance
+random ``draw'' from a normal distribution with mean zero and variance
 \(\sigma^2\). Think of this as adding some random value to the expected
 value.
 
@@ -6580,7 +6580,7 @@ effects of environmental mercury on clutch size in a bird, the effects
 of warming on parasite load in a fish, or the effect of exercise on RNA
 expression.
 
-Count data differ from data with Normal error in many ways, including 1)
+Count data differ from data with normal error in many ways, including 1)
 counts are discrete, and can be zero or positive integers only, 2)
 counts tend to bunch up on the small side of the range, creating a
 distribution with a positive skew, 3) a sample of counts can have an
@@ -6701,9 +6701,12 @@ systematic parts but adds a third part.
 on the \textbf{link scale}. A GLM models the response with a
 distribution specified in the stochastic part. The probability
 distributions introduced in this chapter are the Poisson and Negative
-Binomial. The link function for the Poisson and Negative Binomial is
-\(\eta = log(\mu)\). Note that a linear model is a GLM with a Normal
-distribution and an Identity link (\(\eta = \mu\)).
+Binomial. The natural link function for the Poisson and Negative
+Binomial is the ``log link'', \(\eta = log(\mu)\). More generally, while
+each distribution has a natural (or, ``canonical'') link function, one
+can use alternatives. Given this definition of a generalized linear
+model, a linear model is a GLM with a normal distribution and an
+Identity link (\(\eta = \mu\)).
 
 When modeling counts using the Poisson or negative binomial
 distributions, the link scale is linear, and so the effects are additive
@@ -6724,7 +6727,10 @@ The example is an experiment measuring the effect of the parasitic
 tapeworm \emph{Schistocephalus solidus} infection on the susceptibility
 of infection from a second parasite, the trematode \emph{Diplostomum
 pseudospathaceum}, in the threespine stickleback fish \emph{Gasterosteus
-aculeatus}. The treatment levels are ``Control'' (unexposed to the
+aculeatus}\footnote{Benesh, D. P., \& Kalbe, M. (2016). Experimental
+  parasite community ecology: intraspecific variation in a large
+  tapeworm affects community assembly. Journal of Animal Ecology, 85(4),
+  1004-1013}. The treatment levels are ``Control'' (unexposed to the
 tapeworm), ``Uninfected'' " (exposed to the tapeworm but uninfected),
 ``Infected LG'' (exposed and infected with the low growth population of
 the tapeworm), and ``Infected HG'' (exposed and infected with the high
@@ -6733,9 +6739,7 @@ larvae counted in the eyes (right and left combined) of the fish. A
 histogram of the counts is shown in Figure \ref{fig:glm1-plot1} for the
 control and Infected HG treatment levels.
 
-I start the analysis by fitting a linear model to the worm data and then
-\emph{model checking}, to gain some insight on how well the linear model
-fits the data
+\subsection{Modeling strategy}\label{modeling-strategy}
 
 \textbf{NHST blues} -- Students are often encouraged by textbooks,
 colleagues, or the literature to start the analysis by first ``testing''
@@ -6750,29 +6754,35 @@ filtering procedure, 2) real data are only approximately normal and as
 \(n\) increses, a normality test will reject any real dataset, and 3)
 hypothesis tests are pretty robust to non-normality anyway.
 
-The model is
+Instead of testing assumptions of a model using formal hypothesis tests
+\emph{before} fitting the model, a better strategy is to 1) fit a model,
+and then do 2) \textbf{model checking} using \textbf{diagnostic plots},
+diagnostic statistics, and simulation.
+
+With these data, a researcher would typically fit a GLM with a Poisson
+or negative binomial distribution and log link. Here, I start with a
+linear model to illustrate the interpretation of diagnostic plots with
+non-normal data.
+
+Diganostic plots for model checking a linear model use the residuals of
+the model fit, so the ``linear model'' specification is the natural way
+to think about and define the model.
 
 \begin{align}
-Y &= N(\mu, \sigma)\\
-\mu &= \beta_0 + \beta_1 Treatment
+Diplo_intensity &=\beta_0 + \beta_1 Treatment + \varepsilon\\
+\varepsilon \sim N(0, \sigma)
 \end{align}
-
-Which models the parasite count conditional on \(Treatment\) with a
-Normal distribution. Remember, this is equivalent to a model with an
-error term with a Normal distribution (now might be a good time to go
-back to Chapter 1 and review the section {[}Assumptions for inference
-with statistical models{]}).
 
 \subsection{Checking the model I -- a Normal Q-Q
 plot}\label{checking-the-model-i-a-normal-q-q-plot}
-
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/glm1-plot2-1.pdf}
 
 Figure \ref{fig:glm1-plot2}A shows a histogram of the residuals from the
 fit linear model. The plot shows that the residuals are clumped at the
 negative end of the range, which suggests that a model with a normally
 distributed conditional outcome (or normal error) is not well
 approximated.
+
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/glm1-plot2-1.pdf}
 
 A better way to investigate this is with the \textbf{Normal Q-Q} plot in
 Figure \ref{fig:glm1-plot2}B, which plots the sample quantiles for a
@@ -6808,8 +6818,8 @@ residuals against a set of theoretical quantiles.
   For example, if you have \(n=145\) residuals, then the 73rd point is
   the 50\% quantile.
 \item
-  A theoretical quantile from the Normal distribution can be constructed
-  using the \texttt{qnorm} function which returns the Normal quantiles
+  A theoretical quantile from the normal distribution can be constructed
+  using the \texttt{qnorm} function which returns the normal quantiles
   for a specified vector of percents. Alternatively, one could randomly
   sample \(n\) points using \texttt{rnorm}. These of course will be
   sampled quantiles so will only approximate the expected theoretical
@@ -6864,7 +6874,7 @@ distributed.
 \subsection{Two distributions for count data -- Poisson and Negative
 Binomial}\label{two-distributions-for-count-data-poisson-and-negative-binomial}
 
-The pattern in the Normal Q-Q plot in Figure \ref{fig:glm1-plot2}B
+The pattern in the normal Q-Q plot in Figure \ref{fig:glm1-plot2}B
 should discourage one from modeling the data with a normal distribution
 and instead model the data with an alternative distribution using a
 Generalized Linear Model. There is no unique mapping between how data
@@ -7107,7 +7117,8 @@ The model coefficients on the link scale are
 ## Confidence level used: 0.95
 \end{verbatim}
 
-and on the response scale
+Backtransforming these coefficients to the response scale (using
+\(\mathrm{exp}{b_j}\)) results in a \textbf{response ratio}.
 
 \begin{verbatim}
 ##  contrast                  ratio         SE  df asymp.LCL asymp.UCL
@@ -7124,21 +7135,43 @@ and on the response scale
 ## Tests are performed on the log scale
 \end{verbatim}
 
-Notice that the emmeans package reports the name of the term as the
-ratio of the coefficient term to the intercept term (the reference
-treatment level). This is because the coefficients on the response scale
-\emph{are} ratios and effects are not additive but multiplicative! So,
-for example, the mean of the Infected HG treatment level on the response
-scale is \(b_0*b_3\) (remember that with a linear model the mean would
-be \(b_0 + b_3\)). Check and see if this works.
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Note how the emmeans package reports the name of the term as the ratio
+  of the coefficient term to the intercept term (the reference treatment
+  level). Why are the coefficients tranformed to ratios on the response
+  scale? Remember that a coefficient is a difference in conditional
+  means and that
+  \(\mathrm{exp}(B-A) = \frac{\mathrm{exp}(B)}{\mathrm{exp}(A)}\). For a
+  dummy variable as here (say ``Infected HG''), the response ratio is
+\end{enumerate}
 
-The effects (the coefficients) could be reported as these ratios in a
-table, or in the text it could be reported something like ``Infected HG
+\begin{equation}
+RR_{Infected\_HG} = \frac{\overline{Infected\_HG}}{\overline{Control}}
+\end{equation}
+
+which give us the \textbf{relative effect} of Infected\_HG compared to
+the Control. Relative effects could be reported as a response ratio in a
+table, or in the text it could be reported as a percent ``Infected HG
 fish had 71.5\% (95\%CI: 38.9\% - 111.8\%) more \emph{Diplostomum}
 larvae than Control fish.'' Where do these percents come from? The
-percent effect is \(100(b_j - 1)\) larger than the reference mean if the
-\(b_j > 1\) or \(100(1 - b_j)\) smaller than the reference mean if the
-\(b_j < 1\).
+percent effect is \(100(RR_j - 1)\) larger than the reference mean if
+the \(RR_j > 1\) or \(100(1 - RR_j)\) smaller than the reference mean if
+the \(RR_j < 1\).
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{1}
+\tightlist
+\item
+  Effects on the response scale are not additive but multiplicative! So,
+  for example, the mean of the Infected HG treatment level on the
+  response scale is \(RR_{Control}*RR_{Infected\_HG}\) (remember that
+  with a linear model the mean would be
+  \(b_{Control} + b_{Infected\_HG}\)). Check and see if this works.
+\end{enumerate}
 
 \section{Working in R}\label{working-in-r-4}
 
