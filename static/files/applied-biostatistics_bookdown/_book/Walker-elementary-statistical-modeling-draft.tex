@@ -125,7 +125,7 @@
   \postauthor{\par}
       \predate{\centering\large\emph}
   \postdate{\par}
-    \date{Draft: 2018-11-28}
+    \date{Draft: 2018-12-02}
 
 \usepackage{booktabs}
 \usepackage{amsthm}
@@ -250,7 +250,6 @@ The basic \textbf{structure} of a linear model is
 
 \begin{align}
 Y &= \beta_0 + \beta_1 X + \varepsilon\\
-\varepsilon &\sim N(0, \sigma)
 \label{eq:lm}
 \end{align}
 
@@ -273,8 +272,16 @@ Importantly, \(\mathrm{E}[Y|X]\) is the \textbf{conditional mean}, which
 is the \emph{modeled} value of \(Y\) for all observations in which \(X\)
 takes some specific value \(x\).
 
-The second line of the model (read as ``epsilon is distributed as Normal
-with mean zero and standard deviation sigma'') specifies the
+Introductory textbooks almost always introduce linear models using
+equation \eqref{eq:lm} above. The key part of the model that is missing
+from the specification above is a second line
+
+\begin{equation}
+\varepsilon \sim N(0, \sigma)
+\end{equation}
+
+\% read as ``epsilon is distributed as Normal with mean zero and
+standard deviation sigma''). This line explicitly specifies the
 distribution of the error part. The error part of a linear model is a
 random ``draw'' from a normal distribution with mean zero and variance
 \(\sigma^2\). Think of this as adding some random value to the expected
@@ -2269,7 +2276,8 @@ of \(\sigma\) for that group. The modeled SE for a group uses the
 modeled estimate of \(\sigma\) for every group instead of that group's
 sampled \(s_k\). So, if \(n\) is the same in each group then the modeled
 SE is the same for each group. So what is the modeled SE? If is the
-standard deviation of the residuals of the model, of course.
+standard deviation of the residuals of the model
+\(\sqrt{\frac{ss_{residual}}{df_{residual}}}\).
 
 Pretending the four treatment levels are not from a factorial design:
 
@@ -6617,7 +6625,7 @@ models{]} in Chapter 1, a common way that biological researchers think
 about a response variable is
 
 \begin{align}
-y_i &= \beta_0 + \beta_1 x_i + \varepsilon_i\\
+y_i &= \beta_0 + \beta_1 x_i + \varepsilon_i \\
 \varepsilon &\sim N(0, \sigma)
 \label{eq:spec1}
 \end{align}
@@ -6625,11 +6633,12 @@ y_i &= \beta_0 + \beta_1 x_i + \varepsilon_i\\
 That is, we can think of a response as the sum of some systematic part
 and ``random errror'', which is a random draw from a normal distribution
 with mean zero and variance \(\sigma^2\). This way of thinking about the
-generation of the response is useful for linear models but not useful
-for generalized linear models. For example, if we want to model the
-number of parasites that have infected a fish using a Poisson
+generation of the response is useful for linear models, and model
+checking linear models, but is not useful for generalized linear models
+or model checking generalized liner models. For example, if we want to
+model the number of parasites that have infected a fish using a Poisson
 distribution, the following is the \textbf{wrong} way to think about the
-data generation
+statistical model
 
 \begin{align}
 y_i &= \beta_0 + \beta_1 x_i + \varepsilon_i\\
@@ -6637,20 +6646,22 @@ y_i &= \beta_0 + \beta_1 x_i + \varepsilon_i\\
 \label{eq:spec1-poisson}
 \end{align}
 
-That is, we should not think of a count as the sum of some systematic
-part and ``random error'', which here is a random draw from a Poisson
-distribution. Why? First, if we set the mean of the Poisson ``error'' to
-zero (like with a normal distribution), then the error term for every
-observation would be zero (because the only way to get a mean of zero
-with non-negative integers is if every value is zero). Second, if the
-study is modeling the effect of a treatment on the counts (that is, the
-\(X\) are dummy variables) then \(\beta_0\) is the expected mean count
-of the control (or reference) group. But if we add non-zero Poisson
-error to this, then the mean of the control group would be larger than
-\(\beta_0\). This doesn't make sense. Finally, this data generation
-process generates a continuous response because \(beta_0\) and
-\(beta_1\) are continuous (the mean count will typically be something
-other than an integer).
+That is, we should not think of a count as the sum of a systematic part
+and a random draw from a Poisson distribution. Why? Because it is the
+counts (or the counts conditional on \(X\)) that are poisson
+distributed, not the residuals from the fit model. Some other
+consequences of thinking about this way are: First, if we set the mean
+of the Poisson ``error'' to zero (like with a normal distribution), then
+the error term for every observation would \emph{have to} be zero
+(because the only way to get a mean of zero with non-negative integers
+is if every value is zero). Second, if the study is modeling the effect
+of a treatment on the counts (that is, the \(X\) are dummy variables)
+then \(\beta_0\) is the expected mean count of the control (or
+reference) group. But if we add non-zero Poisson error to this, then the
+mean of the control group would be larger than \(\beta_0\). This doesn't
+make sense. And finally, equation \eqref{eq:spec1-poisson} generates a
+continuous response, instead of an integer, because \(\beta_0\) and
+\(\beta_1\) are continuous.
 
 A better way to think about the data generation for a linear model,
 because this naturally leads to the way to think about data generation
@@ -6668,7 +6679,8 @@ mean \(mu\) (not zero!) and variance \(\sigma^2\). Line 1 is the
 stochastic part of this specification. Line 3 is the systematic part.
 
 The specification of a generalized linear model has both stochastic and
-systematic parts but adds a third part.
+systematic parts but adds a third part, which is a \textbf{link
+function} connecting the stochastic and systematic parts.
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
@@ -6678,7 +6690,7 @@ systematic parts but adds a third part.
   the exponential family (this is sometimes called the ``random part'')
 
   \begin{equation}
-  Y \sim \mathrm{Prob}(\mu)
+  y_i \sim \mathrm{Prob}(\mu_i)
   \end{equation}
 \item
   \textbf{the systematic part}, which is a linear predictor (I like to
@@ -6691,7 +6703,7 @@ systematic parts but adds a third part.
   a \textbf{link function} connecting the two parts
 
   \begin{equation}
-  \eta = g(\mu)
+  \eta_i = g(\mu_i)
   \end{equation}
 \end{enumerate}
 
@@ -6709,13 +6721,13 @@ model, a linear model is a GLM with a normal distribution and an
 Identity link (\(\eta = \mu\)).
 
 When modeling counts using the Poisson or negative binomial
-distributions, the link scale is linear, and so the effects are additive
-on the link scale, while the response scale is nonlinear (it is the
-exponent of the link scale), and so the effects are multiplicative on
-the response scale. If this doesn't make sense now, an example is worked
-out below. The inverse of the link function backtransforms the
-parameters from the link scale back to the response scale. So, for
-example, a prediction on the response sale is
+distributions with a log link, the link scale is linear, and so the
+effects are additive on the link scale, while the response scale is
+nonlinear (it is the exponent of the link scale), and so the effects are
+multiplicative on the response scale. If this doesn't make sense now, an
+example is worked out below. The inverse of the link function
+backtransforms the parameters from the link scale back to the response
+scale. So, for example, a prediction on the response sale is
 \(\mathrm{exp}(\hat{\eta})\) and a coefficient on the response scale is
 \(\mathrm{exp}(b_j)\).
 
@@ -6762,15 +6774,14 @@ diagnostic statistics, and simulation.
 With these data, a researcher would typically fit a GLM with a Poisson
 or negative binomial distribution and log link. Here, I start with a
 linear model to illustrate the interpretation of diagnostic plots with
-non-normal data.
-
-Diganostic plots for model checking a linear model use the residuals of
-the model fit, so the ``linear model'' specification is the natural way
-to think about and define the model.
+non-normal data. I use the ``linear model'' specification (equation
+\eqref{eq:spec1}) because the diganostic plots for model checking a linear
+model use the residuals of the fit model.
 
 \begin{align}
-Diplo_intensity &=\beta_0 + \beta_1 Treatment + \varepsilon\\
-\varepsilon \sim N(0, \sigma)
+Diplo\_intensity_i &= \beta_0 + \beta_1 Uninfected_i + \beta_2 Infected\_LG_i + \beta_3 Infected\_HG_i + \varepsilon_i \\
+\varepsilon &\sim N(0, \sigma)
+\label{eq:worm-lm}
 \end{align}
 
 \subsection{Checking the model I -- a Normal Q-Q
@@ -6782,7 +6793,13 @@ negative end of the range, which suggests that a model with a normally
 distributed conditional outcome (or normal error) is not well
 approximated.
 
+\begin{figure}
+\centering
 \includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/glm1-plot2-1.pdf}
+\caption{\label{fig:glm1-plot2}Diagnostic plots of stickleback parasite
+data. A) Distribution of the residuals of the fit linear model. B)
+Normal Q-Q plot of the residuals of the fit linear model.}
+\end{figure}
 
 A better way to investigate this is with the \textbf{Normal Q-Q} plot in
 Figure \ref{fig:glm1-plot2}B, which plots the sample quantiles for a
@@ -6933,9 +6950,10 @@ count data with overdispersion is the negative binomial.
   ``overdispersed'' Poisson process. The mean of a negative binomial
   variable is \(\mu = k\frac{p}{1-p}\) and the variance is
   \(\sigma^2 = \mu + \mu^2/k\). As a method for modeling an
-  overdispersed Poisson variable, \(k\) functions as a parameter
-  controlling the amount of overdispersion and can be any real, positive
-  value (not simply a positive integer), including values less than 1.
+  overdispersed Poisson variable, \(k\) functions as a **dispersion
+  parameter* controlling the amount of overdispersion and can be any
+  real, positive value (not simply a positive integer), including values
+  less than 1.
 \end{enumerate}
 
 \subsection{Fitting a GLM with a Poisson distribution to the worm
@@ -6945,10 +6963,10 @@ Let's fit a GLM with a Poisson distribution to the worm data. The model
 is
 
 \begin{align}
-Diplo\_intensity &\sim Poisson(\mu)\\
+Diplo\_intensity_i &\sim Poisson(\mu_i)\\
 \mathrm{E}({Diplo\_intensity|Treatment}) &= \mu\\
-\mu &= \mathrm{exp}(\eta)\\
-\eta &= \beta_0 + \beta_1 Uninfected + \beta_2 Infected\_LG + \beta_3 Infected\_HG
+\mu_i &= \mathrm{exp}(\eta_i)\\
+\eta_i &= \beta_0 + \beta_1 Uninfected_i + \beta_2 Infected\_LG_i + \beta_3 Infected\_HG_i
 \end{align}
 
 \begin{enumerate}
@@ -6970,12 +6988,25 @@ Diplo\_intensity &\sim Poisson(\mu)\\
   variables.
 \end{enumerate}
 
-\subsubsection{Model checking -- a quantile residual Q-Q
-plot}\label{model-checking-a-quantile-residual-q-q-plot}
+Remember that the conditional mean is the
+expected/predicted/fitted/modeled value when \(X=x_i\).
 
-For model checking a GLM model fit, an alternative to a Normal Q-Q plot
-is a Quantile residual Q-Q plot of observed vs.~expected
-\textbf{quantile residuals}. The basic algorithm for this is
+\subsection{Model checking fits to count
+data}\label{model-checking-fits-to-count-data}
+
+we use the fit model to check 1. the overall similarity of observed and
+theoretical distributions 2. if the observed distribution is over or
+under dispersed 3. if there more zeros than expected by the theoretical
+distribution. If so, the observed distribution is \textbf{zero-inflated}
+
+\subsubsection{Model checking a GLM I -- the quantile residual Q-Q
+plot}\label{model-checking-a-glm-i-the-quantile-residual-q-q-plot}
+
+A quantile-quantile (Q-Q) plot is used to check overall similarity of
+the observed distribution with the distribution that would be expected
+under the model. An alternative to a Normal Q-Q plot for a GLM fit is a
+quantile residual Q-Q plot of observed vs.~expected \textbf{quantile
+residuals}. The basic algorithm for this is
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
@@ -6984,15 +7015,18 @@ is a Quantile residual Q-Q plot of observed vs.~expected
   Use the model parameters to simulate \(p\) fake values of the response
   for each row of the data. This will be a \(n \times p\) matrix of fake
   data where each column is a new, random sample of a population with
-  parameters equal to that estimated by the observed data.
+  parameters equal to that estimated for the observed data. For the
+  Poisson, the parameter for each observation will be \(\hat{\mu}_i\),
+  the modeled value of observation \(i\). For the negative binomial, the
+  parameters will be \(\hat{\mu}_i\) and the dispersion parameter \(k\),
+  which is the same for all observations.
 \item
   For each observation (each row of the matrix of fake data), compute
   the fraction of simulated values smaller than the observed value of
   the response variable for that row. This fraction is the observed
   \textbf{quantile residual}, which ranges in value from 0 to 1. If the
   true data are distribitued as that specified by the model, then
-  quantile residuals will have a uniform distribution -- any value
-  within the range 0 to 1 is equally likely.
+  quantile residuals will have a uniform distribution.
 \item
   Sort the observed quantile residuals from smallest to largest and plot
   against theoretical quantile residuals from a uniform distribution.
@@ -7020,7 +7054,53 @@ be confusing and lead to misconceptions when learning GLMs.
 The Q-Q plot using quantile residuals with a Poisson distribution
 indicates that the counts of \emph{Diplostomum} larvae in the eyes of
 the threespine stickleback are not well approximated by a Poisson
-distribution.
+distribution -- there are too many observed values near the ends of the
+expected tails, indicating the expected values are not spread out
+enough. This pattern emerges because the observed counts are
+overdispersed compared to a Poisson distribution.
+
+\subsubsection{Model checking a GLM II -- a dispersion
+plot}\label{model-checking-a-glm-ii-a-dispersion-plot}
+
+If observed counts are Poisson distributed, then the \textbf{Pearson
+residuals} (\(r_i\)) and the residual degrees of freedom of the fit
+model (\(df\)) can be used to compute a dispersion statistic
+
+\begin{equation}
+\frac{\sum{r_i}}{df}
+\end{equation}
+
+that has an expected value of 1. Instead of a formal hypothesis test of
+this statistic, I use a simulation approach and ask, ``if the observed
+counts are Poisson distributed, what is the expected frequency
+distribution of this dispersion statistic?'' and then use simulation to
+generate this expected distribution. The algorithm for this is
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  For each observation \(i\), generate a random Poisson count using
+  \(\hat{\mu}\) as the parameter.
+\item
+  Fit the model and compute the dispersion statistic.
+\item
+  Repeat 1 and 2 \(N_{iter}\) times.
+\end{enumerate}
+
+The plot below shows a histogram of the dispersion statistic computed
+for 1000 simulations of the worm data. The observed dispersion statistic
+is 3.4. The expected value is 1.0. The mean of the simulated values is
+1.
+
+\begin{figure}
+\centering
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/glm1-worm-poisson-dispersion-plot-1.pdf}
+\caption{\label{fig:glm1-worm-poisson-dispersion-plot}Observed vs.~expected
+dispersion statistic. The observed statistic marked by the red line. The
+histogram of expected statistics are from 1000 simulations of the
+observed data.}
+\end{figure}
 
 \subsection{Fitting a GLM with a Negative Binomial distribution to the
 worm
@@ -7190,7 +7270,8 @@ Source data URL:
 
 Source file: ``Lab\_exp.csv''
 
-Poisson fit. The quantile residual Q-Q plot is from the package DHARMa
+Poisson fit. A quantile residual Q-Q plot can be generated using the
+package DHARMa
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -7209,6 +7290,35 @@ Poisson fit. The quantile residual Q-Q plot is from the package DHARMa
 \end{verbatim}
 
 \includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/glm1-working-in-r-1.pdf}
+
+A plot of the dispersion statistic can be generated using the object
+returned by the \texttt{SimulateOutput} function but with
+\texttt{refit\ =\ TRUE}, which refits a model each iteration. This
+refitting isn't necessary if only the quantiile residuals are needed.
+The Dharma package does not divide the sum of squared Pearson residuals
+by the residual degrees of freedom and so the expected value of the
+statistic is \(df\).
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# from the DHARMa package}
+\NormalTok{  n_sim <-}\StringTok{ }\DecValTok{250}
+\NormalTok{  simulationOutput <-}\StringTok{ }\KeywordTok{simulateResiduals}\NormalTok{(}\DataTypeTok{fittedModel=}\NormalTok{fit.pois, }\DataTypeTok{n=}\NormalTok{n_sim, }\DataTypeTok{refit=}\OtherTok{TRUE}\NormalTok{)}
+  \KeywordTok{testDispersion}\NormalTok{(simulationOutput)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-16-1.pdf}
+
+\begin{verbatim}
+## 
+##  DHARMa nonparametric dispersion test via mean deviance residual
+##  fitted vs. simulated-refitted
+## 
+## data:  simulationOutput
+## dispersion = 3.3788, p-value < 2.2e-16
+## alternative hypothesis: two.sided
+\end{verbatim}
 
 Negative binomial fit.
 

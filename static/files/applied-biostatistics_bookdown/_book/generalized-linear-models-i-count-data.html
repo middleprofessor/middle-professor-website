@@ -266,7 +266,8 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="13.2.3" data-path="generalized-linear-models-i-count-data.html"><a href="generalized-linear-models-i-count-data.html#checking-the-model-ii-scale-location-plot-for-checking-homoskedasticity"><i class="fa fa-check"></i><b>13.2.3</b> Checking the model II – scale-location plot for checking homoskedasticity</a></li>
 <li class="chapter" data-level="13.2.4" data-path="generalized-linear-models-i-count-data.html"><a href="generalized-linear-models-i-count-data.html#two-distributions-for-count-data-poisson-and-negative-binomial"><i class="fa fa-check"></i><b>13.2.4</b> Two distributions for count data – Poisson and Negative Binomial</a></li>
 <li class="chapter" data-level="13.2.5" data-path="generalized-linear-models-i-count-data.html"><a href="generalized-linear-models-i-count-data.html#fitting-a-glm-with-a-poisson-distribution-to-the-worm-data"><i class="fa fa-check"></i><b>13.2.5</b> Fitting a GLM with a Poisson distribution to the worm data</a></li>
-<li class="chapter" data-level="13.2.6" data-path="generalized-linear-models-i-count-data.html"><a href="generalized-linear-models-i-count-data.html#fitting-a-glm-with-a-negative-binomial-distribution-to-the-worm-data"><i class="fa fa-check"></i><b>13.2.6</b> Fitting a GLM with a Negative Binomial distribution to the worm data</a></li>
+<li class="chapter" data-level="13.2.6" data-path="generalized-linear-models-i-count-data.html"><a href="generalized-linear-models-i-count-data.html#model-checking-fits-to-count-data"><i class="fa fa-check"></i><b>13.2.6</b> Model checking fits to count data</a></li>
+<li class="chapter" data-level="13.2.7" data-path="generalized-linear-models-i-count-data.html"><a href="generalized-linear-models-i-count-data.html#fitting-a-glm-with-a-negative-binomial-distribution-to-the-worm-data"><i class="fa fa-check"></i><b>13.2.7</b> Fitting a GLM with a Negative Binomial distribution to the worm data</a></li>
 </ul></li>
 <li class="chapter" data-level="13.3" data-path="generalized-linear-models-i-count-data.html"><a href="generalized-linear-models-i-count-data.html#working-in-r-4"><i class="fa fa-check"></i><b>13.3</b> Working in R</a></li>
 <li class="chapter" data-level="13.4" data-path="generalized-linear-models-i-count-data.html"><a href="generalized-linear-models-i-count-data.html#problems-4"><i class="fa fa-check"></i><b>13.4</b> Problems</a></li>
@@ -322,17 +323,17 @@ Figure 13.1: Histogram of the count of a trematode parasite larvae in Control vs
 <h2><span class="header-section-number">13.1</span> The generalized linear model</h2>
 <p>As outlined in section [Assumptions for inference with statistical models] in Chapter 1, a common way that biological researchers think about a response variable is</p>
 <span class="math display" id="eq:spec1">\[\begin{align}
-y_i &amp;= \beta_0 + \beta_1 x_i + \varepsilon_i\\
+y_i &amp;= \beta_0 + \beta_1 x_i + \varepsilon_i \\
 \varepsilon &amp;\sim N(0, \sigma)
 \tag{13.1}
 \end{align}\]</span>
-<p>That is, we can think of a response as the sum of some systematic part and “random errror”, which is a random draw from a normal distribution with mean zero and variance <span class="math inline">\(\sigma^2\)</span>. This way of thinking about the generation of the response is useful for linear models but not useful for generalized linear models. For example, if we want to model the number of parasites that have infected a fish using a Poisson distribution, the following is the <strong>wrong</strong> way to think about the data generation</p>
+<p>That is, we can think of a response as the sum of some systematic part and “random errror”, which is a random draw from a normal distribution with mean zero and variance <span class="math inline">\(\sigma^2\)</span>. This way of thinking about the generation of the response is useful for linear models, and model checking linear models, but is not useful for generalized linear models or model checking generalized liner models. For example, if we want to model the number of parasites that have infected a fish using a Poisson distribution, the following is the <strong>wrong</strong> way to think about the statistical model</p>
 <span class="math display" id="eq:spec1-poisson">\[\begin{align}
 y_i &amp;= \beta_0 + \beta_1 x_i + \varepsilon_i\\
 \varepsilon &amp;\sim Poisson(\lambda)
 \tag{13.2}
 \end{align}\]</span>
-<p>That is, we should not think of a count as the sum of some systematic part and “random error”, which here is a random draw from a Poisson distribution. Why? First, if we set the mean of the Poisson “error” to zero (like with a normal distribution), then the error term for every observation would be zero (because the only way to get a mean of zero with non-negative integers is if every value is zero). Second, if the study is modeling the effect of a treatment on the counts (that is, the <span class="math inline">\(X\)</span> are dummy variables) then <span class="math inline">\(\beta_0\)</span> is the expected mean count of the control (or reference) group. But if we add non-zero Poisson error to this, then the mean of the control group would be larger than <span class="math inline">\(\beta_0\)</span>. This doesn’t make sense. Finally, this data generation process generates a continuous response because <span class="math inline">\(beta_0\)</span> and <span class="math inline">\(beta_1\)</span> are continuous (the mean count will typically be something other than an integer).</p>
+<p>That is, we should not think of a count as the sum of a systematic part and a random draw from a Poisson distribution. Why? Because it is the counts (or the counts conditional on <span class="math inline">\(X\)</span>) that are poisson distributed, not the residuals from the fit model. Some other consequences of thinking about this way are: First, if we set the mean of the Poisson “error” to zero (like with a normal distribution), then the error term for every observation would <em>have to</em> be zero (because the only way to get a mean of zero with non-negative integers is if every value is zero). Second, if the study is modeling the effect of a treatment on the counts (that is, the <span class="math inline">\(X\)</span> are dummy variables) then <span class="math inline">\(\beta_0\)</span> is the expected mean count of the control (or reference) group. But if we add non-zero Poisson error to this, then the mean of the control group would be larger than <span class="math inline">\(\beta_0\)</span>. This doesn’t make sense. And finally, equation <a href="generalized-linear-models-i-count-data.html#eq:spec1-poisson">(13.2)</a> generates a continuous response, instead of an integer, because <span class="math inline">\(\beta_0\)</span> and <span class="math inline">\(\beta_1\)</span> are continuous.</p>
 <p>A better way to think about the data generation for a linear model, because this naturally leads to the way to think about data generation for a generalized linear model, is</p>
 <span class="math display" id="eq:lm-spec2">\[\begin{align}
 y_i &amp;\sim N(\mu_i, \sigma)\\
@@ -341,11 +342,11 @@ y_i &amp;\sim N(\mu_i, \sigma)\\
 \tag{1.3}
 \end{align}\]</span>
 <p>That is, a response is a random draw from a normal distribution with mean <span class="math inline">\(mu\)</span> (not zero!) and variance <span class="math inline">\(\sigma^2\)</span>. Line 1 is the stochastic part of this specification. Line 3 is the systematic part.</p>
-<p>The specification of a generalized linear model has both stochastic and systematic parts but adds a third part.</p>
+<p>The specification of a generalized linear model has both stochastic and systematic parts but adds a third part, which is a <strong>link function</strong> connecting the stochastic and systematic parts.</p>
 <ol style="list-style-type: decimal">
 <li><strong>The stochastic part</strong>, which is a probability distribution from the exponential family (this is sometimes called the “random part”)
 <span class="math display">\[\begin{equation}
-Y \sim \mathrm{Prob}(\mu)
+y_i \sim \mathrm{Prob}(\mu_i)
 \end{equation}\]</span></li>
 <li><strong>the systematic part</strong>, which is a linear predictor (I like to think about this as the deterministic part)
 <span class="math display">\[\begin{equation}
@@ -353,11 +354,11 @@ Y \sim \mathrm{Prob}(\mu)
 \end{equation}\]</span></li>
 <li>a <strong>link function</strong> connecting the two parts
 <span class="math display">\[\begin{equation}
-\eta = g(\mu)
+\eta_i = g(\mu_i)
 \end{equation}\]</span></li>
 </ol>
 <p><span class="math inline">\(\mu\)</span> (the Greek symbol mu) is the conditional mean (or expectation <span class="math inline">\(\mathrm{E}(Y|X)\)</span>) of the response on the <strong>response scale</strong> and <span class="math inline">\(\eta\)</span> (the Greek symbol eta) is the conditional mean of the response on the <strong>link scale</strong>. A GLM models the response with a distribution specified in the stochastic part. The probability distributions introduced in this chapter are the Poisson and Negative Binomial. The natural link function for the Poisson and Negative Binomial is the “log link”, <span class="math inline">\(\eta = log(\mu)\)</span>. More generally, while each distribution has a natural (or, “canonical”) link function, one can use alternatives. Given this definition of a generalized linear model, a linear model is a GLM with a normal distribution and an Identity link (<span class="math inline">\(\eta = \mu\)</span>).</p>
-<p>When modeling counts using the Poisson or negative binomial distributions, the link scale is linear, and so the effects are additive on the link scale, while the response scale is nonlinear (it is the exponent of the link scale), and so the effects are multiplicative on the response scale. If this doesn’t make sense now, an example is worked out below. The inverse of the link function backtransforms the parameters from the link scale back to the response scale. So, for example, a prediction on the response sale is <span class="math inline">\(\mathrm{exp}(\hat{\eta})\)</span> and a coefficient on the response scale is <span class="math inline">\(\mathrm{exp}(b_j)\)</span>.</p>
+<p>When modeling counts using the Poisson or negative binomial distributions with a log link, the link scale is linear, and so the effects are additive on the link scale, while the response scale is nonlinear (it is the exponent of the link scale), and so the effects are multiplicative on the response scale. If this doesn’t make sense now, an example is worked out below. The inverse of the link function backtransforms the parameters from the link scale back to the response scale. So, for example, a prediction on the response sale is <span class="math inline">\(\mathrm{exp}(\hat{\eta})\)</span> and a coefficient on the response scale is <span class="math inline">\(\mathrm{exp}(b_j)\)</span>.</p>
 </div>
 <div id="count-data-example-number-of-trematode-worm-larvae-in-eyes-of-threespine-stickleback-fish" class="section level2">
 <h2><span class="header-section-number">13.2</span> Count data example – number of trematode worm larvae in eyes of threespine stickleback fish</h2>
@@ -368,18 +369,23 @@ Y \sim \mathrm{Prob}(\mu)
 <p><strong>NHST blues</strong> – Students are often encouraged by textbooks, colleagues, or the literature to start the analysis by first “testing” assumptions with hypothesis tests – for example using a Shaprio-Wilks test of normality as a decision rule to decide if to use a parametric test such as a <span class="math inline">\(t\)</span>-test or ANOVA if the null hypothesis of normality is not rejected, or a non-parametric test such as a Mann-Whitney U test if the null hypothesis of normality is rejected. I advise against this, because 1) this pre-test filtering automatically invalidates the <span class="math inline">\(p\)</span>-value of the hypothesis test as it does not adjust for the filtering procedure, 2) real data are only approximately normal and as <span class="math inline">\(n\)</span> increses, a normality test will reject any real dataset, and 3) hypothesis tests are pretty robust to non-normality anyway.</p>
 </div>
 <p>Instead of testing assumptions of a model using formal hypothesis tests <em>before</em> fitting the model, a better strategy is to 1) fit a model, and then do 2) <strong>model checking</strong> using <strong>diagnostic plots</strong>, diagnostic statistics, and simulation.</p>
-<p>With these data, a researcher would typically fit a GLM with a Poisson or negative binomial distribution and log link. Here, I start with a linear model to illustrate the interpretation of diagnostic plots with non-normal data.</p>
-<p>Diganostic plots for model checking a linear model use the residuals of the model fit, so the “linear model” specification is the natural way to think about and define the model.</p>
-<span class="math display">\[\begin{align}
-Diplo_intensity &amp;=\beta_0 + \beta_1 Treatment + \varepsilon\\
-\varepsilon \sim N(0, \sigma)
+<p>With these data, a researcher would typically fit a GLM with a Poisson or negative binomial distribution and log link. Here, I start with a linear model to illustrate the interpretation of diagnostic plots with non-normal data. I use the “linear model” specification (equation <a href="generalized-linear-models-i-count-data.html#eq:spec1">(13.1)</a>) because the diganostic plots for model checking a linear model use the residuals of the fit model.</p>
+<span class="math display" id="eq:worm-lm">\[\begin{align}
+Diplo\_intensity_i &amp;= \beta_0 + \beta_1 Uninfected_i + \beta_2 Infected\_LG_i + \beta_3 Infected\_HG_i + \varepsilon_i \\
+\varepsilon &amp;\sim N(0, \sigma)
+\tag{13.3}
 \end{align}\]</span>
 </div>
 <div id="checking-the-model-i-a-normal-q-q-plot" class="section level3">
 <h3><span class="header-section-number">13.2.2</span> Checking the model I – a Normal Q-Q plot</h3>
-<p>Figure <a href="#fig:glm1-plot2"><strong>??</strong></a>A shows a histogram of the residuals from the fit linear model. The plot shows that the residuals are clumped at the negative end of the range, which suggests that a model with a normally distributed conditional outcome (or normal error) is not well approximated.</p>
-<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/glm1-plot2-1.png" width="576" /></p>
-<p>A better way to investigate this is with the <strong>Normal Q-Q</strong> plot in Figure <a href="#fig:glm1-plot2"><strong>??</strong></a>B, which plots the sample quantiles for a variable against their theoretical quantiles. If the conditional outcome approximates a normal distribution, the points should roughly follow the line. Instead, for the worm data, the points are above the line at both ends. At the left (negative) end, this means that we aren’t seeing the most negative values that would be expected (the observed values are more positive than the theoretical values). Remembering that this plot is of residuals, if we think about this as counts, this means that our smallest counts are not as small as we would expect given the mean and a normal distribution. This shouldn’t be surprising – the counts range down to zero and counts cannot be below zero. At the positive end, the sample values are again more positive than the theoretical values. Thinking about this as counts, this means that are largest counts are larger than expected given the mean and a normal distribution. This pattern is exactly what we’d expect of count data, or at least count data that borders zero.</p>
+<p>Figure <a href="generalized-linear-models-i-count-data.html#fig:glm1-plot2">13.2</a>A shows a histogram of the residuals from the fit linear model. The plot shows that the residuals are clumped at the negative end of the range, which suggests that a model with a normally distributed conditional outcome (or normal error) is not well approximated.</p>
+<div class="figure"><span id="fig:glm1-plot2"></span>
+<img src="Walker-elementary-statistical-modeling-draft_files/figure-html/glm1-plot2-1.png" alt="Diagnostic plots of stickleback parasite data. A) Distribution of the residuals of the fit linear model. B) Normal Q-Q plot of the residuals of the fit linear model." width="576" />
+<p class="caption">
+Figure 13.2: Diagnostic plots of stickleback parasite data. A) Distribution of the residuals of the fit linear model. B) Normal Q-Q plot of the residuals of the fit linear model.
+</p>
+</div>
+<p>A better way to investigate this is with the <strong>Normal Q-Q</strong> plot in Figure <a href="generalized-linear-models-i-count-data.html#fig:glm1-plot2">13.2</a>B, which plots the sample quantiles for a variable against their theoretical quantiles. If the conditional outcome approximates a normal distribution, the points should roughly follow the line. Instead, for the worm data, the points are above the line at both ends. At the left (negative) end, this means that we aren’t seeing the most negative values that would be expected (the observed values are more positive than the theoretical values). Remembering that this plot is of residuals, if we think about this as counts, this means that our smallest counts are not as small as we would expect given the mean and a normal distribution. This shouldn’t be surprising – the counts range down to zero and counts cannot be below zero. At the positive end, the sample values are again more positive than the theoretical values. Thinking about this as counts, this means that are largest counts are larger than expected given the mean and a normal distribution. This pattern is exactly what we’d expect of count data, or at least count data that borders zero.</p>
 <div style="background-color:#cccccc; text-align:left; vertical-align: middle; padding:20px 47px;">
 <p><strong>Intuition Pump</strong> – Let’s construct a Normal Q-Q plot. A <strong>quantile</strong> (or percentile) of a vector of numbers is the value of the point at a specified percentage rank. The median is the 50% quantile. The 95% confidence intervals are at the 2.5% and 97.5% quantiles. In a Normal Q-Q plot, we want to plot the quantiles of the residuals against a set of theoretical quantiles.</p>
 <ol style="list-style-type: decimal">
@@ -398,24 +404,24 @@ Diplo_intensity &amp;=\beta_0 + \beta_1 Treatment + \varepsilon\\
 </div>
 <div id="two-distributions-for-count-data-poisson-and-negative-binomial" class="section level3">
 <h3><span class="header-section-number">13.2.4</span> Two distributions for count data – Poisson and Negative Binomial</h3>
-<p>The pattern in the normal Q-Q plot in Figure <a href="#fig:glm1-plot2"><strong>??</strong></a>B should discourage one from modeling the data with a normal distribution and instead model the data with an alternative distribution using a Generalized Linear Model. There is no unique mapping between how data are generated and a specific distribution, so this decision is not as easy as thinking about the data generation mechanism and then simply choosing the “correct” distribution. Section 4.5 in Bolker (xxx) is an excellent summary of how to think about the generating processes for different distributions in the context of ecological data. Since the response in the worm data are counts, we need to choose a distribution that generates integer values, such as the Poisson or the negative binomial.</p>
+<p>The pattern in the normal Q-Q plot in Figure <a href="generalized-linear-models-i-count-data.html#fig:glm1-plot2">13.2</a>B should discourage one from modeling the data with a normal distribution and instead model the data with an alternative distribution using a Generalized Linear Model. There is no unique mapping between how data are generated and a specific distribution, so this decision is not as easy as thinking about the data generation mechanism and then simply choosing the “correct” distribution. Section 4.5 in Bolker (xxx) is an excellent summary of how to think about the generating processes for different distributions in the context of ecological data. Since the response in the worm data are counts, we need to choose a distribution that generates integer values, such as the Poisson or the negative binomial.</p>
 <ol style="list-style-type: decimal">
 <li>Poisson – A Poisson distribution is the probability distribution of the number of occurrences of some thing (an egg, a parasite, or a specific mRNA transcript) generated by a process that generates the thing at a constant rate per unit effort (duration or space). This constant rate is <span class="math inline">\(\lambda\)</span>, which is the expectation, so <span class="math inline">\(\mathrm{E}(Y) = \mu = \lambda\)</span>. Because the rate per effort is constant, <em>the variance of a Poisson variable equals the mean</em>, <span class="math inline">\(\sigma^2 = \mu = \lambda\)</span>. Figure <a href="#fig:glm1-poisson"><strong>??</strong></a> shows three samples from a Poisson distribution with <span class="math inline">\(\lambda\)</span> set to 1, 5, and 10. The plots show that, as the mean count (<span class="math inline">\(\lambda\)</span>) moves away from zero, a Poisson distribution 1) becomes less skewed and more closely approximates a normal distribution and 2) has an increasingly low probability of including zero (less than 1% zeros when the mean is 5).</li>
 </ol>
 <p>A Poisson distribution, then, is useful for count data in which the conditional variance is close to the conditional mean. Very often, biological count data are not well approximated by a Poisson distribution because the variance is either less than the mean, an example of <strong>underdispersion</strong><a href="#fn3" class="footnoteRef" id="fnref3"><sup>3</sup></a>, or greater than the mean, an example of <strong>overdispersion</strong><a href="#fn4" class="footnoteRef" id="fnref4"><sup>4</sup></a>. A useful distribution for count data with overdispersion is the negative binomial.</p>
 <p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/glm1-poisson-1.png" width="576" /></p>
 <ol start="2" style="list-style-type: decimal">
-<li>Negative Binomial – The negative binomial distribution is a discrete probability distribution of the number of successes that occur before a specified number of failures <span class="math inline">\(k\)</span> given a probability <span class="math inline">\(p\)</span> of success. This isn’t a very useful way of thinking about modeling count data in biology. What is useful is that the Negative Binomial distribution can be used simply as way of modeling an “overdispersed” Poisson process. The mean of a negative binomial variable is <span class="math inline">\(\mu = k\frac{p}{1-p}\)</span> and the variance is <span class="math inline">\(\sigma^2 = \mu + \mu^2/k\)</span>. As a method for modeling an overdispersed Poisson variable, <span class="math inline">\(k\)</span> functions as a parameter controlling the amount of overdispersion and can be any real, positive value (not simply a positive integer), including values less than 1.</li>
+<li>Negative Binomial – The negative binomial distribution is a discrete probability distribution of the number of successes that occur before a specified number of failures <span class="math inline">\(k\)</span> given a probability <span class="math inline">\(p\)</span> of success. This isn’t a very useful way of thinking about modeling count data in biology. What is useful is that the Negative Binomial distribution can be used simply as way of modeling an “overdispersed” Poisson process. The mean of a negative binomial variable is <span class="math inline">\(\mu = k\frac{p}{1-p}\)</span> and the variance is <span class="math inline">\(\sigma^2 = \mu + \mu^2/k\)</span>. As a method for modeling an overdispersed Poisson variable, <span class="math inline">\(k\)</span> functions as a **dispersion parameter* controlling the amount of overdispersion and can be any real, positive value (not simply a positive integer), including values less than 1.</li>
 </ol>
 </div>
 <div id="fitting-a-glm-with-a-poisson-distribution-to-the-worm-data" class="section level3">
 <h3><span class="header-section-number">13.2.5</span> Fitting a GLM with a Poisson distribution to the worm data</h3>
 <p>Let’s fit a GLM with a Poisson distribution to the worm data. The model is</p>
 <span class="math display">\[\begin{align}
-Diplo\_intensity &amp;\sim Poisson(\mu)\\
+Diplo\_intensity_i &amp;\sim Poisson(\mu_i)\\
 \mathrm{E}({Diplo\_intensity|Treatment}) &amp;= \mu\\
-\mu &amp;= \mathrm{exp}(\eta)\\
-\eta &amp;= \beta_0 + \beta_1 Uninfected + \beta_2 Infected\_LG + \beta_3 Infected\_HG
+\mu_i &amp;= \mathrm{exp}(\eta_i)\\
+\eta_i &amp;= \beta_0 + \beta_1 Uninfected_i + \beta_2 Infected\_LG_i + \beta_3 Infected\_HG_i
 \end{align}\]</span>
 <ol style="list-style-type: decimal">
 <li>The first line of the model is the stochastic part stating the response is modeled as a random Poisson variable with mean and variance <span class="math inline">\(\mu\)</span> (the rate parameter <span class="math inline">\(\lambda\)</span> of the Poisson distribution).</li>
@@ -423,23 +429,48 @@ Diplo\_intensity &amp;\sim Poisson(\mu)\\
 <li>The third line connects the conditional mean on the link scale (<span class="math inline">\(\eta\)</span>) with the conditional mean on the response scale (<span class="math inline">\(\mu\)</span>)</li>
 <li>The fourth line is the linear predictor, and includes three dummy variables.</li>
 </ol>
-<div id="model-checking-a-quantile-residual-q-q-plot" class="section level4">
-<h4><span class="header-section-number">13.2.5.1</span> Model checking – a quantile residual Q-Q plot</h4>
-<p>For model checking a GLM model fit, an alternative to a Normal Q-Q plot is a Quantile residual Q-Q plot of observed vs. expected <strong>quantile residuals</strong>. The basic algorithm for this is</p>
+<p>Remember that the conditional mean is the expected/predicted/fitted/modeled value when <span class="math inline">\(X=x_i\)</span>.</p>
+</div>
+<div id="model-checking-fits-to-count-data" class="section level3">
+<h3><span class="header-section-number">13.2.6</span> Model checking fits to count data</h3>
+<p>we use the fit model to check 1. the overall similarity of observed and theoretical distributions 2. if the observed distribution is over or under dispersed 3. if there more zeros than expected by the theoretical distribution. If so, the observed distribution is <strong>zero-inflated</strong></p>
+<div id="model-checking-a-glm-i-the-quantile-residual-q-q-plot" class="section level4">
+<h4><span class="header-section-number">13.2.6.1</span> Model checking a GLM I – the quantile residual Q-Q plot</h4>
+<p>A quantile-quantile (Q-Q) plot is used to check overall similarity of the observed distribution with the distribution that would be expected under the model. An alternative to a Normal Q-Q plot for a GLM fit is a quantile residual Q-Q plot of observed vs. expected <strong>quantile residuals</strong>. The basic algorithm for this is</p>
 <ol style="list-style-type: decimal">
-<li>Use the model parameters to simulate <span class="math inline">\(p\)</span> fake values of the response for each row of the data. This will be a <span class="math inline">\(n \times p\)</span> matrix of fake data where each column is a new, random sample of a population with parameters equal to that estimated by the observed data.</li>
-<li>For each observation (each row of the matrix of fake data), compute the fraction of simulated values smaller than the observed value of the response variable for that row. This fraction is the observed <strong>quantile residual</strong>, which ranges in value from 0 to 1. If the true data are distribitued as that specified by the model, then quantile residuals will have a uniform distribution – any value within the range 0 to 1 is equally likely.</li>
+<li>Use the model parameters to simulate <span class="math inline">\(p\)</span> fake values of the response for each row of the data. This will be a <span class="math inline">\(n \times p\)</span> matrix of fake data where each column is a new, random sample of a population with parameters equal to that estimated for the observed data. For the Poisson, the parameter for each observation will be <span class="math inline">\(\hat{\mu}_i\)</span>, the modeled value of observation <span class="math inline">\(i\)</span>. For the negative binomial, the parameters will be <span class="math inline">\(\hat{\mu}_i\)</span> and the dispersion parameter <span class="math inline">\(k\)</span>, which is the same for all observations.</li>
+<li>For each observation (each row of the matrix of fake data), compute the fraction of simulated values smaller than the observed value of the response variable for that row. This fraction is the observed <strong>quantile residual</strong>, which ranges in value from 0 to 1. If the true data are distribitued as that specified by the model, then quantile residuals will have a uniform distribution.</li>
 <li>Sort the observed quantile residuals from smallest to largest and plot against theoretical quantile residuals from a uniform distribution. One could transform the quantile residuals to standard, normal residuals and then plot using a traditional Normal Q-Q plot but this step isn’t necessary (if reported, a Normal Q-Q plot of transformed quantile residuals might confuse readers who failed to read the fine print).</li>
 </ol>
 <div style="background-color:#cccccc; text-align:left; vertical-align: middle; padding:20px 47px;">
 <p><strong>Misconceivable</strong> – A common misconception is that if the distribution of the response approximates a Poisson distribution, then the residuals of a GLM fit with a Poisson distribution should be normally distributed, which could then be checked with a Normal Q-Q plot, and homoskedastic, which could be checked with a scale-location plot. Neither of these is true because a GLM does not transform the data and, in fact, the model definition does not specify anything about the distribution of an “error” term – there is no <span class="math inline">\(\varepsilon\)</span> in the model defintion above! This is why thinking about the definition of a linear model by specifying an error term with a normal distribution can be confusing and lead to misconceptions when learning GLMs.</p>
 </div>
 <p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/glm1-worm-poisson-qr-1.png" width="576" /></p>
-<p>The Q-Q plot using quantile residuals with a Poisson distribution indicates that the counts of <em>Diplostomum</em> larvae in the eyes of the threespine stickleback are not well approximated by a Poisson distribution.</p>
+<p>The Q-Q plot using quantile residuals with a Poisson distribution indicates that the counts of <em>Diplostomum</em> larvae in the eyes of the threespine stickleback are not well approximated by a Poisson distribution – there are too many observed values near the ends of the expected tails, indicating the expected values are not spread out enough. This pattern emerges because the observed counts are overdispersed compared to a Poisson distribution.</p>
+</div>
+<div id="model-checking-a-glm-ii-a-dispersion-plot" class="section level4">
+<h4><span class="header-section-number">13.2.6.2</span> Model checking a GLM II – a dispersion plot</h4>
+<p>If observed counts are Poisson distributed, then the <strong>Pearson residuals</strong> (<span class="math inline">\(r_i\)</span>) and the residual degrees of freedom of the fit model (<span class="math inline">\(df\)</span>) can be used to compute a dispersion statistic</p>
+<span class="math display">\[\begin{equation}
+\frac{\sum{r_i}}{df}
+\end{equation}\]</span>
+<p>that has an expected value of 1. Instead of a formal hypothesis test of this statistic, I use a simulation approach and ask, “if the observed counts are Poisson distributed, what is the expected frequency distribution of this dispersion statistic?” and then use simulation to generate this expected distribution. The algorithm for this is</p>
+<ol style="list-style-type: decimal">
+<li>For each observation <span class="math inline">\(i\)</span>, generate a random Poisson count using <span class="math inline">\(\hat{\mu}\)</span> as the parameter.</li>
+<li>Fit the model and compute the dispersion statistic.</li>
+<li>Repeat 1 and 2 <span class="math inline">\(N_{iter}\)</span> times.</li>
+</ol>
+<p>The plot below shows a histogram of the dispersion statistic computed for 1000 simulations of the worm data. The observed dispersion statistic is 3.4. The expected value is 1.0. The mean of the simulated values is 1.</p>
+<div class="figure"><span id="fig:glm1-worm-poisson-dispersion-plot"></span>
+<img src="Walker-elementary-statistical-modeling-draft_files/figure-html/glm1-worm-poisson-dispersion-plot-1.png" alt="Observed vs. expected dispersion statistic. The observed statistic marked by the red line. The histogram of expected statistics are from 1000 simulations of the observed data." width="576" />
+<p class="caption">
+Figure 13.3: Observed vs. expected dispersion statistic. The observed statistic marked by the red line. The histogram of expected statistics are from 1000 simulations of the observed data.
+</p>
+</div>
 </div>
 </div>
 <div id="fitting-a-glm-with-a-negative-binomial-distribution-to-the-worm-data" class="section level3">
-<h3><span class="header-section-number">13.2.6</span> Fitting a GLM with a Negative Binomial distribution to the worm data</h3>
+<h3><span class="header-section-number">13.2.7</span> Fitting a GLM with a Negative Binomial distribution to the worm data</h3>
 <p>The model is</p>
 <span class="math display">\[\begin{align}
 Diplo\_intensity &amp;\sim NB(\mu, k)\\
@@ -449,12 +480,12 @@ Diplo\_intensity &amp;\sim NB(\mu, k)\\
 \end{align}\]</span>
 <p>This model specifies a negative binomial distribution but otherwise is just like that above specifying a Poisson distribution.</p>
 <div id="model-checking-1" class="section level4">
-<h4><span class="header-section-number">13.2.6.1</span> Model checking</h4>
+<h4><span class="header-section-number">13.2.7.1</span> Model checking</h4>
 <p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/glm1-worm-nb-1.png" width="576" /></p>
 <p>A quantile residual Q-Q plot of the GLM model fit with negative binomial distribution is illustrated above. This looks pretty good.</p>
 </div>
 <div id="model-means-and-coefficients" class="section level4">
-<h4><span class="header-section-number">13.2.6.2</span> Model means and coefficients</h4>
+<h4><span class="header-section-number">13.2.7.2</span> Model means and coefficients</h4>
 <p>In a Generalized Linear Model of counts using either a Poisson or negative binomial distribution, modeled means, coefficients, and contrasts can be reported either on the link or response scale. Remember, the response scale is a count, while the link scale is a log(count).</p>
 <p>The modeled means on the link scale are</p>
 <pre><code>##  Treatment     emmean         SE  df asymp.LCL asymp.UCL
@@ -524,7 +555,7 @@ RR_{Infected\_HG} = \frac{\overline{Infected\_HG}}{\overline{Control}}
 <p>Source publication: Benesh, D. P., &amp; Kalbe, M. (2016). Experimental parasite community ecology: intraspecific variation in a large tapeworm affects community assembly. Journal of Animal Ecology, 85(4), 1004-1013.</p>
 <p>Source data URL: <a href="https://datadryad.org/resource/doi:10.5061/dryad.bq8j8" class="uri">https://datadryad.org/resource/doi:10.5061/dryad.bq8j8</a></p>
 <p>Source file: “Lab_exp.csv”</p>
-<p>Poisson fit. The quantile residual Q-Q plot is from the package DHARMa</p>
+<p>Poisson fit. A quantile residual Q-Q plot can be generated using the package DHARMa</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fit.pois &lt;-<span class="st"> </span><span class="kw">glm</span>(Diplo_intensity <span class="op">~</span><span class="st"> </span>Treatment, <span class="dt">family=</span><span class="st">&quot;poisson&quot;</span>, <span class="dt">data=</span>worm)
 
 <span class="co"># from the DHARMa package</span>
@@ -534,6 +565,19 @@ RR_{Infected\_HG} = \frac{\overline{Infected\_HG}}{\overline{Control}}
 <pre><code>## DHARMa::plotResiduals - low number of unique predictor values, consider setting asFactor = T
 ## DHARMa::plotResiduals - low number of unique predictor values, consider setting asFactor = T</code></pre>
 <p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/glm1-working-in-r-1.png" width="576" /></p>
+<p>A plot of the dispersion statistic can be generated using the object returned by the <code>SimulateOutput</code> function but with <code>refit = TRUE</code>, which refits a model each iteration. This refitting isn’t necessary if only the quantiile residuals are needed. The Dharma package does not divide the sum of squared Pearson residuals by the residual degrees of freedom and so the expected value of the statistic is <span class="math inline">\(df\)</span>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># from the DHARMa package</span>
+  n_sim &lt;-<span class="st"> </span><span class="dv">250</span>
+  simulationOutput &lt;-<span class="st"> </span><span class="kw">simulateResiduals</span>(<span class="dt">fittedModel=</span>fit.pois, <span class="dt">n=</span>n_sim, <span class="dt">refit=</span><span class="ot">TRUE</span>)
+  <span class="kw">testDispersion</span>(simulationOutput)</code></pre></div>
+<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/unnamed-chunk-16-1.png" width="576" /></p>
+<pre><code>## 
+##  DHARMa nonparametric dispersion test via mean deviance residual
+##  fitted vs. simulated-refitted
+## 
+## data:  simulationOutput
+## dispersion = 3.3788, p-value &lt; 2.2e-16
+## alternative hypothesis: two.sided</code></pre>
 <p>Negative binomial fit.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fit.nb &lt;-<span class="st"> </span><span class="kw">glm.nb</span>(Diplo_intensity <span class="op">~</span><span class="st"> </span>Treatment, <span class="dt">data=</span>worm)
 <span class="co"># from the DHARMa package</span>
