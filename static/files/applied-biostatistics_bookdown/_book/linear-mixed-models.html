@@ -31,8 +31,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   
   
-<link rel="prev" href="adding-covariates-to-a-linear-model-i-ancova.html">
-<link rel="next" href="linear-mixed-models.html">
+<link rel="prev" href="generalized-linear-models-i-count-data.html">
+<link rel="next" href="appendix-1-getting-started-with-r.html">
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
@@ -320,341 +320,231 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="generalized-linear-models-i-count-data" class="section level1">
-<h1><span class="header-section-number">Chapter 13</span> Generalized linear models I: Count data</h1>
-<p>Biologists frequently count stuff, and design experiments to estimate the effects of different factors on these counts. For example, the effects of environmental mercury on clutch size in a bird, the effects of warming on parasite load in a fish, or the effect of exercise on RNA expression.</p>
-<p>Count data differ from data with normal error in many ways, including 1) counts are discrete, and can be zero or positive integers only, 2) counts tend to bunch up on the small side of the range, creating a distribution with a positive skew, 3) a sample of counts can have an abundance of zeros, and 4) the variance of counts increases with the mean (see Figure <a href="generalized-linear-models-i-count-data.html#fig:glm1-plot1">13.1</a> for some of these properties). Some count data can be approximated by a normal distribution and reasonably modeled with a linear model but more often, count data are modeled with <strong>Poisson distribution</strong> or <strong>negative binomial distribution</strong> using a <strong>generalized linear model</strong> (GLM). Poisson and negative binomial distributions are <strong>discrete probability distributions</strong> with two important properties: 1) the distribution contains only zero and positive integers and 2) the variance is a function of the mean. Back before modern computing and fast processors, count data were often analyzed by either <strong>transforming</strong> the response or by <strong>non-parametric hypothesis tests</strong>. One reason to prefer a statistical modeling approach with a GLM is that we can get interpretable parameter estimates. By contrast, both the analysis of transformed data and non-parametric hypothesis tests are really tools for computing “correct” <span class="math inline">\(p\)</span>-values.</p>
-<div class="figure"><span id="fig:glm1-plot1"></span>
-<img src="Walker-elementary-statistical-modeling-draft_files/figure-html/glm1-plot1-1.png" alt="Histogram of the count of a trematode parasite larvae in Control vs. Infected fish. Fish in the Infected treatment are infected with a tapeworm." width="576" />
-<p class="caption">
-Figure 13.1: Histogram of the count of a trematode parasite larvae in Control vs. Infected fish. Fish in the Infected treatment are infected with a tapeworm.
-</p>
-</div>
-<div id="the-generalized-linear-model" class="section level2">
-<h2><span class="header-section-number">13.1</span> The generalized linear model</h2>
-<p>As outlined in section [Assumptions for inference with statistical models] in Chapter 1, a common way that biological researchers think about a response variable is</p>
-<span class="math display" id="eq:spec1">\[\begin{align}
-y_i &amp;= \beta_0 + \beta_1 x_i + \varepsilon_i \\
-\varepsilon &amp;\sim N(0, \sigma)
-\tag{13.1}
-\end{align}\]</span>
-<p>That is, we can think of a response as the sum of some systematic part and “random errror”, which is a random draw from a normal distribution with mean zero and variance <span class="math inline">\(\sigma^2\)</span>. This way of thinking about the generation of the response is useful for linear models, and model checking linear models, but is not useful for generalized linear models or model checking generalized liner models. For example, if we want to model the number of parasites that have infected a fish using a Poisson distribution, the following is the <strong>wrong</strong> way to think about the statistical model</p>
-<span class="math display" id="eq:spec1-poisson">\[\begin{align}
-y_i &amp;= \beta_0 + \beta_1 x_i + \varepsilon_i\\
-\varepsilon &amp;\sim Poisson(\lambda)
-\tag{13.2}
-\end{align}\]</span>
-<p>That is, we should not think of a count as the sum of a systematic part and a random draw from a Poisson distribution. Why? Because it is the counts (or the counts conditional on <span class="math inline">\(X\)</span>) that are poisson distributed, not the residuals from the fit model. Some other consequences of thinking about this way are: First, if we set the mean of the Poisson “error” to zero (like with a normal distribution), then the error term for every observation would <em>have to</em> be zero (because the only way to get a mean of zero with non-negative integers is if every value is zero). Second, if the study is modeling the effect of a treatment on the counts (that is, the <span class="math inline">\(X\)</span> are dummy variables) then <span class="math inline">\(\beta_0\)</span> is the expected mean count of the control (or reference) group. But if we add non-zero Poisson error to this, then the mean of the control group would be larger than <span class="math inline">\(\beta_0\)</span>. This doesn’t make sense. And finally, equation <a href="generalized-linear-models-i-count-data.html#eq:spec1-poisson">(13.2)</a> generates a continuous response, instead of an integer, because <span class="math inline">\(\beta_0\)</span> and <span class="math inline">\(\beta_1\)</span> are continuous.</p>
-<p>A better way to think about the data generation for a linear model, because this naturally leads to the way to think about data generation for a generalized linear model, is</p>
-<span class="math display" id="eq:lm-spec2">\[\begin{align}
-y_i &amp;\sim N(\mu_i, \sigma)\\
-\mathrm{E}(Y|X) &amp;= \mu\\
-\mu_i &amp;= \beta_0 + \beta_1 x_i
-\tag{1.3}
-\end{align}\]</span>
-<p>That is, a response is a random draw from a normal distribution with mean <span class="math inline">\(mu\)</span> (not zero!) and variance <span class="math inline">\(\sigma^2\)</span>. Line 1 is the stochastic part of this specification. Line 3 is the systematic part.</p>
-<p>The specification of a generalized linear model has both stochastic and systematic parts but adds a third part, which is a <strong>link function</strong> connecting the stochastic and systematic parts.</p>
+<div id="linear-mixed-models" class="section level1">
+<h1><span class="header-section-number">Chapter 14</span> Linear mixed models</h1>
+<div id="block-and-repeated-measures-effects" class="section level2">
+<h2><span class="header-section-number">14.1</span> Block and repeated measures effects</h2>
+<p>Researchers often collect data in batches, for example</p>
 <ol style="list-style-type: decimal">
-<li><strong>The stochastic part</strong>, which is a probability distribution from the exponential family (this is sometimes called the “random part”)
-<span class="math display">\[\begin{equation}
-y_i \sim \mathrm{Prob}(\mu_i)
-\end{equation}\]</span></li>
-<li><strong>the systematic part</strong>, which is a linear predictor (I like to think about this as the deterministic part)
-<span class="math display">\[\begin{equation}
-\eta=\mathbf{X}\boldsymbol{\beta}
-\end{equation}\]</span></li>
-<li>a <strong>link function</strong> connecting the two parts
-<span class="math display">\[\begin{equation}
-\eta_i = g(\mu_i)
-\end{equation}\]</span></li>
+<li>Researchers interested in the effects of insectivorous birds on tree seedling performance in a forest stake out ten 1 m<span class="math inline">\(^2\)</span> plots and use a wire-mesh cage to cover half of each plot.<a href="#fn5" class="footnoteRef" id="fnref5"><sup>5</sup></a> The cage allows insect herbivores into the seedlings inside but excludes insectivorous birds that eat the insects from the seedlings. In every plot, five seedlings are planted within the exclosure and five outside of the exclosure. At the end of the experiment, the total leaf mass is measured on all seedlings. Small, uncontrolled, environmental factors (including soil factors and density of insectivorous birds) will differ between plots but will be common to all seedlings within a plot and we would expect a common response to this uncontrolled variation on top of the differential response to each treatment. As a consequence, the ten measures of leaf mass within a plot are not independent.</li>
+<li>A nutrition researcher wants to compare the effect of glucose vs. fructose on glucose metabolism in humans. Ten individuals are recruited. Each individual has blood insulin measured 60 minutes after a noon meal over six successive days. The meal alternates between high glucose and high fructose on each day. Each individual has three measures under high glucose treatment and three measures under high fructose treatment. Small, uncontrolled, environmental factors (including metabolic variation, other meals, activity levels) will differ between the individuals but be common within an individual and we would expect a common response to this uncontrolled variation on top of the differential response to each treatment. As a consequence, the six measures of insulin within an individual are not independent.</li>
+<li>A researcher is using a mouse model to compare growth of a wildtype and engineered mutant strain of <em>Staphylococcus</em>. A small spot on both right and left forelimbs of ten mice is shaved and abraded. The two strains are randomly assigned to a side (so each mouse is infected with each strain). Small, uncontrolled, environmental factors (including immune responses) will differ between the mice but be common between the two limbs within a mouse and we would expect a common response to this uncontrolled variation on top of the differential response to each treatment. As a consequence, the two measures of growth within a mouse are not independent.</li>
+<li>An ecologist wants to measure the effect of an invasive plant on the reproduction of a native plant. They stake-out ten 2 m<span class="math inline">\(^2\)</span> plots in a forest and divide each plot into four quadrants, with each quadrant assigned a different treatment: control, activated carbon (a procedural control), extract from the invasive plant’s leaves, and both activated carbon and extract from the invasive plant’s leaves. The response is seedling count. Small, uncontrolled, environmental factors (including soil, drainage, and light) will differ between plots but will will be common to all four quadrants within a plot and we would expect a common response to this uncontrolled variation on top of the differential response to each treatment. As a consequence, the four sets of counts within a plot are not independent.</li>
+<li>An ecologist wants to measure the effect of habitat on chick growth in a bird. Five individuals nest in artifical nest boxes built on the boundary between the forest and a large, agricultural field. Five other individuals nest in boxes built deep in the interior of the forest. Chicks in each nest are weighed 13 days after hatching. Small, uncontrolled, environmental factors (including parenting, food availablity, temperature, etc.) will differ between the nests but be common within the nests and we would expect a common response to this uncontrolled variation on top of the differential response to each treatment. As a consequence, the measures of weight within a nest are not independent.</li>
+<li>A physiologists has skeletal muscle cells growing in 5 control cultures, and 5 treated cultures. The <span class="math inline">\(Y\)</span> variable is cell diameter, which is measured in 10 cells per culture. Small, uncontrolled, environmental factors (including chemical) will differ between cultures but will be common to all cells within a culture and we would expect a common response to this uncontrolled variation on top of the differential response to each treatment. As a consequence, the ten measures of diameter within a culture are not independent.</li>
+<li>A behavioral biologist wants to measure the effect of a predator fish on the preferred feeding location (open water or vegetation) of a prey fish. Ten tanks are set up with equal amounts of vegetated and unvegetated area. One-third of each tank is screened off to house a predator fish, which are added to five of the tanks. Ten prey fish are added to each tank. The response is minutes spent foraging in the open water as a fraction of total time foraging, which is measured in each fish in each tank. Small, uncontrolled, environmental factors (including temperature, water chemistry, light, and fish behavior) will differ between the tanks but be common within tanks and we would expect a common response to this uncontrolled variation on top of the differential response to each treatment. As a consequence, the ten measures of foraging of each fish within a tank are not independent.</li>
 </ol>
-<p><span class="math inline">\(\mu\)</span> (the Greek symbol mu) is the conditional mean (or expectation <span class="math inline">\(\mathrm{E}(Y|X)\)</span>) of the response on the <strong>response scale</strong> and <span class="math inline">\(\eta\)</span> (the Greek symbol eta) is the conditional mean of the response on the <strong>link scale</strong>. A GLM models the response with a distribution specified in the stochastic part. The probability distributions introduced in this chapter are the Poisson and Negative Binomial. The natural link function for the Poisson and Negative Binomial is the “log link”, <span class="math inline">\(\eta = log(\mu)\)</span>. More generally, while each distribution has a natural (or, “canonical”) link function, one can use alternatives. Given this definition of a generalized linear model, a linear model is a GLM with a normal distribution and an Identity link (<span class="math inline">\(\eta = \mu\)</span>).</p>
-<p>When modeling counts using the Poisson or negative binomial distributions with a log link, the link scale is linear, and so the effects are additive on the link scale, while the response scale is nonlinear (it is the exponent of the link scale), and so the effects are multiplicative on the response scale. If this doesn’t make sense now, an example is worked out below. The inverse of the link function backtransforms the parameters from the link scale back to the response scale. So, for example, a prediction on the response sale is <span class="math inline">\(\mathrm{exp}(\hat{\eta})\)</span> and a coefficient on the response scale is <span class="math inline">\(\mathrm{exp}(b_j)\)</span>.</p>
+<p>The plots in experiment 1, individuals in experiment 2, mice in experiment 3, plots in experiment 4, nests in experiment 5, cultures in experiment 6, and tanks in experiment 7 are the experimental units, meaning that it is at this level that the experimenter is controlling the conditions. There is variation among treatments due to treatment effects, variation within treatments due to sampling, and variation within units due to a shared or common environments. This within batch variation is due to <strong>block</strong> effects. The plots/individuals/mice/nests/cultures/tanks are often referred to as <strong>blocks</strong>. The multiple measures within a block are often called <strong>repeated measures</strong>, especially if the block is an experimental animal such as a mouse or human. If multiple measures within a treatment level within a block (that is, within a <span class="math inline">\(block \times treatment\)</span> combination) are taken over time, the data are <strong>longitudinal</strong>. Sometimes in cell biology, the subsamples within a treatment within a block are called “replicates”, as they are replicates of this <span class="math inline">\(block \times treatment\)</span> combination, but this can be confusing because the treatments are replicated at the level of the block and not at the level of the subsamples within a treatment by block combination. The blocks are the independent experimental units. Instead the multiple measures of the response within a <span class="math inline">\(block \times treatment\)</span> combination are <strong>subsamples</strong>.</p>
+<p>Experiments 1 and 2 are examples of a <strong>complete randomized block with subsampling</strong> design. “Complete” means that each block has all treatment levels or combinations of levels if there is more than one factor. Experiments 3 and 4 are examples of a <strong>complete randomized block</strong> design. The blocks are complete but there is only one measure of the response per treatment. Experiments 5, 6, and 7 are examples of an <strong>incomplete randomized blocks</strong> design. The blocks are incomplete because they do not contain less than all treatment levels and combinations. In these examples, each block contains only one treatment level.</p>
 </div>
-<div id="count-data-example-number-of-trematode-worm-larvae-in-eyes-of-threespine-stickleback-fish" class="section level2">
-<h2><span class="header-section-number">13.2</span> Count data example – number of trematode worm larvae in eyes of threespine stickleback fish</h2>
-<p>The example is an experiment measuring the effect of the parasitic tapeworm <em>Schistocephalus solidus</em> infection on the susceptibility of infection from a second parasite, the trematode <em>Diplostomum pseudospathaceum</em>, in the threespine stickleback fish <em>Gasterosteus aculeatus</em><a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a>. The treatment levels are “Control” (unexposed to the tapeworm), “Uninfected” &quot; (exposed to the tapeworm but uninfected), “Infected LG” (exposed and infected with the low growth population of the tapeworm), and “Infected HG” (exposed and infected with the high growth population of tapeworm). The response is the number of trematode larvae counted in the eyes (right and left combined) of the fish. A histogram of the counts is shown in Figure <a href="generalized-linear-models-i-count-data.html#fig:glm1-plot1">13.1</a> for the control and Infected HG treatment levels.</p>
-<div id="modeling-strategy" class="section level3">
-<h3><span class="header-section-number">13.2.1</span> Modeling strategy</h3>
-<div style="background-color:#cccccc; text-align:left; vertical-align: middle; padding:20px 47px;">
-<p><strong>NHST blues</strong> – Students are often encouraged by textbooks, colleagues, or the literature to start the analysis by first “testing” assumptions with hypothesis tests – for example using a Shaprio-Wilks test of normality as a decision rule to decide if to use a parametric test such as a <span class="math inline">\(t\)</span>-test or ANOVA if the null hypothesis of normality is not rejected, or a non-parametric test such as a Mann-Whitney U test if the null hypothesis of normality is rejected. I advise against this, because 1) this pre-test filtering automatically invalidates the <span class="math inline">\(p\)</span>-value of the hypothesis test as it does not adjust for the filtering procedure, 2) real data are only approximately normal and as <span class="math inline">\(n\)</span> increses, a normality test will reject any real dataset, and 3) hypothesis tests are pretty robust to non-normality anyway.</p>
-</div>
-<p>Instead of testing assumptions of a model using formal hypothesis tests <em>before</em> fitting the model, a better strategy is to 1) fit a model, and then do 2) <strong>model checking</strong> using <strong>diagnostic plots</strong>, diagnostic statistics, and simulation.</p>
-<p>With these data, a researcher would typically fit a GLM with a Poisson or negative binomial distribution and log link. Here, I start with a linear model to illustrate the interpretation of diagnostic plots with non-normal data. I use the “linear model” specification (equation <a href="generalized-linear-models-i-count-data.html#eq:spec1">(13.1)</a>) because the diganostic plots for model checking a linear model use the residuals of the fit model.</p>
-<span class="math display" id="eq:worm-lm">\[\begin{align}
-Diplo\_intensity_i &amp;= \beta_0 + \beta_1 Uninfected_i + \beta_2 Infected\_LG_i + \beta_3 Infected\_HG_i + \varepsilon_i \\
-\varepsilon &amp;\sim N(0, \sigma)
-\tag{13.3}
-\end{align}\]</span>
-</div>
-<div id="checking-the-model-i-a-normal-q-q-plot" class="section level3">
-<h3><span class="header-section-number">13.2.2</span> Checking the model I – a Normal Q-Q plot</h3>
-<p>Figure <a href="generalized-linear-models-i-count-data.html#fig:glm1-plot2">13.2</a>A shows a histogram of the residuals from the fit linear model. The plot shows that the residuals are clumped at the negative end of the range, which suggests that a model with a normally distributed conditional outcome (or normal error) is not well approximated.</p>
-<div class="figure"><span id="fig:glm1-plot2"></span>
-<img src="Walker-elementary-statistical-modeling-draft_files/figure-html/glm1-plot2-1.png" alt="Diagnostic plots of stickleback parasite data. A) Distribution of the residuals of the fit linear model. B) Normal Q-Q plot of the residuals of the fit linear model." width="576" />
-<p class="caption">
-Figure 13.2: Diagnostic plots of stickleback parasite data. A) Distribution of the residuals of the fit linear model. B) Normal Q-Q plot of the residuals of the fit linear model.
-</p>
-</div>
-<p>A better way to investigate this is with the <strong>Normal Q-Q</strong> plot in Figure <a href="generalized-linear-models-i-count-data.html#fig:glm1-plot2">13.2</a>B, which plots the sample quantiles for a variable against their theoretical quantiles. If the conditional outcome approximates a normal distribution, the points should roughly follow the line. Instead, for the worm data, the points are above the line at both ends. At the left (negative) end, this means that we aren’t seeing the most negative values that would be expected (the observed values are more positive than the theoretical values). Remembering that this plot is of residuals, if we think about this as counts, this means that our smallest counts are not as small as we would expect given the mean and a normal distribution. This shouldn’t be surprising – the counts range down to zero and counts cannot be below zero. At the positive end, the sample values are again more positive than the theoretical values. Thinking about this as counts, this means that are largest counts are larger than expected given the mean and a normal distribution. This pattern is exactly what we’d expect of count data, or at least count data that borders zero.</p>
-<div style="background-color:#cccccc; text-align:left; vertical-align: middle; padding:20px 47px;">
-<p><strong>Intuition Pump</strong> – Let’s construct a Normal Q-Q plot. A <strong>quantile</strong> (or percentile) of a vector of numbers is the value of the point at a specified percentage rank. The median is the 50% quantile. The 95% confidence intervals are at the 2.5% and 97.5% quantiles. In a Normal Q-Q plot, we want to plot the quantiles of the residuals against a set of theoretical quantiles.</p>
-<ol style="list-style-type: decimal">
-<li>To get the observed quantiles, rank the residuals of the fit linear model from most negative to most positive – these are your quantiles! For example, if you have <span class="math inline">\(n=145\)</span> residuals, then the 73rd point is the 50% quantile.</li>
-<li>A theoretical quantile from the normal distribution can be constructed using the <code>qnorm</code> function which returns the normal quantiles for a specified vector of percents. Alternatively, one could randomly sample <span class="math inline">\(n\)</span> points using <code>rnorm</code>. These of course will be sampled quantiles so will only approximate the expected theoretical quantiles, but I add this here because we use this method below.</li>
-</ol>
-<p>Now simply plot the observed against theoretical quantiles. Often, the <strong>standardized</strong> quantiles are plotted. A standardized variable has a mean of zero and a standard deviation of one and is computed by 1) centering the vector at zero by subtracting the mean from every value, and 2) dividing each value by the standard deviation of the vector. Recognize that because a standard deviation is a function of deviations from the mean, it doesn’t matter which of these operations is done first. A standardized theoretical quantile is specified by <code>qnorm(p, mean = 0, sd = 1)</code>, which is the default.</p>
-<p>Below, I’ve plotted the standardized observed and theoretical quantiles against the vector of percents (from 0 to 100%). This plot also nicely shows how the residuals of the worm data deviate from that expected if these had a normal distribution. The plot nicely shows that the most negative observed quintiles are not as negative as expected given a normal distribution, which again makes sense because this would imply negative counts since the mean is close to zero. And it nicely shows that the most positive observed quantiles are more positive than expected given a normal distribution, again this makes sense in right skewed count data. Finally, the plot nicely shows that the median is less positive than that expected given a normal distribution, which is at the mean (a right skew tends to pull the mean to the right of the median).</p>
-<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/glm1-qqplot-sim-1.png" width="576" /></p>
-</div>
-</div>
-<div id="checking-the-model-ii-scale-location-plot-for-checking-homoskedasticity" class="section level3">
-<h3><span class="header-section-number">13.2.3</span> Checking the model II – scale-location plot for checking homoskedasticity</h3>
-<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/glm1-worm-scale-location-1.png" width="576" /></p>
-<p>A linear model also assumes the error has constant variance (that is, the error variance is not a function of the value of <span class="math inline">\(X\)</span>), or homoskedasticity. The fit model can be checked for homoskedasticity using a scale-location plot, which is a scatterplot of the positive square-root of the standardized residuals against the fitted values<a href="#fn2" class="footnoteRef" id="fnref2"><sup>2</sup></a>. If the residuals approximate a normal distribution, then a regression line through the scatter should be close to horizontal. The regression line in the scale-location plot of the fit of the linear model to the worm data shows a distinct increase in the “scale” (the square root of the standardized residuals) with increased fitted value, which is expected of data that are lognormally, Poisson, or negative binomially distributed.</p>
-</div>
-<div id="two-distributions-for-count-data-poisson-and-negative-binomial" class="section level3">
-<h3><span class="header-section-number">13.2.4</span> Two distributions for count data – Poisson and Negative Binomial</h3>
-<p>The pattern in the normal Q-Q plot in Figure <a href="generalized-linear-models-i-count-data.html#fig:glm1-plot2">13.2</a>B should discourage one from modeling the data with a normal distribution and instead model the data with an alternative distribution using a Generalized Linear Model. There is no unique mapping between how data are generated and a specific distribution, so this decision is not as easy as thinking about the data generation mechanism and then simply choosing the “correct” distribution. Section 4.5 in Bolker (xxx) is an excellent summary of how to think about the generating processes for different distributions in the context of ecological data. Since the response in the worm data are counts, we need to choose a distribution that generates integer values, such as the Poisson or the negative binomial.</p>
-<ol style="list-style-type: decimal">
-<li>Poisson – A Poisson distribution is the probability distribution of the number of occurrences of some thing (an egg, a parasite, or a specific mRNA transcript) generated by a process that generates the thing at a constant rate per unit effort (duration or space). This constant rate is <span class="math inline">\(\lambda\)</span>, which is the expectation, so <span class="math inline">\(\mathrm{E}(Y) = \mu = \lambda\)</span>. Because the rate per effort is constant, <em>the variance of a Poisson variable equals the mean</em>, <span class="math inline">\(\sigma^2 = \mu = \lambda\)</span>. Figure <a href="#fig:glm1-poisson"><strong>??</strong></a> shows three samples from a Poisson distribution with <span class="math inline">\(\lambda\)</span> set to 1, 5, and 10. The plots show that, as the mean count (<span class="math inline">\(\lambda\)</span>) moves away from zero, a Poisson distribution 1) becomes less skewed and more closely approximates a normal distribution and 2) has an increasingly low probability of including zero (less than 1% zeros when the mean is 5).</li>
-</ol>
-<p>A Poisson distribution, then, is useful for count data in which the conditional variance is close to the conditional mean. Very often, biological count data are not well approximated by a Poisson distribution because the variance is either less than the mean, an example of <strong>underdispersion</strong><a href="#fn3" class="footnoteRef" id="fnref3"><sup>3</sup></a>, or greater than the mean, an example of <strong>overdispersion</strong><a href="#fn4" class="footnoteRef" id="fnref4"><sup>4</sup></a>. A useful distribution for count data with overdispersion is the negative binomial.</p>
-<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/glm1-poisson-1.png" width="576" /></p>
-<ol start="2" style="list-style-type: decimal">
-<li>Negative Binomial – The negative binomial distribution is a discrete probability distribution of the number of successes that occur before a specified number of failures <span class="math inline">\(k\)</span> given a probability <span class="math inline">\(p\)</span> of success. This isn’t a very useful way of thinking about modeling count data in biology. What is useful is that the Negative Binomial distribution can be used simply as way of modeling an “overdispersed” Poisson process. The mean of a negative binomial variable is <span class="math inline">\(\mu = k\frac{p}{1-p}\)</span> and the variance is <span class="math inline">\(\sigma^2 = \mu + \mu^2/k\)</span>. As a method for modeling an overdispersed Poisson variable, <span class="math inline">\(k\)</span> functions as a **dispersion parameter* controlling the amount of overdispersion and can be any real, positive value (not simply a positive integer), including values less than 1.</li>
-</ol>
-</div>
-<div id="fitting-a-glm-with-a-poisson-distribution-to-the-worm-data" class="section level3">
-<h3><span class="header-section-number">13.2.5</span> Fitting a GLM with a Poisson distribution to the worm data</h3>
-<p>Let’s fit a GLM with a Poisson distribution to the worm data. The model is</p>
-<span class="math display">\[\begin{align}
-Diplo\_intensity_i &amp;\sim Poisson(\mu_i)\\
-\mathrm{E}({Diplo\_intensity|Treatment}) &amp;= \mu\\
-\mu_i &amp;= \mathrm{exp}(\eta_i)\\
-\eta_i &amp;= \beta_0 + \beta_1 Uninfected_i + \beta_2 Infected\_LG_i + \beta_3 Infected\_HG_i
-\end{align}\]</span>
-<ol style="list-style-type: decimal">
-<li>The first line of the model is the stochastic part stating the response is modeled as a random Poisson variable with mean and variance <span class="math inline">\(\mu\)</span> (the rate parameter <span class="math inline">\(\lambda\)</span> of the Poisson distribution).</li>
-<li>The second line states the <span class="math inline">\(\mu\)</span> is the conditional mean or conditional expectation</li>
-<li>The third line connects the conditional mean on the link scale (<span class="math inline">\(\eta\)</span>) with the conditional mean on the response scale (<span class="math inline">\(\mu\)</span>)</li>
-<li>The fourth line is the linear predictor, and includes three dummy variables.</li>
-</ol>
-<p>Remember that the conditional mean is the expected/predicted/fitted/modeled value when <span class="math inline">\(X=x_i\)</span>.</p>
-</div>
-<div id="model-checking-fits-to-count-data" class="section level3">
-<h3><span class="header-section-number">13.2.6</span> Model checking fits to count data</h3>
-<p>we use the fit model to check 1. the overall similarity of observed and theoretical distributions 2. if the observed distribution is over or under dispersed 3. if there more zeros than expected by the theoretical distribution. If so, the observed distribution is <strong>zero-inflated</strong></p>
-<div id="model-checking-a-glm-i-the-quantile-residual-q-q-plot" class="section level4">
-<h4><span class="header-section-number">13.2.6.1</span> Model checking a GLM I – the quantile residual Q-Q plot</h4>
-<p>A quantile-quantile (Q-Q) plot is used to check overall similarity of the observed distribution with the distribution that would be expected under the model. An alternative to a Normal Q-Q plot for a GLM fit is a quantile residual Q-Q plot of observed vs. expected <strong>quantile residuals</strong>. The basic algorithm for this is</p>
-<ol style="list-style-type: decimal">
-<li>Use the model parameters to simulate <span class="math inline">\(p\)</span> fake values of the response for each row of the data. This will be a <span class="math inline">\(n \times p\)</span> matrix of fake data where each column is a new, random sample of a population with parameters equal to that estimated for the observed data. For the Poisson, the parameter for each observation will be <span class="math inline">\(\hat{\mu}_i\)</span>, the modeled value of observation <span class="math inline">\(i\)</span>. For the negative binomial, the parameters will be <span class="math inline">\(\hat{\mu}_i\)</span> and the dispersion parameter <span class="math inline">\(k\)</span>, which is the same for all observations.</li>
-<li>For each observation (each row of the matrix of fake data), compute the fraction of simulated values smaller than the observed value of the response variable for that row. This fraction is the observed <strong>quantile residual</strong>, which ranges in value from 0 to 1. If the true data are distribitued as that specified by the model, then quantile residuals will have a uniform distribution.</li>
-<li>Sort the observed quantile residuals from smallest to largest and plot against theoretical quantile residuals from a uniform distribution. One could transform the quantile residuals to standard, normal residuals and then plot using a traditional Normal Q-Q plot but this step isn’t necessary (if reported, a Normal Q-Q plot of transformed quantile residuals might confuse readers who failed to read the fine print).</li>
-</ol>
-<div style="background-color:#cccccc; text-align:left; vertical-align: middle; padding:20px 47px;">
-<p><strong>Misconceivable</strong> – A common misconception is that if the distribution of the response approximates a Poisson distribution, then the residuals of a GLM fit with a Poisson distribution should be normally distributed, which could then be checked with a Normal Q-Q plot, and homoskedastic, which could be checked with a scale-location plot. Neither of these is true because a GLM does not transform the data and, in fact, the model definition does not specify anything about the distribution of an “error” term – there is no <span class="math inline">\(\varepsilon\)</span> in the model defintion above! This is why thinking about the definition of a linear model by specifying an error term with a normal distribution can be confusing and lead to misconceptions when learning GLMs.</p>
-</div>
-<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/glm1-worm-poisson-qr-1.png" width="576" /></p>
-<p>The Q-Q plot using quantile residuals with a Poisson distribution indicates that the counts of <em>Diplostomum</em> larvae in the eyes of the threespine stickleback are not well approximated by a Poisson distribution – there are too many observed values near the ends of the expected tails, indicating the expected values are not spread out enough. This pattern emerges because the observed counts are overdispersed compared to a Poisson distribution.</p>
-</div>
-<div id="model-checking-a-glm-ii-a-dispersion-plot" class="section level4">
-<h4><span class="header-section-number">13.2.6.2</span> Model checking a GLM II – a dispersion plot</h4>
-<p>If observed counts are Poisson distributed, then the <strong>Pearson residuals</strong> (<span class="math inline">\(r_i\)</span>) and the residual degrees of freedom of the fit model (<span class="math inline">\(df\)</span>) can be used to compute a dispersion statistic</p>
-<span class="math display">\[\begin{equation}
-\frac{\sum{r_i}}{df}
+<div id="block-repeated-measures-effects-in-statistical-models" class="section level2">
+<h2><span class="header-section-number">14.2</span> Block (repeated measures) effects in statistical models</h2>
+<p>In all of the above examples, the researcher is interested in the treatment effect but not the variation due to differences among the blocks. The blocks are nuissance factors that add additional variance to the response, with the consequence that estimates of treatment effects are less precise, unless the varriance due to the blocks is explicitly modeled. Including block structure in the design and in the statistical model is known as <strong>blocking</strong>. A natural way to think about the block factor is as a <strong>random effect</strong>, meaning that plots in experiment 1 or the mice in experiment 3 are simply random samples from a population of plots or mice. Modeling this using the residual-error specification looks like</p>
+<span class="math display" id="eq:lmm-spec1">\[\begin{equation}
+y_{ij} = (\beta_{0} + \beta_{0j}) + (\beta_{1} + \beta_{1j}) x_i + \varepsilon_i 
+\tag{14.1}
 \end{equation}\]</span>
-<p>that has an expected value of 1. Instead of a formal hypothesis test of this statistic, I use a simulation approach and ask, “if the observed counts are Poisson distributed, what is the expected frequency distribution of this dispersion statistic?” and then use simulation to generate this expected distribution. The algorithm for this is</p>
-<ol style="list-style-type: decimal">
-<li>For each observation <span class="math inline">\(i\)</span>, generate a random Poisson count using <span class="math inline">\(\hat{\mu}\)</span> as the parameter.</li>
-<li>Fit the model and compute the dispersion statistic.</li>
-<li>Repeat 1 and 2 <span class="math inline">\(N_{iter}\)</span> times.</li>
-</ol>
-<p>The plot below shows a histogram of the dispersion statistic computed for 1000 simulations of the worm data. The observed dispersion statistic is 3.4. The expected value is 1.0. The mean of the simulated values is 1.</p>
-<div class="figure"><span id="fig:glm1-worm-poisson-dispersion-plot"></span>
-<img src="Walker-elementary-statistical-modeling-draft_files/figure-html/glm1-worm-poisson-dispersion-plot-1.png" alt="Observed vs. expected dispersion statistic. The observed statistic marked by the red line. The histogram of expected statistics are from 1000 simulations of the observed data." width="576" />
+<p>where <span class="math inline">\(i\)</span> indexes the observation and <span class="math inline">\(j\)</span> indexes the block (culture, plot, mouse, etc). The intercept parameter <span class="math inline">\(\beta_{0j}\)</span> is a <strong>random intercept</strong> and the slope parameter <span class="math inline">\(\beta_{1j}\)</span> is a <strong>random slope</strong>. The random intercept has a <strong>fixed</strong> component (<span class="math inline">\(\beta_0\)</span>) that is common to all observations and a random component (<span class="math inline">\(\beta_{0j}\)</span>) that is common within a block but differs among blocks. In the above equation, I’ve used parentheses to show how these combine into the random intercept that is unique for each block. Similarly, the random slope has a fixed part (<span class="math inline">\(\beta_1\)</span>) that is common to all observations and a random component (<span class="math inline">\(\beta_{1j}\)</span>) that is common within a block but differs among blocks. Again, these are collected within a pair of parentheses in the equation above.</p>
+<p>Linear mixed models are called “mixed models” because they are a mix of fixed and random components. Another useful way to specify this model is to think about it hierarchically, using</p>
+<span class="math display" id="eq:lmm-spec2">\[\begin{align}
+y_{ij} &amp;= \beta_{0j} + \beta_{1j}x_i + \varepsilon_i \\
+\varepsilon_i &amp;\sim N(0, \sigma) \\
+\beta_{0j} &amp;= \beta_{0} + N(0, \sigma_{0}) \\
+\beta_{1j} &amp;= \beta_{1} + N(0, \sigma_{1})
+\tag{14.2}
+\end{align}\]</span>
+<p>% The first line states that the response is a function of a block-specific intercept and a block specific slope plus some error that is unique to each observation. The third and fourth lines state that these block-specific effects are themselves a function of a common effect and a random term that is unique to each block. That is, we have a hierarchical or multi-level structure to the model. Line 1 is the top level and the effects that are specified in line 1 are a function of effects at a second, lower level, which are specified in lines 3 and 4. Because of this structure, linear mixed models are sometimes called hierarchical or multi-level models.</p>
+<p>Finally, it’s useful to think how to specify a linear mixed model using the random-draw specification, as this leads naturally to generalized linear mixed models, or GLMMs.</p>
+<span class="math display" id="eq:lmm-spec3">\[\begin{align}
+y_{ij} &amp;\sim N(\mu{ij}, \sigma) \\
+\mu{ij} &amp;=\beta_{0j} + \beta_{1j}x_i \\
+\beta_{0j} &amp;\sim N(\beta_0, \sigma_0) \\
+\beta_{1j} &amp;\sim N(\beta_1, \sigma_1)
+\tag{14.3}
+\end{align}\]</span>
+</div>
+<div id="visualizing-block-effects" class="section level2">
+<h2><span class="header-section-number">14.3</span> Visualizing block effects</h2>
+<p>To visualize random effects due to block, Let’s create fake data that look something like experiments 1 or 2, with a single factor with two treatment levels, <span class="math inline">\(k=10\)</span> blocks, and <span class="math inline">\(n=3\)</span> measures for each treatment level within each block. This is a randomized complete block design with subsampling and has a total of <span class="math inline">\(N=2 \times k \times n\)</span> measures of <span class="math inline">\(Y\)</span> (and rows of the data.table).</p>
+<div class="figure"><span id="fig:lmm1-sim1"></span>
+<img src="Walker-elementary-statistical-modeling-draft_files/figure-html/lmm1-sim1-1.png" alt="Visualizing random effects. A) The response in the two treatment levels. B) The same data but separated by block. The blue line is at the control mean and the yellow line is at the treated mean. The black dots are the mean response within a block." width="576" />
 <p class="caption">
-Figure 13.3: Observed vs. expected dispersion statistic. The observed statistic marked by the red line. The histogram of expected statistics are from 1000 simulations of the observed data.
+Figure 14.1: Visualizing random effects. A) The response in the two treatment levels. B) The same data but separated by block. The blue line is at the control mean and the yellow line is at the treated mean. The black dots are the mean response within a block.
 </p>
 </div>
+<p>Figure <a href="linear-mixed-models.html#fig:lmm1-sim1">14.1</a>A shows the response as a function of treatment. The responses are nicely symmetric around the treatment means (the blue and yellow lines). A linear model (and generalized linear models, more generally) assumes that a response, conditional on the <span class="math inline">\(X\)</span>, are independent. Figure <a href="linear-mixed-models.html#fig:lmm1-sim1">14.1</a>B shows how this assumption is violated for the simulated data. That pattern of residuals within a block around the treatment means does not look at all random. Instead, there is a distinct pattern within a block for the points to cluster either below the treatment means or above the treatment means. In blocks a, b, c, g, and h, all or most of the responses are below their treatment mean (for example in block a, all the blue points are below the blue line and 2 of 3 yellow points are below the yellow line). In blocks, e, f, i, and j, all or most of the responses are above their treatment mean (for example, in block i, all three yellow points are above the yellow line and 2 of 3 blue points are above the blue line). In other words, the responses within a block covary together. For a linear model, this is known as <strong>correlated error</strong>.</p>
 </div>
-</div>
-<div id="fitting-a-glm-with-a-negative-binomial-distribution-to-the-worm-data" class="section level3">
-<h3><span class="header-section-number">13.2.7</span> Fitting a GLM with a Negative Binomial distribution to the worm data</h3>
-<p>The model is</p>
-<span class="math display">\[\begin{align}
-Diplo\_intensity &amp;\sim NB(\mu, k)\\
-\mathrm{E}({Diplo\_intensity|Treatment}) &amp;= \mu\\
-\mu &amp;= \mathrm{exp}(\eta)\\
-\eta &amp;= \beta_0 + \beta_1 Uninfected + \beta_2 Infected\_LG + \beta_3 Infected\_HG
-\end{align}\]</span>
-<p>This model specifies a negative binomial distribution but otherwise is just like that above specifying a Poisson distribution.</p>
-<div id="model-checking-1" class="section level4">
-<h4><span class="header-section-number">13.2.7.1</span> Model checking</h4>
-<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/glm1-worm-nb-1.png" width="576" /></p>
-<p>A quantile residual Q-Q plot of the GLM model fit with negative binomial distribution is illustrated above. This looks pretty good.</p>
-</div>
-<div id="model-means-and-coefficients" class="section level4">
-<h4><span class="header-section-number">13.2.7.2</span> Model means and coefficients</h4>
-<p>In a Generalized Linear Model of counts using either a Poisson or negative binomial distribution, modeled means, coefficients, and contrasts can be reported either on the link or response scale. Remember, the response scale is a count, while the link scale is a log(count).</p>
-<p>The modeled means on the link scale are</p>
-<pre><code>##  Treatment     emmean         SE  df asymp.LCL asymp.UCL
-##  Control     1.821408 0.08038710 Inf  1.663852  1.978964
-##  Uninfected  1.504077 0.10930511 Inf  1.289843  1.718311
-##  Infected LG 1.624144 0.13615796 Inf  1.357279  1.891009
-##  Infected HG 2.361096 0.07141332 Inf  2.221128  2.501063
-## 
-## Results are given on the log (not the response) scale. 
-## Confidence level used: 0.95</code></pre>
-<p>While the means on response scale are</p>
-<pre><code>##  Treatment    response        SE  df asymp.LCL asymp.UCL
-##  Control      6.180556 0.4968369 Inf  5.279611  7.235243
-##  Uninfected   4.500000 0.4918730 Inf  3.632217  5.575107
-##  Infected LG  5.074074 0.6908756 Inf  3.885608  6.626049
-##  Infected HG 10.602564 0.7571643 Inf  9.217726 12.195456
-## 
-## Confidence level used: 0.95 
-## Intervals are back-transformed from the log scale</code></pre>
-<ol style="list-style-type: decimal">
-<li><p>A mean on the response scale is simply the exponent of the mean on the link scale. For example, the mean of the Control treatment level on the response scale is <span class="math inline">\(\mathrm{exp}(1.821408) = 6.180555\)</span>.</p></li>
-<li><p>The CIs on the link scale are symmetric around the mean but those on the response scale are not. This is a feature, not a bug. Remember that counts are right skewed which means a CI will have a wider right than left interval. Check this!</p></li>
-<li><p>If a plot includes a 1 SE error bar on the response scale, this is technically correct but it encourages the practice of computing CIs using the 2*SE rule of thumb. This rule breaks down for count data with right skewed distributions.</p></li>
-<li><p>Plotting the response scale CIs is both technically correct and makes the 2*SE rule of thumb unnecessary.</p></li>
-</ol>
-<p>The model coefficients on the link scale are</p>
-<pre><code>##  contrast                estimate        SE  df  asymp.LCL  asymp.UCL
-##  Uninfected - Control  -0.3173308 0.1356823 Inf -0.5832632 -0.0513983
-##  Infected LG - Control -0.1972641 0.1581173 Inf -0.5071683  0.1126401
-##  Infected HG - Control  0.5396877 0.1075265 Inf  0.3289396  0.7504358
-##  z.ratio p.value
-##   -2.339  0.0193
-##   -1.248  0.2122
-##    5.019  &lt;.0001
-## 
-## Results are given on the log (not the response) scale. 
-## Confidence level used: 0.95</code></pre>
-<p>Backtransforming the coefficients (but not the intercept) to the response scale (using <span class="math inline">\(\mathrm{exp}{b_j}\)</span>) results in a <strong>response ratio</strong>.</p>
-<pre><code>##  contrast                  ratio         SE  df asymp.LCL asymp.UCL
-##  Uninfected / Control  0.7280899 0.09878893 Inf 0.5580743 0.9499002
-##  Infected LG / Control 0.8209738 0.12981015 Inf 0.6021984 1.1192290
-##  Infected HG / Control 1.7154710 0.18445860 Inf 1.3894940 2.1179227
-##  z.ratio p.value
-##   -2.339  0.0193
-##   -1.248  0.2122
-##    5.019  &lt;.0001
-## 
-## Confidence level used: 0.95 
-## Intervals are back-transformed from the log scale 
-## Tests are performed on the log scale</code></pre>
-<ol style="list-style-type: decimal">
-<li>Note how the emmeans package reports the name of the term as the ratio of the coefficient term to the intercept term (the reference treatment level). Why are the coefficients tranformed to ratios on the response scale? Remember that a coefficient is a difference in conditional means and that <span class="math inline">\(\mathrm{exp}(B-A) = \frac{\mathrm{exp}(B)}{\mathrm{exp}(A)}\)</span>. For a dummy variable as here (say “Infected HG”), the response ratio is</li>
-</ol>
-<span class="math display">\[\begin{equation}
-RR_{Infected\_HG} = \frac{\overline{Infected\_HG}}{\overline{Control}}
+<div id="linear-mixed-models-can-increase-precision-of-point-estimates" class="section level2">
+<h2><span class="header-section-number">14.4</span> linear mixed models can increase precision of point estimates</h2>
+<p>Block effects are differences in expected mean response among blocks due to unmeasured factors that are shared within blocks but not among blocks. A classical linear model fails to model this component of the total variance in the response, and as a consquence, this block-specific variance becomes part of the error variance. One way to visualize this is by moving the random intercept and random slope components of equation <a href="linear-mixed-models.html#eq:lmm-spec1">(14.1)</a> to the right and combining it with the observation-specific error</p>
+<span class="math display" id="eq:lmm-spec1b">\[\begin{equation}
+y_{ij} = \beta_{0} + \beta_{1} x_i + (\beta_{0j} + \beta_{1j} + \varepsilon_i)
+\tag{14.4}
 \end{equation}\]</span>
-<p>which give us the <strong>relative effect</strong> of Infected_HG compared to the Control. Relative effects could be reported as a response ratio in a table, or in the text it could be reported as a percent “Infected HG fish had 71.5% (95%CI: 38.9% - 111.8%) more <em>Diplostomum</em> larvae than Control fish.” Where do these percents come from? The percent effect is <span class="math inline">\(100(RR_j - 1)\)</span> larger than the reference mean if the <span class="math inline">\(RR_j &gt; 1\)</span> or <span class="math inline">\(100(1 - RR_j)\)</span> smaller than the reference mean if the <span class="math inline">\(RR_j &lt; 1\)</span>.</p>
-<ol start="2" style="list-style-type: decimal">
-<li><p>Backtransforming the intercept does not generate a ratio since the intercept on the link scale is not a difference. For the worm analysis, the intercept on the link scale is the mean count of the control group on the link scale and the backtransformed intercept is the mean count of the control group on the response scale.</p></li>
-<li><p>Effects on the response scale are not additive but multiplicative! So, for example, the mean of the Infected HG treatment level on the response scale is <span class="math inline">\(\overline{Control}*RR_{Infected\_HG}\)</span> (remember that with a linear model the mean would be <span class="math inline">\(b_{Control} + b_{Infected\_HG}\)</span>). Check and see if this works.</p></li>
-</ol>
+<p>% which shows that the random effects <span class="math inline">\(\beta_{0j}\)</span> and <span class="math inline">\(\beta_{1j}\)</span> are modeled as error in a linear model. As a consequence, the residual variance is larger and, therefore, the standard errors of point estimates, including means, coefficients of the model, and contrasts from the model, are larger. Here is the table of model coefficients of the data in Figure <a href="linear-mixed-models.html#fig:lmm1-sim1">14.1</a> fitted using a classical linear model</p>
+<pre><code>##               Estimate Std. Error  t value     Pr(&gt;|t|)
+## (Intercept) 10.0235749  0.2439544 41.08791 1.393185e-44
+## TreatmentT+  0.6884787  0.3450036  1.99557 5.068466e-02</code></pre>
+<p>and a linear mixed model</p>
+<pre><code>##               Estimate Std. Error       df   t value     Pr(&gt;|t|)
+## (Intercept) 10.0235749  0.3954692 9.000000 25.346031 1.114196e-09
+## TreatmentT+  0.6884787  0.2700725 8.999999  2.549237 3.123383e-02</code></pre>
+<div style="background-color:#cccccc; text-align:left; vertical-align: middle; padding:20px 47px;">
+<p><strong>NHST blues</strong> – A paired <em>t</em>-test is equivalent to the special case of the linear mixed model when there is a single factor with two treatment levels and <span class="math inline">\(n=1\)</span> measure for each treatment level within each block. A linear mixed model is much more flexible than a paired <em>t</em>-test because it allows a researcher to add treatment levels, additional factors, and covariates to the model. In addition, a and it can better handle missing data.</p>
+<p>Here is a simple simulation of a design that is similar to experiment 3 with a single factor with two treatment levels and both levels applied to the same experimental unit.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">n &lt;-<span class="st"> </span><span class="dv">10</span> <span class="co"># number of blocks</span>
+x &lt;-<span class="st"> </span><span class="kw">rep</span>(<span class="kw">c</span>(<span class="st">&quot;Cn&quot;</span>,<span class="st">&quot;T+&quot;</span>), <span class="dt">each=</span>n) <span class="co"># treatments</span>
+id &lt;-<span class="st"> </span><span class="kw">rep</span>(letters[<span class="dv">1</span><span class="op">:</span>n], <span class="dv">2</span>) <span class="co"># block id</span>
+y &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="kw">rnorm</span>(n, <span class="dt">mean=</span><span class="dv">10</span>), <span class="kw">rnorm</span>(n, <span class="dt">mean=</span><span class="dv">11</span>))
+fake_data &lt;-<span class="st"> </span><span class="kw">data.table</span>(<span class="dt">Y=</span>y, <span class="dt">X=</span>x, <span class="dt">ID=</span>id)
+<span class="kw">coef</span>(<span class="kw">summary</span>(<span class="kw">lme</span>(Y<span class="op">~</span>X, <span class="dt">random =</span> <span class="op">~</span><span class="dv">1</span><span class="op">|</span>ID, <span class="dt">correlation=</span><span class="kw">corCompSymm</span>(<span class="dt">form=</span><span class="op">~</span><span class="dv">1</span><span class="op">|</span>ID), <span class="dt">data=</span>fake_data)))</code></pre></div>
+<pre><code>##                 Value Std.Error DF   t-value      p-value
+## (Intercept) 10.274104 0.3632787  9 28.281608 4.201969e-10
+## XT+          1.057625 0.4678365  9  2.260673 5.012143e-02</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">t.test</span>(Y<span class="op">~</span>X, <span class="dt">data=</span>fake_data, <span class="dt">paired=</span><span class="ot">TRUE</span>)<span class="op">$</span>p.value</code></pre></div>
+<pre><code>## [1] 0.05012143</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># now delete two random observations from the treated level</span>
+NA_rows &lt;-<span class="st"> </span><span class="kw">sample</span>(<span class="dv">1</span><span class="op">:</span>n, <span class="dt">size=</span><span class="dv">2</span>)
+fake_data[, Y2<span class="op">:</span><span class="er">=</span>Y] <span class="co"># copy Y column</span>
+fake_data[(NA_rows<span class="op">+</span><span class="dv">10</span>), Y2<span class="op">:</span><span class="er">=</span><span class="ot">NA</span>] <span class="co"># replace the two obs in Y2 with NA</span>
+<span class="kw">coef</span>(<span class="kw">summary</span>(<span class="kw">lme</span>(Y2<span class="op">~</span>X, <span class="dt">random =</span> <span class="op">~</span><span class="dv">1</span><span class="op">|</span>ID, <span class="dt">correlation=</span><span class="kw">corCompSymm</span>(<span class="dt">form=</span><span class="op">~</span><span class="dv">1</span><span class="op">|</span>ID), 
+                 <span class="dt">data=</span>fake_data,
+                 <span class="dt">na.action=</span>na.exclude)))</code></pre></div>
+<pre><code>##                 Value Std.Error DF   t-value      p-value
+## (Intercept) 10.274104 0.3668354  9 28.007398 4.582957e-10
+## XT+          1.253132 0.5103134  7  2.455613 4.374577e-02</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># cannot run t-test with NA so re-run by deleting matching ID</span>
+fake_data[, Y3<span class="op">:</span><span class="er">=</span>Y2] <span class="co"># copy Y2 column</span>
+fake_data[NA_rows, Y3<span class="op">:</span><span class="er">=</span><span class="ot">NA</span>] <span class="co"># replace the two obs in Y3 with NA</span>
+<span class="kw">t.test</span>(Y3<span class="op">~</span>X, <span class="dt">data=</span>fake_data, <span class="dt">paired=</span><span class="ot">TRUE</span>, <span class="dt">na.action=</span>na.omit)<span class="op">$</span>p.value</code></pre></div>
+<pre><code>## [1] 0.04871176</code></pre>
 </div>
+<p>A linear mixed model specifically estimates the value of <span class="math inline">\(\beta_{0j}\)</span> and <span class="math inline">\(\beta_{1j}\)</span> for each block</p>
 </div>
+<div id="a-linear-mixed-models-are-flexible" class="section level2">
+<h2><span class="header-section-number">14.5</span> A linear mixed models are flexible</h2>
+<p>The linear mixed model above specifies a random effect due to the block for each term (the intercept and the treatment effect, or “slope”) in the model but a researcher might limit the random effect to the intercept, or less commonly, the slope. Excluding the random slope from the model above results in</p>
+<span class="math display" id="eq:lmm-spec1b">\[\begin{equation}
+y_{ij} = (\beta_{0} + \beta_{0j}) + \beta_{1}x_i + \varepsilon_i 
+\tag{14.4}
+\end{equation}\]</span>
+<p>We might use random-intercept model if we think that features of the block would effect the mean response in that block but not effect the treatment. For example, differences in the immune systems among the individual mice in experiment 3 might effect growth in both the wild-type and engineered strains of staph but won’t effect the difference in growth between wild-type and engineered strains</p>
+<p>The models above specify a block effect for each term in the model but the fixed part of the model is relatively simple, there is a single intercept and a categorical variable with two levels. What if the fixed part of the model is more complex? A <span class="math inline">\(2 \times 3\)</span> factorial model has 6 terms: an intercept, a coefficient for the effect of the second level of factor 1, a coefficient for the effects of each of the non-reference levels of factor 2, and the two interaction coefficient. The random block effect can be added to each of these terms</p>
+<span class="math display" id="eq:lmm-spec1c">\[\begin{equation}
+y_{ij} = (\beta_{0} + \beta_{0j}) + (\beta_{1} + \beta_{1j}) x_{1i} + (\beta_{2} + \beta_{2j}) x_{2i} + (\beta_{3} + \beta_{3j}) x_{3i} + (\beta_{4} + \beta_{4j}) x_{1i}x_{2i} + (\beta_{5} + \beta_{5j}) x_{1i}x_{3i} + \varepsilon_i
+\tag{14.5}
+\end{equation}\]</span>
+<div style="background-color:#cccccc; text-align:left; vertical-align: middle; padding:20px 47px;">
+<p><strong>Not more than you should know</strong> – Matrix algebra makes the specification of a linear mixed model much more manageable than the algebra in <a href="#lmm-spec1c"><strong>??</strong></a>. To use matrix algebra, the fixed and random terms are arranged together</p>
+<span class="math display" id="eq:lmm-spec1c">\[\begin{equation}
+y_{ij} = (\beta_{0} + \beta_{1}x_{1i} + \beta_{2}x_{2i} + \beta_{3}x_{3i} + \beta_{4}x_{1i}x_{2i} + \beta_{5}x_{1i}x_{3i}) + (\beta_{0j} + \beta_{1j}x_{1i} + \beta_{2j}x_{2i} + \beta_{3j}x_{3i} + \beta_{4j}x_{1i}x_{2i} + \beta_{5j}x_{1i}x_{3i}) + \varepsilon_i
+\tag{14.5}
+\end{equation}\]</span>
+<p>Then, the fixed terms are <span class="math inline">\(\boldsymbol{x_i}^\top \boldsymbol{\beta}\)</span> and the random terms are <span class="math inline">\(\boldsymbol{x_i}^\top \boldsymbol{\beta_j}\)</span>. Because a linear mixed model may contain</p>
+<span class="math display">\[\begin{equation}
+\mathbf{y_{ij}} = \mathbf{x_i^\top \beta} + \mathbf{x_i^\top u} + \mathbf{\varepsilon_{ij}}
+\end{equation}\]</span>
 </div>
-<div id="working-in-r-4" class="section level2">
-<h2><span class="header-section-number">13.3</span> Working in R</h2>
-<p>Source publication: Benesh, D. P., &amp; Kalbe, M. (2016). Experimental parasite community ecology: intraspecific variation in a large tapeworm affects community assembly. Journal of Animal Ecology, 85(4), 1004-1013.</p>
-<p>Source data URL: <a href="https://datadryad.org/resource/doi:10.5061/dryad.bq8j8" class="uri">https://datadryad.org/resource/doi:10.5061/dryad.bq8j8</a></p>
-<p>Source file: “Lab_exp.csv”</p>
-<p>Poisson fit. A quantile residual Q-Q plot can be generated using the package DHARMa</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fit.pois &lt;-<span class="st"> </span><span class="kw">glm</span>(Diplo_intensity <span class="op">~</span><span class="st"> </span>Treatment, <span class="dt">family=</span><span class="st">&quot;poisson&quot;</span>, <span class="dt">data=</span>worm)
+<p>Linear mixed models are used to avoid pseudoreplication</p>
+</div>
+<div id="linear-mixed-models-shrink-coefficients-by-partial-pooling" class="section level2">
+<h2><span class="header-section-number">14.6</span> Linear mixed models shrink coefficients by partial pooling</h2>
+</div>
+<div id="working-in-r-5" class="section level2">
+<h2><span class="header-section-number">14.7</span> Working in R</h2>
+<p>The major function for working with linear mixed models is <code>lmer()</code> from the lme4 package. An older, and still sometimes used function is <code>lme()</code> from the nlme package. The authors of the lme4 package argue that the df in a linear mixed model are too approximate for a useful <span class="math inline">\(p\)</span>-value and, consequently, the <code>lme</code> function does not return a <span class="math inline">\(p\)</span>-value. Many biological researchers want a <span class="math inline">\(p\)</span>-value and typically use the <code>lmerTest</code> package to get this.</p>
+<div id="coral-data" class="section level3">
+<h3><span class="header-section-number">14.7.1</span> coral data</h3>
+<p><strong>Source</strong> Zill, J. A., Gil, M. A., &amp; Osenberg, C. W. (2017). When environmental factors become stressors: interactive effects of vermetid gastropods and sedimentation on corals. Biology letters, 13(3), 20160957.</p>
+<p><strong>Dryad source</strong> <a href="https://datadryad.org/resource/doi:10.5061/dryad.p59n8" class="uri">https://datadryad.org/resource/doi:10.5061/dryad.p59n8</a></p>
+<p><strong>file name</strong> “VermetidSedimentData_ZillGilOsenberg_DRYAD.xlsx”</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">folder &lt;-<span class="st"> &quot;Data from When environmental factors become stressors- interactive effects of vermetid gastropods and sedimentation on corals&quot;</span>
+fn &lt;-<span class="st"> &quot;VermetidSedimentData_ZillGilOsenberg_DRYAD.xlsx&quot;</span>
+sheet_i &lt;-<span class="st"> &quot;Coral Growth Rate Data&quot;</span>
+file_path &lt;-<span class="st"> </span><span class="kw">paste</span>(data_path, folder, fn, <span class="dt">sep=</span><span class="st">&quot;/&quot;</span>)
+coral &lt;-<span class="st"> </span><span class="kw">data.table</span>(<span class="kw">read_excel</span>(file_path, <span class="dt">sheet=</span>sheet_i))
+<span class="kw">setnames</span>(coral, <span class="dt">old=</span><span class="kw">colnames</span>(coral), <span class="dt">new=</span><span class="kw">clean_label</span>(<span class="kw">colnames</span>(coral)))
+coral[, Vermetids<span class="op">:</span><span class="er">=</span><span class="kw">factor</span>(Vermetids)]
+coral[, Sediment<span class="op">:</span><span class="er">=</span><span class="kw">factor</span>(Sediment)]</code></pre></div>
+<p><code>lmer</code> adds the random component to the formula. <code>lme</code> adds the random component as a separate argument</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># to reproduce the results</span>
+<span class="co"># observation 2 should be excluded from the analysis</span>
+inc &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">3</span><span class="op">:</span><span class="kw">nrow</span>(coral))
 
-<span class="co"># from the DHARMa package</span>
-  n_sim &lt;-<span class="st"> </span><span class="dv">250</span>
-  simulationOutput &lt;-<span class="st"> </span><span class="kw">simulateResiduals</span>(<span class="dt">fittedModel =</span> fit.pois, <span class="dt">n =</span> n_sim)
-  <span class="kw">plot</span>(simulationOutput, <span class="dt">asFactor =</span> F)</code></pre></div>
-<pre><code>## DHARMa::plotResiduals - low number of unique predictor values, consider setting asFactor = T
-## DHARMa::plotResiduals - low number of unique predictor values, consider setting asFactor = T</code></pre>
-<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/glm1-working-in-r-1.png" width="576" /></p>
-<p>A plot of the dispersion statistic can be generated using the object returned by the <code>SimulateOutput</code> function but with <code>refit = TRUE</code>, which refits a model each iteration. This refitting isn’t necessary if only the quantiile residuals are needed. The Dharma package does not divide the sum of squared Pearson residuals by the residual degrees of freedom and so the expected value of the statistic is <span class="math inline">\(df\)</span>.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># from the DHARMa package</span>
-  n_sim &lt;-<span class="st"> </span><span class="dv">250</span>
-  simulationOutput &lt;-<span class="st"> </span><span class="kw">simulateResiduals</span>(<span class="dt">fittedModel=</span>fit.pois, <span class="dt">n=</span>n_sim, <span class="dt">refit=</span><span class="ot">TRUE</span>)
-  <span class="kw">testDispersion</span>(simulationOutput)</code></pre></div>
-<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/unnamed-chunk-16-1.png" width="576" /></p>
-<pre><code>## 
-##  DHARMa nonparametric dispersion test via mean deviance residual
-##  fitted vs. simulated-refitted
-## 
-## data:  simulationOutput
-## dispersion = 3.3788, p-value &lt; 2.2e-16
-## alternative hypothesis: two.sided</code></pre>
-<p>Negative binomial fit.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fit.nb &lt;-<span class="st"> </span><span class="kw">glm.nb</span>(Diplo_intensity <span class="op">~</span><span class="st"> </span>Treatment, <span class="dt">data=</span>worm)
-<span class="co"># from the DHARMa package</span>
-  simulationOutput &lt;-<span class="st"> </span><span class="kw">simulateResiduals</span>(<span class="dt">fittedModel =</span> fit.nb, <span class="dt">n =</span> n_sim)
-  <span class="kw">plot</span>(simulationOutput, <span class="dt">asFactor =</span> F)</code></pre></div>
-<pre><code>## DHARMa::plotResiduals - low number of unique predictor values, consider setting asFactor = T
-## DHARMa::plotResiduals - low number of unique predictor values, consider setting asFactor = T</code></pre>
-<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/glm-working-in-r-2-1.png" width="576" /></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># link scale</span>
-emm &lt;-<span class="st"> </span><span class="kw">emmeans</span>(fit.nb, <span class="dt">specs=</span><span class="st">&quot;Treatment&quot;</span>)
-emm</code></pre></div>
-<pre><code>##  Treatment     emmean         SE  df asymp.LCL asymp.UCL
-##  Control     1.821408 0.08038710 Inf  1.663852  1.978964
-##  Uninfected  1.504077 0.10930511 Inf  1.289843  1.718311
-##  Infected LG 1.624144 0.13615796 Inf  1.357279  1.891009
-##  Infected HG 2.361096 0.07141332 Inf  2.221128  2.501063
-## 
-## Results are given on the log (not the response) scale. 
-## Confidence level used: 0.95</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(<span class="kw">contrast</span>(emm, <span class="dt">method=</span><span class="st">&quot;trt.vs.ctrl&quot;</span>, <span class="dt">adjust=</span><span class="st">&quot;none&quot;</span>), <span class="dt">infer=</span><span class="kw">c</span>(<span class="ot">TRUE</span>, <span class="ot">TRUE</span>))</code></pre></div>
-<pre><code>##  contrast                estimate        SE  df  asymp.LCL  asymp.UCL
-##  Uninfected - Control  -0.3173308 0.1356823 Inf -0.5832632 -0.0513983
-##  Infected LG - Control -0.1972641 0.1581173 Inf -0.5071683  0.1126401
-##  Infected HG - Control  0.5396877 0.1075265 Inf  0.3289396  0.7504358
-##  z.ratio p.value
-##   -2.339  0.0193
-##   -1.248  0.2122
-##    5.019  &lt;.0001
-## 
-## Results are given on the log (not the response) scale. 
-## Confidence level used: 0.95</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># response scale</span>
-emm.response &lt;-<span class="st"> </span><span class="kw">emmeans</span>(fit.nb, <span class="dt">specs=</span><span class="st">&quot;Treatment&quot;</span>, <span class="dt">type=</span><span class="st">&quot;response&quot;</span>)
-<span class="kw">summary</span>(<span class="kw">contrast</span>(emm, <span class="dt">method=</span><span class="st">&quot;trt.vs.ctrl&quot;</span>, <span class="dt">adjust=</span><span class="st">&quot;none&quot;</span>, <span class="dt">type=</span><span class="st">&quot;response&quot;</span>), <span class="dt">infer=</span><span class="kw">c</span>(<span class="ot">TRUE</span>, <span class="ot">TRUE</span>))</code></pre></div>
-<pre><code>##  contrast                  ratio         SE  df asymp.LCL asymp.UCL
-##  Uninfected / Control  0.7280899 0.09878893 Inf 0.5580743 0.9499002
-##  Infected LG / Control 0.8209738 0.12981015 Inf 0.6021984 1.1192290
-##  Infected HG / Control 1.7154710 0.18445860 Inf 1.3894940 2.1179227
-##  z.ratio p.value
-##   -2.339  0.0193
-##   -1.248  0.2122
-##    5.019  &lt;.0001
-## 
-## Confidence level used: 0.95 
-## Intervals are back-transformed from the log scale 
-## Tests are performed on the log scale</code></pre>
-</div>
-<div id="problems-4" class="section level2">
-<h2><span class="header-section-number">13.4</span> Problems</h2>
-<p>Analyze the data that went into Fig 6B of Tena, A., Pekas, A., Cano, D., Wäckers, F. L., &amp; Urbaneja, A. (2015). Sugar provisioning maximizes the biocontrol service of parasitoids. Journal of Applied Ecology, 52(3), 795-804.</p>
-<ol style="list-style-type: decimal">
-<li>Compute contrasts and CIs among all pairs of all three treatment levels</li>
-<li>Make a better plot like 6b including 1) use the modeled mean instead of the simple group mean and 2) use the modeled CI of the mean instead of the SE computed within each group independently.</li>
-</ol>
-<p>source URL: <a href="https://datadryad.org/resource/doi:10.5061/dryad.bj001" class="uri">https://datadryad.org/resource/doi:10.5061/dryad.bj001</a></p>
-<p>source file: “4_Parastism_Fig_6.csv”</p>
+<span class="co"># specification using lmer</span>
+<span class="co"># random intercept only</span>
+fit.lmer1 &lt;-<span class="st"> </span><span class="kw">lmer</span>(GrowthRate <span class="op">~</span><span class="st"> </span>Vermetids<span class="op">*</span>Sediment <span class="op">+</span><span class="st"> </span>(<span class="dv">1</span><span class="op">|</span>Block), <span class="dt">data=</span>coral[inc])
+<span class="co"># random intercept and slope</span>
+fit.lmer2 &lt;-<span class="st"> </span><span class="kw">lmer</span>(GrowthRate <span class="op">~</span><span class="st"> </span>Vermetids<span class="op">*</span>Sediment <span class="op">+</span><span class="st"> </span>(Vermetids<span class="op">|</span>Block) <span class="op">+</span><span class="st"> </span>(Sediment<span class="op">|</span>Block), <span class="dt">data=</span>coral[inc])
+<span class="co"># random intercept and slope</span>
+fit.lmer3 &lt;-<span class="st"> </span><span class="kw">lmer</span>(GrowthRate <span class="op">~</span><span class="st"> </span>Vermetids<span class="op">*</span>Sediment <span class="op">+</span><span class="st"> </span>(Vermetids<span class="op">|</span>Block) <span class="op">+</span><span class="st"> </span>(Sediment<span class="op">|</span>Block), <span class="dt">data=</span>coral[inc])
+<span class="co"># to include the interaction as a random effect we&#39;d need subsampling within each factorial treatment combination</span>
 
+<span class="co"># specification using lme</span>
+fit.lme &lt;-<span class="st"> </span><span class="kw">lme</span>(GrowthRate <span class="op">~</span><span class="st"> </span>Vermetids<span class="op">*</span>Sediment, <span class="dt">random=</span> <span class="op">~</span><span class="dv">1</span><span class="op">|</span>Block, <span class="dt">data=</span>coral[inc])
+
+<span class="co"># results using lmer fit</span>
+<span class="kw">coefficients</span>(fit.lmer1)</code></pre></div>
+<pre><code>## $Block
+##    (Intercept)  Vermetids1 Sediment1 Vermetids1:Sediment1
+## 1     1.205030 0.004655556 0.2852037           -0.7735482
+## 2     1.336057 0.004655556 0.2852037           -0.7735482
+## 3     1.213975 0.004655556 0.2852037           -0.7735482
+## 4     1.262806 0.004655556 0.2852037           -0.7735482
+## 6     1.320778 0.004655556 0.2852037           -0.7735482
+## 7     1.201253 0.004655556 0.2852037           -0.7735482
+## 8     1.314433 0.004655556 0.2852037           -0.7735482
+## 9     1.199842 0.004655556 0.2852037           -0.7735482
+## 10    1.361526 0.004655556 0.2852037           -0.7735482
+## 
+## attr(,&quot;class&quot;)
+## [1] &quot;coef.mer&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">coefficients</span>(<span class="kw">summary</span>(fit.lmer1))</code></pre></div>
+<pre><code>##                          Estimate Std. Error       df     t value
+## (Intercept)           1.268411111  0.1541678 30.42810  8.22747196
+## Vermetids1            0.004655556  0.2091414 22.94176  0.02226033
+## Sediment1             0.285203739  0.2160141 23.53066  1.32030164
+## Vermetids1:Sediment1 -0.773548184  0.3006696 23.24572 -2.57275179
+##                          Pr(&gt;|t|)
+## (Intercept)          3.129452e-09
+## Vermetids1           9.824328e-01
+## Sediment1            1.994339e-01
+## Vermetids1:Sediment1 1.693478e-02</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fit.emm &lt;-<span class="st"> </span><span class="kw">emmeans</span>(fit.lmer1, <span class="dt">specs=</span><span class="kw">c</span>(<span class="st">&quot;Vermetids&quot;</span>, <span class="st">&quot;Sediment&quot;</span>))
+<span class="kw">summary</span>(<span class="kw">contrast</span>(fit.emm, <span class="dt">method=</span><span class="st">&quot;revpairwise&quot;</span>, <span class="dt">adjust=</span><span class="st">&quot;none&quot;</span>), <span class="dt">infer=</span><span class="kw">c</span>(<span class="ot">TRUE</span>, <span class="ot">TRUE</span>))</code></pre></div>
+<pre><code>##  contrast      estimate        SE    df   lower.CL    upper.CL t.ratio
+##  1,0 - 0,0  0.004655556 0.2091414 23.04 -0.4279489  0.43725999   0.022
+##  0,1 - 0,0  0.285203739 0.2167702 23.62 -0.1625690  0.73297646   1.316
+##  0,1 - 1,0  0.280548184 0.2167702 23.62 -0.1672245  0.72832090   1.294
+##  1,1 - 0,0 -0.483688889 0.2091414 23.04 -0.9162933 -0.05108446  -2.313
+##  1,1 - 1,0 -0.488344444 0.2091414 23.04 -0.9209489 -0.05574001  -2.335
+##  1,1 - 0,1 -0.768892628 0.2167702 23.62 -1.2166653 -0.32111991  -3.547
+##  p.value
+##   0.9824
+##   0.2009
+##   0.2081
+##   0.0300
+##   0.0286
+##   0.0017
+## 
+## Confidence level used: 0.95</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fit.lmer1.ml &lt;-<span class="st"> </span><span class="kw">lmer</span>(GrowthRate <span class="op">~</span><span class="st"> </span>Vermetids<span class="op">*</span>Sediment <span class="op">+</span><span class="st"> </span>(<span class="dv">1</span><span class="op">|</span>Block), <span class="dt">data=</span>coral[inc], <span class="dt">REML=</span><span class="ot">FALSE</span>)
+<span class="co"># random intercept and slope</span>
+fit.lmer3.ml &lt;-<span class="st"> </span><span class="kw">lmer</span>(GrowthRate <span class="op">~</span><span class="st"> </span>Vermetids<span class="op">*</span>Sediment <span class="op">+</span><span class="st"> </span>(Vermetids<span class="op">|</span>Block) <span class="op">+</span><span class="st"> </span>(Sediment<span class="op">|</span>Block), <span class="dt">data=</span>coral[inc], <span class="dt">REML=</span><span class="ot">FALSE</span>)
+
+<span class="kw">AIC</span>(fit.lmer1.ml)</code></pre></div>
+<pre><code>## [1] 52.80349</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">AIC</span>(fit.lmer3.ml)</code></pre></div>
+<pre><code>## [1] 61.04197</code></pre>
+<p>The formula for <code>lmer</code></p>
+
+</div>
 </div>
 </div>
 <div class="footnotes">
 <hr />
-<ol start="1">
-<li id="fn1"><p>Benesh, D. P., &amp; Kalbe, M. (2016). Experimental parasite community ecology: intraspecific variation in a large tapeworm affects community assembly. Journal of Animal Ecology, 85(4), 1004-1013<a href="generalized-linear-models-i-count-data.html#fnref1">↩</a></p></li>
-<li id="fn2"><p>fitted values are the predicted values, <span class="math inline">\(\hat{Y}\)</span><a href="generalized-linear-models-i-count-data.html#fnref2">↩</a></p></li>
-<li id="fn3"><p>the variance is less than that expected by the probability model<a href="generalized-linear-models-i-count-data.html#fnref3">↩</a></p></li>
-<li id="fn4"><p>the variance is greater than that expected by the probability model<a href="generalized-linear-models-i-count-data.html#fnref4">↩</a></p></li>
+<ol start="5">
+<li id="fn5"><p>Giffard, B., Corcket, E., Barbaro, L., &amp; Jactel, H. (2012). Bird predation enhances tree seedling resistance to insect herbivores in contrasting forest habitats. Oecologia, 168(2), 415-424<a href="linear-mixed-models.html#fnref5">↩</a></p></li>
 </ol>
 </div>
             </section>
@@ -662,8 +552,8 @@ emm.response &lt;-<span class="st"> </span><span class="kw">emmeans</span>(fit.n
           </div>
         </div>
       </div>
-<a href="adding-covariates-to-a-linear-model-i-ancova.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="linear-mixed-models.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="generalized-linear-models-i-count-data.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="appendix-1-getting-started-with-r.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -693,7 +583,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/rstudio/bookdown-demo/edit/master/chapters/40-glm01-counts.Rmd",
+"link": "https://github.com/rstudio/bookdown-demo/edit/master/chapters/45-lmm01-blocking.Rmd",
 "text": "Edit"
 },
 "download": ["Walker-elementary-statistical-modeling-draft.pdf", "Walker-elementary-statistical-modeling-draft.epub"],

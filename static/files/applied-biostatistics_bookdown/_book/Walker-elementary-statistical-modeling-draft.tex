@@ -125,7 +125,7 @@
   \postauthor{\par}
       \predate{\centering\large\emph}
   \postdate{\par}
-    \date{Draft: 2018-12-02}
+    \date{Draft: 2018-12-17}
 
 \usepackage{booktabs}
 \usepackage{amsthm}
@@ -7422,6 +7422,566 @@ biocontrol service of parasitoids. Journal of Applied Ecology, 52(3),
 source URL: \url{https://datadryad.org/resource/doi:10.5061/dryad.bj001}
 
 source file: ``4\_Parastism\_Fig\_6.csv''
+
+\chapter{Linear mixed models}\label{linear-mixed-models}
+
+\section{Block and repeated measures
+effects}\label{block-and-repeated-measures-effects}
+
+Researchers often collect data in batches, for example
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Researchers interested in the effects of insectivorous birds on tree
+  seedling performance in a forest stake out ten 1 m\(^2\) plots and use
+  a wire-mesh cage to cover half of each plot \footnote{Giffard, B.,
+    Corcket, E., Barbaro, L., \& Jactel, H. (2012). Bird predation
+    enhances tree seedling resistance to insect herbivores in
+    contrasting forest habitats. Oecologia, 168(2), 415-424}. The cage
+  allows insect herbivores into the seedlings inside but excludes
+  insectivorous birds that eat the insects from the seedlings. In every
+  plot, five seedlings are planted within the exclosure and five outside
+  of the exclosure. At the end of the experiment, the total leaf mass is
+  measured on all seedlings. Small, uncontrolled, environmental factors
+  (including soil factors and density of insectivorous birds) will
+  differ between plots but will be common to all seedlings within a plot
+  and we would expect a common response to this uncontrolled variation
+  on top of the differential response to each treatment. As a
+  consequence, the ten measures of leaf mass within a plot are not
+  independent.
+\item
+  A nutrition researcher wants to compare the effect of glucose
+  vs.~fructose on glucose metabolism in humans. Ten individuals are
+  recruited. Each individual has blood insulin measured 60 minutes after
+  a noon meal over six successive days. The meal alternates between high
+  glucose and high fructose on each day. Each individual has three
+  measures under high glucose treatment and three measures under high
+  fructose treatment. Small, uncontrolled, environmental factors
+  (including metabolic variation, other meals, activity levels) will
+  differ between the individuals but be common within an individual and
+  we would expect a common response to this uncontrolled variation on
+  top of the differential response to each treatment. As a consequence,
+  the six measures of insulin within an individual are not independent.
+\item
+  A researcher is using a mouse model to compare growth of a wildtype
+  and engineered mutant strain of \emph{Staphylococcus}. A small spot on
+  both right and left forelimbs of ten mice is shaved and abraded. The
+  two strains are randomly assigned to a side (so each mouse is infected
+  with each strain). Small, uncontrolled, environmental factors
+  (including immune responses) will differ between the mice but be
+  common between the two limbs within a mouse and we would expect a
+  common response to this uncontrolled variation on top of the
+  differential response to each treatment. As a consequence, the two
+  measures of growth within a mouse are not independent.
+\item
+  An ecologist wants to measure the effect of an invasive plant on the
+  reproduction of a native plant. They stake-out ten 2 m\(^2\) plots in
+  a forest and divide each plot into four quadrants, with each quadrant
+  assigned a different treatment: control, activated carbon (a
+  procedural control), extract from the invasive plant's leaves, and
+  both activated carbon and extract from the invasive plant's leaves.
+  The response is seedling count. Small, uncontrolled, environmental
+  factors (including soil, drainage, and light) will differ between
+  plots but will will be common to all four quadrants within a plot and
+  we would expect a common response to this uncontrolled variation on
+  top of the differential response to each treatment. As a consequence,
+  the four sets of counts within a plot are not independent.
+\item
+  An ecologist wants to measure the effect of habitat on chick growth in
+  a bird. Five individuals nest in artifical nest boxes built on the
+  boundary between the forest and a large, agricultural field. Five
+  other individuals nest in boxes built deep in the interior of the
+  forest. Chicks in each nest are weighed 13 days after hatching. Small,
+  uncontrolled, environmental factors (including parenting, food
+  availablity, temperature, etc.) will differ between the nests but be
+  common within the nests and we would expect a common response to this
+  uncontrolled variation on top of the differential response to each
+  treatment. As a consequence, the measures of weight within a nest are
+  not independent.
+\item
+  A physiologists has skeletal muscle cells growing in 5 control
+  cultures, and 5 treated cultures. The \(Y\) variable is cell diameter,
+  which is measured in 10 cells per culture. Small, uncontrolled,
+  environmental factors (including chemical) will differ between
+  cultures but will be common to all cells within a culture and we would
+  expect a common response to this uncontrolled variation on top of the
+  differential response to each treatment. As a consequence, the ten
+  measures of diameter within a culture are not independent.
+\item
+  A behavioral biologist wants to measure the effect of a predator fish
+  on the preferred feeding location (open water or vegetation) of a prey
+  fish. Ten tanks are set up with equal amounts of vegetated and
+  unvegetated area. One-third of each tank is screened off to house a
+  predator fish, which are added to five of the tanks. Ten prey fish are
+  added to each tank. The response is minutes spent foraging in the open
+  water as a fraction of total time foraging, which is measured in each
+  fish in each tank. Small, uncontrolled, environmental factors
+  (including temperature, water chemistry, light, and fish behavior)
+  will differ between the tanks but be common within tanks and we would
+  expect a common response to this uncontrolled variation on top of the
+  differential response to each treatment. As a consequence, the ten
+  measures of foraging of each fish within a tank are not independent.
+\end{enumerate}
+
+The plots in experiment 1, individuals in experiment 2, mice in
+experiment 3, plots in experiment 4, nests in experiment 5, cultures in
+experiment 6, and tanks in experiment 7 are the experimental units,
+meaning that it is at this level that the experimenter is controlling
+the conditions. There is variation among treatments due to treatment
+effects, variation within treatments due to sampling, and variation
+within units due to a shared or common environments. This within batch
+variation is due to \textbf{block} effects. The
+plots/individuals/mice/nests/cultures/tanks are often referred to as
+\textbf{blocks}. The multiple measures within a block are often called
+\textbf{repeated measures}, especially if the block is an experimental
+animal such as a mouse or human. If multiple measures within a treatment
+level within a block (that is, within a \(block \times treatment\)
+combination) are taken over time, the data are \textbf{longitudinal}.
+Sometimes in cell biology, the subsamples within a treatment within a
+block are called ``replicates'', as they are replicates of this
+\(block \times treatment\) combination, but this can be confusing
+because the treatments are replicated at the level of the block and not
+at the level of the subsamples within a treatment by block combination.
+The blocks are the independent experimental units. Instead the multiple
+measures of the response within a \(block \times treatment\) combination
+are \textbf{subsamples}.
+
+Experiments 1 and 2 are examples of a \textbf{complete randomized block
+with subsampling} design. ``Complete'' means that each block has all
+treatment levels or combinations of levels if there is more than one
+factor. Experiments 3 and 4 are examples of a \textbf{complete
+randomized block} design. The blocks are complete but there is only one
+measure of the response per treatment. Experiments 5, 6, and 7 are
+examples of an \textbf{incomplete randomized blocks} design. The blocks
+are incomplete because they do not contain less than all treatment
+levels and combinations. In these examples, each block contains only one
+treatment level.
+
+\section{Block (repeated measures) effects in statistical
+models}\label{block-repeated-measures-effects-in-statistical-models}
+
+In all of the above examples, the researcher is interested in the
+treatment effect but not the variation due to differences among the
+blocks. The blocks are nuissance factors that add additional variance to
+the response, with the consequence that estimates of treatment effects
+are less precise, unless the varriance due to the blocks is explicitly
+modeled. Including block structure in the design and in the statistical
+model is known as \textbf{blocking}. A natural way to think about the
+block factor is as a \textbf{random effect}, meaning that plots in
+experiment 1 or the mice in experiment 3 are simply random samples from
+a population of plots or mice. Modeling this using the residual-error
+specification looks like
+
+\begin{equation}
+y_{ij} = (\beta_{0} + \beta_{0j}) + (\beta_{1} + \beta_{1j}) x_i + \varepsilon_i 
+\label{eq:lmm-spec1}
+\end{equation}
+
+where \(i\) indexes the observation and \(j\) indexes the block
+(culture, plot, mouse, etc). The intercept parameter \(\beta_{0j}\) is a
+\textbf{random intercept} and the slope parameter \(\beta_{1j}\) is a
+\textbf{random slope}. The random intercept has a \textbf{fixed}
+component (\(\beta_0\)) that is common to all observations and a random
+component (\(\beta_{0j}\)) that is common within a block but differs
+among blocks. In the above equation, I've used parentheses to show how
+these combine into the random intercept that is unique for each block.
+Similarly, the random slope has a fixed part (\(\beta_1\)) that is
+common to all observations and a random component (\(\beta_{1j}\)) that
+is common within a block but differs among blocks. Again, these are
+collected within a pair of parentheses in the equation above.
+
+Linear mixed models are called ``mixed models'' because they are a mix
+of fixed and random components. Another useful way to specify this model
+is to think about it hierarchically, using
+
+\begin{align}
+y_{ij} &= \beta_{0j} + \beta_{1j}x_i + \varepsilon_i \\
+\varepsilon_i &\sim N(0, \sigma) \\
+\beta_{0j} &= \beta_{0} + N(0, \sigma_{0}) \\
+\beta_{1j} &= \beta_{1} + N(0, \sigma_{1})
+\label{eq:lmm-spec2}
+\end{align}
+
+\% The first line states that the response is a function of a
+block-specific intercept and a block specific slope plus some error that
+is unique to each observation. The third and fourth lines state that
+these block-specific effects are themselves a function of a common
+effect and a random term that is unique to each block. That is, we have
+a hierarchical or multi-level structure to the model. Line 1 is the top
+level and the effects that are specified in line 1 are a function of
+effects at a second, lower level, which are specified in lines 3 and 4.
+Because of this structure, linear mixed models are sometimes called
+hierarchical or multi-level models.
+
+Finally, it's useful to think how to specify a linear mixed model using
+the random-draw specification, as this leads naturally to generalized
+linear mixed models, or GLMMs.
+
+\begin{align}
+y_{ij} &\sim N(\mu{ij}, \sigma) \\
+\mu{ij} &=\beta_{0j} + \beta_{1j}x_i \\
+\beta_{0j} &\sim N(\beta_0, \sigma_0) \\
+\beta_{1j} &\sim N(\beta_1, \sigma_1)
+\label{eq:lmm-spec3}
+\end{align}
+
+\section{Visualizing block effects}\label{visualizing-block-effects}
+
+To visualize random effects due to block, Let's create fake data that
+look something like experiments 1 or 2, with a single factor with two
+treatment levels, \(k=10\) blocks, and \(n=3\) measures for each
+treatment level within each block. This is a randomized complete block
+design with subsampling and has a total of \(N=2 \times k \times n\)
+measures of \(Y\) (and rows of the data.table).
+
+\begin{figure}
+\centering
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/lmm1-sim1-1.pdf}
+\caption{\label{fig:lmm1-sim1}Visualizing random effects. A) The response in
+the two treatment levels. B) The same data but separated by block. The
+blue line is at the control mean and the yellow line is at the treated
+mean. The black dots are the mean response within a block.}
+\end{figure}
+
+Figure \ref{fig:lmm1-sim1}A shows the response as a function of
+treatment. The responses are nicely symmetric around the treatment means
+(the blue and yellow lines). A linear model (and generalized linear
+models, more generally) assumes that a response, conditional on the
+\(X\), are independent. Figure \ref{fig:lmm1-sim1}B shows how this
+assumption is violated for the simulated data. That pattern of residuals
+within a block around the treatment means does not look at all random.
+Instead, there is a distinct pattern within a block for the points to
+cluster either below the treatment means or above the treatment means.
+In blocks a, b, c, g, and h, all or most of the responses are below
+their treatment mean (for example in block a, all the blue points are
+below the blue line and 2 of 3 yellow points are below the yellow line).
+In blocks, e, f, i, and j, all or most of the responses are above their
+treatment mean (for example, in block i, all three yellow points are
+above the yellow line and 2 of 3 blue points are above the blue line).
+In other words, the responses within a block covary together. For a
+linear model, this is known as \textbf{correlated error}.
+
+\section{linear mixed models can increase precision of point
+estimates}\label{linear-mixed-models-can-increase-precision-of-point-estimates}
+
+Block effects are differences in expected mean response among blocks due
+to unmeasured factors that are shared within blocks but not among
+blocks. A classical linear model fails to model this component of the
+total variance in the response, and as a consquence, this block-specific
+variance becomes part of the error variance. One way to visualize this
+is by moving the random intercept and random slope components of
+equation \eqref{eq:lmm-spec1} to the right and combining it with the
+observation-specific error
+
+\begin{equation}
+y_{ij} = \beta_{0} + \beta_{1} x_i + (\beta_{0j} + \beta_{1j} + \varepsilon_i)
+\label{eq:lmm-spec1b}
+\end{equation}
+
+\% which shows that the random effects \(\beta_{0j}\) and \(\beta_{1j}\)
+are modeled as error in a linear model. As a consequence, the residual
+variance is larger and, therefore, the standard errors of point
+estimates, including means, coefficients of the model, and contrasts
+from the model, are larger. Here is the table of model coefficients of
+the data in Figure \ref{fig:lmm1-sim1} fitted using a classical linear
+model
+
+\begin{verbatim}
+##               Estimate Std. Error  t value     Pr(>|t|)
+## (Intercept) 10.0235749  0.2439544 41.08791 1.393185e-44
+## TreatmentT+  0.6884787  0.3450036  1.99557 5.068466e-02
+\end{verbatim}
+
+and a linear mixed model
+
+\begin{verbatim}
+##               Estimate Std. Error       df   t value     Pr(>|t|)
+## (Intercept) 10.0235749  0.3954692 9.000000 25.346031 1.114196e-09
+## TreatmentT+  0.6884787  0.2700725 8.999999  2.549237 3.123383e-02
+\end{verbatim}
+
+\textbf{NHST blues} -- A paired \emph{t}-test is equivalent to the
+special case of the linear mixed model when there is a single factor
+with two treatment levels and \(n=1\) measure for each treatment level
+within each block. A linear mixed model is much more flexible than a
+paired \emph{t}-test because it allows a researcher to add treatment
+levels, additional factors, and covariates to the model. In addition, a
+and it can better handle missing data.
+
+Here is a simple simulation of a design that is similar to experiment 3
+with a single factor with two treatment levels and both levels applied
+to the same experimental unit.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{n <-}\StringTok{ }\DecValTok{10} \CommentTok{# number of blocks}
+\NormalTok{x <-}\StringTok{ }\KeywordTok{rep}\NormalTok{(}\KeywordTok{c}\NormalTok{(}\StringTok{"Cn"}\NormalTok{,}\StringTok{"T+"}\NormalTok{), }\DataTypeTok{each=}\NormalTok{n) }\CommentTok{# treatments}
+\NormalTok{id <-}\StringTok{ }\KeywordTok{rep}\NormalTok{(letters[}\DecValTok{1}\OperatorTok{:}\NormalTok{n], }\DecValTok{2}\NormalTok{) }\CommentTok{# block id}
+\NormalTok{y <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\KeywordTok{rnorm}\NormalTok{(n, }\DataTypeTok{mean=}\DecValTok{10}\NormalTok{), }\KeywordTok{rnorm}\NormalTok{(n, }\DataTypeTok{mean=}\DecValTok{11}\NormalTok{))}
+\NormalTok{fake_data <-}\StringTok{ }\KeywordTok{data.table}\NormalTok{(}\DataTypeTok{Y=}\NormalTok{y, }\DataTypeTok{X=}\NormalTok{x, }\DataTypeTok{ID=}\NormalTok{id)}
+\KeywordTok{coef}\NormalTok{(}\KeywordTok{summary}\NormalTok{(}\KeywordTok{lme}\NormalTok{(Y}\OperatorTok{~}\NormalTok{X, }\DataTypeTok{random =} \OperatorTok{~}\DecValTok{1}\OperatorTok{|}\NormalTok{ID, }\DataTypeTok{correlation=}\KeywordTok{corCompSymm}\NormalTok{(}\DataTypeTok{form=}\OperatorTok{~}\DecValTok{1}\OperatorTok{|}\NormalTok{ID), }\DataTypeTok{data=}\NormalTok{fake_data)))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##                 Value Std.Error DF   t-value      p-value
+## (Intercept) 10.274104 0.3632787  9 28.281608 4.201969e-10
+## XT+          1.057625 0.4678365  9  2.260673 5.012143e-02
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{t.test}\NormalTok{(Y}\OperatorTok{~}\NormalTok{X, }\DataTypeTok{data=}\NormalTok{fake_data, }\DataTypeTok{paired=}\OtherTok{TRUE}\NormalTok{)}\OperatorTok{$}\NormalTok{p.value}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0.05012143
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# now delete two random observations from the treated level}
+\NormalTok{NA_rows <-}\StringTok{ }\KeywordTok{sample}\NormalTok{(}\DecValTok{1}\OperatorTok{:}\NormalTok{n, }\DataTypeTok{size=}\DecValTok{2}\NormalTok{)}
+\NormalTok{fake_data[, Y2}\OperatorTok{:}\ErrorTok{=}\NormalTok{Y] }\CommentTok{# copy Y column}
+\NormalTok{fake_data[(NA_rows}\OperatorTok{+}\DecValTok{10}\NormalTok{), Y2}\OperatorTok{:}\ErrorTok{=}\OtherTok{NA}\NormalTok{] }\CommentTok{# replace the two obs in Y2 with NA}
+\KeywordTok{coef}\NormalTok{(}\KeywordTok{summary}\NormalTok{(}\KeywordTok{lme}\NormalTok{(Y2}\OperatorTok{~}\NormalTok{X, }\DataTypeTok{random =} \OperatorTok{~}\DecValTok{1}\OperatorTok{|}\NormalTok{ID, }\DataTypeTok{correlation=}\KeywordTok{corCompSymm}\NormalTok{(}\DataTypeTok{form=}\OperatorTok{~}\DecValTok{1}\OperatorTok{|}\NormalTok{ID), }
+                 \DataTypeTok{data=}\NormalTok{fake_data,}
+                 \DataTypeTok{na.action=}\NormalTok{na.exclude)))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##                 Value Std.Error DF   t-value      p-value
+## (Intercept) 10.274104 0.3668354  9 28.007398 4.582957e-10
+## XT+          1.253132 0.5103134  7  2.455613 4.374577e-02
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# cannot run t-test with NA so re-run by deleting matching ID}
+\NormalTok{fake_data[, Y3}\OperatorTok{:}\ErrorTok{=}\NormalTok{Y2] }\CommentTok{# copy Y2 column}
+\NormalTok{fake_data[NA_rows, Y3}\OperatorTok{:}\ErrorTok{=}\OtherTok{NA}\NormalTok{] }\CommentTok{# replace the two obs in Y3 with NA}
+\KeywordTok{t.test}\NormalTok{(Y3}\OperatorTok{~}\NormalTok{X, }\DataTypeTok{data=}\NormalTok{fake_data, }\DataTypeTok{paired=}\OtherTok{TRUE}\NormalTok{, }\DataTypeTok{na.action=}\NormalTok{na.omit)}\OperatorTok{$}\NormalTok{p.value}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0.04871176
+\end{verbatim}
+
+A linear mixed model specifically estimates the value of \(\beta_{0j}\)
+and \(\beta_{1j}\) for each block
+
+\section{A linear mixed models are
+flexible}\label{a-linear-mixed-models-are-flexible}
+
+The linear mixed model above specifies a random effect due to the block
+for each term (the intercept and the treatment effect, or ``slope'') in
+the model but a researcher might limit the random effect to the
+intercept, or less commonly, the slope. Excluding the random slope from
+the model above results in
+
+\begin{equation}
+y_{ij} = (\beta_{0} + \beta_{0j}) + \beta_{1}x_i + \varepsilon_i 
+\label{eq:lmm-spec1b}
+\end{equation}
+
+We might use random-intercept model if we think that features of the
+block would effect the mean response in that block but not effect the
+treatment. For example, differences in the immune systems among the
+individual mice in experiment 3 might effect growth in both the
+wild-type and engineered strains of staph but won't effect the
+difference in growth between wild-type and engineered strains
+
+The models above specify a block effect for each term in the model but
+the fixed part of the model is relatively simple, there is a single
+intercept and a categorical variable with two levels. What if the fixed
+part of the model is more complex? A \(2 \times 3\) factorial model has
+6 terms: an intercept, a coefficient for the effect of the second level
+of factor 1, a coefficient for the effects of each of the non-reference
+levels of factor 2, and the two interaction coefficient. The random
+block effect can be added to each of these terms
+
+\begin{equation}
+y_{ij} = (\beta_{0} + \beta_{0j}) + (\beta_{1} + \beta_{1j}) x_{1i} + (\beta_{2} + \beta_{2j}) x_{2i} + (\beta_{3} + \beta_{3j}) x_{3i} + (\beta_{4} + \beta_{4j}) x_{1i}x_{2i} + (\beta_{5} + \beta_{5j}) x_{1i}x_{3i} + \varepsilon_i
+\label{eq:lmm-spec1c}
+\end{equation}
+
+\textbf{Not more than you should know} -- Matrix algebra makes the
+specification of a linear mixed model much more manageable than the
+algebra in \ref{lmm-spec1c}. To use matrix algebra, the fixed and random
+terms are arranged together
+
+\begin{equation}
+y_{ij} = (\beta_{0} + \beta_{1}x_{1i} + \beta_{2}x_{2i} + \beta_{3}x_{3i} + \beta_{4}x_{1i}x_{2i} + \beta_{5}x_{1i}x_{3i}) + (\beta_{0j} + \beta_{1j}x_{1i} + \beta_{2j}x_{2i} + \beta_{3j}x_{3i} + \beta_{4j}x_{1i}x_{2i} + \beta_{5j}x_{1i}x_{3i}) + \varepsilon_i
+\label{eq:lmm-spec1c}
+\end{equation}
+
+Then, the fixed terms are \(\boldsymbol{x_i}^\top \boldsymbol{\beta}\)
+and the random terms are \(\boldsymbol{x_i}^\top \boldsymbol{\beta_j}\).
+Because a linear mixed model may contain
+
+\begin{equation}
+\mathbf{y_{ij}} = \mathbf{x_i^\top \beta} + \mathbf{x_i^\top u} + \mathbf{\varepsilon_{ij}}
+\end{equation}
+
+Linear mixed models are used to avoid pseudoreplication
+
+\section{Linear mixed models shrink coefficients by partial
+pooling}\label{linear-mixed-models-shrink-coefficients-by-partial-pooling}
+
+\section{Working in R}\label{working-in-r-5}
+
+The major function for working with linear mixed models is
+\texttt{lmer()} from the lme4 package. An older, and still sometimes
+used function is \texttt{lme()} from the nlme package. The authors of
+the lme4 package argue that the df in a linear mixed model are too
+approximate for a useful \(p\)-value and, consequently, the \texttt{lme}
+function does not return a \(p\)-value. Many biological researchers want
+a \(p\)-value and typically use the \texttt{lmerTest} package to get
+this.
+
+\subsection{coral data}\label{coral-data}
+
+\textbf{Source} Zill, J. A., Gil, M. A., \& Osenberg, C. W. (2017). When
+environmental factors become stressors: interactive effects of vermetid
+gastropods and sedimentation on corals. Biology letters, 13(3),
+20160957.
+
+\textbf{Dryad source}
+\url{https://datadryad.org/resource/doi:10.5061/dryad.p59n8}
+
+\textbf{file name} ``VermetidSedimentData\_ZillGilOsenberg\_DRYAD.xlsx''
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{folder <-}\StringTok{ "Data from When environmental factors become stressors- interactive effects of vermetid gastropods and sedimentation on corals"}
+\NormalTok{fn <-}\StringTok{ "VermetidSedimentData_ZillGilOsenberg_DRYAD.xlsx"}
+\NormalTok{sheet_i <-}\StringTok{ "Coral Growth Rate Data"}
+\NormalTok{file_path <-}\StringTok{ }\KeywordTok{paste}\NormalTok{(data_path, folder, fn, }\DataTypeTok{sep=}\StringTok{"/"}\NormalTok{)}
+\NormalTok{coral <-}\StringTok{ }\KeywordTok{data.table}\NormalTok{(}\KeywordTok{read_excel}\NormalTok{(file_path, }\DataTypeTok{sheet=}\NormalTok{sheet_i))}
+\KeywordTok{setnames}\NormalTok{(coral, }\DataTypeTok{old=}\KeywordTok{colnames}\NormalTok{(coral), }\DataTypeTok{new=}\KeywordTok{clean_label}\NormalTok{(}\KeywordTok{colnames}\NormalTok{(coral)))}
+\NormalTok{coral[, Vermetids}\OperatorTok{:}\ErrorTok{=}\KeywordTok{factor}\NormalTok{(Vermetids)]}
+\NormalTok{coral[, Sediment}\OperatorTok{:}\ErrorTok{=}\KeywordTok{factor}\NormalTok{(Sediment)]}
+\end{Highlighting}
+\end{Shaded}
+
+\texttt{lmer} adds the random component to the formula. \texttt{lme}
+adds the random component as a separate argument
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# to reproduce the results}
+\CommentTok{# observation 2 should be excluded from the analysis}
+\NormalTok{inc <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{3}\OperatorTok{:}\KeywordTok{nrow}\NormalTok{(coral))}
+
+\CommentTok{# specification using lmer}
+\CommentTok{# random intercept only}
+\NormalTok{fit.lmer1 <-}\StringTok{ }\KeywordTok{lmer}\NormalTok{(GrowthRate }\OperatorTok{~}\StringTok{ }\NormalTok{Vermetids}\OperatorTok{*}\NormalTok{Sediment }\OperatorTok{+}\StringTok{ }\NormalTok{(}\DecValTok{1}\OperatorTok{|}\NormalTok{Block), }\DataTypeTok{data=}\NormalTok{coral[inc])}
+\CommentTok{# random intercept and slope}
+\NormalTok{fit.lmer2 <-}\StringTok{ }\KeywordTok{lmer}\NormalTok{(GrowthRate }\OperatorTok{~}\StringTok{ }\NormalTok{Vermetids}\OperatorTok{*}\NormalTok{Sediment }\OperatorTok{+}\StringTok{ }\NormalTok{(Vermetids}\OperatorTok{|}\NormalTok{Block) }\OperatorTok{+}\StringTok{ }\NormalTok{(Sediment}\OperatorTok{|}\NormalTok{Block), }\DataTypeTok{data=}\NormalTok{coral[inc])}
+\CommentTok{# random intercept and slope}
+\NormalTok{fit.lmer3 <-}\StringTok{ }\KeywordTok{lmer}\NormalTok{(GrowthRate }\OperatorTok{~}\StringTok{ }\NormalTok{Vermetids}\OperatorTok{*}\NormalTok{Sediment }\OperatorTok{+}\StringTok{ }\NormalTok{(Vermetids}\OperatorTok{|}\NormalTok{Block) }\OperatorTok{+}\StringTok{ }\NormalTok{(Sediment}\OperatorTok{|}\NormalTok{Block), }\DataTypeTok{data=}\NormalTok{coral[inc])}
+\CommentTok{# to include the interaction as a random effect we'd need subsampling within each factorial treatment combination}
+
+\CommentTok{# specification using lme}
+\NormalTok{fit.lme <-}\StringTok{ }\KeywordTok{lme}\NormalTok{(GrowthRate }\OperatorTok{~}\StringTok{ }\NormalTok{Vermetids}\OperatorTok{*}\NormalTok{Sediment, }\DataTypeTok{random=} \OperatorTok{~}\DecValTok{1}\OperatorTok{|}\NormalTok{Block, }\DataTypeTok{data=}\NormalTok{coral[inc])}
+
+\CommentTok{# results using lmer fit}
+\KeywordTok{coefficients}\NormalTok{(fit.lmer1)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## $Block
+##    (Intercept)  Vermetids1 Sediment1 Vermetids1:Sediment1
+## 1     1.205030 0.004655556 0.2852037           -0.7735482
+## 2     1.336057 0.004655556 0.2852037           -0.7735482
+## 3     1.213975 0.004655556 0.2852037           -0.7735482
+## 4     1.262806 0.004655556 0.2852037           -0.7735482
+## 6     1.320778 0.004655556 0.2852037           -0.7735482
+## 7     1.201253 0.004655556 0.2852037           -0.7735482
+## 8     1.314433 0.004655556 0.2852037           -0.7735482
+## 9     1.199842 0.004655556 0.2852037           -0.7735482
+## 10    1.361526 0.004655556 0.2852037           -0.7735482
+## 
+## attr(,"class")
+## [1] "coef.mer"
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{coefficients}\NormalTok{(}\KeywordTok{summary}\NormalTok{(fit.lmer1))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##                          Estimate Std. Error       df     t value
+## (Intercept)           1.268411111  0.1541678 30.42810  8.22747196
+## Vermetids1            0.004655556  0.2091414 22.94176  0.02226033
+## Sediment1             0.285203739  0.2160141 23.53066  1.32030164
+## Vermetids1:Sediment1 -0.773548184  0.3006696 23.24572 -2.57275179
+##                          Pr(>|t|)
+## (Intercept)          3.129452e-09
+## Vermetids1           9.824328e-01
+## Sediment1            1.994339e-01
+## Vermetids1:Sediment1 1.693478e-02
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{fit.emm <-}\StringTok{ }\KeywordTok{emmeans}\NormalTok{(fit.lmer1, }\DataTypeTok{specs=}\KeywordTok{c}\NormalTok{(}\StringTok{"Vermetids"}\NormalTok{, }\StringTok{"Sediment"}\NormalTok{))}
+\KeywordTok{summary}\NormalTok{(}\KeywordTok{contrast}\NormalTok{(fit.emm, }\DataTypeTok{method=}\StringTok{"revpairwise"}\NormalTok{, }\DataTypeTok{adjust=}\StringTok{"none"}\NormalTok{), }\DataTypeTok{infer=}\KeywordTok{c}\NormalTok{(}\OtherTok{TRUE}\NormalTok{, }\OtherTok{TRUE}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##  contrast      estimate        SE    df   lower.CL    upper.CL t.ratio
+##  1,0 - 0,0  0.004655556 0.2091414 23.04 -0.4279489  0.43725999   0.022
+##  0,1 - 0,0  0.285203739 0.2167702 23.62 -0.1625690  0.73297646   1.316
+##  0,1 - 1,0  0.280548184 0.2167702 23.62 -0.1672245  0.72832090   1.294
+##  1,1 - 0,0 -0.483688889 0.2091414 23.04 -0.9162933 -0.05108446  -2.313
+##  1,1 - 1,0 -0.488344444 0.2091414 23.04 -0.9209489 -0.05574001  -2.335
+##  1,1 - 0,1 -0.768892628 0.2167702 23.62 -1.2166653 -0.32111991  -3.547
+##  p.value
+##   0.9824
+##   0.2009
+##   0.2081
+##   0.0300
+##   0.0286
+##   0.0017
+## 
+## Confidence level used: 0.95
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{fit.lmer1.ml <-}\StringTok{ }\KeywordTok{lmer}\NormalTok{(GrowthRate }\OperatorTok{~}\StringTok{ }\NormalTok{Vermetids}\OperatorTok{*}\NormalTok{Sediment }\OperatorTok{+}\StringTok{ }\NormalTok{(}\DecValTok{1}\OperatorTok{|}\NormalTok{Block), }\DataTypeTok{data=}\NormalTok{coral[inc], }\DataTypeTok{REML=}\OtherTok{FALSE}\NormalTok{)}
+\CommentTok{# random intercept and slope}
+\NormalTok{fit.lmer3.ml <-}\StringTok{ }\KeywordTok{lmer}\NormalTok{(GrowthRate }\OperatorTok{~}\StringTok{ }\NormalTok{Vermetids}\OperatorTok{*}\NormalTok{Sediment }\OperatorTok{+}\StringTok{ }\NormalTok{(Vermetids}\OperatorTok{|}\NormalTok{Block) }\OperatorTok{+}\StringTok{ }\NormalTok{(Sediment}\OperatorTok{|}\NormalTok{Block), }\DataTypeTok{data=}\NormalTok{coral[inc], }\DataTypeTok{REML=}\OtherTok{FALSE}\NormalTok{)}
+
+\KeywordTok{AIC}\NormalTok{(fit.lmer1.ml)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 52.80349
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{AIC}\NormalTok{(fit.lmer3.ml)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 61.04197
+\end{verbatim}
+
+The formula for \texttt{lmer}
 
 \chapter*{Appendix 1: Getting Started with
 R}\label{appendix-1-getting-started-with-r}
