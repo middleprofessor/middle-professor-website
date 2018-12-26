@@ -125,7 +125,7 @@
   \postauthor{\par}
       \predate{\centering\large\emph}
   \postdate{\par}
-    \date{Draft: 2018-12-17}
+    \date{Draft: 2018-12-25}
 
 \usepackage{booktabs}
 \usepackage{amsthm}
@@ -3313,7 +3313,7 @@ supplements on vole lifespan? Best practice includes reporting the raw
 data with a summary distribution and treatment effects with CIs. ``Raw
 data'' means the individual lifespans as a function of treatment level.
 
-\subsubsection{Harrel Plot of the data}\label{harrel-plot-of-the-data}
+\subsubsection{Harrell Plot of the data}\label{harrell-plot-of-the-data}
 
 \begin{figure}
 \centering
@@ -7425,8 +7425,7 @@ source file: ``4\_Parastism\_Fig\_6.csv''
 
 \chapter{Linear mixed models}\label{linear-mixed-models}
 
-\section{Block and repeated measures
-effects}\label{block-and-repeated-measures-effects}
+\section{Random effects}\label{random-effects}
 
 Researchers often collect data in batches, for example
 
@@ -7525,22 +7524,27 @@ Researchers often collect data in batches, for example
   measures of foraging of each fish within a tank are not independent.
 \end{enumerate}
 
-The plots in experiment 1, individuals in experiment 2, mice in
-experiment 3, plots in experiment 4, nests in experiment 5, cultures in
-experiment 6, and tanks in experiment 7 are the experimental units,
-meaning that it is at this level that the experimenter is controlling
-the conditions. There is variation among treatments due to treatment
-effects, variation within treatments due to sampling, and variation
-within units due to a shared or common environments. This within batch
-variation is due to \textbf{block} effects. The
-plots/individuals/mice/nests/cultures/tanks are often referred to as
-\textbf{blocks}. The multiple measures within a block are often called
-\textbf{repeated measures}, especially if the block is an experimental
-animal such as a mouse or human. If multiple measures within a treatment
-level within a block (that is, within a \(block \times treatment\)
-combination) are taken over time, the data are \textbf{longitudinal}.
-Sometimes in cell biology, the subsamples within a treatment within a
-block are called ``replicates'', as they are replicates of this
+The batches -- plots in experiment 1, individuals in experiment 2, mice
+in experiment 3, plots in experiment 4, nests in experiment 5, cultures
+in experiment 6, and tanks in experiment 7 -- are often referred to as
+\textbf{blocks} or \textbf{clusters}. I'll generally use the term
+``block'' in this book. The blocks are the experimental units, meaning
+that it is at this level that the experimenter is controlling the
+conditions. There is systematic variation at two levels: among
+treatments due to treatment effects and among blocks due to
+\textbf{block effects}. This among-block variation is the \textbf{random
+effect}. An assumption of modeling random effects is that the blocks
+(plots/individuals/mice/nests/cultures/tanks) are a random sample of the
+blocks that could have been sampled. This is often not strictly true as
+blocks are often \textbf{convenience samples}.
+
+The multiple measures within a block are often called \textbf{repeated
+measures}, especially if the block is an experimental animal such as a
+mouse or human. If multiple measures within a treatment level within a
+block (that is, within a \(block \times treatment\) combination) are
+taken over time, the data are \textbf{longitudinal}. Sometimes in cell
+biology, the subsamples within a treatment within a block are called
+``replicates'', as they are replicates of this
 \(block \times treatment\) combination, but this can be confusing
 because the treatments are replicated at the level of the block and not
 at the level of the subsamples within a treatment by block combination.
@@ -7559,8 +7563,8 @@ are incomplete because they do not contain less than all treatment
 levels and combinations. In these examples, each block contains only one
 treatment level.
 
-\section{Block (repeated measures) effects in statistical
-models}\label{block-repeated-measures-effects-in-statistical-models}
+\section{Random effects in statistical
+models}\label{random-effects-in-statistical-models}
 
 In all of the above examples, the researcher is interested in the
 treatment effect but not the variation due to differences among the
@@ -7585,12 +7589,36 @@ where \(i\) indexes the observation and \(j\) indexes the block
 \textbf{random slope}. The random intercept has a \textbf{fixed}
 component (\(\beta_0\)) that is common to all observations and a random
 component (\(\beta_{0j}\)) that is common within a block but differs
-among blocks. In the above equation, I've used parentheses to show how
-these combine into the random intercept that is unique for each block.
-Similarly, the random slope has a fixed part (\(\beta_1\)) that is
-common to all observations and a random component (\(\beta_{1j}\)) that
-is common within a block but differs among blocks. Again, these are
-collected within a pair of parentheses in the equation above.
+among blocks (see table below). In the above equation, I've used
+parentheses to show how these combine into the random intercept that is
+unique for each block. Similarly, the random slope (treatment effect)
+has a fixed part (\(\beta_1\)) that is common to all observations and a
+random component (\(\beta_{1j}\)) that is common within a block but
+differs among blocks (see table below). Again, these are collected
+within a pair of parentheses in the equation above.
+
+\begin{table}
+
+\caption{\label{tab:lmm-table}The linear mixed model specified above estimates a fixed intercept and fixed slope (treatment effect) that are common to all observations and a random intercept and random slope for each block, each of which is common among observations within a block but differ among observations in different blocks.}
+\centering
+\begin{tabular}[t]{r|l|l|l|l}
+\hline
+block & \$b\_0\$ & \$b\_\{0j\}\$ & \$b\_1\$ & \$b\_\{1j\}\$\\
+\hline
+1 & \$b\_0\$ & \$b\_\{0,j=1\}\$ & \$b\_1\$ & \$b\_\{1,j=1\}\$\\
+\hline
+2 & \$b\_0\$ & \$b\_\{0,j=2\}\$ & \$b\_1\$ & \$b\_\{1,j=2\}\$\\
+\hline
+3 & \$b\_0\$ & \$b\_\{0,j=3\}\$ & \$b\_1\$ & \$b\_\{1,j=3\}\$\\
+\hline
+4 & \$b\_0\$ & \$b\_\{0,j=4\}\$ & \$b\_1\$ & \$b\_\{1,j=4\}\$\\
+\hline
+5 & \$b\_0\$ & \$b\_\{0,j=5\}\$ & \$b\_1\$ & \$b\_\{1,j=5\}\$\\
+\hline
+6 & \$b\_0\$ & \$b\_\{0,j=6\}\$ & \$b\_1\$ & \$b\_\{1,j=6\}\$\\
+\hline
+\end{tabular}
+\end{table}
 
 Linear mixed models are called ``mixed models'' because they are a mix
 of fixed and random components. Another useful way to specify this model
@@ -7604,7 +7632,7 @@ y_{ij} &= \beta_{0j} + \beta_{1j}x_i + \varepsilon_i \\
 \label{eq:lmm-spec2}
 \end{align}
 
-\% The first line states that the response is a function of a
+The first line states that the response is a function of a
 block-specific intercept and a block specific slope plus some error that
 is unique to each observation. The third and fourth lines state that
 these block-specific effects are themselves a function of a common
@@ -7626,6 +7654,44 @@ y_{ij} &\sim N(\mu{ij}, \sigma) \\
 \beta_{1j} &\sim N(\beta_1, \sigma_1)
 \label{eq:lmm-spec3}
 \end{align}
+
+\section{Linear mixed models are
+flexible}\label{linear-mixed-models-are-flexible}
+
+The linear mixed model in Equation \eqref{eq:lmm-spec1} specifies both a
+random intercept and a random slope but a researcher might limit the
+random effect to the intercept only, or less commonly, the slope only.
+Excluding the random slope from Equation \eqref{eq:lmm-spec1} results in
+the model
+
+\begin{equation}
+y_{ij} = (\beta_{0} + \beta_{0j}) + \beta_{1}x_i + \varepsilon_i 
+\label{eq:lmm-spec1b}
+\end{equation}
+
+We might use a random-intercept-only model if we think that features of
+the block would effect the mean response among blocks but not effect the
+difference in treatment level (or treatment effect) among blocks. For
+example, differences in the immune systems among the individual mice in
+experiment 3 might effect growth in both the wild-type and engineered
+strains of staph but won't effect the difference in growth between
+wild-type and engineered strains from one mouse to another.
+
+\textbf{Not more than you should know} -- For more complex mixed models,
+matrix algebra makes the specification of the model much more manageable
+than the scalar algebra in \ref{lmm-spec1b}.
+
+\begin{equation}
+\mathbf{y} = \mathbf{X}\boldsymbol{\beta} + \mathbf{Zu} + \boldsymbol{\varepsilon}
+\end{equation}
+
+where \(\mathbf{y}\) is the vector of the response,
+\(\mathbf{X}\boldsymbol{\beta}\) is the linear predictor of fixed
+effects and \(\mathbf{Zu}\) is the linear predictor of random effects.
+\(\mathbf{X}\) is the model matrix for the fixed effects and
+\(\boldsymbol{\beta}\) is the vector of fixed-effect terms (the fixed
+part of the intercept (\(\beta_0\)), including the fixed-effect
+coefficients for each of the
 
 \section{Visualizing block effects}\label{visualizing-block-effects}
 
@@ -7663,7 +7729,7 @@ above the yellow line and 2 of 3 blue points are above the blue line).
 In other words, the responses within a block covary together. For a
 linear model, this is known as \textbf{correlated error}.
 
-\section{linear mixed models can increase precision of point
+\section{Linear mixed models can increase precision of point
 estimates}\label{linear-mixed-models-can-increase-precision-of-point-estimates}
 
 Block effects are differences in expected mean response among blocks due
@@ -7702,34 +7768,36 @@ and a linear mixed model
 ## TreatmentT+  0.6884787  0.2700725 8.999999  2.549237 3.123383e-02
 \end{verbatim}
 
-\textbf{NHST blues} -- A paired \emph{t}-test is equivalent to the
-special case of the linear mixed model when there is a single factor
-with two treatment levels and \(n=1\) measure for each treatment level
-within each block. A linear mixed model is much more flexible than a
-paired \emph{t}-test because it allows a researcher to add treatment
-levels, additional factors, and covariates to the model. In addition, a
-and it can better handle missing data.
+The linear mixed model has increased precision (a smaller SE of the
+estimates) because it estimates the value of \(\beta_{0j}\) and
+\(\beta_{1j}\) for each block. The linear model does not estimate these
+parameters and the variance in these parameters is swept into the
+residual variance.
 
-Here is a simple simulation of a design that is similar to experiment 3
-with a single factor with two treatment levels and both levels applied
-to the same experimental unit.
+\textbf{NHST blues} -- A \textbf{paired t-test} is equivalent to the
+special case of a linear mixed model with a single factor with two
+treatment levels, \(k\) blocks, and a single measure of each treatment
+level within each block. A good example is the wild type vs.~engineered
+staph count in mice in experiment 3 above. A linear mixed model is much
+more flexible than a paired \emph{t}-test because it allows a researcher
+to add treatment levels, additional factors, and covariates to the
+model. In addition, a linear mixed model can handle missing data.
+
+Here is fake data similar in design to experiment 3 with a single factor
+with two treatment levels and both levels applied to the same
+experimental unit.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{n <-}\StringTok{ }\DecValTok{10} \CommentTok{# number of blocks}
-\NormalTok{x <-}\StringTok{ }\KeywordTok{rep}\NormalTok{(}\KeywordTok{c}\NormalTok{(}\StringTok{"Cn"}\NormalTok{,}\StringTok{"T+"}\NormalTok{), }\DataTypeTok{each=}\NormalTok{n) }\CommentTok{# treatments}
+\NormalTok{n <-}\StringTok{ }\DecValTok{10} \CommentTok{# number of mice (blocks)}
+\NormalTok{x <-}\StringTok{ }\KeywordTok{rep}\NormalTok{(}\KeywordTok{c}\NormalTok{(}\StringTok{"WT"}\NormalTok{,}\StringTok{"T+"}\NormalTok{), }\DataTypeTok{each=}\NormalTok{n) }\CommentTok{# treatments}
 \NormalTok{id <-}\StringTok{ }\KeywordTok{rep}\NormalTok{(letters[}\DecValTok{1}\OperatorTok{:}\NormalTok{n], }\DecValTok{2}\NormalTok{) }\CommentTok{# block id}
 \NormalTok{y <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\KeywordTok{rnorm}\NormalTok{(n, }\DataTypeTok{mean=}\DecValTok{10}\NormalTok{), }\KeywordTok{rnorm}\NormalTok{(n, }\DataTypeTok{mean=}\DecValTok{11}\NormalTok{))}
 \NormalTok{fake_data <-}\StringTok{ }\KeywordTok{data.table}\NormalTok{(}\DataTypeTok{Y=}\NormalTok{y, }\DataTypeTok{X=}\NormalTok{x, }\DataTypeTok{ID=}\NormalTok{id)}
-\KeywordTok{coef}\NormalTok{(}\KeywordTok{summary}\NormalTok{(}\KeywordTok{lme}\NormalTok{(Y}\OperatorTok{~}\NormalTok{X, }\DataTypeTok{random =} \OperatorTok{~}\DecValTok{1}\OperatorTok{|}\NormalTok{ID, }\DataTypeTok{correlation=}\KeywordTok{corCompSymm}\NormalTok{(}\DataTypeTok{form=}\OperatorTok{~}\DecValTok{1}\OperatorTok{|}\NormalTok{ID), }\DataTypeTok{data=}\NormalTok{fake_data)))}
 \end{Highlighting}
 \end{Shaded}
 
-\begin{verbatim}
-##                 Value Std.Error DF   t-value      p-value
-## (Intercept) 10.274104 0.3632787  9 28.281608 4.201969e-10
-## XT+          1.057625 0.4678365  9  2.260673 5.012143e-02
-\end{verbatim}
+The \emph{t}-test \emph{p}-value is
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -7741,108 +7809,211 @@ to the same experimental unit.
 ## [1] 0.05012143
 \end{verbatim}
 
+and the coefficient table of the fixed effect in the linear mixed model
+is
+
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{# now delete two random observations from the treated level}
-\NormalTok{NA_rows <-}\StringTok{ }\KeywordTok{sample}\NormalTok{(}\DecValTok{1}\OperatorTok{:}\NormalTok{n, }\DataTypeTok{size=}\DecValTok{2}\NormalTok{)}
-\NormalTok{fake_data[, Y2}\OperatorTok{:}\ErrorTok{=}\NormalTok{Y] }\CommentTok{# copy Y column}
-\NormalTok{fake_data[(NA_rows}\OperatorTok{+}\DecValTok{10}\NormalTok{), Y2}\OperatorTok{:}\ErrorTok{=}\OtherTok{NA}\NormalTok{] }\CommentTok{# replace the two obs in Y2 with NA}
-\KeywordTok{coef}\NormalTok{(}\KeywordTok{summary}\NormalTok{(}\KeywordTok{lme}\NormalTok{(Y2}\OperatorTok{~}\NormalTok{X, }\DataTypeTok{random =} \OperatorTok{~}\DecValTok{1}\OperatorTok{|}\NormalTok{ID, }\DataTypeTok{correlation=}\KeywordTok{corCompSymm}\NormalTok{(}\DataTypeTok{form=}\OperatorTok{~}\DecValTok{1}\OperatorTok{|}\NormalTok{ID), }
-                 \DataTypeTok{data=}\NormalTok{fake_data,}
-                 \DataTypeTok{na.action=}\NormalTok{na.exclude)))}
+\KeywordTok{coef}\NormalTok{(}\KeywordTok{summary}\NormalTok{(}\KeywordTok{lme}\NormalTok{(Y}\OperatorTok{~}\NormalTok{X, }\DataTypeTok{random =} \OperatorTok{~}\DecValTok{1}\OperatorTok{|}\NormalTok{ID, }\DataTypeTok{correlation=}\KeywordTok{corCompSymm}\NormalTok{(}\DataTypeTok{form=}\OperatorTok{~}\DecValTok{1}\OperatorTok{|}\NormalTok{ID), }\DataTypeTok{data=}\NormalTok{fake_data)))}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
 ##                 Value Std.Error DF   t-value      p-value
-## (Intercept) 10.274104 0.3668354  9 28.007398 4.582957e-10
-## XT+          1.253132 0.5103134  7  2.455613 4.374577e-02
+## (Intercept) 11.331730 0.3632787  9 31.192941 1.753900e-10
+## XWT         -1.057625 0.4678365  9 -2.260673 5.012143e-02
 \end{verbatim}
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{# cannot run t-test with NA so re-run by deleting matching ID}
-\NormalTok{fake_data[, Y3}\OperatorTok{:}\ErrorTok{=}\NormalTok{Y2] }\CommentTok{# copy Y2 column}
-\NormalTok{fake_data[NA_rows, Y3}\OperatorTok{:}\ErrorTok{=}\OtherTok{NA}\NormalTok{] }\CommentTok{# replace the two obs in Y3 with NA}
-\KeywordTok{t.test}\NormalTok{(Y3}\OperatorTok{~}\NormalTok{X, }\DataTypeTok{data=}\NormalTok{fake_data, }\DataTypeTok{paired=}\OtherTok{TRUE}\NormalTok{, }\DataTypeTok{na.action=}\NormalTok{na.omit)}\OperatorTok{$}\NormalTok{p.value}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-## [1] 0.04871176
-\end{verbatim}
-
-A linear mixed model specifically estimates the value of \(\beta_{0j}\)
-and \(\beta_{1j}\) for each block
-
-\section{A linear mixed models are
-flexible}\label{a-linear-mixed-models-are-flexible}
-
-The linear mixed model above specifies a random effect due to the block
-for each term (the intercept and the treatment effect, or ``slope'') in
-the model but a researcher might limit the random effect to the
-intercept, or less commonly, the slope. Excluding the random slope from
-the model above results in
-
-\begin{equation}
-y_{ij} = (\beta_{0} + \beta_{0j}) + \beta_{1}x_i + \varepsilon_i 
-\label{eq:lmm-spec1b}
-\end{equation}
-
-We might use random-intercept model if we think that features of the
-block would effect the mean response in that block but not effect the
-treatment. For example, differences in the immune systems among the
-individual mice in experiment 3 might effect growth in both the
-wild-type and engineered strains of staph but won't effect the
-difference in growth between wild-type and engineered strains
-
-The models above specify a block effect for each term in the model but
-the fixed part of the model is relatively simple, there is a single
-intercept and a categorical variable with two levels. What if the fixed
-part of the model is more complex? A \(2 \times 3\) factorial model has
-6 terms: an intercept, a coefficient for the effect of the second level
-of factor 1, a coefficient for the effects of each of the non-reference
-levels of factor 2, and the two interaction coefficient. The random
-block effect can be added to each of these terms
-
-\begin{equation}
-y_{ij} = (\beta_{0} + \beta_{0j}) + (\beta_{1} + \beta_{1j}) x_{1i} + (\beta_{2} + \beta_{2j}) x_{2i} + (\beta_{3} + \beta_{3j}) x_{3i} + (\beta_{4} + \beta_{4j}) x_{1i}x_{2i} + (\beta_{5} + \beta_{5j}) x_{1i}x_{3i} + \varepsilon_i
-\label{eq:lmm-spec1c}
-\end{equation}
-
-\textbf{Not more than you should know} -- Matrix algebra makes the
-specification of a linear mixed model much more manageable than the
-algebra in \ref{lmm-spec1c}. To use matrix algebra, the fixed and random
-terms are arranged together
-
-\begin{equation}
-y_{ij} = (\beta_{0} + \beta_{1}x_{1i} + \beta_{2}x_{2i} + \beta_{3}x_{3i} + \beta_{4}x_{1i}x_{2i} + \beta_{5}x_{1i}x_{3i}) + (\beta_{0j} + \beta_{1j}x_{1i} + \beta_{2j}x_{2i} + \beta_{3j}x_{3i} + \beta_{4j}x_{1i}x_{2i} + \beta_{5j}x_{1i}x_{3i}) + \varepsilon_i
-\label{eq:lmm-spec1c}
-\end{equation}
-
-Then, the fixed terms are \(\boldsymbol{x_i}^\top \boldsymbol{\beta}\)
-and the random terms are \(\boldsymbol{x_i}^\top \boldsymbol{\beta_j}\).
-Because a linear mixed model may contain
-
-\begin{equation}
-\mathbf{y_{ij}} = \mathbf{x_i^\top \beta} + \mathbf{x_i^\top u} + \mathbf{\varepsilon_{ij}}
-\end{equation}
-
-Linear mixed models are used to avoid pseudoreplication
+\section{Linear mixed models are used to avoid
+pseudoreplication}\label{linear-mixed-models-are-used-to-avoid-pseudoreplication}
 
 \section{Linear mixed models shrink coefficients by partial
 pooling}\label{linear-mixed-models-shrink-coefficients-by-partial-pooling}
+
+In experiment 1 above, there are 10 sites (maybe different woodlots). In
+each plot, five seedlings are planted inside a cage and five outside the
+cage. The cage excludes insectivorous birds but not herbivorous insects.
+The researchers are investigating how birds affect plant growth
+indirectly -- by eating insects that feed on the plants. The response is
+total leaf area in each seedling.
+
+Let's say we want to know the treatment effect in each of these sites.
+There are several ways of estimating this.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  Fit \(k\) separate models, one for each site. The intercept (control
+  mean) and slope (treatment effect) parameters for each site are
+  estimated independently from all other sites. Conequently, the model
+  parameters are computed using \textbf{no pooling}. For the estimation
+  of the \(\beta\) terms, this is equivalent to a single, factorial
+  linear model with \(Site\) modeled as a \textbf{fixed effect} (this is
+  not true for the estimate of the standard errors of these terms since
+  these are computed from the residual sum of squares of the model. For
+  balanced data, all of the ``intercept'' or ``slope'' terms will have
+  the same SE in the factorial analysis but differ among the \(k\)
+  independent analyses).
+\item
+  Fit a linear model to all the data combined as if these were from a
+  single site, and assign the intercept and treatment effect paramters
+  to all sites. The model parameters are computed using \textbf{complete
+  pooling}.
+\item
+  Fit a linear mixed model to all the data, using site as a random
+  factor to estimate both random intercepts and slopes. Similar to the
+  no-pooling analysis, there will be different intercept (control mean)
+  and slope (treatment effect) estimates for each site, but unlike the
+  no-pooling analysis, these estimates are computed by combining
+  information from the other sites. The information used to estimate
+  parameters in a linear mixed model is somewhere in between no pooling
+  and complete pooling and is sometimes called \textbf{partial pooling}.
+\end{enumerate}
+
+The consequence of partial pooling in a linear mixed model is that site
+intercepts (control means) are pulled toward the single intercept in the
+complete-pooling analysis and the site slopes (treatment effects) are
+pulled toward the single slope in the complete-pooling analysis. This
+has the consequence that the \textbf{differences} in parameter estimates
+among sites are shrunk toward zero. A consequence of this shrinkage is
+that the variance of the intercept estimates or of the slope estimates
+is smaller than that in the no-pooling analysis. Figure
+\ref{fig:lmm-partialpoolin} shows this shrinkage effect using fake data
+simulating the seedling experiment.
+
+\begin{figure}
+\centering
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/lmm-partialpooling-1.pdf}
+\caption{\label{fig:lmm-partialpooling}Shrinkage estimates of the treatment
+effect in a linear mixed model. The grey line is the estimate using
+complete pooling (so there is only one estimate which is assigned to
+each site). In general, the partial-pooling (linear mixed model)
+estimates (yellow) are generally closer to the complete pooling estimate
+than the no-pooling (separate linear models) estimates (blue). More
+specifically, if the no-pooling estimate is far from the complete
+pooling estimate, the partial pooling estimate is \emph{much} closer to
+the complete pooling estimate. The consequence of partial pooling is
+that the differences among the estimates are shrunk toward zero.}
+\end{figure}
+
+The linear mixed model estimates of the treatment effects for each site
+are a type of \textbf{shrinkage estimate} and a linear mixed model is
+one kind of \textbf{shrinkage estimator}. Shrinkage estimates have
+fascinating properties:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  the variance of shrinkage estimates is less than that of ordinary
+  least squares estimates (no-pooling, or using the block as a fixed
+  factor)
+\item
+  shrinkage estimates are \textbf{biased} but the OLS estimates are not.
+  This means that the expected value of a coefficient from the linear
+  mixed model \emph{does not equal} the true (parameter) value! Or, more
+  formally, \(\mathrm{E}(b_j) \ne \beta_j\).
+\item
+  the \textbf{mean square error} of shrinkage estimates will be smaller
+  than that for OLS estimates.
+\end{enumerate}
+
+The first property was discussed above and shown in Figure
+\ref{fig:lmm-partialpooling}. The second property raises the question,
+if we want to estimate the treatment effects within each site, why would
+we ever want to use \(Site\) as a random instead of fixed effect? The
+answer is the third property, which can be summarized as, ``if we were
+to replicate the experiment many times, the shrinkage estimates will be,
+on average, less wrong (or closer to the true value) than the OLS
+estimates, where''wrong" is the absolute deviation from the true value."
+
+When shrinkage estimators were first discovered, the third property
+surprised stasticians. The third property has profound consequences.
+Consider a scenario where researchers want to compare the performance of
+a new expression vector to that of an existing expression vector on
+protein production using \emph{E. coli}. The researchers have ten
+different \emph{E. coli} strains and are interested in strain-specific
+effects because they will choose the three strains with the largest
+effects for further testing. The researchers measure the response of
+each strain five times.
+
+\begin{table}
+
+\caption{\label{tab:lmm-fish-passage}Effect of new expression vector on protein production in ten strains of *E. coli* using a fixed effect factorial model and linear mixed model.}
+\centering
+\begin{tabular}[t]{l|r|r|r}
+\hline
+Strain & \$\textbackslash{}beta\_\{1j\}\$ & fixed \$b\_\{1j\}\$ & random \$b\_\{1j\}\$\\
+\hline
+a & 0.91 & 1.07 & 0.98\\
+\hline
+b & 0.87 & 0.94 & 0.85\\
+\hline
+c & 0.90 & -1.03 & 0.30\\
+\hline
+d & 0.81 & 0.64 & 0.63\\
+\hline
+e & 1.09 & 1.00 & 1.07\\
+\hline
+f & 0.62 & 0.91 & 1.14\\
+\hline
+g & 1.33 & 2.26 & 1.36\\
+\hline
+h & 1.27 & 1.48 & 0.96\\
+\hline
+i & 1.61 & 0.57 & 1.13\\
+\hline
+j & 0.89 & 1.50 & 0.93\\
+\hline
+\end{tabular}
+\end{table}
+
+The table above shows the true strain-specific effect and both the fixed
+(OLS) and random (LMM) effect estimates. The largest OLS estimate is
+70\% larger than the true effect and the strain with the largest true
+effect is not among the top three biggest OLS estimates (its ranking is
+9/10). By contrast, the LMM estimates are closer to the true effects and
+the top strain is among the three largest LMM estimates.
+
+These results are specific to these fake data but more generally, 1) the
+largest OLS estimates are inflated (larger error from the true effect),
+relative to the largest LMM estimates 2) overall, the LMM estimates will
+be closer than the OLS estimates to the true effects
+
+To understand this, rank order the treatment effects for each strain. An
+individual strain's position in this rank is the sum of the true effect
+for that strain and some random error. Because OLS, relative to
+shrinkage estimates, have greater variance in the estimate (that is, the
+random error component is bigger), the biggest effects estimated by OLS
+are more likely to be big because of the error component, compared to
+shrinkage estimates.
+
+\textbf{Not more than you want to know} -- Shrinkage estimators are not
+only useful when we are interested in block-specific effects but are
+also useful for estimating effects when there are \textbf{multiple
+responses}. For example, consider a researcher interested in measuring
+the effects of some exercise treatment on gene expression in adipose
+cells. The researcher measures expression levels in 10,000 genes. Given
+the typical content in undergraduate biostatics courses, a researcher
+would probably model these responses using 10,000 \emph{t}-tests, or
+equivalently, 10,000 separate linear models. If the tests were ranked by
+\(p\)-value or absolute effect size, many of the genes with largest
+absolute effect would be there because of a large error component and
+many of the largest effects would be massively overinflated.
+Re-imagining the design as a single, linear mixed model with each gene
+modeled as a block would lead to a rank order in which the biggest
+measured effects more closely approximate the true effects.
 
 \section{Working in R}\label{working-in-r-5}
 
 The major function for working with linear mixed models is
 \texttt{lmer()} from the lme4 package. An older, and still sometimes
-used function is \texttt{lme()} from the nlme package. The authors of
-the lme4 package argue that the df in a linear mixed model are too
-approximate for a useful \(p\)-value and, consequently, the \texttt{lme}
-function does not return a \(p\)-value. Many biological researchers want
-a \(p\)-value and typically use the \texttt{lmerTest} package to get
-this.
+used and useful function is \texttt{lme()} from the nlme package. The
+authors of the lme4 package argue that the df in a linear mixed model
+are too approximate for a useful \(p\)-value and, consequently, the
+\texttt{lme} function does not return a \(p\)-value. Many biological
+researchers want a \(p\)-value and typically use the \texttt{lmerTest}
+package to get this.
 
 \subsection{coral data}\label{coral-data}
 
