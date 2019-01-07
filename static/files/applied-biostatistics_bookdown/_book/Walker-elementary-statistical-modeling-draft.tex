@@ -125,7 +125,7 @@
   \postauthor{\par}
       \predate{\centering\large\emph}
   \postdate{\par}
-    \date{Draft: 2018-12-27}
+    \date{Draft: 2019-01-07}
 
 \usepackage{booktabs}
 \usepackage{amsthm}
@@ -172,103 +172,81 @@ We use statistics to learn from data with uncertainty. Traditional
 introductory textbooks in biostatistics implicitly or explicitly train
 students and researchers to ``discover by p-value'' using hypothesis
 tests (Chapter \ref{p-values}). Over the course of many chapters, the
-student learns to use something like a dichotomous key to choose the
-correct ``test'' for the data at hand, compute a test statistic for
-their data, compute a \(p\)-value based on the test statistic, and
-compare the \emph{p}-value to 0.05. Textbooks typically give very little
-guidance about what can be concluded if \(p < 0.05\) or if \(p > 0.05\),
-but many researchers conclude (incorrectly) they have ``discovered''
-something if \(p < 0.05\) but found ``no effect'' if \(p > 0.05\).
+student learns to use something like a look-up table or a dichotomous
+key to choose the correct ``test'' for the data at hand, compute a test
+statistic for their data, compute a \(p\)-value based on the test
+statistic, and compare the \emph{p}-value to 0.05. Textbooks typically
+give very little guidance about what can be concluded if \(p < 0.05\) or
+if \(p > 0.05\), but many researchers conclude (incorrectly) they have
+``discovered'' something if \(p < 0.05\) but found ``no effect'' if
+\(p > 0.05\).
 
-Researchers learn almost nothing useful from a hypothesis test. True, a
+Researchers learn nothing useful from a hypothesis test. True, a
 \(p\)-value is evidence against the null, and thus, a tool to dampen the
 frequency that we are fooled by randomness. But if we are investigating
 the effects of an increasingly acidified ocean on coral growth,
 \(p=0.002\) may be evidence of an effect of the experimental
 intervention, but, from everything we know about pH and cell biology, it
 would be absurd to conclude from any data that pH does not affect
-growth. Instead, we want to know the magnitude of the effect and our
-uncertainty in estimating this magnitude. We can use this magnitude and
-uncertainty to make predictions about the future of coral reefs, under
-different scenarios of ocean acidification. We can use the estimated
-effects and uncertainty to model the consquences of the effects of
-acidification on coral growth on fish production or carbon cycling.
+growth. To build useful models of how biological systems work, we want
+to know the magnitude of effects and our uncertainty in estimating these
+magnitudes. We can use a magnitude and uncertainty to make predictions
+about the future of coral reefs, under different scenarios of ocean
+acidification. We can use the estimated effects and uncertainty to model
+the consquences of the effects of acidification on coral growth on fish
+production or carbon cycling.
 
-The ``discovery by p-value'' strategy, or Null-Hypothesis Significance
-Testing (NHST), has been criticized by statisticians for many, many
-decades. Nevertheless, introductory biostatistics textbooks written by
-both biologists and statisticians continue to organize textbooks around
-a collection of hypothesis tests, with little emphasis on estimation and
-uncertainty.
-
-This book is an introduction to the analysis of biological data using a
+This book is an introduction to the estimation of effects of biological
+data, and measures of the uncertainty of theses estimates, using a
 statistical modeling approach. As an introduction, the focus will be
 linear models and extensions of the linear models including linear mixed
 models and generalized linear models. Linear models are the engine
 behind many hypothesis tests but the emphasis in statistical modeling is
 estimation and uncertainty instead of test statistics and \(p\)-values.
-
-\section{This book is a path to many
-doors}\label{this-book-is-a-path-to-many-doors}
-
-The basic strategy of statistical modeling is
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\tightlist
-\item
-  \textbf{choose a model}. Statistical modeling includes a diverse array
-  of models, yet almost all methods used by researchers in biology are
-  generalizations of what is known as the linear model\footnote{or,
-    general linear model, but this gets confusing since the acronym
-    (GLM) is mostly used for a class of statistical models called
-    generalized linear models, which are extensions of the linear model}.
-  All of these models look something like this
-\end{enumerate}
+All linear models, and their generalizations, are variations of
 
 \begin{align}
-y_i &\sim N(\mu_i, \sigma)\\
+Y &\sim P(\mu, \theta)\\
 \mathrm{E}(Y|X) &= \mu\\
-\mu_i &= \beta_0 + \beta_1 X_i
-\label{eq:sm}
+\mu &= \beta_0 + \beta_1 X
+\label{eq:lm-spec2}
 \end{align}
 
-which is a type of \textbf{model specification}. The meaning of each of
-the lines will be disussed in chapter 1.
+Chapter 1 explains the meaning of this \textbf{model specification} but
+the point to make here is that because all linear models and their
+generalizations are variations of this specification, a modeling
+strategy of learning or doing statistics is more coherent than the NHST
+strategy using look-up tables or dichotomous keys of hypothesis tests.
+Generalizations of the basic linear model include linear mixed models,
+generalized linear models, generalized additive models, causal graphical
+models, multivariate models, and machine learning. This book is not a
+comprehensive source for any of these methods but, instead, \emph{a path
+of the critical elements leading you to the doorway to the vast universe
+of each of these methods}.
 
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\setcounter{enumi}{1}
-\item
-  \textbf{fit the model}, in order to estimate the model parameters and
-  the uncertainty in these estimates.
-\item
-  \textbf{check the model}, which means to use a series of diagnostic
-  plots and computations of model output to check that the data
-  reasonably approximate the chosen model.
-\item
-  \textbf{inference from the model}, which means to use the fit
-  parameters to learn, with uncertainty, about the system, or to predict
-  future observations, with uncertainty.
-\item
-  \textbf{plot the model}, which means to plot the estimated parameters
-  (or other results dervived from the estimates) with their uncertainty.
-\end{enumerate}
-
-Because all linear models and their extensions are generalizations of
-the specification in step one above, a modeling strategy of statistical
-analysis is more coherent than a ``dichotomous key'' or ``table of
-hypothesis tests'' strategy common to many textbooks.
-
-Generalizations of the basic linear model in step one above include
-linear mixed models, generalized linear models, generalized additive
-models, causal graphical models, multivariate models, and machine
-learning. This book is a path \emph{of elements} leading you to the
-doors to each of these methods.
+\textbf{NHST Blues} -- The ``discovery by p-value'' strategy, or
+Null-Hypothesis Significance Testing (NHST), has been criticized by
+statisticians for many, many decades. Nevertheless, introductory
+biostatistics textbooks written by both biologists and statisticians
+continue to organize textbooks around a collection of hypothesis tests,
+with much less emphasis on estimation and uncertainty. The NHST strategy
+of learning or doing statistics is easy in that it requires little
+understanding of the statistical model underneath the tests and its
+assumptions, limitations, and behavior. The NHST strategy in combination
+with point-and-click software enables ``mindless statistics''\footnote{Gegenrezer}
+and encourages the belief that statistics is a tool like a word
+processor is a tool, afterall, a rigorous analysis of one's data
+requires little more than getting p-values and creating bar plots.
+Indeed, many PhD programs in the biosciences require no statistics
+coursework and the only training available to students is from the other
+graduate students and postdocs in the lab. As a consequence, the
+biological sciences literature is filled with error bars that imply data
+with negative values and p-values that have little relationship to the
+probability of the data under the null. More importantly for science,
+the reported statistics are often not doing for the study what the
+researchers and journal editors think they are doing.
 
 \section{Math}\label{math}
-
-\section{Notation}\label{notation}
 
 \section{R and programming}\label{r-and-programming}
 
@@ -305,8 +283,8 @@ the line in A.}
 \end{figure}
 
 \section{\texorpdfstring{Two specifications of a linear model I: the
-``linear model''
-way}{Two specifications of a linear model I: the linear model way}}\label{two-specifications-of-a-linear-model-i-the-linear-model-way}
+``random error''
+specification}{Two specifications of a linear model I: the random error specification}}\label{two-specifications-of-a-linear-model-i-the-random-error-specification}
 
 The basic \textbf{structure} of a linear model is
 
@@ -315,13 +293,13 @@ Y &= \beta_0 + \beta_1 X + \varepsilon\\
 \label{eq:lm}
 \end{align}
 
-A linear model has two parts: the ``linear predictor''
-(\(Y = \beta_0 + \beta_1 X\)) and the ``error'' (\(\varepsilon\)). The
-linear predictor part looks like the equation for a line except that
-I've used \(\beta_0\) for the intercept and \(\beta_1\) for the slope
-and I've put the intercept term first. This re-labeling and
-re-arrangement make the notation for a linear model more flexible for
-more complicated linear models. For example
+This specification of a linear model has two parts: the ``linear
+predictor'' (\(Y = \beta_0 + \beta_1 X\)) and the ``error''
+(\(\varepsilon\)). The linear predictor part looks like the equation for
+a line except that I've used \(\beta_0\) for the intercept and
+\(\beta_1\) for the slope and I've put the intercept term first. This
+re-labeling and re-arrangement make the notation for a linear model more
+flexible for more complicated linear models. For example
 \(Y = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \varepsilon\) is a model
 where \(Y\) is a function of two \(X\) variables.
 
@@ -339,11 +317,11 @@ equation \eqref{eq:lm} above. The key part of the model that is missing
 from the specification above is a second line
 
 \begin{equation}
-\varepsilon \sim N(0, \sigma)
+\varepsilon \sim N(0, \sigma^2)
 \end{equation}
 
 \% read as ``epsilon is distributed as Normal with mean zero and
-standard deviation sigma''). This line explicitly specifies the
+variance sigma squared''). This line explicitly specifies the
 distribution of the error part. The error part of a linear model is a
 random ``draw'' from a normal distribution with mean zero and variance
 \(\sigma^2\). Think of this as adding some random value to the expected
@@ -375,8 +353,8 @@ specifically, to check that a model actually creates data like that in
 the real dataset that we are analyzing.
 
 \section{\texorpdfstring{Two specifications of a linear model II: the
-``statistical model''
-way}{Two specifications of a linear model II: the statistical model way}}\label{two-specifications-of-a-linear-model-ii-the-statistical-model-way}
+``random draw''
+specification}{Two specifications of a linear model II: the random draw specification}}\label{two-specifications-of-a-linear-model-ii-the-random-draw-specification}
 
 A second way of specifying a linear model is
 
@@ -399,21 +377,22 @@ the statistical model.
 
 These two ways of specifying the model encourage slightly different ways
 of thinking about how the data (the response varible \(Y\)) were
-generated. The linear model way ``generates'' data by constructing
-\(y_i\) from the \(x_i\) and then adding random, normal error. The
-statistical model way ``generates'' data by simply drawing a random
-variable from a normal distribution with a specified mean and variance.
-The statistical model way explicitly defines all parameters, including
-the parameters of the linear predictor (\(\beta_0\) and \(\beta_1\)),
-the conditional mean \(\mu\) and the variance \(\sigma\). The linear
-model way only defines the parameters of the linear predictor, and often
-these are referrred to as ``the parameters'' in the sense that there are
-not other parameters. Because of the explicit statement of all
-parameters, the statistical model way to define the linear model is more
-useful in that it is easily generalized to more complex models,
-including hierarchical models, generalized linear models, and Bayesian
-models. This is why I call it the ``statistical model'' way of
-specification.
+generated. The random error specification ``generates'' data by
+constructing \(y_i\) from the \(x_i\) and then adding random, normal
+error. The random draw specification ``generates'' data by simply
+drawing a random variable from a normal distribution with a specified
+mean and variance. The random draw specification explicitly defines all
+parameters, including the parameters of the linear predictor
+(\(\beta_0\) and \(\beta_1\)), the conditional mean \(\mu\) and the
+variance \(\sigma\). The random error specification only defines the
+parameters of the linear predictor, and often these are referrred to as
+``the parameters'' in the sense that there are not other parameters. The
+random error specification is most useful for thinking about model
+checking fit linear models but thinking about a model as a predictor
+plus error can lead to misconceptions of generalized linear models. The
+random draw specificaiton is more generally useful in that it is easily
+generalized to more complex models, including hierarchical models,
+generalized linear models, and Bayesian models.
 
 \section{Statistical models are used for prediction, explanation, and
 description}\label{statistical-models-are-used-for-prediction-explanation-and-description}
@@ -482,6 +461,31 @@ intention with ``predictive'' language. Here, I advocate embracing
 explicit, explanatory modeling by being very transparent about the
 model's goal and assumptions.
 
+\section{Modeling strategy}\label{modeling-strategy}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  \textbf{choose a model}. Statistical modeling includes a diverse array
+  of models, yet almost all methods used by researchers in biology, and
+  all models in this book, are generalizations of the linear model
+  specified in \ref{eq:}.
+\item
+  \textbf{fit the model}, in order to estimate the model parameters and
+  the uncertainty in these estimates.
+\item
+  \textbf{check the model}, which means to use a series of diagnostic
+  plots and computations of model output to check that the data
+  reasonably approximate the chosen model.
+\item
+  \textbf{inference from the model}, which means to use the fit
+  parameters to learn, with uncertainty, about the system, or to predict
+  future observations, with uncertainty.
+\item
+  \textbf{plot the model}, which means to plot the estimated parameters
+  (or other results dervived from the estimates) with their uncertainty.
+\end{enumerate}
+
 \section{Model fitting}\label{model-fitting}
 
 In order to use a statistical model to describe, predict, or explain, we
@@ -490,7 +494,7 @@ linear model fit to some data is
 
 \begin{align}
 \hat{y}_i &= b_0 + b_1 x_i\\
-\mathrm{E}[Y|X=x_i] &= \hat{y}_i
+\mathrm{E}[Y|X=x] &= \hat{y}_i
 \label{eq:yhat}
 \end{align}
 
@@ -499,8 +503,8 @@ linear model fit to some data is
 (though technically \(b_0\) is not a coefficient). Sometimes
 \(\hat{y}_i\) is simply called ``the prediction''. The second line above
 simply states the conditional expectation is the prediction (read as
-``The conditional expectation of \(Y\), given that \(X\) is assigned the
-value \(x_i\) is y hat'').
+``the conditional expectation of \(Y\), given that \(X\) is assigned the
+value \(x\) is y hat'').
 
 If our goal is inference -- to infer something about the ``population''
 from the sample using the fit model, then \(\hat{y}_i\) is the
@@ -6711,23 +6715,25 @@ y_i &= \beta_0 + \beta_1 x_i + \varepsilon_i\\
 That is, we should not think of a count as the sum of a systematic part
 and a random draw from a Poisson distribution. Why? Because it is the
 counts (or the counts conditional on \(X\)) that are poisson
-distributed, not the residuals from the fit model. Some other
-consequences of thinking about this way are: First, if we set the mean
-of the Poisson ``error'' to zero (like with a normal distribution), then
-the error term for every observation would \emph{have to} be zero
-(because the only way to get a mean of zero with non-negative integers
-is if every value is zero). Second, if the study is modeling the effect
-of a treatment on the counts (that is, the \(X\) are dummy variables)
-then \(\beta_0\) is the expected mean count of the control (or
-reference) group. But if we add non-zero Poisson error to this, then the
-mean of the control group would be larger than \(\beta_0\). This doesn't
-make sense. And finally, equation \eqref{eq:spec1-poisson} generates a
-continuous response, instead of an integer, because \(\beta_0\) and
-\(\beta_1\) are continuous.
+distributed, not the residuals from the fit model.
+
+Thinking about the distribution of count data using model
+\eqref{eq:spec1-poisson} leads to absurd consequences. For example, if we
+set the mean of the Poisson ``error'' to zero (like with a normal
+distribution), then the error term for every observation would
+\emph{have to} be zero (because the only way to get a mean of zero with
+non-negative integers is if every value is zero). Or, if the study is
+modeling the effect of a treatment on the counts (that is, the \(X\) are
+dummy variables) then \(\beta_0\) is the expected mean count of the
+control (or reference) group. But if we add non-zero Poisson error to
+this, then the mean of the control group would be larger than
+\(\beta_0\). This doesn't make sense. And finally, equation
+\eqref{eq:spec1-poisson} generates a continuous response, instead of an
+integer, because \(\beta_0\) and \(\beta_1\) are continuous.
 
 A better way to think about the data generation for a linear model,
-because this naturally leads to the way to think about data generation
-for a generalized linear model, is
+because this naturally leads to the \emph{correct} way to think about
+data generation for a generalized linear model, is
 
 \begin{align}
 y_i &\sim N(\mu_i, \sigma)\\
@@ -6813,7 +6819,7 @@ larvae counted in the eyes (right and left combined) of the fish. A
 histogram of the counts is shown in Figure \ref{fig:glm1-plot1} for the
 control and Infected HG treatment levels.
 
-\subsection{Modeling strategy}\label{modeling-strategy}
+\subsection{Modeling strategy}\label{modeling-strategy-1}
 
 \textbf{NHST blues} -- Students are often encouraged by textbooks,
 colleagues, or the literature to start the analysis by first ``testing''
@@ -8339,8 +8345,17 @@ R}\label{appendix-2-online-resources-for-getting-started-with-linear-modeling-in
 \addcontentsline{toc}{chapter}{Appendix 2: Online Resources for Getting
 Started with Linear Modeling in R}
 
+Roughly, in order from most elementary to most advanced
+
+\href{https://https://learningstatisticswithr-bookdown.netlify.com}{Learning
+Statistics with R} by Danielle Navarro and adapted to Bookdown (for web
+viewing) by Emily Kothe.
+
+\href{http://statsthinking21.org}{Statististical Thinking for the 21st
+Century} by Russell A. Poldrack
+
 \href{https://leanpub.com/regmods}{Regression Models for Data Science in
-R by Brian Caffo}
+R} by Brian Caffo
 
 \href{https://bookdown.org/roback/bookdown-bysh/}{Broadening Your
 Statistical Horizons: Generalized Linear Models and Multilevel Models by
