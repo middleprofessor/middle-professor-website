@@ -24,6 +24,10 @@ Physics for Introductory Biology
 <a class="btn" href="/files/physics_for_biologists/_book/index.html">HTML</a>
 <a class="btn" href="/files/physics_for_biologists/_book/physics.pdf">PDF (not yet available)</a>
 
+Quantitative Problems for Human Physiology
+<a class="btn" href="/files/quant-physiology/_book/index.html">HTML</a>
+<a class="btn" href="/files/quant-physiology/_book/index.pdf">PDF (not yet available)</a>
+
 An elementary explanation of confounding (a very working explanation)
 <a class="btn" href="/files/math/confounding.html">HTML</a>
 
