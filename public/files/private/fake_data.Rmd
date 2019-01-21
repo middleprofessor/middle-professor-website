@@ -1,0 +1,76 @@
+---
+title: "Creating fake data without rmvnorm"
+output: html_notebook
+---
+
+
+```{r functions}
+fake.eigenvectors <- function(p){
+	a <- matrix(rnorm(p*p), p, p) # only orthogonal if p is infinity so need to orthogonalize it
+	a <- t(a)%*%a # this is a pseudo-covariance matrix
+	E <- eigen(a)$vectors # decompose to truly orthogonal columns
+	return(E)
+}
+
+fake.eigenvalues <- function(p, m=p, start=2/3, rate=2){
+    # m is the number of positive eigenvalues
+  s <- start/seq(1:m)^rate
+  s <- c(s, rep(0, p-m)) # add zero eigenvalues
+  L <- diag(s/sum(s)*m) # rescale so that sum(s)=m and put into matrix,
+  # which would occur if all the traits are variance standardized
+  return(L)
+}
+
+fake.cov.matrix <- function(p){
+	# p is the size of the matrix (number of cols and rows)
+	E <- fake.eigenvectors(p)
+	L <- diag(fake.eigenvalues(p))
+	S <- E%*%L%*%t(E)
+	return(S)
+}
+
+# two functions to compute the random data
+fake.X <- function(n,p,E,L){
+  # n is number of observations
+  # p is number of variables
+  X <- matrix(rnorm(n*p),nrow=n,ncol=p) %*% t(E%*%sqrt(L))
+	return(X)
+}
+
+```
+
+```{r}
+set.seed(1)
+n <- 10^4 # number of cases (rows of the data)
+p <- 5 # number of variables (columns of the data)
+
+# start with a matrix. In real life this would be our data
+X <- fake.X(n, p, fake.eigenvectors(p), fake.eigenvalues(p))
+# and here is our "real" covariance matrix
+S <- cov(X)
+
+# okay now we want to create fake data sets with this structure
+decomp <- eigen(S)
+E <- decomp$vectors
+L <- diag(decomp$values)
+fake_data <- fake.X(n, p, E, L)
+
+# okay what if our real covariance matrix is not positive semidefinite, that is has negative eigenvalues.
+# Here is our fake data and cov matrix
+X <- fake.X(n, p, fake.eigenvectors(p), fake.eigenvalues(p, m=(p-1)))
+# and here is our "real" covariance matrix
+S <- cov(X)
+decomp <- eigen(S)
+E <- decomp$vectors
+L <- diag(decomp$values) # note last eigenvalue is negative
+
+# now let's sample fake data from this non-pos matrix
+# set m to p-1
+m <- p-1
+E_reduced <- E[1:p, 1:m] # the first m columns of E
+L_reduced <- L[1:m, 1:m] # the first m diag elements of L
+fake_data <- fake.X(n, m, E_reduced, L_reduced)
+cov(fake_data)
+S # compare...pretty good!
+
+```
