@@ -471,19 +471,20 @@ y_{ij} = \beta_{0} + \beta_{1} x_i + (\beta_{0j} + \beta_{1j} + \varepsilon_i)
 <div style="background-color:#cccccc; text-align:left; vertical-align: middle; padding:20px 47px;">
 <p><strong>NHST blues</strong> – A <strong>paired t-test</strong> is equivalent to the special case of a linear mixed model with a single factor with two treatment levels, <span class="math inline">\(k\)</span> blocks, and a single measure of each treatment level within each block. A good example is the wild type vs. engineered staph count in mice in experiment 3 above. A linear mixed model is much more flexible than a paired <em>t</em>-test because it allows a researcher to add treatment levels, additional factors, and covariates to the model. In addition, a linear mixed model can handle missing data.</p>
 <p>Here is fake data similar in design to experiment 3 with a single factor with two treatment levels and both levels applied to the same experimental unit.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">n &lt;-<span class="st"> </span><span class="dv">10</span> <span class="co"># number of mice (blocks)</span>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">set.seed</span>(<span class="dv">2</span>)
+n &lt;-<span class="st"> </span><span class="dv">10</span> <span class="co"># number of mice (blocks)</span>
 x &lt;-<span class="st"> </span><span class="kw">rep</span>(<span class="kw">c</span>(<span class="st">&quot;WT&quot;</span>,<span class="st">&quot;T+&quot;</span>), <span class="dt">each=</span>n) <span class="co"># treatments</span>
 id &lt;-<span class="st"> </span><span class="kw">rep</span>(letters[<span class="dv">1</span><span class="op">:</span>n], <span class="dv">2</span>) <span class="co"># block id</span>
 y &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="kw">rnorm</span>(n, <span class="dt">mean=</span><span class="dv">10</span>), <span class="kw">rnorm</span>(n, <span class="dt">mean=</span><span class="dv">11</span>))
 fake_data &lt;-<span class="st"> </span><span class="kw">data.table</span>(<span class="dt">Y=</span>y, <span class="dt">X=</span>x, <span class="dt">ID=</span>id)</code></pre></div>
 <p>The <em>t</em>-test <em>p</em>-value is</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">t.test</span>(Y<span class="op">~</span>X, <span class="dt">data=</span>fake_data, <span class="dt">paired=</span><span class="ot">TRUE</span>)<span class="op">$</span>p.value</code></pre></div>
-<pre><code>## [1] 0.05012143</code></pre>
+<pre><code>## [1] 0.05336815</code></pre>
 <p>and the coefficient table of the fixed effect in the linear mixed model is</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">coef</span>(<span class="kw">summary</span>(<span class="kw">lme</span>(Y<span class="op">~</span>X, <span class="dt">random =</span> <span class="op">~</span><span class="dv">1</span><span class="op">|</span>ID, <span class="dt">correlation=</span><span class="kw">corCompSymm</span>(<span class="dt">form=</span><span class="op">~</span><span class="dv">1</span><span class="op">|</span>ID), <span class="dt">data=</span>fake_data)))</code></pre></div>
-<pre><code>##                 Value Std.Error DF   t-value      p-value
-## (Intercept) 11.331730 0.3632787  9 31.192941 1.753900e-10
-## XWT         -1.057625 0.4678365  9 -2.260673 5.012143e-02</code></pre>
+<pre><code>##                  Value Std.Error DF   t-value      p-value
+## (Intercept) 11.1797704 0.3438775  9 32.510914 1.212113e-10
+## XWT         -0.9686188 0.4358740  9 -2.222245 5.336815e-02</code></pre>
 </div>
 </div>
 <div id="linear-mixed-models-are-used-to-avoid-pseudoreplication" class="section level2">
