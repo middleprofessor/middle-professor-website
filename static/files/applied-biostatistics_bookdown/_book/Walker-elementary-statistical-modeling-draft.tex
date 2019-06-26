@@ -109,7 +109,7 @@
 \usepackage{titling}
 
 % Create subtitle command for use in maketitle
-\newcommand{\subtitle}[1]{
+\providecommand{\subtitle}[1]{
   \posttitle{
     \begin{center}\large#1\end{center}
     }
@@ -125,7 +125,7 @@
   \postauthor{\par}
       \predate{\centering\large\emph}
   \postdate{\par}
-    \date{Draft: 2019-01-22}
+    \date{Draft: 2019-06-24}
 
 \usepackage{booktabs}
 \usepackage{amsthm}
@@ -136,20 +136,6 @@
 }
 \makeatother
 
-\usepackage{amsthm}
-\newtheorem{theorem}{Theorem}[chapter]
-\newtheorem{lemma}{Lemma}[chapter]
-\theoremstyle{definition}
-\newtheorem{definition}{Definition}[chapter]
-\newtheorem{corollary}{Corollary}[chapter]
-\newtheorem{proposition}{Proposition}[chapter]
-\theoremstyle{definition}
-\newtheorem{example}{Example}[chapter]
-\theoremstyle{definition}
-\newtheorem{exercise}{Exercise}[chapter]
-\theoremstyle{remark}
-\newtheorem*{remark}{Remark}
-\newtheorem*{solution}{Solution}
 \begin{document}
 \maketitle
 
@@ -177,12 +163,14 @@ key to choose the correct ``test'' for the data at hand, compute a test
 statistic for their data, compute a \(p\)-value based on the test
 statistic, and compare the \emph{p}-value to 0.05. Textbooks typically
 give very little guidance about what can be concluded if \(p < 0.05\) or
-if \(p > 0.05\), but many researchers conclude (incorrectly) they have
-``discovered'' something if \(p < 0.05\) but found ``no effect'' if
-\(p > 0.05\).
+if \(p > 0.05\), but many researchers conclude, incorrectly, they have
+``discovered'' something or ``shown'' an effect if \(p < 0.05\) but
+found ``no effect'' if \(p > 0.05\).
 
-Researchers learn almost nothing useful from a hypothesis test. True, a
-\(p\)-value is evidence against the null, and thus, a tool to dampen the
+Researchers learn nothing useful from a hypothesis test -- that is,
+comparing \(p\) to 0.05 (or some other arbitrary value). A \(p\)-value
+is a measure of compatibility between the data and the null hypothesis
+and, consequently, a pretty good, but imperfect tool to dampen the
 frequency that we are fooled by randomness. But if we are investigating
 the effects of an increasingly acidified ocean on coral growth,
 \(p=0.002\) may be evidence of an effect of the experimental
@@ -193,7 +181,7 @@ to know the magnitude of effects and our uncertainty in estimating these
 magnitudes. We can use a magnitude and uncertainty to make predictions
 about the future of coral reefs, under different scenarios of ocean
 acidification. We can use the estimated effects and uncertainty to model
-the consquences of the effects of acidification on coral growth on fish
+the consequences of the effects of acidification on coral growth on fish
 production or carbon cycling.
 
 This book is an introduction to the estimation of effects of biological
@@ -326,31 +314,6 @@ random ``draw'' from a normal distribution with mean zero and variance
 \(\sigma^2\). Think of this as adding some random value to the expected
 value.
 
-The inputs to a linear model (the \(X\) variables) have many names
-including ``independent variables,'' ``predictor variables,'',
-``explanatory variables,'' ``treatment variables,'' and ``covariates''.
-The output of a linear model (the \(Y\) variable or variables if the
-model is multivariate) is the ``dependent variable,'' ``response,'' or
-``outcome.'' The \(\beta\) in the linear model are model
-\textbf{parameters} and if a parameter is multiplied by an \(X\)
-variable then it is a \textbf{coefficient} (for example, \(\beta_1\) in
-model \eqref{eq:lm} is a coefficient) (there are additional parameters
-that are hidden from this specification of the linear model but show up
-in the specification below). The coefficients of the \(X\) in a linear
-model (\(\beta_1\) in model \eqref{eq:lm}) are often called ``the
-effects'' (so \(\beta_1\) is the effect of \(X_1\)).
-
-Although a linear model (or statistical model more generally) is a model
-of a data-generating process, linear models are not typically used to
-actually generate any data. Instead, when we use a linear model to
-understand something about a real dataset, we think of our data as one
-realization of a process that generates data like ours. A linear model
-is a model of that process. That said, it is incredibly useful to use
-linear models to create fake datasets for at least two reasons: to probe
-our understanding of statistical modeling generally and, more
-specifically, to check that a model actually creates data like that in
-the real dataset that we are analyzing.
-
 \section{\texorpdfstring{Two specifications of a linear model II: the
 ``random draw''
 specification}{Two specifications of a linear model II: the random draw specification}}\label{two-specifications-of-a-linear-model-ii-the-random-draw-specification}
@@ -378,20 +341,49 @@ These two ways of specifying the model encourage slightly different ways
 of thinking about how the data (the response varible \(Y\)) were
 generated. The random error specification ``generates'' data by
 constructing \(y_i\) from the \(x_i\) and then adding random, normal
-error. The random draw specification ``generates'' data by simply
-drawing a random variable from a normal distribution with a specified
-mean and variance. The random draw specification explicitly defines all
-parameters, including the parameters of the linear predictor
-(\(\beta_0\) and \(\beta_1\)), the conditional mean \(\mu\) and the
-variance \(\sigma\). The random error specification only defines the
-parameters of the linear predictor, and often these are referrred to as
-``the parameters'' in the sense that there are not other parameters. The
-random error specification is most useful for thinking about model
-checking fit linear models but thinking about a model as a predictor
-plus error can lead to misconceptions of generalized linear models. The
-random draw specificaiton is more generally useful in that it is easily
-generalized to more complex models, including hierarchical models,
-generalized linear models, and Bayesian models.
+error. The random draw specification ``generates'' data by constructing
+what \(y_i\) should be, and then drawing a random variable from a
+distribution with this expectation. This random draw is \(y_i\) and not
+the ``error''.
+
+The random draw specification explicitly defines all parameters,
+including the parameters of the linear predictor (\(\beta_0\) and
+\(\beta_1\)), the conditional mean \(\mu\) and the variance \(\sigma\).
+The random error specification only defines the parameters of the linear
+predictor, and often these are referrred to as ``the parameters'' in the
+sense that there are not other parameters. The random error
+specification is most useful for thinking about model checking fit
+linear models but thinking about a model as a predictor plus error can
+lead to misconceptions of generalized linear models. The random draw
+specificaiton is more generally useful in that it is easily generalized
+to more complex models, including hierarchical models, generalized
+linear models, and Bayesian models.
+
+Although a linear model (or statistical model more generally) is a model
+of a data-generating process, linear models are not typically used to
+actually generate any data. Instead, when we use a linear model to
+understand something about a real dataset, we think of our data as one
+realization of a process that generates data like ours. A linear model
+is a model of that process. That said, it is incredibly useful to use
+linear models to create fake datasets for at least two reasons: to probe
+our understanding of statistical modeling generally and, more
+specifically, to check that a model actually creates data like that in
+the real dataset that we are analyzing.
+
+\section{\texorpdfstring{What do we call the \(X\) and \(Y\)
+variables?}{What do we call the X and Y variables?}}\label{what-do-we-call-the-x-and-y-variables}
+
+The inputs to a linear model (the \(X\) variables) have many names
+including ``independent variables,'' ``predictor variables,'',
+``explanatory variables,'' ``treatment variables,'' and ``covariates''.
+The output of a linear model (the \(Y\) variable or variables if the
+model is multivariate) is the ``dependent variable,'' ``response,'' or
+``outcome.'' The \(\beta\) in the linear model are model
+\textbf{parameters} and if a parameter is multiplied by an \(X\)
+variable then it is also a \textbf{coefficient} (for example,
+\(\beta_1\) in model \eqref{eq:lm} is a coefficient). The coefficients of
+the \(X\) in a linear model (\(\beta_1\) in model \eqref{eq:lm}) are often
+called ``the effects'' (so \(\beta_1\) is the effect of \(X_1\)).
 
 \section{Statistical models are used for prediction, explanation, and
 description}\label{statistical-models-are-used-for-prediction-explanation-and-description}
@@ -1423,17 +1415,44 @@ and analysis to later chapters.
 
 \section{Creating Fake Data}\label{creating-fake-data}
 
+Fake data are generated by sampling from one of R's random sampling
+functions. These functions sample from different distributions including
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  uniform -- function \texttt{runif(n,\ min=0,\ max=1)}, which samples n
+  continous values between \texttt{min} and \texttt{max}.
+\item
+  normal (Gaussian) -- function \texttt{rnorm(n,\ mean=0,\ sd=1)}, which
+  samples n continous values from a distribution with the specified mean
+  and standard deviation. The default is the ``standard'' normal
+  distribution.
+\item
+  poisson -- function \texttt{rpois(n,\ lambda)}, which samples
+  \texttt{n} counts from a distribution with mean and variance equal to
+  \texttt{lambda}.
+\item
+  negative binomial -- \texttt{rnegbin(n,\ mu=n,\ theta)}, which samples
+  \texttt{n} counts with mean \texttt{mu} and variance
+  \texttt{mu\ +\ mu\^{}2/theta}.
+\end{enumerate}
+
 \subsection{Continuous X (fake observational
 data)}\label{continuous-x-fake-observational-data}
 
-A very simple simulation of a regression model
+A very simple simulation of observational design (the \(X\) are not at
+``controlled'' levels)
 
 \begin{Shaded}
 \begin{Highlighting}[]
 \NormalTok{n <-}\StringTok{ }\DecValTok{25}
-\NormalTok{beta_}\DecValTok{0}\NormalTok{ <-}\StringTok{ }\DecValTok{25}
-\NormalTok{beta_}\DecValTok{1}\NormalTok{ <-}\StringTok{ }\FloatTok{3.4}
-\NormalTok{sigma <-}\StringTok{ }\DecValTok{2}
+\CommentTok{# the paramters}
+\NormalTok{beta_}\DecValTok{0}\NormalTok{ <-}\StringTok{ }\DecValTok{25} \CommentTok{# the true intercept}
+\NormalTok{beta_}\DecValTok{1}\NormalTok{ <-}\StringTok{ }\FloatTok{3.4} \CommentTok{# the true slope}
+\NormalTok{sigma <-}\StringTok{ }\DecValTok{2} \CommentTok{# the true standard deviation}
+
 \NormalTok{x <-}\StringTok{ }\KeywordTok{rnorm}\NormalTok{(n)}
 \NormalTok{y <-}\StringTok{ }\NormalTok{beta_}\DecValTok{0} \OperatorTok{+}\StringTok{ }\NormalTok{beta_}\DecValTok{1}\OperatorTok{*}\NormalTok{x }\OperatorTok{+}\StringTok{ }\KeywordTok{rnorm}\NormalTok{(n, }\DataTypeTok{sd=}\NormalTok{sigma)}
 \KeywordTok{qplot}\NormalTok{(x, y)}
@@ -1442,9 +1461,12 @@ A very simple simulation of a regression model
 
 \includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/continuous-X-1.pdf}
 
+How well does a model fit to the data recover the true parameters?
+
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{knitr}\OperatorTok{::}\KeywordTok{kable}\NormalTok{(}\KeywordTok{coefficients}\NormalTok{(}\KeywordTok{summary}\NormalTok{(}\KeywordTok{lm}\NormalTok{(y }\OperatorTok{~}\StringTok{ }\NormalTok{x))), }\DataTypeTok{digits=}\DecValTok{2}\NormalTok{)}
+\NormalTok{fit <-}\StringTok{ }\KeywordTok{lm}\NormalTok{(y }\OperatorTok{~}\StringTok{ }\NormalTok{x)}
+\NormalTok{knitr}\OperatorTok{::}\KeywordTok{kable}\NormalTok{(}\KeywordTok{coefficients}\NormalTok{(}\KeywordTok{summary}\NormalTok{(fit)), }\DataTypeTok{digits=}\KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{2}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{4}\NormalTok{))}
 \end{Highlighting}
 \end{Shaded}
 
@@ -1452,9 +1474,9 @@ A very simple simulation of a regression model
 \hline
   & Estimate & Std. Error & t value & Pr(>|t|)\\
 \hline
-(Intercept) & 24.46 & 0.39 & 62.43 & 0\\
+(Intercept) & 24.5 & 0.39 & 62.4 & 0\\
 \hline
-x & 3.05 & 0.37 & 8.25 & 0\\
+x & 3.0 & 0.37 & 8.2 & 0\\
 \hline
 \end{tabular}
 
@@ -1468,9 +1490,12 @@ easier.
 \subsection{Categorical X (fake experimental
 data)}\label{categorical-x-fake-experimental-data}
 
+Similar to above but the \(X\) are at controlled levels and so this
+simulates an experimental design
+
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{n <-}\StringTok{ }\DecValTok{5}
+\NormalTok{n <-}\StringTok{ }\DecValTok{5} \CommentTok{# the sample size per treatment level}
 
 \NormalTok{fake_data <-}\StringTok{ }\KeywordTok{data.table}\NormalTok{(}\DataTypeTok{Treatment=}\KeywordTok{rep}\NormalTok{(}\KeywordTok{c}\NormalTok{(}\StringTok{"control"}\NormalTok{, }\StringTok{"treated"}\NormalTok{), }\DataTypeTok{each=}\NormalTok{n))}
 \NormalTok{beta_}\DecValTok{0}\NormalTok{ <-}\StringTok{ }\FloatTok{10.5} \CommentTok{# mean of untreated}
@@ -1511,10 +1536,386 @@ Treatmenttreated & 2.100 & 2.151 & 0.976 & 0.358\\
 \end{tabular}
 
 Check that the intercept is close to beta\_0 and the coefficient for
-Treatment is close to beta\_1. This coefficient is the different in
+Treatment is close to beta\_1. This coefficient is the difference in
 means between the treatment levels. It is the simulated effect. Again,
 change \(n\). Good values are \(n=20\) and \(n=100\). Again, comment out
 the plot line to make exploration more efficient.
+
+\subsection{Correlated X (fake observational
+data)}\label{correlated-x-fake-observational-data}
+
+\subsubsection{Generating correlated X
+variables}\label{generating-correlated-x-variables}
+
+It's useful to think about how correlated data are generated because
+often we want to generate fake\_data with an expected correlation. Let's
+say we want to generate two X variables that have an expected
+correlation of 0.6. To generate this, we take advantage of the fact that
+two variables, X1 and X2, are correlated if they share a ``common
+cause'' -- a variable Z that effects (or ``causes'') both X1 and X2. If
+the expected variances of X1, X2, and Z are all 1, then the expected
+correlation between X1 and X2 is the product of the causal effect from Z
+to each X. The easiest way to implement this is to simply make the
+effect from Z to both X equal to \(\sqrt(0.6)\).
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{n <-}\StringTok{ }\DecValTok{10}\OperatorTok{^}\DecValTok{3}
+\NormalTok{z <-}\StringTok{ }\KeywordTok{rnorm}\NormalTok{(n) }\CommentTok{# the common cause, with sigma = 1}
+\NormalTok{rho <-}\StringTok{ }\FloatTok{0.6} \CommentTok{# the true correlation between X1 and X2}
+\NormalTok{beta_z <-}\StringTok{ }\KeywordTok{sqrt}\NormalTok{(rho) }\CommentTok{# the easiest way to get effects of z on X1 and X2 that generates rho}
+\NormalTok{sigma_x <-}\StringTok{ }\KeywordTok{sqrt}\NormalTok{(}\DecValTok{1} \OperatorTok{-}\StringTok{ }\NormalTok{rho) }\CommentTok{# we will make the variance of X1 and X2 = 1, so the "explained" variance in X is beta_z^2 = rho so this is the sqrt of the unexplained variance}
+\NormalTok{x1 <-}\StringTok{ }\NormalTok{beta_z}\OperatorTok{*}\NormalTok{z }\OperatorTok{+}\StringTok{ }\KeywordTok{rnorm}\NormalTok{(n, }\DataTypeTok{sd=}\NormalTok{sigma_x)}
+\NormalTok{x2 <-}\StringTok{ }\NormalTok{beta_z}\OperatorTok{*}\NormalTok{z }\OperatorTok{+}\StringTok{ }\KeywordTok{rnorm}\NormalTok{(n, }\DataTypeTok{sd=}\NormalTok{sigma_x)}
+\CommentTok{# check}
+\KeywordTok{cov}\NormalTok{(}\KeywordTok{data.frame}\NormalTok{(}\DataTypeTok{X1=}\NormalTok{x1, }\DataTypeTok{X2=}\NormalTok{x2)) }\CommentTok{# is the diagonal close to 1, 1?}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##           X1        X2
+## X1 1.0523598 0.5978408
+## X2 0.5978408 0.9713292
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{cor}\NormalTok{(x1, x2) }\CommentTok{# is the value close to rho?}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0.5913168
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{qplot}\NormalTok{(x1, x2)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-4-1.pdf}
+
+Now create fake \(Y\) that is a function of both \(X_1\) and \(X_2\).
+Create ``standardized'' fake data, where \(\sigma_Y = 1\).
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{beta_}\DecValTok{0}\NormalTok{ <-}\StringTok{ }\FloatTok{3.2}
+\NormalTok{beta_}\DecValTok{1}\NormalTok{ <-}\StringTok{ }\FloatTok{0.7}
+\NormalTok{beta_}\DecValTok{2}\NormalTok{ <-}\StringTok{ }\OperatorTok{-}\FloatTok{0.3}
+\NormalTok{explained_sigma <-}\StringTok{ }\NormalTok{beta_}\DecValTok{1}\OperatorTok{^}\DecValTok{2} \OperatorTok{+}\StringTok{ }\NormalTok{beta_}\DecValTok{2}\OperatorTok{^}\DecValTok{2} \OperatorTok{+}\StringTok{ }\DecValTok{2}\OperatorTok{*}\NormalTok{beta_}\DecValTok{1}\OperatorTok{*}\NormalTok{beta_}\DecValTok{2}\OperatorTok{*}\NormalTok{rho }\CommentTok{# Wright's rules! Compare to Trig!}
+\NormalTok{sigma_Y.X <-}\StringTok{ }\KeywordTok{sqrt}\NormalTok{(}\DecValTok{1} \OperatorTok{-}\StringTok{ }\NormalTok{explained_sigma) }\CommentTok{# sqrt unexplained variance}
+\NormalTok{y <-}\StringTok{ }\NormalTok{beta_}\DecValTok{0} \OperatorTok{+}\StringTok{ }\NormalTok{beta_}\DecValTok{1}\OperatorTok{*}\NormalTok{x1 }\OperatorTok{+}\StringTok{ }\NormalTok{beta_}\DecValTok{2}\OperatorTok{*}\NormalTok{x2 }\OperatorTok{+}\StringTok{ }\KeywordTok{rnorm}\NormalTok{(n, }\DataTypeTok{sd=}\NormalTok{sigma_Y.X)}
+
+\CommentTok{# check}
+\KeywordTok{var}\NormalTok{(y) }\CommentTok{# should be close to 1 as n gets bigger}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0.9791502
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# check parameters}
+\KeywordTok{coef}\NormalTok{(}\KeywordTok{summary}\NormalTok{(}\KeywordTok{lm}\NormalTok{(y }\OperatorTok{~}\StringTok{ }\NormalTok{x1 }\OperatorTok{+}\StringTok{ }\NormalTok{x2))) }\CommentTok{# should be near parameters as n gets bigger}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##               Estimate Std. Error    t value     Pr(>|t|)
+## (Intercept)  3.1887712 0.02536483 125.716255 0.000000e+00
+## x1           0.6885565 0.03064195  22.471043 8.422461e-91
+## x2          -0.3037457 0.03189446  -9.523465 1.223898e-20
+\end{verbatim}
+
+Note that the variance of \(Y\) is the variance of the explained part
+due to X1 and X2 and the unexplained part and if the expected variance
+of \(Y=1\) then this sets an upper limit for the explained part. This
+means that
+
+\begin{equation}
+\beta_1^2 + \beta_2^2 + 2 \beta_1 \beta_2 \rho < 1
+\end{equation}
+
+which means the magnitude of \(\beta_1\) and \(\beta_2\) should
+generally be less than 1.
+
+\subsubsection{Creating mulitple X variables using the package
+mvtnorm}\label{creating-mulitple-x-variables-using-the-package-mvtnorm}
+
+The package mvtnorm provides a function to generate multivariate data
+(multiple columns) with a specified vector of means (the means of each
+column) and covariance matrix among the means.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{rcov1 <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(p)\{}
+  \CommentTok{# p is the number of columns or number of variables}
+\NormalTok{  pp <-}\StringTok{ }\NormalTok{p}\OperatorTok{*}\NormalTok{(p}\OperatorTok{-}\DecValTok{1}\NormalTok{)}\OperatorTok{/}\DecValTok{2} \CommentTok{# number of elements in lower tri}
+\NormalTok{  max_r <-}\StringTok{ }\FloatTok{0.7}
+\NormalTok{  r <-}\StringTok{ }\KeywordTok{rexp}\NormalTok{(pp)}
+\NormalTok{  r <-}\StringTok{ }\NormalTok{r}\OperatorTok{*}\NormalTok{max_r}\OperatorTok{/}\KeywordTok{max}\NormalTok{(r)}
+  
+  \CommentTok{# create correlation matrix}
+\NormalTok{  R <-}\StringTok{ }\KeywordTok{matrix}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DataTypeTok{nrow=}\NormalTok{p, }\DataTypeTok{ncol=}\NormalTok{p)}
+\NormalTok{  R[}\KeywordTok{lower.tri}\NormalTok{(R, }\DataTypeTok{diag=}\OtherTok{FALSE}\NormalTok{)] <-}\StringTok{ }\NormalTok{r}
+\NormalTok{  R <-}\StringTok{ }\KeywordTok{t}\NormalTok{(R)}
+\NormalTok{  R[}\KeywordTok{lower.tri}\NormalTok{(R, }\DataTypeTok{diag=}\OtherTok{FALSE}\NormalTok{)] <-}\StringTok{ }\NormalTok{r}
+  
+  \CommentTok{# convert to covariance matrix}
+\NormalTok{  L <-}\StringTok{ }\KeywordTok{diag}\NormalTok{(}\KeywordTok{sqrt}\NormalTok{(}\KeywordTok{rexp}\NormalTok{(p))) }\CommentTok{# standard deviations}
+\NormalTok{  S <-}\StringTok{ }\NormalTok{L}\OperatorTok{%*%}\NormalTok{R}\OperatorTok{%*%}\NormalTok{L}
+  
+  \CommentTok{# check -- these should be the same}
+  \CommentTok{# R}
+  \CommentTok{# cov2cor(S)}
+  \KeywordTok{return}\NormalTok{(S)}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+Now let's use mvtnorm to generate fake correlated X
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{p <-}\StringTok{ }\DecValTok{5} \CommentTok{# number of X variables}
+\NormalTok{S <-}\StringTok{ }\KeywordTok{rcov1}\NormalTok{(p)}
+
+\CommentTok{# make the fake X}
+\NormalTok{n <-}\StringTok{ }\DecValTok{10}\OperatorTok{^}\DecValTok{5}
+\NormalTok{mu <-}\StringTok{ }\KeywordTok{runif}\NormalTok{(p, }\DataTypeTok{min=}\DecValTok{10}\NormalTok{, }\DataTypeTok{max=}\DecValTok{100}\NormalTok{) }\CommentTok{# vecctor of p means}
+\NormalTok{X <-}\StringTok{ }\KeywordTok{rmvnorm}\NormalTok{(n, }\DataTypeTok{mean=}\NormalTok{mu, }\DataTypeTok{sigma=}\NormalTok{S)}
+
+\CommentTok{# how close? (check the cor as this is easier to scan)}
+\KeywordTok{cov2cor}\NormalTok{(S)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##           [,1]       [,2]       [,3]       [,4]       [,5]
+## [1,] 1.0000000 0.15511020 0.11863165 0.48788949 0.14545246
+## [2,] 0.1551102 1.00000000 0.70000000 0.03514487 0.04345391
+## [3,] 0.1186317 0.70000000 1.00000000 0.05346376 0.54083807
+## [4,] 0.4878895 0.03514487 0.05346376 1.00000000 0.44504979
+## [5,] 0.1454525 0.04345391 0.54083807 0.44504979 1.00000000
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{cor}\NormalTok{(X)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##           [,1]       [,2]       [,3]       [,4]       [,5]
+## [1,] 1.0000000 0.15618693 0.12146387 0.48987841 0.14569745
+## [2,] 0.1561869 1.00000000 0.69709529 0.03879653 0.03961509
+## [3,] 0.1214639 0.69709529 1.00000000 0.05598629 0.54138395
+## [4,] 0.4898784 0.03879653 0.05598629 1.00000000 0.44214983
+## [5,] 0.1456974 0.03961509 0.54138395 0.44214983 1.00000000
+\end{verbatim}
+
+\subsubsection{The rcov1 algorithm is
+naive}\label{the-rcov1-algorithm-is-naive}
+
+A problem with generating a fake covariance matrix as above is that it
+is likely to be \textbf{singular} as \(p\) get's bigger. A singular
+covariance matrix is one where there are fewer orthogonal axes of
+variation then there are variables. Imagine a multidimensional
+scatterplot of a data set with the fake covariance matrix. If we zoom
+around this multidimensional space, we will come across a ``view'' in
+which all the points are compressed along a single line -- that is there
+is no variation on the axis orthogonal to this line of points. This is
+bad, as it means we cannot fit a linear model using least squares
+(because the inverse of the covariance matrix doesn't exist).
+
+Let's explore this. If the a covariance matrix is singular, then at
+least one eigenvalue of the matrix is negative (eigenvalues is a
+multivariate term beyond the scope of this text but, effectively, these
+are the variances of the orthogonal axes referred to above). Here I
+compute the frequency of covariance matrices with at least one negative
+eigenvalue as \(p\) increases
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{niter <-}\StringTok{ }\DecValTok{1000}
+\NormalTok{p_vec <-}\StringTok{ }\DecValTok{3}\OperatorTok{:}\DecValTok{10}
+\NormalTok{counts <-}\StringTok{ }\KeywordTok{numeric}\NormalTok{(}\KeywordTok{length}\NormalTok{(p_vec))}
+\NormalTok{i <-}\StringTok{ }\DecValTok{0}
+\ControlFlowTok{for}\NormalTok{(p }\ControlFlowTok{in} \DecValTok{3}\OperatorTok{:}\DecValTok{10}\NormalTok{)\{}
+\NormalTok{  i <-}\StringTok{ }\NormalTok{i}\OperatorTok{+}\DecValTok{1}
+  \ControlFlowTok{for}\NormalTok{(iter }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\NormalTok{niter)\{}
+\NormalTok{    counts[i] <-}\StringTok{ }\KeywordTok{ifelse}\NormalTok{(}\KeywordTok{eigen}\NormalTok{(}\KeywordTok{rcov1}\NormalTok{(p))}\OperatorTok{$}\NormalTok{values[p] }\OperatorTok{<}\StringTok{ }\DecValTok{0}\NormalTok{, counts[i]}\OperatorTok{+}\DecValTok{1}\NormalTok{, counts[i])}
+\NormalTok{  \}}
+\NormalTok{\}}
+\KeywordTok{data.table}\NormalTok{(}\DataTypeTok{p=}\NormalTok{p_vec, }\DataTypeTok{freq=}\NormalTok{counts}\OperatorTok{/}\NormalTok{niter)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##     p  freq
+## 1:  3 0.000
+## 2:  4 0.025
+## 3:  5 0.066
+## 4:  6 0.135
+## 5:  7 0.190
+## 6:  8 0.225
+## 7:  9 0.275
+## 8: 10 0.368
+\end{verbatim}
+
+\subsubsection{Generating multiple columns of X variables with a
+non-singular covariance
+matrix}\label{generating-multiple-columns-of-x-variables-with-a-non-singular-covariance-matrix}
+
+This section uses some ideas from matrix algebra. The goal is to create
+a \(n \times p\) matrix of \(X\) variables that have some random
+covariance structure that is full-rank (not singular, or no negative
+eigenvalues). The algorithm starts with a \(p \times p\) random
+eigenvector matrix \(\mathbf{E}\) and a \(p \times p\) random eigenvalue
+matrix \(\mathbf{L}\) and then computes the random covariance matrix
+using \(\mathbf{E}\mathbf{L}\mathbf{E}^\top\)
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Generate a random \(p \times p\) random eigenvector matrix from a
+  covariance matrix of \(p \times p\) matrix of random normal variables.
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{fake.eigenvectors <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(p)\{}
+\NormalTok{    a <-}\StringTok{ }\KeywordTok{matrix}\NormalTok{(}\KeywordTok{rnorm}\NormalTok{(p}\OperatorTok{*}\NormalTok{p), p, p) }\CommentTok{# only orthogonal if p is infinity so need to orthogonalize it}
+\NormalTok{    a <-}\StringTok{ }\KeywordTok{t}\NormalTok{(a)}\OperatorTok{%*%}\NormalTok{a }\CommentTok{# this is the sum-of-squares-and-cross-product-matrix}
+\NormalTok{    E <-}\StringTok{ }\KeywordTok{eigen}\NormalTok{(a)}\OperatorTok{$}\NormalTok{vectors }\CommentTok{# decompose to truly orthogonal columns}
+    \KeywordTok{return}\NormalTok{(E)}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{1}
+\tightlist
+\item
+  Generate \(p\) random eigenvalues in descending order and that sum to
+  1. There are several ways to create this sequence. Here are two:
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# force the eigenvalues to descend at a constant rate}
+\NormalTok{fake.eigenvalues <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(p, }\DataTypeTok{m=}\NormalTok{p, }\DataTypeTok{start=}\DecValTok{1}\NormalTok{, }\DataTypeTok{rate=}\DecValTok{1}\NormalTok{)\{}
+  \CommentTok{# m is the number of positive eigenvalues}
+  \CommentTok{# start and rate control the decline in the eigenvalue}
+\NormalTok{  s <-}\StringTok{ }\NormalTok{start}\OperatorTok{/}\KeywordTok{seq}\NormalTok{(}\DecValTok{1}\OperatorTok{:}\NormalTok{m)}\OperatorTok{^}\NormalTok{rate}
+\NormalTok{  s <-}\StringTok{ }\KeywordTok{c}\NormalTok{(s, }\KeywordTok{rep}\NormalTok{(}\DecValTok{0}\NormalTok{, p}\OperatorTok{-}\NormalTok{m)) }\CommentTok{# add zero eigenvalues}
+\NormalTok{  L <-}\StringTok{ }\KeywordTok{diag}\NormalTok{(s}\OperatorTok{/}\KeywordTok{sum}\NormalTok{(s)}\OperatorTok{*}\NormalTok{m) }\CommentTok{# rescale so that sum(s)=m and put into matrix,}
+  \CommentTok{# which would occur if all the traits are variance standardized}
+  \KeywordTok{return}\NormalTok{(L)}
+\NormalTok{\}}
+
+\CommentTok{# random descent}
+\NormalTok{fake.eigenvalues.exp <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(p, }\DataTypeTok{m=}\NormalTok{p, }\DataTypeTok{rate=}\DecValTok{1}\NormalTok{)\{}
+  \CommentTok{# exponential distribution of eigenvalues}
+  \CommentTok{# m is the number of positive eigenvalues}
+  \CommentTok{# start and rate control the decline in the eigenvalue}
+\NormalTok{  s <-}\StringTok{ }\KeywordTok{rexp}\NormalTok{(m, rate)}
+\NormalTok{  s <-}\StringTok{ }\NormalTok{s[}\KeywordTok{order}\NormalTok{(s, }\DataTypeTok{decreasing=}\OtherTok{TRUE}\NormalTok{)] }\CommentTok{# re-order into descending order}
+\NormalTok{  s <-}\StringTok{ }\KeywordTok{c}\NormalTok{(s, }\KeywordTok{rep}\NormalTok{(}\DecValTok{0}\NormalTok{, p}\OperatorTok{-}\NormalTok{m)) }\CommentTok{# add zero eigenvalues}
+\NormalTok{  L <-}\StringTok{ }\KeywordTok{diag}\NormalTok{(s}\OperatorTok{/}\KeywordTok{sum}\NormalTok{(s)}\OperatorTok{*}\NormalTok{m) }\CommentTok{# rescale so that sum(s)=m and put into matrix,}
+  \CommentTok{# which would occur if all the traits are variance standardized}
+  \KeywordTok{return}\NormalTok{(L)}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{2}
+\tightlist
+\item
+  Generate the random covariance matrix
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{fake.cov.matrix <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(p)\{}
+    \CommentTok{# p is the size of the matrix (number of cols and rows)}
+\NormalTok{    E <-}\StringTok{ }\KeywordTok{fake.eigenvectors}\NormalTok{(p)}
+\NormalTok{    L <-}\StringTok{ }\KeywordTok{diag}\NormalTok{(}\KeywordTok{fake.eigenvalues}\NormalTok{(p))}
+\NormalTok{    S <-}\StringTok{ }\NormalTok{E}\OperatorTok{%*%}\NormalTok{L}\OperatorTok{%*%}\KeywordTok{t}\NormalTok{(E)}
+    \KeywordTok{return}\NormalTok{(S)}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{3}
+\tightlist
+\item
+  Generate the random \(X\) variables using
+  \(\mathbf{X} = \mathbf{X}' (\mathbf{E}\sqrt{\mathbf{L}})^\top\)
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# two functions to compute the random data}
+\NormalTok{fake.X <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(n,p,E,L)\{}
+  \CommentTok{# n is number of observations}
+  \CommentTok{# p is number of variables}
+\NormalTok{  X <-}\StringTok{ }\KeywordTok{matrix}\NormalTok{(}\KeywordTok{rnorm}\NormalTok{(n}\OperatorTok{*}\NormalTok{p),}\DataTypeTok{nrow=}\NormalTok{n,}\DataTypeTok{ncol=}\NormalTok{p) }\OperatorTok{%*%}\StringTok{ }\KeywordTok{t}\NormalTok{(E}\OperatorTok{%*%}\KeywordTok{sqrt}\NormalTok{(L))}
+    \KeywordTok{return}\NormalTok{(X)}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+An example
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{n <-}\StringTok{ }\DecValTok{10}\OperatorTok{^}\DecValTok{5}
+\NormalTok{p <-}\StringTok{ }\DecValTok{5}
+\NormalTok{E <-}\StringTok{ }\KeywordTok{fake.eigenvectors}\NormalTok{(p)}
+\NormalTok{L <-}\StringTok{ }\KeywordTok{fake.eigenvalues}\NormalTok{(p, }\DataTypeTok{start=}\DecValTok{1}\NormalTok{, }\DataTypeTok{rate=}\DecValTok{1}\NormalTok{)}
+\NormalTok{X <-}\StringTok{ }\KeywordTok{fake.X}\NormalTok{(n, p, E, L)}
+\KeywordTok{colnames}\NormalTok{(X) <-}\StringTok{ }\KeywordTok{paste0}\NormalTok{(}\StringTok{"X"}\NormalTok{, }\DecValTok{1}\OperatorTok{:}\NormalTok{p)}
+\NormalTok{E}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##            [,1]        [,2]        [,3]        [,4]        [,5]
+## [1,]  0.4762049  0.76679336  0.02189702 -0.37886958 -0.20306443
+## [2,] -0.3226816  0.26514622 -0.21147219  0.50680583 -0.72387940
+## [3,]  0.6343127 -0.07414265  0.40381446  0.65434666  0.03024185
+## [4,]  0.2450305 -0.53523178  0.22900376 -0.40906173 -0.65856872
+## [5,] -0.4546568  0.22305882  0.85982044 -0.06406746 -0.01166667
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{E <-}\StringTok{ }\KeywordTok{eigen}\NormalTok{(}\KeywordTok{cov}\NormalTok{(X))}\OperatorTok{$}\NormalTok{vectors}
+\NormalTok{scores <-}\StringTok{ }\NormalTok{X}\OperatorTok{%*%}\NormalTok{E}
+\KeywordTok{colnames}\NormalTok{(scores) <-}\StringTok{ }\KeywordTok{paste0}\NormalTok{(}\StringTok{"pc"}\NormalTok{, }\DecValTok{1}\OperatorTok{:}\NormalTok{p)}
+\KeywordTok{cor}\NormalTok{(}\KeywordTok{cbind}\NormalTok{(X, scores))[}\DecValTok{1}\OperatorTok{:}\NormalTok{p, (p}\OperatorTok{+}\DecValTok{1}\NormalTok{)}\OperatorTok{:}\NormalTok{(p}\OperatorTok{*}\DecValTok{2}\NormalTok{)]}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##           pc1         pc2          pc3        pc4          pc5
+## X1  0.6381822  0.71536319  0.009665104  0.2581645 -0.119317350
+## X2 -0.5701649  0.32632936 -0.213505507 -0.4289443 -0.582102493
+## X3  0.8417769 -0.06005797  0.312645510 -0.4358132  0.011149679
+## X4  0.4130194 -0.64271492  0.232581875  0.3517727 -0.488358607
+## X5 -0.6579685  0.23893819  0.712352851  0.0501983 -0.004418134
+\end{verbatim}
 
 \section{Saving Data}\label{saving-data}
 
@@ -1959,7 +2360,7 @@ means
 ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 \end{verbatim}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-6-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-15-1.pdf}
 
 Compute the mean of the means
 
@@ -2182,198 +2583,498 @@ with a bootstrap estimate of the SEM.
 
 dayum!
 
-\chapter{Plotting}\label{plotting}
+\chapter{Pretty good plots}\label{pretty-good-plots}
 
-\section{Plots should be the center of your paper's
-universe}\label{plots-should-be-the-center-of-your-papers-universe}
+When it comes to plotting, many researchers mindlessly generate plots
+that are easily generated by the software and look like the typical
+plots published in the field. The resulting plot is comforting because
+it is familiar, not because it effectively communicates what a good plot
+should communicate.
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{library}\NormalTok{(ggplot2)}
-\KeywordTok{library}\NormalTok{(ggpubr)}
-\KeywordTok{library}\NormalTok{(emmeans)}
-\KeywordTok{library}\NormalTok{(data.table)}
+Plots should be the focus of both the reader and researcher. Instead of
+mindless plotting, a researcher should ask a series of questions of
+every plot
 
-\NormalTok{data_path <-}\StringTok{ "../data"} \CommentTok{# notebook}
-\NormalTok{data_path <-}\StringTok{ "data"} \CommentTok{# bookdown}
-\end{Highlighting}
-\end{Shaded}
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  What is the point of each element in a plot?
+\item
+  Are these the points that I most want to communicate?
+\item
+  Are there better practices for communicating these points?
+\item
+  Are the points that I want to communicate that are not covered by
+  these elements?
+\end{enumerate}
 
-\section{Pretty good plots show the
-data}\label{pretty-good-plots-show-the-data}
+The answer to these questions should inform what is and what is not
+plotted. The result is a pretty good plot. A typical pretty good plot
+contains some combination of
 
-The first plot combines 1. ``Cleveland dot plot'' of the group means 2.
-unconditional 1 SE error bar.
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Modeled effects with confidence intervals. ``Effects'' are the
+  coefficients of a model, or contrasts constructed from the model, such
+  as all pairwise differences between the means of the levels of a
+  factor. Inferences are typically made from the estimated effects
+\item
+  Modeled means and standard errors or confidence intervals.
+\item
+  Raw data points or a summary distribution of these.
+\end{enumerate}
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{ggerrorplot}\NormalTok{(}\DataTypeTok{x=}\StringTok{"treatment"}\NormalTok{, }\DataTypeTok{y=}\StringTok{"Y"}\NormalTok{, }\DataTypeTok{data=}\NormalTok{fd, }\DataTypeTok{add=}\StringTok{"mean"}\NormalTok{, }\DataTypeTok{desc_stat =} \StringTok{"mean_se"}\NormalTok{, }\DataTypeTok{error.plot =} \StringTok{"errorbar"}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
+\section{Pretty good plots show the model and the
+data}\label{pretty-good-plots-show-the-model-and-the-data}
+
+The data to introduce best practices in plotting come from ``The enteric
+nervous system promotes intestinal health by constraining microbiota
+composition''\footnote{Rolig, A.S., Mittge, E.K., Ganz, J., Troll, J.V.,
+  Melancon, E., Wiles, T.J., Alligood, K., Stephens, W.Z., Eisen, J.S.
+  and Guillemin, K., 2017. The enteric nervous system promotes
+  intestinal health by constraining microbiota composition. PLoS
+  biology, 15(2), p.e2000689}. The researchers found that zebrafish with
+a \emph{sox10} mutation lacked an enteric nervous system and developed a
+microbiota-dependent inflammation. The paper includes several
+experiments to probe the hypothesis that the ENS regulates microbial
+community composition and, in turn, inflammatory status. The data here
+are from Fig. 2 of the paper, which reports the results of one of a set
+of experiments to test the hypothesis that microbiota from \emph{sox10}
+mutants (that induce inflammation) are necessary and sufficient to
+induce inflammation in wildtype guts. In this experiment, homogenized
+intestines and their microbial community from four different donor
+groups were added to the flasks housing the zebrafish. The response
+variable is neutrophil count. Neutrophils are a white blood cell that
+increase in number during inflammation. The four treatment levels are
+the different donors of intestinal microbes: WT (wild type), GF (germ
+free, so no microbes are transferred), iapMO (a control ``for the
+possibility that nonbacterial factors such as host pro-inflammatory
+cytokines rather than microbial derived factors cause transmissible
+intestinal inflammation''), and sox10.
+
+\subsection{Pretty good plot component 1: Modeled effects
+plot}\label{pretty-good-plot-component-1-modeled-effects-plot}
+
+Biologists infer the biological consequences of a treatment by
+interpreting the magnitude and sign of treatment ``effects'', such as
+the differences in means among treatment levels. Why then do we mostly
+plot treatment level means, where effects can only be inferred
+\emph{indirectly}, by mentally computing differences in means? Instead,
+our primary plots should be effects plots, which \emph{directly}
+communicate treatment effects, and the uncertainty in the estimates of
+these effects.
 
 \begin{figure}
 \centering
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/ggplot-cleveland-dotplot1-1.pdf}
-\caption{\label{fig:ggplot-cleveland-dotplot1}A simple Cleveland dot plot of
-group means and standard error. The standard error bars are the
-unconditional or unmodeled SE.}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/plots-effect-1.pdf}
+\caption{\label{fig:plots-effect}Effects Plot}
 \end{figure}
 
-The second plot combines 1. ``Cleveland dot plot'' of the group means 2.
-unconditional 1 SE error bar. 3. jittered dots of the raw data points
+The y-axis contains each of the \emph{paired comparisons} among the four
+treatment levels. The x-axis is the response, which is the ratio of the
+means of the two groups in the comparison. For example, the top
+comparison shows that guts in fish exposed to sox10 donors have 2.7X
+more neutrophils per length of gut than guts in fish exposed to wild
+type donors. The bars are 95\% confidence intervals, with is the range
+of effects that are compatible with the observed data at the 95\% level
+(confidence intervals are disscussed in depth in chapter xxx.). The
+small end of the interval for the sox10/WT comparison is 1.31, meaning
+that effects as small as 31\% increased neutrophil count are compatible
+with the data. It is up to the research community to decide if 2.7X or
+1.31X are physiologically meaningful effects. \emph{p}-values from the
+hypothesis tests are included.
 
-The advantage of this plot of
+\subsection{Pretty good plot component 2: Modeled mean and CI plot with
+jittered raw
+data}\label{pretty-good-plot-component-2-modeled-mean-and-ci-plot-with-jittered-raw-data}
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{ggerrorplot}\NormalTok{(}\DataTypeTok{x=}\StringTok{"treatment"}\NormalTok{, }\DataTypeTok{y=}\StringTok{"Y"}\NormalTok{, }\DataTypeTok{data=}\NormalTok{fd, }\DataTypeTok{add=}\KeywordTok{c}\NormalTok{(}\StringTok{"mean"}\NormalTok{, }\StringTok{"jitter"}\NormalTok{), }\DataTypeTok{desc_stat =} \StringTok{"mean_se"}\NormalTok{, }\DataTypeTok{error.plot =} \StringTok{"errorbar"}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
+Often the means of the treatment levels are meaningful, for example, if
+neutrophils per length of gut is a standard measure then researchers
+working in this area will be familiar with usual and unusal values. The
+data used in Fig \ref{fig:plots-effect} are used to plot means and
+confidence intervals of the mean using a \textbf{bar chart}, which is a
+pretty good chart type for measures such as counts in which negative
+values are prohibited and zero is meaningful.
 
 \begin{figure}
 \centering
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/ggplot-cleveland-dotplot2-1.pdf}
-\caption{\label{fig:ggplot-cleveland-dotplot2}A Cleveland dot plot of group
-means and standard error.with superimposed dot plot of raw values that
-``show the data''.}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/plots-means-1.pdf}
+\caption{\label{fig:plots-means}Mean and error plot}
 \end{figure}
 
-\section{Even better plots\ldots{}}\label{even-better-plots}
+Fig. \ref{fig:plots-means} plots the \emph{modeled} means, represented
+by the tops of the bars, the modeled 95\% confidence intervals of each
+mean, represented by the error bars, and the \emph{p}-values for all
+pairwise comparisons. What do I mean by \emph{modeled} means and error
+intervals?
 
-\subsection{Let interaction plots be interaction
-plots}\label{let-interaction-plots-be-interaction-plots}
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Modeled means and error intervals are estimated from the statistical
+  model. Many published plots are of raw means and error intervals,
+  meaning that the mean and error for each treatment level is computed
+  only using the response measures in that treatment level.
+\item
+  A modeled mean will often be equal to the raw mean, but this will not
+  always be the case, for example if there are covariates in the model,
+  or the researchers are using a \emph{hierarchical model} (Chapter
+  xxx).
+\item
+  Modeled error intervals are never the same as the raw error intervals,
+  and are commonly conspicuously different. Almost always, we should
+  plot modeled means and error intervals, since these represent the
+  means that are relevant to inference.
+\end{enumerate}
 
-The levels of the treatment variable indicate that the experimental
-design is \textbf{factorial} with all four combinations of two factors
-(\(A\) and \(B\)) each with two treatment levels. The two plots above
-fail to capture this aspect of the data. There are several ways of doing
-this, including using different colors or shapes for the different
-levels of one factor and spatially clustering the levels of one factor
-within the other on the graph. Additionally, the whole purpose of a
-factorial design is to measure the interaction effect. The magnitude of
-the interaction can be qualitatively visualized by comparing the lines
-connecting the group means among the levels of one factor within a level
-of the other factor. I don't think ggpubr does this, so here is a
-function.
+Fig. \ref{fig:plots-means} also plots the raw count data as ``jittered''
+black dots. ``Showing the data'' is a pretty good feature of a plot
+because it allows the reader to get a sense of the underlying sample
+size and distribution including outliers, which can be used to mentally
+model check the published statistical analysis. For example, the
+jittered dots in Fig. \ref{fig:plots-means} suggest a
+\textbf{heterogeneity} of variances; specifically, the treatment level
+with the largest mean has a conspicuously higher variance. This pattern
+violates the assumptions of a general linear model and should raise a
+red flag to a reader if the researchers used a general linear model to
+analyze the data.
+
+What a mean-and-error plot fails to show, at least directly, are the
+effects. To infer the effects from the plot, a reader must perform
+mental math -- either compute the difference or the ratio between pairs
+of means. This mental math is easy enough if the comparisons are between
+individual treatment levels but much harder if the comparisons are
+between pooled sets of treatment levels, for example in a factorial
+experimental design. The mental math that is excessively difficult is
+the reconstruction of some kind of error interval of the contrasts, for
+example the 95\% confidence intervals in Fig. \ref{plots-effect} and it
+is this interval that is necessary for a researcher to infer the range
+of biological consequences that are compatible with the experiment. The
+inclusion of the \emph{p}-values for all pairwise comparisons gives the
+significance level of these contrasts, but of the kinds of summary
+results that we could present (contrasts, error intervals,
+\emph{p}-values), the \emph{p}-values are the least informative.
+
+\subsection{Combining Effects and Modeled mean and CI plots -- an
+Effects and response
+plot.}\label{combining-effects-and-modeled-mean-and-ci-plots-an-effects-and-response-plot.}
+
+If one wants to show both effects and the data, then these can be
+combined.
+
+\begin{figure}
+\centering
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/plots-harrellplot-1.pdf}
+\caption{\label{fig:plots-harrellplot}A pretty good plot}
+\end{figure}
+
+If the means do not have any importance in understanding the results,
+the effects plot can be combined with some kind of a plot summarizing
+the distribution, such as a boxplot.
+
+\begin{figure}
+\centering
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/plots-harrelplot2-1.pdf}
+\caption{\label{fig:plots-harrelplot2}Another pretty good plot}
+\end{figure}
+
+Regardless, the effects plot is the most important component as this is
+the illustration of the story a researcher wants to tell.
+
+\section{Some comments on plot
+components}\label{some-comments-on-plot-components}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{Alternatives to barplots make good plots for the supplement,
+  not the main paper}. A prominent trend over the last few years has
+  been the replacement of bar plots with plots that ``show the data'',
+  such as jitter plots or dot plots, or that show summaries of the
+  distribution, such as box plots or violin plots. These plot types were
+  developed for exploratory data analysis, not to communicate the
+  results of experiments. All of these plots fail to communicate the
+  results of the statistical model and, because of this, are inferior to
+  an effects plot, and even a mean-and-error plot, if the mean and error
+  are the modeled values. Box/Violoin/Dot/Jitter plots might be useful
+  as a supplement to an effects plot, either combined with the effects
+  plot as above, or as a supplementary figure.
+\item
+  Standard error bars, computed from the raw data, can have absurd
+  implications. For example, I sometimes see standard error bars cross
+  \(y=0\) for a response that cannot be negative, such as a count. Even
+  if the standard error bar doesn't cross zero, it is common to see
+  standard error bars that imply (but do not explicitly show) 95\%
+  confidence intervals that cross zero, again for responses that cannot
+  be negative. A standard error bar or confidence interval that crosses
+  zero implies that negative means are compatible with the data. This is
+  an absurd implication for responses that cannot have negative values
+  (or are ``bounded by'' zero). Explicit or implicit error bars that
+  cross zero are especially common for count responses with small means.
+  \emph{If} a researcher plots confidence intervals, these should be
+  computed using a method that avoids absurd implications, such methods
+  include the bootstrap and generalized linear models.
+\item
+  \textbf{Stars add minimal value}. Many researchers add star symbols to
+  a plot indicating the level of significance of a particular paired
+  comparison. An uncommon, but better, alternative would be to add the
+  actual p-value (as above). Adding a p-value (or stars) does
+  communicate model results, and so adds value to a mean-and-error or
+  box/violin/jitter plot. However, much more value would be added by
+  simply reporting an effects plot or a combined effects-and-response
+  plot.
+\end{enumerate}
+
+\section{Working in R}\label{working-in-r}
+
+A reasonable goal of any research project should be a script to generate
+the final plots entirely within the R environment and not rely on
+external drawing software to add finishing features. \texttt{ggplot2} is
+one of the major plotting environments in R and the one that seems to
+have the strongest following, especially among new R users.
+\texttt{ggplot2} has the ability to generate extremely personalized and
+finished plots. However, creating a plot with multiple layers (bars,
+lines, error intervals, raw data points, p-values) can often require
+many hours of googling.
+
+\texttt{ggpubr} is an extension to \texttt{ggplot2} (it calls ggplot2
+functions under the hood) and provides many canned functions for
+producing the kinds of ggplots that are published in biological
+journals. With one line of script, a researcher can generate a
+publishable plot that is as good or better than many published plot.
+That said, the means and error intervals used in \texttt{ggpubr} plots
+are the raw and not modeled values, and, consequently, \texttt{ggpubr}
+is not sufficient to generate pretty good plots. It is easy enough to
+add custom error bars to a ggpubr plot.
+
+\subsection{Adding p-values}\label{adding-p-values}
+
+p-values are added to the base ggpubr plot using
+\texttt{stat\_compare\_means}. The pairs to compare are specified with
+\texttt{comparison\ =}. The model to compute the p-values is ``t.test''.
+\textbf{It is important} to know what exactly is being computed when
+analyzing data and reporting results and ``t test'' is not sufficient to
+know this. The t-test could be the classic t-test or a Welch test (which
+adjusts the standard error to account for heterogenity in variance
+between groups). Is the standard error pooled across all four groups
+(that is, estimated from the linear model) or is it pairwise? And, are
+the p-values adjusted for multiple comparisons? These kinds of questions
+can be checked with a function's help page.
+\texttt{?stat\_compare\_means} doesn't answer these questions but
+suggests \texttt{compare\_means}, which also doesn't answer these
+questions. The script below has checks to see what p-values the function
+is returning.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{gg_interaction <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(x, y, }\DataTypeTok{random=}\OtherTok{NULL}\NormalTok{, data, }\DataTypeTok{se=}\StringTok{"model"}\NormalTok{)\{}
-  \CommentTok{# x is a vector of the column labels of categorical variables}
-  \CommentTok{# y is the response column}
-  \CommentTok{# random is a column name of a blocking factor}
-  \CommentTok{# data is a data.frame or data.table}
-  \CommentTok{# se is "model" or "sample"}
-\NormalTok{  dt <-}\StringTok{ }\KeywordTok{na.omit}\NormalTok{(}\KeywordTok{data.table}\NormalTok{(data[, .SD, }\DataTypeTok{.SDcols=}\KeywordTok{c}\NormalTok{(x,y)]))}
-\NormalTok{  fixed_part <-}\StringTok{ }\KeywordTok{paste}\NormalTok{(y, }\StringTok{"~"}\NormalTok{, }\KeywordTok{paste}\NormalTok{(x[}\DecValTok{1}\NormalTok{], x[}\DecValTok{2}\NormalTok{], }\DataTypeTok{sep=}\StringTok{"*"}\NormalTok{))}
-  \ControlFlowTok{if}\NormalTok{(}\KeywordTok{is.null}\NormalTok{(random))\{ }\CommentTok{# linear model}
-\NormalTok{    lm_formula <-}\StringTok{ }\KeywordTok{formula}\NormalTok{(fixed_part)}
-\NormalTok{    fit <-}\StringTok{ }\KeywordTok{lm}\NormalTok{(lm_formula, }\DataTypeTok{data=}\NormalTok{dt)}
-\NormalTok{  \}}\ControlFlowTok{else}\NormalTok{\{ ## linear mixed model}
-\NormalTok{    random_part <-}\StringTok{ }\KeywordTok{paste}\NormalTok{(}\StringTok{"(1|"}\NormalTok{, random, }\StringTok{")"}\NormalTok{, }\DataTypeTok{sep=}\StringTok{""}\NormalTok{)}
-\NormalTok{    lmm_formula <-}\StringTok{ }\KeywordTok{formula}\NormalTok{(}\KeywordTok{paste}\NormalTok{(fixed_part, random_part, }\DataTypeTok{sep=}\StringTok{" + "}\NormalTok{))}
-\NormalTok{    fit <-}\StringTok{ }\KeywordTok{lmer}\NormalTok{(lmm_formula, }\DataTypeTok{data=}\NormalTok{dt)}
-\NormalTok{  \}}
+\NormalTok{pairs_i <-}\StringTok{ }\KeywordTok{list}\NormalTok{(}\KeywordTok{c}\NormalTok{(}\StringTok{"sox10"}\NormalTok{, }\StringTok{"iapMO"}\NormalTok{), }\KeywordTok{c}\NormalTok{(}\StringTok{"sox10"}\NormalTok{, }\StringTok{"GF"}\NormalTok{), }\KeywordTok{c}\NormalTok{(}\StringTok{"sox10"}\NormalTok{, }\StringTok{"WT"}\NormalTok{))}
+\KeywordTok{ggbarplot}\NormalTok{(}\DataTypeTok{x=}\StringTok{"donor"}\NormalTok{, }
+          \DataTypeTok{y=}\StringTok{"count"}\NormalTok{, }
+          \DataTypeTok{data=}\NormalTok{exp2d,}
+          \DataTypeTok{add=}\KeywordTok{c}\NormalTok{(}\StringTok{"mean_se"}\NormalTok{, }\StringTok{"jitter"}\NormalTok{),}
+          \DataTypeTok{color =} \StringTok{"black"}\NormalTok{,}
+          \DataTypeTok{fill =} \StringTok{"steelblue"}\NormalTok{,}
+          \DataTypeTok{size=}\FloatTok{0.5}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{stat_compare_means}\NormalTok{(}\DataTypeTok{method =} \StringTok{"t.test"}\NormalTok{, }\DataTypeTok{comparisons=}\NormalTok{pairs_i) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{ylab}\NormalTok{(}\StringTok{"Neutrophil count"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\OtherTok{NULL}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-21-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# checks on the p-value}
+\CommentTok{# t-tests using SE pooled over all four groups}
+\NormalTok{check_it <-}\StringTok{ }\OtherTok{FALSE}
+\ControlFlowTok{if}\NormalTok{(check_it}\OperatorTok{==}\OtherTok{TRUE}\NormalTok{)\{}
+\NormalTok{  m1 <-}\StringTok{ }\KeywordTok{lm}\NormalTok{(count}\OperatorTok{~}\NormalTok{donor, }\DataTypeTok{data=}\NormalTok{exp2d)}
+\NormalTok{  m1.emm <-}\StringTok{ }\KeywordTok{emmeans}\NormalTok{(m1, }\DataTypeTok{specs=}\StringTok{"donor"}\NormalTok{)}
+  \KeywordTok{contrast}\NormalTok{(m1.emm, }\DataTypeTok{method=}\StringTok{"trt.vs.ctrl"}\NormalTok{, }\DataTypeTok{ref=}\DecValTok{3}\NormalTok{, }\DataTypeTok{adjust=}\StringTok{"none"}\NormalTok{) }\CommentTok{# not pooled SE}
   
-  \CommentTok{# get modeled means and se}
-\NormalTok{  fit.emm <-}\StringTok{ }\KeywordTok{data.table}\NormalTok{(}\KeywordTok{summary}\NormalTok{(}\KeywordTok{emmeans}\NormalTok{(fit, }\DataTypeTok{specs=}\NormalTok{x)))}
-\NormalTok{  new_names <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"f1"}\NormalTok{, }\StringTok{"f2"}\NormalTok{)}
-  \KeywordTok{setnames}\NormalTok{(fit.emm, }\DataTypeTok{old=}\NormalTok{x, }\DataTypeTok{new=}\NormalTok{new_names)}
-  
-  \CommentTok{# get sampled means and se}
-\NormalTok{  dt_sum <-}\StringTok{ }\NormalTok{dt[, .(}\DataTypeTok{emmean=}\KeywordTok{mean}\NormalTok{(}\KeywordTok{get}\NormalTok{(y)), }\CommentTok{# conditional mean but giving the name in fit.emm}
-                   \DataTypeTok{sd=}\KeywordTok{sd}\NormalTok{(}\KeywordTok{get}\NormalTok{(y)),}
-                   \DataTypeTok{SE=}\KeywordTok{sd}\NormalTok{(}\KeywordTok{get}\NormalTok{(y))}\OperatorTok{/}\KeywordTok{sqrt}\NormalTok{(.N)),}
-\NormalTok{               by=.(}\KeywordTok{get}\NormalTok{(x[}\DecValTok{1}\NormalTok{]), }\KeywordTok{get}\NormalTok{(x[}\DecValTok{2}\NormalTok{]))]}
-  \KeywordTok{setnames}\NormalTok{(dt_sum, }\DataTypeTok{old=}\KeywordTok{c}\NormalTok{(}\StringTok{"get"}\NormalTok{, }\StringTok{"get.1"}\NormalTok{), }\DataTypeTok{new=}\NormalTok{new_names)}
-  
-  \ControlFlowTok{if}\NormalTok{(se}\OperatorTok{==}\StringTok{"model"}\NormalTok{)\{dt_sum <-}\StringTok{ }\NormalTok{fit.emm\}}
-  
-\NormalTok{  pd <-}\StringTok{ }\KeywordTok{position_dodge}\NormalTok{(.}\DecValTok{3}\NormalTok{)}
-\NormalTok{  gg <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(}\DataTypeTok{data=}\NormalTok{dt_sum, }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{f1, }\DataTypeTok{y=}\NormalTok{emmean, }\DataTypeTok{shape=}\NormalTok{f2, }\DataTypeTok{group=}\NormalTok{f2)) }\OperatorTok{+}
-\StringTok{    }\CommentTok{#geom_jitter(position=pd, color='gray', size=2) +}
-\StringTok{    }\KeywordTok{geom_point}\NormalTok{(}\DataTypeTok{color=}\StringTok{'black'}\NormalTok{, }\DataTypeTok{size=}\DecValTok{4}\NormalTok{, }\DataTypeTok{position=}\NormalTok{pd) }\OperatorTok{+}
-\StringTok{    }\KeywordTok{geom_errorbar}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{ymin=}\NormalTok{(emmean}\OperatorTok{-}\NormalTok{SE), }\DataTypeTok{ymax=}\NormalTok{(emmean}\OperatorTok{+}\NormalTok{SE)), }
-                  \DataTypeTok{color=}\StringTok{'black'}\NormalTok{, }\DataTypeTok{width=}\NormalTok{.}\DecValTok{2}\NormalTok{, }\DataTypeTok{position=}\NormalTok{pd) }\OperatorTok{+}
-\StringTok{    }\KeywordTok{geom_line}\NormalTok{(}\DataTypeTok{position=}\NormalTok{pd) }\OperatorTok{+}
-\StringTok{    }\KeywordTok{xlab}\NormalTok{(x[}\DecValTok{1}\NormalTok{]) }\OperatorTok{+}
-\StringTok{    }\KeywordTok{ylab}\NormalTok{(y) }\OperatorTok{+}
-\StringTok{    }\KeywordTok{theme_bw}\NormalTok{() }\OperatorTok{+}
-\StringTok{    }\KeywordTok{guides}\NormalTok{(}\DataTypeTok{shape=}\KeywordTok{guide_legend}\NormalTok{(}\DataTypeTok{title=}\NormalTok{x[}\DecValTok{2}\NormalTok{])) }\OperatorTok{+}
-\StringTok{    }\KeywordTok{theme}\NormalTok{(}\DataTypeTok{axis.title=}\KeywordTok{element_text}\NormalTok{(}\DataTypeTok{size =} \KeywordTok{rel}\NormalTok{(}\FloatTok{1.5}\NormalTok{)),}
-          \DataTypeTok{axis.text=}\KeywordTok{element_text}\NormalTok{(}\DataTypeTok{size =} \KeywordTok{rel}\NormalTok{(}\FloatTok{1.5}\NormalTok{)),}
-          \DataTypeTok{legend.title=}\KeywordTok{element_text}\NormalTok{(}\DataTypeTok{size =} \KeywordTok{rel}\NormalTok{(}\FloatTok{1.3}\NormalTok{)),}
-          \DataTypeTok{legend.text=}\KeywordTok{element_text}\NormalTok{(}\DataTypeTok{size =} \KeywordTok{rel}\NormalTok{(}\FloatTok{1.3}\NormalTok{))) }\OperatorTok{+}
-\StringTok{    }\OtherTok{NULL}
-  \KeywordTok{return}\NormalTok{(gg)}
+  \KeywordTok{pairwise.t.test}\NormalTok{(exp2d}\OperatorTok{$}\NormalTok{count, exp2d}\OperatorTok{$}\NormalTok{donor, }\DataTypeTok{p.adjust.method=}\StringTok{"none"}\NormalTok{, }\DataTypeTok{pool.sd=}\OtherTok{FALSE}\NormalTok{) }\CommentTok{# this matches}
+  \CommentTok{# compare}
+  \KeywordTok{t.test}\NormalTok{(count}\OperatorTok{~}\NormalTok{donor, }\DataTypeTok{data=}\NormalTok{exp2d[donor}\OperatorTok{==}\StringTok{"WT"} \OperatorTok{|}\StringTok{ }\NormalTok{donor}\OperatorTok{==}\StringTok{"sox10"}\NormalTok{]) }\CommentTok{# matches, this is Welch t}
+  \KeywordTok{t.test}\NormalTok{(count}\OperatorTok{~}\NormalTok{donor, }\DataTypeTok{data=}\NormalTok{exp2d[donor}\OperatorTok{==}\StringTok{"WT"} \OperatorTok{|}\StringTok{ }\NormalTok{donor}\OperatorTok{==}\StringTok{"sox10"}\NormalTok{], }\DataTypeTok{var.equal=}\OtherTok{TRUE}\NormalTok{)}
 \NormalTok{\}}
 \end{Highlighting}
 \end{Shaded}
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{gg_interaction}\NormalTok{(}\DataTypeTok{x=}\KeywordTok{c}\NormalTok{(}\StringTok{"A"}\NormalTok{,}\StringTok{"B"}\NormalTok{), }\DataTypeTok{y=}\StringTok{"Y"}\NormalTok{, }\DataTypeTok{data=}\NormalTok{fd, }\DataTypeTok{se=}\StringTok{"sample"}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
+So the p-values returned by
+\texttt{stat\_compare\_means(method="t.test")} are computed from
+independent Welch t-tests.
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/ggplot-gginteractionplot1-1.pdf}
+\subsection{Adding custom p-values}\label{adding-custom-p-values}
 
-Figure xxx, with lines connecting cell means, is often called an
-``interaction plot'' and this plot type is common in ecology and
-organismal biology but not so common in cell biology and physiology. A
-Harrell plot (see below) is even better for communicating interaction
-effects.
+\subsection{Adding custom error bars}\label{adding-custom-error-bars}
 
-\subsection{Even better plots (continued)\ldots{}Show the
-model}\label{even-better-plots-continuedshow-the-model}
+\subsection{Plotting two factors}\label{plotting-two-factors}
 
-The SE error bars above are computed for each group independently. If we
-are going to bother fitting a model to the data and reporting modeled
-statistics in the text, it makes sense to also report these modeled
-statistcs in the figures since\ldots{}figures should be the center of
-the paper's universe.
+\subsection{Combining effects and response
+plots}\label{combining-effects-and-response-plots}
 
-The plots below, use modeled SEs from the the fit model. Think about it
-like this, the linear model has some error \(\varepsilon\) which has
-some standard deviation \(\sigma\). The standard error computed for a
-group is \(\frac{s_k}{\sqrt{n}}\) where \(s_k\) is the sampled estimate
-of \(\sigma\) for that group. The modeled SE for a group uses the
-modeled estimate of \(\sigma\) for every group instead of that group's
-sampled \(s_k\). So, if \(n\) is the same in each group then the modeled
-SE is the same for each group. So what is the modeled SE? If is the
-standard deviation of the residuals of the model
-\(\sqrt{\frac{ss_{residual}}{df_{residual}}}\).
+\subsection{Base ggpubr plot}\label{base-ggpubr-plot}
 
-Pretending the four treatment levels are not from a factorial design:
+\subsubsection{Single factor with two or more
+levels}\label{single-factor-with-two-or-more-levels}
+
+\paragraph{Bar plot of raw group mean and standard errors, with pairwise
+p-values}\label{bar-plot-of-raw-group-mean-and-standard-errors-with-pairwise-p-values}
+
+information.
+
+\paragraph{jitter plot of data with raw group mean and standard errors,
+and pairwise
+p-values}\label{jitter-plot-of-data-with-raw-group-mean-and-standard-errors-and-pairwise-p-values}
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{# pretend the four treatment levels are not from a factorial design}
-\NormalTok{fit <-}\StringTok{ }\KeywordTok{lm}\NormalTok{(Y}\OperatorTok{~}\NormalTok{treatment, }\DataTypeTok{data=}\NormalTok{fd)}
-\NormalTok{fit.emm <-}\StringTok{ }\KeywordTok{data.table}\NormalTok{(}\KeywordTok{summary}\NormalTok{(}\KeywordTok{emmeans}\NormalTok{(fit, }\DataTypeTok{specs=}\StringTok{"treatment"}\NormalTok{)))}
-\NormalTok{fit.emm[, treatment}\OperatorTok{:}\ErrorTok{=}\KeywordTok{factor}\NormalTok{(treatment, }\KeywordTok{as.character}\NormalTok{(}\KeywordTok{levels}\NormalTok{(fd}\OperatorTok{$}\NormalTok{treatment)))]}
-\CommentTok{# the modeled SE is right there in fit.emm}
-\NormalTok{gg <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(}\DataTypeTok{data=}\NormalTok{fit.emm, }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{treatment, }\DataTypeTok{y=}\NormalTok{emmean)) }\OperatorTok{+}
-\StringTok{  }\KeywordTok{geom_point}\NormalTok{(}\DataTypeTok{size=}\DecValTok{3}\NormalTok{) }\OperatorTok{+}
-\StringTok{  }\KeywordTok{geom_errorbar}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{ymin=}\NormalTok{emmean}\OperatorTok{-}\NormalTok{SE, }\DataTypeTok{ymax=}\NormalTok{emmean}\OperatorTok{+}\NormalTok{SE), }\DataTypeTok{width=}\FloatTok{0.2}\NormalTok{) }\OperatorTok{+}
-\StringTok{  }\KeywordTok{theme_classic}\NormalTok{(}\DataTypeTok{base_size=}\DecValTok{14}\NormalTok{) }\OperatorTok{+}
-\StringTok{  }\KeywordTok{geom_jitter}\NormalTok{(}\DataTypeTok{data=}\NormalTok{fd, }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{treatment, }\DataTypeTok{y=}\NormalTok{Y), }\DataTypeTok{width=}\FloatTok{0.2}\NormalTok{) }\OperatorTok{+}
+\NormalTok{pairs_i <-}\StringTok{ }\KeywordTok{list}\NormalTok{(}\KeywordTok{c}\NormalTok{(}\StringTok{"sox10"}\NormalTok{, }\StringTok{"iapMO"}\NormalTok{), }\KeywordTok{c}\NormalTok{(}\StringTok{"sox10"}\NormalTok{, }\StringTok{"GF"}\NormalTok{), }\KeywordTok{c}\NormalTok{(}\StringTok{"sox10"}\NormalTok{, }\StringTok{"WT"}\NormalTok{))}
+\KeywordTok{ggerrorplot}\NormalTok{(}\DataTypeTok{x=}\StringTok{"donor"}\NormalTok{, }
+          \DataTypeTok{y=}\StringTok{"count"}\NormalTok{, }
+          \DataTypeTok{data=}\NormalTok{exp2d,}
+          \DataTypeTok{add=}\KeywordTok{c}\NormalTok{(}\StringTok{"mean_ci"}\NormalTok{, }\StringTok{"jitter"}\NormalTok{),}
+          \DataTypeTok{color =} \StringTok{"black"}\NormalTok{,}
+          \DataTypeTok{fill =} \StringTok{"steelblue"}\NormalTok{,}
+          \DataTypeTok{size=}\FloatTok{0.5}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{stat_compare_means}\NormalTok{(}\DataTypeTok{method =} \StringTok{"t.test"}\NormalTok{, }\DataTypeTok{comparisons=}\NormalTok{pairs_i, }\DataTypeTok{label=}\StringTok{"p.signif"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{ylab}\NormalTok{(}\StringTok{"Neutrophil count"}\NormalTok{) }\OperatorTok{+}
 \StringTok{  }\OtherTok{NULL}
-\NormalTok{gg}
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/gg_better_mean_plot-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-22-1.pdf}
 
-Interaction plot
+\paragraph{violin plot of data with raw group mean and standard errors,
+and pairwise
+p-values}\label{violin-plot-of-data-with-raw-group-mean-and-standard-errors-and-pairwise-p-values}
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\KeywordTok{gg_interaction}\NormalTok{(}\DataTypeTok{x=}\KeywordTok{c}\NormalTok{(}\StringTok{"A"}\NormalTok{,}\StringTok{"B"}\NormalTok{), }\DataTypeTok{y=}\StringTok{"Y"}\NormalTok{, }\DataTypeTok{data=}\NormalTok{fd, }\DataTypeTok{se=}\StringTok{"model"}\NormalTok{)}
+\NormalTok{pairs_i <-}\StringTok{ }\KeywordTok{list}\NormalTok{(}\KeywordTok{c}\NormalTok{(}\StringTok{"sox10"}\NormalTok{, }\StringTok{"iapMO"}\NormalTok{), }\KeywordTok{c}\NormalTok{(}\StringTok{"sox10"}\NormalTok{, }\StringTok{"GF"}\NormalTok{), }\KeywordTok{c}\NormalTok{(}\StringTok{"sox10"}\NormalTok{, }\StringTok{"WT"}\NormalTok{))}
+\KeywordTok{ggviolin}\NormalTok{(}\DataTypeTok{x=}\StringTok{"donor"}\NormalTok{, }
+          \DataTypeTok{y=}\StringTok{"count"}\NormalTok{, }
+          \DataTypeTok{data=}\NormalTok{exp2d,}
+          \DataTypeTok{add=}\KeywordTok{c}\NormalTok{(}\StringTok{"mean_ci"}\NormalTok{),}
+          \DataTypeTok{color =} \StringTok{"black"}\NormalTok{,}
+          \DataTypeTok{fill =} \StringTok{"steelblue"}\NormalTok{,}
+          \DataTypeTok{size=}\FloatTok{0.5}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{stat_compare_means}\NormalTok{(}\DataTypeTok{method =} \StringTok{"t.test"}\NormalTok{, }\DataTypeTok{comparisons=}\NormalTok{pairs_i, }\DataTypeTok{label=}\StringTok{"p.signif"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{ylab}\NormalTok{(}\StringTok{"Neutrophil count"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\OtherTok{NULL}
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/ggplot-gginteractionplot2-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-23-1.pdf}
+
+\paragraph{Box plot of data with raw group mean and standard errors, and
+pairwise
+p-values}\label{box-plot-of-data-with-raw-group-mean-and-standard-errors-and-pairwise-p-values}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{pairs_i <-}\StringTok{ }\KeywordTok{list}\NormalTok{(}\KeywordTok{c}\NormalTok{(}\StringTok{"sox10"}\NormalTok{, }\StringTok{"iapMO"}\NormalTok{), }\KeywordTok{c}\NormalTok{(}\StringTok{"sox10"}\NormalTok{, }\StringTok{"GF"}\NormalTok{), }\KeywordTok{c}\NormalTok{(}\StringTok{"sox10"}\NormalTok{, }\StringTok{"WT"}\NormalTok{))}
+\KeywordTok{ggboxplot}\NormalTok{(}\DataTypeTok{x=}\StringTok{"donor"}\NormalTok{, }
+          \DataTypeTok{y=}\StringTok{"count"}\NormalTok{, }
+          \DataTypeTok{data=}\NormalTok{exp2d,}
+          \DataTypeTok{color =} \StringTok{"black"}\NormalTok{,}
+          \DataTypeTok{fill =} \StringTok{"steelblue"}\NormalTok{,}
+          \DataTypeTok{size=}\FloatTok{0.5}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{stat_compare_means}\NormalTok{(}\DataTypeTok{method =} \StringTok{"t.test"}\NormalTok{, }\DataTypeTok{comparisons=}\NormalTok{pairs_i, }\DataTypeTok{label=}\StringTok{"p.signif"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{ylab}\NormalTok{(}\StringTok{"Neutrophil count"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\OtherTok{NULL}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-24-1.pdf}
+\#\#\#\# Two factors
+
+The data are from figure 6d. This solution requires computing either the
+raw or modeled means and errors and adding these to a base ggpubr plot.
+Many packages have summary statistics functions for means, standard
+deviations, and standard errors. This is easily done by simply computing
+the statistics using data.table functionality.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# compute raw statistics}
+\CommentTok{# enclosing the line within parentheses prints the result to the console!}
+\NormalTok{(exp6d.raw <-}\StringTok{ }\NormalTok{exp6d[}\OperatorTok{!}\KeywordTok{is.na}\NormalTok{(count), .(}\DataTypeTok{count=}\KeywordTok{mean}\NormalTok{(count),}
+                       \DataTypeTok{se=}\KeywordTok{sd}\NormalTok{(count)}\OperatorTok{/}\KeywordTok{sqrt}\NormalTok{(.N)),}
+                   \DataTypeTok{by=}\NormalTok{.(treatment, strain)]}
+\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##     treatment strain    count       se
+## 1:    control     WT 13.08333 2.310904
+## 2:    control  sox10 45.61538 6.259903
+## 3: transplant     WT 16.35714 2.259552
+## 4: transplant  sox10 18.33333 4.536274
+\end{verbatim}
+
+Modeled means, standard errors, and confidence limits are conveniently
+computed using the \texttt{emmeans} (``estimated marginal means'')
+function from the emmeans package.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# modeled statsistics}
+\NormalTok{m1 <-}\StringTok{ }\KeywordTok{glm.nb}\NormalTok{(count }\OperatorTok{~}\StringTok{ }\NormalTok{treatment}\OperatorTok{*}\NormalTok{strain, }\DataTypeTok{data=}\NormalTok{exp6d)}
+\NormalTok{(m1.emm <-}\StringTok{ }\KeywordTok{data.table}\NormalTok{(}\KeywordTok{summary}\NormalTok{(}\KeywordTok{emmeans}\NormalTok{(m1, }\DataTypeTok{specs=}\KeywordTok{c}\NormalTok{(}\StringTok{"treatment"}\NormalTok{, }\StringTok{"strain"}\NormalTok{), }\DataTypeTok{type=}\StringTok{"response"}\NormalTok{))))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##     treatment strain response       SE  df asymp.LCL asymp.UCL
+## 1:    control     WT 13.08333 2.032161 Inf  9.649528  17.73907
+## 2: transplant     WT 16.35714 2.289208 Inf 12.433129  21.51961
+## 3:    control  sox10 45.61538 6.132974 Inf 35.048350  59.36837
+## 4: transplant  sox10 18.33333 3.871911 Inf 12.119140  27.73391
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# change column "response" to "count" for the ggplot}
+\KeywordTok{setnames}\NormalTok{(m1.emm, }\DataTypeTok{old=}\StringTok{"response"}\NormalTok{, }\DataTypeTok{new=}\StringTok{"count"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#pairs_i <- list(c("sox10", "iapMO"), c("sox10", "GF"), c("sox10", "WT"))}
+\NormalTok{pd =}\StringTok{ }\KeywordTok{position_dodge}\NormalTok{(}\FloatTok{0.7}\NormalTok{)}
+\KeywordTok{ggbarplot}\NormalTok{(}\DataTypeTok{x=}\StringTok{"treatment"}\NormalTok{, }
+          \DataTypeTok{y=}\StringTok{"count"}\NormalTok{,}
+          \DataTypeTok{data=}\NormalTok{exp6d,}
+          \DataTypeTok{add=}\KeywordTok{c}\NormalTok{(}\StringTok{"mean"}\NormalTok{),}
+          \DataTypeTok{color =} \StringTok{"black"}\NormalTok{,}
+          \DataTypeTok{fill =} \StringTok{"strain"}\NormalTok{,}
+          \DataTypeTok{palette =} \StringTok{"jco"}\NormalTok{,}
+          \DataTypeTok{position =}\NormalTok{ pd,}
+          \DataTypeTok{size=}\FloatTok{0.5}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\CommentTok{#stat_compare_means(method = "t.test", comparisons=pairs_i) +}
+\StringTok{  }\KeywordTok{ylab}\NormalTok{(}\StringTok{"Neutrophil count"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\CommentTok{# geom_dotplot(aes(fill=strain),}
+\StringTok{  }\CommentTok{#              binaxis='y', stackdir='center', position=pd, show.legend=FALSE,}
+\StringTok{  }\CommentTok{#              color="grey") +}
+\StringTok{  }\KeywordTok{geom_point}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{fill=}\NormalTok{strain), }\DataTypeTok{position=}\KeywordTok{position_jitterdodge}\NormalTok{(}\DataTypeTok{jitter.width=}\FloatTok{0.2}\NormalTok{), }\DataTypeTok{show.legend=}\OtherTok{FALSE}\NormalTok{, }\DataTypeTok{alpha=}\FloatTok{0.5}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_errorbar}\NormalTok{(}\DataTypeTok{data=}\NormalTok{m1.emm, }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{treatment, }\DataTypeTok{ymin=}\NormalTok{asymp.LCL, }\DataTypeTok{ymax=}\NormalTok{asymp.UCL, }\DataTypeTok{group=}\NormalTok{strain),}
+                \DataTypeTok{position=}\NormalTok{pd, }\DataTypeTok{width=}\FloatTok{0.1}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\OtherTok{NULL}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-27-1.pdf}
+
+\subsubsection{Three factors}\label{three-factors}
 
 \chapter{\texorpdfstring{A linear model with a single, continous
 \emph{X}}{A linear model with a single, continous X}}\label{a-linear-model-with-a-single-continous-x}
@@ -2603,7 +3304,7 @@ which emphasizes the continuous nature of evidence against the null, and
 not something like''\(p < 0.05\)``, which artificially dichotomizes the
 evidence against the null.
 
-\section{Working in R}\label{working-in-r}
+\section{Working in R}\label{working-in-r-1}
 
 \subsection{\texorpdfstring{Exploring the bivariate relationship between
 \emph{Y} and
@@ -3445,7 +4146,7 @@ like a huge effect, especially for a short lived vole. 7 days is
 certainly a much smaller effect, but this doesn't mean that it doesn't
 have important ecological, behavioral, or fitness consequences.
 
-\section{Working in R}\label{working-in-r-1}
+\section{Working in R}\label{working-in-r-2}
 
 \subsection{\texorpdfstring{Exploring the relationship between \emph{Y}
 and
@@ -3565,10 +4266,10 @@ models. If you haven't already, download the emmeans package.
 \end{Shaded}
 
 \begin{verbatim}
-##  treatment   emmean       SE df lower.CL upper.CL
-##  control   503.3929 27.40978 93 448.9625 557.8233
-##  vitamin_E 413.4762 44.75999 93 324.5917 502.3607
-##  vitamin_C 388.3158 47.05685 93 294.8702 481.7614
+##  treatment emmean   SE df lower.CL upper.CL
+##  control      503 27.4 93      449      558
+##  vitamin_E    413 44.8 93      325      502
+##  vitamin_C    388 47.1 93      295      482
 ## 
 ## Confidence level used: 0.95
 \end{verbatim}
@@ -3592,14 +4293,10 @@ of treatment levels.
 \end{Shaded}
 
 \begin{verbatim}
-##  contrast                estimate       SE df  lower.CL   upper.CL t.ratio
-##  vitamin_E - control    -89.91667 52.48574 93 -194.1429  14.309609  -1.713
-##  vitamin_C - control   -115.07707 54.45772 93 -223.2193  -6.934834  -2.113
-##  vitamin_C - vitamin_E  -25.16040 64.94462 93 -154.1275 103.806738  -0.387
-##  p.value
-##   0.0900
-##   0.0373
-##   0.6993
+##  contrast              estimate   SE df lower.CL upper.CL t.ratio p.value
+##  vitamin_E - control      -89.9 52.5 93     -194    14.31 -1.713  0.0900 
+##  vitamin_C - control     -115.1 54.5 93     -223    -6.93 -2.113  0.0373 
+##  vitamin_C - vitamin_E    -25.2 64.9 93     -154   103.81 -0.387  0.6993 
 ## 
 ## Confidence level used: 0.95
 \end{verbatim}
@@ -3683,7 +4380,7 @@ Here is the default plot
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-13-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-28-1.pdf}
 
 \chapter{P-values}\label{p-values}
 
@@ -5101,7 +5798,7 @@ scientific model.
   term.
 \end{enumerate}
 
-\section{Working in R}\label{working-in-r-2}
+\section{Working in R}\label{working-in-r-3}
 
 A \textbf{full-factorial} model with two factors is specified in the
 model formula as \texttt{y\ \textasciitilde{}\ A*B} where A is the first
@@ -6137,7 +6834,7 @@ effects}\label{back-to-interpretation-of-main-effects}
 the same if the design is
 balanced.}\label{the-anova-tables-for-type-i-ii-and-iii-sum-of-squares-are-the-same-if-the-design-is-balanced.}
 
-\section{Working in R}\label{working-in-r-3}
+\section{Working in R}\label{working-in-r-4}
 
 \subsection{Type I sum of squares in
 R}\label{type-i-sum-of-squares-in-r}
@@ -6366,7 +7063,7 @@ residuals is
 ## `stat_bindot()` using `bins = 30`. Pick better value with `binwidth`.
 \end{verbatim}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-14-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-29-1.pdf}
 
 \begin{verbatim}
 ##              Estimate Std. Error   t value     Pr(>|t|)
@@ -7204,11 +7901,11 @@ log(count).
 The modeled means on the link scale are
 
 \begin{verbatim}
-##  Treatment     emmean         SE  df asymp.LCL asymp.UCL
-##  Control     1.821408 0.08038710 Inf  1.663852  1.978964
-##  Uninfected  1.504077 0.10930511 Inf  1.289843  1.718311
-##  Infected LG 1.624144 0.13615796 Inf  1.357279  1.891009
-##  Infected HG 2.361096 0.07141332 Inf  2.221128  2.501063
+##  Treatment   emmean     SE  df asymp.LCL asymp.UCL
+##  Control       1.82 0.0804 Inf      1.66      1.98
+##  Uninfected    1.50 0.1093 Inf      1.29      1.72
+##  Infected LG   1.62 0.1362 Inf      1.36      1.89
+##  Infected HG   2.36 0.0714 Inf      2.22      2.50
 ## 
 ## Results are given on the log (not the response) scale. 
 ## Confidence level used: 0.95
@@ -7217,11 +7914,11 @@ The modeled means on the link scale are
 While the means on response scale are
 
 \begin{verbatim}
-##  Treatment    response        SE  df asymp.LCL asymp.UCL
-##  Control      6.180556 0.4968369 Inf  5.279611  7.235243
-##  Uninfected   4.500000 0.4918730 Inf  3.632217  5.575107
-##  Infected LG  5.074074 0.6908756 Inf  3.885608  6.626049
-##  Infected HG 10.602564 0.7571643 Inf  9.217726 12.195456
+##  Treatment   response    SE  df asymp.LCL asymp.UCL
+##  Control         6.18 0.497 Inf      5.28      7.24
+##  Uninfected      4.50 0.492 Inf      3.63      5.58
+##  Infected LG     5.07 0.691 Inf      3.89      6.63
+##  Infected HG    10.60 0.757 Inf      9.22     12.20
 ## 
 ## Confidence level used: 0.95 
 ## Intervals are back-transformed from the log scale
@@ -7251,14 +7948,14 @@ While the means on response scale are
 The model coefficients on the link scale are
 
 \begin{verbatim}
-##  contrast                estimate        SE  df  asymp.LCL  asymp.UCL
-##  Uninfected - Control  -0.3173308 0.1356823 Inf -0.5832632 -0.0513983
-##  Infected LG - Control -0.1972641 0.1581173 Inf -0.5071683  0.1126401
-##  Infected HG - Control  0.5396877 0.1075265 Inf  0.3289396  0.7504358
-##  z.ratio p.value
-##   -2.339  0.0193
-##   -1.248  0.2122
-##    5.019  <.0001
+##  contrast              estimate    SE  df asymp.LCL asymp.UCL z.ratio
+##  Uninfected - Control    -0.317 0.136 Inf    -0.583   -0.0514 -2.339 
+##  Infected LG - Control   -0.197 0.158 Inf    -0.507    0.1126 -1.248 
+##  Infected HG - Control    0.540 0.108 Inf     0.329    0.7504  5.019 
+##  p.value
+##  0.0193 
+##  0.2122 
+##  <.0001 
 ## 
 ## Results are given on the log (not the response) scale. 
 ## Confidence level used: 0.95
@@ -7269,14 +7966,14 @@ response scale (using \(\mathrm{exp}{b_j}\)) results in a
 \textbf{response ratio}.
 
 \begin{verbatim}
-##  contrast                  ratio         SE  df asymp.LCL asymp.UCL
-##  Uninfected / Control  0.7280899 0.09878893 Inf 0.5580743 0.9499002
-##  Infected LG / Control 0.8209738 0.12981015 Inf 0.6021984 1.1192290
-##  Infected HG / Control 1.7154710 0.18445860 Inf 1.3894940 2.1179227
-##  z.ratio p.value
-##   -2.339  0.0193
-##   -1.248  0.2122
-##    5.019  <.0001
+##  contrast              ratio     SE  df asymp.LCL asymp.UCL z.ratio
+##  Uninfected / Control  0.728 0.0988 Inf     0.558      0.95 -2.339 
+##  Infected LG / Control 0.821 0.1298 Inf     0.602      1.12 -1.248 
+##  Infected HG / Control 1.715 0.1845 Inf     1.389      2.12  5.019 
+##  p.value
+##  0.0193 
+##  0.2122 
+##  <.0001 
 ## 
 ## Confidence level used: 0.95 
 ## Intervals are back-transformed from the log scale 
@@ -7326,7 +8023,7 @@ the \(RR_j < 1\).
   \(b_{Control} + b_{Infected\_HG}\)). Check and see if this works.
 \end{enumerate}
 
-\section{Working in R}\label{working-in-r-4}
+\section{Working in R}\label{working-in-r-5}
 
 Source publication: Benesh, D. P., \& Kalbe, M. (2016). Experimental
 parasite community ecology: intraspecific variation in a large tapeworm
@@ -7351,11 +8048,6 @@ package DHARMa
 \end{Highlighting}
 \end{Shaded}
 
-\begin{verbatim}
-## DHARMa::plotResiduals - low number of unique predictor values, consider setting asFactor = T
-## DHARMa::plotResiduals - low number of unique predictor values, consider setting asFactor = T
-\end{verbatim}
-
 \includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/glm1-working-in-r-1.pdf}
 
 A plot of the dispersion statistic can be generated using the object
@@ -7375,7 +8067,7 @@ statistic is \(df\).
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-16-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-31-1.pdf}
 
 \begin{verbatim}
 ## 
@@ -7398,11 +8090,6 @@ Negative binomial fit.
 \end{Highlighting}
 \end{Shaded}
 
-\begin{verbatim}
-## DHARMa::plotResiduals - low number of unique predictor values, consider setting asFactor = T
-## DHARMa::plotResiduals - low number of unique predictor values, consider setting asFactor = T
-\end{verbatim}
-
 \includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/glm-working-in-r-2-1.pdf}
 
 \begin{Shaded}
@@ -7414,11 +8101,11 @@ Negative binomial fit.
 \end{Shaded}
 
 \begin{verbatim}
-##  Treatment     emmean         SE  df asymp.LCL asymp.UCL
-##  Control     1.821408 0.08038710 Inf  1.663852  1.978964
-##  Uninfected  1.504077 0.10930511 Inf  1.289843  1.718311
-##  Infected LG 1.624144 0.13615796 Inf  1.357279  1.891009
-##  Infected HG 2.361096 0.07141332 Inf  2.221128  2.501063
+##  Treatment   emmean     SE  df asymp.LCL asymp.UCL
+##  Control       1.82 0.0804 Inf      1.66      1.98
+##  Uninfected    1.50 0.1093 Inf      1.29      1.72
+##  Infected LG   1.62 0.1362 Inf      1.36      1.89
+##  Infected HG   2.36 0.0714 Inf      2.22      2.50
 ## 
 ## Results are given on the log (not the response) scale. 
 ## Confidence level used: 0.95
@@ -7431,14 +8118,14 @@ Negative binomial fit.
 \end{Shaded}
 
 \begin{verbatim}
-##  contrast                estimate        SE  df  asymp.LCL  asymp.UCL
-##  Uninfected - Control  -0.3173308 0.1356823 Inf -0.5832632 -0.0513983
-##  Infected LG - Control -0.1972641 0.1581173 Inf -0.5071683  0.1126401
-##  Infected HG - Control  0.5396877 0.1075265 Inf  0.3289396  0.7504358
-##  z.ratio p.value
-##   -2.339  0.0193
-##   -1.248  0.2122
-##    5.019  <.0001
+##  contrast              estimate    SE  df asymp.LCL asymp.UCL z.ratio
+##  Uninfected - Control    -0.317 0.136 Inf    -0.583   -0.0514 -2.339 
+##  Infected LG - Control   -0.197 0.158 Inf    -0.507    0.1126 -1.248 
+##  Infected HG - Control    0.540 0.108 Inf     0.329    0.7504  5.019 
+##  p.value
+##  0.0193 
+##  0.2122 
+##  <.0001 
 ## 
 ## Results are given on the log (not the response) scale. 
 ## Confidence level used: 0.95
@@ -7453,14 +8140,14 @@ Negative binomial fit.
 \end{Shaded}
 
 \begin{verbatim}
-##  contrast                  ratio         SE  df asymp.LCL asymp.UCL
-##  Uninfected / Control  0.7280899 0.09878893 Inf 0.5580743 0.9499002
-##  Infected LG / Control 0.8209738 0.12981015 Inf 0.6021984 1.1192290
-##  Infected HG / Control 1.7154710 0.18445860 Inf 1.3894940 2.1179227
-##  z.ratio p.value
-##   -2.339  0.0193
-##   -1.248  0.2122
-##    5.019  <.0001
+##  contrast              ratio     SE  df asymp.LCL asymp.UCL z.ratio
+##  Uninfected / Control  0.728 0.0988 Inf     0.558      0.95 -2.339 
+##  Infected LG / Control 0.821 0.1298 Inf     0.602      1.12 -1.248 
+##  Infected HG / Control 1.715 0.1845 Inf     1.389      2.12  5.019 
+##  p.value
+##  0.0193 
+##  0.2122 
+##  <.0001 
 ## 
 ## Confidence level used: 0.95 
 ## Intervals are back-transformed from the log scale 
@@ -7664,11 +8351,15 @@ random component (\(\beta_{1j}\)) that is common within a block but
 differs among blocks (see table below). Again, these are collected
 within a pair of parentheses in the equation above.
 
-\begin{table}
+\begin{verbatim}
+## boundary (singular) fit: see ?isSingular
+\end{verbatim}
+
+\begin{table}[t]
 
 \caption{\label{tab:lmm-table}The linear mixed model specified above estimates a fixed intercept and fixed slope (treatment effect) that are common to all observations and a random intercept and random slope for each block, each of which is common among observations within a block but differ among observations in different blocks.}
 \centering
-\begin{tabular}[t]{r|l|l|l|l}
+\begin{tabular}{r|l|l|l|l}
 \hline
 block & \$b\_0\$ & \$b\_\{0j\}\$ & \$b\_1\$ & \$b\_\{1j\}\$\\
 \hline
@@ -7831,8 +8522,8 @@ and a linear mixed model
 
 \begin{verbatim}
 ##               Estimate Std. Error       df   t value     Pr(>|t|)
-## (Intercept) 10.0235749  0.3954692 9.000000 25.346031 1.114196e-09
-## TreatmentT+  0.6884787  0.2700725 8.999999  2.549237 3.123383e-02
+## (Intercept) 10.0235749  0.3954736 8.999737 25.345750 1.114804e-09
+## TreatmentT+  0.6884787  0.2700797 9.000052  2.549169 3.123718e-02
 \end{verbatim}
 
 The linear mixed model has increased precision (a smaller SE of the
@@ -8005,11 +8696,11 @@ effects because they will choose the three strains with the largest
 effects for further testing. The researchers measure the response of
 each strain five times.
 
-\begin{table}
+\begin{table}[t]
 
 \caption{\label{tab:lmm-fish-passage}Effect of new expression vector on protein production in ten strains of *E. coli* using a fixed effect factorial model and linear mixed model.}
 \centering
-\begin{tabular}[t]{l|r|r|r}
+\begin{tabular}{l|r|r|r}
 \hline
 Strain & \$\textbackslash{}beta\_\{1j\}\$ & fixed \$b\_\{1j\}\$ & random \$b\_\{1j\}\$\\
 \hline
@@ -8072,7 +8763,7 @@ Re-imagining the design as a single, linear mixed model with each gene
 modeled as a block would lead to a rank order in which the biggest
 measured effects more closely approximate the true effects.
 
-\section{Working in R}\label{working-in-r-5}
+\section{Working in R}\label{working-in-r-6}
 
 The major function for working with linear mixed models is
 \texttt{lmer()} from the lme4 package. An older, and still sometimes
@@ -8122,8 +8813,26 @@ adds the random component as a separate argument
 \NormalTok{fit.lmer1 <-}\StringTok{ }\KeywordTok{lmer}\NormalTok{(GrowthRate }\OperatorTok{~}\StringTok{ }\NormalTok{Vermetids}\OperatorTok{*}\NormalTok{Sediment }\OperatorTok{+}\StringTok{ }\NormalTok{(}\DecValTok{1}\OperatorTok{|}\NormalTok{Block), }\DataTypeTok{data=}\NormalTok{coral[inc])}
 \CommentTok{# random intercept and slope}
 \NormalTok{fit.lmer2 <-}\StringTok{ }\KeywordTok{lmer}\NormalTok{(GrowthRate }\OperatorTok{~}\StringTok{ }\NormalTok{Vermetids}\OperatorTok{*}\NormalTok{Sediment }\OperatorTok{+}\StringTok{ }\NormalTok{(Vermetids}\OperatorTok{|}\NormalTok{Block) }\OperatorTok{+}\StringTok{ }\NormalTok{(Sediment}\OperatorTok{|}\NormalTok{Block), }\DataTypeTok{data=}\NormalTok{coral[inc])}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## boundary (singular) fit: see ?isSingular
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
 \CommentTok{# random intercept and slope}
 \NormalTok{fit.lmer3 <-}\StringTok{ }\KeywordTok{lmer}\NormalTok{(GrowthRate }\OperatorTok{~}\StringTok{ }\NormalTok{Vermetids}\OperatorTok{*}\NormalTok{Sediment }\OperatorTok{+}\StringTok{ }\NormalTok{(Vermetids}\OperatorTok{|}\NormalTok{Block) }\OperatorTok{+}\StringTok{ }\NormalTok{(Sediment}\OperatorTok{|}\NormalTok{Block), }\DataTypeTok{data=}\NormalTok{coral[inc])}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## boundary (singular) fit: see ?isSingular
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
 \CommentTok{# to include the interaction as a random effect we'd need subsampling within each factorial treatment combination}
 
 \CommentTok{# specification using lme}
@@ -8137,15 +8846,15 @@ adds the random component as a separate argument
 \begin{verbatim}
 ## $Block
 ##    (Intercept)  Vermetids1 Sediment1 Vermetids1:Sediment1
-## 1     1.205030 0.004655556 0.2852037           -0.7735482
-## 2     1.336057 0.004655556 0.2852037           -0.7735482
-## 3     1.213975 0.004655556 0.2852037           -0.7735482
-## 4     1.262806 0.004655556 0.2852037           -0.7735482
-## 6     1.320778 0.004655556 0.2852037           -0.7735482
-## 7     1.201253 0.004655556 0.2852037           -0.7735482
-## 8     1.314433 0.004655556 0.2852037           -0.7735482
-## 9     1.199842 0.004655556 0.2852037           -0.7735482
-## 10    1.361526 0.004655556 0.2852037           -0.7735482
+## 1     1.205018 0.004655556 0.2852023           -0.7735467
+## 2     1.336068 0.004655556 0.2852023           -0.7735467
+## 3     1.213966 0.004655556 0.2852023           -0.7735467
+## 4     1.262805 0.004655556 0.2852023           -0.7735467
+## 6     1.320787 0.004655556 0.2852023           -0.7735467
+## 7     1.201242 0.004655556 0.2852023           -0.7735467
+## 8     1.314441 0.004655556 0.2852023           -0.7735467
+## 9     1.199831 0.004655556 0.2852023           -0.7735467
+## 10    1.361541 0.004655556 0.2852023           -0.7735467
 ## 
 ## attr(,"class")
 ## [1] "coef.mer"
@@ -8159,15 +8868,15 @@ adds the random component as a separate argument
 
 \begin{verbatim}
 ##                          Estimate Std. Error       df     t value
-## (Intercept)           1.268411111  0.1541678 30.42810  8.22747196
-## Vermetids1            0.004655556  0.2091414 22.94176  0.02226033
-## Sediment1             0.285203739  0.2160141 23.53066  1.32030164
-## Vermetids1:Sediment1 -0.773548184  0.3006696 23.24572 -2.57275179
+## (Intercept)           1.268411111  0.1541680 30.42768  8.22745788
+## Vermetids1            0.004655556  0.2091398 22.94243  0.02226049
+## Sediment1             0.285202305  0.2160126 23.53130  1.32030428
+## Vermetids1:Sediment1 -0.773546750  0.3006674 23.24638 -2.57276556
 ##                          Pr(>|t|)
-## (Intercept)          3.129452e-09
-## Vermetids1           9.824328e-01
-## Sediment1            1.994339e-01
-## Vermetids1:Sediment1 1.693478e-02
+## (Intercept)          3.129900e-09
+## Vermetids1           9.824326e-01
+## Sediment1            1.994327e-01
+## Vermetids1:Sediment1 1.693404e-02
 \end{verbatim}
 
 \begin{Shaded}
@@ -8178,20 +8887,13 @@ adds the random component as a separate argument
 \end{Shaded}
 
 \begin{verbatim}
-##  contrast      estimate        SE    df   lower.CL    upper.CL t.ratio
-##  1,0 - 0,0  0.004655556 0.2091414 23.04 -0.4279489  0.43725999   0.022
-##  0,1 - 0,0  0.285203739 0.2167702 23.62 -0.1625690  0.73297646   1.316
-##  0,1 - 1,0  0.280548184 0.2167702 23.62 -0.1672245  0.72832090   1.294
-##  1,1 - 0,0 -0.483688889 0.2091414 23.04 -0.9162933 -0.05108446  -2.313
-##  1,1 - 1,0 -0.488344444 0.2091414 23.04 -0.9209489 -0.05574001  -2.335
-##  1,1 - 0,1 -0.768892628 0.2167702 23.62 -1.2166653 -0.32111991  -3.547
-##  p.value
-##   0.9824
-##   0.2009
-##   0.2081
-##   0.0300
-##   0.0286
-##   0.0017
+##  contrast  estimate    SE   df lower.CL upper.CL t.ratio p.value
+##  1,0 - 0,0  0.00466 0.209 23.0   -0.428   0.4373  0.022  0.9824 
+##  0,1 - 0,0  0.28520 0.217 23.6   -0.163   0.7330  1.316  0.2009 
+##  0,1 - 1,0  0.28055 0.217 23.6   -0.167   0.7283  1.294  0.2081 
+##  1,1 - 0,0 -0.48369 0.209 23.0   -0.916  -0.0511 -2.313  0.0300 
+##  1,1 - 1,0 -0.48834 0.209 23.0   -0.921  -0.0557 -2.335  0.0286 
+##  1,1 - 0,1 -0.76889 0.217 23.6   -1.217  -0.3211 -3.547  0.0017 
 ## 
 ## Confidence level used: 0.95
 \end{verbatim}
@@ -8201,7 +8903,15 @@ adds the random component as a separate argument
 \NormalTok{fit.lmer1.ml <-}\StringTok{ }\KeywordTok{lmer}\NormalTok{(GrowthRate }\OperatorTok{~}\StringTok{ }\NormalTok{Vermetids}\OperatorTok{*}\NormalTok{Sediment }\OperatorTok{+}\StringTok{ }\NormalTok{(}\DecValTok{1}\OperatorTok{|}\NormalTok{Block), }\DataTypeTok{data=}\NormalTok{coral[inc], }\DataTypeTok{REML=}\OtherTok{FALSE}\NormalTok{)}
 \CommentTok{# random intercept and slope}
 \NormalTok{fit.lmer3.ml <-}\StringTok{ }\KeywordTok{lmer}\NormalTok{(GrowthRate }\OperatorTok{~}\StringTok{ }\NormalTok{Vermetids}\OperatorTok{*}\NormalTok{Sediment }\OperatorTok{+}\StringTok{ }\NormalTok{(Vermetids}\OperatorTok{|}\NormalTok{Block) }\OperatorTok{+}\StringTok{ }\NormalTok{(Sediment}\OperatorTok{|}\NormalTok{Block), }\DataTypeTok{data=}\NormalTok{coral[inc], }\DataTypeTok{REML=}\OtherTok{FALSE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
 
+\begin{verbatim}
+## boundary (singular) fit: see ?isSingular
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
 \KeywordTok{AIC}\NormalTok{(fit.lmer1.ml)}
 \end{Highlighting}
 \end{Shaded}
