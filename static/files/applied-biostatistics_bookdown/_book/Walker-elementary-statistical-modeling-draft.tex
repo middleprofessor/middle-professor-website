@@ -125,7 +125,7 @@
   \postauthor{\par}
       \predate{\centering\large\emph}
   \postdate{\par}
-    \date{Draft: 2019-06-24}
+    \date{Draft: 2019-06-27}
 
 \usepackage{booktabs}
 \usepackage{amsthm}
@@ -2801,9 +2801,9 @@ components}\label{some-comments-on-plot-components}
   results of experiments. All of these plots fail to communicate the
   results of the statistical model and, because of this, are inferior to
   an effects plot, and even a mean-and-error plot, if the mean and error
-  are the modeled values. Box/Violoin/Dot/Jitter plots might be useful
-  as a supplement to an effects plot, either combined with the effects
-  plot as above, or as a supplementary figure.
+  are the modeled values. Box/Violoin/Dot/Jitter plots are a useful
+  supplement to an effects plot, either combined with the effects plot
+  as above, or as a supplementary figure.
 \item
   Standard error bars, computed from the raw data, can have absurd
   implications. For example, I sometimes see standard error bars cross
@@ -2852,19 +2852,107 @@ are the raw and not modeled values, and, consequently, \texttt{ggpubr}
 is not sufficient to generate pretty good plots. It is easy enough to
 add custom error bars to a ggpubr plot.
 
+\subsection{Adding modeled error
+intervals}\label{adding-modeled-error-intervals}
+
+\texttt{ggplot2} and \texttt{ggpubr} compute and plot unpooled error
+intervals (standard error bars and confidence intervals). Plotting the
+modeled error intervals ``shows the model''. \texttt{emmeans} is a
+comprehensive and flexible package for computing modeled standard errors
+and confidence intervals for all of the statistical models covered in
+this text.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{m1 <-}\StringTok{ }\KeywordTok{glm.nb}\NormalTok{(count }\OperatorTok{~}\StringTok{ }\NormalTok{donor, }\DataTypeTok{data=}\NormalTok{exp2d)}
+\NormalTok{emm.m1 <-}\StringTok{ }\KeywordTok{emmeans}\NormalTok{(m1, }\DataTypeTok{specs=}\StringTok{"donor"}\NormalTok{, }\DataTypeTok{type=}\StringTok{"response"}\NormalTok{)}
+\NormalTok{effects.m1 <-}\StringTok{ }\KeywordTok{summary}\NormalTok{(}\KeywordTok{contrast}\NormalTok{(emm.m1, }\DataTypeTok{method=}\StringTok{"revpairwise"}\NormalTok{), }\DataTypeTok{infer=}\KeywordTok{c}\NormalTok{(}\OtherTok{TRUE}\NormalTok{, }\OtherTok{TRUE}\NormalTok{))}
+
+\CommentTok{# make emm.m1 a data.table}
+\NormalTok{emm.m1 <-}\StringTok{ }\KeywordTok{data.table}\NormalTok{(}\KeywordTok{summary}\NormalTok{(emm.m1))}
+\CommentTok{# the y column needs to have the same label as the plotted data}
+\KeywordTok{setnames}\NormalTok{(emm.m1, }\DataTypeTok{old=}\StringTok{"response"}\NormalTok{, }\DataTypeTok{new=}\StringTok{"count"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\subsubsection{Modeled error intervals of the
+effect}\label{modeled-error-intervals-of-the-effect}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{(gg1 <-}\StringTok{ }\KeywordTok{ggdotplot}\NormalTok{(}\DataTypeTok{x=}\StringTok{"contrast"}\NormalTok{, }
+                 \DataTypeTok{y=}\StringTok{"ratio"}\NormalTok{, }
+                 \DataTypeTok{data=}\NormalTok{effects.m1, }
+                 \DataTypeTok{color =} \StringTok{"steelblue"}\NormalTok{,}
+                 \DataTypeTok{fill =} \StringTok{"steelblue"}\NormalTok{,}
+                 \DataTypeTok{size=}\FloatTok{0.5}\NormalTok{) }\OperatorTok{+}
+\StringTok{   }
+\StringTok{  }\CommentTok{# add either the SE or CI, contained in effects.m1}
+\StringTok{  }\KeywordTok{geom_errorbar}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{contrast, }\DataTypeTok{ymin=}\NormalTok{asymp.LCL, }\DataTypeTok{ymax=}\NormalTok{asymp.UCL),}
+                \DataTypeTok{width=}\FloatTok{0.15}\NormalTok{, }\DataTypeTok{color=}\StringTok{"steelblue"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{ylab}\NormalTok{(}\StringTok{"Effect ratio"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_hline}\NormalTok{(}\DataTypeTok{yintercept=}\DecValTok{1}\NormalTok{, }\DataTypeTok{linetype =} \DecValTok{2}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{coord_flip}\NormalTok{() }\OperatorTok{+}\StringTok{ }
+\StringTok{  }
+\StringTok{  }\OtherTok{NULL}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-22-1.pdf}
+
+\subsubsection{Modeled error intervals of the
+mean}\label{modeled-error-intervals-of-the-mean}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{(gg2 <-}\StringTok{ }\KeywordTok{ggbarplot}\NormalTok{(}\DataTypeTok{x=}\StringTok{"donor"}\NormalTok{, }
+          \DataTypeTok{y=}\StringTok{"count"}\NormalTok{, }
+          \DataTypeTok{data=}\NormalTok{exp2d,}
+          \DataTypeTok{add=}\KeywordTok{c}\NormalTok{(}\StringTok{"mean"}\NormalTok{, }\StringTok{"jitter"}\NormalTok{),}
+          \DataTypeTok{color =} \StringTok{"darkgray"}\NormalTok{,}
+          \DataTypeTok{fill =} \StringTok{"steelblue"}\NormalTok{,}
+          \DataTypeTok{size=}\FloatTok{0.5}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{ylab}\NormalTok{(}\StringTok{"Neutrophil count"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }
+\StringTok{  }\CommentTok{# emm.m1 contains the SE and 95% CIs. Either could be plotted. Here I plot the CI}
+\StringTok{  }\KeywordTok{geom_errorbar}\NormalTok{(}\DataTypeTok{data=}\NormalTok{emm.m1, }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{ymin=}\NormalTok{asymp.LCL, }\DataTypeTok{ymax=}\NormalTok{asymp.UCL), }\DataTypeTok{width=}\FloatTok{0.1}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\OtherTok{NULL}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-23-1.pdf}
+
+Note that the CIs are asymmetric about the mean (and these modeled CIs
+will never include negative values for count data).
+
+\subsubsection{Combining effects and response
+plots}\label{combining-effects-and-response-plots}
+
+The ggplots are combined using the package \texttt{cowplot}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{gg_top <-}\StringTok{ }\NormalTok{gg1 }\OperatorTok{+}\StringTok{ }\KeywordTok{scale_y_continuous}\NormalTok{(}\DataTypeTok{position=}\StringTok{"right"}\NormalTok{)}
+\KeywordTok{plot_grid}\NormalTok{(gg_top, gg2, }\DataTypeTok{nrow=}\DecValTok{2}\NormalTok{, }\DataTypeTok{align =} \StringTok{"v"}\NormalTok{, }\DataTypeTok{rel_heights =} \KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{1}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-24-1.pdf}
+
 \subsection{Adding p-values}\label{adding-p-values}
 
 p-values are added to the base ggpubr plot using
 \texttt{stat\_compare\_means}. The pairs to compare are specified with
 \texttt{comparison\ =}. The model to compute the p-values is ``t.test''.
-\textbf{It is important} to know what exactly is being computed when
-analyzing data and reporting results and ``t test'' is not sufficient to
-know this. The t-test could be the classic t-test or a Welch test (which
-adjusts the standard error to account for heterogenity in variance
-between groups). Is the standard error pooled across all four groups
-(that is, estimated from the linear model) or is it pairwise? And, are
-the p-values adjusted for multiple comparisons? These kinds of questions
-can be checked with a function's help page.
+\textbf{It is important to know what exactly is being computed when
+analyzing data and reporting results} and ``t test'' is not sufficient
+to know this. The t-test could be the classic t-test or a Welch test
+(which adjusts the standard error to account for heterogenity in
+variance between groups). In this example, there are multiple tests and
+the standard error could be the pooled estimate estimated from the
+linear model, or a pairwise estimate. And, given the multiple
+comparisons, the p-values could be adjusted or not. These kinds of
+questions can be checked with a function's help page.
 \texttt{?stat\_compare\_means} doesn't answer these questions but
 suggests \texttt{compare\_means}, which also doesn't answer these
 questions. The script below has checks to see what p-values the function
@@ -2886,7 +2974,7 @@ is returning.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-21-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-25-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -2912,88 +3000,7 @@ independent Welch t-tests.
 
 \subsection{Adding custom p-values}\label{adding-custom-p-values}
 
-\subsection{Adding custom error bars}\label{adding-custom-error-bars}
-
 \subsection{Plotting two factors}\label{plotting-two-factors}
-
-\subsection{Combining effects and response
-plots}\label{combining-effects-and-response-plots}
-
-\subsection{Base ggpubr plot}\label{base-ggpubr-plot}
-
-\subsubsection{Single factor with two or more
-levels}\label{single-factor-with-two-or-more-levels}
-
-\paragraph{Bar plot of raw group mean and standard errors, with pairwise
-p-values}\label{bar-plot-of-raw-group-mean-and-standard-errors-with-pairwise-p-values}
-
-information.
-
-\paragraph{jitter plot of data with raw group mean and standard errors,
-and pairwise
-p-values}\label{jitter-plot-of-data-with-raw-group-mean-and-standard-errors-and-pairwise-p-values}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{pairs_i <-}\StringTok{ }\KeywordTok{list}\NormalTok{(}\KeywordTok{c}\NormalTok{(}\StringTok{"sox10"}\NormalTok{, }\StringTok{"iapMO"}\NormalTok{), }\KeywordTok{c}\NormalTok{(}\StringTok{"sox10"}\NormalTok{, }\StringTok{"GF"}\NormalTok{), }\KeywordTok{c}\NormalTok{(}\StringTok{"sox10"}\NormalTok{, }\StringTok{"WT"}\NormalTok{))}
-\KeywordTok{ggerrorplot}\NormalTok{(}\DataTypeTok{x=}\StringTok{"donor"}\NormalTok{, }
-          \DataTypeTok{y=}\StringTok{"count"}\NormalTok{, }
-          \DataTypeTok{data=}\NormalTok{exp2d,}
-          \DataTypeTok{add=}\KeywordTok{c}\NormalTok{(}\StringTok{"mean_ci"}\NormalTok{, }\StringTok{"jitter"}\NormalTok{),}
-          \DataTypeTok{color =} \StringTok{"black"}\NormalTok{,}
-          \DataTypeTok{fill =} \StringTok{"steelblue"}\NormalTok{,}
-          \DataTypeTok{size=}\FloatTok{0.5}\NormalTok{) }\OperatorTok{+}
-\StringTok{  }\KeywordTok{stat_compare_means}\NormalTok{(}\DataTypeTok{method =} \StringTok{"t.test"}\NormalTok{, }\DataTypeTok{comparisons=}\NormalTok{pairs_i, }\DataTypeTok{label=}\StringTok{"p.signif"}\NormalTok{) }\OperatorTok{+}
-\StringTok{  }\KeywordTok{ylab}\NormalTok{(}\StringTok{"Neutrophil count"}\NormalTok{) }\OperatorTok{+}
-\StringTok{  }\OtherTok{NULL}
-\end{Highlighting}
-\end{Shaded}
-
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-22-1.pdf}
-
-\paragraph{violin plot of data with raw group mean and standard errors,
-and pairwise
-p-values}\label{violin-plot-of-data-with-raw-group-mean-and-standard-errors-and-pairwise-p-values}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{pairs_i <-}\StringTok{ }\KeywordTok{list}\NormalTok{(}\KeywordTok{c}\NormalTok{(}\StringTok{"sox10"}\NormalTok{, }\StringTok{"iapMO"}\NormalTok{), }\KeywordTok{c}\NormalTok{(}\StringTok{"sox10"}\NormalTok{, }\StringTok{"GF"}\NormalTok{), }\KeywordTok{c}\NormalTok{(}\StringTok{"sox10"}\NormalTok{, }\StringTok{"WT"}\NormalTok{))}
-\KeywordTok{ggviolin}\NormalTok{(}\DataTypeTok{x=}\StringTok{"donor"}\NormalTok{, }
-          \DataTypeTok{y=}\StringTok{"count"}\NormalTok{, }
-          \DataTypeTok{data=}\NormalTok{exp2d,}
-          \DataTypeTok{add=}\KeywordTok{c}\NormalTok{(}\StringTok{"mean_ci"}\NormalTok{),}
-          \DataTypeTok{color =} \StringTok{"black"}\NormalTok{,}
-          \DataTypeTok{fill =} \StringTok{"steelblue"}\NormalTok{,}
-          \DataTypeTok{size=}\FloatTok{0.5}\NormalTok{) }\OperatorTok{+}
-\StringTok{  }\KeywordTok{stat_compare_means}\NormalTok{(}\DataTypeTok{method =} \StringTok{"t.test"}\NormalTok{, }\DataTypeTok{comparisons=}\NormalTok{pairs_i, }\DataTypeTok{label=}\StringTok{"p.signif"}\NormalTok{) }\OperatorTok{+}
-\StringTok{  }\KeywordTok{ylab}\NormalTok{(}\StringTok{"Neutrophil count"}\NormalTok{) }\OperatorTok{+}
-\StringTok{  }\OtherTok{NULL}
-\end{Highlighting}
-\end{Shaded}
-
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-23-1.pdf}
-
-\paragraph{Box plot of data with raw group mean and standard errors, and
-pairwise
-p-values}\label{box-plot-of-data-with-raw-group-mean-and-standard-errors-and-pairwise-p-values}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{pairs_i <-}\StringTok{ }\KeywordTok{list}\NormalTok{(}\KeywordTok{c}\NormalTok{(}\StringTok{"sox10"}\NormalTok{, }\StringTok{"iapMO"}\NormalTok{), }\KeywordTok{c}\NormalTok{(}\StringTok{"sox10"}\NormalTok{, }\StringTok{"GF"}\NormalTok{), }\KeywordTok{c}\NormalTok{(}\StringTok{"sox10"}\NormalTok{, }\StringTok{"WT"}\NormalTok{))}
-\KeywordTok{ggboxplot}\NormalTok{(}\DataTypeTok{x=}\StringTok{"donor"}\NormalTok{, }
-          \DataTypeTok{y=}\StringTok{"count"}\NormalTok{, }
-          \DataTypeTok{data=}\NormalTok{exp2d,}
-          \DataTypeTok{color =} \StringTok{"black"}\NormalTok{,}
-          \DataTypeTok{fill =} \StringTok{"steelblue"}\NormalTok{,}
-          \DataTypeTok{size=}\FloatTok{0.5}\NormalTok{) }\OperatorTok{+}
-\StringTok{  }\KeywordTok{stat_compare_means}\NormalTok{(}\DataTypeTok{method =} \StringTok{"t.test"}\NormalTok{, }\DataTypeTok{comparisons=}\NormalTok{pairs_i, }\DataTypeTok{label=}\StringTok{"p.signif"}\NormalTok{) }\OperatorTok{+}
-\StringTok{  }\KeywordTok{ylab}\NormalTok{(}\StringTok{"Neutrophil count"}\NormalTok{) }\OperatorTok{+}
-\StringTok{  }\OtherTok{NULL}
-\end{Highlighting}
-\end{Shaded}
-
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-24-1.pdf}
-\#\#\#\# Two factors
 
 The data are from figure 6d. This solution requires computing either the
 raw or modeled means and errors and adding these to a base ggpubr plot.
@@ -3072,18 +3079,18 @@ function from the emmeans package.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-27-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-28-1.pdf}
 
 \subsubsection{Three factors}\label{three-factors}
 
-\chapter{\texorpdfstring{A linear model with a single, continous
-\emph{X}}{A linear model with a single, continous X}}\label{a-linear-model-with-a-single-continous-x}
+\chapter{\texorpdfstring{A linear model with a single, continuous
+\emph{X}}{A linear model with a single, continuous X}}\label{a-linear-model-with-a-single-continuous-x}
 
-\section{\texorpdfstring{A linear model with a single, continous
+\section{\texorpdfstring{A linear model with a single, continuous
 \emph{X} is classical
-``regression''}{A linear model with a single, continous X is classical regression}}\label{a-linear-model-with-a-single-continous-x-is-classical-regression}
+``regression''}{A linear model with a single, continuous X is classical regression}}\label{a-linear-model-with-a-single-continuous-x-is-classical-regression}
 
-To introduce modeling with a single continous \(X\) variable, I'll use
+To introduce modeling with a single continuous \(X\) variable, I'll use
 data from
 
 \begin{enumerate}
@@ -4380,7 +4387,7 @@ Here is the default plot
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-28-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-29-1.pdf}
 
 \chapter{P-values}\label{p-values}
 
@@ -7063,7 +7070,7 @@ residuals is
 ## `stat_bindot()` using `bins = 30`. Pick better value with `binwidth`.
 \end{verbatim}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-29-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-30-1.pdf}
 
 \begin{verbatim}
 ##              Estimate Std. Error   t value     Pr(>|t|)
@@ -8067,7 +8074,7 @@ statistic is \(df\).
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-31-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-32-1.pdf}
 
 \begin{verbatim}
 ## 
