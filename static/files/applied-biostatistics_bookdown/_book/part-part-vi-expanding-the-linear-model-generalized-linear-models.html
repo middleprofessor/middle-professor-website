@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>(Part) Part VI: Expanding the Linear Model: Generalized Linear Models | Elementary Statistical Modeling for Applied Biostatistics</title>
+  <meta name="description" content="A first course in statistical modeling for biology students">
+  <meta name="generator" content="bookdown  and GitBook 2.6.7">
+
+  <meta property="og:title" content="(Part) Part VI: Expanding the Linear Model: Generalized Linear Models | Elementary Statistical Modeling for Applied Biostatistics" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="A first course in statistical modeling for biology students" />
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="(Part) Part VI: Expanding the Linear Model: Generalized Linear Models | Elementary Statistical Modeling for Applied Biostatistics" />
+  
+  <meta name="twitter:description" content="A first course in statistical modeling for biology students" />
+  
+
+<meta name="author" content="Copyright 2018 Jeffrey A. Walker">
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  
+  
+<link rel="prev" href="anova-tables.html">
+<link rel="next" href="generalized-linear-models-i-count-data.html">
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Elements of Applied Biostatistics</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Preface</a><ul>
+<li class="chapter" data-level="0.1" data-path="index.html"><a href="index.html#math"><i class="fa fa-check"></i><b>0.1</b> Math</a></li>
+<li class="chapter" data-level="0.2" data-path="index.html"><a href="index.html#r-and-programming"><i class="fa fa-check"></i><b>0.2</b> R and programming</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="part-part-i-r-fundamentals.html"><a href="part-part-i-r-fundamentals.html"><i class="fa fa-check"></i>(Part) Part I: R fundamentals</a></li>
+<li class="chapter" data-level="1" data-path="organization-r-projects-and-r-notebooks.html"><a href="organization-r-projects-and-r-notebooks.html"><i class="fa fa-check"></i><b>1</b> Organization – R Projects and R Notebooks</a><ul>
+<li class="chapter" data-level="1.1" data-path="organization-r-projects-and-r-notebooks.html"><a href="organization-r-projects-and-r-notebooks.html#importing-packages"><i class="fa fa-check"></i><b>1.1</b> Importing Packages</a></li>
+<li class="chapter" data-level="1.2" data-path="organization-r-projects-and-r-notebooks.html"><a href="organization-r-projects-and-r-notebooks.html#create-an-r-studio-project-for-this-class"><i class="fa fa-check"></i><b>1.2</b> Create an R Studio Project for this Class</a></li>
+<li class="chapter" data-level="1.3" data-path="organization-r-projects-and-r-notebooks.html"><a href="organization-r-projects-and-r-notebooks.html#r-notebooks"><i class="fa fa-check"></i><b>1.3</b> R Notebooks</a><ul>
+<li class="chapter" data-level="1.3.1" data-path="organization-r-projects-and-r-notebooks.html"><a href="organization-r-projects-and-r-notebooks.html#create-an-r-notebook-for-this-chapter"><i class="fa fa-check"></i><b>1.3.1</b> Create an R Notebook for this Chapter</a></li>
+<li class="chapter" data-level="1.3.2" data-path="organization-r-projects-and-r-notebooks.html"><a href="organization-r-projects-and-r-notebooks.html#create-a-setup-chunk"><i class="fa fa-check"></i><b>1.3.2</b> Create a “setup” chunk</a></li>
+<li class="chapter" data-level="1.3.3" data-path="organization-r-projects-and-r-notebooks.html"><a href="organization-r-projects-and-r-notebooks.html#create-a-simple-plot-chunk"><i class="fa fa-check"></i><b>1.3.3</b> Create a “simple plot” chunk</a></li>
+<li class="chapter" data-level="1.3.4" data-path="organization-r-projects-and-r-notebooks.html"><a href="organization-r-projects-and-r-notebooks.html#create-more-r-chunks-and-explore-options-and-play-with-r-code"><i class="fa fa-check"></i><b>1.3.4</b> Create more R chunks and explore options and play with R code</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="data-reading-writing-and-fake.html"><a href="data-reading-writing-and-fake.html"><i class="fa fa-check"></i><b>2</b> Data – Reading, Writing, and Fake</a><ul>
+<li class="chapter" data-level="2.1" data-path="data-reading-writing-and-fake.html"><a href="data-reading-writing-and-fake.html#create-new-notebook-for-this-chapter"><i class="fa fa-check"></i><b>2.1</b> Create new notebook for this chapter</a></li>
+<li class="chapter" data-level="2.2" data-path="data-reading-writing-and-fake.html"><a href="data-reading-writing-and-fake.html#importing-data"><i class="fa fa-check"></i><b>2.2</b> Importing Data</a><ul>
+<li class="chapter" data-level="2.2.1" data-path="data-reading-writing-and-fake.html"><a href="data-reading-writing-and-fake.html#excel-file"><i class="fa fa-check"></i><b>2.2.1</b> Excel File</a></li>
+<li class="chapter" data-level="2.2.2" data-path="data-reading-writing-and-fake.html"><a href="data-reading-writing-and-fake.html#text-file"><i class="fa fa-check"></i><b>2.2.2</b> Text File</a></li>
+</ul></li>
+<li class="chapter" data-level="2.3" data-path="data-reading-writing-and-fake.html"><a href="data-reading-writing-and-fake.html#creating-fake-data"><i class="fa fa-check"></i><b>2.3</b> Creating Fake Data</a><ul>
+<li class="chapter" data-level="2.3.1" data-path="data-reading-writing-and-fake.html"><a href="data-reading-writing-and-fake.html#continuous-x-fake-observational-data"><i class="fa fa-check"></i><b>2.3.1</b> Continuous X (fake observational data)</a></li>
+<li class="chapter" data-level="2.3.2" data-path="data-reading-writing-and-fake.html"><a href="data-reading-writing-and-fake.html#categorical-x-fake-experimental-data"><i class="fa fa-check"></i><b>2.3.2</b> Categorical X (fake experimental data)</a></li>
+<li class="chapter" data-level="2.3.3" data-path="data-reading-writing-and-fake.html"><a href="data-reading-writing-and-fake.html#correlated-x-fake-observational-data"><i class="fa fa-check"></i><b>2.3.3</b> Correlated X (fake observational data)</a></li>
+</ul></li>
+<li class="chapter" data-level="2.4" data-path="data-reading-writing-and-fake.html"><a href="data-reading-writing-and-fake.html#saving-data"><i class="fa fa-check"></i><b>2.4</b> Saving Data</a></li>
+<li class="chapter" data-level="2.5" data-path="data-reading-writing-and-fake.html"><a href="data-reading-writing-and-fake.html#problems"><i class="fa fa-check"></i><b>2.5</b> Problems</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="pretty-good-plots.html"><a href="pretty-good-plots.html"><i class="fa fa-check"></i><b>3</b> Pretty good plots</a><ul>
+<li class="chapter" data-level="3.1" data-path="pretty-good-plots.html"><a href="pretty-good-plots.html#pretty-good-plots-show-the-model-and-the-data"><i class="fa fa-check"></i><b>3.1</b> Pretty good plots show the model and the data</a><ul>
+<li class="chapter" data-level="3.1.1" data-path="pretty-good-plots.html"><a href="pretty-good-plots.html#pretty-good-plot-component-1-modeled-effects-plot"><i class="fa fa-check"></i><b>3.1.1</b> Pretty good plot component 1: Modeled effects plot</a></li>
+<li class="chapter" data-level="3.1.2" data-path="pretty-good-plots.html"><a href="pretty-good-plots.html#pretty-good-plot-component-2-modeled-mean-and-ci-plot-with-jittered-raw-data"><i class="fa fa-check"></i><b>3.1.2</b> Pretty good plot component 2: Modeled mean and CI plot with jittered raw data</a></li>
+<li class="chapter" data-level="3.1.3" data-path="pretty-good-plots.html"><a href="pretty-good-plots.html#combining-effects-and-modeled-mean-and-ci-plots-an-effects-and-response-plot."><i class="fa fa-check"></i><b>3.1.3</b> Combining Effects and Modeled mean and CI plots – an Effects and response plot.</a></li>
+</ul></li>
+<li class="chapter" data-level="3.2" data-path="pretty-good-plots.html"><a href="pretty-good-plots.html#some-comments-on-plot-components"><i class="fa fa-check"></i><b>3.2</b> Some comments on plot components</a></li>
+<li class="chapter" data-level="3.3" data-path="pretty-good-plots.html"><a href="pretty-good-plots.html#working-in-r"><i class="fa fa-check"></i><b>3.3</b> Working in R</a><ul>
+<li class="chapter" data-level="3.3.1" data-path="pretty-good-plots.html"><a href="pretty-good-plots.html#adding-modeled-error-intervals"><i class="fa fa-check"></i><b>3.3.1</b> Adding modeled error intervals</a></li>
+<li class="chapter" data-level="3.3.2" data-path="pretty-good-plots.html"><a href="pretty-good-plots.html#adding-p-values"><i class="fa fa-check"></i><b>3.3.2</b> Adding p-values</a></li>
+<li class="chapter" data-level="3.3.3" data-path="pretty-good-plots.html"><a href="pretty-good-plots.html#adding-custom-p-values"><i class="fa fa-check"></i><b>3.3.3</b> Adding custom p-values</a></li>
+<li class="chapter" data-level="3.3.4" data-path="pretty-good-plots.html"><a href="pretty-good-plots.html#plotting-two-factors"><i class="fa fa-check"></i><b>3.3.4</b> Plotting two factors</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="part-part-ii-statistics-fundamentals.html"><a href="part-part-ii-statistics-fundamentals.html"><i class="fa fa-check"></i>(Part) Part II: Statistics fundamentals</a></li>
+<li class="chapter" data-level="4" data-path="variability-and-uncertainty-standard-deviations-and-standard-errors.html"><a href="variability-and-uncertainty-standard-deviations-and-standard-errors.html"><i class="fa fa-check"></i><b>4</b> Variability and Uncertainty (Standard Deviations and Standard Errors)</a><ul>
+<li class="chapter" data-level="4.1" data-path="variability-and-uncertainty-standard-deviations-and-standard-errors.html"><a href="variability-and-uncertainty-standard-deviations-and-standard-errors.html#the-sample-standard-deviation-vs.the-standard-error-of-the-mean"><i class="fa fa-check"></i><b>4.1</b> The sample standard deviation vs. the standard error of the mean</a><ul>
+<li class="chapter" data-level="4.1.1" data-path="variability-and-uncertainty-standard-deviations-and-standard-errors.html"><a href="variability-and-uncertainty-standard-deviations-and-standard-errors.html#sample-standard-deviation"><i class="fa fa-check"></i><b>4.1.1</b> Sample standard deviation</a></li>
+<li class="chapter" data-level="4.1.2" data-path="variability-and-uncertainty-standard-deviations-and-standard-errors.html"><a href="variability-and-uncertainty-standard-deviations-and-standard-errors.html#standard-error-of-the-mean"><i class="fa fa-check"></i><b>4.1.2</b> Standard error of the mean</a></li>
+</ul></li>
+<li class="chapter" data-level="4.2" data-path="variability-and-uncertainty-standard-deviations-and-standard-errors.html"><a href="variability-and-uncertainty-standard-deviations-and-standard-errors.html#using-google-sheets-to-generate-fake-data-to-explore-uncertainty"><i class="fa fa-check"></i><b>4.2</b> Using Google Sheets to generate fake data to explore uncertainty</a><ul>
+<li class="chapter" data-level="4.2.1" data-path="variability-and-uncertainty-standard-deviations-and-standard-errors.html"><a href="variability-and-uncertainty-standard-deviations-and-standard-errors.html#steps"><i class="fa fa-check"></i><b>4.2.1</b> Steps</a></li>
+</ul></li>
+<li class="chapter" data-level="4.3" data-path="variability-and-uncertainty-standard-deviations-and-standard-errors.html"><a href="variability-and-uncertainty-standard-deviations-and-standard-errors.html#using-r-to-generate-fake-data-to-explore-uncertainty"><i class="fa fa-check"></i><b>4.3</b> Using R to generate fake data to explore uncertainty</a><ul>
+<li class="chapter" data-level="4.3.1" data-path="variability-and-uncertainty-standard-deviations-and-standard-errors.html"><a href="variability-and-uncertainty-standard-deviations-and-standard-errors.html#part-i"><i class="fa fa-check"></i><b>4.3.1</b> part I</a></li>
+<li class="chapter" data-level="4.3.2" data-path="variability-and-uncertainty-standard-deviations-and-standard-errors.html"><a href="variability-and-uncertainty-standard-deviations-and-standard-errors.html#part-ii---means"><i class="fa fa-check"></i><b>4.3.2</b> part II - means</a></li>
+<li class="chapter" data-level="4.3.3" data-path="variability-and-uncertainty-standard-deviations-and-standard-errors.html"><a href="variability-and-uncertainty-standard-deviations-and-standard-errors.html#part-iii---how-do-sd-and-se-change-as-sample-size-n-increases"><i class="fa fa-check"></i><b>4.3.3</b> part III - how do SD and SE change as sample size (n) increases?</a></li>
+<li class="chapter" data-level="4.3.4" data-path="variability-and-uncertainty-standard-deviations-and-standard-errors.html"><a href="variability-and-uncertainty-standard-deviations-and-standard-errors.html#part-iv-generating-fake-data-with-for-loops"><i class="fa fa-check"></i><b>4.3.4</b> Part IV – Generating fake data with “for loops”</a></li>
+</ul></li>
+<li class="chapter" data-level="4.4" data-path="variability-and-uncertainty-standard-deviations-and-standard-errors.html"><a href="variability-and-uncertainty-standard-deviations-and-standard-errors.html#bootstrapped-standard-errors"><i class="fa fa-check"></i><b>4.4</b> Bootstrapped standard errors</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="part-iii-statistical-modeling.html"><a href="part-iii-statistical-modeling.html"><i class="fa fa-check"></i>Part III: Statistical Modeling</a></li>
+<li class="chapter" data-level="5" data-path="statistical-modeling.html"><a href="statistical-modeling.html"><i class="fa fa-check"></i><b>5</b> Statistical Modeling</a><ul>
+<li class="chapter" data-level="5.1" data-path="statistical-modeling.html"><a href="statistical-modeling.html#two-specifications-of-a-linear-model"><i class="fa fa-check"></i><b>5.1</b> Two specifications of a linear model</a><ul>
+<li class="chapter" data-level="5.1.1" data-path="statistical-modeling.html"><a href="statistical-modeling.html#the-random-error-specification"><i class="fa fa-check"></i><b>5.1.1</b> The “random error” specification</a></li>
+<li class="chapter" data-level="5.1.2" data-path="statistical-modeling.html"><a href="statistical-modeling.html#the-random-draw-specification"><i class="fa fa-check"></i><b>5.1.2</b> The “random draw” specification</a></li>
+<li class="chapter" data-level="5.1.3" data-path="statistical-modeling.html"><a href="statistical-modeling.html#comparing-the-two-ways-of-specifying-the-linear-model"><i class="fa fa-check"></i><b>5.1.3</b> Comparing the two ways of specifying the linear model</a></li>
+</ul></li>
+<li class="chapter" data-level="5.2" data-path="statistical-modeling.html"><a href="statistical-modeling.html#what-do-we-call-the-x-and-y-variables"><i class="fa fa-check"></i><b>5.2</b> What do we call the <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> variables?</a></li>
+<li class="chapter" data-level="5.3" data-path="statistical-modeling.html"><a href="statistical-modeling.html#statistical-models-are-used-for-prediction-explanation-and-description"><i class="fa fa-check"></i><b>5.3</b> Statistical models are used for prediction, explanation, and description</a></li>
+<li class="chapter" data-level="5.4" data-path="statistical-modeling.html"><a href="statistical-modeling.html#modeling-strategy"><i class="fa fa-check"></i><b>5.4</b> Modeling strategy</a></li>
+<li class="chapter" data-level="5.5" data-path="statistical-modeling.html"><a href="statistical-modeling.html#a-mean-is-the-simplest-model"><i class="fa fa-check"></i><b>5.5</b> A mean is the simplest model</a></li>
+<li class="chapter" data-level="5.6" data-path="statistical-modeling.html"><a href="statistical-modeling.html#assumptions-for-inference-with-a-statistical-model"><i class="fa fa-check"></i><b>5.6</b> Assumptions for inference with a statistical model</a></li>
+<li class="chapter" data-level="5.7" data-path="statistical-modeling.html"><a href="statistical-modeling.html#specific-assumptions-for-inference-with-a-linear-model"><i class="fa fa-check"></i><b>5.7</b> Specific assumptions for inference with a linear model</a></li>
+<li class="chapter" data-level="5.8" data-path="statistical-modeling.html"><a href="statistical-modeling.html#statistical-model-or-regression-model"><i class="fa fa-check"></i><b>5.8</b> “Statistical model” or “regression model”?</a></li>
+<li class="chapter" data-level="5.9" data-path="statistical-modeling.html"><a href="statistical-modeling.html#glm-vs.glm-vs.gls"><i class="fa fa-check"></i><b>5.9</b> GLM vs. GLM vs. GLS</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="a-linear-model-with-a-single-continuous-x.html"><a href="a-linear-model-with-a-single-continuous-x.html"><i class="fa fa-check"></i><b>6</b> A linear model with a single, continuous <em>X</em></a><ul>
+<li class="chapter" data-level="6.1" data-path="a-linear-model-with-a-single-continuous-x.html"><a href="a-linear-model-with-a-single-continuous-x.html#a-linear-model-with-a-single-continuous-x-is-classical-regression"><i class="fa fa-check"></i><b>6.1</b> A linear model with a single, continuous <em>X</em> is classical “regression”</a><ul>
+<li class="chapter" data-level="6.1.1" data-path="a-linear-model-with-a-single-continuous-x.html"><a href="a-linear-model-with-a-single-continuous-x.html#using-a-linear-model-to-estimate-explanatory-effects"><i class="fa fa-check"></i><b>6.1.1</b> Using a linear model to estimate explanatory effects</a></li>
+<li class="chapter" data-level="6.1.2" data-path="a-linear-model-with-a-single-continuous-x.html"><a href="a-linear-model-with-a-single-continuous-x.html#using-a-linear-model-for-prediction"><i class="fa fa-check"></i><b>6.1.2</b> Using a linear model for prediction</a></li>
+<li class="chapter" data-level="6.1.3" data-path="a-linear-model-with-a-single-continuous-x.html"><a href="a-linear-model-with-a-single-continuous-x.html#reporting-results"><i class="fa fa-check"></i><b>6.1.3</b> Reporting results</a></li>
+</ul></li>
+<li class="chapter" data-level="6.2" data-path="a-linear-model-with-a-single-continuous-x.html"><a href="a-linear-model-with-a-single-continuous-x.html#working-in-r-1"><i class="fa fa-check"></i><b>6.2</b> Working in R</a><ul>
+<li class="chapter" data-level="6.2.1" data-path="a-linear-model-with-a-single-continuous-x.html"><a href="a-linear-model-with-a-single-continuous-x.html#exploring-the-bivariate-relationship-between-y-and-x"><i class="fa fa-check"></i><b>6.2.1</b> Exploring the bivariate relationship between <em>Y</em> and <em>X</em></a></li>
+<li class="chapter" data-level="6.2.2" data-path="a-linear-model-with-a-single-continuous-x.html"><a href="a-linear-model-with-a-single-continuous-x.html#fitting-the-linear-model"><i class="fa fa-check"></i><b>6.2.2</b> Fitting the linear model</a></li>
+<li class="chapter" data-level="6.2.3" data-path="a-linear-model-with-a-single-continuous-x.html"><a href="a-linear-model-with-a-single-continuous-x.html#getting-to-know-the-linear-model-the-summary-function"><i class="fa fa-check"></i><b>6.2.3</b> Getting to know the linear model: the <code>summary</code> function</a></li>
+<li class="chapter" data-level="6.2.4" data-path="a-linear-model-with-a-single-continuous-x.html"><a href="a-linear-model-with-a-single-continuous-x.html#display-an-alternative-to-summary"><i class="fa fa-check"></i><b>6.2.4</b> display: An alternative to summary</a></li>
+<li class="chapter" data-level="6.2.5" data-path="a-linear-model-with-a-single-continuous-x.html"><a href="a-linear-model-with-a-single-continuous-x.html#confidence-intervals"><i class="fa fa-check"></i><b>6.2.5</b> Confidence intervals</a></li>
+<li class="chapter" data-level="6.2.6" data-path="a-linear-model-with-a-single-continuous-x.html"><a href="a-linear-model-with-a-single-continuous-x.html#how-good-is-our-model"><i class="fa fa-check"></i><b>6.2.6</b> How good is our model?</a></li>
+<li class="chapter" data-level="6.2.7" data-path="a-linear-model-with-a-single-continuous-x.html"><a href="a-linear-model-with-a-single-continuous-x.html#exploring-a-lm-object"><i class="fa fa-check"></i><b>6.2.7</b> exploring a lm object</a></li>
+</ul></li>
+<li class="chapter" data-level="6.3" data-path="a-linear-model-with-a-single-continuous-x.html"><a href="a-linear-model-with-a-single-continuous-x.html#problems-1"><i class="fa fa-check"></i><b>6.3</b> Problems</a></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="least-squares-estimation-and-the-decomposition-of-variance.html"><a href="least-squares-estimation-and-the-decomposition-of-variance.html"><i class="fa fa-check"></i><b>7</b> Least Squares Estimation and the Decomposition of Variance</a><ul>
+<li class="chapter" data-level="7.1" data-path="least-squares-estimation-and-the-decomposition-of-variance.html"><a href="least-squares-estimation-and-the-decomposition-of-variance.html#ols-regression"><i class="fa fa-check"></i><b>7.1</b> OLS regression</a></li>
+<li class="chapter" data-level="7.2" data-path="least-squares-estimation-and-the-decomposition-of-variance.html"><a href="least-squares-estimation-and-the-decomposition-of-variance.html#how-well-does-the-model-fit-the-data-r2-and-variance-explained"><i class="fa fa-check"></i><b>7.2</b> How well does the model fit the data? <span class="math inline">\(R^2\)</span> and “variance explained”</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="part-part-iv-linear-models-for-experimental-data.html"><a href="part-part-iv-linear-models-for-experimental-data.html"><i class="fa fa-check"></i>(Part) Part IV: Linear Models for Experimental Data</a></li>
+<li class="chapter" data-level="8" data-path="a-linear-model-with-a-single-categorical-x.html"><a href="a-linear-model-with-a-single-categorical-x.html"><i class="fa fa-check"></i><b>8</b> A linear model with a single, categorical <em>X</em></a><ul>
+<li class="chapter" data-level="8.1" data-path="a-linear-model-with-a-single-categorical-x.html"><a href="a-linear-model-with-a-single-categorical-x.html#a-linear-model-with-a-single-categorical-x-is-the-engine-behind-a-single-factor-one-way-anova-and-a-t-test-is-a-special-case-of-this-model."><i class="fa fa-check"></i><b>8.1</b> A linear model with a single, categorical <em>X</em> is the engine behind a single factor (one-way) ANOVA and a t-test is a special case of this model.</a><ul>
+<li class="chapter" data-level="8.1.1" data-path="a-linear-model-with-a-single-categorical-x.html"><a href="a-linear-model-with-a-single-categorical-x.html#table-of-model-coefficients"><i class="fa fa-check"></i><b>8.1.1</b> Table of model coefficients</a></li>
+<li class="chapter" data-level="8.1.2" data-path="a-linear-model-with-a-single-categorical-x.html"><a href="a-linear-model-with-a-single-categorical-x.html#the-linear-model"><i class="fa fa-check"></i><b>8.1.2</b> The linear model</a></li>
+<li class="chapter" data-level="8.1.3" data-path="a-linear-model-with-a-single-categorical-x.html"><a href="a-linear-model-with-a-single-categorical-x.html#reporting-results-1"><i class="fa fa-check"></i><b>8.1.3</b> Reporting results</a></li>
+</ul></li>
+<li class="chapter" data-level="8.2" data-path="a-linear-model-with-a-single-categorical-x.html"><a href="a-linear-model-with-a-single-categorical-x.html#working-in-r-2"><i class="fa fa-check"></i><b>8.2</b> Working in R</a><ul>
+<li class="chapter" data-level="8.2.1" data-path="a-linear-model-with-a-single-categorical-x.html"><a href="a-linear-model-with-a-single-categorical-x.html#exploring-the-relationship-between-y-and-x"><i class="fa fa-check"></i><b>8.2.1</b> Exploring the relationship between <em>Y</em> and <em>X</em></a></li>
+<li class="chapter" data-level="8.2.2" data-path="a-linear-model-with-a-single-categorical-x.html"><a href="a-linear-model-with-a-single-categorical-x.html#fitting-the-model"><i class="fa fa-check"></i><b>8.2.2</b> Fitting the model</a></li>
+<li class="chapter" data-level="8.2.3" data-path="a-linear-model-with-a-single-categorical-x.html"><a href="a-linear-model-with-a-single-categorical-x.html#an-introduction-to-contrasts"><i class="fa fa-check"></i><b>8.2.3</b> An introduction to contrasts</a></li>
+<li class="chapter" data-level="8.2.4" data-path="a-linear-model-with-a-single-categorical-x.html"><a href="a-linear-model-with-a-single-categorical-x.html#harrell-plot"><i class="fa fa-check"></i><b>8.2.4</b> Harrell plot</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="linear-model-assumptions.html"><a href="linear-model-assumptions.html"><i class="fa fa-check"></i><b>9</b> Linear Model Assumptions</a></li>
+<li class="chapter" data-level="10" data-path="skewed-data.html"><a href="skewed-data.html"><i class="fa fa-check"></i><b>10</b> skewed data</a></li>
+<li class="chapter" data-level="11" data-path="two-or-more-categorical-x-factorial-designs.html"><a href="two-or-more-categorical-x-factorial-designs.html"><i class="fa fa-check"></i><b>11</b> Two (or more) Categorical <span class="math inline">\(X\)</span> – Factorial designs</a><ul>
+<li class="chapter" data-level="11.1" data-path="two-or-more-categorical-x-factorial-designs.html"><a href="two-or-more-categorical-x-factorial-designs.html#factorial-experiments"><i class="fa fa-check"></i><b>11.1</b> Factorial experiments</a><ul>
+<li class="chapter" data-level="11.1.1" data-path="two-or-more-categorical-x-factorial-designs.html"><a href="two-or-more-categorical-x-factorial-designs.html#model-coefficients-an-interaction-effect-is-what-is-leftover-after-adding-the-treatment-effects-to-the-control"><i class="fa fa-check"></i><b>11.1.1</b> Model coefficients: an interaction effect is what is leftover after adding the treatment effects to the control</a></li>
+<li class="chapter" data-level="11.1.2" data-path="two-or-more-categorical-x-factorial-designs.html"><a href="two-or-more-categorical-x-factorial-designs.html#what-is-the-biological-meaning-of-an-interaction-effect"><i class="fa fa-check"></i><b>11.1.2</b> What is the biological meaning of an interaction effect?</a></li>
+<li class="chapter" data-level="11.1.3" data-path="two-or-more-categorical-x-factorial-designs.html"><a href="two-or-more-categorical-x-factorial-designs.html#what-about-models-with-more-than-two-factors"><i class="fa fa-check"></i><b>11.1.3</b> What about models with more than two factors?</a></li>
+<li class="chapter" data-level="11.1.4" data-path="two-or-more-categorical-x-factorial-designs.html"><a href="two-or-more-categorical-x-factorial-designs.html#the-additive-model"><i class="fa fa-check"></i><b>11.1.4</b> The additive model</a></li>
+<li class="chapter" data-level="11.1.5" data-path="two-or-more-categorical-x-factorial-designs.html"><a href="two-or-more-categorical-x-factorial-designs.html#contrasts-simple-vs.main-effects"><i class="fa fa-check"></i><b>11.1.5</b> Contrasts – simple vs. main effects</a></li>
+</ul></li>
+<li class="chapter" data-level="11.2" data-path="two-or-more-categorical-x-factorial-designs.html"><a href="two-or-more-categorical-x-factorial-designs.html#reporting-results-2"><i class="fa fa-check"></i><b>11.2</b> Reporting results</a><ul>
+<li class="chapter" data-level="11.2.1" data-path="two-or-more-categorical-x-factorial-designs.html"><a href="two-or-more-categorical-x-factorial-designs.html#text-results"><i class="fa fa-check"></i><b>11.2.1</b> Text results</a></li>
+<li class="chapter" data-level="11.2.2" data-path="two-or-more-categorical-x-factorial-designs.html"><a href="two-or-more-categorical-x-factorial-designs.html#harrellplot"><i class="fa fa-check"></i><b>11.2.2</b> Harrellplot</a></li>
+<li class="chapter" data-level="11.2.3" data-path="two-or-more-categorical-x-factorial-designs.html"><a href="two-or-more-categorical-x-factorial-designs.html#interaction-plots"><i class="fa fa-check"></i><b>11.2.3</b> Interaction plots</a></li>
+</ul></li>
+<li class="chapter" data-level="11.3" data-path="two-or-more-categorical-x-factorial-designs.html"><a href="two-or-more-categorical-x-factorial-designs.html#recommendations"><i class="fa fa-check"></i><b>11.3</b> Recommendations</a></li>
+<li class="chapter" data-level="11.4" data-path="two-or-more-categorical-x-factorial-designs.html"><a href="two-or-more-categorical-x-factorial-designs.html#working-in-r-3"><i class="fa fa-check"></i><b>11.4</b> Working in R</a></li>
+<li class="chapter" data-level="11.5" data-path="two-or-more-categorical-x-factorial-designs.html"><a href="two-or-more-categorical-x-factorial-designs.html#problems-2"><i class="fa fa-check"></i><b>11.5</b> Problems</a></li>
+</ul></li>
+<li class="chapter" data-level="12" data-path="adding-covariates-to-a-linear-model-i-ancova.html"><a href="adding-covariates-to-a-linear-model-i-ancova.html"><i class="fa fa-check"></i><b>12</b> Adding covariates to a linear model I: ANCOVA</a><ul>
+<li class="chapter" data-level="12.1" data-path="adding-covariates-to-a-linear-model-i-ancova.html"><a href="adding-covariates-to-a-linear-model-i-ancova.html#adding-covariates-can-increases-the-precision-of-the-effect-of-interest"><i class="fa fa-check"></i><b>12.1</b> Adding covariates can increases the precision of the effect of interest</a><ul>
+<li class="chapter" data-level="12.1.1" data-path="adding-covariates-to-a-linear-model-i-ancova.html"><a href="adding-covariates-to-a-linear-model-i-ancova.html#interaction-effects-with-covariates"><i class="fa fa-check"></i><b>12.1.1</b> Interaction effects with covariates</a></li>
+<li class="chapter" data-level="12.1.2" data-path="adding-covariates-to-a-linear-model-i-ancova.html"><a href="adding-covariates-to-a-linear-model-i-ancova.html#add-only-covariates-that-were-measured-before-peaking-at-the-data"><i class="fa fa-check"></i><b>12.1.2</b> Add only covariates that were measured before peaking at the data</a></li>
+</ul></li>
+<li class="chapter" data-level="12.2" data-path="adding-covariates-to-a-linear-model-i-ancova.html"><a href="adding-covariates-to-a-linear-model-i-ancova.html#regression-to-the-mean"><i class="fa fa-check"></i><b>12.2</b> Regression to the mean</a><ul>
+<li class="chapter" data-level="12.2.1" data-path="adding-covariates-to-a-linear-model-i-ancova.html"><a href="adding-covariates-to-a-linear-model-i-ancova.html#do-not-use-percent-change-believing-that-percents-account-for-effects-of-initial-weights"><i class="fa fa-check"></i><b>12.2.1</b> Do not use percent change, believing that percents account for effects of initial weights</a></li>
+<li class="chapter" data-level="12.2.2" data-path="adding-covariates-to-a-linear-model-i-ancova.html"><a href="adding-covariates-to-a-linear-model-i-ancova.html#do-not-test-for-balance-of-baseline-measures"><i class="fa fa-check"></i><b>12.2.2</b> Do not “test for balance” of baseline measures</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="part-part-v-hypothesis-testing.html"><a href="part-part-v-hypothesis-testing.html"><i class="fa fa-check"></i>(Part) Part V: Hypothesis Testing</a></li>
+<li class="chapter" data-level="13" data-path="p-values.html"><a href="p-values.html"><i class="fa fa-check"></i><b>13</b> P-values</a><ul>
+<li class="chapter" data-level="13.1" data-path="p-values.html"><a href="p-values.html#p-values"><i class="fa fa-check"></i><b>13.1</b> <span class="math inline">\(p\)</span>-values</a></li>
+<li class="chapter" data-level="13.2" data-path="p-values.html"><a href="p-values.html#creating-a-null-distribution."><i class="fa fa-check"></i><b>13.2</b> Creating a null distribution.</a><ul>
+<li class="chapter" data-level="13.2.1" data-path="p-values.html"><a href="p-values.html#the-null-distribution"><i class="fa fa-check"></i><b>13.2.1</b> the Null Distribution</a></li>
+<li class="chapter" data-level="13.2.2" data-path="p-values.html"><a href="p-values.html#t-tests"><i class="fa fa-check"></i><b>13.2.2</b> <span class="math inline">\(t\)</span>-tests</a></li>
+<li class="chapter" data-level="13.2.3" data-path="p-values.html"><a href="p-values.html#p-values-from-the-perspective-of-permutation"><i class="fa fa-check"></i><b>13.2.3</b> P-values from the perspective of permutation</a></li>
+</ul></li>
+<li class="chapter" data-level="13.3" data-path="p-values.html"><a href="p-values.html#statistical-modeling-instead-of-hypothesis-testing"><i class="fa fa-check"></i><b>13.3</b> Statistical modeling instead of hypothesis testing</a></li>
+<li class="chapter" data-level="13.4" data-path="p-values.html"><a href="p-values.html#frequentist-probability-and-the-interpretation-of-p-values"><i class="fa fa-check"></i><b>13.4</b> frequentist probability and the interpretation of p-values</a><ul>
+<li class="chapter" data-level="13.4.1" data-path="p-values.html"><a href="p-values.html#background"><i class="fa fa-check"></i><b>13.4.1</b> Background</a></li>
+<li class="chapter" data-level="13.4.2" data-path="p-values.html"><a href="p-values.html#this-book-covers-frequentist-approaches-to-statistical-modeling-and-when-a-probability-arises-such-as-the-p-value-of-a-test-statistic-this-will-be-a-frequentist-probability."><i class="fa fa-check"></i><b>13.4.2</b> This book covers frequentist approaches to statistical modeling and when a probability arises, such as the <span class="math inline">\(p\)</span>-value of a test statistic, this will be a frequentist probability.</a></li>
+<li class="chapter" data-level="13.4.3" data-path="p-values.html"><a href="p-values.html#two-interpretations-of-the-p-value"><i class="fa fa-check"></i><b>13.4.3</b> Two interpretations of the <span class="math inline">\(p\)</span>-value</a></li>
+<li class="chapter" data-level="13.4.4" data-path="p-values.html"><a href="p-values.html#nhst"><i class="fa fa-check"></i><b>13.4.4</b> NHST</a></li>
+<li class="chapter" data-level="13.4.5" data-path="p-values.html"><a href="p-values.html#some-major-misconceptions-of-the-p-value"><i class="fa fa-check"></i><b>13.4.5</b> Some major misconceptions of the <span class="math inline">\(p\)</span>-value</a></li>
+<li class="chapter" data-level="13.4.6" data-path="p-values.html"><a href="p-values.html#recommendations-1"><i class="fa fa-check"></i><b>13.4.6</b> Recommendations</a></li>
+</ul></li>
+<li class="chapter" data-level="13.5" data-path="p-values.html"><a href="p-values.html#problems-3"><i class="fa fa-check"></i><b>13.5</b> Problems</a></li>
+</ul></li>
+<li class="chapter" data-level="14" data-path="anova-tables.html"><a href="anova-tables.html"><i class="fa fa-check"></i><b>14</b> ANOVA Tables</a><ul>
+<li class="chapter" data-level="14.1" data-path="anova-tables.html"><a href="anova-tables.html#summary-of-usage"><i class="fa fa-check"></i><b>14.1</b> Summary of usage</a></li>
+<li class="chapter" data-level="14.2" data-path="anova-tables.html"><a href="anova-tables.html#example-a-one-way-anova-using-the-vole-data"><i class="fa fa-check"></i><b>14.2</b> Example: a one-way ANOVA using the vole data</a></li>
+<li class="chapter" data-level="14.3" data-path="anova-tables.html"><a href="anova-tables.html#example-a-two-way-anova-using-the-urchin-data"><i class="fa fa-check"></i><b>14.3</b> Example: a two-way ANOVA using the urchin data</a><ul>
+<li class="chapter" data-level="14.3.1" data-path="anova-tables.html"><a href="anova-tables.html#how-to-read-an-anova-table"><i class="fa fa-check"></i><b>14.3.1</b> How to read an ANOVA table</a></li>
+<li class="chapter" data-level="14.3.2" data-path="anova-tables.html"><a href="anova-tables.html#how-to-read-anova-results-reported-in-the-text"><i class="fa fa-check"></i><b>14.3.2</b> How to read ANOVA results reported in the text</a></li>
+<li class="chapter" data-level="14.3.3" data-path="anova-tables.html"><a href="anova-tables.html#better-practice-estimates-and-their-uncertainty"><i class="fa fa-check"></i><b>14.3.3</b> Better practice – estimates and their uncertainty</a></li>
+</ul></li>
+<li class="chapter" data-level="14.4" data-path="anova-tables.html"><a href="anova-tables.html#unbalanced-designs"><i class="fa fa-check"></i><b>14.4</b> Unbalanced designs</a><ul>
+<li class="chapter" data-level="14.4.1" data-path="anova-tables.html"><a href="anova-tables.html#what-is-going-on-in-unbalanced-anova-type-i-ii-iii-sum-of-squares"><i class="fa fa-check"></i><b>14.4.1</b> What is going on in unbalanced ANOVA? – Type I, II, III sum of squares</a></li>
+<li class="chapter" data-level="14.4.2" data-path="anova-tables.html"><a href="anova-tables.html#back-to-interpretation-of-main-effects"><i class="fa fa-check"></i><b>14.4.2</b> Back to interpretation of main effects</a></li>
+<li class="chapter" data-level="14.4.3" data-path="anova-tables.html"><a href="anova-tables.html#the-anova-tables-for-type-i-ii-and-iii-sum-of-squares-are-the-same-if-the-design-is-balanced."><i class="fa fa-check"></i><b>14.4.3</b> The anova tables for Type I, II, and III sum of squares are the same if the design is balanced.</a></li>
+</ul></li>
+<li class="chapter" data-level="14.5" data-path="anova-tables.html"><a href="anova-tables.html#working-in-r-4"><i class="fa fa-check"></i><b>14.5</b> Working in R</a><ul>
+<li class="chapter" data-level="14.5.1" data-path="anova-tables.html"><a href="anova-tables.html#type-i-sum-of-squares-in-r"><i class="fa fa-check"></i><b>14.5.1</b> Type I sum of squares in R</a></li>
+<li class="chapter" data-level="14.5.2" data-path="anova-tables.html"><a href="anova-tables.html#type-ii-and-iii-sum-of-squares"><i class="fa fa-check"></i><b>14.5.2</b> Type II and III Sum of Squares</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="part-part-vi-expanding-the-linear-model-generalized-linear-models.html"><a href="part-part-vi-expanding-the-linear-model-generalized-linear-models.html"><i class="fa fa-check"></i>(Part) Part VI: Expanding the Linear Model: Generalized Linear Models</a></li>
+<li class="chapter" data-level="15" data-path="generalized-linear-models-i-count-data.html"><a href="generalized-linear-models-i-count-data.html"><i class="fa fa-check"></i><b>15</b> Generalized linear models I: Count data</a><ul>
+<li class="chapter" data-level="15.1" data-path="generalized-linear-models-i-count-data.html"><a href="generalized-linear-models-i-count-data.html#the-generalized-linear-model"><i class="fa fa-check"></i><b>15.1</b> The generalized linear model</a></li>
+<li class="chapter" data-level="15.2" data-path="generalized-linear-models-i-count-data.html"><a href="generalized-linear-models-i-count-data.html#count-data-example-number-of-trematode-worm-larvae-in-eyes-of-threespine-stickleback-fish"><i class="fa fa-check"></i><b>15.2</b> Count data example – number of trematode worm larvae in eyes of threespine stickleback fish</a><ul>
+<li class="chapter" data-level="15.2.1" data-path="generalized-linear-models-i-count-data.html"><a href="generalized-linear-models-i-count-data.html#modeling-strategy-1"><i class="fa fa-check"></i><b>15.2.1</b> Modeling strategy</a></li>
+<li class="chapter" data-level="15.2.2" data-path="generalized-linear-models-i-count-data.html"><a href="generalized-linear-models-i-count-data.html#checking-the-model-i-a-normal-q-q-plot"><i class="fa fa-check"></i><b>15.2.2</b> Checking the model I – a Normal Q-Q plot</a></li>
+<li class="chapter" data-level="15.2.3" data-path="generalized-linear-models-i-count-data.html"><a href="generalized-linear-models-i-count-data.html#checking-the-model-ii-scale-location-plot-for-checking-homoskedasticity"><i class="fa fa-check"></i><b>15.2.3</b> Checking the model II – scale-location plot for checking homoskedasticity</a></li>
+<li class="chapter" data-level="15.2.4" data-path="generalized-linear-models-i-count-data.html"><a href="generalized-linear-models-i-count-data.html#two-distributions-for-count-data-poisson-and-negative-binomial"><i class="fa fa-check"></i><b>15.2.4</b> Two distributions for count data – Poisson and Negative Binomial</a></li>
+<li class="chapter" data-level="15.2.5" data-path="generalized-linear-models-i-count-data.html"><a href="generalized-linear-models-i-count-data.html#fitting-a-glm-with-a-poisson-distribution-to-the-worm-data"><i class="fa fa-check"></i><b>15.2.5</b> Fitting a GLM with a Poisson distribution to the worm data</a></li>
+<li class="chapter" data-level="15.2.6" data-path="generalized-linear-models-i-count-data.html"><a href="generalized-linear-models-i-count-data.html#model-checking-fits-to-count-data"><i class="fa fa-check"></i><b>15.2.6</b> Model checking fits to count data</a></li>
+<li class="chapter" data-level="15.2.7" data-path="generalized-linear-models-i-count-data.html"><a href="generalized-linear-models-i-count-data.html#fitting-a-glm-with-a-negative-binomial-distribution-to-the-worm-data"><i class="fa fa-check"></i><b>15.2.7</b> Fitting a GLM with a Negative Binomial distribution to the worm data</a></li>
+</ul></li>
+<li class="chapter" data-level="15.3" data-path="generalized-linear-models-i-count-data.html"><a href="generalized-linear-models-i-count-data.html#working-in-r-5"><i class="fa fa-check"></i><b>15.3</b> Working in R</a></li>
+<li class="chapter" data-level="15.4" data-path="generalized-linear-models-i-count-data.html"><a href="generalized-linear-models-i-count-data.html#problems-4"><i class="fa fa-check"></i><b>15.4</b> Problems</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="part-part-vii-expanding-the-linear-model-hierarchical-linear-mixed-models.html"><a href="part-part-vii-expanding-the-linear-model-hierarchical-linear-mixed-models.html"><i class="fa fa-check"></i>(Part) Part VII: Expanding the Linear Model: Hierarchical (Linear Mixed) Models</a></li>
+<li class="chapter" data-level="16" data-path="linear-mixed-models.html"><a href="linear-mixed-models.html"><i class="fa fa-check"></i><b>16</b> Linear mixed models</a><ul>
+<li class="chapter" data-level="16.1" data-path="linear-mixed-models.html"><a href="linear-mixed-models.html#random-effects"><i class="fa fa-check"></i><b>16.1</b> Random effects</a></li>
+<li class="chapter" data-level="16.2" data-path="linear-mixed-models.html"><a href="linear-mixed-models.html#random-effects-in-statistical-models"><i class="fa fa-check"></i><b>16.2</b> Random effects in statistical models</a></li>
+<li class="chapter" data-level="16.3" data-path="linear-mixed-models.html"><a href="linear-mixed-models.html#linear-mixed-models-are-flexible"><i class="fa fa-check"></i><b>16.3</b> Linear mixed models are flexible</a></li>
+<li class="chapter" data-level="16.4" data-path="linear-mixed-models.html"><a href="linear-mixed-models.html#visualizing-block-effects"><i class="fa fa-check"></i><b>16.4</b> Visualizing block effects</a></li>
+<li class="chapter" data-level="16.5" data-path="linear-mixed-models.html"><a href="linear-mixed-models.html#linear-mixed-models-can-increase-precision-of-point-estimates"><i class="fa fa-check"></i><b>16.5</b> Linear mixed models can increase precision of point estimates</a></li>
+<li class="chapter" data-level="16.6" data-path="linear-mixed-models.html"><a href="linear-mixed-models.html#linear-mixed-models-are-used-to-avoid-pseudoreplication"><i class="fa fa-check"></i><b>16.6</b> Linear mixed models are used to avoid pseudoreplication</a></li>
+<li class="chapter" data-level="16.7" data-path="linear-mixed-models.html"><a href="linear-mixed-models.html#linear-mixed-models-shrink-coefficients-by-partial-pooling"><i class="fa fa-check"></i><b>16.7</b> Linear mixed models shrink coefficients by partial pooling</a></li>
+<li class="chapter" data-level="16.8" data-path="linear-mixed-models.html"><a href="linear-mixed-models.html#working-in-r-6"><i class="fa fa-check"></i><b>16.8</b> Working in R</a><ul>
+<li class="chapter" data-level="16.8.1" data-path="linear-mixed-models.html"><a href="linear-mixed-models.html#coral-data"><i class="fa fa-check"></i><b>16.8.1</b> coral data</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="appendix-1-getting-started-with-r.html"><a href="appendix-1-getting-started-with-r.html"><i class="fa fa-check"></i>Appendix 1: Getting Started with R</a><ul>
+<li class="chapter" data-level="16.9" data-path="appendix-1-getting-started-with-r.html"><a href="appendix-1-getting-started-with-r.html#get-your-computer-ready"><i class="fa fa-check"></i><b>16.9</b> Get your computer ready</a><ul>
+<li class="chapter" data-level="16.9.1" data-path="appendix-1-getting-started-with-r.html"><a href="appendix-1-getting-started-with-r.html#install-r"><i class="fa fa-check"></i><b>16.9.1</b> Install R</a></li>
+<li class="chapter" data-level="16.9.2" data-path="appendix-1-getting-started-with-r.html"><a href="appendix-1-getting-started-with-r.html#install-r-studio"><i class="fa fa-check"></i><b>16.9.2</b> Install R Studio</a></li>
+<li class="chapter" data-level="16.9.3" data-path="appendix-1-getting-started-with-r.html"><a href="appendix-1-getting-started-with-r.html#resources-for-installing-r-and-r-studio"><i class="fa fa-check"></i><b>16.9.3</b> Resources for installing R and R Studio</a></li>
+<li class="chapter" data-level="16.9.4" data-path="appendix-1-getting-started-with-r.html"><a href="appendix-1-getting-started-with-r.html#install-latex"><i class="fa fa-check"></i><b>16.9.4</b> Install LaTeX</a></li>
+</ul></li>
+<li class="chapter" data-level="16.10" data-path="appendix-1-getting-started-with-r.html"><a href="appendix-1-getting-started-with-r.html#start-learning"><i class="fa fa-check"></i><b>16.10</b> Start learning</a><ul>
+<li class="chapter" data-level="16.10.1" data-path="appendix-1-getting-started-with-r.html"><a href="appendix-1-getting-started-with-r.html#start-with-data-camp-introduction-to-r"><i class="fa fa-check"></i><b>16.10.1</b> Start with Data Camp Introduction to R</a></li>
+<li class="chapter" data-level="16.10.2" data-path="appendix-1-getting-started-with-r.html"><a href="appendix-1-getting-started-with-r.html#then-move-to-introduction-to-r-studio"><i class="fa fa-check"></i><b>16.10.2</b> Then Move to Introduction to R Studio</a></li>
+<li class="chapter" data-level="16.10.3" data-path="appendix-1-getting-started-with-r.html"><a href="appendix-1-getting-started-with-r.html#develop-your-project-with-an-r-studio-notebook"><i class="fa fa-check"></i><b>16.10.3</b> Develop your project with an R Studio Notebook</a></li>
+</ul></li>
+<li class="chapter" data-level="16.11" data-path="appendix-1-getting-started-with-r.html"><a href="appendix-1-getting-started-with-r.html#getting-data-into-r"><i class="fa fa-check"></i><b>16.11</b> Getting Data into R</a></li>
+<li class="chapter" data-level="16.12" data-path="appendix-1-getting-started-with-r.html"><a href="appendix-1-getting-started-with-r.html#additional-r-learning-resources"><i class="fa fa-check"></i><b>16.12</b> Additional R learning resources</a></li>
+<li class="chapter" data-level="16.13" data-path="appendix-1-getting-started-with-r.html"><a href="appendix-1-getting-started-with-r.html#packages-used-extensively-in-this-text"><i class="fa fa-check"></i><b>16.13</b> Packages used extensively in this text</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="appendix-2-online-resources-for-getting-started-with-linear-modeling-in-r.html"><a href="appendix-2-online-resources-for-getting-started-with-linear-modeling-in-r.html"><i class="fa fa-check"></i>Appendix 2: Online Resources for Getting Started with Linear Modeling in R</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Elementary Statistical Modeling for Applied Biostatistics</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="part-part-vi-expanding-the-linear-model-generalized-linear-models" class="section level1 unnumbered">
+<h1>(Part) Part VI: Expanding the Linear Model: Generalized Linear Models</h1>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="anova-tables.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="generalized-linear-models-i-count-data.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/rstudio/bookdown-demo/edit/master/chapters/50-glm01-counts.Rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"download": ["Walker-elementary-statistical-modeling-draft.pdf", "Walker-elementary-statistical-modeling-draft.epub"],
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:" && /^https?:/.test(src))
+      src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>
