@@ -5,11 +5,11 @@
 
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Chapter 12 Two (or more) Categorical \(X\) – Factorial designs | Elementary Statistical Modeling for Applied Biostatistics</title>
+  <title>Chapter 11 Plotting Models | Elementary Statistical Modeling for Applied Biostatistics</title>
   <meta name="description" content="A first course in statistical modeling for biology students">
   <meta name="generator" content="bookdown  and GitBook 2.6.7">
 
-  <meta property="og:title" content="Chapter 12 Two (or more) Categorical \(X\) – Factorial designs | Elementary Statistical Modeling for Applied Biostatistics" />
+  <meta property="og:title" content="Chapter 11 Plotting Models | Elementary Statistical Modeling for Applied Biostatistics" />
   <meta property="og:type" content="book" />
   
   
@@ -17,7 +17,7 @@
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Chapter 12 Two (or more) Categorical \(X\) – Factorial designs | Elementary Statistical Modeling for Applied Biostatistics" />
+  <meta name="twitter:title" content="Chapter 11 Plotting Models | Elementary Statistical Modeling for Applied Biostatistics" />
   
   <meta name="twitter:description" content="A first course in statistical modeling for biology students" />
   
@@ -31,8 +31,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   
   
-<link rel="prev" href="plotting-models.html">
-<link rel="next" href="adding-covariates-to-a-linear-model.html">
+<link rel="prev" href="model-fitting-i-ols.html">
+<link rel="next" href="two-or-more-categorical-x-factorial-designs.html">
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -343,392 +343,242 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="two-or-more-categorical-x-factorial-designs" class="section level1">
-<h1><span class="header-section-number">Chapter 12</span> Two (or more) Categorical <span class="math inline">\(X\)</span> – Factorial designs</h1>
-<div id="factorial-experiments" class="section level2">
-<h2><span class="header-section-number">12.1</span> Factorial experiments</h2>
-<p>A factorial experiment is one in which there are two or more categorical <span class="math inline">\(X\)</span> that are <strong>crossed</strong>, so the groups contain different combinations of levels of each factor. Factorial experiments are used to estimate the <strong>interaction</strong> between factors. Let’s explore this using data from xxx</p>
-<p>The urchin data are from an experiment measuring the effect of <span class="math inline">\(Temp\)</span> and <span class="math inline">\(CO2\)</span> on larval sea urchin metabolic rate (<span class="math inline">\(Resp\)</span>) (there are other outcome measures in the study too). The units of metabolic rate are pmol O2/hr/larva. There are two <span class="math inline">\(Temp\)</span> levels (13C and 18C) and two <span class="math inline">\(CO2\)</span> levels (400 µAtm and 1100) and the factors are crossed, so this is a <span class="math inline">\(2 \times 2\)</span> (crossed or factorial) design. There are <span class="math inline">\(n=6\)</span> replicates for each combination of the levels. A good way to visualize the treatment combinations in a crossed design is with a <span class="math inline">\(m \times p\)</span> table showing all combinations of the <span class="math inline">\(m\)</span> levels of factor 1 (<span class="math inline">\(Temp\)</span>) against the <span class="math inline">\(p\)</span> levels of factor 2 (<span class="math inline">\(CO2\)</span>)</p>
-<div class="figure">
-<img src="images/2x2_table.png" alt="The urchin experimental design as a 2 x 2 table" style="width:50.0%" />
-<p class="caption">The urchin experimental design as a 2 x 2 table</p>
-</div>
-<p>The upper left cell contains the 13C level with the Temperature factor and the 400 µAtm level within the CO2 factor. The replicates in this cell were grown with no added treatments, so this cell is the “control” for Temp and the control for CO2, which we will use as the “reference” group for the linear model. The replicates in the lower left cell were grown with an added temperature treatment (in this case, a 5 C higher temperature). The replicates in the upper right cell were grown an added CO2 treatment (a 700 µATM higher CO2). And finally, the replicates in the bottom right cell were grown with both the added temperature (+5 C) and added CO2 (+700 µATM). Here, I use a “+” or “-” to designate the addition (or not) of the treatment, so our <span class="math inline">\(2 \times 2\)</span> treatment levels are Temp-/CO2-, Temp+/CO2-, Temp-/CO2+ and Temp+/CO2+.</p>
-<div id="model-coefficients-an-interaction-effect-is-what-is-leftover-after-adding-the-treatment-effects-to-the-control" class="section level3">
-<h3><span class="header-section-number">12.1.1</span> Model coefficients: an interaction effect is what is leftover after adding the treatment effects to the control</h3>
-<p>A factorial design allows a researcher to estimate the interaction between two factors. To clarify this, let’s fit the factorial model and look at the coefficient table. The fit model is</p>
-<span class="math display">\[\begin{equation}
-Resp_i = b_0 + b_1 Temp^+ + b_2 CO2^+ + b_3 Temp^+ CO2^+ + e_i
-\end{equation}\]</span>
-<p>% Again, <span class="math inline">\(Temp^+\)</span> and <span class="math inline">\(CO2^+\)</span> are dummy variables. The model also includes <span class="math inline">\(Temp^+ CO2^+\)</span>, which is a dummy variable for the interaction between Temp and CO2. The value of this interaction dummy variable is literally the product of the two main factor dummy variables (<span class="math inline">\(Temp^+\)</span> and <span class="math inline">\(CO2^+\)</span>), which can be verified with the model matrix (which here, is computed from the subset of the data that includeds only the first two rows of each treatment combination)</p>
-<table>
-<thead>
-<tr class="header">
-<th align="right">(Intercept)</th>
-<th align="right">Temp+</th>
-<th align="right">CO2+</th>
-<th align="right">Temp+:CO2+</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="right">1</td>
-<td align="right">0</td>
-<td align="right">0</td>
-<td align="right">0</td>
-</tr>
-<tr class="even">
-<td align="right">1</td>
-<td align="right">0</td>
-<td align="right">0</td>
-<td align="right">0</td>
-</tr>
-<tr class="odd">
-<td align="right">1</td>
-<td align="right">1</td>
-<td align="right">0</td>
-<td align="right">0</td>
-</tr>
-<tr class="even">
-<td align="right">1</td>
-<td align="right">1</td>
-<td align="right">0</td>
-<td align="right">0</td>
-</tr>
-<tr class="odd">
-<td align="right">1</td>
-<td align="right">0</td>
-<td align="right">1</td>
-<td align="right">0</td>
-</tr>
-<tr class="even">
-<td align="right">1</td>
-<td align="right">0</td>
-<td align="right">1</td>
-<td align="right">0</td>
-</tr>
-<tr class="odd">
-<td align="right">1</td>
-<td align="right">1</td>
-<td align="right">1</td>
-<td align="right">1</td>
-</tr>
-<tr class="even">
-<td align="right">1</td>
-<td align="right">1</td>
-<td align="right">1</td>
-<td align="right">1</td>
-</tr>
-</tbody>
-</table>
-<p>The coefficient table is</p>
-<table>
-<thead>
-<tr class="header">
-<th></th>
-<th align="right">Estimate</th>
-<th align="right">Std. Error</th>
-<th align="right">t value</th>
-<th align="right">Pr(&gt;|t|)</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>(Intercept)</td>
-<td align="right">8.23</td>
-<td align="right">0.73</td>
-<td align="right">11.3</td>
-<td align="right">0.000</td>
-</tr>
-<tr class="even">
-<td>Temp+</td>
-<td align="right">4.51</td>
-<td align="right">1.03</td>
-<td align="right">4.4</td>
-<td align="right">0.000</td>
-</tr>
-<tr class="odd">
-<td>CO2+</td>
-<td align="right">-0.32</td>
-<td align="right">1.03</td>
-<td align="right">-0.3</td>
-<td align="right">0.761</td>
-</tr>
-<tr class="even">
-<td>Temp+:CO2+</td>
-<td align="right">-2.68</td>
-<td align="right">1.45</td>
-<td align="right">-1.9</td>
-<td align="right">0.079</td>
-</tr>
-</tbody>
-</table>
-<p>The Intercept (<span class="math inline">\(b_0\)</span>) is the mean (8.23) of the reference (Temp-/CO2-) group, and so the mean of the upper left cell in Table 1). The Temp+ coefficient (<span class="math inline">\(b_1\)</span>) is the estimate of the added temperature effect relative to the reference, and so is the mean of the lower left cell minus the mean of the upper left cell (<span class="math inline">\(b_1=\bar{Y}_{Temp^+}-\bar{Y}_{-/-}\)</span>). The CO2+ coefficient (<span class="math inline">\(b_2\)</span>) is the estimate of the added CO2 effect relative to the reference, and so is the mean of the upper right cell minus the mean of the upper left cell (<span class="math inline">\(b_2=\bar{Y}_{CO2^+}-\bar{Y}_{-/-}\)</span>). The Temp+:CO2+ coefficient (<span class="math inline">\(b_3\)</span>) is the estimate of the <strong>interaction effect</strong>, which is the effect in addition to the Temp<span class="math inline">\(^+\)</span> and CO2<span class="math inline">\(^+\)</span> effects. If you added <span class="math inline">\(b_1\)</span> and <span class="math inline">\(b_2\)</span> to <span class="math inline">\(b_0\)</span>, you would get the mean of the Temp<span class="math inline">\(^+\)</span>/CO2<span class="math inline">\(^+\)</span> group <em>if the effects were purely additive</em>. So the interaction effect is the difference between the mean of the bottom right cell and the sum of the coefficients of the other three cells (<span class="math inline">\(b_3 = \bar{Y}_{Temp^+CO2^+} - (b0 + b1 + b2)\)</span>). An interaction is a <strong>non-additive effect</strong>. Think about this. Adding 5 C increases respiration by 4.51 units. Adding 700 <span class="math inline">\(\mu\)</span>ATM CO2 decreases respiration by .32 units. If these effects were purely additive, then adding both 5 C and 700 <span class="math inline">\(\mu\)</span>ATM should result in a mean of 8.23 + 4.51 - .32 = 12.42 units for the Temp<span class="math inline">\(^+\)</span>/CO2<span class="math inline">\(^+\)</span> group. What is the mean of this group?</p>
-<p>9.74! So the difference between the ``additive expectation’’ and the actual mean is <span class="math inline">\(9.74 - 12.42 = -2.68\)</span>, which is the interaction effect (coefficient).</p>
-</div>
-<div id="what-is-the-biological-meaning-of-an-interaction-effect" class="section level3">
-<h3><span class="header-section-number">12.1.2</span> What is the biological meaning of an interaction effect?</h3>
-<p>I can dead lift 150 pounds and my friend Jake can deadlift 175 pounds. Working together, we should be able to lift 325 pounds. What if together, we could actually lift 400 pounds? If this were the case, this would be an interaction with an effect equal to 75 pounds. Is this biologically plausible? If so, what is the mechanism? Here is a possible mechanism (although I am highly skeptical of it having a magnitude of 75 pounds): when lifting an object as part of a group, the central nervous system allows increased motor unit recruitment, and so each person can lift more weight than they could if lifting alone. A positive interaction like this is called <em>synergistic</em>. Always think about the biological meaning of an interaction effect.</p>
-</div>
-<div id="what-about-models-with-more-than-two-factors" class="section level3">
-<h3><span class="header-section-number">12.1.3</span> What about models with more than two factors?</h3>
-<p>A factorial model can have more than two factors, for example, a model with three factors (A, B, and C), each with two levels (which I’ll designate with a “+”), is</p>
-<span class="math display">\[\begin{equation}
-Y = \beta_0 + \beta_1 A^+ + \beta_1 B^+ + \beta_3 C^+ + \beta_4 A^+ B^+ + \beta_5 A^+ C^+ + \beta_6 B^+ C^+ + \beta_7 A^+ B^+ C^+ + \varepsilon
-\end{equation}\]</span>
-<p>It is easy enough to get an ANOVA table with <span class="math inline">\(p\)</span>-values for this model but I don’t recommend it because</p>
+<div id="plotting-models" class="section level1">
+<h1><span class="header-section-number">Chapter 11</span> Plotting Models</h1>
+<p><em>So, along the lines of Sarah Susanka’s “Not So Big House,” Kolbert asks the group, “What would a Pretty Good House look like?”</em> – Michael Maines<a href="#fn2" class="footnoteRef" id="fnref2"><sup>2</sup></a></p>
+<p>When it comes to plotting, many researchers mindlessly generate plots that are easily generated by the software and look like the typical plots published in the field. The resulting plot is comforting because it is familiar, not because it effectively communicates what a good plot should communicate – the model results.</p>
+<p>Plots should be the focus of both the reader and researcher. Instead of mindless plotting, a researcher should ask a series of questions of every plot</p>
 <ol style="list-style-type: decimal">
-<li>If space and/or time and/or materials are limited then it typically makes more sense to prioritize the power to estimate standard errors by choosing one of the two-factor models and increasing sample size</li>
-<li>Interaction effects in 2-factor models are hard enough to interpret. A 3-way interaction is very, very tough to interpret. If all we did was table up <span class="math inline">\(F\)</span>-ratios and <span class="math inline">\(p\)</span>-values, this wouldn’t matter. But it does matter.</li>
+<li>What is the point of each element in a plot?</li>
+<li>Are these the points that I most want to communicate?</li>
+<li>Are there better practices for communicating these points?</li>
+<li>Are the points that I want to communicate that are not covered by these elements?</li>
 </ol>
-</div>
-<div id="the-additive-model" class="section level3">
-<h3><span class="header-section-number">12.1.4</span> The additive model</h3>
-<p>Sometimes researchers fit reduced models. For example, the <span class="math inline">\(p\)</span>-value for the interaction effect in the full model is 0.079, which is not statististically significant. This would lead some researchers to explicitly conclude (mistakenly), that there is no interaction between CO2 and Temp and that the effects of CO2 and Temp on metabolism are <strong>additive</strong> (see below). This would lead others (controversially) to refit the model excluding the interaction term:</p>
-<span class="math display">\[\begin{equation}
-Resp_i = b_0 + b_1Temp^+ + b_2CO2^+ + e_i
-\end{equation}\]</span>
-<p>% This particular reduced model is often referred to as the <strong>additive model</strong>, since it excludes the the interaction term, which is a <em>product</em> of other terms. Indeed, the title of the urchin paper is “Temperature and CO2 additively regulate physiology, morphology and genomic responses of larval sea urchins, <em>Strongylocentrotus purpuratus</em>.” It is important to recognize that unless the interaction effect is precisely zero, the coefficients of Temp+ and CO2+ will change. Here are the coefficients of the additive model</p>
-<table>
-<thead>
-<tr class="header">
-<th></th>
-<th align="right">Estimate</th>
-<th align="right">Std. Error</th>
-<th align="right">t value</th>
-<th align="right">Pr(&gt;|t|)</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>(Intercept)</td>
-<td align="right">8.90</td>
-<td align="right">0.66</td>
-<td align="right">13.4</td>
-<td align="right">0.000</td>
-</tr>
-<tr class="even">
-<td>Temp+</td>
-<td align="right">3.17</td>
-<td align="right">0.77</td>
-<td align="right">4.1</td>
-<td align="right">0.000</td>
-</tr>
-<tr class="odd">
-<td>CO2+</td>
-<td align="right">-1.66</td>
-<td align="right">0.77</td>
-<td align="right">-2.2</td>
-<td align="right">0.042</td>
-</tr>
-</tbody>
-</table>
-<p>For several reasons, one should not drop a term because <span class="math inline">\(p&gt;0.05\)</span>.</p>
+<p>The answer to these questions should inform what is and what is not plotted. The result is a pretty good plot. The idea of a pretty good plot is borrowed from the “pretty good house” concept that grew out of a collaborative group of builders and architects in Northern New England. The “pretty good house” combines best practices for building an earth friendly, high performance home at a reasonable cost. There is no pretty good house governing body that awards certificates of achievement but, instead, a set of metrics and a collection of building practices that can achieve these.</p>
+<p>A typical pretty good plot contains some combination of</p>
 <ol style="list-style-type: decimal">
-<li>The <span class="math inline">\(p\)</span>-value is an arbitrary dichotomization of a continuous variable. Would it make sense to behave differently if <span class="math inline">\(p=0.051\)</span> vs. <span class="math inline">\(p=0.049\)</span>, given that these two p-values are effectively identical?</li>
-<li>A <span class="math inline">\(p\)</span>-value is not evidence that an effect is zero, or “doesn’t exist”, or event that an effect is “trivially small”. This is because <span class="math inline">\(p\)</span>-values are a function of measurement error, sampling error, and sample size, in addition to effect size.</li>
+<li>Modeled effects with confidence intervals. “Effects” are the coefficients of a model, or contrasts constructed from the model, such as all pairwise differences between the means of the levels of a factor. Inferences are typically made from the estimated effects</li>
+<li>Modeled means and standard errors or confidence intervals.</li>
+<li>Raw data points or a summary distribution of these.</li>
 </ol>
+<div id="pretty-good-plots-show-the-model-and-the-data" class="section level2">
+<h2><span class="header-section-number">11.1</span> Pretty good plots show the model and the data</h2>
+<p>The data to introduce best practices in plotting come from “The enteric nervous system promotes intestinal health by constraining microbiota composition”<a href="#fn3" class="footnoteRef" id="fnref3"><sup>3</sup></a>. The researchers found that zebrafish with a <em>sox10</em> mutation lacked an enteric nervous system and developed a microbiota-dependent inflammation. The paper includes several experiments to probe the hypothesis that the ENS regulates microbial community composition and, in turn, inflammatory status. The data here are from Fig. 2 of the paper, which reports the results of one of a set of experiments to test the hypothesis that microbiota from <em>sox10</em> mutants (that induce inflammation) are necessary and sufficient to induce inflammation in wildtype guts. In this experiment, homogenized intestines and their microbial community from four different donor groups were added to the flasks housing the zebrafish. The response variable is neutrophil count. Neutrophils are a white blood cell that increase in number during inflammation. The four treatment levels are the different donors of intestinal microbes: WT (wild type), GF (germ free, so no microbes are transferred), iapMO (a control “for the possibility that nonbacterial factors such as host pro-inflammatory cytokines rather than microbial derived factors cause transmissible intestinal inflammation”), and sox10.</p>
+<div id="pretty-good-plot-component-1-modeled-effects-plot" class="section level3">
+<h3><span class="header-section-number">11.1.1</span> Pretty good plot component 1: Modeled effects plot</h3>
+<p>Biologists infer the biological consequences of a treatment by interpreting the magnitude and sign of treatment “effects”, such as the differences in means among treatment levels. Why then do we mostly plot treatment level means, where effects can only be inferred <em>indirectly</em>, by mentally computing differences in means? Instead, our primary plots should be effects plots, which <em>directly</em> communicate treatment effects, and the uncertainty in the estimates of these effects.</p>
+<div class="figure"><span id="fig:plots-effect"></span>
+<img src="Walker-elementary-statistical-modeling-draft_files/figure-html/plots-effect-1.png" alt="Effects Plot" width="576" />
+<p class="caption">
+Figure 11.1: Effects Plot
+</p>
 </div>
-<div id="contrasts-simple-vs.main-effects" class="section level3">
-<h3><span class="header-section-number">12.1.5</span> Contrasts – simple vs. main effects</h3>
-<p>In a <span class="math inline">\(m \times p\)</span> design, there are <span class="math inline">\(mp\)</span> cell means and, therefore, <span class="math inline">\(mp(mp-1)/2\)</span> pairwise contrasts. For the urchin data, these are</p>
+<p>The y-axis contains each of the <em>paired comparisons</em> among the four treatment levels. The x-axis is the response, which is the ratio of the means of the two groups in the comparison. For example, the top comparison shows that guts in fish exposed to sox10 donors have 2.7X more neutrophils per length of gut than guts in fish exposed to wild type donors. The bars are 95% confidence intervals, with is the range of effects that are compatible with the observed data at the 95% level (confidence intervals are disscussed in depth in chapter xxx.). The small end of the interval for the sox10/WT comparison is 1.31, meaning that effects as small as 31% increased neutrophil count are compatible with the data. It is up to the research community to decide if 2.7X or 1.31X are physiologically meaningful effects. <em>p</em>-values from the hypothesis tests are included.</p>
+</div>
+<div id="pretty-good-plot-component-2-modeled-mean-and-ci-plot-with-jittered-raw-data" class="section level3">
+<h3><span class="header-section-number">11.1.2</span> Pretty good plot component 2: Modeled mean and CI plot with jittered raw data</h3>
+<p>Often the means of the treatment levels are meaningful, for example, if neutrophils per length of gut is a standard measure then researchers working in this area will be familiar with usual and unusal values. The data used in Fig <a href="plotting-models.html#fig:plots-effect">11.1</a> are used to plot means and confidence intervals of the mean using a <strong>bar chart</strong>, which is a pretty good chart type for measures such as counts in which negative values are prohibited and zero is meaningful.</p>
+<div class="figure"><span id="fig:plots-means"></span>
+<img src="Walker-elementary-statistical-modeling-draft_files/figure-html/plots-means-1.png" alt="Mean and error plot" width="576" />
+<p class="caption">
+Figure 11.2: Mean and error plot
+</p>
+</div>
+<p>Fig. <a href="plotting-models.html#fig:plots-means">11.2</a> plots the <em>modeled</em> means, represented by the tops of the bars, the modeled 95% confidence intervals of each mean, represented by the error bars, and the <em>p</em>-values for all pairwise comparisons. What do I mean by <em>modeled</em> means and error intervals?</p>
 <ol style="list-style-type: decimal">
-<li>Temp+/CO2- - Temp-/CO2- (bottom left - top left)</li>
-<li>Temp+/CO2+ - Temp-/CO2+ (bottom right - top right)</li>
-<li>Temp-/CO2+ - Temp-/CO2- (top right - top left)</li>
-<li>Temp+/CO2+ - Temp+/CO2- (bottom right - bottom left)</li>
-<li>Temp-/CO2+ - Temp+/CO2- (top right - bottom left)</li>
-<li>Temp+/CO2+ - Temp-/CO2- (bottom right - top left)</li>
+<li>Modeled means and error intervals are estimated from the statistical model. Many published plots are of raw means and error intervals, meaning that the mean and error for each treatment level is computed only using the response measures in that treatment level.</li>
+<li>A modeled mean will often be equal to the raw mean, but this will not always be the case, for example if there are covariates in the model, or the researchers are using a <em>hierarchical model</em> (Chapter xxx).</li>
+<li>Modeled error intervals are never the same as the raw error intervals, and are commonly conspicuously different. Almost always, we should plot modeled means and error intervals, since these represent the means that are relevant to inference.</li>
 </ol>
+<p>Fig. <a href="plotting-models.html#fig:plots-means">11.2</a> also plots the raw count data as “jittered” black dots. “Showing the data” is a pretty good feature of a plot because it allows the reader to get a sense of the underlying sample size and distribution including outliers, which can be used to mentally model check the published statistical analysis. For example, the jittered dots in Fig. <a href="plotting-models.html#fig:plots-means">11.2</a> suggest a <strong>heterogeneity</strong> of variances; specifically, the treatment level with the largest mean has a conspicuously higher variance. This pattern violates the assumptions of a general linear model and should raise a red flag to a reader if the researchers used a general linear model to analyze the data.</p>
+<p>What a mean-and-error plot fails to show, at least directly, are the effects. To infer the effects from the plot, a reader must perform mental math – either compute the difference or the ratio between pairs of means. This mental math is easy enough if the comparisons are between individual treatment levels but much harder if the comparisons are between pooled sets of treatment levels, for example in a factorial experimental design. The mental math that is excessively difficult is the reconstruction of some kind of error interval of the contrasts, for example the 95% confidence intervals in Fig. <a href="#plots-effect"><strong>??</strong></a> and it is this interval that is necessary for a researcher to infer the range of biological consequences that are compatible with the experiment. The inclusion of the <em>p</em>-values for all pairwise comparisons gives the significance level of these contrasts, but of the kinds of summary results that we could present (contrasts, error intervals, <em>p</em>-values), the <em>p</em>-values are the least informative.</p>
+</div>
+<div id="combining-effects-and-modeled-mean-and-ci-plots-an-effects-and-response-plot." class="section level3">
+<h3><span class="header-section-number">11.1.3</span> Combining Effects and Modeled mean and CI plots – an Effects and response plot.</h3>
+<p>If one wants to show both effects and the data, then these can be combined.</p>
+<div class="figure"><span id="fig:plots-harrellplot"></span>
+<img src="Walker-elementary-statistical-modeling-draft_files/figure-html/plots-harrellplot-1.png" alt="A pretty good plot" width="576" />
+<p class="caption">
+Figure 11.3: A pretty good plot
+</p>
+</div>
+<p>If the means do not have any importance in understanding the results, the effects plot can be combined with some kind of a plot summarizing the distribution, such as a boxplot.</p>
+<div class="figure"><span id="fig:plots-harrelplot2"></span>
+<img src="Walker-elementary-statistical-modeling-draft_files/figure-html/plots-harrelplot2-1.png" alt="Another pretty good plot" width="576" />
+<p class="caption">
+Figure 11.4: Another pretty good plot
+</p>
+</div>
+<p>Regardless, the effects plot is the most important component as this is the illustration of the story a researcher wants to tell.</p>
+</div>
+</div>
+<div id="some-comments-on-plot-components" class="section level2">
+<h2><span class="header-section-number">11.2</span> Some comments on plot components</h2>
 <ol style="list-style-type: decimal">
-<li>and (2) are the <strong>simple effects</strong> of Temp at each level of CO2. (3) and (4) are the simple effects of CO2 at each level of Temp. (5) is the response of the CO2 treatment at the reference level of Temp minus the response of the Temp treatment at the reference level of CO2. This probably is not a very interesting contrast. (6) is the combined response of Temp and CO2, including the interaction, minus the control. This also is unlikely to be of much interest.</li>
-</ol>
-<table>
-<thead>
-<tr class="header">
-<th align="left">contrast</th>
-<th align="right">estimate</th>
-<th align="right">SE</th>
-<th align="right">df</th>
-<th align="right">lower.CL</th>
-<th align="right">upper.CL</th>
-<th align="right">t.ratio</th>
-<th align="right">p.value</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="left">Temp+,CO2- - Temp-,CO2-</td>
-<td align="right">4.51</td>
-<td align="right">1.03</td>
-<td align="right">20</td>
-<td align="right">2.4</td>
-<td align="right">6.7</td>
-<td align="right">4.4</td>
-<td align="right">0.000</td>
-</tr>
-<tr class="even">
-<td align="left">Temp-,CO2+ - Temp-,CO2-</td>
-<td align="right">-0.32</td>
-<td align="right">1.03</td>
-<td align="right">20</td>
-<td align="right">-2.5</td>
-<td align="right">1.8</td>
-<td align="right">-0.3</td>
-<td align="right">0.761</td>
-</tr>
-<tr class="odd">
-<td align="left">Temp-,CO2+ - Temp+,CO2-</td>
-<td align="right">-4.83</td>
-<td align="right">1.03</td>
-<td align="right">20</td>
-<td align="right">-7.0</td>
-<td align="right">-2.7</td>
-<td align="right">-4.7</td>
-<td align="right">0.000</td>
-</tr>
-<tr class="even">
-<td align="left">Temp+,CO2+ - Temp-,CO2-</td>
-<td align="right">1.51</td>
-<td align="right">1.03</td>
-<td align="right">20</td>
-<td align="right">-0.6</td>
-<td align="right">3.6</td>
-<td align="right">1.5</td>
-<td align="right">0.157</td>
-</tr>
-<tr class="odd">
-<td align="left">Temp+,CO2+ - Temp+,CO2-</td>
-<td align="right">-3.00</td>
-<td align="right">1.03</td>
-<td align="right">20</td>
-<td align="right">-5.1</td>
-<td align="right">-0.9</td>
-<td align="right">-2.9</td>
-<td align="right">0.008</td>
-</tr>
-<tr class="even">
-<td align="left">Temp+,CO2+ - Temp-,CO2+</td>
-<td align="right">1.82</td>
-<td align="right">1.03</td>
-<td align="right">20</td>
-<td align="right">-0.3</td>
-<td align="right">4.0</td>
-<td align="right">1.8</td>
-<td align="right">0.091</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Main effects</strong> are contrasts between</p>
-</div>
-</div>
-<div id="reporting-results-2" class="section level2">
-<h2><span class="header-section-number">12.2</span> Reporting results</h2>
-<div id="text-results" class="section level3">
-<h3><span class="header-section-number">12.2.1</span> Text results</h3>
-<p>The effect of the increased temperature at the control CO2 level was 4.5 (95% CI: 2.4, 6.7; <span class="math inline">\(p &lt; 0.001\)</span>) pmol O2/hr/larva. The effect of increased CO2 at the control temperature was -0.3 (95% CI: -2.4, 1.8; <span class="math inline">\(p=.76\)</span>) pmol O2/hr/larva. The interaction effect was -2.7 (95% CI: -5.7, 0.3; <span class="math inline">\(p = 0.079\)</span>) pmol O2/hr/larva. Because of the relatively large interaction, the effect of temperature at the high level of CO2 was less than half the effect at the low level of CO2 (estimate: 1.82; 95% CI: -0.3, 4.0; <span class="math inline">\(p = 0.091\)</span>) and the effect of CO2 at the high level of Temp was 10 times greater than that at the low level of Temp (estimate: -3.0; 95% CI: -5.1, -.9; <span class="math inline">\(p = 0.0084\)</span>).</p>
-<p>The CI on the interaction includes both large negative values and trivially small values, including zero, and, consequently, our data is compatible with both scientific models (that is, we can neither support nor reject the predictions of the scientific model using these results).</p>
-</div>
-<div id="harrellplot" class="section level3">
-<h3><span class="header-section-number">12.2.2</span> Harrellplot</h3>
-<p>If the focus is on the interaction, then a Harrell Plot of coefficients is a good choice for communicating this.</p>
-<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/urchin-harrellplot1-1.png" width="576" /></p>
-<p>The plot shows that a relatively big and positive Temp effect, a relatively small CO2 effect (and one with too much noise to have any confidence of the sign) and a intermediate interaction effect. In the original paper, the researchers were testing a scientific (not statistical!) model that predicted no interaction, and the researchers argued that these data support this model because of the small p-value for this effect (see the table above). Well, the data do support that model (one end of the 95% CI for the interaction includes zero, and other very small values) but they also support a model of a large interaction (the other end of the 95% CI includes large negative effects). The data are too course (or the signal:noise ratio is to small) to have much confidence in the size of the interaction effect. Some comments:</p>
-<ol style="list-style-type: decimal">
-<li>It is not valid to claim that an effect “doesn’t” exist because p &gt; 0.05 (see chapter xxx)</li>
-<li>Researchers need to draw conclusions based on <em>both</em> ends of the CI, as well as the mean!</li>
-<li>A sample size of 6 will generally be very low power to get a precise estimate of the interaction unless the sampling variability is very small.</li>
-</ol>
-<p>If we are more interested in differences between the different treatment combinations, then a Harrell plot with the contrasts is a good way to communicate this.</p>
-<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/urchin-harrellplot2-1.png" width="576" /> The four contrasts are differences between the means of pairs of cells in the <span class="math inline">\(2 \times 2\)</span> table:</p>
-<ol style="list-style-type: decimal">
-<li>“Temp+: CO2+ - CO2-” – lower right - lower left</li>
-<li>“Temp-: CO2+ - CO2-” – upper right - upper left</li>
-<li>“CO2+: Temp+ - Temp-” – lower right - upper right</li>
-<li>“CO2-: Temp+ - Temp-” – lower left - upper left</li>
+<li><strong>Alternatives to barplots make good plots for the supplement, not the main paper</strong>. A prominent trend over the last few years has been the replacement of bar plots with plots that “show the data”, such as jitter plots or dot plots, or that show summaries of the distribution, such as box plots or violin plots. These plot types were developed for exploratory data analysis, not to communicate the results of experiments. All of these plots fail to communicate the results of the statistical model and, because of this, are inferior to an effects plot, and even a mean-and-error plot, if the mean and error are the modeled values. Box/Violoin/Dot/Jitter plots are a useful supplement to an effects plot, either combined with the effects plot as above, or as a supplementary figure.</li>
+<li>Standard error bars, computed from the raw data, can have absurd implications. For example, I sometimes see standard error bars cross <span class="math inline">\(y=0\)</span> for a response that cannot be negative, such as a count. Even if the standard error bar doesn’t cross zero, it is common to see standard error bars that imply (but do not explicitly show) 95% confidence intervals that cross zero, again for responses that cannot be negative. A standard error bar or confidence interval that crosses zero implies that negative means are compatible with the data. This is an absurd implication for responses that cannot have negative values (or are “bounded by” zero). Explicit or implicit error bars that cross zero are especially common for count responses with small means. <em>If</em> a researcher plots confidence intervals, these should be computed using a method that avoids absurd implications, such methods include the bootstrap and generalized linear models.</li>
+<li><strong>Stars add minimal value</strong>. Many researchers add star symbols to a plot indicating the level of significance of a particular paired comparison. An uncommon, but better, alternative would be to add the actual p-value (as above). Adding a p-value (or stars) does communicate model results, and so adds value to a mean-and-error or box/violin/jitter plot. However, much more value would be added by simply reporting an effects plot or a combined effects-and-response plot.</li>
 </ol>
 </div>
-<div id="interaction-plots" class="section level3">
-<h3><span class="header-section-number">12.2.3</span> Interaction plots</h3>
-<p>A common way to plot the results of the model is with an <strong>interaction plot</strong>.</p>
-<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/urchin-interaction-plot-1.png" width="576" /></p>
-<p>In this interaction plot, the <span class="math inline">\(X\)</span>-axis contains the two <span class="math inline">\(Temp\)</span> treatment levels and the <span class="math inline">\(Y\)</span>-axis is the outcome (<span class="math inline">\(Resp\)</span>). The plot shows the four cell means indicated by the circles (low CO2 levels) or triangles (high CO2 levels). The solid lines connect the cell means <em>across Temp levels within CO2 levels</em>.</p>
-<ol style="list-style-type: decimal">
-<li>The slope of a line is the effect of <span class="math inline">\(Temp\)</span> on <span class="math inline">\(Resp\)</span></li>
-<li>The relative <em>elevation</em> of the lines is the effect of <span class="math inline">\(CO2\)</span> on <span class="math inline">\(Resp\)</span></li>
-<li>The difference in slope <em>or</em> the relative elevation at each level of <span class="math inline">\(Temp\)</span> is the interaction effect</li>
-</ol>
-<p>Let’s deconstruct this. The top (CO2-) line is the effect of <span class="math inline">\(Temp\)</span> at the control (400 <span class="math inline">\(\mu\)</span>ATM) value of <span class="math inline">\(CO2\)</span>. The slope of the bottom (CO2+) line is the effect of <span class="math inline">\(Temp\)</span> at the high (1100 <span class="math inline">\(\mu\)</span>ATM) value of <span class="math inline">\(CO2\)</span>. <em>These lines have different slopes</em>, or the slope <em>is conditional on</em> the level of CO2. This means that the effect of <span class="math inline">\(Temp\)</span> on respiration is <em>conditional on the value of <span class="math inline">\(CO2\)</span></em>. Think about this. This is what an interaction implies–conditional effects.</p>
-<p>At the reference temperature (13 C), the CO2+ line is barely below the CO2- line. But at the high temperature (18 C), the CO2+ line is far below the CO2- line. That is, the relative elevation (the <span class="math inline">\(CO2\)</span> effect) is conditional on the level of <span class="math inline">\(Temp\)</span>. It will always be the case that if the effect of Factor A is conditional on the levels of Factor B, then the effect of Factor B will be conditional on the levels of Factor A.</p>
-<p>An interaction plot is an okay plot. It doesn’t show the data, only a descriptive summary (means and standard errors). If we are interested in the interaction effect, it doesn’t give us a very good sense of the error in this effect. And <em>that</em> is a problem because with real data, two lines are never precisely parallel. Our interpretation of the similarity of the slopes would probably mostly reflect our pre-conceived scientific model.</p>
+<div id="working-in-r-2" class="section level2">
+<h2><span class="header-section-number">11.3</span> Working in R</h2>
+<p>A reasonable goal of any research project should be a script to generate the final plots entirely within the R environment and not rely on external drawing software to add finishing features. <code>ggplot2</code> is one of the major plotting environments in R and the one that seems to have the strongest following, especially among new R users. <code>ggplot2</code> has the ability to generate extremely personalized and finished plots. However, creating a plot with multiple layers (bars, lines, error intervals, raw data points, p-values) can often require many hours of googling.</p>
+<p><code>ggpubr</code> is an extension to <code>ggplot2</code> (it calls ggplot2 functions under the hood) and provides many canned functions for producing the kinds of ggplots that are published in biological journals. With one line of script, a researcher can generate a publishable plot that is as good or better than many published plot. That said, the means and error intervals used in <code>ggpubr</code> plots are the raw and not modeled values, and, consequently, <code>ggpubr</code> is not sufficient to generate pretty good plots. It is easy enough to add custom error bars to a ggpubr plot.</p>
+<div id="adding-modeled-error-intervals" class="section level3">
+<h3><span class="header-section-number">11.3.1</span> Adding modeled error intervals</h3>
+<p><code>ggplot2</code> and <code>ggpubr</code> compute and plot unpooled error intervals (standard error bars and confidence intervals). Plotting the modeled error intervals “shows the model”. <code>emmeans</code> is a comprehensive and flexible package for computing modeled standard errors and confidence intervals for all of the statistical models covered in this text.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">m1 &lt;-<span class="st"> </span><span class="kw">glm.nb</span>(count <span class="op">~</span><span class="st"> </span>donor, <span class="dt">data=</span>exp2d)
+emm.m1 &lt;-<span class="st"> </span><span class="kw">emmeans</span>(m1, <span class="dt">specs=</span><span class="st">&quot;donor&quot;</span>, <span class="dt">type=</span><span class="st">&quot;response&quot;</span>)
+effects.m1 &lt;-<span class="st"> </span><span class="kw">summary</span>(<span class="kw">contrast</span>(emm.m1, <span class="dt">method=</span><span class="st">&quot;revpairwise&quot;</span>), <span class="dt">infer=</span><span class="kw">c</span>(<span class="ot">TRUE</span>, <span class="ot">TRUE</span>))
+
+<span class="co"># make emm.m1 a data.table</span>
+emm.m1 &lt;-<span class="st"> </span><span class="kw">data.table</span>(<span class="kw">summary</span>(emm.m1))
+<span class="co"># the y column needs to have the same label as the plotted data</span>
+<span class="kw">setnames</span>(emm.m1, <span class="dt">old=</span><span class="st">&quot;response&quot;</span>, <span class="dt">new=</span><span class="st">&quot;count&quot;</span>)</code></pre></div>
+<div id="modeled-error-intervals-of-the-effect" class="section level4">
+<h4><span class="header-section-number">11.3.1.1</span> Modeled error intervals of the effect</h4>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">(gg1 &lt;-<span class="st"> </span><span class="kw">ggdotplot</span>(<span class="dt">x=</span><span class="st">&quot;contrast&quot;</span>, 
+                 <span class="dt">y=</span><span class="st">&quot;ratio&quot;</span>, 
+                 <span class="dt">data=</span>effects.m1, 
+                 <span class="dt">color =</span> <span class="st">&quot;steelblue&quot;</span>,
+                 <span class="dt">fill =</span> <span class="st">&quot;steelblue&quot;</span>,
+                 <span class="dt">size=</span><span class="fl">0.5</span>) <span class="op">+</span>
+<span class="st">   </span>
+<span class="st">  </span><span class="co"># add either the SE or CI, contained in effects.m1</span>
+<span class="st">  </span><span class="kw">geom_errorbar</span>(<span class="kw">aes</span>(<span class="dt">x=</span>contrast, <span class="dt">ymin=</span>asymp.LCL, <span class="dt">ymax=</span>asymp.UCL),
+                <span class="dt">width=</span><span class="fl">0.15</span>, <span class="dt">color=</span><span class="st">&quot;steelblue&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;Effect ratio&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_hline</span>(<span class="dt">yintercept=</span><span class="dv">1</span>, <span class="dt">linetype =</span> <span class="dv">2</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">coord_flip</span>() <span class="op">+</span><span class="st"> </span>
+<span class="st">  </span>
+<span class="st">  </span><span class="ot">NULL</span>)</code></pre></div>
+<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/unnamed-chunk-23-1.png" width="576" /></p>
+</div>
+<div id="modeled-error-intervals-of-the-mean" class="section level4">
+<h4><span class="header-section-number">11.3.1.2</span> Modeled error intervals of the mean</h4>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">(gg2 &lt;-<span class="st"> </span><span class="kw">ggbarplot</span>(<span class="dt">x=</span><span class="st">&quot;donor&quot;</span>, 
+          <span class="dt">y=</span><span class="st">&quot;count&quot;</span>, 
+          <span class="dt">data=</span>exp2d,
+          <span class="dt">add=</span><span class="kw">c</span>(<span class="st">&quot;mean&quot;</span>, <span class="st">&quot;jitter&quot;</span>),
+          <span class="dt">color =</span> <span class="st">&quot;darkgray&quot;</span>,
+          <span class="dt">fill =</span> <span class="st">&quot;steelblue&quot;</span>,
+          <span class="dt">size=</span><span class="fl">0.5</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;Neutrophil count&quot;</span>) <span class="op">+</span>
+<span class="st">  </span>
+<span class="st">  </span><span class="co"># emm.m1 contains the SE and 95% CIs. Either could be plotted. Here I plot the CI</span>
+<span class="st">  </span><span class="kw">geom_errorbar</span>(<span class="dt">data=</span>emm.m1, <span class="kw">aes</span>(<span class="dt">ymin=</span>asymp.LCL, <span class="dt">ymax=</span>asymp.UCL), <span class="dt">width=</span><span class="fl">0.1</span>) <span class="op">+</span>
+<span class="st">  </span><span class="ot">NULL</span>)</code></pre></div>
+<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/unnamed-chunk-24-1.png" width="576" /></p>
+<p>Note that the CIs are asymmetric about the mean (and these modeled CIs will never include negative values for count data).</p>
+</div>
+<div id="combining-effects-and-response-plots" class="section level4">
+<h4><span class="header-section-number">11.3.1.3</span> Combining effects and response plots</h4>
+<p>The ggplots are combined using the package <code>cowplot</code></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">gg_top &lt;-<span class="st"> </span>gg1 <span class="op">+</span><span class="st"> </span><span class="kw">scale_y_continuous</span>(<span class="dt">position=</span><span class="st">&quot;right&quot;</span>)
+<span class="kw">plot_grid</span>(gg_top, gg2, <span class="dt">nrow=</span><span class="dv">2</span>, <span class="dt">align =</span> <span class="st">&quot;v&quot;</span>, <span class="dt">rel_heights =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">1</span>))</code></pre></div>
+<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/unnamed-chunk-25-1.png" width="576" /></p>
 </div>
 </div>
-<div id="recommendations-1" class="section level2">
-<h2><span class="header-section-number">12.3</span> Recommendations</h2>
-<ol style="list-style-type: decimal">
-<li>Should an interaction term be dropped from a model? In biological data, there will almost certainly be an interaction effect with everything. The goal, then, should be to model the effect and use the estimate and the uncertainty in the effect, <em>in combination with the goals of the analysis</em>, to make any decision about dropping a term.</li>
-</ol>
+<div id="adding-p-values" class="section level3">
+<h3><span class="header-section-number">11.3.2</span> Adding p-values</h3>
+<p>p-values are added to the base ggpubr plot using <code>stat_compare_means</code>. The pairs to compare are specified with <code>comparison =</code>. The model to compute the p-values is “t.test”. <strong>It is important to know what exactly is being computed when analyzing data and reporting results</strong> and “t test” is not sufficient to know this. The t-test could be the classic t-test or a Welch test (which adjusts the standard error to account for heterogenity in variance between groups). In this example, there are multiple tests and the standard error could be the pooled estimate estimated from the linear model, or a pairwise estimate. And, given the multiple comparisons, the p-values could be adjusted or not. These kinds of questions can be checked with a function’s help page. <code>?stat_compare_means</code> doesn’t answer these questions but suggests <code>compare_means</code>, which also doesn’t answer these questions. The script below has checks to see what p-values the function is returning.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">pairs_i &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="kw">c</span>(<span class="st">&quot;sox10&quot;</span>, <span class="st">&quot;iapMO&quot;</span>), <span class="kw">c</span>(<span class="st">&quot;sox10&quot;</span>, <span class="st">&quot;GF&quot;</span>), <span class="kw">c</span>(<span class="st">&quot;sox10&quot;</span>, <span class="st">&quot;WT&quot;</span>))
+<span class="kw">ggbarplot</span>(<span class="dt">x=</span><span class="st">&quot;donor&quot;</span>, 
+          <span class="dt">y=</span><span class="st">&quot;count&quot;</span>, 
+          <span class="dt">data=</span>exp2d,
+          <span class="dt">add=</span><span class="kw">c</span>(<span class="st">&quot;mean_se&quot;</span>, <span class="st">&quot;jitter&quot;</span>),
+          <span class="dt">color =</span> <span class="st">&quot;black&quot;</span>,
+          <span class="dt">fill =</span> <span class="st">&quot;steelblue&quot;</span>,
+          <span class="dt">size=</span><span class="fl">0.5</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">stat_compare_means</span>(<span class="dt">method =</span> <span class="st">&quot;t.test&quot;</span>, <span class="dt">comparisons=</span>pairs_i) <span class="op">+</span>
+<span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;Neutrophil count&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="ot">NULL</span></code></pre></div>
+<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/unnamed-chunk-26-1.png" width="576" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># checks on the p-value</span>
+<span class="co"># t-tests using SE pooled over all four groups</span>
+check_it &lt;-<span class="st"> </span><span class="ot">FALSE</span>
+<span class="cf">if</span>(check_it<span class="op">==</span><span class="ot">TRUE</span>){
+  m1 &lt;-<span class="st"> </span><span class="kw">lm</span>(count<span class="op">~</span>donor, <span class="dt">data=</span>exp2d)
+  m1.emm &lt;-<span class="st"> </span><span class="kw">emmeans</span>(m1, <span class="dt">specs=</span><span class="st">&quot;donor&quot;</span>)
+  <span class="kw">contrast</span>(m1.emm, <span class="dt">method=</span><span class="st">&quot;trt.vs.ctrl&quot;</span>, <span class="dt">ref=</span><span class="dv">3</span>, <span class="dt">adjust=</span><span class="st">&quot;none&quot;</span>) <span class="co"># not pooled SE</span>
+  
+  <span class="kw">pairwise.t.test</span>(exp2d<span class="op">$</span>count, exp2d<span class="op">$</span>donor, <span class="dt">p.adjust.method=</span><span class="st">&quot;none&quot;</span>, <span class="dt">pool.sd=</span><span class="ot">FALSE</span>) <span class="co"># this matches</span>
+  <span class="co"># compare</span>
+  <span class="kw">t.test</span>(count<span class="op">~</span>donor, <span class="dt">data=</span>exp2d[donor<span class="op">==</span><span class="st">&quot;WT&quot;</span> <span class="op">|</span><span class="st"> </span>donor<span class="op">==</span><span class="st">&quot;sox10&quot;</span>]) <span class="co"># matches, this is Welch t</span>
+  <span class="kw">t.test</span>(count<span class="op">~</span>donor, <span class="dt">data=</span>exp2d[donor<span class="op">==</span><span class="st">&quot;WT&quot;</span> <span class="op">|</span><span class="st"> </span>donor<span class="op">==</span><span class="st">&quot;sox10&quot;</span>], <span class="dt">var.equal=</span><span class="ot">TRUE</span>)
+}</code></pre></div>
+<p>So the p-values returned by <code>stat_compare_means(method=&quot;t.test&quot;)</code> are computed from independent Welch t-tests.</p>
 </div>
-<div id="working-in-r-3" class="section level2">
-<h2><span class="header-section-number">12.4</span> Working in R</h2>
-<p>A <strong>full-factorial</strong> model with two factors is specified in the model formula as <code>y ~ A*B</code> where A is the first factor, and B is the second factor. R expands this formula to <code>y ~ A + B + A:B</code> where the colon indicates an interaction (multiplicative) effect.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># re-label levels and convert to factors.</span>
-urchin1 &lt;-<span class="st"> </span><span class="kw">copy</span>(urchin)
-urchin1[, CO2<span class="op">:</span><span class="er">=</span><span class="kw">factor</span>(<span class="kw">ifelse</span>(CO2<span class="op">==</span><span class="dv">400</span>,<span class="st">&quot;-&quot;</span>, <span class="st">&quot;+&quot;</span>))]
-urchin1[, Temp<span class="op">:</span><span class="er">=</span><span class="kw">factor</span>(<span class="kw">ifelse</span>(Temp<span class="op">==</span><span class="dv">13</span>, <span class="st">&quot;-&quot;</span>, <span class="st">&quot;+&quot;</span>))]
-fit &lt;-<span class="st"> </span><span class="kw">lm</span>(Resp <span class="op">~</span><span class="st"> </span>Temp<span class="op">*</span>CO2, <span class="dt">data=</span>urchin1) <span class="co"># use urchin1 data with relabeled levels</span>
-<span class="kw">coef</span>(<span class="kw">summary</span>(fit))</code></pre></div>
-<pre><code>##               Estimate Std. Error    t value     Pr(&gt;|t|)
-## (Intercept)  8.2333333  0.7255577 11.3475922 3.626935e-10
-## Temp+        4.5100000  1.0260936  4.3953106 2.792573e-04
-## CO2+        -0.3166667  1.0260936 -0.3086138 7.608069e-01
-## Temp+:CO2+  -2.6850000  1.4511155 -1.8503007 7.910035e-02</code></pre>
-<p>The first thing this script does is to re-label the levels of Temp and CO2. The relabeling is more aesthically pleasing in the tabled output. If we didn’t relable, it would be necessary to convert CO2 and Temp to factors or else R would treat these as numeric and not factors.</p>
-<p>The additive model is specified by the formula <code>y ~ A + B</code></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fit &lt;-<span class="st"> </span><span class="kw">lm</span>(Resp <span class="op">~</span><span class="st"> </span>Temp <span class="op">+</span><span class="st"> </span>CO2, <span class="dt">data=</span>urchin1) <span class="co"># use urchin1 data with relabeled levels</span>
-<span class="kw">coef</span>(<span class="kw">summary</span>(fit))</code></pre></div>
-<pre><code>##              Estimate Std. Error   t value     Pr(&gt;|t|)
-## (Intercept)  8.904583  0.6636207 13.418183 9.038657e-12
-## Temp+        3.167500  0.7662831  4.133590 4.721000e-04
-## CO2+        -1.659167  0.7662831 -2.165214 4.203445e-02</code></pre>
+<div id="adding-custom-p-values" class="section level3">
+<h3><span class="header-section-number">11.3.3</span> Adding custom p-values</h3>
 </div>
-<div id="problems-3" class="section level2">
-<h2><span class="header-section-number">12.5</span> Problems</h2>
-<ol style="list-style-type: decimal">
-<li><p>Draw four <span class="math inline">\(2 \times 2\)</span> tables and label the row and column headers using the levels of the urchin treatment. In the first table, insert the cell means. In the 2nd table, insert the equation for the coefficient. In the third table, solve the equations. And in the fourth column, insert the estimates from the table above. Are tables 3 and 4 the same? If not, you’ve goofed somewhere.</p></li>
-<li><p>Frew et al. (2017) showed that increasing atomospheric CO2 increases grub activity in the soil which in turn increases root damage to sugarcane. They used a 2 x 2 experiment to then show that silicon added to the soild decreased the damage to the roots by the grubs (silicon minerals are very hard and plants uptake silicon from the soil to mineralize tissues to protect against insect damage). There are lots of analyses in the paper, but I want you to reproduce Fig. 4b, but using gg_interaction_plot and fit the model using lm.</p></li>
-</ol>
-<p>(The treatment assignments are in a different file than the experimental results. Use the <code>merge</code> function to glue the two tables together, keying on the common column “plant”)</p>
-<ol style="list-style-type: decimal">
-<li><strong>file name</strong>: “canegrub_feedingtrial.csv”</li>
-<li><strong>file name</strong>: “treatments.csv”</li>
-<li><strong>source</strong>: <a href="https://datadryad.org/resource/doi:10.5061/dryad.r3s16" class="uri">https://datadryad.org/resource/doi:10.5061/dryad.r3s16</a></li>
-</ol>
-<div class="figure">
-<img src="images/frew_fig_4b.png" alt="Frew et al. Figure 4b" style="width:50.0%" />
-<p class="caption">Frew et al. Figure 4b</p>
-</div>
-<ol start="3" style="list-style-type: decimal">
-<li>Kardol et al investigated the effect of moss growth in response to rainfall and community structure. Analyze the effect of these two factors on biomass gain and generate a Harrell plot alternative to their bar plot in Fig. 3 (see below). What is striking about your plot compared to theirs?</li>
-</ol>
-<p><strong>Filename</strong> “Data file for Dryad.xlsx” <strong>sheet</strong> “Data” **Source*:** <a href="https://datadryad.org/resource/doi:10.5061/dryad.66d5f" class="uri">https://datadryad.org/resource/doi:10.5061/dryad.66d5f</a></p>
-<div class="figure">
-<img src="images/kardol_fig_3.png" alt="Kardol et al. Figure 3" style="width:50.0%" />
-<p class="caption">Kardol et al. Figure 3</p>
-</div>
-<ol start="4" style="list-style-type: decimal">
-<li>(Grad students only) Generate a fake experiment! The experiment should have two factors each with two levels. Experiment with power by varying sample size and effect size.</li>
-</ol>
+<div id="plotting-two-factors" class="section level3">
+<h3><span class="header-section-number">11.3.4</span> Plotting two factors</h3>
+<p>The data are from figure 6d. This solution requires computing either the raw or modeled means and errors and adding these to a base ggpubr plot. Many packages have summary statistics functions for means, standard deviations, and standard errors. This is easily done by simply computing the statistics using data.table functionality.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># compute raw statistics</span>
+<span class="co"># enclosing the line within parentheses prints the result to the console!</span>
+(exp6d.raw &lt;-<span class="st"> </span>exp6d[<span class="op">!</span><span class="kw">is.na</span>(count), .(<span class="dt">count=</span><span class="kw">mean</span>(count),
+                       <span class="dt">se=</span><span class="kw">sd</span>(count)<span class="op">/</span><span class="kw">sqrt</span>(.N)),
+                   <span class="dt">by=</span>.(treatment, strain)]
+)</code></pre></div>
+<pre><code>##     treatment strain    count       se
+## 1:    control     WT 13.08333 2.310904
+## 2:    control  sox10 45.61538 6.259903
+## 3: transplant     WT 16.35714 2.259552
+## 4: transplant  sox10 18.33333 4.536274</code></pre>
+<p>Modeled means, standard errors, and confidence limits are conveniently computed using the <code>emmeans</code> (“estimated marginal means”) function from the emmeans package.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># modeled statsistics</span>
+m1 &lt;-<span class="st"> </span><span class="kw">glm.nb</span>(count <span class="op">~</span><span class="st"> </span>treatment<span class="op">*</span>strain, <span class="dt">data=</span>exp6d)
+(m1.emm &lt;-<span class="st"> </span><span class="kw">data.table</span>(<span class="kw">summary</span>(<span class="kw">emmeans</span>(m1, <span class="dt">specs=</span><span class="kw">c</span>(<span class="st">&quot;treatment&quot;</span>, <span class="st">&quot;strain&quot;</span>), <span class="dt">type=</span><span class="st">&quot;response&quot;</span>))))</code></pre></div>
+<pre><code>##     treatment strain response       SE  df asymp.LCL asymp.UCL
+## 1:    control     WT 13.08333 2.032161 Inf  9.649528  17.73907
+## 2: transplant     WT 16.35714 2.289208 Inf 12.433129  21.51961
+## 3:    control  sox10 45.61538 6.132974 Inf 35.048350  59.36837
+## 4: transplant  sox10 18.33333 3.871911 Inf 12.119140  27.73391</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># change column &quot;response&quot; to &quot;count&quot; for the ggplot</span>
+<span class="kw">setnames</span>(m1.emm, <span class="dt">old=</span><span class="st">&quot;response&quot;</span>, <span class="dt">new=</span><span class="st">&quot;count&quot;</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#pairs_i &lt;- list(c(&quot;sox10&quot;, &quot;iapMO&quot;), c(&quot;sox10&quot;, &quot;GF&quot;), c(&quot;sox10&quot;, &quot;WT&quot;))</span>
+pd =<span class="st"> </span><span class="kw">position_dodge</span>(<span class="fl">0.7</span>)
+<span class="kw">ggbarplot</span>(<span class="dt">x=</span><span class="st">&quot;treatment&quot;</span>, 
+          <span class="dt">y=</span><span class="st">&quot;count&quot;</span>,
+          <span class="dt">data=</span>exp6d,
+          <span class="dt">add=</span><span class="kw">c</span>(<span class="st">&quot;mean&quot;</span>),
+          <span class="dt">color =</span> <span class="st">&quot;black&quot;</span>,
+          <span class="dt">fill =</span> <span class="st">&quot;strain&quot;</span>,
+          <span class="dt">palette =</span> <span class="st">&quot;jco&quot;</span>,
+          <span class="dt">position =</span> pd,
+          <span class="dt">size=</span><span class="fl">0.5</span>) <span class="op">+</span>
+<span class="st">  </span><span class="co">#stat_compare_means(method = &quot;t.test&quot;, comparisons=pairs_i) +</span>
+<span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;Neutrophil count&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="co"># geom_dotplot(aes(fill=strain),</span>
+<span class="st">  </span><span class="co">#              binaxis=&#39;y&#39;, stackdir=&#39;center&#39;, position=pd, show.legend=FALSE,</span>
+<span class="st">  </span><span class="co">#              color=&quot;grey&quot;) +</span>
+<span class="st">  </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">fill=</span>strain), <span class="dt">position=</span><span class="kw">position_jitterdodge</span>(<span class="dt">jitter.width=</span><span class="fl">0.2</span>), <span class="dt">show.legend=</span><span class="ot">FALSE</span>, <span class="dt">alpha=</span><span class="fl">0.5</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_errorbar</span>(<span class="dt">data=</span>m1.emm, <span class="kw">aes</span>(<span class="dt">x=</span>treatment, <span class="dt">ymin=</span>asymp.LCL, <span class="dt">ymax=</span>asymp.UCL, <span class="dt">group=</span>strain),
+                <span class="dt">position=</span>pd, <span class="dt">width=</span><span class="fl">0.1</span>) <span class="op">+</span>
+<span class="st">  </span><span class="ot">NULL</span></code></pre></div>
+<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/unnamed-chunk-29-1.png" width="576" /></p>
+<div id="three-factors" class="section level4">
+<h4><span class="header-section-number">11.3.4.1</span> Three factors</h4>
 
 </div>
+</div>
+</div>
+</div>
+<div class="footnotes">
+<hr />
+<ol start="2">
+<li id="fn2"><p>“The Pretty Good House - Finding the right balance between construction cost and energy performance”. <a href="https://www.greenbuildingadvisor.com/article/the-pretty-good-house" class="uri">https://www.greenbuildingadvisor.com/article/the-pretty-good-house</a><a href="plotting-models.html#fnref2">↩</a></p></li>
+<li id="fn3"><p>Rolig, A.S., Mittge, E.K., Ganz, J., Troll, J.V., Melancon, E., Wiles, T.J., Alligood, K., Stephens, W.Z., Eisen, J.S. and Guillemin, K., 2017. The enteric nervous system promotes intestinal health by constraining microbiota composition. PLoS biology, 15(2), p.e2000689<a href="plotting-models.html#fnref3">↩</a></p></li>
+</ol>
 </div>
             </section>
 
           </div>
         </div>
       </div>
-<a href="plotting-models.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="adding-covariates-to-a-linear-model.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="model-fitting-i-ols.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="two-or-more-categorical-x-factorial-designs.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -758,7 +608,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/rstudio/bookdown-demo/edit/master/chapters/34-factorial.Rmd",
+"link": "https://github.com/rstudio/bookdown-demo/edit/master/chapters/30-plotting_models.Rmd",
 "text": "Edit"
 },
 "history": {

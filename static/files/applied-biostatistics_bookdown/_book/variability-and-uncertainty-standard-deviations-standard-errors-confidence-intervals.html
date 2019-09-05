@@ -5,11 +5,11 @@
 
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Chapter 12 Two (or more) Categorical \(X\) – Factorial designs | Elementary Statistical Modeling for Applied Biostatistics</title>
+  <title>Chapter 4 Variability and Uncertainty (Standard Deviations, Standard Errors, Confidence Intervals) | Elementary Statistical Modeling for Applied Biostatistics</title>
   <meta name="description" content="A first course in statistical modeling for biology students">
   <meta name="generator" content="bookdown  and GitBook 2.6.7">
 
-  <meta property="og:title" content="Chapter 12 Two (or more) Categorical \(X\) – Factorial designs | Elementary Statistical Modeling for Applied Biostatistics" />
+  <meta property="og:title" content="Chapter 4 Variability and Uncertainty (Standard Deviations, Standard Errors, Confidence Intervals) | Elementary Statistical Modeling for Applied Biostatistics" />
   <meta property="og:type" content="book" />
   
   
@@ -17,7 +17,7 @@
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Chapter 12 Two (or more) Categorical \(X\) – Factorial designs | Elementary Statistical Modeling for Applied Biostatistics" />
+  <meta name="twitter:title" content="Chapter 4 Variability and Uncertainty (Standard Deviations, Standard Errors, Confidence Intervals) | Elementary Statistical Modeling for Applied Biostatistics" />
   
   <meta name="twitter:description" content="A first course in statistical modeling for biology students" />
   
@@ -31,8 +31,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   
   
-<link rel="prev" href="plotting-models.html">
-<link rel="next" href="adding-covariates-to-a-linear-model.html">
+<link rel="prev" href="an-introduction-to-statistical-modeling.html">
+<link rel="next" href="covariance-and-correlation.html">
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -343,382 +343,195 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="two-or-more-categorical-x-factorial-designs" class="section level1">
-<h1><span class="header-section-number">Chapter 12</span> Two (or more) Categorical <span class="math inline">\(X\)</span> – Factorial designs</h1>
-<div id="factorial-experiments" class="section level2">
-<h2><span class="header-section-number">12.1</span> Factorial experiments</h2>
-<p>A factorial experiment is one in which there are two or more categorical <span class="math inline">\(X\)</span> that are <strong>crossed</strong>, so the groups contain different combinations of levels of each factor. Factorial experiments are used to estimate the <strong>interaction</strong> between factors. Let’s explore this using data from xxx</p>
-<p>The urchin data are from an experiment measuring the effect of <span class="math inline">\(Temp\)</span> and <span class="math inline">\(CO2\)</span> on larval sea urchin metabolic rate (<span class="math inline">\(Resp\)</span>) (there are other outcome measures in the study too). The units of metabolic rate are pmol O2/hr/larva. There are two <span class="math inline">\(Temp\)</span> levels (13C and 18C) and two <span class="math inline">\(CO2\)</span> levels (400 µAtm and 1100) and the factors are crossed, so this is a <span class="math inline">\(2 \times 2\)</span> (crossed or factorial) design. There are <span class="math inline">\(n=6\)</span> replicates for each combination of the levels. A good way to visualize the treatment combinations in a crossed design is with a <span class="math inline">\(m \times p\)</span> table showing all combinations of the <span class="math inline">\(m\)</span> levels of factor 1 (<span class="math inline">\(Temp\)</span>) against the <span class="math inline">\(p\)</span> levels of factor 2 (<span class="math inline">\(CO2\)</span>)</p>
-<div class="figure">
-<img src="images/2x2_table.png" alt="The urchin experimental design as a 2 x 2 table" style="width:50.0%" />
-<p class="caption">The urchin experimental design as a 2 x 2 table</p>
-</div>
-<p>The upper left cell contains the 13C level with the Temperature factor and the 400 µAtm level within the CO2 factor. The replicates in this cell were grown with no added treatments, so this cell is the “control” for Temp and the control for CO2, which we will use as the “reference” group for the linear model. The replicates in the lower left cell were grown with an added temperature treatment (in this case, a 5 C higher temperature). The replicates in the upper right cell were grown an added CO2 treatment (a 700 µATM higher CO2). And finally, the replicates in the bottom right cell were grown with both the added temperature (+5 C) and added CO2 (+700 µATM). Here, I use a “+” or “-” to designate the addition (or not) of the treatment, so our <span class="math inline">\(2 \times 2\)</span> treatment levels are Temp-/CO2-, Temp+/CO2-, Temp-/CO2+ and Temp+/CO2+.</p>
-<div id="model-coefficients-an-interaction-effect-is-what-is-leftover-after-adding-the-treatment-effects-to-the-control" class="section level3">
-<h3><span class="header-section-number">12.1.1</span> Model coefficients: an interaction effect is what is leftover after adding the treatment effects to the control</h3>
-<p>A factorial design allows a researcher to estimate the interaction between two factors. To clarify this, let’s fit the factorial model and look at the coefficient table. The fit model is</p>
-<span class="math display">\[\begin{equation}
-Resp_i = b_0 + b_1 Temp^+ + b_2 CO2^+ + b_3 Temp^+ CO2^+ + e_i
+<div id="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals" class="section level1">
+<h1><span class="header-section-number">Chapter 4</span> Variability and Uncertainty (Standard Deviations, Standard Errors, Confidence Intervals)</h1>
+<p><strong>Uncertainty</strong> is the stuff of science. A major goal of statistics is measuring uncertainty. What do we mean by uncertainty? Uncertainty is the error in estimating a parameter, such as the mean of a sample, or the difference in means between two experimental treatments, or the predicted response given a certain change in conditions. Uncertainty is measured with a <strong>variance</strong> or its square root, which is a <strong>standard deviation</strong>. The standard deviation of a statistic is also (and more commonly) called a <strong>standard error</strong>.</p>
+<p>Uncertainty emerges because of variability. In any introductory statistics class, students are introduced to two measures of variability, the “standard deviation” and the “standard error.” These terms are absolutely fundamental to statistics – they are the start of everything else. Yet, many biology researchers confuse these terms and certainly, introductory students do too.</p>
+<p>When a research biologist uses the term “standard deviation,” they are probably referring to the sample standard deviation which is a measure of the variability of a sample. When a research biologist uses the term “standard error,” they are probably referring to the standard error of a mean, but it could be the standard error of another statistics, such as a difference between means or a regression slope. An important point to remember and understand is that all standard errors <em>are</em> standard deviations. This will make more sense soon.</p>
+<div id="the-sample-standard-deviation-vs.the-standard-error-of-the-mean" class="section level2">
+<h2><span class="header-section-number">4.1</span> The sample standard deviation vs. the standard error of the mean</h2>
+<div id="sample-standard-deviation" class="section level3">
+<h3><span class="header-section-number">4.1.1</span> Sample standard deviation</h3>
+<p>The sample standard deviation is a measure of the variability of a sample. For example, were we to look at a histological section of skeletal muscle we would see that the diameter of the fibers (the muscle cells) is variable. We could use imaging software to measure the diameter of a sample of 100 cells and get a <strong>distribution</strong> like this</p>
+<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/histogram-1.png" width="576" /></p>
+<p>The mean of this sample is 69.4 and the standard deviation is 2.8. The standard deviation is the square root of the variance, and so computed by</p>
+<span class="math display" id="eq:variance">\[\begin{equation}
+s_y = \sqrt{\frac{\sum_{i=1}^n{(y_i - \overline{y})^2}}{n-1}}
+\tag{4.1}
 \end{equation}\]</span>
-<p>% Again, <span class="math inline">\(Temp^+\)</span> and <span class="math inline">\(CO2^+\)</span> are dummy variables. The model also includes <span class="math inline">\(Temp^+ CO2^+\)</span>, which is a dummy variable for the interaction between Temp and CO2. The value of this interaction dummy variable is literally the product of the two main factor dummy variables (<span class="math inline">\(Temp^+\)</span> and <span class="math inline">\(CO2^+\)</span>), which can be verified with the model matrix (which here, is computed from the subset of the data that includeds only the first two rows of each treatment combination)</p>
-<table>
-<thead>
-<tr class="header">
-<th align="right">(Intercept)</th>
-<th align="right">Temp+</th>
-<th align="right">CO2+</th>
-<th align="right">Temp+:CO2+</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="right">1</td>
-<td align="right">0</td>
-<td align="right">0</td>
-<td align="right">0</td>
-</tr>
-<tr class="even">
-<td align="right">1</td>
-<td align="right">0</td>
-<td align="right">0</td>
-<td align="right">0</td>
-</tr>
-<tr class="odd">
-<td align="right">1</td>
-<td align="right">1</td>
-<td align="right">0</td>
-<td align="right">0</td>
-</tr>
-<tr class="even">
-<td align="right">1</td>
-<td align="right">1</td>
-<td align="right">0</td>
-<td align="right">0</td>
-</tr>
-<tr class="odd">
-<td align="right">1</td>
-<td align="right">0</td>
-<td align="right">1</td>
-<td align="right">0</td>
-</tr>
-<tr class="even">
-<td align="right">1</td>
-<td align="right">0</td>
-<td align="right">1</td>
-<td align="right">0</td>
-</tr>
-<tr class="odd">
-<td align="right">1</td>
-<td align="right">1</td>
-<td align="right">1</td>
-<td align="right">1</td>
-</tr>
-<tr class="even">
-<td align="right">1</td>
-<td align="right">1</td>
-<td align="right">1</td>
-<td align="right">1</td>
-</tr>
-</tbody>
-</table>
-<p>The coefficient table is</p>
-<table>
-<thead>
-<tr class="header">
-<th></th>
-<th align="right">Estimate</th>
-<th align="right">Std. Error</th>
-<th align="right">t value</th>
-<th align="right">Pr(&gt;|t|)</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>(Intercept)</td>
-<td align="right">8.23</td>
-<td align="right">0.73</td>
-<td align="right">11.3</td>
-<td align="right">0.000</td>
-</tr>
-<tr class="even">
-<td>Temp+</td>
-<td align="right">4.51</td>
-<td align="right">1.03</td>
-<td align="right">4.4</td>
-<td align="right">0.000</td>
-</tr>
-<tr class="odd">
-<td>CO2+</td>
-<td align="right">-0.32</td>
-<td align="right">1.03</td>
-<td align="right">-0.3</td>
-<td align="right">0.761</td>
-</tr>
-<tr class="even">
-<td>Temp+:CO2+</td>
-<td align="right">-2.68</td>
-<td align="right">1.45</td>
-<td align="right">-1.9</td>
-<td align="right">0.079</td>
-</tr>
-</tbody>
-</table>
-<p>The Intercept (<span class="math inline">\(b_0\)</span>) is the mean (8.23) of the reference (Temp-/CO2-) group, and so the mean of the upper left cell in Table 1). The Temp+ coefficient (<span class="math inline">\(b_1\)</span>) is the estimate of the added temperature effect relative to the reference, and so is the mean of the lower left cell minus the mean of the upper left cell (<span class="math inline">\(b_1=\bar{Y}_{Temp^+}-\bar{Y}_{-/-}\)</span>). The CO2+ coefficient (<span class="math inline">\(b_2\)</span>) is the estimate of the added CO2 effect relative to the reference, and so is the mean of the upper right cell minus the mean of the upper left cell (<span class="math inline">\(b_2=\bar{Y}_{CO2^+}-\bar{Y}_{-/-}\)</span>). The Temp+:CO2+ coefficient (<span class="math inline">\(b_3\)</span>) is the estimate of the <strong>interaction effect</strong>, which is the effect in addition to the Temp<span class="math inline">\(^+\)</span> and CO2<span class="math inline">\(^+\)</span> effects. If you added <span class="math inline">\(b_1\)</span> and <span class="math inline">\(b_2\)</span> to <span class="math inline">\(b_0\)</span>, you would get the mean of the Temp<span class="math inline">\(^+\)</span>/CO2<span class="math inline">\(^+\)</span> group <em>if the effects were purely additive</em>. So the interaction effect is the difference between the mean of the bottom right cell and the sum of the coefficients of the other three cells (<span class="math inline">\(b_3 = \bar{Y}_{Temp^+CO2^+} - (b0 + b1 + b2)\)</span>). An interaction is a <strong>non-additive effect</strong>. Think about this. Adding 5 C increases respiration by 4.51 units. Adding 700 <span class="math inline">\(\mu\)</span>ATM CO2 decreases respiration by .32 units. If these effects were purely additive, then adding both 5 C and 700 <span class="math inline">\(\mu\)</span>ATM should result in a mean of 8.23 + 4.51 - .32 = 12.42 units for the Temp<span class="math inline">\(^+\)</span>/CO2<span class="math inline">\(^+\)</span> group. What is the mean of this group?</p>
-<p>9.74! So the difference between the ``additive expectation’’ and the actual mean is <span class="math inline">\(9.74 - 12.42 = -2.68\)</span>, which is the interaction effect (coefficient).</p>
+<p>Memorize this equation. To understand the logic of this measure of variability, note that <span class="math inline">\(y_i - \overline{y}\)</span> is the <strong>deviation</strong> of the <span class="math inline">\(i\)</span>th value from the sample mean, so the numerator is the sum of squared deviations. The numerator is a sum over <span class="math inline">\(n\)</span> items and the denominator is <span class="math inline">\(n-1\)</span> so the variance is (almost!) an averaged squared deviation. More variable samples will have bigger deviations and, therefore, bigger average squared deviations. Since the standard deviation is the square root of the variance, a standard deviation is the square root of an average squared deviation. This makes it similar in value to the averaged deviation (or average of the absolute values of the deviations since the average deviation is, by definition of a mean, zero).</p>
+<p>Notes on the variance and standard deviation</p>
+<ol style="list-style-type: decimal">
+<li>Variances are additive but standard deviations are not. This means that the variance of the sum of two independent (uncorrelated) random variables is simply the sum of the variances of each of the variables. This is important for many statistical analyses.</li>
+<li>The units of variance are the square of the original units, which is awkward for interpretation. The units of a standard deviation is the same as that of the original variable, and so is much easier to interpet.</li>
+<li>For variables that are approximately normally distributed, we can map the standard deviation to the quantiles of the distribution. For example, 68% of the values are within one standard deviation of the mean, 95% of the values are within two standard deviations, and 99% of the values are within three standard deviations.</li>
+</ol>
 </div>
-<div id="what-is-the-biological-meaning-of-an-interaction-effect" class="section level3">
-<h3><span class="header-section-number">12.1.2</span> What is the biological meaning of an interaction effect?</h3>
-<p>I can dead lift 150 pounds and my friend Jake can deadlift 175 pounds. Working together, we should be able to lift 325 pounds. What if together, we could actually lift 400 pounds? If this were the case, this would be an interaction with an effect equal to 75 pounds. Is this biologically plausible? If so, what is the mechanism? Here is a possible mechanism (although I am highly skeptical of it having a magnitude of 75 pounds): when lifting an object as part of a group, the central nervous system allows increased motor unit recruitment, and so each person can lift more weight than they could if lifting alone. A positive interaction like this is called <em>synergistic</em>. Always think about the biological meaning of an interaction effect.</p>
-</div>
-<div id="what-about-models-with-more-than-two-factors" class="section level3">
-<h3><span class="header-section-number">12.1.3</span> What about models with more than two factors?</h3>
-<p>A factorial model can have more than two factors, for example, a model with three factors (A, B, and C), each with two levels (which I’ll designate with a “+”), is</p>
-<span class="math display">\[\begin{equation}
-Y = \beta_0 + \beta_1 A^+ + \beta_1 B^+ + \beta_3 C^+ + \beta_4 A^+ B^+ + \beta_5 A^+ C^+ + \beta_6 B^+ C^+ + \beta_7 A^+ B^+ C^+ + \varepsilon
+<div id="standard-error-of-the-mean" class="section level3">
+<h3><span class="header-section-number">4.1.2</span> Standard error of the mean</h3>
+<p>A standard error of a statistic is a measure of the precision of the statistic. The standard error of the mean is a measure of the precision of the estimate of the mean. The smaller the standard error, the more precise the estimate. The standard error of the mean (SEM) is computed as</p>
+<span class="math display" id="eq:se">\[\begin{equation}
+SEM = \frac{s_y}{\sqrt{n}}
+\tag{4.2}
 \end{equation}\]</span>
-<p>It is easy enough to get an ANOVA table with <span class="math inline">\(p\)</span>-values for this model but I don’t recommend it because</p>
+<p>The SEM is often denoted <span class="math inline">\(s_{\bar{y}}\)</span> to indicate that it is a standard deviation of the mean (<span class="math inline">\(\bar{y}\)</span>). In what sense is a standard error a measure of variability? This is kinda weird. If we sample 100 cells in the slide of muscle tissue and compute the mean diameter, how can the mean have a standard deviation? There is only one value! To understand how the SEM is a standard deviation, imagine 1) resampling 100 cells and 2) recomputing a mean from the re-sampled data, then repeating this resampling and recomputation an infinite number of times and each time, you write down the newly computed mean. The true standard error of the mean is the standard deviation of this infinitely long column of means. This means that a standard error of the mean, computed from a single sample using equation <a href="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals.html#eq:se">(4.2)</a> is itself a sample statistic.</p>
+<p>Notes on standard errors</p>
 <ol style="list-style-type: decimal">
-<li>If space and/or time and/or materials are limited then it typically makes more sense to prioritize the power to estimate standard errors by choosing one of the two-factor models and increasing sample size</li>
-<li>Interaction effects in 2-factor models are hard enough to interpret. A 3-way interaction is very, very tough to interpret. If all we did was table up <span class="math inline">\(F\)</span>-ratios and <span class="math inline">\(p\)</span>-values, this wouldn’t matter. But it does matter.</li>
+<li>The SEM is only one kind of standard error. A standard deviation can be computed for any statistic – these are all standard errors. For some statistics, such as the mean, the standard error can be computed directly using an equation, such as that for the SEM (equation <a href="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals.html#eq:se">(4.2)</a>. For other statistics, a computer intensive method such as the <strong>bootstrap</strong> is necessary to compute a standard error. We will return to the bootstrap at the end of this chapter.</li>
+<li>The units of a standard error are the units of the measured variable.</li>
+<li>A standard error is proportional to sample variability (the sample standard deviation, <span class="math inline">\(s_y\)</span>) and inversely proportional to sample size (<span class="math inline">\(n\)</span>). Sample variability is a function of both natural variation (there really is variation in diameter among fibers in the quadriceps muscle) and measurement error (imaging software with higher resolution can measure a diameter with less error). Since the SEM is a measure of the precision of estimating a mean, this means this precision will increase (or the SEM will decrease) if 1) an investigator uses methods that reduce measurement error and 2) an investigator computes the mean from a larger sample.</li>
+<li>This last point (the SEM decreases with sample size) seems obvious when looking at equation <a href="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals.html#eq:se">(4.2)</a>, since <span class="math inline">\(n\)</span> is in the denominator. Of course <span class="math inline">\(n\)</span> is also in the denominator of equation <a href="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals.html#eq:variance">(4.1)</a> for the sample standard deviation but the standard deviation does not decrease as sample size increases. First this wouldn’t make any sense – variability is variability. A sample of 10,000 cell diameters should be no more variable than a sample of 100 cell diameters (think about if you agree with this or not). Second, this should also be obvious from equation <a href="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals.html#eq:variance">(4.1)</a>. The standard deviation is the square root of an average and averages don’t increase with the number of things summed since both the the numerator (a sum) and denominator increase with <span class="math inline">\(n\)</span>.</li>
 </ol>
 </div>
-<div id="the-additive-model" class="section level3">
-<h3><span class="header-section-number">12.1.4</span> The additive model</h3>
-<p>Sometimes researchers fit reduced models. For example, the <span class="math inline">\(p\)</span>-value for the interaction effect in the full model is 0.079, which is not statististically significant. This would lead some researchers to explicitly conclude (mistakenly), that there is no interaction between CO2 and Temp and that the effects of CO2 and Temp on metabolism are <strong>additive</strong> (see below). This would lead others (controversially) to refit the model excluding the interaction term:</p>
-<span class="math display">\[\begin{equation}
-Resp_i = b_0 + b_1Temp^+ + b_2CO2^+ + e_i
-\end{equation}\]</span>
-<p>% This particular reduced model is often referred to as the <strong>additive model</strong>, since it excludes the the interaction term, which is a <em>product</em> of other terms. Indeed, the title of the urchin paper is “Temperature and CO2 additively regulate physiology, morphology and genomic responses of larval sea urchins, <em>Strongylocentrotus purpuratus</em>.” It is important to recognize that unless the interaction effect is precisely zero, the coefficients of Temp+ and CO2+ will change. Here are the coefficients of the additive model</p>
-<table>
-<thead>
-<tr class="header">
-<th></th>
-<th align="right">Estimate</th>
-<th align="right">Std. Error</th>
-<th align="right">t value</th>
-<th align="right">Pr(&gt;|t|)</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>(Intercept)</td>
-<td align="right">8.90</td>
-<td align="right">0.66</td>
-<td align="right">13.4</td>
-<td align="right">0.000</td>
-</tr>
-<tr class="even">
-<td>Temp+</td>
-<td align="right">3.17</td>
-<td align="right">0.77</td>
-<td align="right">4.1</td>
-<td align="right">0.000</td>
-</tr>
-<tr class="odd">
-<td>CO2+</td>
-<td align="right">-1.66</td>
-<td align="right">0.77</td>
-<td align="right">-2.2</td>
-<td align="right">0.042</td>
-</tr>
-</tbody>
-</table>
-<p>For several reasons, one should not drop a term because <span class="math inline">\(p&gt;0.05\)</span>.</p>
+</div>
+<div id="using-google-sheets-to-generate-fake-data-to-explore-uncertainty" class="section level2">
+<h2><span class="header-section-number">4.2</span> Using Google Sheets to generate fake data to explore uncertainty</h2>
+<p>In statistics we are interested in estimated parameters of a <strong>population</strong> using measures from a <strong>sample</strong>. The goal in this section is to use Google Sheets (or Microsoft Excel) to use fake data to discover the behavior of sampling and to gain some intuition about uncertainty using standard errors.</p>
+<div id="steps" class="section level3">
+<h3><span class="header-section-number">4.2.1</span> Steps</h3>
 <ol style="list-style-type: decimal">
-<li>The <span class="math inline">\(p\)</span>-value is an arbitrary dichotomization of a continuous variable. Would it make sense to behave differently if <span class="math inline">\(p=0.051\)</span> vs. <span class="math inline">\(p=0.049\)</span>, given that these two p-values are effectively identical?</li>
-<li>A <span class="math inline">\(p\)</span>-value is not evidence that an effect is zero, or “doesn’t exist”, or event that an effect is “trivially small”. This is because <span class="math inline">\(p\)</span>-values are a function of measurement error, sampling error, and sample size, in addition to effect size.</li>
+<li>Open Google Sheets</li>
+<li>In cell A1 type “mu”. mu is the greek letter <span class="math inline">\(\mu\)</span> and is very common notation for the poplation value (the TRUE value!) of the mean of some hypothetical measure. In cell B1, insert some number as the value of <span class="math inline">\(\mu\)</span>. Any number! It can be negative or positive.</li>
+<li>In cell A2 type “sigma”. sigma is the greek letter <span class="math inline">\(\sigma\)</span>. <span class="math inline">\(\sigma^2\)</span> is very common (universal!) notation for the population (TRUE) variance of some measure or parameter. Notice that the true (population) values of the mean and variance are greek letters. This is pretty standard in statistics. In cell B2, insert some positive number (standard deviations are the positive square roots of the variance).</li>
+<li>In cell A8 type the number 1</li>
+<li>In cell A9 insert the equation “=A8 + 1”. What is this equation doing? It is adding the number 1 to to the value in the cell above, so the resulting value should be 2.</li>
+<li>In Cell B8, insert the equation “=normsinv(rand())*$B$2 + $B$1“. The first part of the equation creates a random normal variable with mean 0 and standard deviation 1. multiplication and addition transform this to a random normal variable with mean <span class="math inline">\(\mu\)</span> and standard deviation <span class="math inline">\(\sigma\)</span> (the values you set in cells B1 and B2).</li>
+<li>copy cell B8 and paste into cell B9. Now Higlight cells A9:B9 and copy the equations down to row 107. You now have 100 random variables sampled from a infinite population with mean <span class="math inline">\(\mu\)</span> and standard deviation <span class="math inline">\(\sigma\)</span>.</li>
+<li>In cell A4 write “mean 10”. In cell B4 insert the equation “=average(B8:B17)”. The resulting value is the <strong>sample mean</strong> of the first 10 random variables you created. Is the mean close to <span class="math inline">\(\mu\)</span>?</li>
+<li>In cell A5 write “sd 10”. In cell B5 insert the equation “stdev(B8:B17)”. The result is the <strong>sample standard deviation</strong> of the first 10 random variables. Is this close to <span class="math inline">\(\sigma\)</span>?</li>
+<li>In cell A6 write “mean 100”. In cell B6 insert the equation “=average(B8:B107)”. The resulting value is the <strong>sample mean</strong> of the all 100 random variables you created. Is this mean closer to <span class="math inline">\(\mu\)</span> than mean 10?</li>
+<li>In cell A7 write “sd 100”. In cell B7 insert the equation “=stdev(B8:B107)”. The resulting value is the <strong>sample standard deviation</strong> of the all 100 random variables you created. Is this SD closer to <span class="math inline">\(\sigma\)</span> than sd 10?</li>
 </ol>
+<p>The sample standard deviation is a measure of the variability of the sample. The more spread out the sample (the further each value is from the mean), the bigger the sample standard deviation. The sample standard deviation is most often simply known as “The” standard deviation, which is a bit misleading since there are many kinds of standard deviations!</p>
+<p>Remember that your computed mean and standard deviations are estimates computed from a sample. They are estimates of the true values <span class="math inline">\(\mu\)</span> and <span class="math inline">\(\sigma\)</span>. Explore the behavior of the sample mean and standard deviation by re-calculating the spreadsheet. In Excel, a spreadsheet is re-calculated by simultaneously pressing the command and equal key. In Google, command-R recalculates but is painfully slow. Instead, if using Google Sheets, just type the number 1 into a blank cell, and the sheet recalculates quickly. Do it again. And again.</p>
+<p>Each time you re-calculate, a new set of random numbers are generated and the new means and standard deviations are computed. Compare mean 10 and mean 100 each re-calculation. Notice that these estimates are variable. They change with each re-calculation. How variable is mean 10 compared to mean 100? The variability of the estimate of the mean is a measure of <strong>uncertainty</strong> in the estimate. Are we more uncertain with mean 10 or with mean 100? This variability is measured by a standard deviation. This <strong>standard deviation of the mean</strong> is also called the <strong>standard error of the mean</strong>. Many researchers are loose with terms and use “The” standard error to mean the standard error of the mean, even though there are many kinds of standard errors. In general, “standard error”&quot; is abbreviated as “SE.” Sometimes “standard error of the mean” is specifically abbreviated to “SEM.”</p>
+<p>The standard error of the mean is a measure of the precision in estimating the mean. The smaller the value the more precise the estimate. The standard error of the mean <em>is</em> a standard deviation of the mean. This is kinda weird. If we sample a population one time and compute a mean, how can the mean have a standard deviation? There is only one value! And we compute this value using the sample standard deviation: <span class="math inline">\(SEM = \frac{SD}{\sqrt{N}}\)</span>. To understand how the SEM is a standard deviation, Imagine recalculating the spread sheet an infinite number of times and each time, you write down the newly computed mean. The standard error of the mean is the standard deviation of this infinitely long column of means.</p>
 </div>
-<div id="contrasts-simple-vs.main-effects" class="section level3">
-<h3><span class="header-section-number">12.1.5</span> Contrasts – simple vs. main effects</h3>
-<p>In a <span class="math inline">\(m \times p\)</span> design, there are <span class="math inline">\(mp\)</span> cell means and, therefore, <span class="math inline">\(mp(mp-1)/2\)</span> pairwise contrasts. For the urchin data, these are</p>
+</div>
+<div id="using-r-to-generate-fake-data-to-explore-uncertainty" class="section level2">
+<h2><span class="header-section-number">4.3</span> Using R to generate fake data to explore uncertainty</h2>
+<p>note that I use “standard deviation” to refer to the sample standard deviation and “standard error” to refer to the standard error of the mean (again, we can compute standard errors as a standard deviation of any kind of estimate)</p>
+<div id="part-i" class="section level3">
+<h3><span class="header-section-number">4.3.1</span> part I</h3>
+<p>In the exercise above, you used Google Sheets to generate <span class="math inline">\(p\)</span> columns of fake data. Each column had <span class="math inline">\(n\)</span> elements, so the matrix of fake data was <span class="math inline">\(n \times m\)</span> (it is standard in most fields to specify a matrix as rows by columns). This is <em>much</em> easier to do in R and how much grows exponentially as the size of the matrix grows.</p>
+<p>To start, we just generate a <span class="math inline">\(n \times p\)</span> matrix of normal random numbers.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># R script to gain some intuition about standard deviation (sd) and standard error (se)</span>
+<span class="co"># you will probably need to install ggplot2 using library(ggplot2) </span>
+n &lt;-<span class="st"> </span><span class="dv">6</span> <span class="co"># sample size</span>
+p &lt;-<span class="st"> </span><span class="dv">100</span> <span class="co"># number of columns of fake data to generate</span>
+fake_data &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">rnorm</span>(n<span class="op">*</span>p, <span class="dt">mean=</span><span class="dv">0</span>, <span class="dt">sd=</span><span class="dv">1</span>), <span class="dt">nrow=</span>n, <span class="dt">ncol=</span>p) <span class="co"># create a matrix</span></code></pre></div>
+<p>the 3rd line is the cool thing about R. In one line I’m creating a dataset with <span class="math inline">\(n\)</span> rows and <span class="math inline">\(p\)</span> columns. Each column is a sample of the standard normal distribution which by definition has mean zero and standard deviation of 1. But, and this is important, any sample from this distribution will not have exactly mean zero and standard deviation of 1, because it’s a sample, the mean and standard deviation will have some small errror from the truth. The line has two parts to it: first I’m using the function “rnorm” (for random normal) to create a vector of n*m random, normal deviates (draws from the random normal distribution) and then I’m organizing these into a matrix (using the function “matrix”)</p>
+<p>To compute the vector of means, standard deviations, and standard errors for each column of <code>fake_data</code>, use the <code>apply()</code> function.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">means &lt;-<span class="st"> </span><span class="kw">apply</span>(fake_data,<span class="dv">2</span>,mean) <span class="co"># the apply function is super useful</span>
+sds &lt;-<span class="st"> </span><span class="kw">apply</span>(fake_data,<span class="dv">2</span>,sd)
+sems &lt;-<span class="st"> </span>sds<span class="op">/</span><span class="kw">sqrt</span>(n)</code></pre></div>
+<p><code>apply()</code> is a workhorse in many R scripts. Learn it. Know it. Live it.</p>
+<p>The SEM is the standard deviation of the mean, so let’s see if the standard deviation of the means is close to the true standard error. We sampled from a normal distribution with SD=1 so the true standard is</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="dv">1</span><span class="op">/</span><span class="kw">sqrt</span>(n)</code></pre></div>
+<pre><code>## [1] 0.4082483</code></pre>
+<p>and the standard deviation of the <span class="math inline">\(p\)</span> means is</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sd</span>(means)</code></pre></div>
+<pre><code>## [1] 0.3731974</code></pre>
+<p>Questions</p>
 <ol style="list-style-type: decimal">
-<li>Temp+/CO2- - Temp-/CO2- (bottom left - top left)</li>
-<li>Temp+/CO2+ - Temp-/CO2+ (bottom right - top right)</li>
-<li>Temp-/CO2+ - Temp-/CO2- (top right - top left)</li>
-<li>Temp+/CO2+ - Temp+/CO2- (bottom right - bottom left)</li>
-<li>Temp-/CO2+ - Temp+/CO2- (top right - bottom left)</li>
-<li>Temp+/CO2+ - Temp-/CO2- (bottom right - top left)</li>
+<li>how close is <code>sd(means)</code> to the true SE?</li>
+<li>change p above to 1000. Now how close is sd(means) to the true SE?</li>
+<li>change p above to 10,000. Now how close is sd(means) to the true SE?</li>
 </ol>
+</div>
+<div id="part-ii---means" class="section level3">
+<h3><span class="header-section-number">4.3.2</span> part II - means</h3>
+<p>This is a visualization of the spread, or variability, of the sampled means</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">qplot</span>(means)</code></pre></div>
+<pre><code>## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
+<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/unnamed-chunk-6-1.png" width="576" /></p>
+<p>Compute the mean of the means</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">mean</span>(means)</code></pre></div>
+<pre><code>## [1] -0.039961</code></pre>
+<p>Questions</p>
 <ol style="list-style-type: decimal">
-<li>and (2) are the <strong>simple effects</strong> of Temp at each level of CO2. (3) and (4) are the simple effects of CO2 at each level of Temp. (5) is the response of the CO2 treatment at the reference level of Temp minus the response of the Temp treatment at the reference level of CO2. This probably is not a very interesting contrast. (6) is the combined response of Temp and CO2, including the interaction, minus the control. This also is unlikely to be of much interest.</li>
+<li>Remember that the true mean is zero. How close, in general, are the sampled means to the true mean. How variable are the means? How is this quantified?</li>
+<li>change n to 100, then replot. Are the means, in general, closer to the true mean? How variable are the means now?</li>
+<li>Is the mean estimated with <span class="math inline">\(n=100\)</span> closer to the truth, in general, then the mean estimated with <span class="math inline">\(n=6\)</span>?</li>
+<li>Redo with <span class="math inline">\(n=10000\)</span></li>
 </ol>
-<table>
-<thead>
-<tr class="header">
-<th align="left">contrast</th>
-<th align="right">estimate</th>
-<th align="right">SE</th>
-<th align="right">df</th>
-<th align="right">lower.CL</th>
-<th align="right">upper.CL</th>
-<th align="right">t.ratio</th>
-<th align="right">p.value</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="left">Temp+,CO2- - Temp-,CO2-</td>
-<td align="right">4.51</td>
-<td align="right">1.03</td>
-<td align="right">20</td>
-<td align="right">2.4</td>
-<td align="right">6.7</td>
-<td align="right">4.4</td>
-<td align="right">0.000</td>
-</tr>
-<tr class="even">
-<td align="left">Temp-,CO2+ - Temp-,CO2-</td>
-<td align="right">-0.32</td>
-<td align="right">1.03</td>
-<td align="right">20</td>
-<td align="right">-2.5</td>
-<td align="right">1.8</td>
-<td align="right">-0.3</td>
-<td align="right">0.761</td>
-</tr>
-<tr class="odd">
-<td align="left">Temp-,CO2+ - Temp+,CO2-</td>
-<td align="right">-4.83</td>
-<td align="right">1.03</td>
-<td align="right">20</td>
-<td align="right">-7.0</td>
-<td align="right">-2.7</td>
-<td align="right">-4.7</td>
-<td align="right">0.000</td>
-</tr>
-<tr class="even">
-<td align="left">Temp+,CO2+ - Temp-,CO2-</td>
-<td align="right">1.51</td>
-<td align="right">1.03</td>
-<td align="right">20</td>
-<td align="right">-0.6</td>
-<td align="right">3.6</td>
-<td align="right">1.5</td>
-<td align="right">0.157</td>
-</tr>
-<tr class="odd">
-<td align="left">Temp+,CO2+ - Temp+,CO2-</td>
-<td align="right">-3.00</td>
-<td align="right">1.03</td>
-<td align="right">20</td>
-<td align="right">-5.1</td>
-<td align="right">-0.9</td>
-<td align="right">-2.9</td>
-<td align="right">0.008</td>
-</tr>
-<tr class="even">
-<td align="left">Temp+,CO2+ - Temp-,CO2+</td>
-<td align="right">1.82</td>
-<td align="right">1.03</td>
-<td align="right">20</td>
-<td align="right">-0.3</td>
-<td align="right">4.0</td>
-<td align="right">1.8</td>
-<td align="right">0.091</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Main effects</strong> are contrasts between</p>
 </div>
-</div>
-<div id="reporting-results-2" class="section level2">
-<h2><span class="header-section-number">12.2</span> Reporting results</h2>
-<div id="text-results" class="section level3">
-<h3><span class="header-section-number">12.2.1</span> Text results</h3>
-<p>The effect of the increased temperature at the control CO2 level was 4.5 (95% CI: 2.4, 6.7; <span class="math inline">\(p &lt; 0.001\)</span>) pmol O2/hr/larva. The effect of increased CO2 at the control temperature was -0.3 (95% CI: -2.4, 1.8; <span class="math inline">\(p=.76\)</span>) pmol O2/hr/larva. The interaction effect was -2.7 (95% CI: -5.7, 0.3; <span class="math inline">\(p = 0.079\)</span>) pmol O2/hr/larva. Because of the relatively large interaction, the effect of temperature at the high level of CO2 was less than half the effect at the low level of CO2 (estimate: 1.82; 95% CI: -0.3, 4.0; <span class="math inline">\(p = 0.091\)</span>) and the effect of CO2 at the high level of Temp was 10 times greater than that at the low level of Temp (estimate: -3.0; 95% CI: -5.1, -.9; <span class="math inline">\(p = 0.0084\)</span>).</p>
-<p>The CI on the interaction includes both large negative values and trivially small values, including zero, and, consequently, our data is compatible with both scientific models (that is, we can neither support nor reject the predictions of the scientific model using these results).</p>
-</div>
-<div id="harrellplot" class="section level3">
-<h3><span class="header-section-number">12.2.2</span> Harrellplot</h3>
-<p>If the focus is on the interaction, then a Harrell Plot of coefficients is a good choice for communicating this.</p>
-<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/urchin-harrellplot1-1.png" width="576" /></p>
-<p>The plot shows that a relatively big and positive Temp effect, a relatively small CO2 effect (and one with too much noise to have any confidence of the sign) and a intermediate interaction effect. In the original paper, the researchers were testing a scientific (not statistical!) model that predicted no interaction, and the researchers argued that these data support this model because of the small p-value for this effect (see the table above). Well, the data do support that model (one end of the 95% CI for the interaction includes zero, and other very small values) but they also support a model of a large interaction (the other end of the 95% CI includes large negative effects). The data are too course (or the signal:noise ratio is to small) to have much confidence in the size of the interaction effect. Some comments:</p>
+<div id="part-iii---how-do-sd-and-se-change-as-sample-size-n-increases" class="section level3">
+<h3><span class="header-section-number">4.3.3</span> part III - how do SD and SE change as sample size (n) increases?</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">mean</span>(sds)</code></pre></div>
+<pre><code>## [1] 1.017144</code></pre>
+<p>Questions</p>
 <ol style="list-style-type: decimal">
-<li>It is not valid to claim that an effect “doesn’t” exist because p &gt; 0.05 (see chapter xxx)</li>
-<li>Researchers need to draw conclusions based on <em>both</em> ends of the CI, as well as the mean!</li>
-<li>A sample size of 6 will generally be very low power to get a precise estimate of the interaction unless the sampling variability is very small.</li>
+<li>what is the mean of the standard deviations when n=6 (set p=1000)</li>
+<li>what is the mean of the standard deviations when n=100 (set p=1000)</li>
+<li>when n = 1000? (set p=1000)</li>
+<li>when n = 10000? (set p=1000)</li>
+<li>how does the mean of the standard deviations change as n increases (does it get smaller? or stay about the same size)</li>
+<li>repeat the above with SEM</li>
 </ol>
-<p>If we are more interested in differences between the different treatment combinations, then a Harrell plot with the contrasts is a good way to communicate this.</p>
-<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/urchin-harrellplot2-1.png" width="576" /> The four contrasts are differences between the means of pairs of cells in the <span class="math inline">\(2 \times 2\)</span> table:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">mean</span>(sems)</code></pre></div>
+<pre><code>## [1] 0.4152472</code></pre>
+<p>Congratulations, you have just done a Monte Carlo simulation!</p>
+</div>
+<div id="part-iv-generating-fake-data-with-for-loops" class="section level3">
+<h3><span class="header-section-number">4.3.4</span> Part IV – Generating fake data with “for loops”</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">n &lt;-<span class="st"> </span><span class="dv">6</span> <span class="co"># sample size</span>
+n_iter &lt;-<span class="st"> </span><span class="dv">10</span><span class="op">^</span><span class="dv">5</span> <span class="co"># number of iterations of loop (equivalent to p)</span>
+means &lt;-<span class="st"> </span><span class="kw">numeric</span>(n_iter)
+sds &lt;-<span class="st"> </span><span class="kw">numeric</span>(n_iter)
+sems &lt;-<span class="st"> </span><span class="kw">numeric</span>(n_iter)
+<span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>n_iter){
+  y &lt;-<span class="st"> </span><span class="kw">rnorm</span>(n) <span class="co"># mean=0 and sd=1 are default so not necessary to specify</span>
+  means[i] &lt;-<span class="st"> </span><span class="kw">mean</span>(y)
+  sds[i] &lt;-<span class="st"> </span><span class="kw">sd</span>(y)
+  sems[i] &lt;-<span class="st"> </span><span class="kw">sd</span>(y)<span class="op">/</span><span class="kw">sqrt</span>(n)
+}
+<span class="kw">sd</span>(means)</code></pre></div>
+<pre><code>## [1] 0.4090702</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">mean</span>(sems)</code></pre></div>
+<pre><code>## [1] 0.3883867</code></pre>
+<p>Questions</p>
 <ol style="list-style-type: decimal">
-<li>“Temp+: CO2+ - CO2-” – lower right - lower left</li>
-<li>“Temp-: CO2+ - CO2-” – upper right - upper left</li>
-<li>“CO2+: Temp+ - Temp-” – lower right - upper right</li>
-<li>“CO2-: Temp+ - Temp-” – lower left - upper left</li>
+<li>What do <code>sd(means)</code> and <code>mean(sems)</code> converge to as <code>n_iter</code> is increased from 100 to 1000 to 10,000?</li>
+<li>Do they converge to the same number?</li>
+<li>Should they?</li>
+<li>What is the correct number?</li>
 </ol>
+<p>Question number 4 is asking what is E(SEM), the “expected standard error of the mean”. There is a very easy formula to compute this. What is it?</p>
 </div>
-<div id="interaction-plots" class="section level3">
-<h3><span class="header-section-number">12.2.3</span> Interaction plots</h3>
-<p>A common way to plot the results of the model is with an <strong>interaction plot</strong>.</p>
-<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/urchin-interaction-plot-1.png" width="576" /></p>
-<p>In this interaction plot, the <span class="math inline">\(X\)</span>-axis contains the two <span class="math inline">\(Temp\)</span> treatment levels and the <span class="math inline">\(Y\)</span>-axis is the outcome (<span class="math inline">\(Resp\)</span>). The plot shows the four cell means indicated by the circles (low CO2 levels) or triangles (high CO2 levels). The solid lines connect the cell means <em>across Temp levels within CO2 levels</em>.</p>
+</div>
+<div id="bootstrapped-standard-errors" class="section level2">
+<h2><span class="header-section-number">4.4</span> Bootstrapped standard errors</h2>
+<p>The bootstrap is the best invention since duct tape. Really.</p>
+<p>A standard error is the standard deviation of an infinite number of hypothetically re-sampled means. A bootstrap standard error of a statistic is the standard deviation of the statistic from a finite number of resamples of the data! Wait what?</p>
+<p>Let’s download some data to explore this concept. The data are archived at Dryad Repository.</p>
 <ol style="list-style-type: decimal">
-<li>The slope of a line is the effect of <span class="math inline">\(Temp\)</span> on <span class="math inline">\(Resp\)</span></li>
-<li>The relative <em>elevation</em> of the lines is the effect of <span class="math inline">\(CO2\)</span> on <span class="math inline">\(Resp\)</span></li>
-<li>The difference in slope <em>or</em> the relative elevation at each level of <span class="math inline">\(Temp\)</span> is the interaction effect</li>
+<li>URL: <a href="https://datadryad.org//resource/doi:10.5061/dryad.31cc4" class="uri">https://datadryad.org//resource/doi:10.5061/dryad.31cc4</a></li>
+<li>file: RSBL-2013-0432 vole data.xlsx</li>
+<li>sheet: COLD VOLES LIFESPAN</li>
 </ol>
-<p>Let’s deconstruct this. The top (CO2-) line is the effect of <span class="math inline">\(Temp\)</span> at the control (400 <span class="math inline">\(\mu\)</span>ATM) value of <span class="math inline">\(CO2\)</span>. The slope of the bottom (CO2+) line is the effect of <span class="math inline">\(Temp\)</span> at the high (1100 <span class="math inline">\(\mu\)</span>ATM) value of <span class="math inline">\(CO2\)</span>. <em>These lines have different slopes</em>, or the slope <em>is conditional on</em> the level of CO2. This means that the effect of <span class="math inline">\(Temp\)</span> on respiration is <em>conditional on the value of <span class="math inline">\(CO2\)</span></em>. Think about this. This is what an interaction implies–conditional effects.</p>
-<p>At the reference temperature (13 C), the CO2+ line is barely below the CO2- line. But at the high temperature (18 C), the CO2+ line is far below the CO2- line. That is, the relative elevation (the <span class="math inline">\(CO2\)</span> effect) is conditional on the level of <span class="math inline">\(Temp\)</span>. It will always be the case that if the effect of Factor A is conditional on the levels of Factor B, then the effect of Factor B will be conditional on the levels of Factor A.</p>
-<p>An interaction plot is an okay plot. It doesn’t show the data, only a descriptive summary (means and standard errors). If we are interested in the interaction effect, it doesn’t give us a very good sense of the error in this effect. And <em>that</em> is a problem because with real data, two lines are never precisely parallel. Our interpretation of the similarity of the slopes would probably mostly reflect our pre-conceived scientific model.</p>
-</div>
-</div>
-<div id="recommendations-1" class="section level2">
-<h2><span class="header-section-number">12.3</span> Recommendations</h2>
-<ol style="list-style-type: decimal">
-<li>Should an interaction term be dropped from a model? In biological data, there will almost certainly be an interaction effect with everything. The goal, then, should be to model the effect and use the estimate and the uncertainty in the effect, <em>in combination with the goals of the analysis</em>, to make any decision about dropping a term.</li>
-</ol>
-</div>
-<div id="working-in-r-3" class="section level2">
-<h2><span class="header-section-number">12.4</span> Working in R</h2>
-<p>A <strong>full-factorial</strong> model with two factors is specified in the model formula as <code>y ~ A*B</code> where A is the first factor, and B is the second factor. R expands this formula to <code>y ~ A + B + A:B</code> where the colon indicates an interaction (multiplicative) effect.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># re-label levels and convert to factors.</span>
-urchin1 &lt;-<span class="st"> </span><span class="kw">copy</span>(urchin)
-urchin1[, CO2<span class="op">:</span><span class="er">=</span><span class="kw">factor</span>(<span class="kw">ifelse</span>(CO2<span class="op">==</span><span class="dv">400</span>,<span class="st">&quot;-&quot;</span>, <span class="st">&quot;+&quot;</span>))]
-urchin1[, Temp<span class="op">:</span><span class="er">=</span><span class="kw">factor</span>(<span class="kw">ifelse</span>(Temp<span class="op">==</span><span class="dv">13</span>, <span class="st">&quot;-&quot;</span>, <span class="st">&quot;+&quot;</span>))]
-fit &lt;-<span class="st"> </span><span class="kw">lm</span>(Resp <span class="op">~</span><span class="st"> </span>Temp<span class="op">*</span>CO2, <span class="dt">data=</span>urchin1) <span class="co"># use urchin1 data with relabeled levels</span>
-<span class="kw">coef</span>(<span class="kw">summary</span>(fit))</code></pre></div>
-<pre><code>##               Estimate Std. Error    t value     Pr(&gt;|t|)
-## (Intercept)  8.2333333  0.7255577 11.3475922 3.626935e-10
-## Temp+        4.5100000  1.0260936  4.3953106 2.792573e-04
-## CO2+        -0.3166667  1.0260936 -0.3086138 7.608069e-01
-## Temp+:CO2+  -2.6850000  1.4511155 -1.8503007 7.910035e-02</code></pre>
-<p>The first thing this script does is to re-label the levels of Temp and CO2. The relabeling is more aesthically pleasing in the tabled output. If we didn’t relable, it would be necessary to convert CO2 and Temp to factors or else R would treat these as numeric and not factors.</p>
-<p>The additive model is specified by the formula <code>y ~ A + B</code></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fit &lt;-<span class="st"> </span><span class="kw">lm</span>(Resp <span class="op">~</span><span class="st"> </span>Temp <span class="op">+</span><span class="st"> </span>CO2, <span class="dt">data=</span>urchin1) <span class="co"># use urchin1 data with relabeled levels</span>
-<span class="kw">coef</span>(<span class="kw">summary</span>(fit))</code></pre></div>
-<pre><code>##              Estimate Std. Error   t value     Pr(&gt;|t|)
-## (Intercept)  8.904583  0.6636207 13.418183 9.038657e-12
-## Temp+        3.167500  0.7662831  4.133590 4.721000e-04
-## CO2+        -1.659167  0.7662831 -2.165214 4.203445e-02</code></pre>
-</div>
-<div id="problems-3" class="section level2">
-<h2><span class="header-section-number">12.5</span> Problems</h2>
-<ol style="list-style-type: decimal">
-<li><p>Draw four <span class="math inline">\(2 \times 2\)</span> tables and label the row and column headers using the levels of the urchin treatment. In the first table, insert the cell means. In the 2nd table, insert the equation for the coefficient. In the third table, solve the equations. And in the fourth column, insert the estimates from the table above. Are tables 3 and 4 the same? If not, you’ve goofed somewhere.</p></li>
-<li><p>Frew et al. (2017) showed that increasing atomospheric CO2 increases grub activity in the soil which in turn increases root damage to sugarcane. They used a 2 x 2 experiment to then show that silicon added to the soild decreased the damage to the roots by the grubs (silicon minerals are very hard and plants uptake silicon from the soil to mineralize tissues to protect against insect damage). There are lots of analyses in the paper, but I want you to reproduce Fig. 4b, but using gg_interaction_plot and fit the model using lm.</p></li>
-</ol>
-<p>(The treatment assignments are in a different file than the experimental results. Use the <code>merge</code> function to glue the two tables together, keying on the common column “plant”)</p>
-<ol style="list-style-type: decimal">
-<li><strong>file name</strong>: “canegrub_feedingtrial.csv”</li>
-<li><strong>file name</strong>: “treatments.csv”</li>
-<li><strong>source</strong>: <a href="https://datadryad.org/resource/doi:10.5061/dryad.r3s16" class="uri">https://datadryad.org/resource/doi:10.5061/dryad.r3s16</a></li>
-</ol>
-<div class="figure">
-<img src="images/frew_fig_4b.png" alt="Frew et al. Figure 4b" style="width:50.0%" />
-<p class="caption">Frew et al. Figure 4b</p>
-</div>
-<ol start="3" style="list-style-type: decimal">
-<li>Kardol et al investigated the effect of moss growth in response to rainfall and community structure. Analyze the effect of these two factors on biomass gain and generate a Harrell plot alternative to their bar plot in Fig. 3 (see below). What is striking about your plot compared to theirs?</li>
-</ol>
-<p><strong>Filename</strong> “Data file for Dryad.xlsx” <strong>sheet</strong> “Data” **Source*:** <a href="https://datadryad.org/resource/doi:10.5061/dryad.66d5f" class="uri">https://datadryad.org/resource/doi:10.5061/dryad.66d5f</a></p>
-<div class="figure">
-<img src="images/kardol_fig_3.png" alt="Kardol et al. Figure 3" style="width:50.0%" />
-<p class="caption">Kardol et al. Figure 3</p>
-</div>
-<ol start="4" style="list-style-type: decimal">
-<li>(Grad students only) Generate a fake experiment! The experiment should have two factors each with two levels. Experiment with power by varying sample size and effect size.</li>
-</ol>
+<p>The data are the measured lifespans of the short-tailed field vole (<em>Microtus agrestis</em>) under three different experimental treatments: vitamin E supplementation, vitamin C supplementation, and control (no vitamin supplementation). Vitamins C and E are antioxidants, which are thought to be protective of basic cell function since they bind to the cell-damaging reactive oxygen species that result from cell metabolism.</p>
+<p>I’ve read in the file using read_excel and converted to a data.table named <code>vole</code>. I used <code>setnames</code> to rename the columns to lifespan, control, vitamin_E, and vitamin_C. The data are in a <strong>wide format</strong> – that is instead of a single “treatment” column, there are three columns (“control”, “vitamin C”, “vitamin E”) with value = 1, if that row (or lifespan) was assigned the treatment of the column label and zero otherwise. In general, we want data.tables to be in long format. Wide formats can be useful for some computations but not really for these data.</p>
+<p>Compute the standard error of the mean of the lifespan for the control group using equation <a href="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals.html#eq:se">(4.2)</a>. One simple way to do this for the control group is to extract the subset of the data satisfying the condition control = 1 (the value in the column “control” equals 1). In R, these conditional querries use <code>==</code>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">y &lt;-<span class="st"> </span><span class="kw">na.omit</span>(vole[control<span class="op">==</span><span class="dv">1</span>, lifespan]) <span class="co"># subset of data satisfying condition and omitting missing data, if these exist</span>
+n &lt;-<span class="st"> </span><span class="kw">length</span>(y) <span class="co"># the sample size</span>
+se &lt;-<span class="st"> </span><span class="kw">sd</span>(y)<span class="op">/</span><span class="kw">sqrt</span>(n<span class="op">-</span><span class="dv">1</span>) <span class="co"># standard error of the mean</span></code></pre></div>
+<p>Okay, the SEM using equation <a href="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals.html#eq:se">(4.2)</a> is 31.9. Let’s compare this with a bootstrap estimate of the SEM.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">n_iter &lt;-<span class="st"> </span><span class="dv">2000</span> <span class="co"># number of bootstrap iterations</span>
+means &lt;-<span class="st"> </span><span class="kw">numeric</span>(n_iter) <span class="co"># we will save the means each iteration to this</span>
+inc &lt;-<span class="st"> </span><span class="dv">1</span><span class="op">:</span>n <span class="co"># the first sample is the actual sample</span>
+<span class="cf">for</span>(iter <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>n_iter){ <span class="co"># the for loop</span>
+  means[iter] &lt;-<span class="st"> </span><span class="kw">mean</span>(y[inc])
+  inc &lt;-<span class="st"> </span><span class="kw">sample</span>(<span class="dv">1</span><span class="op">:</span>n, <span class="dt">replace=</span><span class="ot">TRUE</span>) <span class="co"># re-sample for the next iteration</span>
+}
+se_boot &lt;-<span class="st"> </span><span class="kw">sd</span>(means)
+
+<span class="co">#compare</span>
+se</code></pre></div>
+<pre><code>## [1] 31.89536</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">se_boot</code></pre></div>
+<pre><code>## [1] 30.93843</code></pre>
+<p>dayum!</p>
 
 </div>
 </div>
@@ -727,8 +540,8 @@ fit &lt;-<span class="st"> </span><span class="kw">lm</span>(Resp <span class="o
           </div>
         </div>
       </div>
-<a href="plotting-models.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="adding-covariates-to-a-linear-model.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="an-introduction-to-statistical-modeling.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="covariance-and-correlation.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -758,7 +571,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/rstudio/bookdown-demo/edit/master/chapters/34-factorial.Rmd",
+"link": "https://github.com/rstudio/bookdown-demo/edit/master/chapters/15-uncertainty_sd_and_se.Rmd",
 "text": "Edit"
 },
 "history": {

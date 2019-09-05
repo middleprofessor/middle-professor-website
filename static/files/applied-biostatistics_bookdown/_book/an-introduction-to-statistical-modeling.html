@@ -5,11 +5,11 @@
 
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Chapter 12 Two (or more) Categorical \(X\) – Factorial designs | Elementary Statistical Modeling for Applied Biostatistics</title>
+  <title>Chapter 3 An Introduction to Statistical Modeling | Elementary Statistical Modeling for Applied Biostatistics</title>
   <meta name="description" content="A first course in statistical modeling for biology students">
   <meta name="generator" content="bookdown  and GitBook 2.6.7">
 
-  <meta property="og:title" content="Chapter 12 Two (or more) Categorical \(X\) – Factorial designs | Elementary Statistical Modeling for Applied Biostatistics" />
+  <meta property="og:title" content="Chapter 3 An Introduction to Statistical Modeling | Elementary Statistical Modeling for Applied Biostatistics" />
   <meta property="og:type" content="book" />
   
   
@@ -17,7 +17,7 @@
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Chapter 12 Two (or more) Categorical \(X\) – Factorial designs | Elementary Statistical Modeling for Applied Biostatistics" />
+  <meta name="twitter:title" content="Chapter 3 An Introduction to Statistical Modeling | Elementary Statistical Modeling for Applied Biostatistics" />
   
   <meta name="twitter:description" content="A first course in statistical modeling for biology students" />
   
@@ -31,8 +31,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   
   
-<link rel="prev" href="plotting-models.html">
-<link rel="next" href="adding-covariates-to-a-linear-model.html">
+<link rel="prev" href="part-ii-some-fundamentals-of-statistical-modeling.html">
+<link rel="next" href="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals.html">
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -343,382 +343,151 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="two-or-more-categorical-x-factorial-designs" class="section level1">
-<h1><span class="header-section-number">Chapter 12</span> Two (or more) Categorical <span class="math inline">\(X\)</span> – Factorial designs</h1>
-<div id="factorial-experiments" class="section level2">
-<h2><span class="header-section-number">12.1</span> Factorial experiments</h2>
-<p>A factorial experiment is one in which there are two or more categorical <span class="math inline">\(X\)</span> that are <strong>crossed</strong>, so the groups contain different combinations of levels of each factor. Factorial experiments are used to estimate the <strong>interaction</strong> between factors. Let’s explore this using data from xxx</p>
-<p>The urchin data are from an experiment measuring the effect of <span class="math inline">\(Temp\)</span> and <span class="math inline">\(CO2\)</span> on larval sea urchin metabolic rate (<span class="math inline">\(Resp\)</span>) (there are other outcome measures in the study too). The units of metabolic rate are pmol O2/hr/larva. There are two <span class="math inline">\(Temp\)</span> levels (13C and 18C) and two <span class="math inline">\(CO2\)</span> levels (400 µAtm and 1100) and the factors are crossed, so this is a <span class="math inline">\(2 \times 2\)</span> (crossed or factorial) design. There are <span class="math inline">\(n=6\)</span> replicates for each combination of the levels. A good way to visualize the treatment combinations in a crossed design is with a <span class="math inline">\(m \times p\)</span> table showing all combinations of the <span class="math inline">\(m\)</span> levels of factor 1 (<span class="math inline">\(Temp\)</span>) against the <span class="math inline">\(p\)</span> levels of factor 2 (<span class="math inline">\(CO2\)</span>)</p>
-<div class="figure">
-<img src="images/2x2_table.png" alt="The urchin experimental design as a 2 x 2 table" style="width:50.0%" />
-<p class="caption">The urchin experimental design as a 2 x 2 table</p>
-</div>
-<p>The upper left cell contains the 13C level with the Temperature factor and the 400 µAtm level within the CO2 factor. The replicates in this cell were grown with no added treatments, so this cell is the “control” for Temp and the control for CO2, which we will use as the “reference” group for the linear model. The replicates in the lower left cell were grown with an added temperature treatment (in this case, a 5 C higher temperature). The replicates in the upper right cell were grown an added CO2 treatment (a 700 µATM higher CO2). And finally, the replicates in the bottom right cell were grown with both the added temperature (+5 C) and added CO2 (+700 µATM). Here, I use a “+” or “-” to designate the addition (or not) of the treatment, so our <span class="math inline">\(2 \times 2\)</span> treatment levels are Temp-/CO2-, Temp+/CO2-, Temp-/CO2+ and Temp+/CO2+.</p>
-<div id="model-coefficients-an-interaction-effect-is-what-is-leftover-after-adding-the-treatment-effects-to-the-control" class="section level3">
-<h3><span class="header-section-number">12.1.1</span> Model coefficients: an interaction effect is what is leftover after adding the treatment effects to the control</h3>
-<p>A factorial design allows a researcher to estimate the interaction between two factors. To clarify this, let’s fit the factorial model and look at the coefficient table. The fit model is</p>
-<span class="math display">\[\begin{equation}
-Resp_i = b_0 + b_1 Temp^+ + b_2 CO2^+ + b_3 Temp^+ CO2^+ + e_i
+<div id="an-introduction-to-statistical-modeling" class="section level1">
+<h1><span class="header-section-number">Chapter 3</span> An Introduction to Statistical Modeling</h1>
+<p>This chapter introduces statistical modeling using the <strong>linear model</strong>. All students are familiar with the idea of a linear model from learning the equation of a line, which is</p>
+<span class="math display" id="eq:line">\[\begin{equation}
+Y = mX + b
+\tag{3.1}
 \end{equation}\]</span>
-<p>% Again, <span class="math inline">\(Temp^+\)</span> and <span class="math inline">\(CO2^+\)</span> are dummy variables. The model also includes <span class="math inline">\(Temp^+ CO2^+\)</span>, which is a dummy variable for the interaction between Temp and CO2. The value of this interaction dummy variable is literally the product of the two main factor dummy variables (<span class="math inline">\(Temp^+\)</span> and <span class="math inline">\(CO2^+\)</span>), which can be verified with the model matrix (which here, is computed from the subset of the data that includeds only the first two rows of each treatment combination)</p>
-<table>
-<thead>
-<tr class="header">
-<th align="right">(Intercept)</th>
-<th align="right">Temp+</th>
-<th align="right">CO2+</th>
-<th align="right">Temp+:CO2+</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="right">1</td>
-<td align="right">0</td>
-<td align="right">0</td>
-<td align="right">0</td>
-</tr>
-<tr class="even">
-<td align="right">1</td>
-<td align="right">0</td>
-<td align="right">0</td>
-<td align="right">0</td>
-</tr>
-<tr class="odd">
-<td align="right">1</td>
-<td align="right">1</td>
-<td align="right">0</td>
-<td align="right">0</td>
-</tr>
-<tr class="even">
-<td align="right">1</td>
-<td align="right">1</td>
-<td align="right">0</td>
-<td align="right">0</td>
-</tr>
-<tr class="odd">
-<td align="right">1</td>
-<td align="right">0</td>
-<td align="right">1</td>
-<td align="right">0</td>
-</tr>
-<tr class="even">
-<td align="right">1</td>
-<td align="right">0</td>
-<td align="right">1</td>
-<td align="right">0</td>
-</tr>
-<tr class="odd">
-<td align="right">1</td>
-<td align="right">1</td>
-<td align="right">1</td>
-<td align="right">1</td>
-</tr>
-<tr class="even">
-<td align="right">1</td>
-<td align="right">1</td>
-<td align="right">1</td>
-<td align="right">1</td>
-</tr>
-</tbody>
-</table>
-<p>The coefficient table is</p>
-<table>
-<thead>
-<tr class="header">
-<th></th>
-<th align="right">Estimate</th>
-<th align="right">Std. Error</th>
-<th align="right">t value</th>
-<th align="right">Pr(&gt;|t|)</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>(Intercept)</td>
-<td align="right">8.23</td>
-<td align="right">0.73</td>
-<td align="right">11.3</td>
-<td align="right">0.000</td>
-</tr>
-<tr class="even">
-<td>Temp+</td>
-<td align="right">4.51</td>
-<td align="right">1.03</td>
-<td align="right">4.4</td>
-<td align="right">0.000</td>
-</tr>
-<tr class="odd">
-<td>CO2+</td>
-<td align="right">-0.32</td>
-<td align="right">1.03</td>
-<td align="right">-0.3</td>
-<td align="right">0.761</td>
-</tr>
-<tr class="even">
-<td>Temp+:CO2+</td>
-<td align="right">-2.68</td>
-<td align="right">1.45</td>
-<td align="right">-1.9</td>
-<td align="right">0.079</td>
-</tr>
-</tbody>
-</table>
-<p>The Intercept (<span class="math inline">\(b_0\)</span>) is the mean (8.23) of the reference (Temp-/CO2-) group, and so the mean of the upper left cell in Table 1). The Temp+ coefficient (<span class="math inline">\(b_1\)</span>) is the estimate of the added temperature effect relative to the reference, and so is the mean of the lower left cell minus the mean of the upper left cell (<span class="math inline">\(b_1=\bar{Y}_{Temp^+}-\bar{Y}_{-/-}\)</span>). The CO2+ coefficient (<span class="math inline">\(b_2\)</span>) is the estimate of the added CO2 effect relative to the reference, and so is the mean of the upper right cell minus the mean of the upper left cell (<span class="math inline">\(b_2=\bar{Y}_{CO2^+}-\bar{Y}_{-/-}\)</span>). The Temp+:CO2+ coefficient (<span class="math inline">\(b_3\)</span>) is the estimate of the <strong>interaction effect</strong>, which is the effect in addition to the Temp<span class="math inline">\(^+\)</span> and CO2<span class="math inline">\(^+\)</span> effects. If you added <span class="math inline">\(b_1\)</span> and <span class="math inline">\(b_2\)</span> to <span class="math inline">\(b_0\)</span>, you would get the mean of the Temp<span class="math inline">\(^+\)</span>/CO2<span class="math inline">\(^+\)</span> group <em>if the effects were purely additive</em>. So the interaction effect is the difference between the mean of the bottom right cell and the sum of the coefficients of the other three cells (<span class="math inline">\(b_3 = \bar{Y}_{Temp^+CO2^+} - (b0 + b1 + b2)\)</span>). An interaction is a <strong>non-additive effect</strong>. Think about this. Adding 5 C increases respiration by 4.51 units. Adding 700 <span class="math inline">\(\mu\)</span>ATM CO2 decreases respiration by .32 units. If these effects were purely additive, then adding both 5 C and 700 <span class="math inline">\(\mu\)</span>ATM should result in a mean of 8.23 + 4.51 - .32 = 12.42 units for the Temp<span class="math inline">\(^+\)</span>/CO2<span class="math inline">\(^+\)</span> group. What is the mean of this group?</p>
-<p>9.74! So the difference between the ``additive expectation’’ and the actual mean is <span class="math inline">\(9.74 - 12.42 = -2.68\)</span>, which is the interaction effect (coefficient).</p>
+<p>where <span class="math inline">\(m\)</span> is the slope of the line and <span class="math inline">\(b\)</span> is the <span class="math inline">\(Y\)</span>-intercept. It is useful to think of equation <a href="an-introduction-to-statistical-modeling.html#eq:line">(3.1)</a> as a function that maps values of <span class="math inline">\(X\)</span> to values of <span class="math inline">\(Y\)</span>. Using this function, if we input some value of <span class="math inline">\(X\)</span>, we always get the same value of Y as the output.</p>
+<p>A linear model is a function, like that in equation <a href="an-introduction-to-statistical-modeling.html#eq:line">(3.1)</a>, that is fit to a set of data, often to model a process that generated the data or something like the data. The line in Figure <a href="an-introduction-to-statistical-modeling.html#fig:line">3.1</a>A is just that, a line, but the line in Figure <a href="an-introduction-to-statistical-modeling.html#fig:line">3.1</a>B is a linear model fit to the data in Figure <a href="an-introduction-to-statistical-modeling.html#fig:line">3.1</a>B.</p>
+<div class="figure"><span id="fig:line"></span>
+<img src="Walker-elementary-statistical-modeling-draft_files/figure-html/line-1.png" alt="A line vs. a linear model. (A) the line $y=-3.48X + 105.7$ is drawn. (B) A linear model fit to the data. The model coefficients are numerically equal to the slope and intercept of the line in A." width="576" />
+<p class="caption">
+Figure 3.1: A line vs. a linear model. (A) the line <span class="math inline">\(y=-3.48X + 105.7\)</span> is drawn. (B) A linear model fit to the data. The model coefficients are numerically equal to the slope and intercept of the line in A.
+</p>
 </div>
-<div id="what-is-the-biological-meaning-of-an-interaction-effect" class="section level3">
-<h3><span class="header-section-number">12.1.2</span> What is the biological meaning of an interaction effect?</h3>
-<p>I can dead lift 150 pounds and my friend Jake can deadlift 175 pounds. Working together, we should be able to lift 325 pounds. What if together, we could actually lift 400 pounds? If this were the case, this would be an interaction with an effect equal to 75 pounds. Is this biologically plausible? If so, what is the mechanism? Here is a possible mechanism (although I am highly skeptical of it having a magnitude of 75 pounds): when lifting an object as part of a group, the central nervous system allows increased motor unit recruitment, and so each person can lift more weight than they could if lifting alone. A positive interaction like this is called <em>synergistic</em>. Always think about the biological meaning of an interaction effect.</p>
-</div>
-<div id="what-about-models-with-more-than-two-factors" class="section level3">
-<h3><span class="header-section-number">12.1.3</span> What about models with more than two factors?</h3>
-<p>A factorial model can have more than two factors, for example, a model with three factors (A, B, and C), each with two levels (which I’ll designate with a “+”), is</p>
+<div id="two-specifications-of-a-linear-model" class="section level2">
+<h2><span class="header-section-number">3.1</span> Two specifications of a linear model</h2>
+<div id="the-random-error-specification" class="section level3">
+<h3><span class="header-section-number">3.1.1</span> The “random error” specification</h3>
+<p>A linear model is commonly specified using</p>
+<span class="math display" id="eq:lm">\[\begin{align}
+Y &amp;= \beta_0 + \beta_1 X + \varepsilon\\
+\tag{3.2}
+\end{align}\]</span>
+<p>This specification of a linear model has two parts: the <strong>linear predictor</strong> <span class="math inline">\(Y = \beta_0 + \beta_1 X\)</span> and the <strong>error</strong> <span class="math inline">\(\varepsilon\)</span>. The linear predictor part looks like the equation for a line except that 1) <span class="math inline">\(\beta_0\)</span> is used for the intercept and <span class="math inline">\(\beta_1\)</span> for the slope and 2) the intercept term precedes the slope term. This re-labeling and re-arrangement make the notation for a linear model more flexible for more complicated linear models. For example <span class="math inline">\(Y = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \varepsilon\)</span> is a model where <span class="math inline">\(Y\)</span> is a function of two <span class="math inline">\(X\)</span> variables.</p>
+<p>As with the equation for a line, the linear predictor part of a linear model is a function that maps a specific value of <span class="math inline">\(X\)</span> to a value of <span class="math inline">\(Y\)</span>. This mapped value is the <strong>expected value</strong> given a specific input value of <span class="math inline">\(X\)</span>. This is often written as <span class="math inline">\(\mathrm{E}[Y|X]\)</span>, which is read as “the expected value of <span class="math inline">\(Y\)</span> given <span class="math inline">\(X\)</span>”, where “given X” means a specific value of X. Importantly, <span class="math inline">\(\mathrm{E}[Y|X]\)</span> is the <strong>conditional mean</strong>, which is the <em>modeled</em> value of <span class="math inline">\(Y\)</span> for all observations in which <span class="math inline">\(X\)</span> takes some specific value <span class="math inline">\(x\)</span>.</p>
+Introductory textbooks almost always introduce linear models using equation <a href="an-introduction-to-statistical-modeling.html#eq:lm">(3.2)</a> above. The key part of the model that is missing from the specification above is a second line
 <span class="math display">\[\begin{equation}
-Y = \beta_0 + \beta_1 A^+ + \beta_1 B^+ + \beta_3 C^+ + \beta_4 A^+ B^+ + \beta_5 A^+ C^+ + \beta_6 B^+ C^+ + \beta_7 A^+ B^+ C^+ + \varepsilon
+\varepsilon \sim N(0, \sigma^2)
 \end{equation}\]</span>
-<p>It is easy enough to get an ANOVA table with <span class="math inline">\(p\)</span>-values for this model but I don’t recommend it because</p>
-<ol style="list-style-type: decimal">
-<li>If space and/or time and/or materials are limited then it typically makes more sense to prioritize the power to estimate standard errors by choosing one of the two-factor models and increasing sample size</li>
-<li>Interaction effects in 2-factor models are hard enough to interpret. A 3-way interaction is very, very tough to interpret. If all we did was table up <span class="math inline">\(F\)</span>-ratios and <span class="math inline">\(p\)</span>-values, this wouldn’t matter. But it does matter.</li>
-</ol>
+<p>which is read as “epsilon is distributed as Normal with mean zero and variance sigma squared”. This line explicitly specifies the distribution of the error part. The error part of a linear model is a random “draw” from a normal distribution with mean zero and variance <span class="math inline">\(\sigma^2\)</span>. Think of this as adding some random value to the expected value.</p>
 </div>
-<div id="the-additive-model" class="section level3">
-<h3><span class="header-section-number">12.1.4</span> The additive model</h3>
-<p>Sometimes researchers fit reduced models. For example, the <span class="math inline">\(p\)</span>-value for the interaction effect in the full model is 0.079, which is not statististically significant. This would lead some researchers to explicitly conclude (mistakenly), that there is no interaction between CO2 and Temp and that the effects of CO2 and Temp on metabolism are <strong>additive</strong> (see below). This would lead others (controversially) to refit the model excluding the interaction term:</p>
+<div id="the-random-draw-specification" class="section level3">
+<h3><span class="header-section-number">3.1.2</span> The “random draw” specification</h3>
+<p>A second way of specifying a linear model is</p>
+<span class="math display" id="eq:lm-spec2">\[\begin{align}
+y_i &amp;\sim N(\mu_i, \sigma)\\
+\mathrm{E}(Y|X) &amp;= \mu\\
+\mu_i &amp;= \beta_0 + \beta_1 x_i
+\tag{3.3}
+\end{align}\]</span>
+<p>The first line states that the response variable <span class="math inline">\(Y\)</span> is a random variable independently drawn from a normal distribution with mean <span class="math inline">\(\mu\)</span> and variance <span class="math inline">\(\sigma^2\)</span>. This first line is the <strong>stochastic</strong> part of the statistical model. The second line simply states that <span class="math inline">\(\mu\)</span> (the greek letter “mu”) from the first line is the conditional mean or conditional expectation. The third line states how <span class="math inline">\(Y\)</span> is generated given a value of <span class="math inline">\(X\)</span>. This is the linear predictor, which is the <strong>systematic</strong> (or deterministic) part of the statistical model.</p>
+</div>
+<div id="comparing-the-two-ways-of-specifying-the-linear-model" class="section level3">
+<h3><span class="header-section-number">3.1.3</span> Comparing the two ways of specifying the linear model</h3>
+<p>These two ways of specifying the model encourage slightly different ways of thinking about how the data (the response varible <span class="math inline">\(Y\)</span>) were generated. The random error specification “generates” data by randomly drawing some error <span class="math inline">\(\varepsilon_i\)</span> from the specified distribution and adding this to <span class="math inline">\(x_i\)</span>. The random draw specification “generates” data by constructing what <span class="math inline">\(y_i\)</span> should be, and then drawing a random variable from a distribution with this expectation. This random draw is <span class="math inline">\(y_i\)</span> and not the “error”. For the random error generation, we need only one hat of random numbers, but for the random draw generation, we need a hat for each value of <span class="math inline">\(x_i\)</span> because we are drawing the response (<span class="math inline">\(y_i\)</span>) and not the error (<span class="math inline">\(\varepsilon_i\)</span>).</p>
+<p>The random draw specification explicitly defines all parameters, including the parameters of the linear predictor (<span class="math inline">\(\beta_0\)</span> and <span class="math inline">\(\beta_1\)</span>), the conditional mean <span class="math inline">\(\mu\)</span> and the variance <span class="math inline">\(\sigma\)</span>. The random error specification only defines the parameters of the linear predictor, and often these are referrred to as “the parameters” in the sense that there are not other parameters. The random error specification is most useful for thinking about model checking a fit linear model. Importantly, thinking about a model as a predictor plus error can lead to misconceptions of generalized linear models. The random draw specification is more generally useful in that it is easily generalized to more complex models, including hierarchical models, generalized linear models, and Bayesian models.</p>
+<p>Although a linear model (or statistical model more generally) is a model of a data-generating process, linear models are not typically used to actually generate any data. Instead, when we use a linear model to understand something about a real dataset, we think of our data as one realization of a process that generates data like ours. A linear model is a model of that process. That said, it is incredibly useful to use linear models to create fake datasets for at least two reasons: to probe our understanding of statistical modeling generally and, more specifically, to check that a model actually creates data like that in the real dataset that we are analyzing.</p>
+</div>
+</div>
+<div id="what-do-we-call-the-x-and-y-variables" class="section level2">
+<h2><span class="header-section-number">3.2</span> What do we call the <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> variables?</h2>
+<p>The inputs to a linear model (the <span class="math inline">\(X\)</span> variables) have many names including “independent variables,” “predictor variables,”, “explanatory variables,” “treatment variables,” and “covariates”. The output of a linear model (the <span class="math inline">\(Y\)</span> variable or variables if the model is multivariate) is the “dependent variable,” “response,” or “outcome.” The <span class="math inline">\(\beta\)</span> in the linear model are model <strong>parameters</strong> and if a parameter is multiplied by an <span class="math inline">\(X\)</span> variable then it is also a <strong>coefficient</strong> (for example, <span class="math inline">\(\beta_1\)</span> in model <a href="an-introduction-to-statistical-modeling.html#eq:lm">(3.2)</a> is a coefficient). The coefficients of the <span class="math inline">\(X\)</span> in a linear model (<span class="math inline">\(\beta_1\)</span> in model <a href="an-introduction-to-statistical-modeling.html#eq:lm">(3.2)</a>) are often called “the effects” (so <span class="math inline">\(\beta_1\)</span> is the effect of <span class="math inline">\(X_1\)</span>).</p>
+</div>
+<div id="statistical-models-are-used-for-prediction-explanation-and-description" class="section level2">
+<h2><span class="header-section-number">3.3</span> Statistical models are used for prediction, explanation, and description</h2>
+<p>Researchers typically use statistical models to understand relationships between one or more <span class="math inline">\(Y\)</span> variables and one or more <span class="math inline">\(X\)</span> variables. These relationships include</p>
+<ol style="list-style-type: decimal">
+<li><p>Descriptive modeling. Sometimes a researcher merely wants to describe the relationship between <span class="math inline">\(Y\)</span> and a set of <span class="math inline">\(X\)</span> variables, perhaps to discover patterns. For example, the arrival of a spring migrant bird (<span class="math inline">\(Y\)</span>) as a function of sex (<span class="math inline">\(X_1\)</span>) and age (<span class="math inline">\(X_2\)</span>) might show that males and younger individuals arrive earlier. Importantly, if another <span class="math inline">\(X\)</span> variable is added to the model (or one dropped), the coefficients, and therefore, the precise description, will change. That is, the interpretation of a coefficient as a descriptor is <em>conditional</em> on the other covariates (<span class="math inline">\(X\)</span> variables) in the model. In a descriptive model, there is no implication of causal effects and the goal is not prediction. Nevertheless, it is very hard for humans to discuss a descriptive model without using causal language, which probably means that it is hard for us to think of these models as <em>mere description</em>. Like natural history, descriptive models are useful as patterns in want of an explanation, using more explicit causal models including experiments.</p></li>
+<li><p>Predictive modeling. Predictive modeling is very common in applied research. For example, fisheries researchers might model the relationship between population density and habitat variables to predict which subset of ponds in a region are most suitable for brook trout (<em>Salvelinus fontinalis</em>) reintroduction. The goal is to build a model with minimal prediction error, which is the error between predicted and actual values for a future sample. In predictive modeling, the <span class="math inline">\(X\)</span> (“predictor”) variables are largely instrumental – how these are related to <span class="math inline">\(Y\)</span> is not a goal of the modeling, although sometimes an investigator may be interested in the relative importance among the <span class="math inline">\(X\)</span> for predicting <span class="math inline">\(Y\)</span> (for example, collecting the data may be time consuming, or expensive, or enviromentally destructive, so know which subset of <span class="math inline">\(X\)</span> are most important for predicting <span class="math inline">\(Y\)</span> is a useful strategy).</p></li>
+<li><p>Explanatory (causal) modeling. Very often, researchers are explicitly interested in <em>how</em> the <span class="math inline">\(X\)</span> variables are causally related to <span class="math inline">\(Y\)</span>. The fisheries researchers that want to reintroduce trout may want to develop and manage a set of ponds to maintain healthy trout populations. This active management requires intervention to change habitat traits in a direction, and with a magnitude, to cause the desired response. This model is predictive – a specific change in <span class="math inline">\(X\)</span> predicts a specific response in <span class="math inline">\(Y\)</span> – because the coefficients of the model provide knowledge on how the system functions – how changes in the inputs <em>cause</em> change in the output. Causal interpretation of model coefficients requires a set of strong assumptions about the <span class="math inline">\(X\)</span> variables in the model. These assumptions are typically met in <strong>experimental designs</strong> but not <strong>observational designs</strong>.</p></li>
+</ol>
+<p>With observational designs, biologists are often not very explicit about which of these is the goal of the modeling and use a combination of descriptive, predictive, and causal language to describe and discuss results. Many papers read as if the researchers intend explanatory inference but because of norms within the biology community, mask this intention with “predictive” language. Here, I advocate embracing explicit, explanatory modeling by being very transparent about the model’s goal and assumptions.</p>
+</div>
+<div id="modeling-strategy" class="section level2">
+<h2><span class="header-section-number">3.4</span> Modeling strategy</h2>
+<ol style="list-style-type: decimal">
+<li><p><strong>choose a model</strong>. Statistical modeling includes a diverse array of models, yet almost all methods used by researchers in biology, and all models in this book, are generalizations of the linear model specified in <a href="#eq:">(<strong>??</strong>)</a>.</p></li>
+<li><p><strong>fit the model</strong>, in order to estimate the model parameters and the uncertainty in these estimates.</p></li>
+<li><p><strong>check the model</strong>, which means to use a series of diagnostic plots and computations of model output to check that the data reasonably approximate the chosen model.</p></li>
+<li><p><strong>inference from the model</strong>, which means to use the fit parameters to learn, with uncertainty, about the system, or to predict future observations, with uncertainty.</p></li>
+<li><p><strong>plot the model</strong>, which means to plot the estimated parameters (or other results dervived from the estimates) with their uncertainty.</p></li>
+</ol>
+<p>In order to use a statistical model to describe, predict, or explain, we need to fit a model to data in order to estimate the parameters. A linear model fit to some data is</p>
+<span class="math display" id="eq:yhat">\[\begin{align}
+\hat{y}_i &amp;= b_0 + b_1 x_i + e_i\\
+\tag{3.4}
+\end{align}\]</span>
+<p><span class="math inline">\(\hat{y}_i\)</span> (“y hat”) is the <strong>predicted value</strong> of individual <span class="math inline">\(i\)</span>, <span class="math inline">\(b_0\)</span> and <span class="math inline">\(b_1\)</span> are the coefficients of the model fit (though technically <span class="math inline">\(b_0\)</span> is not a coefficient), and <span class="math inline">\(e_i\)</span> is the residual. Sometimes <span class="math inline">\(\hat{y}_i\)</span> is simply called “the prediction”.</p>
+<p>If our goal is inference – to infer something about the “population” from the sample using the fit model, then <span class="math inline">\(\hat{y}_i\)</span> is the <strong>point estimate</strong> of the parameter <span class="math inline">\(\mu_i\)</span>, the coefficients <span class="math inline">\(b_0\)</span> and <span class="math inline">\(b_1\)</span> are point estimates of the parameters <span class="math inline">\(\beta_0\)</span> and <span class="math inline">\(\beta_1\)</span>, and the standard deviation of the <span class="math inline">\(e_i\)</span> is an estimate of <span class="math inline">\(\sigma\)</span>. “Population” is in quotes because it is a very abstract concept. Throughout this book, Greek letters refer to a theoretical parameter and Roman letters refer to point estimates.</p>
+<p>Throughout this text, I recommend reporting and interpreting <strong>interval estimates</strong> of the point estimate. A <strong>confidence interval</strong> is a type of interval estimate. A confidence interval of a parameter is a measure of the uncertainty in the estimate. A 95% confidence interval has a 95% probability (in the sense of long-run frequency) of containing the parameter This probability is a property of the population of intervals that could be computed using the same sampling and measuring procedure. It is not correct, without further assumptions, to state that there is a 95% probability that the parameter lies within the interval. Perhaps a more useful interpretation is that the interval is a <strong>compatability interval</strong> in that it contains the range of estimates that are compatible with the data, in the sense that a <span class="math inline">\(t\)</span>-test would not reject the null hypothesis of a difference between the estimate and any value within the interval (this interpretation does not imply anything about the true value).</p>
+<div class="figure"><span id="fig:coldVoles"></span>
+<img src="Walker-elementary-statistical-modeling-draft_files/figure-html/coldVoles-1.png" alt="HarrellPlot of vole data." width="576" />
+<p class="caption">
+Figure 3.2: HarrellPlot of vole data.
+</p>
+</div>
+<p>For the model fit to the data in Figure <a href="an-introduction-to-statistical-modeling.html#fig:line">3.1</a>B, the coefficient of <span class="math inline">\(X\)</span> is the slope of the line. Perhaps surprisingly, we can fit a model like equation <a href="an-introduction-to-statistical-modeling.html#eq:lm">(3.2)</a> to data in which the <span class="math inline">\(X\)</span> variable is categorical. A simple example is the experiment of antioxidants (vitamins C and E) on lifespan in Voles (Fig. <a href="an-introduction-to-statistical-modeling.html#fig:coldVoles">3.2</a>). In this experiment, the <span class="math inline">\(X\)</span> variable is categorical, with three <strong>levels</strong>: “Control”, “Vitamin_E” and “Vitamin_C”. Categorical <span class="math inline">\(X\)</span> variables are often called <strong>factors</strong>. The trick to using a statistical model with categorical <span class="math inline">\(X\)</span> is to recode the factor levels into numbers – how this is done is explained in Chapter xxx. When the <span class="math inline">\(X\)</span> variable is categorical, the coefficients of the <span class="math inline">\(X\)</span> are <em>differences in group means</em>. The linear model fit to the vole data has two coefficients, one for Vitamin E and one for vitamin C. The estimate and uncertainty of the these two coefficients are shown in the top part of Figure <a href="an-introduction-to-statistical-modeling.html#fig:coldVoles">3.2</a>. The bottom part shows the raw data, as well as the group (factor level) means and the uncertainty in the estimate of these means.</p>
+</div>
+<div id="a-mean-is-the-simplest-model" class="section level2">
+<h2><span class="header-section-number">3.5</span> A mean is the simplest model</h2>
+<p>The simplest possible model that can be fit to the data is</p>
+<span class="math display" id="eq:unconditional">\[\begin{equation}
+\mathrm{E}[Y] = b_0
+\tag{3.5}
+\end{equation}\]</span>
+<p>which is simply the mean of <span class="math inline">\(Y\)</span>, or, more specifically, the <strong>unconditional mean</strong> of <span class="math inline">\(Y\)</span>, since its value is not conditional on any value of <span class="math inline">\(X\)</span>.</p>
+</div>
+<div id="assumptions-for-inference-with-a-statistical-model" class="section level2">
+<h2><span class="header-section-number">3.6</span> Assumptions for inference with a statistical model</h2>
+<p><strong>Inference</strong> refers to using the fit model to generalize from the sample to the population, which assumes that the response is drawn from some specified probability distribution (Normal, or Poisson, or Bernouli, etc.). Throughout this text, I emphasize reporting and interpreting point estimates and confidence intervals. Another kind of inference is a <strong>significance test</strong>, which is the computation of the probability of “seeing the data” or something more extreme than the data, given a specified null hypothesis. A significance test results in a <strong>p-value</strong>, which can be reported with the point estimate and confidence interval. Somewhat related to a significance test is a hypothesis test, or what is now often perjoratively called a <strong>Null-Hypothesis Signficance Test</strong> (NHST), in which the <span class="math inline">\(p\)</span>-value from a significance test is compared to a pre-specified error rate called <span class="math inline">\(\alpha\)</span>. NHST may be useful for some very limited kinds of science but, in general, is not useful for most biological research and, instead, leads to large misconceptions. A general rule of thumb is, do not compare a reported <span class="math inline">\(p\)</span>-value to <span class="math inline">\(\alpha\)</span>.</p>
+<ol style="list-style-type: decimal">
+<li>The data were generated by a process that is “linear in the parameters”, which means that the different components of the model are added together. This additive part of the model containing the parameters is the linear predictor in specifications <a href="an-introduction-to-statistical-modeling.html#eq:lm">(3.2)</a> and <a href="an-introduction-to-statistical-modeling.html#eq:lm-spec2">(3.3)</a> above. For example, a cubic polynomial model</li>
+</ol>
 <span class="math display">\[\begin{equation}
-Resp_i = b_0 + b_1Temp^+ + b_2CO2^+ + e_i
+\mathrm{E}(Y|X) = \beta_0 + \beta_1 X + \beta_2 X^2 + \beta_3 X^3
 \end{equation}\]</span>
-<p>% This particular reduced model is often referred to as the <strong>additive model</strong>, since it excludes the the interaction term, which is a <em>product</em> of other terms. Indeed, the title of the urchin paper is “Temperature and CO2 additively regulate physiology, morphology and genomic responses of larval sea urchins, <em>Strongylocentrotus purpuratus</em>.” It is important to recognize that unless the interaction effect is precisely zero, the coefficients of Temp+ and CO2+ will change. Here are the coefficients of the additive model</p>
-<table>
-<thead>
-<tr class="header">
-<th></th>
-<th align="right">Estimate</th>
-<th align="right">Std. Error</th>
-<th align="right">t value</th>
-<th align="right">Pr(&gt;|t|)</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>(Intercept)</td>
-<td align="right">8.90</td>
-<td align="right">0.66</td>
-<td align="right">13.4</td>
-<td align="right">0.000</td>
-</tr>
-<tr class="even">
-<td>Temp+</td>
-<td align="right">3.17</td>
-<td align="right">0.77</td>
-<td align="right">4.1</td>
-<td align="right">0.000</td>
-</tr>
-<tr class="odd">
-<td>CO2+</td>
-<td align="right">-1.66</td>
-<td align="right">0.77</td>
-<td align="right">-2.2</td>
-<td align="right">0.042</td>
-</tr>
-</tbody>
-</table>
-<p>For several reasons, one should not drop a term because <span class="math inline">\(p&gt;0.05\)</span>.</p>
+<p>is a linear model, even though the function is non-linear, because the different components are added. Because a linear predictor is additive, it can be compactly defined using matrix algebra</p>
+<span class="math display">\[\begin{equation}
+\mathrm{E}(Y|X) = \mathbf{X}\boldsymbol{\beta}
+\end{equation}\]</span>
+<p>where <span class="math inline">\(mathbf{X}\)</span> is the <strong>model matrix</strong> and <span class="math inline">\(\boldsymbol{\beta}\)</span> is the vector of parameters. We discuss these more in chapter xxx.</p>
+<p>A <strong>Generalized Linear Model</strong> (GLM) has the form <span class="math inline">\(g(\mu_i) = \eta_i\)</span> where <span class="math inline">\(\eta\)</span> (the Greek letter “eta”) is the linear predictor</p>
+<span class="math display">\[\begin{equation}
+\eta = \mathbf{X}\boldsymbol{\beta} 
+\end{equation}\]</span>
+<p>GLMs are extensions of linear models. There are non-linear models that are not linear in the parameters, that is, the predictor is not a simple dot product of the model matrix and a vector of parameters. For example, the Michaelis-Menten model is a non-linear model</p>
+<span class="math display">\[\begin{equation}
+\mathrm{E}(Y|X)  = \frac{\beta_1 X}{\beta_2 + X}
+\end{equation}\]</span>
+<p>that is non-linear in the parameters because the parts are not added together. This text covers linear models and generalized linear models, but not non-linear models that are also non-linear in the parameters.</p>
+<ol start="2" style="list-style-type: decimal">
+<li>The draws from the probability distribution are <strong>independent</strong>. Independence implies <strong>uncorrelated</strong> observations (the <span class="math inline">\(Y\)</span>), that is, for any two observations with the same value of <span class="math inline">\(X\)</span>, we cannot predict the value of one given the value of the other. For example, in the vole data above, uncorrelated implies that we cannot predict the lifespan of one vole within the Vitamin E treatment given the lifespan of another vole in the Vitamin E treatment. For linear models, this assumption is often stated as “independent errors” (the <span class="math inline">\(\varepsilon\)</span> in model <a href="an-introduction-to-statistical-modeling.html#eq:lm">(3.2)</a>) instead of independent observations.</li>
+</ol>
+<p>There are lots of reasons that observations might be correlated. In the vole example, perhaps the voles were housed in batches of 5 individuals, and slight differences in the environment among the housing containers, caused all the voles in some containers to have shorter lifespans than expected given their treatment assigment and all voles in other containers to have longer lifespans than expected given their treatment assigment. More generally, if there are measures both within and among experimental units (field sites or humans or rats) then we’d expect the measures within the same unit to err from the model in the same direction. Multiple measures within experimental units (a site or individual) creates “clustered” observations. Lack of independence or clustered observations can be modeled using models with <strong>random effects</strong>. These models go by many names including linear mixed models (common in Ecology), hierarchical models, multilevel models, and random effects models. A linear mixed model is a variation of model <a href="an-introduction-to-statistical-modeling.html#eq:lm">(3.2)</a>. This text introduces linear mixed models in chapter xxx.</p>
+<p>Measures that are taken from sites that are closer together or measures taken closer in time or measures from more closely related biological species will tend to have more similar values than measures taken from sites that are further apart or from times that are further apart or from species that are less closely related. Space and time and phylogeny create <strong>spatial and temporal and phylogenetic autocorrelation</strong>. Correlated error due to space or time or phylogeny can be modeled with <strong>Generalized Least Squares</strong> (GLS) models. A GLS model is a variation of model <a href="an-introduction-to-statistical-modeling.html#eq:lm">(3.2)</a>.</p>
+</div>
+<div id="specific-assumptions-for-inference-with-a-linear-model" class="section level2">
+<h2><span class="header-section-number">3.7</span> Specific assumptions for inference with a linear model</h2>
 <ol style="list-style-type: decimal">
-<li>The <span class="math inline">\(p\)</span>-value is an arbitrary dichotomization of a continuous variable. Would it make sense to behave differently if <span class="math inline">\(p=0.051\)</span> vs. <span class="math inline">\(p=0.049\)</span>, given that these two p-values are effectively identical?</li>
-<li>A <span class="math inline">\(p\)</span>-value is not evidence that an effect is zero, or “doesn’t exist”, or event that an effect is “trivially small”. This is because <span class="math inline">\(p\)</span>-values are a function of measurement error, sampling error, and sample size, in addition to effect size.</li>
+<li><strong>Constant variance</strong> or <strong>homoskedasticity</strong>. The most common way of thinking about this is the error term <span class="math inline">\(\varepsilon\)</span> has constant variance, which is a short way of saying that random draws of <span class="math inline">\(\varepsilon\)</span> in model <a href="an-introduction-to-statistical-modeling.html#eq:lm">(3.2)</a> are all from the same (or <strong>identical</strong>) distribution. This is explicitly stated in the second line of model specification <a href="an-introduction-to-statistical-modeling.html#eq:lm">(3.2)</a>. If we were to think about this using model specification <a href="an-introduction-to-statistical-modeling.html#eq:lm-spec2">(3.3)</a>, then homoskedasticity means that <span class="math inline">\(\sigma\)</span> in <span class="math inline">\(N(\mu, \sigma)\)</span> is constant for all observations (or that the <em>conditional</em> probability distributions are identical, where <em>conditional</em> would mean adjusted for <span class="math inline">\(\mu\)</span>)</li>
 </ol>
-</div>
-<div id="contrasts-simple-vs.main-effects" class="section level3">
-<h3><span class="header-section-number">12.1.5</span> Contrasts – simple vs. main effects</h3>
-<p>In a <span class="math inline">\(m \times p\)</span> design, there are <span class="math inline">\(mp\)</span> cell means and, therefore, <span class="math inline">\(mp(mp-1)/2\)</span> pairwise contrasts. For the urchin data, these are</p>
-<ol style="list-style-type: decimal">
-<li>Temp+/CO2- - Temp-/CO2- (bottom left - top left)</li>
-<li>Temp+/CO2+ - Temp-/CO2+ (bottom right - top right)</li>
-<li>Temp-/CO2+ - Temp-/CO2- (top right - top left)</li>
-<li>Temp+/CO2+ - Temp+/CO2- (bottom right - bottom left)</li>
-<li>Temp-/CO2+ - Temp+/CO2- (top right - bottom left)</li>
-<li>Temp+/CO2+ - Temp-/CO2- (bottom right - top left)</li>
+<p>Many biological processes generate data in which the error is a function of the mean. For example, measures of biological variables that grow, such as lengths of body parts or population size, have variances that “grow” with the mean. Or, measures of counts, such as the number of cells damaged by toxin, the number of eggs in a nest, or the number of mRNA transcripts per cell have variances that are a function of the mean. Heteroskedastic error can be modeled with <strong>Generalized Least Squares</strong>, a generalization of the linear model, and with <strong>Generalized Linear Models</strong> (GLM), which are “extensions” of the classical linear model.</p>
+<ol start="2" style="list-style-type: decimal">
+<li>Normal or <strong>Gaussian</strong> probability distribution. As above, the most common way of thinking about this is the error term <span class="math inline">\(\varepsilon\)</span> is Normal. Using model specification <a href="an-introduction-to-statistical-modeling.html#eq:lm-spec2">(3.3)</a>, we’d say the conditional probablity distribution of the response is normal. A normal probability distribution implies that 1) the response is continuous and 2) the conditional probability is symmetric around <span class="math inline">\(mu_i\)</span>. If the conditional probability distribution has a long left or right tail it is <strong>skewed</strong> left or right. Counts (number of cells, number of eggs, number of mRNA transcripts) and binary responses (sucessful escape or sucessful infestation of host) are not continuous and often often have asymmetric probablity distributions that are skewed to the right and while sometimes both can be reasonably modeled using a linear model they are more often modeled using generalized linear models, which, again, is an extension of the linear model in equation <a href="#eq:lm-lm-spec2">(<strong>??</strong>)</a>.</li>
 </ol>
-<ol style="list-style-type: decimal">
-<li>and (2) are the <strong>simple effects</strong> of Temp at each level of CO2. (3) and (4) are the simple effects of CO2 at each level of Temp. (5) is the response of the CO2 treatment at the reference level of Temp minus the response of the Temp treatment at the reference level of CO2. This probably is not a very interesting contrast. (6) is the combined response of Temp and CO2, including the interaction, minus the control. This also is unlikely to be of much interest.</li>
-</ol>
-<table>
-<thead>
-<tr class="header">
-<th align="left">contrast</th>
-<th align="right">estimate</th>
-<th align="right">SE</th>
-<th align="right">df</th>
-<th align="right">lower.CL</th>
-<th align="right">upper.CL</th>
-<th align="right">t.ratio</th>
-<th align="right">p.value</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="left">Temp+,CO2- - Temp-,CO2-</td>
-<td align="right">4.51</td>
-<td align="right">1.03</td>
-<td align="right">20</td>
-<td align="right">2.4</td>
-<td align="right">6.7</td>
-<td align="right">4.4</td>
-<td align="right">0.000</td>
-</tr>
-<tr class="even">
-<td align="left">Temp-,CO2+ - Temp-,CO2-</td>
-<td align="right">-0.32</td>
-<td align="right">1.03</td>
-<td align="right">20</td>
-<td align="right">-2.5</td>
-<td align="right">1.8</td>
-<td align="right">-0.3</td>
-<td align="right">0.761</td>
-</tr>
-<tr class="odd">
-<td align="left">Temp-,CO2+ - Temp+,CO2-</td>
-<td align="right">-4.83</td>
-<td align="right">1.03</td>
-<td align="right">20</td>
-<td align="right">-7.0</td>
-<td align="right">-2.7</td>
-<td align="right">-4.7</td>
-<td align="right">0.000</td>
-</tr>
-<tr class="even">
-<td align="left">Temp+,CO2+ - Temp-,CO2-</td>
-<td align="right">1.51</td>
-<td align="right">1.03</td>
-<td align="right">20</td>
-<td align="right">-0.6</td>
-<td align="right">3.6</td>
-<td align="right">1.5</td>
-<td align="right">0.157</td>
-</tr>
-<tr class="odd">
-<td align="left">Temp+,CO2+ - Temp+,CO2-</td>
-<td align="right">-3.00</td>
-<td align="right">1.03</td>
-<td align="right">20</td>
-<td align="right">-5.1</td>
-<td align="right">-0.9</td>
-<td align="right">-2.9</td>
-<td align="right">0.008</td>
-</tr>
-<tr class="even">
-<td align="left">Temp+,CO2+ - Temp-,CO2+</td>
-<td align="right">1.82</td>
-<td align="right">1.03</td>
-<td align="right">20</td>
-<td align="right">-0.3</td>
-<td align="right">4.0</td>
-<td align="right">1.8</td>
-<td align="right">0.091</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Main effects</strong> are contrasts between</p>
+<p>A common misconception is that inference from a linear model assumes that the <em>response</em> (<span class="math inline">\(Y\)</span>) is normally distributed. Both the “linear model” and “statistical model” ways of specifying the model show precisely why this conception is wrong. Model <a href="an-introduction-to-statistical-modeling.html#eq:lm">(3.2)</a> states explicitly that it is the error that has the normal distribution – the distribution of <span class="math inline">\(Y\)</span> is a mix of the distribution of <span class="math inline">\(X\)</span> and the error. Model <a href="an-introduction-to-statistical-modeling.html#eq:lm-spec2">(3.3)</a> states that the conditional outcome has a normal distribution, that is, the distribution after adjusting for variation in <span class="math inline">\(X\)</span>.</p>
 </div>
+<div id="statistical-model-or-regression-model" class="section level2">
+<h2><span class="header-section-number">3.8</span> “Statistical model” or “regression model”?</h2>
+<p>Statistical modeling terminology can be confusing. The <span class="math inline">\(X\)</span> variables in a statistical model may be quantitative (continuous or integers) or categorical (names or qualitative amounts) or some mix of the two. Linear models with all quantitative independent variables are often called “regression models.” Linear models with all categorical independent variables are often called “ANOVA models.” Linear models with a mix of quantitative and categorical variables are often called “ANCOVA models” if the focus is on one of the categorical <span class="math inline">\(X\)</span> or “regression models” if there tend to be many independent variables. Other patterns occur. For example “ANCOVA models” often include interaction effects but “regression models” rarely do. To avoid thinking of statistical analysis as “regression vs. ANOVA” (the type of thinking encouraged by many textbooks in biostatistics), I will most often use the term “statistical model” for general usage, and use a more specific term only to emphasize something about the model in that particluar context.</p>
 </div>
-<div id="reporting-results-2" class="section level2">
-<h2><span class="header-section-number">12.2</span> Reporting results</h2>
-<div id="text-results" class="section level3">
-<h3><span class="header-section-number">12.2.1</span> Text results</h3>
-<p>The effect of the increased temperature at the control CO2 level was 4.5 (95% CI: 2.4, 6.7; <span class="math inline">\(p &lt; 0.001\)</span>) pmol O2/hr/larva. The effect of increased CO2 at the control temperature was -0.3 (95% CI: -2.4, 1.8; <span class="math inline">\(p=.76\)</span>) pmol O2/hr/larva. The interaction effect was -2.7 (95% CI: -5.7, 0.3; <span class="math inline">\(p = 0.079\)</span>) pmol O2/hr/larva. Because of the relatively large interaction, the effect of temperature at the high level of CO2 was less than half the effect at the low level of CO2 (estimate: 1.82; 95% CI: -0.3, 4.0; <span class="math inline">\(p = 0.091\)</span>) and the effect of CO2 at the high level of Temp was 10 times greater than that at the low level of Temp (estimate: -3.0; 95% CI: -5.1, -.9; <span class="math inline">\(p = 0.0084\)</span>).</p>
-<p>The CI on the interaction includes both large negative values and trivially small values, including zero, and, consequently, our data is compatible with both scientific models (that is, we can neither support nor reject the predictions of the scientific model using these results).</p>
-</div>
-<div id="harrellplot" class="section level3">
-<h3><span class="header-section-number">12.2.2</span> Harrellplot</h3>
-<p>If the focus is on the interaction, then a Harrell Plot of coefficients is a good choice for communicating this.</p>
-<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/urchin-harrellplot1-1.png" width="576" /></p>
-<p>The plot shows that a relatively big and positive Temp effect, a relatively small CO2 effect (and one with too much noise to have any confidence of the sign) and a intermediate interaction effect. In the original paper, the researchers were testing a scientific (not statistical!) model that predicted no interaction, and the researchers argued that these data support this model because of the small p-value for this effect (see the table above). Well, the data do support that model (one end of the 95% CI for the interaction includes zero, and other very small values) but they also support a model of a large interaction (the other end of the 95% CI includes large negative effects). The data are too course (or the signal:noise ratio is to small) to have much confidence in the size of the interaction effect. Some comments:</p>
-<ol style="list-style-type: decimal">
-<li>It is not valid to claim that an effect “doesn’t” exist because p &gt; 0.05 (see chapter xxx)</li>
-<li>Researchers need to draw conclusions based on <em>both</em> ends of the CI, as well as the mean!</li>
-<li>A sample size of 6 will generally be very low power to get a precise estimate of the interaction unless the sampling variability is very small.</li>
-</ol>
-<p>If we are more interested in differences between the different treatment combinations, then a Harrell plot with the contrasts is a good way to communicate this.</p>
-<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/urchin-harrellplot2-1.png" width="576" /> The four contrasts are differences between the means of pairs of cells in the <span class="math inline">\(2 \times 2\)</span> table:</p>
-<ol style="list-style-type: decimal">
-<li>“Temp+: CO2+ - CO2-” – lower right - lower left</li>
-<li>“Temp-: CO2+ - CO2-” – upper right - upper left</li>
-<li>“CO2+: Temp+ - Temp-” – lower right - upper right</li>
-<li>“CO2-: Temp+ - Temp-” – lower left - upper left</li>
-</ol>
-</div>
-<div id="interaction-plots" class="section level3">
-<h3><span class="header-section-number">12.2.3</span> Interaction plots</h3>
-<p>A common way to plot the results of the model is with an <strong>interaction plot</strong>.</p>
-<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/urchin-interaction-plot-1.png" width="576" /></p>
-<p>In this interaction plot, the <span class="math inline">\(X\)</span>-axis contains the two <span class="math inline">\(Temp\)</span> treatment levels and the <span class="math inline">\(Y\)</span>-axis is the outcome (<span class="math inline">\(Resp\)</span>). The plot shows the four cell means indicated by the circles (low CO2 levels) or triangles (high CO2 levels). The solid lines connect the cell means <em>across Temp levels within CO2 levels</em>.</p>
-<ol style="list-style-type: decimal">
-<li>The slope of a line is the effect of <span class="math inline">\(Temp\)</span> on <span class="math inline">\(Resp\)</span></li>
-<li>The relative <em>elevation</em> of the lines is the effect of <span class="math inline">\(CO2\)</span> on <span class="math inline">\(Resp\)</span></li>
-<li>The difference in slope <em>or</em> the relative elevation at each level of <span class="math inline">\(Temp\)</span> is the interaction effect</li>
-</ol>
-<p>Let’s deconstruct this. The top (CO2-) line is the effect of <span class="math inline">\(Temp\)</span> at the control (400 <span class="math inline">\(\mu\)</span>ATM) value of <span class="math inline">\(CO2\)</span>. The slope of the bottom (CO2+) line is the effect of <span class="math inline">\(Temp\)</span> at the high (1100 <span class="math inline">\(\mu\)</span>ATM) value of <span class="math inline">\(CO2\)</span>. <em>These lines have different slopes</em>, or the slope <em>is conditional on</em> the level of CO2. This means that the effect of <span class="math inline">\(Temp\)</span> on respiration is <em>conditional on the value of <span class="math inline">\(CO2\)</span></em>. Think about this. This is what an interaction implies–conditional effects.</p>
-<p>At the reference temperature (13 C), the CO2+ line is barely below the CO2- line. But at the high temperature (18 C), the CO2+ line is far below the CO2- line. That is, the relative elevation (the <span class="math inline">\(CO2\)</span> effect) is conditional on the level of <span class="math inline">\(Temp\)</span>. It will always be the case that if the effect of Factor A is conditional on the levels of Factor B, then the effect of Factor B will be conditional on the levels of Factor A.</p>
-<p>An interaction plot is an okay plot. It doesn’t show the data, only a descriptive summary (means and standard errors). If we are interested in the interaction effect, it doesn’t give us a very good sense of the error in this effect. And <em>that</em> is a problem because with real data, two lines are never precisely parallel. Our interpretation of the similarity of the slopes would probably mostly reflect our pre-conceived scientific model.</p>
-</div>
-</div>
-<div id="recommendations-1" class="section level2">
-<h2><span class="header-section-number">12.3</span> Recommendations</h2>
-<ol style="list-style-type: decimal">
-<li>Should an interaction term be dropped from a model? In biological data, there will almost certainly be an interaction effect with everything. The goal, then, should be to model the effect and use the estimate and the uncertainty in the effect, <em>in combination with the goals of the analysis</em>, to make any decision about dropping a term.</li>
-</ol>
-</div>
-<div id="working-in-r-3" class="section level2">
-<h2><span class="header-section-number">12.4</span> Working in R</h2>
-<p>A <strong>full-factorial</strong> model with two factors is specified in the model formula as <code>y ~ A*B</code> where A is the first factor, and B is the second factor. R expands this formula to <code>y ~ A + B + A:B</code> where the colon indicates an interaction (multiplicative) effect.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># re-label levels and convert to factors.</span>
-urchin1 &lt;-<span class="st"> </span><span class="kw">copy</span>(urchin)
-urchin1[, CO2<span class="op">:</span><span class="er">=</span><span class="kw">factor</span>(<span class="kw">ifelse</span>(CO2<span class="op">==</span><span class="dv">400</span>,<span class="st">&quot;-&quot;</span>, <span class="st">&quot;+&quot;</span>))]
-urchin1[, Temp<span class="op">:</span><span class="er">=</span><span class="kw">factor</span>(<span class="kw">ifelse</span>(Temp<span class="op">==</span><span class="dv">13</span>, <span class="st">&quot;-&quot;</span>, <span class="st">&quot;+&quot;</span>))]
-fit &lt;-<span class="st"> </span><span class="kw">lm</span>(Resp <span class="op">~</span><span class="st"> </span>Temp<span class="op">*</span>CO2, <span class="dt">data=</span>urchin1) <span class="co"># use urchin1 data with relabeled levels</span>
-<span class="kw">coef</span>(<span class="kw">summary</span>(fit))</code></pre></div>
-<pre><code>##               Estimate Std. Error    t value     Pr(&gt;|t|)
-## (Intercept)  8.2333333  0.7255577 11.3475922 3.626935e-10
-## Temp+        4.5100000  1.0260936  4.3953106 2.792573e-04
-## CO2+        -0.3166667  1.0260936 -0.3086138 7.608069e-01
-## Temp+:CO2+  -2.6850000  1.4511155 -1.8503007 7.910035e-02</code></pre>
-<p>The first thing this script does is to re-label the levels of Temp and CO2. The relabeling is more aesthically pleasing in the tabled output. If we didn’t relable, it would be necessary to convert CO2 and Temp to factors or else R would treat these as numeric and not factors.</p>
-<p>The additive model is specified by the formula <code>y ~ A + B</code></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fit &lt;-<span class="st"> </span><span class="kw">lm</span>(Resp <span class="op">~</span><span class="st"> </span>Temp <span class="op">+</span><span class="st"> </span>CO2, <span class="dt">data=</span>urchin1) <span class="co"># use urchin1 data with relabeled levels</span>
-<span class="kw">coef</span>(<span class="kw">summary</span>(fit))</code></pre></div>
-<pre><code>##              Estimate Std. Error   t value     Pr(&gt;|t|)
-## (Intercept)  8.904583  0.6636207 13.418183 9.038657e-12
-## Temp+        3.167500  0.7662831  4.133590 4.721000e-04
-## CO2+        -1.659167  0.7662831 -2.165214 4.203445e-02</code></pre>
-</div>
-<div id="problems-3" class="section level2">
-<h2><span class="header-section-number">12.5</span> Problems</h2>
-<ol style="list-style-type: decimal">
-<li><p>Draw four <span class="math inline">\(2 \times 2\)</span> tables and label the row and column headers using the levels of the urchin treatment. In the first table, insert the cell means. In the 2nd table, insert the equation for the coefficient. In the third table, solve the equations. And in the fourth column, insert the estimates from the table above. Are tables 3 and 4 the same? If not, you’ve goofed somewhere.</p></li>
-<li><p>Frew et al. (2017) showed that increasing atomospheric CO2 increases grub activity in the soil which in turn increases root damage to sugarcane. They used a 2 x 2 experiment to then show that silicon added to the soild decreased the damage to the roots by the grubs (silicon minerals are very hard and plants uptake silicon from the soil to mineralize tissues to protect against insect damage). There are lots of analyses in the paper, but I want you to reproduce Fig. 4b, but using gg_interaction_plot and fit the model using lm.</p></li>
-</ol>
-<p>(The treatment assignments are in a different file than the experimental results. Use the <code>merge</code> function to glue the two tables together, keying on the common column “plant”)</p>
-<ol style="list-style-type: decimal">
-<li><strong>file name</strong>: “canegrub_feedingtrial.csv”</li>
-<li><strong>file name</strong>: “treatments.csv”</li>
-<li><strong>source</strong>: <a href="https://datadryad.org/resource/doi:10.5061/dryad.r3s16" class="uri">https://datadryad.org/resource/doi:10.5061/dryad.r3s16</a></li>
-</ol>
-<div class="figure">
-<img src="images/frew_fig_4b.png" alt="Frew et al. Figure 4b" style="width:50.0%" />
-<p class="caption">Frew et al. Figure 4b</p>
-</div>
-<ol start="3" style="list-style-type: decimal">
-<li>Kardol et al investigated the effect of moss growth in response to rainfall and community structure. Analyze the effect of these two factors on biomass gain and generate a Harrell plot alternative to their bar plot in Fig. 3 (see below). What is striking about your plot compared to theirs?</li>
-</ol>
-<p><strong>Filename</strong> “Data file for Dryad.xlsx” <strong>sheet</strong> “Data” **Source*:** <a href="https://datadryad.org/resource/doi:10.5061/dryad.66d5f" class="uri">https://datadryad.org/resource/doi:10.5061/dryad.66d5f</a></p>
-<div class="figure">
-<img src="images/kardol_fig_3.png" alt="Kardol et al. Figure 3" style="width:50.0%" />
-<p class="caption">Kardol et al. Figure 3</p>
-</div>
-<ol start="4" style="list-style-type: decimal">
-<li>(Grad students only) Generate a fake experiment! The experiment should have two factors each with two levels. Experiment with power by varying sample size and effect size.</li>
-</ol>
+<div id="glm-vs.glm-vs.gls" class="section level2">
+<h2><span class="header-section-number">3.9</span> GLM vs. GLM vs. GLS</h2>
+<p>Linear models are sometimes called “general linear models” with the abbreviation GLM. This is unfortunate because the abbreviation GLM usually refers to <strong>generalized linear models</strong>. Regardless, don’t confuse either version of GLM with GLS, which is the abbreviation of <strong>generalized least squares</strong>. GLS generalizes the linear model to allow for heteroskedastic and/or correlated error (using the “linear model” way of thinking about model specification)</p>
 
 </div>
 </div>
@@ -727,8 +496,8 @@ fit &lt;-<span class="st"> </span><span class="kw">lm</span>(Resp <span class="o
           </div>
         </div>
       </div>
-<a href="plotting-models.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="adding-covariates-to-a-linear-model.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="part-ii-some-fundamentals-of-statistical-modeling.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -758,7 +527,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/rstudio/bookdown-demo/edit/master/chapters/34-factorial.Rmd",
+"link": "https://github.com/rstudio/bookdown-demo/edit/master/chapters/12-introduction-to-statistical-modeling.Rmd",
 "text": "Edit"
 },
 "history": {
