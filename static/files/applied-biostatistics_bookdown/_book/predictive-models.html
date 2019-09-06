@@ -5,11 +5,11 @@
 
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Appendix 1: Getting Started with R | Elementary Statistical Modeling for Applied Biostatistics</title>
+  <title>Chapter 16 Predictive Models | Elementary Statistical Modeling for Applied Biostatistics</title>
   <meta name="description" content="A first course in statistical modeling for biology students">
   <meta name="generator" content="bookdown  and GitBook 2.6.7">
 
-  <meta property="og:title" content="Appendix 1: Getting Started with R | Elementary Statistical Modeling for Applied Biostatistics" />
+  <meta property="og:title" content="Chapter 16 Predictive Models | Elementary Statistical Modeling for Applied Biostatistics" />
   <meta property="og:type" content="book" />
   
   
@@ -17,7 +17,7 @@
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Appendix 1: Getting Started with R | Elementary Statistical Modeling for Applied Biostatistics" />
+  <meta name="twitter:title" content="Chapter 16 Predictive Models | Elementary Statistical Modeling for Applied Biostatistics" />
   
   <meta name="twitter:description" content="A first course in statistical modeling for biology students" />
   
@@ -31,8 +31,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   
   
-<link rel="prev" href="linear-mixed-models.html">
-<link rel="next" href="appendix-2-online-resources-for-getting-started-with-statistical-modeling-in-r.html">
+<link rel="prev" href="anova-tables.html">
+<link rel="next" href="part-v-expanding-the-linear-model-generalized-linear-models-and-multilevel-linear-mixed-models.html">
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -364,75 +364,44 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="appendix-1-getting-started-with-r" class="section level1 unnumbered">
-<h1>Appendix 1: Getting Started with R</h1>
-<div id="get-your-computer-ready" class="section level2">
-<h2><span class="header-section-number">18.9</span> Get your computer ready</h2>
-<div id="install-r" class="section level3">
-<h3><span class="header-section-number">18.9.1</span> Install R</h3>
-<p>R is the core software</p>
-<p><a href="https://cran.r-project.org">Download R for your OS</a></p>
+<div id="predictive-models" class="section level1">
+<h1><span class="header-section-number">Chapter 16</span> Predictive Models</h1>
+<p>This chapter focusses on modeling <strong>observational data</strong> with multiple <span class="math inline">\(X\)</span> variables, both continous and categorical. The classical analysis of multiple <span class="math inline">\(X\)</span> variables is <strong>multiple regression</strong>, sometimes called <strong>multivariable regression</strong> and occassionally, but incorrectly, called <strong>multivariate regression</strong> – “multivariate” refers to multiple <span class="math inline">\(Y\)</span> variables.</p>
+<p>The models in this chapter have the structure</p>
+<span class="math display">\[\begin{equation}
+Y = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \beta_3 X_3 + ... \beta_p X_p + \varepsilon 
+\end{equation}\]</span>
+<p>% where <span class="math inline">\(p\)</span> is the number of <span class="math inline">\(X\)</span> variables or <strong>predictors</strong> in the model. This equation is easily generalized to both generalized linear models, linear mixed models, and generalized linear mixed models.</p>
+<div id="overfitting" class="section level2">
+<h2><span class="header-section-number">16.1</span> Overfitting</h2>
+<p>When a model is fit to data, the model coefficients are estimates of the parameters that “generated the data”. The value of an estimate is partly a function of the signal (the parameter) and partly a function of the noise, which is unique to the sample. At a low signal to noise ratio a model is mostly fitting the noise. A measure of how well the model “fits” the data is <span class="math inline">\(R^2\)</span>, which is</p>
+<span class="math display">\[\begin{equation}
+R^2 &lt;- 1 - \frac{SS_{residual}}{SS_{total}}
+\end{equation}\]</span>
+<p>As <span class="math inline">\(X\)</span> variables are added to a model, the <span class="math inline">\(R^2\)</span> necessarily increases. Part of this increase is due to added signal, but part is due to added noise. If the added noise is more than the added signal, then the model fit – that is the parameter estimates – increasingly reflects the noise unique to the sample rather the signal common to every sample. This is the basis of <strong>overfitting</strong>.</p>
+<p>To demonstrate overfitting, I fit completely random <span class="math inline">\(X\)</span> variables to the lifespans for the control voles.</p>
+<p>Think about it this way: if I create fake data in there are ten <span class="math inline">\(X\)</span> variables that are correlewhich <span class="math inline">\(Y\)</span> is a simple column of random, normal variables that are not a function of</p>
 </div>
-<div id="install-r-studio" class="section level3">
-<h3><span class="header-section-number">18.9.2</span> Install R Studio</h3>
-<p>R Studio is a slick (very slick) GUI interface for developing R projects</p>
-<p><a href="https://www.rstudio.com/products/rstudio/download/">Download R Studio Desktop</a></p>
+<div id="model-building-vs.variable-selection-vs.model-selection" class="section level2">
+<h2><span class="header-section-number">16.2</span> Model building vs. Variable selection vs. Model selection</h2>
+<div id="stepwise-regression" class="section level3">
+<h3><span class="header-section-number">16.2.1</span> Stepwise regression</h3>
 </div>
-<div id="resources-for-installing-r-and-r-studio" class="section level3">
-<h3><span class="header-section-number">18.9.3</span> Resources for installing R and R Studio</h3>
-<p><a href="https://medium.com/@GalarnykMichael/install-r-and-rstudio-on-windows-5f503f708027">On Windows</a></p>
-<p><a href="https://medium.com/@GalarnykMichael/install-r-and-rstudio-on-mac-e911606ce4f4">On a Mac</a></p>
+<div id="cross-validation" class="section level3">
+<h3><span class="header-section-number">16.2.2</span> Cross-validation</h3>
 </div>
-<div id="install-latex" class="section level3">
-<h3><span class="header-section-number">18.9.4</span> Install LaTeX</h3>
-<p>LaTeX (“la-tek”) is necessary to use the pdf output of R Markdown.</p>
-<p><a href="https://medium.com/@sorenlind/create-pdf-reports-using-r-r-markdown-latex-and-knitr-on-windows-10-952b0c48bfa9">On Windows</a></p>
-<p><a href="https://medium.com/@sorenlind/create-pdf-reports-using-r-r-markdown-latex-and-knitr-on-macos-high-sierra-e7b5705c9fd">On a Mac</a></p>
+<div id="penalization" class="section level3">
+<h3><span class="header-section-number">16.2.3</span> Penalization</h3>
+<div id="aic" class="section level4">
+<h4><span class="header-section-number">16.2.3.1</span> AIC</h4>
 </div>
-</div>
-<div id="start-learning" class="section level2">
-<h2><span class="header-section-number">18.10</span> Start learning</h2>
-<div id="start-with-data-camp-introduction-to-r" class="section level3">
-<h3><span class="header-section-number">18.10.1</span> Start with Data Camp Introduction to R</h3>
-<p><a href="https://www.datacamp.com/courses/free-introduction-to-r">Data Camp: Introduction to R (free online course)</a></p>
-</div>
-<div id="then-move-to-introduction-to-r-studio" class="section level3">
-<h3><span class="header-section-number">18.10.2</span> Then Move to Introduction to R Studio</h3>
-<p><a href="https://www.rstudio.com/resources/webinars/rstudio-essentials-webinar-series-part-1/">R Studio Essentials, Programming Part 1 (Writing code in RStudio)</a></p>
-</div>
-<div id="develop-your-project-with-an-r-studio-notebook" class="section level3">
-<h3><span class="header-section-number">18.10.3</span> Develop your project with an R Studio Notebook</h3>
-<p><a href="https://www.rstudio.com/resources/webinars/getting-started-with-r-markdown/">Getting Started with R Markdown</a></p>
-<p><a href="https://www.rstudio.com/resources/webinars/introducing-notebooks-with-r-markdown/">Introducing Notebooks with R Markdown</a></p>
+<div id="lasso" class="section level4">
+<h4><span class="header-section-number">16.2.3.2</span> LASSO</h4>
 </div>
 </div>
-<div id="getting-data-into-r" class="section level2">
-<h2><span class="header-section-number">18.11</span> Getting Data into R</h2>
-<p><a href="https://www.rstudio.com/resources/webinars/getting-your-data-into-r/">Getting your data into R</a></p>
 </div>
-<div id="additional-r-learning-resources" class="section level2">
-<h2><span class="header-section-number">18.12</span> Additional R learning resources</h2>
-<p><a href="https://bookdown.org/chesterismay/rbasics/">Getting used to R, RStudio, and R Markdown</a></p>
-<p><a href="https://www.rstudio.com/resources/webinars/">Link to list of R Studio webinars</a></p>
-<p><a href="https://www.rstudio.com/resources/cheatsheets/">Link to set of R package cheat sheets (amazing!)</a></p>
-<p><a href="https://bookdown.org">Bookdown online books</a></p>
-</div>
-<div id="packages-used-extensively-in-this-text" class="section level2">
-<h2><span class="header-section-number">18.13</span> Packages used extensively in this text</h2>
-<ol style="list-style-type: decimal">
-<li>ggplot2</li>
-<li>data.table</li>
-<li>mvtnorm</li>
-<li>lme4</li>
-<li>nlme</li>
-<li>emmeans</li>
-<li>readxl</li>
-<li>reshape2</li>
-</ol>
-<p><a href="http://r4ds.had.co.nz/data-visualisation.html">Data Visualisation chapter from <em>R for Data Science</em></a></p>
-<p><a href="http://r4ds.had.co.nz/graphics-for-communication.html">Graphics for communication chapter from <em>R for Data Science</em></a></p>
-<p>Youtube: <a href="https://www.youtube.com/watch?v=pc1ARG6kbAM">An Introduction to The data.table Package</a></p>
-<p>Coursera: <a href="https://www.coursera.org/learn/data-cleaning/lecture/trMZ7/the-data-table-package">The data.table Package</a></p>
+<div id="shrinkage" class="section level2">
+<h2><span class="header-section-number">16.3</span> Shrinkage</h2>
 
 </div>
 </div>
@@ -441,8 +410,8 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
           </div>
         </div>
       </div>
-<a href="linear-mixed-models.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="appendix-2-online-resources-for-getting-started-with-statistical-modeling-in-r.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="anova-tables.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="part-v-expanding-the-linear-model-generalized-linear-models-and-multilevel-linear-mixed-models.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -472,7 +441,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/rstudio/bookdown-demo/edit/master/chapters/92-R_resources.Rmd",
+"link": "https://github.com/rstudio/bookdown-demo/edit/master/chapters/46-predictive-models.Rmd",
 "text": "Edit"
 },
 "history": {

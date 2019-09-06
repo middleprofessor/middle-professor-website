@@ -5808,6 +5808,406 @@ function from the emmeans package.
 
 \subsubsection{Three factors}\label{three-factors}
 
+\chapter*{\texorpdfstring{Part IV: More than one \(X\) -- Multivariable
+Models}{Part IV: More than one X -- Multivariable Models}}\label{part-iv-more-than-one-x-multivariable-models}
+\addcontentsline{toc}{chapter}{Part IV: More than one \(X\) --
+Multivariable Models}
+
+\chapter{Adding covariates to a linear
+model}\label{adding-covariates-to-a-linear-model}
+
+In its most general sense, \textbf{Covariates} are simply the \(X\)
+variables in a statistical model. With data from experiments,
+``covariates'' more typically refers to \(X\) variables that are added
+to a model to increase precision of the treatment effects. In
+observational designs, covariates might be added to a model to 1)
+increase predictive ability, 2) because the researcher is interested in
+specific conditional effects, or 3) to eliminate confounding. These are
+discussed in later chapters.
+
+\section{Adding covariates can increases the precision of the effect of
+interest}\label{adding-covariates-can-increases-the-precision-of-the-effect-of-interest}
+
+I use fake data to introduce the concept of \textbf{statistical
+elimination} of a \textbf{covariate} in a statistical model. Here I am
+modeling the effect of a new drug on blood LDL-C levels. LDL is a kind
+of lipoprotein, which are particles in the blood that transport fats and
+cholesterol to and from different tissues. LDL-C is cholesterol
+associated with LDL particles. LDL-C is considered ``bad cholesterol''
+because LDL is believed to transport cholesterol and other lipids to
+arterial walls, which is the basis for atherosclerosis.
+
+Twenty applied biostats students are recruited and are randomly assigned
+to either the new or old drug. The response is blood LDL-C level and the
+two treatment levels are ``old'' and ``new''. For the dummy variable
+coding, I'll make ``old'' the reference level.
+
+Let's model this with
+
+\begin{equation}
+ldlc = \beta_0 + \beta_1 drug + \varepsilon
+\label{eq:ancova-1}
+\end{equation}
+
+where \(drug\) is the dummy variable with \(old=0\) and \(new=1\).
+
+\begin{figure}
+\centering
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/ancova-plot1-1.pdf}
+\caption{\label{fig:ancova-plot1}The fake LDL-C experiment.}
+\end{figure}
+
+\begin{verbatim}
+##               Estimate Std. Error    t value     Pr(>|t|)
+## (Intercept) 161.640772   3.974506 40.6694043 3.620049e-19
+## drugnew       1.785414   5.620800  0.3176442 7.544101e-01
+\end{verbatim}
+
+The plot shows large overlap in LDL-C and no obvious effect of the drug.
+There ``is no effect of the drug (\(p = 0.754\))'' is of course an
+incorrect interpretation of the hypothesis test of the estimate of
+\(\beta_1\). A correct interpretation is, there is too much noise to say
+much about any effect.
+
+In addition to assigning treatment level randomly, I also had the 20
+students count calories from fat over the course of the experiment. Here
+is a plot of LDL-C vs.~percent calories from fat, with treatment
+assignment color coded. Remember, these are the exact same values of
+LDL-C as in the first figure.
+
+\begin{figure}
+\centering
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/ancova-plot2-1.pdf}
+\caption{\label{fig:ancova-plot2}Linear regression of \(ldlc\) on dietary
+\(fat\) fit to the fake LDL-C data. The points are color coded by
+treatment.}
+\end{figure}
+
+The line is the bivariate regression fit to the data ignoring treatment
+level so is the model
+
+\begin{equation}
+ldlc = \beta_0 + \beta_1 fat + \varepsilon
+\label{eq:ancova-2}
+\end{equation}
+
+I've color coded the points by treatment level but \(drug\) is not in
+the model. It is clear that most of the ``old'' data points are above
+the line, or have positive residuals from the model, while the ``new''
+data points are below the line, or have negative residuals from the
+model. A better way to think about this pattern is that \textbf{at any
+specific level of fat, the LDL-C for old is higher than the LDL-C for
+new}.
+
+What is happening? Dietary fat is contributing to the variance of LDL-C
+and this added noise makes it harder to measure the effect of the new
+drug relative to the old drug. If we could somehow measure the effect of
+drug at a specific level of dietary fat, then we could get a more
+precise estimate of the effect. But how to do this?
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  We could just analyze a subset of the data, that is, only the cases in
+  which the value of dietary fat is nearly equal. This throws away
+  perfectly good data and, consequently, greatly reduces the sample size
+  and thus precision to estimate the effect.
+\item
+  We could use the residuals of the fitted model \eqref{eq:ancova-2} to
+  estimate the effect of drug treatment (this is what we did by eye in
+  figure \ref{fig:ancova-plot2}). Here is the new model
+\end{enumerate}
+
+\begin{equation}
+ldlc.r = \beta_0 + \beta_1 drug + \varepsilon
+\label{eq:ancova-3}
+\end{equation}
+
+where \(ldlc.r\) are the residuals. The effect of the new drug on these
+residuals is
+
+\begin{verbatim}
+## `stat_bindot()` using `bins = 30`. Pick better value with `binwidth`.
+\end{verbatim}
+
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-31-1.pdf}
+
+\begin{verbatim}
+##              Estimate Std. Error   t value     Pr(>|t|)
+## (Intercept)  2.361321  0.6190269  3.814570 1.269495e-03
+## drugnew     -4.722642  0.8754362 -5.394616 3.984159e-05
+\end{verbatim}
+
+In this two-stage analysis (stage 1: fit ldlc \textasciitilde{} fat to
+get residuals, stage 2: fit residuals \textasciitilde{} drug), we have
+\emph{eliminated the effect of dietary fat} on the variance of the
+response and, as a consequence, the estimate of the effect of the drug
+is much more precise. Now the estimate of the effect is -4.7 mg/dL blood
+and the SE is only .9 (compare this to the values in the original
+analysis). While the SE of the diference is correct, any confidence
+interval or \(t\)-value is not because the df is wrong. In the two stage
+analysis we fit two parameters -- the slope (coefficient \(b_1\)) in
+stage 1 and the difference in means (coefficient \(b_1\)) in stage 2 --
+but the \(t\) in the table assumes we only fit one parameter (that from
+stage 2). Effectively, the stage 2 test is ignorant that the data
+(\(ldlc.r\)) are the result of a previous model fit. We could manually
+modify the computation of \(t\), but the more proper method is to
+simply\ldots{}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{2}
+\tightlist
+\item
+  Add dietary fat into the original linear model.
+\end{enumerate}
+
+\begin{equation}
+ldlc = \beta_0 + \beta_1 fat + \beta_2 drug + \varepsilon
+\end{equation}
+
+\begin{verbatim}
+##               Estimate Std. Error  t value     Pr(>|t|)
+## (Intercept)  99.449257  2.2812187 43.59479 6.880431e-19
+## fat         203.773799  7.2192309 28.22652 1.009563e-15
+## drugnew      -5.128034  0.8711147 -5.88675 1.794002e-05
+\end{verbatim}
+
+Here, the estimate is -5.1 and the SE is 0.9. Look back at the script
+generating the fake data; the true effect (\(\beta_1\)) of the new drug
+was set to -5.0 so this estimate is quite good.
+
+\subsection{Interaction effects with
+covariates}\label{interaction-effects-with-covariates}
+
+\subsection{Add only covariates that were measured before peaking at the
+data}\label{add-only-covariates-that-were-measured-before-peaking-at-the-data}
+
+\section{Regression to the mean}\label{regression-to-the-mean}
+
+It is common to measure the outcome variable (\(Y\)) both before and
+after the experimental treatments are applied and then compare the
+pre-post \emph{change} in \(Y\) in response to the treatment using a
+\(t\)-test or ANOVA. Don't do this.
+
+Instead, add the pre-treatment measure into the model as a covariate.
+
+\begin{equation}
+Y_{post} = \beta_0 + \beta_1 Y_{pre} + \beta_2 Treatment + \varepsilon
+\label{eq:ancova-4}
+\end{equation}
+
+where \(Treatment\) is a dummy variable for a two-level factor. A
+pre-treatment measure (\(Y_{pre}\)) is often called the \emph{baseline}
+measure. The change in \(Y\) (\(\Delta Y = Y{post} - Y_{pre}\)) is
+sometimes called a change score or gain score. \(\Delta Y\) can be
+modeled as in equation \eqref{eq:ancova-4} and the \(p\)-value will be
+precisely the same (the estimate and SE will differ of course because
+the response variable is different).
+
+\begin{equation}
+\Delta Y = \beta_0 + \beta_1 Y_{pre} + \beta_2 Treatment + \varepsilon
+\label{eq:ancova-5}
+\end{equation}
+
+The reason why a researcher should not model \(\Delta Y\) as a function
+of \(Treatment\) without \(Y_{pre}\) as a covariate is that the
+\textbf{regression to the mean}. To explain regression to the mean, I
+use fake data simulated to model the results from an important study on
+gut microbiomes. In this study, the authors (Turnbaugh et al. xxx)
+showed that mice with feces from obese (genotype \emph{ob/ob}) donors
+had higher weight gain than mice with feces from lean (genotype
+\emph{+/+}) donors, presumably because of the differences in microbial
+communities between the donor types (shown elsewhere in their paper). To
+support the inference of a large difference in weight change, they
+illustrated the percent change in each treatment level in their Fig 3C,
+which is replicated here using simulated data generated to match the
+original summary statistics (Figure \ref{fig:ancova-mouseplot1}).
+
+\begin{figure}
+\centering
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/ancova-mouseplot1-1.pdf}
+\caption{\label{fig:ancova-mouseplot1}Figure 3c of Turnbaugh \emph{et al}
+2006. This figure was generated with simulated data matching the summary
+statistics given in Turnbaugh \emph{et al} 2006}
+\end{figure}
+
+That looks like a big difference, with the mice from the obese-donor
+treatment level gaining much more fat than the mice from the lean-donor
+treatment level. Turnbaugh et al. used a simple t-test of this percent
+change to test the effect of the \emph{ob/ob} treatment. The linear
+model underneath this \(t\)-test is
+
+\begin{equation}
+fat.gain = \beta_0 + \beta_1 obese + \varepsilon
+\end{equation}
+
+where \(fat.gain\) is the percent gain in fat from baseline and
+\(obese\) is a dummy variable with \emph{ob/ob} \(= 1\). The model
+coefficients are
+
+\begin{verbatim}
+##                Estimate Std. Error  t value     Pr(>|t|)
+## (Intercept)    25.24015   5.627515 4.485134 0.0003259533
+## treatmentob/ob 21.92156   8.176589 2.681016 0.0157879742
+\end{verbatim}
+
+\begin{verbatim}
+##                    2.5 %   97.5 %
+## (Intercept)    13.367137 37.11317
+## treatmentob/ob  4.670468 39.17266
+\end{verbatim}
+
+Or, the increase in fat in the obese-treated mice was 21.9\% (95\%CI:
+4.7, 39.2\%, \(p=0.016\)) greater than the increase in lean-treated
+mice. This result, if generally verified with replication and rigorous
+probing, would have spectacular implications for human health.
+
+One might reasonably expect that if mice are randomized into two groups,
+then the expected difference in percent change from baseline is zero.
+This is unconditionally true but not conditionally true. That is, if we
+ignore initial fat weight, the expected difference is zero. But, the
+expected difference is also conditional on the initial difference in fat
+weights. More specifically, the expected difference is opposite in sign
+but proportional in magnitude to the initial difference. This
+conditional expectation is a consequence of regression to the mean. If
+the first measure of a random variable is extreme, the second measure
+will tend to be less extreme. And, if a second measure is extreme, the
+first measure will tend to be less extreme.
+
+Despite random treatment assignment, the mean initial fat weight of the
+\emph{ob/ob} group was 1.2SD less than the mean initial weight of the
+\emph{+/+} group. By contrast, the mean final weight of the \emph{ob/ob}
+group was 0.06SD larger than the mean final weight of the \emph{+/+}
+group. This first difference is an extreme measure. The second is
+extremely close to the expectation if there is no treatment effect.
+Because the initial difference in weight is unusually negative, the
+expected difference in percent change will be unusually positive.
+
+This dependency between difference in percent change from baseline and
+difference in initial weight is easy to simulate. Simply
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  randomly sample a normal distribution as the ``initial weight'' and
+  randomly assign to treatment class
+\item
+  let the final weight have some correlation (\(\rho\)) with the initial
+  weight. Some correlation should make sense -- we expect a mouse that
+  has more fat than average at the start of the experiment to also have
+  more fat than average at the end of the experiment. Run the experiment
+  at different values of this correlation to see how it effects
+  regression to the mean.
+\item
+  Do not add a treatment effect. We want to explore the behavior of the
+  nill null hypothesis.
+\end{enumerate}
+
+\begin{figure}
+\centering
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/ancova-sim1-1.pdf}
+\caption{\label{fig:ancova-sim1}Effect of initial difference in weight on
+the difference in change score. Increased initial difference in weight
+results in an increased differences in change score between treatment
+and control. Four different values of \emph{rho} (the correlation
+between initial and final weights) were simulated. Only when
+\emph{rho}=1 is there no influence of initial difference, because
+whatever differences occur at baseline will be perfectly preserved in
+the final measure. The X gives the values in the original Turnbaugh
+data}
+\end{figure}
+
+What's happening in Figure \ref{fig:ancova-sim1}? Each point is a result
+for a single, simulated experiment. In total, there are 1000 simulated
+experiments for each of four values of \(\rho\). The \emph{x}-axis is
+the difference between the means of the two treatment levels at baseline
+(\emph{Initial difference}). The \emph{y}-axis is the difference in mean
+change score between the two treatment levels -- that is the difference
+in the means of \(\Delta Y\) from equation \eqref{eq:ancova-5}. This
+difference in \(\Delta Y\) is the effect of the treatment the
+researchers are interested in. The \emph{unconditional} expectation of
+this difference is zero
+
+\begin{equation}
+\mathrm{E}(\Delta Y_{ob/ob} - \Delta Y_{+/+}) = 0
+\end{equation}
+
+but the change conditional on baseline is not zero
+
+\begin{equation}
+\mathrm{E}(\Delta Y_{ob/ob} - \Delta Y_{+/+}) \ne 0
+\end{equation}
+
+Instead, the conditional expectation is a function of the difference at
+baseline. If the initial difference in weight happens to be unusually
+large and negative, the expected difference in change score is unusually
+positive. This non-zero expectation means that the estimate of the
+treatment effect is \textbf{conditionally biased} for any model that
+does not include the baseline fat weight as a covariate. And, from a
+frequentist perspective, the Type I error for a test of a difference in
+\(\Delta Y\) is strongly dependent on the initial difference in weight.
+
+The big X in the plot indicates the difference at baseline and
+difference in \(\Delta Y\) for the original mice study. The difference
+in \(Delta Y\) is unusually positive (about .6\% of the \(|\delta Y|\)
+are larger) but very close to the expected value given the unusually
+large, negative difference at baseline. In other words, the probability
+of the data, or more extreme than the data, is not 0.006 but something
+larger and perhaps, much larger (the computed value depends on the
+observed \(\rho\). From, the plot, the X is very unusual if \(\rho=1\),
+pretty unusual if \(\rho=0.66\), but pretty common if \(\rho=0.33\) or
+if \(\rho=0\)).
+
+\subsection{Do not use percent change, believing that percents account
+for effects of initial
+weights}\label{do-not-use-percent-change-believing-that-percents-account-for-effects-of-initial-weights}
+
+Some researchers mistakenly believe that a \(t\)-test of percent change
+automatically adjusts for effects in initial weight, since this initial
+weight is in the denominator of the percent. This is wrong. The
+dependency of the difference in change between treatments on the initial
+difference between treatments is more severe if change is measured as a
+percent, because the numerator (the change score) is expected to be
+larger if the denominator is smaller (initial measure). Using the
+simulated data from above, here is this dependency.
+
+\begin{figure}
+\centering
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/ancova-sim2-1.pdf}
+\caption{\label{fig:ancova-sim2}Effect of initial difference in weight on
+the difference in percent change. Increased initial difference in weight
+results in an increased differences in Percent change between treatment
+and control. Four different values of \emph{rho} (the correlation
+between initial and final weights) were simulated. Note there is no
+value of \emph{rho} where the difference in percent change is
+independent of the initial difference. The X gives the values in the
+original Turnbaugh data.}
+\end{figure}
+
+\subsection{\texorpdfstring{Do not ``test for balance'' of baseline
+measures}{Do not test for balance of baseline measures}}\label{do-not-test-for-balance-of-baseline-measures}
+
+Contrary to some advice and maybe to intuition, it makes no sense to
+``test for balance'' at baseline with a \emph{t}-test of the difference
+in initial measures of \(Y\). And, it makes no sense to use this test as
+a decision rule for how to proceed: if \(p>0.05\) then use a simple
+\(t\) test of the change scores, if \(p<0.05\) then use ANCOVA with
+baseline measures in the model. First, a null-hypothesis significance
+test cannot tell you that there is ``no difference'' -- this is not what
+null-hypothesis tests do. Second, any \(p\)-value after the initial test
+isn't strictly valid as it does not take into account this decision
+step, but this is minor. Third, it doesn't matter; there will always be
+some difference in the actual means of the initial measures and,
+consequently, the conditional expectation of the final measures, or
+change in measures, or percent change will be dependent on this initial
+difference. So, if one has initial measures, one should use an linear
+model that adjusts for baseline measures to estimate the treatment
+effect in pre-post designs. And, if one isn't planning on taking an
+initial measure, then maybe you should, because the initial measure used
+in a linear model allows a better estimate of the treatment effect!
+
 \chapter{\texorpdfstring{Two (or more) Categorical \(X\) -- Factorial
 designs}{Two (or more) Categorical X -- Factorial designs}}\label{two-or-more-categorical-x-factorial-designs}
 
@@ -6352,401 +6752,6 @@ together, keying on the common column ``plant'')
   have two factors each with two levels. Experiment with power by
   varying sample size and effect size.
 \end{enumerate}
-
-\chapter{Adding covariates to a linear
-model}\label{adding-covariates-to-a-linear-model}
-
-In its most general sense, \textbf{Covariates} are simply the \(X\)
-variables in a statistical model. With data from experiments,
-``covariates'' more typically refers to \(X\) variables that are added
-to a model to increase precision of the treatment effects. In
-observational designs, covariates might be added to a model to 1)
-increase predictive ability, 2) because the researcher is interested in
-specific conditional effects, or 3) to eliminate confounding. These are
-discussed in later chapters.
-
-\section{Adding covariates can increases the precision of the effect of
-interest}\label{adding-covariates-can-increases-the-precision-of-the-effect-of-interest}
-
-I use fake data to introduce the concept of \textbf{statistical
-elimination} of a \textbf{covariate} in a statistical model. Here I am
-modeling the effect of a new drug on blood LDL-C levels. LDL is a kind
-of lipoprotein, which are particles in the blood that transport fats and
-cholesterol to and from different tissues. LDL-C is cholesterol
-associated with LDL particles. LDL-C is considered ``bad cholesterol''
-because LDL is believed to transport cholesterol and other lipids to
-arterial walls, which is the basis for atherosclerosis.
-
-Twenty applied biostats students are recruited and are randomly assigned
-to either the new or old drug. The response is blood LDL-C level and the
-two treatment levels are ``old'' and ``new''. For the dummy variable
-coding, I'll make ``old'' the reference level.
-
-Let's model this with
-
-\begin{equation}
-ldlc = \beta_0 + \beta_1 drug + \varepsilon
-\label{eq:ancova-1}
-\end{equation}
-
-where \(drug\) is the dummy variable with \(old=0\) and \(new=1\).
-
-\begin{figure}
-\centering
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/ancova-plot1-1.pdf}
-\caption{\label{fig:ancova-plot1}The fake LDL-C experiment.}
-\end{figure}
-
-\begin{verbatim}
-##               Estimate Std. Error    t value     Pr(>|t|)
-## (Intercept) 161.640772   3.974506 40.6694043 3.620049e-19
-## drugnew       1.785414   5.620800  0.3176442 7.544101e-01
-\end{verbatim}
-
-The plot shows large overlap in LDL-C and no obvious effect of the drug.
-There ``is no effect of the drug (\(p = 0.754\))'' is of course an
-incorrect interpretation of the hypothesis test of the estimate of
-\(\beta_1\). A correct interpretation is, there is too much noise to say
-much about any effect.
-
-In addition to assigning treatment level randomly, I also had the 20
-students count calories from fat over the course of the experiment. Here
-is a plot of LDL-C vs.~percent calories from fat, with treatment
-assignment color coded. Remember, these are the exact same values of
-LDL-C as in the first figure.
-
-\begin{figure}
-\centering
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/ancova-plot2-1.pdf}
-\caption{\label{fig:ancova-plot2}Linear regression of \(ldlc\) on dietary
-\(fat\) fit to the fake LDL-C data. The points are color coded by
-treatment.}
-\end{figure}
-
-The line is the bivariate regression fit to the data ignoring treatment
-level so is the model
-
-\begin{equation}
-ldlc = \beta_0 + \beta_1 fat + \varepsilon
-\label{eq:ancova-2}
-\end{equation}
-
-I've color coded the points by treatment level but \(drug\) is not in
-the model. It is clear that most of the ``old'' data points are above
-the line, or have positive residuals from the model, while the ``new''
-data points are below the line, or have negative residuals from the
-model. A better way to think about this pattern is that \textbf{at any
-specific level of fat, the LDL-C for old is higher than the LDL-C for
-new}.
-
-What is happening? Dietary fat is contributing to the variance of LDL-C
-and this added noise makes it harder to measure the effect of the new
-drug relative to the old drug. If we could somehow measure the effect of
-drug at a specific level of dietary fat, then we could get a more
-precise estimate of the effect. But how to do this?
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\item
-  We could just analyze a subset of the data, that is, only the cases in
-  which the value of dietary fat is nearly equal. This throws away
-  perfectly good data and, consequently, greatly reduces the sample size
-  and thus precision to estimate the effect.
-\item
-  We could use the residuals of the fitted model \eqref{eq:ancova-2} to
-  estimate the effect of drug treatment (this is what we did by eye in
-  figure \ref{fig:ancova-plot2}). Here is the new model
-\end{enumerate}
-
-\begin{equation}
-ldlc.r = \beta_0 + \beta_1 drug + \varepsilon
-\label{eq:ancova-3}
-\end{equation}
-
-where \(ldlc.r\) are the residuals. The effect of the new drug on these
-residuals is
-
-\begin{verbatim}
-## `stat_bindot()` using `bins = 30`. Pick better value with `binwidth`.
-\end{verbatim}
-
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-31-1.pdf}
-
-\begin{verbatim}
-##              Estimate Std. Error   t value     Pr(>|t|)
-## (Intercept)  2.361321  0.6190269  3.814570 1.269495e-03
-## drugnew     -4.722642  0.8754362 -5.394616 3.984159e-05
-\end{verbatim}
-
-In this two-stage analysis (stage 1: fit ldlc \textasciitilde{} fat to
-get residuals, stage 2: fit residuals \textasciitilde{} drug), we have
-\emph{eliminated the effect of dietary fat} on the variance of the
-response and, as a consequence, the estimate of the effect of the drug
-is much more precise. Now the estimate of the effect is -4.7 mg/dL blood
-and the SE is only .9 (compare this to the values in the original
-analysis). While the SE of the diference is correct, any confidence
-interval or \(t\)-value is not because the df is wrong. In the two stage
-analysis we fit two parameters -- the slope (coefficient \(b_1\)) in
-stage 1 and the difference in means (coefficient \(b_1\)) in stage 2 --
-but the \(t\) in the table assumes we only fit one parameter (that from
-stage 2). Effectively, the stage 2 test is ignorant that the data
-(\(ldlc.r\)) are the result of a previous model fit. We could manually
-modify the computation of \(t\), but the more proper method is to
-simply\ldots{}
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\setcounter{enumi}{2}
-\tightlist
-\item
-  Add dietary fat into the original linear model.
-\end{enumerate}
-
-\begin{equation}
-ldlc = \beta_0 + \beta_1 fat + \beta_2 drug + \varepsilon
-\end{equation}
-
-\begin{verbatim}
-##               Estimate Std. Error  t value     Pr(>|t|)
-## (Intercept)  99.449257  2.2812187 43.59479 6.880431e-19
-## fat         203.773799  7.2192309 28.22652 1.009563e-15
-## drugnew      -5.128034  0.8711147 -5.88675 1.794002e-05
-\end{verbatim}
-
-Here, the estimate is -5.1 and the SE is 0.9. Look back at the script
-generating the fake data; the true effect (\(\beta_1\)) of the new drug
-was set to -5.0 so this estimate is quite good.
-
-\subsection{Interaction effects with
-covariates}\label{interaction-effects-with-covariates}
-
-\subsection{Add only covariates that were measured before peaking at the
-data}\label{add-only-covariates-that-were-measured-before-peaking-at-the-data}
-
-\section{Regression to the mean}\label{regression-to-the-mean}
-
-It is common to measure the outcome variable (\(Y\)) both before and
-after the experimental treatments are applied and then compare the
-pre-post \emph{change} in \(Y\) in response to the treatment using a
-\(t\)-test or ANOVA. Don't do this.
-
-Instead, add the pre-treatment measure into the model as a covariate.
-
-\begin{equation}
-Y_{post} = \beta_0 + \beta_1 Y_{pre} + \beta_2 Treatment + \varepsilon
-\label{eq:ancova-4}
-\end{equation}
-
-where \(Treatment\) is a dummy variable for a two-level factor. A
-pre-treatment measure (\(Y_{pre}\)) is often called the \emph{baseline}
-measure. The change in \(Y\) (\(\Delta Y = Y{post} - Y_{pre}\)) is
-sometimes called a change score or gain score. \(\Delta Y\) can be
-modeled as in equation \eqref{eq:ancova-4} and the \(p\)-value will be
-precisely the same (the estimate and SE will differ of course because
-the response variable is different).
-
-\begin{equation}
-\Delta Y = \beta_0 + \beta_1 Y_{pre} + \beta_2 Treatment + \varepsilon
-\label{eq:ancova-5}
-\end{equation}
-
-The reason why a researcher should not model \(\Delta Y\) as a function
-of \(Treatment\) without \(Y_{pre}\) as a covariate is that the
-\textbf{regression to the mean}. To explain regression to the mean, I
-use fake data simulated to model the results from an important study on
-gut microbiomes. In this study, the authors (Turnbaugh et al. xxx)
-showed that mice with feces from obese (genotype \emph{ob/ob}) donors
-had higher weight gain than mice with feces from lean (genotype
-\emph{+/+}) donors, presumably because of the differences in microbial
-communities between the donor types (shown elsewhere in their paper). To
-support the inference of a large difference in weight change, they
-illustrated the percent change in each treatment level in their Fig 3C,
-which is replicated here using simulated data generated to match the
-original summary statistics (Figure \ref{fig:ancova-mouseplot1}).
-
-\begin{figure}
-\centering
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/ancova-mouseplot1-1.pdf}
-\caption{\label{fig:ancova-mouseplot1}Figure 3c of Turnbaugh \emph{et al}
-2006. This figure was generated with simulated data matching the summary
-statistics given in Turnbaugh \emph{et al} 2006}
-\end{figure}
-
-That looks like a big difference, with the mice from the obese-donor
-treatment level gaining much more fat than the mice from the lean-donor
-treatment level. Turnbaugh et al. used a simple t-test of this percent
-change to test the effect of the \emph{ob/ob} treatment. The linear
-model underneath this \(t\)-test is
-
-\begin{equation}
-fat.gain = \beta_0 + \beta_1 obese + \varepsilon
-\end{equation}
-
-where \(fat.gain\) is the percent gain in fat from baseline and
-\(obese\) is a dummy variable with \emph{ob/ob} \(= 1\). The model
-coefficients are
-
-\begin{verbatim}
-##                Estimate Std. Error  t value     Pr(>|t|)
-## (Intercept)    25.24015   5.627515 4.485134 0.0003259533
-## treatmentob/ob 21.92156   8.176589 2.681016 0.0157879742
-\end{verbatim}
-
-\begin{verbatim}
-##                    2.5 %   97.5 %
-## (Intercept)    13.367137 37.11317
-## treatmentob/ob  4.670468 39.17266
-\end{verbatim}
-
-Or, the increase in fat in the obese-treated mice was 21.9\% (95\%CI:
-4.7, 39.2\%, \(p=0.016\)) greater than the increase in lean-treated
-mice. This result, if generally verified with replication and rigorous
-probing, would have spectacular implications for human health.
-
-One might reasonably expect that if mice are randomized into two groups,
-then the expected difference in percent change from baseline is zero.
-This is unconditionally true but not conditionally true. That is, if we
-ignore initial fat weight, the expected difference is zero. But, the
-expected difference is also conditional on the initial difference in fat
-weights. More specifically, the expected difference is opposite in sign
-but proportional in magnitude to the initial difference. This
-conditional expectation is a consequence of regression to the mean. If
-the first measure of a random variable is extreme, the second measure
-will tend to be less extreme. And, if a second measure is extreme, the
-first measure will tend to be less extreme.
-
-Despite random treatment assignment, the mean initial fat weight of the
-\emph{ob/ob} group was 1.2SD less than the mean initial weight of the
-\emph{+/+} group. By contrast, the mean final weight of the \emph{ob/ob}
-group was 0.06SD larger than the mean final weight of the \emph{+/+}
-group. This first difference is an extreme measure. The second is
-extremely close to the expectation if there is no treatment effect.
-Because the initial difference in weight is unusually negative, the
-expected difference in percent change will be unusually positive.
-
-This dependency between difference in percent change from baseline and
-difference in initial weight is easy to simulate. Simply
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\tightlist
-\item
-  randomly sample a normal distribution as the ``initial weight'' and
-  randomly assign to treatment class
-\item
-  let the final weight have some correlation (\(\rho\)) with the initial
-  weight. Some correlation should make sense -- we expect a mouse that
-  has more fat than average at the start of the experiment to also have
-  more fat than average at the end of the experiment. Run the experiment
-  at different values of this correlation to see how it effects
-  regression to the mean.
-\item
-  Do not add a treatment effect. We want to explore the behavior of the
-  nill null hypothesis.
-\end{enumerate}
-
-\begin{figure}
-\centering
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/ancova-sim1-1.pdf}
-\caption{\label{fig:ancova-sim1}Effect of initial difference in weight on
-the difference in change score. Increased initial difference in weight
-results in an increased differences in change score between treatment
-and control. Four different values of \emph{rho} (the correlation
-between initial and final weights) were simulated. Only when
-\emph{rho}=1 is there no influence of initial difference, because
-whatever differences occur at baseline will be perfectly preserved in
-the final measure. The X gives the values in the original Turnbaugh
-data}
-\end{figure}
-
-What's happening in Figure \ref{fig:ancova-sim1}? Each point is a result
-for a single, simulated experiment. In total, there are 1000 simulated
-experiments for each of four values of \(\rho\). The \emph{x}-axis is
-the difference between the means of the two treatment levels at baseline
-(\emph{Initial difference}). The \emph{y}-axis is the difference in mean
-change score between the two treatment levels -- that is the difference
-in the means of \(\Delta Y\) from equation \eqref{eq:ancova-5}. This
-difference in \(\Delta Y\) is the effect of the treatment the
-researchers are interested in. The \emph{unconditional} expectation of
-this difference is zero
-
-\begin{equation}
-\mathrm{E}(\Delta Y_{ob/ob} - \Delta Y_{+/+}) = 0
-\end{equation}
-
-but the change conditional on baseline is not zero
-
-\begin{equation}
-\mathrm{E}(\Delta Y_{ob/ob} - \Delta Y_{+/+}) \ne 0
-\end{equation}
-
-Instead, the conditional expectation is a function of the difference at
-baseline. If the initial difference in weight happens to be unusually
-large and negative, the expected difference in change score is unusually
-positive. This non-zero expectation means that the estimate of the
-treatment effect is \textbf{conditionally biased} for any model that
-does not include the baseline fat weight as a covariate. And, from a
-frequentist perspective, the Type I error for a test of a difference in
-\(\Delta Y\) is strongly dependent on the initial difference in weight.
-
-The big X in the plot indicates the difference at baseline and
-difference in \(\Delta Y\) for the original mice study. The difference
-in \(Delta Y\) is unusually positive (about .6\% of the \(|\delta Y|\)
-are larger) but very close to the expected value given the unusually
-large, negative difference at baseline. In other words, the probability
-of the data, or more extreme than the data, is not 0.006 but something
-larger and perhaps, much larger (the computed value depends on the
-observed \(\rho\). From, the plot, the X is very unusual if \(\rho=1\),
-pretty unusual if \(\rho=0.66\), but pretty common if \(\rho=0.33\) or
-if \(\rho=0\)).
-
-\subsection{Do not use percent change, believing that percents account
-for effects of initial
-weights}\label{do-not-use-percent-change-believing-that-percents-account-for-effects-of-initial-weights}
-
-Some researchers mistakenly believe that a \(t\)-test of percent change
-automatically adjusts for effects in initial weight, since this initial
-weight is in the denominator of the percent. This is wrong. The
-dependency of the difference in change between treatments on the initial
-difference between treatments is more severe if change is measured as a
-percent, because the numerator (the change score) is expected to be
-larger if the denominator is smaller (initial measure). Using the
-simulated data from above, here is this dependency.
-
-\begin{figure}
-\centering
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/ancova-sim2-1.pdf}
-\caption{\label{fig:ancova-sim2}Effect of initial difference in weight on
-the difference in percent change. Increased initial difference in weight
-results in an increased differences in Percent change between treatment
-and control. Four different values of \emph{rho} (the correlation
-between initial and final weights) were simulated. Note there is no
-value of \emph{rho} where the difference in percent change is
-independent of the initial difference. The X gives the values in the
-original Turnbaugh data.}
-\end{figure}
-
-\subsection{\texorpdfstring{Do not ``test for balance'' of baseline
-measures}{Do not test for balance of baseline measures}}\label{do-not-test-for-balance-of-baseline-measures}
-
-Contrary to some advice and maybe to intuition, it makes no sense to
-``test for balance'' at baseline with a \emph{t}-test of the difference
-in initial measures of \(Y\). And, it makes no sense to use this test as
-a decision rule for how to proceed: if \(p>0.05\) then use a simple
-\(t\) test of the change scores, if \(p<0.05\) then use ANCOVA with
-baseline measures in the model. First, a null-hypothesis significance
-test cannot tell you that there is ``no difference'' -- this is not what
-null-hypothesis tests do. Second, any \(p\)-value after the initial test
-isn't strictly valid as it does not take into account this decision
-step, but this is minor. Third, it doesn't matter; there will always be
-some difference in the actual means of the initial measures and,
-consequently, the conditional expectation of the final measures, or
-change in measures, or percent change will be dependent on this initial
-difference. So, if one has initial measures, one should use an linear
-model that adjusts for baseline measures to estimate the treatment
-effect in pre-post designs. And, if one isn't planning on taking an
-initial measure, then maybe you should, because the initial measure used
-in a linear model allows a better estimate of the treatment effect!
 
 \chapter{ANOVA Tables}\label{anova-tables}
 
@@ -7771,10 +7776,72 @@ the model matrix. The safest way to do this is something like this
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 \end{verbatim}
 
-\chapter*{Part VI: Expanding the Linear Model: Generalized Linear
-Models}\label{part-vi-expanding-the-linear-model-generalized-linear-models}
-\addcontentsline{toc}{chapter}{Part VI: Expanding the Linear Model:
-Generalized Linear Models}
+\chapter{Predictive Models}\label{predictive-models}
+
+This chapter focusses on modeling \textbf{observational data} with
+multiple \(X\) variables, both continous and categorical. The classical
+analysis of multiple \(X\) variables is \textbf{multiple regression},
+sometimes called \textbf{multivariable regression} and occassionally,
+but incorrectly, called \textbf{multivariate regression} --
+``multivariate'' refers to multiple \(Y\) variables.
+
+The models in this chapter have the structure
+
+\begin{equation}
+Y = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \beta_3 X_3 + ... \beta_p X_p + \varepsilon 
+\end{equation}
+
+\% where \(p\) is the number of \(X\) variables or \textbf{predictors}
+in the model. This equation is easily generalized to both generalized
+linear models, linear mixed models, and generalized linear mixed models.
+
+\section{Overfitting}\label{overfitting}
+
+When a model is fit to data, the model coefficients are estimates of the
+parameters that ``generated the data''. The value of an estimate is
+partly a function of the signal (the parameter) and partly a function of
+the noise, which is unique to the sample. At a low signal to noise ratio
+a model is mostly fitting the noise. A measure of how well the model
+``fits'' the data is \(R^2\), which is
+
+\begin{equation}
+R^2 <- 1 - \frac{SS_{residual}}{SS_{total}}
+\end{equation}
+
+As \(X\) variables are added to a model, the \(R^2\) necessarily
+increases. Part of this increase is due to added signal, but part is due
+to added noise. If the added noise is more than the added signal, then
+the model fit -- that is the parameter estimates -- increasingly
+reflects the noise unique to the sample rather the signal common to
+every sample. This is the basis of \textbf{overfitting}.
+
+To demonstrate overfitting, I fit completely random \(X\) variables to
+the lifespans for the control voles.
+
+Think about it this way: if I create fake data in there are ten \(X\)
+variables that are correlewhich \(Y\) is a simple column of random,
+normal variables that are not a function of
+
+\section{Model building vs.~Variable selection vs.~Model
+selection}\label{model-building-vs.variable-selection-vs.model-selection}
+
+\subsection{Stepwise regression}\label{stepwise-regression}
+
+\subsection{Cross-validation}\label{cross-validation}
+
+\subsection{Penalization}\label{penalization}
+
+\subsubsection{AIC}\label{aic}
+
+\subsubsection{LASSO}\label{lasso}
+
+\section{Shrinkage}\label{shrinkage}
+
+\chapter*{Part V: Expanding the Linear Model -- Generalized Linear
+Models and Multilevel (Linear Mixed)
+Models}\label{part-v-expanding-the-linear-model-generalized-linear-models-and-multilevel-linear-mixed-models}
+\addcontentsline{toc}{chapter}{Part V: Expanding the Linear Model --
+Generalized Linear Models and Multilevel (Linear Mixed) Models}
 
 \chapter{Generalized linear models I: Count
 data}\label{generalized-linear-models-i-count-data}
@@ -8611,12 +8678,6 @@ biocontrol service of parasitoids. Journal of Applied Ecology, 52(3),
 source URL: \url{https://datadryad.org/resource/doi:10.5061/dryad.bj001}
 
 source file: ``4\_Parastism\_Fig\_6.csv''
-
-\chapter*{Part VII: Expanding the Linear Model: Hierarchical (Linear
-Mixed)
-Models}\label{part-vii-expanding-the-linear-model-hierarchical-linear-mixed-models}
-\addcontentsline{toc}{chapter}{Part VII: Expanding the Linear Model:
-Hierarchical (Linear Mixed) Models}
 
 \chapter{Linear mixed models}\label{linear-mixed-models}
 
