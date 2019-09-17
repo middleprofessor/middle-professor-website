@@ -125,7 +125,7 @@
   \postauthor{\par}
       \predate{\centering\large\emph}
   \postdate{\par}
-    \date{Draft: 2019-09-06}
+    \date{Draft: 2019-09-17}
 
 \usepackage{booktabs}
 \usepackage{amsthm}
@@ -397,8 +397,8 @@ Chapter}\label{create-an-r-notebook-for-this-chapter}
 
 Now write some text documenting which packages you installed.
 
-\subsection{\texorpdfstring{Create a ``setup''
-chunk}{Create a setup chunk}}\label{create-a-setup-chunk}
+\subsection{\texorpdfstring{Create a ``load-packages''
+chunk}{Create a load-packages chunk}}\label{create-a-load-packages-chunk}
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
@@ -468,16 +468,38 @@ learn more! We will use data.table for importing text files in
 tab-delimited or comma-separated formats and the readxl package for
 importing excel files.
 
+Start your notebook with a chunk named ``setup''. It is important that
+this is the name.
+
 \begin{Shaded}
 \begin{Highlighting}[]
-\KeywordTok{library}\NormalTok{(ggplot2)}
-\KeywordTok{library}\NormalTok{(ggpubr)}
-\KeywordTok{library}\NormalTok{(data.table)}
-\KeywordTok{library}\NormalTok{(readxl)}
-\KeywordTok{library}\NormalTok{(emmeans)}
-\KeywordTok{library}\NormalTok{(mvtnorm)}
-
 \NormalTok{knitr}\OperatorTok{::}\NormalTok{opts_chunk}\OperatorTok{$}\KeywordTok{set}\NormalTok{(}\DataTypeTok{fig.width=}\DecValTok{6}\NormalTok{, }\DataTypeTok{fig.height=}\DecValTok{4}\NormalTok{) }
+
+\CommentTok{# use this in a chuck called "setup" to force the working directory to be}
+\CommentTok{# at the level of the project file.}
+\NormalTok{knitr}\OperatorTok{::}\NormalTok{opts_knit}\OperatorTok{$}\KeywordTok{set}\NormalTok{(}\DataTypeTok{root.dir =}\NormalTok{ rprojroot}\OperatorTok{::}\KeywordTok{find_rstudio_root_file}\NormalTok{())}
+
+\CommentTok{# relative paths to project folders}
+\NormalTok{data_path <-}\StringTok{ "data"} \CommentTok{# path to data that are imported}
+\NormalTok{output_path <-}\StringTok{ "output"} \CommentTok{# path to data that are saved}
+\end{Highlighting}
+\end{Shaded}
+
+Add a ``load-packages'' chunk. You do not need to preface
+``load-packages'' with ``data''. This is done here because chunk names
+cannot be repeated in a single compiled object and I have a .Rmd file
+for each chapter of the book and each begins with a chunk like this. So
+I start the name of chunks within each chapter with a descritor of the
+chapter.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(ggplot2) }\CommentTok{# ggplot environment}
+\KeywordTok{library}\NormalTok{(ggpubr) }\CommentTok{# publication ready plots}
+\KeywordTok{library}\NormalTok{(data.table) }\CommentTok{# make data.frames data.tables}
+\KeywordTok{library}\NormalTok{(readxl) }\CommentTok{# import excel}
+\KeywordTok{library}\NormalTok{(emmeans) }\CommentTok{# get estimated marginal means and CIs, used for plot}
+\KeywordTok{library}\NormalTok{(janitor) }\CommentTok{# clean_names to clean col labels of imported data}
 \end{Highlighting}
 \end{Shaded}
 
@@ -492,26 +514,20 @@ such as human health measures).
 
 The downloaded data will be inserted into the ``data'' folder. To access
 these data in an R script, the script needs to know ``where to look'' or
-the ``address.'' This address is the \textbf{directory path}. The
-default path for an R notebook is the directory containing the notebook
-.Rmd file. This file should be in the ``notebooks'' folder within
-``BIO\_413''. The ``BIO\_413'' Folder is the parent of the ``notebooks''
-folder. It is also the parent of the ``data'' folder. To see any content
-within the ``data'' folder, the R script needs to tell R to move back
-(or up) the directory structure out of the ``notebooks'' folder into the
-parent ``BIO\_413'' folder and then forward (or down) into the ``data''
-folder. This is done with
+the ``address.'' This address is the \textbf{path}. The default
+\textbf{working directory} for an R notebook is the directory containing
+the notebook .Rmd file so the default path is the path to this directory
+and this file should always be saved to the ``notebooks'' folder within
+``BIO\_413''. The setup chunk above changes this default working
+directory to the project folder, which makes it a little easier to
+navigate to the data folder.
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{data_path <-}\StringTok{ "../data"}
-\end{Highlighting}
-\end{Shaded}
-
-The \texttt{..} moves the address (of where to read input or write
-output) back one step and \texttt{/data} moves the address forward into
-the ``data'' folder. This folder will eventually contains lots of data
-from Dryad Digital Repository.
+``BIO\_413'' Folder is the parent of the ``notebooks'' folder. It is
+also the parent of the ``data'' folder. To see any content within the
+``data'' folder, the R script needs to tell R to move back (or up) the
+directory structure out of the ``notebooks'' folder into the parent
+``BIO\_413'' folder and then forward (or down) into the ``data'' folder.
+This would be do
 
 \subsection{Excel File}\label{excel-file}
 
@@ -575,7 +591,92 @@ for Data Science} book.
 \NormalTok{data_folder <-}\StringTok{ "Data from Prenatal acoustic communication programs offspring for high post-hatching temperatures in a songbird"}
 \NormalTok{filename <-}\StringTok{ "allDatasetsMarietteBuchanan2016.xls"}
 \NormalTok{file_path <-}\StringTok{ }\KeywordTok{paste}\NormalTok{(data_path, data_folder, filename, }\DataTypeTok{sep=}\StringTok{"/"}\NormalTok{)}
-\NormalTok{chick <-}\StringTok{ }\KeywordTok{data.table}\NormalTok{(}\KeywordTok{read_excel}\NormalTok{(file_path, }\DataTypeTok{sheet=}\StringTok{"nestlingMass"}\NormalTok{))}
+\NormalTok{chick <-}\StringTok{ }\KeywordTok{read_excel}\NormalTok{(file_path, }\DataTypeTok{sheet=}\StringTok{"nestlingMass"}\NormalTok{) }\CommentTok{# read the excel file}
+\NormalTok{chick <-}\StringTok{ }\KeywordTok{data.table}\NormalTok{(chick) }\CommentTok{# convert to data.table}
+\end{Highlighting}
+\end{Shaded}
+
+In this book, we will consistently uses this protocol for storing and
+retrieving downloaded files. The first three lines in the script above
+creates the directory path to the file. This path includes
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  data\_path -- the relative path into the folder ``data'' (relative to
+  the location of the project file)
+\item
+  data\_folder -- the name of the folder within ``data'' containing the
+  file
+\item
+  filename -- the name of the file to read
+\end{enumerate}
+
+These are all put together into a single path using the function
+\texttt{paste()}. Read about paste. It will be used repeatedly. The
+\texttt{read\_excel(file\_path,\ sheet="nestlingMass")} reads the
+nestlingMass sheet only. The next
+line:\texttt{chick\ \textless{}-\ data.table(chick)} converts the
+data.frame into a data.table.
+
+\subsubsection{Troubleshooting File
+Import}\label{troubleshooting-file-import}
+
+If you get an error that starts with ``Error: \texttt{path} does not
+exist:'' then R is not ``seeing'' your specified file given the path
+you've given it.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Make sure your ``setup'' chunk is called ``setup'' and that it
+  includes the line to change the working directory to the project
+  directory and that you have run the chunk
+\item
+  Make sure the path to the data folder is in your setup chunk.
+\item
+  Make sure your ``data'' folder is \emph{one level} inside your project
+  folder. ``one level'' means it is not buried deeper inside other
+  folders within the project folder.
+\item
+  Make sure your ``Data from \ldots{}'' folder is one level inside your
+  ``data'' folder
+\item
+  Make sure you have the name of the ``Data from \ldots{}'' folder
+  correct in your script. To do this, I do not type the name but instead
+  go to the finder (on Mac OS) and highlight the ``Data from \ldots{}''
+  folder and copy the name -- the whole name -- and then paste in
+  between the quote mark in the line
+  \texttt{data\_folder\ \textless{}-\ ""}
+\item
+  Make sure your data file is one level inside the correct ``Data from''
+  folder.
+\item
+  Make sure the file name is correct in the script. As with the folder
+  name, I go to the finder and copy the file name and paste it in place.
+\end{enumerate}
+
+More generally, R is \emph{very literal} when it comes to: Spelling.
+Humans are very good at understanding misspelled words but the R
+language (or any computer language) is very literal. ``Data from
+Quantifying the effects of'' and ``Data from Quantifying the efects of''
+are different values. Capitalization. R is \textbf{case sensitive} (some
+programming languages are not). ``Data from Quantifying'', ``Data from
+quantifying'', and ``data from quantifying'' are all different values.
+Spelling AND capitalization have to be perfect, not simply close. Humans
+are very good at understanding misspelled and OdDLy capitalized words
+but the R language (or any computer language) is very literal.
+
+\subsubsection{Peak at the imported data.table to check that the file
+was imported correctly and to learn about the
+contents.}\label{peak-at-the-imported-data.table-to-check-that-the-file-was-imported-correctly-and-to-learn-about-the-contents.}
+
+Insert the following after your import script and run:
+
+\begin{Shaded}
+\begin{Highlighting}[]
 \KeywordTok{head}\NormalTok{(chick) }\CommentTok{# check -- are there headers? are there the correct number of columns?}
 \end{Highlighting}
 \end{Shaded}
@@ -625,85 +726,55 @@ for Data Science} book.
 ## 6:        13.46
 \end{verbatim}
 
-\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+The function \texttt{head(chick)} script displays the first few lines of
+the data.table \texttt{chick}. This is one way to check that the data
+were imported correctly, to examine the column labels to ensure they
+conform to best practices, and to simply get to know the contents of the
+import file. In this case, it is easy to see that the column names have
+spaces in them. Spaces in column names are bad practice because a column
+name is a variable and variable names should not include spaces (is
+\texttt{brood\ id} one variable or two?). The best practice is to
+replace a blank with an underscore, for example \texttt{brood\_id}. Some
+coders just mash words together into a single word like this
+\texttt{broodid} but this should generally be avoided because the result
+can be hard to read. Some coders also use Caps to designate new words
+like this \texttt{BroodId}. This is easier to read than simple
+concatenation but the underscore is the easiest to read.
 
-\textbf{NOTE}
-
-If you are getting errors when trying to read a file, it is probably a
-bug in the construction of the variable \texttt{file\_path}, which is a
-string variable and the value has to be exactly match the directly path
-to the file you are trying to read. \texttt{file\_path} is constructed
-by pasting together the variables \texttt{data\_path},
-\texttt{data\_folder}, and \texttt{filename}. Type \texttt{file\_path}
-into the console and look at the value. Then check
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\tightlist
-\item
-  Spelling. Humans are very good at understanding misspelled words but
-  the R language (or any computer language) is very literal. ``../data''
-  does not equal ``./data'' or ``../ data'' or ``../data''
-\item
-  Capitalization. R is \textbf{case sensitive} (some programming
-  languages are not). ``../data'' does not equal ``../Data'' or
-  ``../DATA''.
-\item
-  is the file you are trying to read actually in the folder you are
-  trying to read from?
-\item
-  is the notebook that you are writing in the folder ``notebooks''? (the
-  construction of \texttt{file\_path} assumes that notebook is one
-  folder deep within the project folder.
-\end{enumerate}
-
-If the spelling or capitalization of any of these components is wrong,
-then \texttt{file\_path} will be wrong. If there is any difference in
-any character in the string, then R will return an error. So spelling
-AND capitalization have to be perfect, not simply close. Humans are very
-good at understanding misspelled and OdDLy capitalized words but the R
-language (or any computer language) is very literal.
-
-\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
-
-In this book, we will consistently uses the protocol for storing and
-retrieving downloaded files. The first three lines in the script above
-creates the directory path to the file. This path includes
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\tightlist
-\item
-  data\_path -- the relative path into the folder ``data'' (relative to
-  the location of the notebook file)
-\item
-  data\_folder -- the name of the folder within ``data'' containing the
-  file
-\item
-  filename -- the name of the file to read
-\end{enumerate}
-
-These are all put together into a single path using the function
-\texttt{paste()}. Read about paste. It will be used repeatedly. The
-\texttt{read\_excel(file\_path,\ sheet="nestlingMass")} reads the
-nestlingMass sheet only. This function is embedded within the
-\texttt{data.table()} function and so is converted into a data.table.
-The data.table is assigned to the object ``chick''
-
-The \texttt{head(chick)} script simply displays the first few lines of
-the data.table. This is one way to check that the data were imported
-correctly. In this case, it is easy to see that the column names have
-spaces in them. It can sometimes be hard to work with column names with
-spaces and so this next line of code changes all spaces to an underscore
+The \texttt{janitor} package has a nice function to clean the column
+names of a data frame. The default clean includes changing any uppercase
+letter to lower case and replacing spaces with underscores. Many coders
+like to work with all lowercase variable names to avoid having to hit
+the shift key.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\KeywordTok{setnames}\NormalTok{(chick, }\DataTypeTok{old=}\KeywordTok{colnames}\NormalTok{(chick), }\DataTypeTok{new=}\KeywordTok{gsub}\NormalTok{(}\StringTok{" "}\NormalTok{, }\StringTok{"_"}\NormalTok{, }\KeywordTok{colnames}\NormalTok{(chick)))}
+\NormalTok{chick <-}\StringTok{ }\KeywordTok{clean_names}\NormalTok{(chick)}
 \end{Highlighting}
 \end{Shaded}
 
-Resist the temptation to change the column names in the data file, which
-reduces reproducibility. Always increase reproducibility!
+Importantly, \textbf{resist the temptation to change the column names in
+the data file}, which reduces reproducibility. Leave original data files
+original. Always increase reproducibility!
+
+\subsubsection{Best practices for creating data
+files}\label{best-practices-for-creating-data-files}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  \url{https://www.youtube.com/watch?time_continue=309\&v=Ry2xjTBtNFE}
+  -- An excellent video introduction to best practices for organizing
+  data in a spreadsheet that will subsequently be analyzed by statistics
+  software.
+\item
+  Broman, K. W., \& Woo, K. H. (2017). Data organization in spreadsheets
+  (No. e3183v1). \url{https://doi.org/10.7287/peerj.preprints.3183v1} --
+  An excelllent review of best practices for organizing data in a
+  spreadsheet.
+\end{enumerate}
+
+\subsubsection{Explore with plots}\label{explore-with-plots}
 
 Just for fun, let's plot the data and reproduce Fig. 2A and B. We are
 using the \texttt{qplot} function, which is from the ggplot2 package.
@@ -827,11 +898,11 @@ re-orders these levels to this more meaningful order.
 Again, there are spaces in the column names. \textbf{Here I'll leave it
 to you to change this}
 
-Here is a reproduction of Fig 2.
+Here is a reproduction of Fig 2 from the journal article.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\KeywordTok{ggbarplot}\NormalTok{(}\DataTypeTok{data=}\NormalTok{bee, }\DataTypeTok{x=}\StringTok{"Treatment"}\NormalTok{, }\DataTypeTok{y=}\StringTok{"New_queens"}\NormalTok{, }\DataTypeTok{add =} \KeywordTok{c}\NormalTok{(}\StringTok{"mean_se"}\NormalTok{))}
+\KeywordTok{ggbarplot}\NormalTok{(}\DataTypeTok{data=}\NormalTok{bee, }\DataTypeTok{x=}\StringTok{"Treatment"}\NormalTok{, }\DataTypeTok{y=}\StringTok{"New_queens"}\NormalTok{, }\DataTypeTok{add =} \StringTok{"mean_se"}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
@@ -890,33 +961,49 @@ and analysis to later chapters.
 
 \section{Saving Data}\label{saving-data}
 
-Let's save the fake data to the ``Fake\_Data'' folder. In the ``output''
-folder create a new folder named ``week 01''. Then set the path to the
-output folder:
+For many projects, it is uncommon to save data. I might save simulated
+data if it takes a long time (hours or days) to generate these and I
+simply want to work with the simulated data in the future (and not have
+to regenerate it). Or I might save processed data if it takes a long
+time to process it and I want to analyze the processed data in the
+future and not have to re-process it.
+
+Here, we will create a small, simulated data set and save it to the
+``output'' folder. You should have an ``output'' folder directly
+(one-level) inside the project folder. Create a folder within the output
+folder names ``chapter\_02''. Make sure that you have the script
+assigning the path to the output folder code in the setup chunk.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{output_path <-}\StringTok{ "../output"} \CommentTok{# out to parent directory than down into Fake_data}
+\KeywordTok{set.seed}\NormalTok{(}\DecValTok{1}\NormalTok{)}
+\NormalTok{n <-}\StringTok{ }\DecValTok{10}
+\NormalTok{beta_}\DecValTok{0}\NormalTok{ <-}\StringTok{ }\FloatTok{10.3}
+\NormalTok{beta_}\DecValTok{1}\NormalTok{ <-}\StringTok{ }\FloatTok{1.1}
+\NormalTok{sigma <-}\StringTok{ }\FloatTok{1.5}
+\NormalTok{fake_data <-}\StringTok{ }\KeywordTok{data.table}\NormalTok{(}\DataTypeTok{treatment=}\KeywordTok{rep}\NormalTok{(}\KeywordTok{c}\NormalTok{(}\StringTok{"Cn"}\NormalTok{,}\StringTok{"Tr"}\NormalTok{), }\DataTypeTok{each=}\NormalTok{n),}
+                        \DataTypeTok{weight=}\KeywordTok{c}\NormalTok{(}\KeywordTok{rnorm}\NormalTok{(n, }\DataTypeTok{mean=}\NormalTok{beta_}\DecValTok{0}\NormalTok{, }\DataTypeTok{sd=}\NormalTok{sigma), }
+                                 \KeywordTok{rnorm}\NormalTok{(n, }\DataTypeTok{mean=}\NormalTok{beta_}\DecValTok{0} \OperatorTok{+}\StringTok{ }\NormalTok{beta_}\DecValTok{1}\NormalTok{, }\DataTypeTok{sd=}\NormalTok{sigma)))}
+\KeywordTok{ggstripchart}\NormalTok{(}\DataTypeTok{data=}\NormalTok{fake_data, }\DataTypeTok{x=}\StringTok{"treatment"}\NormalTok{, }\DataTypeTok{y=}\StringTok{"weight"}\NormalTok{, }\DataTypeTok{add=}\StringTok{"mean_ci"}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
-This could be done at the beginning of the notebook, especially if many
-output files are saved. Regardless, now complete the file\_path with the
-specifics of this save.
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/data-fake-data-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{data_folder <-}\StringTok{ "week 01"}
-\NormalTok{filename <-}\StringTok{ "my_first_fake_data.txt"}
-\NormalTok{file_path <-}\StringTok{ }\KeywordTok{paste}\NormalTok{(output_path, data_folder, filename, }\DataTypeTok{sep=}\StringTok{"/"}\NormalTok{)}
-\CommentTok{# write.table(fake_data, file_path, sep="\textbackslash{}t", quote=FALSE)}
+\NormalTok{save_data_folder <-}\StringTok{ "chapter_02"}
+\NormalTok{save_filename <-}\StringTok{ "my_first_fake_data.txt"}
+\NormalTok{save_file_path <-}\StringTok{ }\KeywordTok{paste}\NormalTok{(output_path, save_data_folder, save_filename, }\DataTypeTok{sep=}\StringTok{"/"}\NormalTok{)}
+\KeywordTok{write.table}\NormalTok{(fake_data, save_file_path, }\DataTypeTok{sep=}\StringTok{"}\CharTok{\textbackslash{}t}\StringTok{"}\NormalTok{, }\DataTypeTok{quote=}\OtherTok{FALSE}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
-We used \texttt{write.table()} to create a tab-delimited text file using
-\texttt{sep="\textbackslash{}t"} to specify tabs to separate the row
-elements. ``\t'' is the standard character string for a tab. Check in
-your Fake\_Data folder and open the file in a text editor.
+Look at your project directory to make sure the file is where it should
+be! We used \texttt{write.table()} to create a tab-delimited text file
+using \texttt{sep="\textbackslash{}t"} to specify tabs to separate the
+row elements. ``\t'' is the standard character string for a tab. Check
+in your Fake\_Data folder and open the file in a text editor.
 
 \section{Problems}\label{problems}
 
@@ -995,8 +1082,8 @@ the line in A.}
 \section{Two specifications of a linear
 model}\label{two-specifications-of-a-linear-model}
 
-\subsection{\texorpdfstring{The ``random error''
-specification}{The random error specification}}\label{the-random-error-specification}
+\subsection{\texorpdfstring{The ``error draw''
+specification}{The error draw specification}}\label{the-error-draw-specification}
 
 A linear model is commonly specified using
 
@@ -1040,8 +1127,8 @@ random ``draw'' from a normal distribution with mean zero and variance
 \(\sigma^2\). Think of this as adding some random value to the expected
 value.
 
-\subsection{\texorpdfstring{The ``random draw''
-specification}{The random draw specification}}\label{the-random-draw-specification}
+\subsection{\texorpdfstring{The ``conditional draw''
+specification}{The conditional draw specification}}\label{the-conditional-draw-specification}
 
 A second way of specifying a linear model is
 
@@ -1068,28 +1155,29 @@ model}\label{comparing-the-two-ways-of-specifying-the-linear-model}
 
 These two ways of specifying the model encourage slightly different ways
 of thinking about how the data (the response varible \(Y\)) were
-generated. The random error specification ``generates'' data by randomly
+generated. The error draw specification ``generates'' data by randomly
 drawing some error \(\varepsilon_i\) from the specified distribution and
-adding this to \(x_i\). The random draw specification ``generates'' data
-by constructing what \(y_i\) should be, and then drawing a random
-variable from a distribution with this expectation. This random draw is
-\(y_i\) and not the ``error''. For the random error generation, we need
-only one hat of random numbers, but for the random draw generation, we
-need a hat for each value of \(x_i\) because we are drawing the response
-(\(y_i\)) and not the error (\(\varepsilon_i\)).
+adding this to \(x_i\). The conditional draw specification ``generates''
+data by constructing what \(y_i\) ``should be'' given \(x_i\) (the
+conditional expection), and then drawing a random variable from a
+distribution with this expectation. This random draw is \(y_i\) and not
+the ``error''. For the error draw generation, we need only one hat of
+random numbers, but for the conditional draw generation, we need a hat
+for each value of \(x_i\).
 
-The random draw specification explicitly defines all parameters,
+The conditional draw specification explicitly defines all parameters,
 including the parameters of the linear predictor (\(\beta_0\) and
-\(\beta_1\)), the conditional mean \(\mu\) and the variance \(\sigma\).
-The random error specification only defines the parameters of the linear
-predictor, and often these are referrred to as ``the parameters'' in the
-sense that there are not other parameters. The random error
-specification is most useful for thinking about model checking a fit
-linear model. Importantly, thinking about a model as a predictor plus
-error can lead to misconceptions of generalized linear models. The
-random draw specification is more generally useful in that it is easily
-generalized to more complex models, including hierarchical models,
-generalized linear models, and Bayesian models.
+\(\beta_1\)), the conditional mean \(\mu\) and the variance
+\(\sigma^2\). The error draw specification only defines the parameters
+of the linear predictor, and often these are referrred to as ``the
+parameters'' in the sense that there are not other parameters. The error
+draw specification is most useful for thinking about model checking a
+fit linear model. The random draw specification is more generally useful
+in that it is easily generalized to more complex models, including
+hierarchical models, generalized linear models, and Bayesian models. In
+fact, \emph{thinking about a model as a predictor plus error can lead to
+the misconception that in a generalized linear models, the error has the
+distribution (binomial, poisson, etc.) modeled}.
 
 Although a linear model (or statistical model more generally) is a model
 of a data-generating process, linear models are not typically used to
@@ -2093,6 +2181,55 @@ with a bootstrap estimate of the SEM.
 dayum!
 
 \chapter{Covariance and Correlation}\label{covariance-and-correlation}
+
+Variance is one of two major concepts in statistical modeling. The
+second is \textbf{covariance}, which arises when two variables measured
+on the same unit vary together. ``Vary together'' means that if we
+measured leg length and arm length on each individual in a sample of
+humans, we'd expect individuals with long arms to also have long legs
+while those with short arms to have short legs. ``Measured on the same
+unit'' means that we measure both leg length and arm length in each
+individual of a sample -- we cannot compute a covariance if we measure
+legs in one sample and arms in a second. Covariance can be positive or
+negative. It is positive when the tendency is for both values to be
+large or both values to be small. It is negative when the tendency is
+for one value to be small when the other is large. Positive and negative
+covariance are easily visualized with a scatterplot
+\ref{fig:covariance-scatterplot}.
+
+\begin{figure}
+\centering
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/covariance-scatterplot-1.pdf}
+\caption{\label{fig:covariance-scatterplot}Scatterplot illustrating two
+variables with (A) positive covariance and (B) negative covariance}
+\end{figure}
+
+\section{}\label{section}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Covariance
+\end{enumerate}
+
+\begin{equation}
+\mathrm{COV}[X, Y] = \sum_{i=1}^n{\frac{(x_i - \bar{x})(y_i - \bar{y})}{n-1}}
+\label{eq:cov}
+\end{equation}
+
+Compare this to the equation for the variance. In \eqref{eq:cov}, the
+numerator in the sum is the product of two different deviations (one for
+each variable) instead of the product of a deviation with itself.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{1}
+\item
+  Correlation
+\item
+  Regression
+\end{enumerate}
 
 \chapter{P-values}\label{p-values}
 
@@ -4763,6 +4900,9 @@ Here is the default plot
 \NormalTok{\}}
 \end{Highlighting}
 \end{Shaded}
+
+\section{Do coefficients make numeric
+sense?}\label{do-coefficients-make-numeric-sense}
 
 \section{All statistical analyses should be followed by model
 checking}\label{all-statistical-analyses-should-be-followed-by-model-checking}
