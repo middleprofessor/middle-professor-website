@@ -850,55 +850,20 @@ overcome this, the statement below specifies that the file contains a
 \NormalTok{filename <-}\StringTok{ "Whitehorn, O'Connor, Wackers, Goulson (2012) Data from 'Neonicotinoid pesticide reduces bumblebee colony growth and queen production'.csv.csv"}
 \NormalTok{file_path <-}\StringTok{ }\KeywordTok{paste}\NormalTok{(data_path, data_folder, filename, }\DataTypeTok{sep=}\StringTok{"/"}\NormalTok{)}
 \NormalTok{bee <-}\StringTok{ }\KeywordTok{fread}\NormalTok{(file_path, }\DataTypeTok{header=}\OtherTok{TRUE}\NormalTok{)}
-\NormalTok{bee[, Treatment}\OperatorTok{:}\ErrorTok{=}\KeywordTok{factor}\NormalTok{(Treatment, }\KeywordTok{c}\NormalTok{(}\StringTok{"Control"}\NormalTok{, }\StringTok{"Low"}\NormalTok{, }\StringTok{"High"}\NormalTok{))]}
-\KeywordTok{head}\NormalTok{(bee)}
 \end{Highlighting}
 \end{Shaded}
 
-\begin{verbatim}
-##    Treatment Nest ID No. workers      0      1      2   3   4    5    6
-## 1:   Control      C1          13 712.95 748.30 800.57 865 966  997  850
-## 2:   Control      C2          14 719.58 750.00 789.25 822 812  846  827
-## 3:   Control      C3          17 704.92 736.31 767.99 837 976 1117 1050
-## 4:   Control      C4          20 726.42 763.31 795.60 813 801  784   NA
-## 5:   Control      C5          28 740.60 785.52 808.42 837 871  906  886
-## 6:   Control      C6          15 727.10 751.90 774.80 807 847  859  827
-##      7   8 V13 Workers left Males New queens Total unhatched pupae
-## 1: 791 775  NA            2     0          1                    NA
-## 2: 820 802  NA            6    15          0                    20
-## 3: 866 808  NA            1     0          9                    NA
-## 4:  NA  NA  NA            0     0          0                    12
-## 5: 807 775  NA            3     0          0                    NA
-## 6:  NA  NA  NA            0     0          0                   118
-##    Queen pupae Empty cells
-## 1:          NA          NA
-## 2:           0         120
-## 3:          NA          NA
-## 4:           0          72
-## 5:          NA          NA
-## 6:          20         132
-\end{verbatim}
-
 Here, as with the import of the Excel file, the first three lines create
-the directory path to the file. The treatment column is a factor
-variable containing three levels (Control, Low, and High). R
-automatically orders these alphabetically. For plotting and analysis, we
-might want a different order. For example, we want Control to be first
-in the order, since this is a natural ``reference'' level (what
-everything is compared to). And if we think of ``Control'' as no
-treatment, then it makes sense to have ``Low'' second in order and
-``Hight'' last in order. The line
-\texttt{bee{[},\ Treatment:=factor(Treatment,\ c("Control",\ "Low",\ "High")){]}}
-re-orders these levels to this more meaningful order.
-
-Again, there are spaces in the column names. \textbf{Here I'll leave it
-to you to change this}
+the directory path to the file. Peek at the file in the console. Again,
+there are spaces in the column names. \textbf{Here I'll leave it to you
+to change this}
 
 Here is a reproduction of Fig 2 from the journal article.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\KeywordTok{ggbarplot}\NormalTok{(}\DataTypeTok{data=}\NormalTok{bee, }\DataTypeTok{x=}\StringTok{"Treatment"}\NormalTok{, }\DataTypeTok{y=}\StringTok{"New_queens"}\NormalTok{, }\DataTypeTok{add =} \StringTok{"mean_se"}\NormalTok{)}
+\NormalTok{bee[, treatment}\OperatorTok{:}\ErrorTok{=}\KeywordTok{factor}\NormalTok{(treatment, }\KeywordTok{c}\NormalTok{(}\StringTok{"Control"}\NormalTok{, }\StringTok{"Low"}\NormalTok{, }\StringTok{"High"}\NormalTok{))] }\CommentTok{# reorder factor levels}
+\KeywordTok{ggbarplot}\NormalTok{(}\DataTypeTok{data=}\NormalTok{bee, }\DataTypeTok{x=}\StringTok{"treatment"}\NormalTok{, }\DataTypeTok{y=}\StringTok{"new_queens"}\NormalTok{, }\DataTypeTok{add =} \StringTok{"mean_se"}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
@@ -926,34 +891,34 @@ and analysis to later chapters.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\KeywordTok{ggbarplot}\NormalTok{(}\DataTypeTok{data=}\NormalTok{bee, }\DataTypeTok{x=}\StringTok{"Treatment"}\NormalTok{, }\DataTypeTok{y=}\StringTok{"New_queens"}\NormalTok{, }\DataTypeTok{add =} \KeywordTok{c}\NormalTok{(}\StringTok{"mean_se"}\NormalTok{, }\StringTok{"point"}\NormalTok{))}
+\KeywordTok{ggbarplot}\NormalTok{(}\DataTypeTok{data=}\NormalTok{bee, }\DataTypeTok{x=}\StringTok{"treatment"}\NormalTok{, }\DataTypeTok{y=}\StringTok{"new_queens"}\NormalTok{, }\DataTypeTok{add =} \KeywordTok{c}\NormalTok{(}\StringTok{"mean_se"}\NormalTok{, }\StringTok{"point"}\NormalTok{))}
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/alternative-plots-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/data-alternative-plots-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\KeywordTok{ggboxplot}\NormalTok{(}\DataTypeTok{data=}\NormalTok{bee, }\DataTypeTok{x=}\StringTok{"Treatment"}\NormalTok{, }\DataTypeTok{y=}\StringTok{"New_queens"}\NormalTok{)}
+\KeywordTok{ggboxplot}\NormalTok{(}\DataTypeTok{data=}\NormalTok{bee, }\DataTypeTok{x=}\StringTok{"treatment"}\NormalTok{, }\DataTypeTok{y=}\StringTok{"new_queens"}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/alternative-plots-2.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/data-alternative-plots-2.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{fit.glm <-}\StringTok{ }\KeywordTok{glm}\NormalTok{(New_queens }\OperatorTok{~}\StringTok{ }\NormalTok{Treatment, }\DataTypeTok{data=}\NormalTok{bee, }\DataTypeTok{family=}\KeywordTok{poisson}\NormalTok{())}
-\NormalTok{means.glm <-}\StringTok{ }\KeywordTok{emmeans}\NormalTok{(fit.glm, }\DataTypeTok{specs=}\StringTok{"Treatment"}\NormalTok{, }\DataTypeTok{type =} \StringTok{"response"}\NormalTok{)}
-\NormalTok{gg <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(}\DataTypeTok{data=}\KeywordTok{data.frame}\NormalTok{(means.glm), }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{Treatment, }\DataTypeTok{y=}\NormalTok{rate)) }\OperatorTok{+}
+\NormalTok{fit.glm <-}\StringTok{ }\KeywordTok{glm}\NormalTok{(new_queens }\OperatorTok{~}\StringTok{ }\NormalTok{treatment, }\DataTypeTok{data=}\NormalTok{bee, }\DataTypeTok{family=}\KeywordTok{poisson}\NormalTok{())}
+\NormalTok{means.glm <-}\StringTok{ }\KeywordTok{emmeans}\NormalTok{(fit.glm, }\DataTypeTok{specs=}\StringTok{"treatment"}\NormalTok{, }\DataTypeTok{type =} \StringTok{"response"}\NormalTok{)}
+\NormalTok{gg <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(}\DataTypeTok{data=}\KeywordTok{data.frame}\NormalTok{(means.glm), }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{treatment, }\DataTypeTok{y=}\NormalTok{rate)) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{geom_col}\NormalTok{(}\DataTypeTok{fill=}\StringTok{"gray"}\NormalTok{) }\OperatorTok{+}\StringTok{ }
-\StringTok{  }\KeywordTok{geom_errorbar}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{Treatment, }\DataTypeTok{ymin=}\NormalTok{asymp.LCL, }\DataTypeTok{ymax=}\NormalTok{asymp.UCL), }\DataTypeTok{width=}\FloatTok{0.3}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_errorbar}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{treatment, }\DataTypeTok{ymin=}\NormalTok{asymp.LCL, }\DataTypeTok{ymax=}\NormalTok{asymp.UCL), }\DataTypeTok{width=}\FloatTok{0.3}\NormalTok{) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{ylab}\NormalTok{(}\StringTok{"New queens"}\NormalTok{) }\OperatorTok{+}
 \StringTok{  }\OtherTok{NULL}
 \NormalTok{gg}
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/alternative-plots-3.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/data-alternative-plots-3.pdf}
 
 \section{Saving Data}\label{saving-data}
 

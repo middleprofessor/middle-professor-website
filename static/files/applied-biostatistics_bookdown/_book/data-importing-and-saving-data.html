@@ -520,50 +520,27 @@ chick &lt;-<span class="st"> </span><span class="kw">data.table</span>(chick) <s
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">data_folder &lt;-<span class="st"> &quot;Data from Neonicotinoid pesticide reduces bumblebee colony growth and queen production&quot;</span>
 filename &lt;-<span class="st"> &quot;Whitehorn, O&#39;Connor, Wackers, Goulson (2012) Data from &#39;Neonicotinoid pesticide reduces bumblebee colony growth and queen production&#39;.csv.csv&quot;</span>
 file_path &lt;-<span class="st"> </span><span class="kw">paste</span>(data_path, data_folder, filename, <span class="dt">sep=</span><span class="st">&quot;/&quot;</span>)
-bee &lt;-<span class="st"> </span><span class="kw">fread</span>(file_path, <span class="dt">header=</span><span class="ot">TRUE</span>)
-bee[, Treatment<span class="op">:</span><span class="er">=</span><span class="kw">factor</span>(Treatment, <span class="kw">c</span>(<span class="st">&quot;Control&quot;</span>, <span class="st">&quot;Low&quot;</span>, <span class="st">&quot;High&quot;</span>))]
-<span class="kw">head</span>(bee)</code></pre></div>
-<pre><code>##    Treatment Nest ID No. workers      0      1      2   3   4    5    6
-## 1:   Control      C1          13 712.95 748.30 800.57 865 966  997  850
-## 2:   Control      C2          14 719.58 750.00 789.25 822 812  846  827
-## 3:   Control      C3          17 704.92 736.31 767.99 837 976 1117 1050
-## 4:   Control      C4          20 726.42 763.31 795.60 813 801  784   NA
-## 5:   Control      C5          28 740.60 785.52 808.42 837 871  906  886
-## 6:   Control      C6          15 727.10 751.90 774.80 807 847  859  827
-##      7   8 V13 Workers left Males New queens Total unhatched pupae
-## 1: 791 775  NA            2     0          1                    NA
-## 2: 820 802  NA            6    15          0                    20
-## 3: 866 808  NA            1     0          9                    NA
-## 4:  NA  NA  NA            0     0          0                    12
-## 5: 807 775  NA            3     0          0                    NA
-## 6:  NA  NA  NA            0     0          0                   118
-##    Queen pupae Empty cells
-## 1:          NA          NA
-## 2:           0         120
-## 3:          NA          NA
-## 4:           0          72
-## 5:          NA          NA
-## 6:          20         132</code></pre>
-<p>Here, as with the import of the Excel file, the first three lines create the directory path to the file. The treatment column is a factor variable containing three levels (Control, Low, and High). R automatically orders these alphabetically. For plotting and analysis, we might want a different order. For example, we want Control to be first in the order, since this is a natural “reference” level (what everything is compared to). And if we think of “Control” as no treatment, then it makes sense to have “Low” second in order and “Hight” last in order. The line <code>bee[, Treatment:=factor(Treatment, c(&quot;Control&quot;, &quot;Low&quot;, &quot;High&quot;))]</code> re-orders these levels to this more meaningful order.</p>
-<p>Again, there are spaces in the column names. <strong>Here I’ll leave it to you to change this</strong></p>
+bee &lt;-<span class="st"> </span><span class="kw">fread</span>(file_path, <span class="dt">header=</span><span class="ot">TRUE</span>)</code></pre></div>
+<p>Here, as with the import of the Excel file, the first three lines create the directory path to the file. Peek at the file in the console. Again, there are spaces in the column names. <strong>Here I’ll leave it to you to change this</strong></p>
 <p>Here is a reproduction of Fig 2 from the journal article.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggbarplot</span>(<span class="dt">data=</span>bee, <span class="dt">x=</span><span class="st">&quot;Treatment&quot;</span>, <span class="dt">y=</span><span class="st">&quot;New_queens&quot;</span>, <span class="dt">add =</span> <span class="st">&quot;mean_se&quot;</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">bee[, treatment<span class="op">:</span><span class="er">=</span><span class="kw">factor</span>(treatment, <span class="kw">c</span>(<span class="st">&quot;Control&quot;</span>, <span class="st">&quot;Low&quot;</span>, <span class="st">&quot;High&quot;</span>))] <span class="co"># reorder factor levels</span>
+<span class="kw">ggbarplot</span>(<span class="dt">data=</span>bee, <span class="dt">x=</span><span class="st">&quot;treatment&quot;</span>, <span class="dt">y=</span><span class="st">&quot;new_queens&quot;</span>, <span class="dt">add =</span> <span class="st">&quot;mean_se&quot;</span>)</code></pre></div>
 <p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/plot-bee-fig-2-1.png" width="576" /></p>
 <p>The plot suggests immediately some problems with the plot itself and the associated analysis. First, the y-axis is counts, which means that negative values are impossible. But the standard error bars look like they use standard errors computed from a model that allows infinetly large negative values, and the illustrated standard error bars imply that negative values exist. So these error bars are misleading. Second, it is good practice, especially if sample sizes are modest or small, to “show the data”, which means, show the individual data points and not just a summary of the distribution.</p>
 <p>Here are three alternative plots for exploratory purposes. The first simply “shows the data” but still uses the misleading standard error bars. The second uses a box plot. The last plots the means and 95% confidence intervals modeled with a GLM (generalized linear model) to account for the count data (the model used could be improved). Notice that the bar length above the mean is longer than the bar length below the mean (that is the interval is asymmetric about the mean). In order to stay focussed on importing data, I leave explanation of these plots and analysis to later chapters.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggbarplot</span>(<span class="dt">data=</span>bee, <span class="dt">x=</span><span class="st">&quot;Treatment&quot;</span>, <span class="dt">y=</span><span class="st">&quot;New_queens&quot;</span>, <span class="dt">add =</span> <span class="kw">c</span>(<span class="st">&quot;mean_se&quot;</span>, <span class="st">&quot;point&quot;</span>))</code></pre></div>
-<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/alternative-plots-1.png" width="576" /></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggboxplot</span>(<span class="dt">data=</span>bee, <span class="dt">x=</span><span class="st">&quot;Treatment&quot;</span>, <span class="dt">y=</span><span class="st">&quot;New_queens&quot;</span>)</code></pre></div>
-<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/alternative-plots-2.png" width="576" /></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fit.glm &lt;-<span class="st"> </span><span class="kw">glm</span>(New_queens <span class="op">~</span><span class="st"> </span>Treatment, <span class="dt">data=</span>bee, <span class="dt">family=</span><span class="kw">poisson</span>())
-means.glm &lt;-<span class="st"> </span><span class="kw">emmeans</span>(fit.glm, <span class="dt">specs=</span><span class="st">&quot;Treatment&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;response&quot;</span>)
-gg &lt;-<span class="st"> </span><span class="kw">ggplot</span>(<span class="dt">data=</span><span class="kw">data.frame</span>(means.glm), <span class="kw">aes</span>(<span class="dt">x=</span>Treatment, <span class="dt">y=</span>rate)) <span class="op">+</span>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggbarplot</span>(<span class="dt">data=</span>bee, <span class="dt">x=</span><span class="st">&quot;treatment&quot;</span>, <span class="dt">y=</span><span class="st">&quot;new_queens&quot;</span>, <span class="dt">add =</span> <span class="kw">c</span>(<span class="st">&quot;mean_se&quot;</span>, <span class="st">&quot;point&quot;</span>))</code></pre></div>
+<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/data-alternative-plots-1.png" width="576" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggboxplot</span>(<span class="dt">data=</span>bee, <span class="dt">x=</span><span class="st">&quot;treatment&quot;</span>, <span class="dt">y=</span><span class="st">&quot;new_queens&quot;</span>)</code></pre></div>
+<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/data-alternative-plots-2.png" width="576" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fit.glm &lt;-<span class="st"> </span><span class="kw">glm</span>(new_queens <span class="op">~</span><span class="st"> </span>treatment, <span class="dt">data=</span>bee, <span class="dt">family=</span><span class="kw">poisson</span>())
+means.glm &lt;-<span class="st"> </span><span class="kw">emmeans</span>(fit.glm, <span class="dt">specs=</span><span class="st">&quot;treatment&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;response&quot;</span>)
+gg &lt;-<span class="st"> </span><span class="kw">ggplot</span>(<span class="dt">data=</span><span class="kw">data.frame</span>(means.glm), <span class="kw">aes</span>(<span class="dt">x=</span>treatment, <span class="dt">y=</span>rate)) <span class="op">+</span>
 <span class="st">  </span><span class="kw">geom_col</span>(<span class="dt">fill=</span><span class="st">&quot;gray&quot;</span>) <span class="op">+</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">geom_errorbar</span>(<span class="kw">aes</span>(<span class="dt">x=</span>Treatment, <span class="dt">ymin=</span>asymp.LCL, <span class="dt">ymax=</span>asymp.UCL), <span class="dt">width=</span><span class="fl">0.3</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_errorbar</span>(<span class="kw">aes</span>(<span class="dt">x=</span>treatment, <span class="dt">ymin=</span>asymp.LCL, <span class="dt">ymax=</span>asymp.UCL), <span class="dt">width=</span><span class="fl">0.3</span>) <span class="op">+</span>
 <span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;New queens&quot;</span>) <span class="op">+</span>
 <span class="st">  </span><span class="ot">NULL</span>
 gg</code></pre></div>
-<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/alternative-plots-3.png" width="576" /></p>
+<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/data-alternative-plots-3.png" width="576" /></p>
 </div>
 </div>
 <div id="saving-data" class="section level2">
