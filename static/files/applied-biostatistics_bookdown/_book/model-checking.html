@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Chapter 6 Model Checking | Elementary Statistical Modeling for Applied Biostatistics</title>
+  <meta name="description" content="A first course in statistical modeling for biology students">
+  <meta name="generator" content="bookdown  and GitBook 2.6.7">
+
+  <meta property="og:title" content="Chapter 6 Model Checking | Elementary Statistical Modeling for Applied Biostatistics" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="A first course in statistical modeling for biology students" />
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapter 6 Model Checking | Elementary Statistical Modeling for Applied Biostatistics" />
+  
+  <meta name="twitter:description" content="A first course in statistical modeling for biology students" />
+  
+
+<meta name="author" content="Copyright 2018 Jeffrey A. Walker">
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  
+  
+<link rel="prev" href="p-values.html">
+<link rel="next" href="model-fitting-and-model-fit-ols.html">
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Elements of Applied Biostatistics</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Preface</a><ul>
+<li class="chapter" data-level="0.1" data-path="index.html"><a href="index.html#math"><i class="fa fa-check"></i><b>0.1</b> Math</a></li>
+<li class="chapter" data-level="0.2" data-path="index.html"><a href="index.html#r-and-programming"><i class="fa fa-check"></i><b>0.2</b> R and programming</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="part-i-r-fundamentals.html"><a href="part-i-r-fundamentals.html"><i class="fa fa-check"></i>Part I: R fundamentals</a></li>
+<li class="chapter" data-level="1" data-path="organization-r-projects-and-r-notebooks.html"><a href="organization-r-projects-and-r-notebooks.html"><i class="fa fa-check"></i><b>1</b> Organization – R Projects and R Notebooks</a><ul>
+<li class="chapter" data-level="1.1" data-path="organization-r-projects-and-r-notebooks.html"><a href="organization-r-projects-and-r-notebooks.html#importing-packages"><i class="fa fa-check"></i><b>1.1</b> Importing Packages</a></li>
+<li class="chapter" data-level="1.2" data-path="organization-r-projects-and-r-notebooks.html"><a href="organization-r-projects-and-r-notebooks.html#create-an-r-studio-project-for-this-class"><i class="fa fa-check"></i><b>1.2</b> Create an R Studio Project for this Class</a></li>
+<li class="chapter" data-level="1.3" data-path="organization-r-projects-and-r-notebooks.html"><a href="organization-r-projects-and-r-notebooks.html#r-notebooks"><i class="fa fa-check"></i><b>1.3</b> R Notebooks</a><ul>
+<li class="chapter" data-level="1.3.1" data-path="organization-r-projects-and-r-notebooks.html"><a href="organization-r-projects-and-r-notebooks.html#create-an-r-notebook-for-this-chapter"><i class="fa fa-check"></i><b>1.3.1</b> Create an R Notebook for this Chapter</a></li>
+<li class="chapter" data-level="1.3.2" data-path="organization-r-projects-and-r-notebooks.html"><a href="organization-r-projects-and-r-notebooks.html#create-a-load-packages-chunk"><i class="fa fa-check"></i><b>1.3.2</b> Create a “load-packages” chunk</a></li>
+<li class="chapter" data-level="1.3.3" data-path="organization-r-projects-and-r-notebooks.html"><a href="organization-r-projects-and-r-notebooks.html#create-a-simple-plot-chunk"><i class="fa fa-check"></i><b>1.3.3</b> Create a “simple plot” chunk</a></li>
+<li class="chapter" data-level="1.3.4" data-path="organization-r-projects-and-r-notebooks.html"><a href="organization-r-projects-and-r-notebooks.html#create-more-r-chunks-and-explore-options-and-play-with-r-code"><i class="fa fa-check"></i><b>1.3.4</b> Create more R chunks and explore options and play with R code</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="data-importing-and-saving-data.html"><a href="data-importing-and-saving-data.html"><i class="fa fa-check"></i><b>2</b> Data – Importing and Saving Data</a><ul>
+<li class="chapter" data-level="2.1" data-path="data-importing-and-saving-data.html"><a href="data-importing-and-saving-data.html#create-new-notebook-for-this-chapter"><i class="fa fa-check"></i><b>2.1</b> Create new notebook for this chapter</a></li>
+<li class="chapter" data-level="2.2" data-path="data-importing-and-saving-data.html"><a href="data-importing-and-saving-data.html#importing-data"><i class="fa fa-check"></i><b>2.2</b> Importing Data</a><ul>
+<li class="chapter" data-level="2.2.1" data-path="data-importing-and-saving-data.html"><a href="data-importing-and-saving-data.html#excel-file"><i class="fa fa-check"></i><b>2.2.1</b> Excel File</a></li>
+<li class="chapter" data-level="2.2.2" data-path="data-importing-and-saving-data.html"><a href="data-importing-and-saving-data.html#text-file"><i class="fa fa-check"></i><b>2.2.2</b> Text File</a></li>
+</ul></li>
+<li class="chapter" data-level="2.3" data-path="data-importing-and-saving-data.html"><a href="data-importing-and-saving-data.html#saving-data"><i class="fa fa-check"></i><b>2.3</b> Saving Data</a></li>
+<li class="chapter" data-level="2.4" data-path="data-importing-and-saving-data.html"><a href="data-importing-and-saving-data.html#problems"><i class="fa fa-check"></i><b>2.4</b> Problems</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="part-ii-some-fundamentals-of-statistical-modeling.html"><a href="part-ii-some-fundamentals-of-statistical-modeling.html"><i class="fa fa-check"></i>Part II: Some Fundamentals of Statistical Modeling</a></li>
+<li class="chapter" data-level="3" data-path="an-introduction-to-statistical-modeling.html"><a href="an-introduction-to-statistical-modeling.html"><i class="fa fa-check"></i><b>3</b> An Introduction to Statistical Modeling</a><ul>
+<li class="chapter" data-level="3.1" data-path="an-introduction-to-statistical-modeling.html"><a href="an-introduction-to-statistical-modeling.html#two-specifications-of-a-linear-model"><i class="fa fa-check"></i><b>3.1</b> Two specifications of a linear model</a><ul>
+<li class="chapter" data-level="3.1.1" data-path="an-introduction-to-statistical-modeling.html"><a href="an-introduction-to-statistical-modeling.html#the-error-draw-specification"><i class="fa fa-check"></i><b>3.1.1</b> The “error draw” specification</a></li>
+<li class="chapter" data-level="3.1.2" data-path="an-introduction-to-statistical-modeling.html"><a href="an-introduction-to-statistical-modeling.html#the-conditional-draw-specification"><i class="fa fa-check"></i><b>3.1.2</b> The “conditional draw” specification</a></li>
+<li class="chapter" data-level="3.1.3" data-path="an-introduction-to-statistical-modeling.html"><a href="an-introduction-to-statistical-modeling.html#comparing-the-two-ways-of-specifying-the-linear-model"><i class="fa fa-check"></i><b>3.1.3</b> Comparing the two ways of specifying the linear model</a></li>
+</ul></li>
+<li class="chapter" data-level="3.2" data-path="an-introduction-to-statistical-modeling.html"><a href="an-introduction-to-statistical-modeling.html#what-do-we-call-the-x-and-y-variables"><i class="fa fa-check"></i><b>3.2</b> What do we call the <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> variables?</a></li>
+<li class="chapter" data-level="3.3" data-path="an-introduction-to-statistical-modeling.html"><a href="an-introduction-to-statistical-modeling.html#statistical-models-are-used-for-prediction-explanation-and-description"><i class="fa fa-check"></i><b>3.3</b> Statistical models are used for prediction, explanation, and description</a></li>
+<li class="chapter" data-level="3.4" data-path="an-introduction-to-statistical-modeling.html"><a href="an-introduction-to-statistical-modeling.html#modeling-strategy"><i class="fa fa-check"></i><b>3.4</b> Modeling strategy</a></li>
+<li class="chapter" data-level="3.5" data-path="an-introduction-to-statistical-modeling.html"><a href="an-introduction-to-statistical-modeling.html#a-mean-is-the-simplest-model"><i class="fa fa-check"></i><b>3.5</b> A mean is the simplest model</a></li>
+<li class="chapter" data-level="3.6" data-path="an-introduction-to-statistical-modeling.html"><a href="an-introduction-to-statistical-modeling.html#assumptions-for-inference-with-a-statistical-model"><i class="fa fa-check"></i><b>3.6</b> Assumptions for inference with a statistical model</a></li>
+<li class="chapter" data-level="3.7" data-path="an-introduction-to-statistical-modeling.html"><a href="an-introduction-to-statistical-modeling.html#specific-assumptions-for-inference-with-a-linear-model"><i class="fa fa-check"></i><b>3.7</b> Specific assumptions for inference with a linear model</a></li>
+<li class="chapter" data-level="3.8" data-path="an-introduction-to-statistical-modeling.html"><a href="an-introduction-to-statistical-modeling.html#statistical-model-or-regression-model"><i class="fa fa-check"></i><b>3.8</b> “Statistical model” or “regression model”?</a></li>
+<li class="chapter" data-level="3.9" data-path="an-introduction-to-statistical-modeling.html"><a href="an-introduction-to-statistical-modeling.html#glm-vs.glm-vs.gls"><i class="fa fa-check"></i><b>3.9</b> GLM vs. GLM vs. GLS</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals.html"><a href="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals.html"><i class="fa fa-check"></i><b>4</b> Variability and Uncertainty (Standard Deviations, Standard Errors, Confidence Intervals)</a><ul>
+<li class="chapter" data-level="4.1" data-path="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals.html"><a href="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals.html#the-sample-standard-deviation-vs.the-standard-error-of-the-mean"><i class="fa fa-check"></i><b>4.1</b> The sample standard deviation vs. the standard error of the mean</a><ul>
+<li class="chapter" data-level="4.1.1" data-path="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals.html"><a href="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals.html#sample-standard-deviation"><i class="fa fa-check"></i><b>4.1.1</b> Sample standard deviation</a></li>
+<li class="chapter" data-level="4.1.2" data-path="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals.html"><a href="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals.html#standard-error-of-the-mean"><i class="fa fa-check"></i><b>4.1.2</b> Standard error of the mean</a></li>
+</ul></li>
+<li class="chapter" data-level="4.2" data-path="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals.html"><a href="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals.html#using-google-sheets-to-generate-fake-data-to-explore-uncertainty"><i class="fa fa-check"></i><b>4.2</b> Using Google Sheets to generate fake data to explore uncertainty</a><ul>
+<li class="chapter" data-level="4.2.1" data-path="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals.html"><a href="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals.html#steps"><i class="fa fa-check"></i><b>4.2.1</b> Steps</a></li>
+</ul></li>
+<li class="chapter" data-level="4.3" data-path="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals.html"><a href="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals.html#using-r-to-generate-fake-data-to-explore-uncertainty"><i class="fa fa-check"></i><b>4.3</b> Using R to generate fake data to explore uncertainty</a><ul>
+<li class="chapter" data-level="4.3.1" data-path="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals.html"><a href="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals.html#part-i"><i class="fa fa-check"></i><b>4.3.1</b> part I</a></li>
+<li class="chapter" data-level="4.3.2" data-path="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals.html"><a href="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals.html#part-ii---means"><i class="fa fa-check"></i><b>4.3.2</b> part II - means</a></li>
+<li class="chapter" data-level="4.3.3" data-path="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals.html"><a href="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals.html#part-iii---how-do-sd-and-se-change-as-sample-size-n-increases"><i class="fa fa-check"></i><b>4.3.3</b> part III - how do SD and SE change as sample size (n) increases?</a></li>
+<li class="chapter" data-level="4.3.4" data-path="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals.html"><a href="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals.html#part-iv-generating-fake-data-with-for-loops"><i class="fa fa-check"></i><b>4.3.4</b> Part IV – Generating fake data with “for loops”</a></li>
+</ul></li>
+<li class="chapter" data-level="4.4" data-path="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals.html"><a href="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals.html#bootstrapped-standard-errors"><i class="fa fa-check"></i><b>4.4</b> Bootstrapped standard errors</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="p-values.html"><a href="p-values.html"><i class="fa fa-check"></i><b>5</b> P-values</a><ul>
+<li class="chapter" data-level="5.1" data-path="p-values.html"><a href="p-values.html#p-values-1"><i class="fa fa-check"></i><b>5.1</b> <span class="math inline">\(p\)</span>-values</a></li>
+<li class="chapter" data-level="5.2" data-path="p-values.html"><a href="p-values.html#creating-a-null-distribution."><i class="fa fa-check"></i><b>5.2</b> Creating a null distribution.</a><ul>
+<li class="chapter" data-level="5.2.1" data-path="p-values.html"><a href="p-values.html#the-null-distribution"><i class="fa fa-check"></i><b>5.2.1</b> the Null Distribution</a></li>
+<li class="chapter" data-level="5.2.2" data-path="p-values.html"><a href="p-values.html#t-tests"><i class="fa fa-check"></i><b>5.2.2</b> <span class="math inline">\(t\)</span>-tests</a></li>
+<li class="chapter" data-level="5.2.3" data-path="p-values.html"><a href="p-values.html#p-values-from-the-perspective-of-permutation"><i class="fa fa-check"></i><b>5.2.3</b> P-values from the perspective of permutation</a></li>
+</ul></li>
+<li class="chapter" data-level="5.3" data-path="p-values.html"><a href="p-values.html#statistical-modeling-instead-of-hypothesis-testing"><i class="fa fa-check"></i><b>5.3</b> Statistical modeling instead of hypothesis testing</a></li>
+<li class="chapter" data-level="5.4" data-path="p-values.html"><a href="p-values.html#frequentist-probability-and-the-interpretation-of-p-values"><i class="fa fa-check"></i><b>5.4</b> frequentist probability and the interpretation of p-values</a><ul>
+<li class="chapter" data-level="5.4.1" data-path="p-values.html"><a href="p-values.html#background"><i class="fa fa-check"></i><b>5.4.1</b> Background</a></li>
+<li class="chapter" data-level="5.4.2" data-path="p-values.html"><a href="p-values.html#this-book-covers-frequentist-approaches-to-statistical-modeling-and-when-a-probability-arises-such-as-the-p-value-of-a-test-statistic-this-will-be-a-frequentist-probability."><i class="fa fa-check"></i><b>5.4.2</b> This book covers frequentist approaches to statistical modeling and when a probability arises, such as the <span class="math inline">\(p\)</span>-value of a test statistic, this will be a frequentist probability.</a></li>
+<li class="chapter" data-level="5.4.3" data-path="p-values.html"><a href="p-values.html#two-interpretations-of-the-p-value"><i class="fa fa-check"></i><b>5.4.3</b> Two interpretations of the <span class="math inline">\(p\)</span>-value</a></li>
+<li class="chapter" data-level="5.4.4" data-path="p-values.html"><a href="p-values.html#nhst"><i class="fa fa-check"></i><b>5.4.4</b> NHST</a></li>
+<li class="chapter" data-level="5.4.5" data-path="p-values.html"><a href="p-values.html#some-major-misconceptions-of-the-p-value"><i class="fa fa-check"></i><b>5.4.5</b> Some major misconceptions of the <span class="math inline">\(p\)</span>-value</a></li>
+<li class="chapter" data-level="5.4.6" data-path="p-values.html"><a href="p-values.html#recommendations"><i class="fa fa-check"></i><b>5.4.6</b> Recommendations</a></li>
+</ul></li>
+<li class="chapter" data-level="5.5" data-path="p-values.html"><a href="p-values.html#problems-1"><i class="fa fa-check"></i><b>5.5</b> Problems</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="model-checking.html"><a href="model-checking.html"><i class="fa fa-check"></i><b>6</b> Model Checking</a><ul>
+<li class="chapter" data-level="6.1" data-path="model-checking.html"><a href="model-checking.html#do-coefficients-make-numeric-sense"><i class="fa fa-check"></i><b>6.1</b> Do coefficients make numeric sense?</a></li>
+<li class="chapter" data-level="6.2" data-path="model-checking.html"><a href="model-checking.html#all-statistical-analyses-should-be-followed-by-model-checking"><i class="fa fa-check"></i><b>6.2</b> All statistical analyses should be followed by model checking</a></li>
+<li class="chapter" data-level="6.3" data-path="model-checking.html"><a href="model-checking.html#linear-model-assumptions"><i class="fa fa-check"></i><b>6.3</b> Linear model assumptions</a></li>
+<li class="chapter" data-level="6.4" data-path="model-checking.html"><a href="model-checking.html#diagnostic-plots-use-the-residuals-from-the-model-fit"><i class="fa fa-check"></i><b>6.4</b> Diagnostic plots use the residuals from the model fit</a><ul>
+<li class="chapter" data-level="6.4.1" data-path="model-checking.html"><a href="model-checking.html#residuals"><i class="fa fa-check"></i><b>6.4.1</b> Residuals</a></li>
+<li class="chapter" data-level="6.4.2" data-path="model-checking.html"><a href="model-checking.html#a-normal-q-q-plot-is-used-to-check-normality"><i class="fa fa-check"></i><b>6.4.2</b> A Normal Q-Q plot is used to check normality</a></li>
+<li class="chapter" data-level="6.4.3" data-path="model-checking.html"><a href="model-checking.html#outliers---an-outlier-is-a-point-that-is-highly-unexpected-given-the-modeled-distribution."><i class="fa fa-check"></i><b>6.4.3</b> Outliers - an outlier is a point that is highly unexpected given the modeled distribution.</a></li>
+</ul></li>
+<li class="chapter" data-level="6.5" data-path="model-checking.html"><a href="model-checking.html#model-checking-homoskedasticity"><i class="fa fa-check"></i><b>6.5</b> Model checking homoskedasticity</a></li>
+<li class="chapter" data-level="6.6" data-path="model-checking.html"><a href="model-checking.html#model-checking-independence---hapiness-adverse-example."><i class="fa fa-check"></i><b>6.6</b> Model checking independence - hapiness adverse example.</a></li>
+<li class="chapter" data-level="6.7" data-path="model-checking.html"><a href="model-checking.html#using-r"><i class="fa fa-check"></i><b>6.7</b> Using R</a></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="model-fitting-and-model-fit-ols.html"><a href="model-fitting-and-model-fit-ols.html"><i class="fa fa-check"></i><b>7</b> Model Fitting and Model Fit (OLS)</a><ul>
+<li class="chapter" data-level="7.1" data-path="model-fitting-and-model-fit-ols.html"><a href="model-fitting-and-model-fit-ols.html#least-squares-estimation-and-the-decomposition-of-variance"><i class="fa fa-check"></i><b>7.1</b> Least Squares Estimation and the Decomposition of Variance</a></li>
+<li class="chapter" data-level="7.2" data-path="model-fitting-and-model-fit-ols.html"><a href="model-fitting-and-model-fit-ols.html#ols-regression"><i class="fa fa-check"></i><b>7.2</b> OLS regression</a></li>
+<li class="chapter" data-level="7.3" data-path="model-fitting-and-model-fit-ols.html"><a href="model-fitting-and-model-fit-ols.html#how-well-does-the-model-fit-the-data-r2-and-variance-explained"><i class="fa fa-check"></i><b>7.3</b> How well does the model fit the data? <span class="math inline">\(R^2\)</span> and “variance explained”</a></li>
+</ul></li>
+<li><a href="part-iv-more-than-one-x-multivariable-models.html#part-iv-more-than-one-x-multivariable-models">Part IV: More than one <span class="math inline">\(X\)</span> – Multivariable Models</a></li>
+<li class="chapter" data-level="8" data-path="adding-covariates-to-a-linear-model.html"><a href="adding-covariates-to-a-linear-model.html"><i class="fa fa-check"></i><b>8</b> Adding covariates to a linear model</a><ul>
+<li class="chapter" data-level="8.1" data-path="adding-covariates-to-a-linear-model.html"><a href="adding-covariates-to-a-linear-model.html#adding-covariates-can-increases-the-precision-of-the-effect-of-interest"><i class="fa fa-check"></i><b>8.1</b> Adding covariates can increases the precision of the effect of interest</a><ul>
+<li class="chapter" data-level="8.1.1" data-path="adding-covariates-to-a-linear-model.html"><a href="adding-covariates-to-a-linear-model.html#interaction-effects-with-covariates"><i class="fa fa-check"></i><b>8.1.1</b> Interaction effects with covariates</a></li>
+<li class="chapter" data-level="8.1.2" data-path="adding-covariates-to-a-linear-model.html"><a href="adding-covariates-to-a-linear-model.html#add-only-covariates-that-were-measured-before-peaking-at-the-data"><i class="fa fa-check"></i><b>8.1.2</b> Add only covariates that were measured before peaking at the data</a></li>
+</ul></li>
+<li class="chapter" data-level="8.2" data-path="adding-covariates-to-a-linear-model.html"><a href="adding-covariates-to-a-linear-model.html#regression-to-the-mean"><i class="fa fa-check"></i><b>8.2</b> Regression to the mean</a><ul>
+<li class="chapter" data-level="8.2.1" data-path="adding-covariates-to-a-linear-model.html"><a href="adding-covariates-to-a-linear-model.html#do-not-use-percent-change-believing-that-percents-account-for-effects-of-initial-weights"><i class="fa fa-check"></i><b>8.2.1</b> Do not use percent change, believing that percents account for effects of initial weights</a></li>
+<li class="chapter" data-level="8.2.2" data-path="adding-covariates-to-a-linear-model.html"><a href="adding-covariates-to-a-linear-model.html#do-not-test-for-balance-of-baseline-measures"><i class="fa fa-check"></i><b>8.2.2</b> Do not “test for balance” of baseline measures</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="two-or-more-categorical-x-factorial-designs.html"><a href="two-or-more-categorical-x-factorial-designs.html"><i class="fa fa-check"></i><b>9</b> Two (or more) Categorical <span class="math inline">\(X\)</span> – Factorial designs</a><ul>
+<li class="chapter" data-level="9.1" data-path="two-or-more-categorical-x-factorial-designs.html"><a href="two-or-more-categorical-x-factorial-designs.html#factorial-experiments"><i class="fa fa-check"></i><b>9.1</b> Factorial experiments</a><ul>
+<li class="chapter" data-level="9.1.1" data-path="two-or-more-categorical-x-factorial-designs.html"><a href="two-or-more-categorical-x-factorial-designs.html#model-coefficients-an-interaction-effect-is-what-is-leftover-after-adding-the-treatment-effects-to-the-control"><i class="fa fa-check"></i><b>9.1.1</b> Model coefficients: an interaction effect is what is leftover after adding the treatment effects to the control</a></li>
+<li class="chapter" data-level="9.1.2" data-path="two-or-more-categorical-x-factorial-designs.html"><a href="two-or-more-categorical-x-factorial-designs.html#what-is-the-biological-meaning-of-an-interaction-effect"><i class="fa fa-check"></i><b>9.1.2</b> What is the biological meaning of an interaction effect?</a></li>
+<li class="chapter" data-level="9.1.3" data-path="two-or-more-categorical-x-factorial-designs.html"><a href="two-or-more-categorical-x-factorial-designs.html#what-about-models-with-more-than-two-factors"><i class="fa fa-check"></i><b>9.1.3</b> What about models with more than two factors?</a></li>
+<li class="chapter" data-level="9.1.4" data-path="two-or-more-categorical-x-factorial-designs.html"><a href="two-or-more-categorical-x-factorial-designs.html#the-additive-model"><i class="fa fa-check"></i><b>9.1.4</b> The additive model</a></li>
+<li class="chapter" data-level="9.1.5" data-path="two-or-more-categorical-x-factorial-designs.html"><a href="two-or-more-categorical-x-factorial-designs.html#contrasts-simple-vs.main-effects"><i class="fa fa-check"></i><b>9.1.5</b> Contrasts – simple vs. main effects</a></li>
+</ul></li>
+<li class="chapter" data-level="9.2" data-path="two-or-more-categorical-x-factorial-designs.html"><a href="two-or-more-categorical-x-factorial-designs.html#reporting-results"><i class="fa fa-check"></i><b>9.2</b> Reporting results</a><ul>
+<li class="chapter" data-level="9.2.1" data-path="two-or-more-categorical-x-factorial-designs.html"><a href="two-or-more-categorical-x-factorial-designs.html#text-results"><i class="fa fa-check"></i><b>9.2.1</b> Text results</a></li>
+<li class="chapter" data-level="9.2.2" data-path="two-or-more-categorical-x-factorial-designs.html"><a href="two-or-more-categorical-x-factorial-designs.html#harrellplot"><i class="fa fa-check"></i><b>9.2.2</b> Harrellplot</a></li>
+<li class="chapter" data-level="9.2.3" data-path="two-or-more-categorical-x-factorial-designs.html"><a href="two-or-more-categorical-x-factorial-designs.html#interaction-plots"><i class="fa fa-check"></i><b>9.2.3</b> Interaction plots</a></li>
+</ul></li>
+<li class="chapter" data-level="9.3" data-path="two-or-more-categorical-x-factorial-designs.html"><a href="two-or-more-categorical-x-factorial-designs.html#recommendations-1"><i class="fa fa-check"></i><b>9.3</b> Recommendations</a></li>
+<li class="chapter" data-level="9.4" data-path="two-or-more-categorical-x-factorial-designs.html"><a href="two-or-more-categorical-x-factorial-designs.html#working-in-r"><i class="fa fa-check"></i><b>9.4</b> Working in R</a></li>
+<li class="chapter" data-level="9.5" data-path="two-or-more-categorical-x-factorial-designs.html"><a href="two-or-more-categorical-x-factorial-designs.html#problems-2"><i class="fa fa-check"></i><b>9.5</b> Problems</a></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="anova-tables.html"><a href="anova-tables.html"><i class="fa fa-check"></i><b>10</b> ANOVA Tables</a><ul>
+<li class="chapter" data-level="10.1" data-path="anova-tables.html"><a href="anova-tables.html#summary-of-usage"><i class="fa fa-check"></i><b>10.1</b> Summary of usage</a></li>
+<li class="chapter" data-level="10.2" data-path="anova-tables.html"><a href="anova-tables.html#example-a-one-way-anova-using-the-vole-data"><i class="fa fa-check"></i><b>10.2</b> Example: a one-way ANOVA using the vole data</a></li>
+<li class="chapter" data-level="10.3" data-path="anova-tables.html"><a href="anova-tables.html#example-a-two-way-anova-using-the-urchin-data"><i class="fa fa-check"></i><b>10.3</b> Example: a two-way ANOVA using the urchin data</a><ul>
+<li class="chapter" data-level="10.3.1" data-path="anova-tables.html"><a href="anova-tables.html#how-to-read-an-anova-table"><i class="fa fa-check"></i><b>10.3.1</b> How to read an ANOVA table</a></li>
+<li class="chapter" data-level="10.3.2" data-path="anova-tables.html"><a href="anova-tables.html#how-to-read-anova-results-reported-in-the-text"><i class="fa fa-check"></i><b>10.3.2</b> How to read ANOVA results reported in the text</a></li>
+<li class="chapter" data-level="10.3.3" data-path="anova-tables.html"><a href="anova-tables.html#better-practice-estimates-and-their-uncertainty"><i class="fa fa-check"></i><b>10.3.3</b> Better practice – estimates and their uncertainty</a></li>
+</ul></li>
+<li class="chapter" data-level="10.4" data-path="anova-tables.html"><a href="anova-tables.html#unbalanced-designs"><i class="fa fa-check"></i><b>10.4</b> Unbalanced designs</a><ul>
+<li class="chapter" data-level="10.4.1" data-path="anova-tables.html"><a href="anova-tables.html#what-is-going-on-in-unbalanced-anova-type-i-ii-iii-sum-of-squares"><i class="fa fa-check"></i><b>10.4.1</b> What is going on in unbalanced ANOVA? – Type I, II, III sum of squares</a></li>
+<li class="chapter" data-level="10.4.2" data-path="anova-tables.html"><a href="anova-tables.html#back-to-interpretation-of-main-effects"><i class="fa fa-check"></i><b>10.4.2</b> Back to interpretation of main effects</a></li>
+<li class="chapter" data-level="10.4.3" data-path="anova-tables.html"><a href="anova-tables.html#the-anova-tables-for-type-i-ii-and-iii-sum-of-squares-are-the-same-if-the-design-is-balanced."><i class="fa fa-check"></i><b>10.4.3</b> The anova tables for Type I, II, and III sum of squares are the same if the design is balanced.</a></li>
+</ul></li>
+<li class="chapter" data-level="10.5" data-path="anova-tables.html"><a href="anova-tables.html#working-in-r-1"><i class="fa fa-check"></i><b>10.5</b> Working in R</a><ul>
+<li class="chapter" data-level="10.5.1" data-path="anova-tables.html"><a href="anova-tables.html#type-i-sum-of-squares-in-r"><i class="fa fa-check"></i><b>10.5.1</b> Type I sum of squares in R</a></li>
+<li class="chapter" data-level="10.5.2" data-path="anova-tables.html"><a href="anova-tables.html#type-ii-and-iii-sum-of-squares"><i class="fa fa-check"></i><b>10.5.2</b> Type II and III Sum of Squares</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="11" data-path="predictive-models.html"><a href="predictive-models.html"><i class="fa fa-check"></i><b>11</b> Predictive Models</a><ul>
+<li class="chapter" data-level="11.1" data-path="predictive-models.html"><a href="predictive-models.html#overfitting"><i class="fa fa-check"></i><b>11.1</b> Overfitting</a></li>
+<li class="chapter" data-level="11.2" data-path="predictive-models.html"><a href="predictive-models.html#model-building-vs.variable-selection-vs.model-selection"><i class="fa fa-check"></i><b>11.2</b> Model building vs. Variable selection vs. Model selection</a><ul>
+<li class="chapter" data-level="11.2.1" data-path="predictive-models.html"><a href="predictive-models.html#stepwise-regression"><i class="fa fa-check"></i><b>11.2.1</b> Stepwise regression</a></li>
+<li class="chapter" data-level="11.2.2" data-path="predictive-models.html"><a href="predictive-models.html#cross-validation"><i class="fa fa-check"></i><b>11.2.2</b> Cross-validation</a></li>
+<li class="chapter" data-level="11.2.3" data-path="predictive-models.html"><a href="predictive-models.html#penalization"><i class="fa fa-check"></i><b>11.2.3</b> Penalization</a></li>
+</ul></li>
+<li class="chapter" data-level="11.3" data-path="predictive-models.html"><a href="predictive-models.html#shrinkage"><i class="fa fa-check"></i><b>11.3</b> Shrinkage</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="part-v-expanding-the-linear-model-generalized-linear-models-and-multilevel-linear-mixed-models.html"><a href="part-v-expanding-the-linear-model-generalized-linear-models-and-multilevel-linear-mixed-models.html"><i class="fa fa-check"></i>Part V: Expanding the Linear Model – Generalized Linear Models and Multilevel (Linear Mixed) Models</a></li>
+<li class="chapter" data-level="12" data-path="generalized-linear-models-i-count-data.html"><a href="generalized-linear-models-i-count-data.html"><i class="fa fa-check"></i><b>12</b> Generalized linear models I: Count data</a><ul>
+<li class="chapter" data-level="12.1" data-path="generalized-linear-models-i-count-data.html"><a href="generalized-linear-models-i-count-data.html#the-generalized-linear-model"><i class="fa fa-check"></i><b>12.1</b> The generalized linear model</a></li>
+<li class="chapter" data-level="12.2" data-path="generalized-linear-models-i-count-data.html"><a href="generalized-linear-models-i-count-data.html#count-data-example-number-of-trematode-worm-larvae-in-eyes-of-threespine-stickleback-fish"><i class="fa fa-check"></i><b>12.2</b> Count data example – number of trematode worm larvae in eyes of threespine stickleback fish</a><ul>
+<li class="chapter" data-level="12.2.1" data-path="generalized-linear-models-i-count-data.html"><a href="generalized-linear-models-i-count-data.html#modeling-strategy-1"><i class="fa fa-check"></i><b>12.2.1</b> Modeling strategy</a></li>
+<li class="chapter" data-level="12.2.2" data-path="generalized-linear-models-i-count-data.html"><a href="generalized-linear-models-i-count-data.html#checking-the-model-i-a-normal-q-q-plot"><i class="fa fa-check"></i><b>12.2.2</b> Checking the model I – a Normal Q-Q plot</a></li>
+<li class="chapter" data-level="12.2.3" data-path="generalized-linear-models-i-count-data.html"><a href="generalized-linear-models-i-count-data.html#checking-the-model-ii-scale-location-plot-for-checking-homoskedasticity"><i class="fa fa-check"></i><b>12.2.3</b> Checking the model II – scale-location plot for checking homoskedasticity</a></li>
+<li class="chapter" data-level="12.2.4" data-path="generalized-linear-models-i-count-data.html"><a href="generalized-linear-models-i-count-data.html#two-distributions-for-count-data-poisson-and-negative-binomial"><i class="fa fa-check"></i><b>12.2.4</b> Two distributions for count data – Poisson and Negative Binomial</a></li>
+<li class="chapter" data-level="12.2.5" data-path="generalized-linear-models-i-count-data.html"><a href="generalized-linear-models-i-count-data.html#fitting-a-glm-with-a-poisson-distribution-to-the-worm-data"><i class="fa fa-check"></i><b>12.2.5</b> Fitting a GLM with a Poisson distribution to the worm data</a></li>
+<li class="chapter" data-level="12.2.6" data-path="generalized-linear-models-i-count-data.html"><a href="generalized-linear-models-i-count-data.html#model-checking-fits-to-count-data"><i class="fa fa-check"></i><b>12.2.6</b> Model checking fits to count data</a></li>
+<li class="chapter" data-level="12.2.7" data-path="generalized-linear-models-i-count-data.html"><a href="generalized-linear-models-i-count-data.html#fitting-a-glm-with-a-negative-binomial-distribution-to-the-worm-data"><i class="fa fa-check"></i><b>12.2.7</b> Fitting a GLM with a Negative Binomial distribution to the worm data</a></li>
+</ul></li>
+<li class="chapter" data-level="12.3" data-path="generalized-linear-models-i-count-data.html"><a href="generalized-linear-models-i-count-data.html#working-in-r-2"><i class="fa fa-check"></i><b>12.3</b> Working in R</a></li>
+<li class="chapter" data-level="12.4" data-path="generalized-linear-models-i-count-data.html"><a href="generalized-linear-models-i-count-data.html#problems-3"><i class="fa fa-check"></i><b>12.4</b> Problems</a></li>
+</ul></li>
+<li class="chapter" data-level="13" data-path="linear-mixed-models.html"><a href="linear-mixed-models.html"><i class="fa fa-check"></i><b>13</b> Linear mixed models</a><ul>
+<li class="chapter" data-level="13.1" data-path="linear-mixed-models.html"><a href="linear-mixed-models.html#random-effects"><i class="fa fa-check"></i><b>13.1</b> Random effects</a></li>
+<li class="chapter" data-level="13.2" data-path="linear-mixed-models.html"><a href="linear-mixed-models.html#random-effects-in-statistical-models"><i class="fa fa-check"></i><b>13.2</b> Random effects in statistical models</a></li>
+<li class="chapter" data-level="13.3" data-path="linear-mixed-models.html"><a href="linear-mixed-models.html#linear-mixed-models-are-flexible"><i class="fa fa-check"></i><b>13.3</b> Linear mixed models are flexible</a></li>
+<li class="chapter" data-level="13.4" data-path="linear-mixed-models.html"><a href="linear-mixed-models.html#visualizing-block-effects"><i class="fa fa-check"></i><b>13.4</b> Visualizing block effects</a></li>
+<li class="chapter" data-level="13.5" data-path="linear-mixed-models.html"><a href="linear-mixed-models.html#linear-mixed-models-can-increase-precision-of-point-estimates"><i class="fa fa-check"></i><b>13.5</b> Linear mixed models can increase precision of point estimates</a></li>
+<li class="chapter" data-level="13.6" data-path="linear-mixed-models.html"><a href="linear-mixed-models.html#linear-mixed-models-are-used-to-avoid-pseudoreplication"><i class="fa fa-check"></i><b>13.6</b> Linear mixed models are used to avoid pseudoreplication</a></li>
+<li class="chapter" data-level="13.7" data-path="linear-mixed-models.html"><a href="linear-mixed-models.html#linear-mixed-models-shrink-coefficients-by-partial-pooling"><i class="fa fa-check"></i><b>13.7</b> Linear mixed models shrink coefficients by partial pooling</a></li>
+<li class="chapter" data-level="13.8" data-path="linear-mixed-models.html"><a href="linear-mixed-models.html#working-in-r-3"><i class="fa fa-check"></i><b>13.8</b> Working in R</a><ul>
+<li class="chapter" data-level="13.8.1" data-path="linear-mixed-models.html"><a href="linear-mixed-models.html#coral-data"><i class="fa fa-check"></i><b>13.8.1</b> coral data</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="appendix-1-getting-started-with-r.html"><a href="appendix-1-getting-started-with-r.html"><i class="fa fa-check"></i>Appendix 1: Getting Started with R</a><ul>
+<li class="chapter" data-level="13.9" data-path="appendix-1-getting-started-with-r.html"><a href="appendix-1-getting-started-with-r.html#get-your-computer-ready"><i class="fa fa-check"></i><b>13.9</b> Get your computer ready</a><ul>
+<li class="chapter" data-level="13.9.1" data-path="appendix-1-getting-started-with-r.html"><a href="appendix-1-getting-started-with-r.html#install-r"><i class="fa fa-check"></i><b>13.9.1</b> Install R</a></li>
+<li class="chapter" data-level="13.9.2" data-path="appendix-1-getting-started-with-r.html"><a href="appendix-1-getting-started-with-r.html#install-r-studio"><i class="fa fa-check"></i><b>13.9.2</b> Install R Studio</a></li>
+<li class="chapter" data-level="13.9.3" data-path="appendix-1-getting-started-with-r.html"><a href="appendix-1-getting-started-with-r.html#resources-for-installing-r-and-r-studio"><i class="fa fa-check"></i><b>13.9.3</b> Resources for installing R and R Studio</a></li>
+<li class="chapter" data-level="13.9.4" data-path="appendix-1-getting-started-with-r.html"><a href="appendix-1-getting-started-with-r.html#install-latex"><i class="fa fa-check"></i><b>13.9.4</b> Install LaTeX</a></li>
+</ul></li>
+<li class="chapter" data-level="13.10" data-path="appendix-1-getting-started-with-r.html"><a href="appendix-1-getting-started-with-r.html#start-learning"><i class="fa fa-check"></i><b>13.10</b> Start learning</a><ul>
+<li class="chapter" data-level="13.10.1" data-path="appendix-1-getting-started-with-r.html"><a href="appendix-1-getting-started-with-r.html#start-with-data-camp-introduction-to-r"><i class="fa fa-check"></i><b>13.10.1</b> Start with Data Camp Introduction to R</a></li>
+<li class="chapter" data-level="13.10.2" data-path="appendix-1-getting-started-with-r.html"><a href="appendix-1-getting-started-with-r.html#then-move-to-introduction-to-r-studio"><i class="fa fa-check"></i><b>13.10.2</b> Then Move to Introduction to R Studio</a></li>
+<li class="chapter" data-level="13.10.3" data-path="appendix-1-getting-started-with-r.html"><a href="appendix-1-getting-started-with-r.html#develop-your-project-with-an-r-studio-notebook"><i class="fa fa-check"></i><b>13.10.3</b> Develop your project with an R Studio Notebook</a></li>
+</ul></li>
+<li class="chapter" data-level="13.11" data-path="appendix-1-getting-started-with-r.html"><a href="appendix-1-getting-started-with-r.html#getting-data-into-r"><i class="fa fa-check"></i><b>13.11</b> Getting Data into R</a></li>
+<li class="chapter" data-level="13.12" data-path="appendix-1-getting-started-with-r.html"><a href="appendix-1-getting-started-with-r.html#additional-r-learning-resources"><i class="fa fa-check"></i><b>13.12</b> Additional R learning resources</a></li>
+<li class="chapter" data-level="13.13" data-path="appendix-1-getting-started-with-r.html"><a href="appendix-1-getting-started-with-r.html#packages-used-extensively-in-this-text"><i class="fa fa-check"></i><b>13.13</b> Packages used extensively in this text</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="appendix-2-online-resources-for-getting-started-with-statistical-modeling-in-r.html"><a href="appendix-2-online-resources-for-getting-started-with-statistical-modeling-in-r.html"><i class="fa fa-check"></i>Appendix 2: Online Resources for Getting Started with Statistical Modeling in R</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Elementary Statistical Modeling for Applied Biostatistics</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="model-checking" class="section level1">
+<h1><span class="header-section-number">Chapter 6</span> Model Checking</h1>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># a function to transform a vector into quantiles</span>
+<span class="co"># not if the data are 1:n then the output is &quot;rankits&quot;</span>
+quantilize_<span class="dv">1</span> &lt;-<span class="st"> </span><span class="cf">function</span>(x){
+  <span class="co"># this is the ppoints(x) function</span>
+  m &lt;-<span class="st"> </span><span class="kw">length</span>(x)
+  s &lt;-<span class="st"> </span><span class="kw">trunc</span>(<span class="kw">rank</span>(x))
+  a &lt;-<span class="st"> </span><span class="kw">ifelse</span>(m <span class="op">&lt;=</span><span class="st"> </span><span class="dv">10</span>, <span class="dv">3</span><span class="op">/</span><span class="dv">8</span>, <span class="dv">1</span><span class="op">/</span><span class="dv">2</span>)
+  q &lt;-<span class="st"> </span>(s<span class="op">-</span>a)<span class="op">/</span>(m <span class="op">+</span><span class="st"> </span>(<span class="dv">1</span><span class="op">-</span>a) <span class="op">-</span><span class="st"> </span>a)
+  <span class="kw">return</span>(q)
+}</code></pre></div>
+<div id="do-coefficients-make-numeric-sense" class="section level2">
+<h2><span class="header-section-number">6.1</span> Do coefficients make numeric sense?</h2>
+</div>
+<div id="all-statistical-analyses-should-be-followed-by-model-checking" class="section level2">
+<h2><span class="header-section-number">6.2</span> All statistical analyses should be followed by model checking</h2>
+<p>We us a linear model (or statistical model more generally) to infer effects or predict future outcomes. Our inference is uncertain. Given some modeling assumptions, we can quantify this uncertainty with standard errors, and from these standard errors we can compute confidence intervals and <em>p</em>-values. It is good practice to use a series of <strong>diagnostic plots</strong>, diagnostic statistics, and simulation to check how well the data approximate the fit model and model assumptions. <strong>Model checking</strong> is used to both check our subjective confidence in the modeled estimates and uncertainty and to provide empirical evidence for subjective decision making in the analysis workflow.</p>
+<div style="background-color:#cccccc; text-align:left; vertical-align: middle; padding:20px 47px;">
+<p><strong>NHST blues</strong> – Researchers are often encouraged by textbooks, colleagues, or the literature to test the assumptions of a <em>t</em>-test or ANOVA with formal hypothesis tests of distributions such as a Shaprio-Wilks test of normality or a Levine test of homogeneity. In this strategy, an alternative to the <em>t</em>-test/ANOVA is used if the distribution test’s p-value is less than some cut-off (such as 0.05). Common alternatives include 1) transformations of the response to either make it more normal or the variances more homogenous, 2) implementation of alternative tests such as a Mann-Whitney-Wilcoxon (MWW) test for non-normal data or a Welch <em>t</em>-test/ANOVA for heterogenous variances. The logic of a test of normality or homogeneity before a <em>t</em>-test/ANOVA isn’t consistent with frequentist thinking because the failure to reject a null hypothesis does not mean the null hypothesis is true. We shouldn’t conclude that a sample is “normal” or that the variances are “homogenous” because a distributional test’s <em>p</em>-value &gt; 0.05. But, maybe we should of the distributional pre-test as an “objective” model check? The logic of this objective decision rule suffers from several issues. <strong>First</strong>, the subsequent <em>p</em>-value of the <em>t</em>test/ANOVA test is not valid because this <em>p</em>-value is the long-run frequency of a test-statistic as large or larger than the observed statistic conditional on the null – not conditional on the subset of nulls with <span class="math inline">\(p &gt; 0.05\)</span> in the distribution test. <strong>Second</strong>, real data are only approximately normal; with small <span class="math inline">\(n\)</span>, it will be hard to reject the null of a normal distribution because of low power, but, as <span class="math inline">\(n\)</span> increses, a normality test will reject any real dataset. <strong>Third</strong>, and most importantly, our analysis should follow the logic of our goals. If our goal is the estimation of effects, we cannot get meaningful estimates from a non-parametric test (with a few exceptions) or a transformed response, as these methods are entirely about computing a “correct” <em>p</em>-value. Good alternatives to classic non-parametric tests and transformations are bootstrap estimates of confidence limits, permutation tests, and generalized linear models.</p>
+</div>
+</div>
+<div id="linear-model-assumptions" class="section level2">
+<h2><span class="header-section-number">6.3</span> Linear model assumptions</h2>
+<p>Assumptions of a linear model concern the distribution of the “random draw” in the underlying statistical model. Again, in the random error specification of a linear model</p>
+<span class="math display" id="eq:model-checking-spec1">\[\begin{align}
+Y &amp;= \beta_0 + \beta_1 X + \varepsilon\\
+\varepsilon &amp;\sim N(0, \sigma)
+\tag{6.1}
+\end{align}\]</span>
+<p>the random draw (the “error”) is from a normal distribution with mean zero and standard deviation <span class="math inline">\(\sigma\)</span>. In the random conditional response specification</p>
+<span class="math display" id="eq:model-checking-spec2">\[\begin{align}
+y_i &amp;\sim N(\mu_i, \sigma)\\
+\mathrm{E}(Y|X) &amp;= \mu\\
+\mu_i &amp;= \beta_0 + \beta_1 x_i
+\tag{6.2}
+\end{align}\]</span>
+<p>the random draw is a value drawn from a normal distribution with mean <span class="math inline">\(\mu_i = \beta_0 + \beta_1 x_i\)</span> and variance <span class="math inline">\(\sigma^2\)</span>. Any inference about the parameter <span class="math inline">\(\beta_1\)</span> (such as confidence intervals or hypothesis tests) assumes that the these distributions are IID Normal where IID is <strong>independent and identically distributed</strong> and Normal refers to the Normal (or Gaussian) distribution.</p>
+<ol style="list-style-type: decimal">
+<li>Independent means that the error for one case cannot be predicted from the error of any other case. This lack of independence creates <em>correlated error</em>. There are lots or reasons that errors might be correlated. If individuals are measured both within and among cages, or tanks, or plots, or field sites, then we’d expect the measures within the same unit (cage, tank, plot, site) to err from the model in the same direction because of environmental features shared by individuals within the unit but not by individuals in other units. Multiple measures within experimental units create “clusters” of error. Lack of independence or clustered error can be modeled using models with <strong>random effects</strong>. These models go by many names including linear mixed models (common in Ecology), hierarchical models, multilevel models, and random effects models. A linear mixed model is a variation of model <a href="model-checking.html#eq:model-checking-spec1">(6.1)</a>.</li>
+</ol>
+<div style="background-color:#cccccc; text-align:left; vertical-align: middle; padding:20px 47px;">
+<p><strong>tl;dr</strong> – Measures taken within the same individual over time (<em>repeated measures</em>) are correlated and are common in all areas of biology. In ecology and evolutionary studies, measures that are taken from sites that are closer together or measures taken closer in time or measures from more closely related biological species will tend to have more similar error than measures taken from sites that are further apart or from times that are further apart or from species that are less closely related. Space and time and phylogeny create <strong>spatial, temporal, and phylogenetic autocorrelation</strong>. Correlated error due to space or time or phylogeny can be modeled with <strong>Generalized Least Squares</strong> (GLS) models. A GLS model is a variation of model <a href="model-checking.html#eq:model-checking-spec1">(6.1)</a>.</p>
+</div>
+<ol start="2" style="list-style-type: decimal">
+<li><p>Identical means that the errors are “drawn” from the same distribution. Since the model is a linear model, this distribution is a Normal distribution with mean zero and variance <span class="math inline">\(\sigma^2\)</span>. A consequence of “identical” is that the error variance is <strong>homoskedastic</strong>, or constant, or independent of <span class="math inline">\(X\)</span>. If the error variance differs among the <span class="math inline">\(X\)</span> then the errors are <strong>heteroskedastic</strong>. Many biological processes generate data in which the error is a function of the mean. For example, measures of biological variables that grow, such as lengths of body parts or population size, have variances that “grow” with the mean. Or, measures of counts, such as the number of cells damaged by toxin, the number of eggs in a nest, or the number of mRNA transcripts per cell have variances that are a function of the mean. Both growth and count measures can sometimes be reasonably modeled using a linear model but more often, they are better modeled using a <strong>generalized linear model</strong> (GLM), which is an extension of a linear model. Heteroskedasitc error arising for other reasons, both biological and experimental, can be modeled with Generalized Least Squares (GLS) or with linear mixed models..</p></li>
+<li><p>Normal (Gaussian) error means that 1) the response is continuous and 2) the probability of sampling an individual measuring 0.5 units below the population mean is the same as the probability of sampling an individual measuring 0.5 units above the population mean. Counts (number of cells, number of eggs, number of mRNA transcripts) and binary responses (sucessful escape or sucessful infestation of host) are not continous and often often have asymmetric probablity distributions that are skewed to the right and while sometimes both can be reasonably modeled using a linear model they are more often modeled using a <strong>generalized linear model</strong> (GLM), which, again, is an extension of the linear model in equation <a href="model-checking.html#eq:model-checking-spec1">(6.1)</a>.</p></li>
+</ol>
+</div>
+<div id="diagnostic-plots-use-the-residuals-from-the-model-fit" class="section level2">
+<h2><span class="header-section-number">6.4</span> Diagnostic plots use the residuals from the model fit</h2>
+<div id="residuals" class="section level3">
+<h3><span class="header-section-number">6.4.1</span> Residuals</h3>
+<p>A residual of a statistical model is <span class="math inline">\(y_i - \hat{y}_i\)</span>. Remember that <span class="math inline">\(\hat{y}_i\)</span> is the predicted value of <span class="math inline">\(Y\)</span> when <span class="math inline">\(X\)</span> has the value <span class="math inline">\(x_i\)</span> (compaactly written as <span class="math inline">\(X=x_i\)</span>). And remember that <span class="math inline">\(\hat{y}_i\)</span> is the estimate of <span class="math inline">\(\mu_i\)</span>. For linear models (but not generalized linear models), the residuals of the fit model are estimates of the <span class="math inline">\(\varepsilon\)</span> in equation <a href="model-checking.html#eq:model-checking-spec1">(6.1)</a>. This <em>is not</em> true for generalized linear models because GLMs are not specified using <a href="model-checking.html#eq:model-checking-spec1">(6.1)</a>.</p>
+<div style="background-color:#cccccc; text-align:left; vertical-align: middle; padding:20px 47px;">
+<p><strong>Alert</strong> A common misconception is that inference from a linear model assumes that the <em>response</em> (the measured <span class="math inline">\(Y\)</span>) is IID Normal. This is wrong. Either specification of the linear model shows precisely why this conception is wrong. Model <a href="model-checking.html#eq:model-checking-spec1">(6.1)</a> explicitly shows that it is the error that has the normal distribution – the distribution of <span class="math inline">\(Y\)</span> is a mix of the distribution of <span class="math inline">\(X\)</span> and that of the error. A more general way of thinking about the assumed distribution uses the specification in model <a href="model-checking.html#eq:model-checking-spec2">(6.2)</a>, which shows that it is the <em>conditional</em> response that is assumed to be IID normal. Remember, a conditional response (<span class="math inline">\(y_i\)</span>) is a random draw from the infinite set of responses at a given value of <span class="math inline">\(X\)</span>.</p>
+</div>
+<p>Let’s look at the distribution of residuals versus the response for a hypothetical experiment with a single, categorical <span class="math inline">\(X\)</span> variable (the experimental factor) with two levels (“Cn” for control and “Tr” for treatment). The true parameters are <span class="math inline">\(\beta_0 = 10\)</span> (the true mean for the control group, or <span class="math inline">\(\mu_{0}\)</span>), <span class="math inline">\(\beta_1=4\)</span> (the difference between the true mean for the treatment minus the true mean for the control, or <span class="math inline">\(\mu_1 - \mu_0\)</span>), and <span class="math inline">\(\sigma = 2\)</span> (the error standard deviation).</p>
+<div class="figure">
+<img src="Walker-elementary-statistical-modeling-draft_files/figure-html/model-check-histogram,%20model-check-residuals1-1.png" alt="Histogram of the (A) response, showing with modes near the true means of each group and (B) residuals, with a mode for both groups at zero." width="576" />
+<p class="caption">
+(#fig:model-check-histogram, model-check-residuals1)Histogram of the (A) response, showing with modes near the true means of each group and (B) residuals, with a mode for both groups at zero.
+</p>
+</div>
+<p>The plot above shows a histogram of the response (A) and residuals (B). In the plot of the response, the mode (the highest bar, or bin with the most cases) includes true mean for each group. And, as expected given <span class="math inline">\(\beta_1=4\)</span>, the modes of the two groups are 4 units apart. It should be easy to see from this plot that the response does not have a normal distribution. Instead, it is distincly bimodal. But the distribution of the response <em>within</em> each level looks like these are drawn from a normal distribution – and it should. In the plot of the residuals, the values of both groups are shifted so that the mean of each group is at zero. The consequence of the shift is that the combined set of residuals does look like it is drawn from a Normal distribution.</p>
+<p>The two plots suggest two different approaches for model checking. First, we could examine the responses within each level of the experimental factor. Or, second, we could examine the residuals of the fit model, ignoring that the residuals come from multiple groups. The first is inefficient because it requires as many checks as there are levels in the factor. The second requires a single check.</p>
+<div style="background-color:#cccccc; text-align:left; vertical-align: middle; padding:20px 47px;">
+<p><strong>Alert</strong> Some textbooks that recommend formal hypothesis tests of normality recommend the inefficient, multiple testing on each group separately. This isn’t wrong, it’s just more work than it needs to be and also suffers from “multiple testing”.</p>
+</div>
+</div>
+<div id="a-normal-q-q-plot-is-used-to-check-normality" class="section level3">
+<h3><span class="header-section-number">6.4.2</span> A Normal Q-Q plot is used to check normality</h3>
+<p>A Normal Q-Q plot of the residuals can be used to check how closely the residuals approximate a normal distribution. A Normal Q-Q plot is a scatterplot of</p>
+<ol style="list-style-type: decimal">
+<li><strong>sample quantiles</strong> on the <em>y</em> axis. The sample quantiles is the vector of <span class="math inline">\(N\)</span> residuals in rank order, from smallest (most negative) to largest (most positive). Sometimes this vector is standardized (doing this makes not difference to the interpretation of the Q-Q plot).</li>
+<li><strong>standard normal quantiles</strong> on the <em>x</em> axis. This is the vector of standard normal quantiles given <span class="math inline">\(N\)</span> elements in the vector.</li>
+</ol>
+<div style="background-color:#cccccc; text-align:left; vertical-align: middle; padding:20px 47px;">
+<p><strong>Stats 101</strong> A quantile is the value of a distribution that is greater than <span class="math inline">\(p\)</span> percent of the values in the distribution. The 2.5% quantile of a uniform distribution from 0 to 1 is 0.025. The 2.5% quantile of a standard normal distribution is -1.96 (remember that 95% of the values in a standard normal distribution are between -1.96 and 1.96). The 50% quantile of a uniform distribution is 0.5 and the 50% quantile of a standard normal distribution is 0.0 (this is the median of the distribtion – 50% of the values are smaller and 50% of the values are larger).</p>
+</div>
+<div style="background-color:#cccccc; text-align:left; vertical-align: middle; padding:20px 47px;">
+<p><strong>Stats 201</strong> A Q-Q plot more generally is a scatter plot of two vectors of quantiles either of which can come from a sample or a theoretical distribution. In the GLM chapter, the text will introduce Q-Q plots of residual quantiles transformed to have an expected uniform distribution. These are plotted against theoretical uniform quantiles from 0 to 1.</p>
+</div>
+<p>If the sampled distribution closely approximates a normal distribution, the scatter should fall along a line from the bottom, left to the top, right of the plot. The interpretation of a normal Q-Q plot is enhanced with a line of “expected values” of the sample quantiles if the sample residuals are drawn from a normal distribution. The closer the sample quantiles are to the line, the more closely the residuals approximate a normal distribution. Because of sampling, the sampled values always deviate from the line, especially at the ends. If the sample was drawn from a normal distribution, these deviations should be small if the sample size is big, but can be more pronounced with a small sample size. This makes it hard to have much confidence in the “normality” of a small sample.</p>
+<p>Let’s have a look at a Normal Q-Q plot of the residuals of the fake data generated above.</p>
+<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/model-check-normal-qq-1.png" width="576" /></p>
+<p>Rules of a Q-Q plot</p>
+<p>At the small end of the distribution (bottom-left), the sample values are a bit more negative than expected, which means the left tail is a bit extended. At the large end (upper-right), the sample values are, a bit less positive than expected, which means the right tail is a bit shortened. Should we fit a different model given these deviations? To answer this, we look look at the shaded area, which represents the range of expected deviations from expectation (the line) given the sample size. Clearly the deviations are within this range.</p>
+<p>Now let’s look at simulated samples drawn from non-normal distributions to identify their characteristic deviations.</p>
+<div id="right-skewed" class="section level4">
+<h4><span class="header-section-number">6.4.2.1</span> Right skewed</h4>
+<p>Many biological measures are from a distribution with long, right tails (right skewed). Examples include many count variables (number of eggs in a clutch, number of cells colonized by a parasite), and measures of time, weight, or length. What is common to all of these is unconstrained upper bounday but a constrained lower boundary at or above zero (A nest might have zero but eggs. The weight of a fat depot must be greater than zero but the weight of a specific species of fish in a trawl catch might be zero).</p>
+<p>A long right tail of conditional responses creates a characteristic positive deviation of the largest quantiles in a Normal Q-Q plot of the residuals from a linear model. Positive deviations at the upper end indicate larger values than expected given a normal distribution. This is the signature of the residuals of a linear model fit to right skewed data.</p>
+<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/model-check-lognormal-1.png" width="576" /></p>
+<p>A continous response with a right skewed distribution can be modeled with a generalized linear model using a lognormal or gamma distribution. A count response can be modeled with a generalized linear model using a Poisson, quasi-Poisson, or negative binomial distribution (Chapter xxx).</p>
+</div>
+<div id="excess-zeroes" class="section level4">
+<h4><span class="header-section-number">6.4.2.2</span> Excess zeroes</h4>
+<p>Count data often have an excess of zeroes (for example a lake with no nests or a host with no parasites), resulting in positive deviations (closer to zero) at the lower end of the quantile range.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># zero inflated</span>
+mu_pois &lt;-<span class="st"> </span><span class="fl">2.7</span>
+beta_pois &lt;-<span class="st"> </span><span class="dv">2</span>
+p_zero &lt;-<span class="st"> </span><span class="fl">0.3</span>
+
+fd.zipois &lt;-<span class="st"> </span><span class="kw">data.table</span>(
+  <span class="dt">Treatment=</span><span class="kw">rep</span>(<span class="kw">c</span>(<span class="st">&quot;Cn&quot;</span>, <span class="st">&quot;Tr&quot;</span>), <span class="dt">each=</span>n),
+  <span class="dt">Response=</span><span class="kw">c</span>(SpiecEasi<span class="op">::</span><span class="kw">rzipois</span>(n, <span class="dt">lambda =</span> mu_pois, <span class="dt">pstr0 =</span> p_zero), SpiecEasi<span class="op">::</span><span class="kw">rzipois</span>(n, <span class="dt">lambda =</span> (mu_pois<span class="op">+</span>beta_pois), <span class="dt">pstr0 =</span> p_zero))
+)
+m1 &lt;-<span class="st"> </span><span class="kw">lm</span>(Response <span class="op">~</span><span class="st"> </span>Treatment, <span class="dt">data=</span>fd.zipois)
+fd.zipois[, Residual<span class="op">:</span><span class="er">=</span><span class="kw">residuals</span>(m1)]
+gg1.zipois &lt;-<span class="st"> </span><span class="kw">gghistogram</span>(<span class="dt">data=</span>fd.zipois, <span class="dt">x =</span> <span class="st">&quot;Response&quot;</span>,
+                          <span class="dt">color=</span><span class="st">&quot;Treatment&quot;</span>, <span class="dt">fill=</span><span class="st">&quot;Treatment&quot;</span>,
+                          <span class="dt">add =</span> <span class="st">&quot;mean&quot;</span>, <span class="dt">rug =</span> <span class="ot">FALSE</span>,
+                          <span class="dt">bins=</span><span class="dv">9</span>,
+                          <span class="dt">palette =</span> <span class="kw">c</span>(<span class="st">&quot;#00AFBB&quot;</span>, <span class="st">&quot;#E7B800&quot;</span>)
+)
+
+gg3.zipois &lt;-<span class="st"> </span><span class="kw">ggqqplot</span>(<span class="dt">data=</span>fd.zipois, <span class="dt">x =</span> <span class="st">&quot;Residual&quot;</span>, <span class="dt">title=</span><span class="st">&quot;zero-inflated poisson&quot;</span>)
+
+gg3.zipois</code></pre></div>
+<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/unnamed-chunk-12-1.png" width="576" /></p>
+</div>
+<div id="constrained-lower-and-upper-bounds" class="section level4">
+<h4><span class="header-section-number">6.4.2.3</span> Constrained lower and upper bounds</h4>
+<p>Proportions are constrained to values between zero and one. A proportion can have a distribution that approximates a normal distribution if the mean is near 0.5 and the standard deviation is small. But, more generally, proportions can have distributions with diverse shapes.</p>
+<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/model-check-proportions-1.png" width="576" /></p>
+</div>
+<div id="binary-responses" class="section level4">
+<h4><span class="header-section-number">6.4.2.4</span> Binary responses</h4>
+</div>
+</div>
+<div id="outliers---an-outlier-is-a-point-that-is-highly-unexpected-given-the-modeled-distribution." class="section level3">
+<h3><span class="header-section-number">6.4.3</span> Outliers - an outlier is a point that is highly unexpected given the modeled distribution.</h3>
+</div>
+</div>
+<div id="model-checking-homoskedasticity" class="section level2">
+<h2><span class="header-section-number">6.5</span> Model checking homoskedasticity</h2>
+</div>
+<div id="model-checking-independence---hapiness-adverse-example." class="section level2">
+<h2><span class="header-section-number">6.6</span> Model checking independence - hapiness adverse example.</h2>
+</div>
+<div id="using-r" class="section level2">
+<h2><span class="header-section-number">6.7</span> Using R</h2>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="p-values.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="model-fitting-and-model-fit-ols.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/rstudio/bookdown-demo/edit/master/chapters/26-model-checking.Rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"download": ["Walker-elementary-statistical-modeling-draft.pdf", "Walker-elementary-statistical-modeling-draft.epub"],
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:" && /^https?:/.test(src))
+      src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

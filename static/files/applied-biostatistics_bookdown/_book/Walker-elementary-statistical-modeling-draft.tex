@@ -125,7 +125,7 @@
   \postauthor{\par}
       \predate{\centering\large\emph}
   \postdate{\par}
-    \date{Draft: 2019-09-17}
+    \date{Draft: 2019-09-25}
 
 \usepackage{booktabs}
 \usepackage{amsthm}
@@ -275,9 +275,14 @@ Class}\label{create-an-r-studio-project-for-this-class}
 \def\labelenumi{\arabic{enumi}.}
 \tightlist
 \item
-  Create a folder named ``BIO\_413''
+  Create a project folder within the Documents folder (Mac OS) or My
+  Documents folder (Windows OS). All files associated with this book
+  will reside inside this folder. The name of the project folder should
+  be something meaningful, such as ``Applied\_Biostatics'' or the name
+  of your class (for students in my Applied Biostatics class, this
+  folder should be named ``BIO\_413'').
 \item
-  Within this folder, create new folders named
+  Within the project folder, create new folders named
 
   \begin{enumerate}
   \def\labelenumii{\arabic{enumii}.}
@@ -299,11 +304,11 @@ Class}\label{create-an-r-studio-project-for-this-class}
   Open R Studio and click the menu item File \textgreater{} New
   Project\ldots{}
 \item
-  Choose ``Existing Directory'' and navigate to your BIO\_413 folder
+  Choose ``Existing Directory'' and navigate to your project folder
 \item
   Choose ``Create Project''
 \item
-  Check that a file named ``BIO\_413.Rproj'' is in your BIO\_413 folder
+  Check that a ``.Rproj'' file is in your project folder
 \end{enumerate}
 
 \section{R Notebooks}\label{r-notebooks}
@@ -314,7 +319,7 @@ A typical statistical modeling project will consist of:
 \def\labelenumi{\arabic{enumi}.}
 \tightlist
 \item
-  reading data from Excel or text (.csv or .txt) files
+  importing data from Excel or text (.csv or .txt) files
 \item
   cleaning data
 \item
@@ -459,26 +464,169 @@ code}\label{create-more-r-chunks-and-explore-options-and-play-with-r-code}
 \chapter{Data -- Importing and Saving
 Data}\label{data-importing-and-saving-data}
 
+Importing data into R can be a struggle for new R users and,
+unfortunately, most online sources give easy but superficial methods
+that don't follow best practices for increasing reproducibility or do
+not allow flexible organization of files within a project. Some
+examples:
+
+(tl;dr -- go to next section if you just want to import a file and don't
+want to understand this important background information!)
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \texttt{df\ \textless{}-\ read.table(file="clipboard")} imports data
+  copied from the clipboard, from an Excel/Sheets file or from an open
+  text file. For this to be semi-reproducible, a comment specifying the
+  filename, worksheet and range that was copied is necessary. The
+  ultimate problem, though, is, how does a researcher know that they
+  highlighted and copied the correct range in the Excel sheet?
+\item
+  \texttt{df\ \textless{}-\ read.csv(file.choose())} opens the familiar
+  ``open file'' dialog box, which lets the user navigate to the file of
+  choice. For this to be semi-reproducible, a comment specifying the
+  filename to import is necessary. Still, the ultimate problem is, how
+  does a researcher know which file was actually opened during an R
+  session? The researcher might think they opened
+  ``walker\_maine\_bee\_data\_clean\_androscoggin.csv'' but mistakenly
+  opened ``walker\_maine\_bee\_data\_clean\_aroostook.csv''.
+\item
+  \texttt{df\ \textless{}-\ read.table(file="my\_data.txt")} and
+  \texttt{df\ \textless{}-\ read\_excel(file="my\_data.xlsx")} are
+  reproducible because the filename is explicitly specified. But, this
+  method requires that ``my\_data'' is physically located in the same
+  folder as the file containing the R script (the notebook .Rmd file in
+  our case) and this violates the best practice of clean project
+  organization with different folders for the different kinds of files
+  (data, R scripts, images, manuscript text, etc.).
+\item
+  R Studio has an elegant import tool in the environment pane that opens
+  a custom dialog box that allows the researcher to navigate to the
+  file, and to specify what part of the file to import, such as the
+  specific sheet and range for an Excel file. This has the same
+  reproducibility issues as \#1 and \#2 but R Studio includes the
+  equivalent script, which adds all relevant information for
+  reproducility. One then simply copies and pastes this script into a
+  code chunk and voila! The next time the script is run, the data can be
+  imported from the script without using menus and dialog boxes. Except
+  that..the script does not seem to take into account that the
+  \textbf{working directory} of an R Markdown file is not the project
+  foler but the foler containing the R Markdown file and so this
+  two-step method fails. More personally, I'd prefer to run a chunk that
+  quickly opens the data file instead of re-navigating through my file
+  system and re-specifying the sheet and range every time I re-start the
+  project in a new R session.
+\end{enumerate}
+
+There are at least three solutions to the issues raised above, all
+requiring some understanding of \textbf{file paths} and directory
+structure in an operating system. A file such as ``my\_data.xlsx'' has
+an \textbf{absolute} file path, which is the full address of the file
+(the filename is something like your house street number). The absolute
+file path of ``my\_data.xlsx'' might be
+``/Users/jwalker/Documents/applied-biostatistics/data/my\_data.xlsx''. A
+\textbf{relative} file path is the file path from the \textbf{working
+directory}. In an R Studio project, the working directory is the project
+directory, which is the directory containing the .Rproj file. This will
+be the working directory of the console. \emph{Importantly}, the working
+directory of an R Markdown code chunk is the folder containing the saved
+R Markdown file. An R Studio Notebook is an R Markdown file so the
+working directory of a notebook code chunk is the folder containing the
+saved notebook file. If a notebook file is located within the notebooks
+folder, which is located within the project folder, then the relative
+file path to ``my\_file.xlsx'' is ``../data/my\_file.xlsx''. The ``..''
+tells the file OS to move ``up'' into the parent directory (which is the
+project folder) and the ``data'' tells the file OS to move ``down'' into
+the data folder. These are put together into a single address using
+``/''. The beauty of relative paths is that they remain the same -- and
+so do not break one's script -- if the project folder, and all of its
+contents including the data folder and the notebooks folder, is moved to
+another location on the hard drive (say into a new ``Research'' folder).
+By contrast, the absolute file path changes, which breaks any old
+script.
+
+The three solutions are 1. Create a \textbf{relative path} to the file
+using something like
+\texttt{file\_path\ \textless{}-\ "../data/my\_data.xlsx"}. This should
+\emph{always} work but it fails on some computers. For example, if the
+project folder is on a Windows OS (but not Mac OS) desktop, the assigned
+relative address doesn't seem to look in the folder containing the file.
+2. Create a setup chunk that reroutes the working directory to the
+project folder using the script
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# use this in a chuck called "setup" to force the working directory to be}
+\CommentTok{# at the level of the project file.}
+\NormalTok{knitr}\OperatorTok{::}\NormalTok{opts_knit}\OperatorTok{$}\KeywordTok{set}\NormalTok{(}\DataTypeTok{root.dir =}\NormalTok{ rprojroot}\OperatorTok{::}\KeywordTok{find_rstudio_root_file}\NormalTok{())}
+\end{Highlighting}
+\end{Shaded}
+
+For this to work, the chunk has to be named ``setup'', that is, the text
+inside the curly brackets at the top of the chunk should be ``r setup''.
+Then, with this chunk, the relative file path is
+\texttt{file\_path\ \textless{}-\ "../data/my\_data.xlsx"} if
+``my\_data.xlsx'' is immediately inside the data folder which is
+imediately inside the project folder. This should work on any machine,
+and should work even if a project folder is moved. However, it does not
+work when writing a book with Bookdown a Bookdown project has multiple
+.Rmd files and the chunk names cannot be repeated across files. There
+can only be one chunk called ``setup''.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{2}
+\tightlist
+\item
+  Use the function here(). The most robust solution seems to be using
+  the function here() from the here package. The function works
+  something like this
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{data_path <-}\StringTok{ "data"} \CommentTok{# path to data that are imported}
+\NormalTok{file_name <-}\StringTok{ "my_data.xlsx"}
+\NormalTok{file_path <-}\StringTok{ }\KeywordTok{here}\NormalTok{(data_path, file_name) }\CommentTok{# paste together parts of the address}
+\KeywordTok{read_excel}\NormalTok{(}\DataTypeTok{file=}\NormalTok{file_path)}
+\end{Highlighting}
+\end{Shaded}
+
+here::here() creates an absolute path, but one that is created on the
+fly, and will change (or should change) correctly if the project folder
+is moved on the same machine or to another machine. And no chunk named
+setup is required so this also works in every R markdown file when using
+Bookdown.
+
 \section{Create new notebook for this
 chapter}\label{create-new-notebook-for-this-chapter}
 
-Be sure to save the notebook in the ``notebooks'' folder of your
-BIO\_413 project. Annotate your notebook with notes! Update it as you
-learn more! We will use data.table for importing text files in
-tab-delimited or comma-separated formats and the readxl package for
-importing excel files.
+Create a new notebook and save it to the ``notebooks'' folder of your
+BIO\_413 project. \textbf{Important:} In an R Studio project, the
+working directory is the project directory (the location of the .Rproj
+file) -- this will be the working directory of the console. The working
+directory of an R Markdown code chunk is the folder containing the saved
+R Markdown file. An R Studio Notebook is an R Markdown file so the
+working directory of an notebook code chunk is the folder containing the
+saved notebook file. Importantly, the working directory of the code
+chunk isn't ``moved'' to the folder containing the saved file
+\emph{until the file is saved} so import/export scripts will no work
+properly until the file is saved!
 
-Start your notebook with a chunk named ``setup''. It is important that
-``setup'' is the name. The text inside the curly brackets at the top of
-the chunk should be ``r setup, message=FALSE''
+Annotate your notebook with notes! Update it as you learn more! We will
+use data.table for importing text files in tab-delimited or
+comma-separated formats and the readxl package for importing excel
+files.
+
+Start each notebook with a chunk named ``setup'' (note that since this
+book is advocating the use of here() to set the file path, naming the
+setup chunk ``setup'' is not imperative).
 
 \begin{Shaded}
 \begin{Highlighting}[]
 \NormalTok{knitr}\OperatorTok{::}\NormalTok{opts_chunk}\OperatorTok{$}\KeywordTok{set}\NormalTok{(}\DataTypeTok{fig.width=}\DecValTok{6}\NormalTok{, }\DataTypeTok{fig.height=}\DecValTok{4}\NormalTok{) }
-
-\CommentTok{# use this in a chuck called "setup" to force the working directory to be}
-\CommentTok{# at the level of the project file.}
-\NormalTok{knitr}\OperatorTok{::}\NormalTok{opts_knit}\OperatorTok{$}\KeywordTok{set}\NormalTok{(}\DataTypeTok{root.dir =}\NormalTok{ rprojroot}\OperatorTok{::}\KeywordTok{find_rstudio_root_file}\NormalTok{())}
 
 \CommentTok{# relative paths to project folders}
 \NormalTok{data_path <-}\StringTok{ "data"} \CommentTok{# path to data that are imported}
@@ -496,6 +644,7 @@ Add a ``load-packages'' chunk.
 \KeywordTok{library}\NormalTok{(readxl) }\CommentTok{# import excel}
 \KeywordTok{library}\NormalTok{(emmeans) }\CommentTok{# get estimated marginal means and CIs, used for plot}
 \KeywordTok{library}\NormalTok{(janitor) }\CommentTok{# clean_names to clean col labels of imported data}
+\KeywordTok{library}\NormalTok{(here) }\CommentTok{# here::here() creates the absolute path to the file}
 \end{Highlighting}
 \end{Shaded}
 
@@ -507,23 +656,6 @@ resource for increasing reproducibility in science. My own view is that
 \emph{all data} should be archived on some public server (exceptions
 include data that are proprietary or contain sensitive information --
 such as human health measures).
-
-The downloaded data will be inserted into the ``data'' folder. To access
-these data in an R script, the script needs to know ``where to look'' or
-the ``address.'' This address is the \textbf{path}. The default
-\textbf{working directory} for an R notebook is the directory containing
-the notebook .Rmd file so the default path is the path to this directory
-and this file should always be saved to the ``notebooks'' folder within
-``BIO\_413''. The setup chunk above changes this default working
-directory to the project folder, which makes it a little easier to
-navigate to the data folder.
-
-``BIO\_413'' Folder is the parent of the ``notebooks'' folder. It is
-also the parent of the ``data'' folder. To see any content within the
-``data'' folder, the R script needs to tell R to move back (or up) the
-directory structure out of the ``notebooks'' folder into the parent
-``BIO\_413'' folder and then forward (or down) into the ``data'' folder.
-This would be do
 
 \subsection{Excel File}\label{excel-file}
 
@@ -586,7 +718,7 @@ for Data Science} book.
 \begin{Highlighting}[]
 \NormalTok{data_folder <-}\StringTok{ "Data from Prenatal acoustic communication programs offspring for high post-hatching temperatures in a songbird"}
 \NormalTok{filename <-}\StringTok{ "allDatasetsMarietteBuchanan2016.xls"}
-\NormalTok{file_path <-}\StringTok{ }\KeywordTok{paste}\NormalTok{(data_path, data_folder, filename, }\DataTypeTok{sep=}\StringTok{"/"}\NormalTok{)}
+\NormalTok{file_path <-}\StringTok{ }\KeywordTok{here}\NormalTok{(data_path, data_folder, filename)}
 \NormalTok{chick <-}\StringTok{ }\KeywordTok{read_excel}\NormalTok{(file_path, }\DataTypeTok{sheet=}\StringTok{"nestlingMass"}\NormalTok{) }\CommentTok{# read the excel file}
 \NormalTok{chick <-}\StringTok{ }\KeywordTok{data.table}\NormalTok{(chick) }\CommentTok{# convert to data.table}
 \end{Highlighting}
@@ -609,8 +741,9 @@ creates the directory path to the file. This path includes
   filename -- the name of the file to read
 \end{enumerate}
 
-These are all put together into a single path using the function
-\texttt{paste()}. Read about paste. It will be used repeatedly. The
+These are all put together into the absolute path using the function
+\texttt{here()} from the here package. Take a look at the value of
+file\_path to confirm. The
 \texttt{read\_excel(file\_path,\ sheet="nestlingMass")} reads the
 nestlingMass sheet only. The next
 line:\texttt{chick\ \textless{}-\ data.table(chick)} converts the
@@ -627,11 +760,11 @@ you've given it.
 \def\labelenumi{\arabic{enumi}.}
 \tightlist
 \item
-  Make sure your ``setup'' chunk is called ``setup'' and that it
-  includes the line to change the working directory to the project
-  directory and that you have run the chunk
+  Make sure you loaded the package \texttt{here} in a ``load-libraries''
+  chunk and that you have run the chunk
 \item
-  Make sure the path to the data folder is in your setup chunk.
+  Make sure you have assigned \texttt{data\_path\ \textless{}-\ "data"}
+  in the setup chunk and have run the chunk.
 \item
   Make sure your ``data'' folder is \emph{one level} inside your project
   folder. ``one level'' means it is not buried deeper inside other
@@ -652,6 +785,8 @@ you've given it.
 \item
   Make sure the file name is correct in the script. As with the folder
   name, I go to the finder and copy the file name and paste it in place.
+  In Windows use ctrl-a instead of ctrl-c to copy the full filename
+  including the extension.
 \end{enumerate}
 
 More generally, R is \emph{very literal} when it comes to: Spelling.
@@ -673,75 +808,52 @@ Insert the following after your import script and run:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\KeywordTok{head}\NormalTok{(chick) }\CommentTok{# check -- are there headers? are there the correct number of columns?}
+\KeywordTok{View}\NormalTok{(chick) }\CommentTok{# check -- are there headers? are there the correct number of columns?}
+\end{Highlighting}
+\end{Shaded}
+
+The line \texttt{View(chick)} script opens a new tab containing a
+spreadsheet-like display of the data frame \texttt{chick}. This is one
+way to check that the data were imported correctly, to examine the
+column labels to ensure they conform to best practices, and to simply
+get to know the contents of the imported file. From the view of chick,
+it may not be immediately apparent that the column names contain spaces.
+This can be seen more easily using
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{colnames}\NormalTok{(chick)}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
-##       chick ID brood ID brood composition sex rank in nest
-## 1:    N1.10LF3  N1.10m3             mixed   F            2
-## 2: N1.10noCut3  N1.10m3             mixed   M            4
-## 3:    N1.10RB3  N1.10m3             mixed   F            2
-## 4:    N1.10RF3  N1.10m3             mixed   F            5
-## 5:    N1.12LB3  N1.12m3             mixed   F            3
-## 6:    N1.12LF3  N1.12m3             mixed   F            1
-##    playback treatment nest temperature above ambient
-## 1:              treat                       4.289583
-## 2:               cont                       4.289583
-## 3:               cont                       4.289583
-## 4:               cont                       4.289583
-## 5:               cont                       3.972917
-## 6:              treat                       3.972917
-##    max daily temp hatch day mean max temp hatch to day2
-## 1:                     17.4                    18.83333
-## 2:                     19.0                    20.53333
-## 3:                     17.4                    18.83333
-## 4:                     19.0                    20.53333
-## 5:                     29.0                    24.63333
-## 6:                     25.1                    24.80000
-##    mean max temp hatch to day10 mean max temp hatch to day13 hatching mass
-## 1:                        22.70                     23.05714           0.7
-## 2:                        24.53                     23.41429           0.6
-## 3:                        22.70                     23.05714           0.7
-## 4:                        24.53                     23.41429           0.6
-## 5:                        22.85                     22.91429           0.7
-## 6:                        23.35                     23.24286           0.6
-##              day1 mass           day2 mass         day10 mass day13 mass
-## 1:  1.1000000000000001                 1.2                 NA        9.8
-## 2: 0.80000000000000004  1.1000000000000001                 NA        9.1
-## 3: 0.90000000000000002  1.3999999999999999                 NA        9.3
-## 4:                 0.5 0.90000000000000002                 NA        7.7
-## 5:                   1  1.3999999999999999 9.4000000000000004       10.1
-## 6: 0.90000000000000002  1.3999999999999999 8.0999999999999996        9.6
-##    day13 tarsus
-## 1:        14.11
-## 2:        12.90
-## 3:        13.60
-## 4:        13.06
-## 5:        14.08
-## 6:        13.46
+##  [1] "chick ID"                       "brood ID"                      
+##  [3] "brood composition"              "sex"                           
+##  [5] "rank in nest"                   "playback treatment"            
+##  [7] "nest temperature above ambient" "max daily temp hatch day"      
+##  [9] "mean max temp hatch to day2"    "mean max temp hatch to day10"  
+## [11] "mean max temp hatch to day13"   "hatching mass"                 
+## [13] "day1 mass"                      "day2 mass"                     
+## [15] "day10 mass"                     "day13 mass"                    
+## [17] "day13 tarsus"
 \end{verbatim}
 
-The function \texttt{head(chick)} script displays the first few lines of
-the data.table \texttt{chick}. This is one way to check that the data
-were imported correctly, to examine the column labels to ensure they
-conform to best practices, and to simply get to know the contents of the
-import file. In this case, it is easy to see that the column names have
-spaces in them. Spaces in column names are bad practice because a column
-name is a variable and variable names should not include spaces (is
-\texttt{brood\ id} one variable or two?). The best practice is to
-replace a blank with an underscore, for example \texttt{brood\_id}. Some
-coders just mash words together into a single word like this
-\texttt{broodid} but this should generally be avoided because the result
-can be hard to read. Some coders also use Caps to designate new words
-like this \texttt{BroodId}. This is easier to read than simple
+In general, it is bad practice to include spaces, parentheses, and
+special characters such as \$ or \^{}, in the column names of a data
+frame because these increase handling costs later on. The best practice
+is to replace a blank with an underscore, for example
+\texttt{brood\_id}. Some coders separate words with a period
+(\texttt{brood.id}). Others mash words together into a single word like
+this \texttt{broodid} but this should generally be avoided because the
+result can be hard to read. Finally, some coders use Caps to designate
+new words like this \texttt{BroodId}. This is easier to read than simple
 concatenation but the underscore is the easiest to read.
 
 The \texttt{janitor} package has a nice function to clean the column
-names of a data frame. The default clean includes changing any uppercase
-letter to lower case and replacing spaces with underscores. Many coders
-like to work with all lowercase variable names to avoid having to hit
-the shift key.
+names of a data frame including replacing spaces with an underscore and
+stripping parentheses. The default clean includes changing any uppercase
+letter to lower case. Many coders like to work with all lowercase
+variable names to avoid having to hit the shift key.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -848,7 +960,7 @@ overcome this, the statement below specifies that the file contains a
 \begin{Highlighting}[]
 \NormalTok{data_folder <-}\StringTok{ "Data from Neonicotinoid pesticide reduces bumblebee colony growth and queen production"}
 \NormalTok{filename <-}\StringTok{ "Whitehorn, O'Connor, Wackers, Goulson (2012) Data from 'Neonicotinoid pesticide reduces bumblebee colony growth and queen production'.csv.csv"}
-\NormalTok{file_path <-}\StringTok{ }\KeywordTok{paste}\NormalTok{(data_path, data_folder, filename, }\DataTypeTok{sep=}\StringTok{"/"}\NormalTok{)}
+\NormalTok{file_path <-}\StringTok{ }\KeywordTok{here}\NormalTok{(data_path, data_folder, filename)}
 \NormalTok{bee <-}\StringTok{ }\KeywordTok{fread}\NormalTok{(file_path, }\DataTypeTok{header=}\OtherTok{TRUE}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
@@ -955,7 +1067,7 @@ assigning the path to the output folder code in the setup chunk.
 \begin{Highlighting}[]
 \NormalTok{save_data_folder <-}\StringTok{ "chapter_02"}
 \NormalTok{save_filename <-}\StringTok{ "my_first_fake_data.txt"}
-\NormalTok{save_file_path <-}\StringTok{ }\KeywordTok{paste}\NormalTok{(output_path, save_data_folder, save_filename, }\DataTypeTok{sep=}\StringTok{"/"}\NormalTok{)}
+\NormalTok{save_file_path <-}\StringTok{ }\KeywordTok{here}\NormalTok{(output_path, save_data_folder, save_filename)}
 \KeywordTok{write.table}\NormalTok{(fake_data, save_file_path, }\DataTypeTok{sep=}\StringTok{"}\CharTok{\textbackslash{}t}\StringTok{"}\NormalTok{, }\DataTypeTok{quote=}\OtherTok{FALSE}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
@@ -984,7 +1096,8 @@ in your Fake\_Data folder and open the file in a text editor.
 \item
   Download the dataset ``Results2015.txt'' from the Dryad repository at
   \url{https://datadryad.org//resource/doi:10.5061/dryad.65vk4}. Try to
-  reproduce Fig. 1. It's not easy. I've inserted the figure below.
+  reproduce Fig. 1. It's not easy. I've inserted the figure below but
+  also download the paper and look at Fig. 1.
 \item
   (grad students only) Download and plot data from a Dryad Repository
   dataset of your choice.
@@ -997,11 +1110,7 @@ in your Fake\_Data folder and open the file in a text editor.
   at this point what any of it is! Plot it as a strip chart, as above.
 \end{enumerate}
 
-\begin{figure}
-\centering
-\includegraphics[width=0.50000\textwidth]{images/Dung_beetles_reduce_livestock-fig_1.png}
-\caption{Fig. 1 from ``Dung beetles reduce livestock\ldots{}''}
-\end{figure}
+\includegraphics{images/Dung_beetles_reduce_livestock-fig_1.png}
 
 \chapter*{Part II: Some Fundamentals of Statistical
 Modeling}\label{part-ii-some-fundamentals-of-statistical-modeling}
@@ -1241,7 +1350,7 @@ model's goal and assumptions.
   \textbf{choose a model}. Statistical modeling includes a diverse array
   of models, yet almost all methods used by researchers in biology, and
   all models in this book, are generalizations of the linear model
-  specified in \ref{eq:}.
+  specified in \eqref{eq:lm-spec2}.
 \item
   \textbf{fit the model}, in order to estimate the model parameters and
   the uncertainty in these estimates.
@@ -1498,7 +1607,7 @@ the classical linear model.
   distributions that are skewed to the right and while sometimes both
   can be reasonably modeled using a linear model they are more often
   modeled using generalized linear models, which, again, is an extension
-  of the linear model in equation \eqref{eq:lm-lm-spec2}.
+  of the linear model in equation \eqref{eq:lm-spec2}.
 \end{enumerate}
 
 A common misconception is that inference from a linear model assumes
@@ -1698,8 +1807,9 @@ Notes on standard errors
   (a sum) and denominator increase with \(n\).
 \end{enumerate}
 
-\section{Using Google Sheets to generate fake data to explore
-uncertainty}\label{using-google-sheets-to-generate-fake-data-to-explore-uncertainty}
+\section{Using Google Sheets to generate fake data to explore the
+standard
+error}\label{using-google-sheets-to-generate-fake-data-to-explore-the-standard-error}
 
 In statistics we are interested in estimated parameters of a
 \textbf{population} using measures from a \textbf{sample}. The goal in
@@ -1808,8 +1918,8 @@ number of times and each time, you write down the newly computed mean.
 The standard error of the mean is the standard deviation of this
 infinitely long column of means.
 
-\section{Using R to generate fake data to explore
-uncertainty}\label{using-r-to-generate-fake-data-to-explore-uncertainty}
+\section{Using R to generate fake data to explore the standard
+error}\label{using-r-to-generate-fake-data-to-explore-the-standard-error}
 
 note that I use ``standard deviation'' to refer to the sample standard
 deviation and ``standard error'' to refer to the standard error of the
@@ -1861,8 +1971,9 @@ function.
 \end{Highlighting}
 \end{Shaded}
 
-\texttt{apply()} is a workhorse in many R scripts. Learn it. Know it.
-Live it.
+\texttt{apply()} is a workhorse in many R scripts and is often used in R
+scripts in place of a for-loop (see below) because it takes fewer lines
+of code.
 
 The SEM is the standard deviation of the mean, so let's see if the
 standard deviation of the means is close to the true standard error. We
@@ -1918,7 +2029,7 @@ means
 ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 \end{verbatim}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-6-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-9-1.pdf}
 
 Compute the mean of the means
 
@@ -1996,8 +2107,10 @@ Questions
 
 Congratulations, you have just done a Monte Carlo simulation!
 
-\subsection{\texorpdfstring{Part IV -- Generating fake data with ``for
-loops''}{Part IV -- Generating fake data with for loops}}\label{part-iv-generating-fake-data-with-for-loops}
+\subsection{Part IV -- Generating fake data with
+for-loops}\label{part-iv-generating-fake-data-with-for-loops}
+
+A \textbf{for-loop} is used to iterate a computation.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -2053,12 +2166,10 @@ is it?
 \section{Bootstrapped standard
 errors}\label{bootstrapped-standard-errors}
 
-The bootstrap is the best invention since duct tape. Really.
-
-A standard error is the standard deviation of an infinite number of
-hypothetically re-sampled means. A bootstrap standard error of a
-statistic is the standard deviation of the statistic from a finite
-number of resamples of the data! Wait what?
+A standard error of the mean is the expected standard deviation of an
+infinite number of hypothetically re-sampled means. A bootstrap standard
+error of a statistic is the standard deviation of the statistic from a
+finite number of \emph{resamples} of the data.
 
 Let's download some data to explore this concept. The data are archived
 at Dryad Repository.
@@ -2089,8 +2200,7 @@ lifespan, control, vitamin\_E, and vitamin\_C. The data are in a
 column, there are three columns (``control'', ``vitamin C'', ``vitamin
 E'') with value = 1, if that row (or lifespan) was assigned the
 treatment of the column label and zero otherwise. In general, we want
-data.tables to be in long format. Wide formats can be useful for some
-computations but not really for these data.
+data.tables to be in long format.
 
 Compute the standard error of the mean of the lifespan for the control
 group using equation \eqref{eq:se}. One simple way to do this for the
@@ -2100,46 +2210,97 @@ R, these conditional querries use \texttt{==}.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{y <-}\StringTok{ }\KeywordTok{na.omit}\NormalTok{(vole[control}\OperatorTok{==}\DecValTok{1}\NormalTok{, lifespan]) }\CommentTok{# subset of data satisfying condition and omitting missing data, if these exist}
-\NormalTok{n <-}\StringTok{ }\KeywordTok{length}\NormalTok{(y) }\CommentTok{# the sample size}
-\NormalTok{se <-}\StringTok{ }\KeywordTok{sd}\NormalTok{(y)}\OperatorTok{/}\KeywordTok{sqrt}\NormalTok{(n}\OperatorTok{-}\DecValTok{1}\NormalTok{) }\CommentTok{# standard error of the mean}
+\NormalTok{control_voles <-}\StringTok{ }\KeywordTok{na.omit}\NormalTok{(vole[control}\OperatorTok{==}\DecValTok{1}\NormalTok{, lifespan]) }\CommentTok{# subset of data satisfying condition and}
+\CommentTok{# omitting missing data, if these exist}
+\NormalTok{n <-}\StringTok{ }\KeywordTok{length}\NormalTok{(control_voles) }\CommentTok{# the sample size}
+\NormalTok{se <-}\StringTok{ }\KeywordTok{sd}\NormalTok{(control_voles)}\OperatorTok{/}\KeywordTok{sqrt}\NormalTok{(n}\OperatorTok{-}\DecValTok{1}\NormalTok{) }\CommentTok{# standard error of the mean of the control voles}
 \end{Highlighting}
 \end{Shaded}
 
 Okay, the SEM using equation \eqref{eq:se} is 31.9. Let's compare this
-with a bootstrap estimate of the SEM.
+with a bootstrap estimate of the SEM. There are several R packages that
+do a bootstrap but here I've coded one using a for-loop both to practice
+with for-loops and to help communicate what a bootstrap \emph{is}.
+
+The basic algorithm for a bootstrap is
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{re-sample the data with replacement}. Here ``the data'' is the
+  set of lifespans for the Control voles. ``Resample with replacement''
+  means to sample \(n\) times from the full set of values. If we were to
+  do this manually, we would i) write down each value of Control
+  lifespan on its own piece of paper and throw all pieces into a hat.
+  ii) pick a paper from the hat, add its value to sample \(i\), and
+  return the paper to the hat. iii) repeat step ii \(n\) times, where
+  \(n\) is the original sample size. The new sample contains some values
+  multiple times (papers that were picked out of the hat more than once)
+  and is missing some values (papers that were not picked out in any of
+  the \(n\) picks).
+\item
+  Compute the statistic with the new sample.
+\item
+  Repeat steps 1 and 2 \(p\) times, which will result in a \(p\)-length
+  vector of the statistic. Typically \(p\) is somewhere between 2000 and
+  10,000.
+\item
+  For the standard error of the statistic, compute the standard
+  deviation of the re-sampled statistic.
+\end{enumerate}
+
+A for-loop automates this algorithm.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{n_iter <-}\StringTok{ }\DecValTok{2000} \CommentTok{# number of bootstrap iterations}
+\KeywordTok{set.seed}\NormalTok{(}\DecValTok{1}\NormalTok{)}
+\NormalTok{n_iter <-}\StringTok{ }\DecValTok{2000} \CommentTok{# number of bootstrap iterations, or p}
 \NormalTok{means <-}\StringTok{ }\KeywordTok{numeric}\NormalTok{(n_iter) }\CommentTok{# we will save the means each iteration to this}
 \NormalTok{inc <-}\StringTok{ }\DecValTok{1}\OperatorTok{:}\NormalTok{n }\CommentTok{# the first sample is the actual sample}
-\ControlFlowTok{for}\NormalTok{(iter }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\NormalTok{n_iter)\{ }\CommentTok{# the for loop}
-\NormalTok{  means[iter] <-}\StringTok{ }\KeywordTok{mean}\NormalTok{(y[inc])}
+\ControlFlowTok{for}\NormalTok{(iter }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\NormalTok{n_iter)\{ }\CommentTok{# this line sets up the number of iterations, p}
+\NormalTok{  means[iter] <-}\StringTok{ }\KeywordTok{mean}\NormalTok{(control_voles[inc]) }\CommentTok{# inc is the set of rows to include in the computation of the mean.}
 \NormalTok{  inc <-}\StringTok{ }\KeywordTok{sample}\NormalTok{(}\DecValTok{1}\OperatorTok{:}\NormalTok{n, }\DataTypeTok{replace=}\OtherTok{TRUE}\NormalTok{) }\CommentTok{# re-sample for the next iteration}
 \NormalTok{\}}
 \NormalTok{se_boot <-}\StringTok{ }\KeywordTok{sd}\NormalTok{(means)}
-
-\CommentTok{#compare}
-\NormalTok{se}
+\KeywordTok{getwd}\NormalTok{()}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
-## [1] 31.89536
+## [1] "/Users/jwalker/Documents/Github projects/Bookdown projects/applied-biostatistics"
 \end{verbatim}
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{se_boot}
-\end{Highlighting}
-\end{Shaded}
+The SEM using the bootstrap is 31.43. Again, the SEM using equation
+\eqref{eq:se} is 31.9.
 
-\begin{verbatim}
-## [1] 30.93843
-\end{verbatim}
+\section{Confidence Interval}\label{confidence-interval}
 
-dayum!
+Here I introduce a \textbf{confidence interval} (abbreviated to CI)
+using the mean of a sample but the concept is easily generalized to any
+parameter of a statistical model. The mean of the Control voles is 503.4
+and the SE of the mean is 31.9. The SE is used to construct the lower
+and upper boundary of a ``1 - \(\alpha\)'' confidence interval using
+\texttt{lower\ \textless{}-\ mean(x)\ -\ qt(alpha/2,\ df\ =\ n)*se(x)}
+and
+\texttt{upper\ \textless{}-\ mean(x)\ +\ qt(alpha/2,\ df\ =\ n)*se(x)}.
+
+\begin{equation}
+upper = mean + 
+\end{equation}
+
+A confidence interval of the mean is a measure of the uncertainty in the
+estimate of the mean. A 95\% confidence interval has a 95\% probability
+(in the sense of long-run frequency) of containing the true mean. This
+probability is a property of the population of intervals that could be
+computed using the same sampling and measuring procedure. It is not
+correct, without further assumptions, to state that ``there is a 95\%
+probability that the true mean lies within the interval''. Perhaps a
+more useful interpretation is that the interval contains the range of
+means that are consistent with the data, in the sense that a \(t\)-test
+would not reject the null hypothesis of a difference between the
+estimate and any value within the interval (this interpretation does not
+imply anything about the true value).
 
 \chapter{Covariance and Correlation}\label{covariance-and-correlation}
 
@@ -2164,8 +2325,6 @@ covariance are easily visualized with a scatterplot
 \caption{\label{fig:covariance-scatterplot}Scatterplot illustrating two
 variables with (A) positive covariance and (B) negative covariance}
 \end{figure}
-
-\section{}\label{section}
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
@@ -2194,7 +2353,7 @@ each variable) instead of the product of a deviation with itself.
 
 \chapter{P-values}\label{p-values}
 
-\section{\texorpdfstring{\(p\)-values}{p-values}}\label{p-values}
+\section{\texorpdfstring{\(p\)-values}{p-values}}\label{p-values-1}
 
 \begin{tabular}{l|r|r|r|r|r|r|r}
 \hline
@@ -2208,9 +2367,9 @@ vitamin\_C - vitamin\_E & -25.2 & 65 & 93 & -154.1 & 103.8 & -0.4 & 0.699\\
 \hline
 \end{tabular}
 
-Let's use the vole data to introduce the \(p\)-value. The table above
-gives a SE, \(t\) and \(p\)-value for each pairwise contrast among the
-three treatment levels. A typical report (one with several
+Let's use the vole data to introduce the \emph{p}-value. The table above
+gives a SE, \(t\) and \emph{p}-value for each pairwise contrast among
+the three treatment levels. A typical report (one with several
 misconceptions) might read
 
 ``We found a significant effect of Vitamin C (\(t=\) -2.1, \(p=\) 0.037)
@@ -2219,40 +2378,41 @@ lifespan.''
 
 A \(p\) value \emph{is a continuous measure of evidence against the
 null}. As long as the data approximate the assumptions of the null
-hypothesis pretty well, a very small \(p\)-value, such as 0.002 or
+hypothesis pretty well, a very small \emph{p}-value, such as 0.002 or
 0.0005, is pretty good evidence against the null hypothesis -- but does
 not mean ``an effect exists''. To show an effect exists, we should have
-small \(p\)-values in multiple replicates \emph{and} we should
+small \emph{p}-values in multiple replicates \emph{and} we should
 rigorously probe the hypothesis with different experiments that
 challenge the hypothesis in different ways. A small \(p\) is evidence
 for a research program to move forward with replication and probing. A
-big \(p\)-value, say 0.22 or 0.76, is pretty weak evidence against the
-null, but does not mean ``there is no effect.'' If an experiment is well
-designed, a big \(p\) could suggest abandoning any hypotheses that
+big \emph{p}-value, say 0.22 or 0.76, is pretty weak evidence against
+the null, but does not mean ``there is no effect.'' If an experiment is
+well designed, a big \(p\) could suggest abandoning any hypotheses that
 predict biologically consequential effects. Unfortunately, a big \(p\)
 could also reflect a weak experimental design. Between small and big
 \(p\) values, such as 0.009 or 0.011, problems arise. These intermediate
-\(p\)-values beg for replication. A major problem of inference using
+\emph{p}-values beg for replication. A major problem of inference using
 \(p\) values is that there is no sharp boundaries between these three
 regions. Instead biologists typically use the \(p < 0.05\) as a sharp
 boundary to declare that an effect exists or not.
 
-Okay. so what \emph{is} a \(p\)-value? When we do a \(t\)-test, we get a
-\(p\)-value. There are several ways to think about this probability. The
-most compact way is \(P(data | null)\), which is literally read as the
-probability of the data given the null (or ``conditional'' on the null),
-but is really short for \emph{the probability of the data, or something
-more extreme than the data, given that the null hypothesis is true}. The
-``probability of the data'' is kinda vague. More specifically, we mean
-the probability of some statistic about the data such as the difference
-in means between group A and group B or the \(t\)-value associated with
-this difference. So, a bit more formally, the probability returned in a
-\(t\)-test is \(\mathrm{prob}(t \ge t_{obs} | H_0)\). This is the long
-run frequency of observing a \(t\)-value as big or bigger than the
-observed \(t\)-value (the one you actually got with your data) if the
-null is true. Let's parse this into ``long run frequency of observing a
-\(t\)-value as big or bigger than the observed \(t\)-value'' and ``null
-is true''.
+Okay. so what \emph{is} a \emph{p}-value? When we do a \emph{t}-test, we
+get a \emph{p}-value. There are several ways to think about this
+probability. The most compact way is \(P(data | null)\), which is
+literally read as the probability of the data given the null (or
+``conditional'' on the null), but is really short for \emph{the
+probability of the data, or something more extreme than the data, given
+that the null hypothesis is true}. The ``probability of the data'' is
+kinda vague. More specifically, we mean the probability of some
+statistic about the data such as the difference in means between group A
+and group B or the \emph{t}-value associated with this difference. So, a
+bit more formally, the probability returned in a \emph{t}-test is
+\(\mathrm{prob}(t \ge t_{obs} | H_0)\). This is the long run frequency
+of observing a \emph{t}-value as big or bigger than the observed
+\emph{t}-value (the one you actually got with your data) if the null is
+true. Let's parse this into ``long run frequency of observing a
+\emph{t}-value as big or bigger than the observed \emph{t}-value'' and
+``null is true''.
 
 A thought experiment: You open a google sheet and insert 12 standard,
 normal random deviates (so the true mean is zero and the true variance
@@ -2260,34 +2420,34 @@ is one) in Column A, rows 1-12. You arbitrarily assign the first six
 values (rows 1-6) to treatment A and the second six values (rows 7-12)
 to treatment B. You use the space immediately below these data to
 compute the mean of treatment A, the mean of treatment B, the difference
-in means (A - B), and a \(t\)-value. Unfortunately, google sheets
-doesn't have a \(t\)-value function so you'd have to compute this
+in means (A - B), and a \emph{t}-value. Unfortunately, google sheets
+doesn't have a \emph{t}-value function so you'd have to compute this
 yourself. Or not, since this is a thought experiment. Now ``fill right''
 or copy and paste these functions into 999 new columns. You now have
-1000 \(t\) tests. The expected value of the difference in means is zero
-(why?) but the actual values will form a normal distribution about zero.
-Most will be close to zero (either in the negative or positive
-direction) but some will be further from zero. The expected \(t\)-value
-will also be zero (why?) and the distribution of these 1000 \(t\) values
-will look normal but the tails are a little fuller. This row of \(t\)
-values is a null distribution, because in generating the data we used
-the exact same formula for the values assigned to A and the values
-assigned to B. Now think of a \(t\)-value in your head, say 0.72
-(remember that \(t\) values will largely range from about -3 to +3
-although the theoretical range is \(-\infty\) to \(+\infty\). What is
+1000 \emph{t}-tests. The expected value of the difference in means is
+zero (why?) but the actual values will form a normal distribution about
+zero. Most will be close to zero (either in the negative or positive
+direction) but some will be further from zero. The expected
+\emph{t}-value will also be zero (why?) and the distribution of these
+1000 \(t\) values will look normal but the tails are a little fuller.
+This row of \(t\) values is a null distribution, because in generating
+the data we used the exact same formula for the values assigned to A and
+the values assigned to B. Now think of a \emph{t}-value in your head,
+say 0.72 (remember that \(t\) values will largely range from about -3 to
++3 although the theoretical range is \(-\infty\) to \(+\infty\). What is
 the probability of observing a \(t\) of 0.72 \emph{or bigger} if the
-null is true? Look at the row of \(t\)-values! Count the number of
-\(t \ge 0.72\) and then divide by the total number of \(t\)-values in
+null is true? Look at the row of \emph{t}-values! Count the number of
+\(t \ge 0.72\) and then divide by the total number of \emph{t}-values in
 the row (1000) and you have a probability computed as a frequency. But
 remember the frequentist definition is the long run frequency, or the
 expected frequency at the limit (when you've generated not 1000 or even
-1,000,000 but an infinite number of columns and \(t\)-values).
+1,000,000 but an infinite number of columns and \emph{t}-values).
 
 Some asides to the thought experiment: First, why ``as big or bigger''
 and not just the probability of the value itself? The reason is that the
 probability of finding the exact \(t\) is 1/infinity, which doesn't do
 us much good. So instead we compute the probability of finding \(t\) as
-big, or bigger, than our observed \(t\). Second, the \(t\)-test
+big, or bigger, than our observed \(t\). Second, the \emph{t}-test
 probability described above is a ``one-tail probability''. Because a
 difference can be both in the positive direction and the negative
 direction, we usually want to count all the \(t \ge 0.72\) and the
@@ -2297,48 +2457,49 @@ of \emph{as extreme or more extreme} values. This is called a
 distribution. Third, we don't really count \(t \ge 0.72\) but take
 advantage of the beautiful mathematical properties of the theoretical
 \(t\) distribution, which allows us to compute the frequentist
-probability (expected long range frequency) given the \(t\)-value and
-the degrees of freedom using the \(t\)-distribution.
+probability (expected long range frequency) given the \emph{t}-value and
+the degrees of freedom using the \emph{t}-distribution.
 
 Now what do I mean with the phrase ``null is true''? Most people equate
 ``null is true'' with ``no difference in means'' but the phrase entails
-much more than this. Effectively, the phrase means that the \(p\)-value
-is based on modeling the real data with a theoretical sample in which
-all the points were randomly sampled from the same distribution and that
-the assignment of the individual points to treatment was random. This
-model means the theoretical sample has three properties: First, random
-assignment to treatment after sampling from the same distribution means
-that the expected means are the same, or put differently, the expected
-difference in means between the assigned groups is zero. Second, random
-assignment to treatment after sampling from the same distribution
-\emph{also} means that the expected variances of the two groups are
-equal. And third, random sampling means that the values of each point
-are independent -- we cannot predict the value of one point knowing
-information about any other point. \textbf{Here is what is super
-important about this}: if we get a really low \(p\)-value, any one of
-these consequences may be untrue about our data, for example it could be
-that the true means of the two treatment groups really are different, or
-it could mean it is the variances that differ between the two groups, or
-it could mean that the data (or technically, the errors) are not
-independent of each other. This is why we need certain assumptions to
-make a \(p\)-value meaningful for empirical data. By assuming
-independent error and homogenous (equal) variances in our two samples, a
-low \(p\) value is evidence of unequal means.
+much more than this. Effectively, the phrase means that the
+\emph{p}-value is based on modeling the real data with a theoretical
+sample in which all the points were randomly sampled from the same
+distribution and that the assignment of the individual points to
+treatment was random. This model means the theoretical sample has three
+properties: First, random assignment to treatment after sampling from
+the same distribution means that the expected means are the same, or put
+differently, the expected difference in means between the assigned
+groups is zero. Second, random assignment to treatment after sampling
+from the same distribution \emph{also} means that the expected variances
+of the two groups are equal. And third, random sampling means that the
+values of each point are independent -- we cannot predict the value of
+one point knowing information about any other point. \textbf{Here is
+what is super important about this}: if we get a really low
+\emph{p}-value, any one of these consequences may be untrue about our
+data, for example it could be that the true means of the two treatment
+groups really are different, or it could mean it is the variances that
+differ between the two groups, or it could mean that the data (or
+technically, the errors) are not independent of each other. This is why
+we need certain assumptions to make a \emph{p}-value meaningful for
+empirical data. By assuming independent error and homogenous (equal)
+variances in our two samples, a low \(p\) value is evidence of unequal
+means.
 
 \section{Creating a null
 distribution.}\label{creating-a-null-distribution.}
 
-Let's repeat: A pretty good definition of a \(p\)-value is: the long-run
-frequency of observing a test-statistic as large or larger than the
-observed statistic, if the null were true. A more succinct way to state
-this is
+Let's repeat: A pretty good definition of a \emph{p}-value is: the
+long-run frequency of observing a test-statistic as large or larger than
+the observed statistic, if the null were true. A more succinct way to
+state this is
 
 \begin{equation}
 p = \mathrm{prob}(t \ge t_o | H_o)
 \end{equation}
 
-where \(t\) is a hypothetically sampled \(t\)-value from a null
-distribution, \(t_o\) is the observed \(t\)-value, and \(H_o\) is the
+where \(t\) is a hypothetically sampled \emph{t}-value from a null
+distribution, \(t_o\) is the observed \emph{t}-value, and \(H_o\) is the
 null hypothesis. Part of the null hypothesis is the expected value of
 the parameter estimated is usually (but not always) zero -- this can be
 called the nil null. For example, if there is no vitamin E effect on
@@ -2378,7 +2539,7 @@ from the null distribution of differences that is as large, or larger,
 than the observed difference.
 
 What is a null distribution? It is the distribution of a statistic (such
-as a difference in means, or better, a \(t\)-value) if the null were
+as a difference in means, or better, a \emph{t}-value) if the null were
 true. Here, I am generating a null distribution that is relevant to the
 cold vole data. See if you can understand the script before reading the
 explanation below.
@@ -2452,42 +2613,44 @@ from the simulated null distribution that as larger or larger than the
 observed difference is 0.042 (this compuation includes the observed
 value in both the numerator and denominator).
 
-\subsection{\texorpdfstring{\(t\)-tests}{t-tests}}\label{t-tests}
+\subsection{\texorpdfstring{\emph{t}-tests}{t-tests}}\label{t-tests}
 
-A \(t\)-test is a test of differences between two values. These could be
+A \emph{t}-test is a test of differences between two values. These could
+be
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
 \tightlist
 \item
   the difference between the means of two samples (a ``two-sample''
-  \(t\)-test)
+  \emph{t}-test)
 \item
   the difference between a mean of a sample and some pre-specified value
-  (a ``one-sample'' \(t\)-test)
+  (a ``one-sample'' \emph{t}-test)
 \item
   the difference between a coefficient from a linear model and a value
   (often zero)
 \end{enumerate}
 
-A \(t\)-test compares an observed \(t\)-value to a \(t\)-distribution.
-The null distribution introduced above was a distribution of mean
-differences. This isn't generally useful, since the distribution of
-expected mean differences is a function of sample variability (standard
-deviations) in addition to sample size and, therefore, a mean-difference
-null distribution will be unique to every study. A \(t\)-distribution is
-a distribution of \(t\)-values under the null (statistical jargon for
-``given the null is true''), where a \(t\)-value is a difference
-standardized by its standard error. Standardizing by a standard
-deviation (remember that a standard error is an estimate of the
-statistic's standard deviation) removes the effect of sample variability
-on the distribution. A \(t\)-distribution, then, is only a function of
-sample size (or ``degrees of freedom''). As \(n\) increases a \(t\)
-distribution becomes converges on the standard, normal distribution.
+A \emph{t}-test compares an observed \emph{t}-value to a
+\emph{t}-distribution. The null distribution introduced above was a
+distribution of mean differences. This isn't generally useful, since the
+distribution of expected mean differences is a function of sample
+variability (standard deviations) in addition to sample size and,
+therefore, a mean-difference null distribution will be unique to every
+study. A \emph{t}-distribution is a distribution of \emph{t}-values
+under the null (statistical jargon for ``given the null is true''),
+where a \emph{t}-value is a difference standardized by its standard
+error. Standardizing by a standard deviation (remember that a standard
+error is an estimate of the statistic's standard deviation) removes the
+effect of sample variability on the distribution. A
+\emph{t}-distribution, then, is only a function of sample size (or
+``degrees of freedom''). As \(n\) increases a \(t\) distribution becomes
+converges on the standard, normal distribution.
 
 The difference between the mean of the vitamin\_E treatment and the
-control treatment is -89.9. A two-sample \(t\)-test of this difference
-is
+control treatment is -89.9. A two-sample \emph{t}-test of this
+difference is
 
 \begin{verbatim}
 ## 
@@ -2503,15 +2666,15 @@ is
 ##  413.4762  503.3929
 \end{verbatim}
 
-The \(p\)-value comes from comparing the observed \(t\) to a null \(t\)
-distribution and ``counting'' the values that are bigger than the
+The \emph{p}-value comes from comparing the observed \(t\) to a null
+\(t\) distribution and ``counting'' the values that are bigger than the
 observed \(t\). These are counted in both tails, because \(p\) is the
 probability of a \(t\) more extreme than the observed value, and \(t\)
 can be more extreme in the negative direction and in the positive
 direction. We can simulate this with a finite, instead of infinite, null
 distribution using the t-distribution instead of the distribution of
 mean differences, as above. I hide the script, but its the same as
-above, except that the \(t\)-value is computed for each simulated
+above, except that the \emph{t}-value is computed for each simulated
 experiment and not just the difference in means.
 
 \begin{figure}
@@ -2522,29 +2685,29 @@ simulation generated 100,000 t-tests with a true null.}
 \end{figure}
 
 Hey that looks pretty good! A \(p\) value can be computed by counting
-the number of simulated \(t\)-values, \emph{including the observed
+the number of simulated \emph{t}-values, \emph{including the observed
 value}, that are more extreme (in either the positive or negative
 direction) than the observed \(t\). Including the observed \(t\), there
 are 10904 values that are more extreme than that observed. An
 approximate measure of \(p\) is this count divided by 100,001 (why is 1
 added to the denominator?), which is 0.1090389. This simulation-based
-\(p\)-value is very (very!) close to that computed from the observed
-\(t\)-test.
+\emph{p}-value is very (very!) close to that computed from the observed
+\emph{t}-test.
 
 \subsection{P-values from the perspective of
 permutation}\label{p-values-from-the-perspective-of-permutation}
 
-A very intuitive way to think about \(p\)-values is with a permutation
-test. Consider two of the treatment levels in the vole data, say vitamin
-E and the vitamin C (I'm bored with the control!). Think about the
-structure of the dataset: there are two columns, ``Treatment'', which
-contains the assigned treatment, and ``Lifespan''. The values in the
-Treatment column were randomly assigned prior to the start of the
-experiment. If there is an effect of treatment on lifespan, then
-assginment matters -- the values in the lifespan column for the vitamin
-E rows will be more or less, on average, than the values in the lifepan
-column for the vitamin C rows. Or, the lifespan values are what they are
-\emph{because} of the values in the treatment column.
+A very intuitive way to think about \emph{p}-values is with a
+permutation test. Consider two of the treatment levels in the vole data,
+say vitamin E and the vitamin C (I'm bored with the control!). Think
+about the structure of the dataset: there are two columns,
+``Treatment'', which contains the assigned treatment, and ``Lifespan''.
+The values in the Treatment column were randomly assigned prior to the
+start of the experiment. If there is an effect of treatment on lifespan,
+then assginment matters -- the values in the lifespan column for the
+vitamin E rows will be more or less, on average, than the values in the
+lifepan column for the vitamin C rows. Or, the lifespan values are what
+they are \emph{because} of the values in the treatment column.
 
 Now let's leave the values in the treatment column be, and just randomly
 re-arrange or permute the lifespan values. What is the new expected
@@ -2564,14 +2727,15 @@ permutations.
 \section{Statistical modeling instead of hypothesis
 testing}\label{statistical-modeling-instead-of-hypothesis-testing}
 
-This chapter is an introduction to a \(p\)-value by way of \(t\)-tests.
-I advocate that you analyze \(t\)-test like questions using statistical
-modeling instead of null hypothesis significance testing. The reason is
-that we learn much more from an estimate of the effect and a CI than
-from a \(t\) and \(p\)-value. But, it is also good to know that a \(t\)
-test is a special case of a linear model, and you can get that \(t\) and
-\(p\) using a statistical modeling approach should your boss want them
-(and you cannot convince them otherwise). Let's explore this.
+This chapter is an introduction to a \emph{p}-value by way of
+\emph{t}-tests. I advocate that you analyze \emph{t}-test like questions
+using statistical modeling instead of null hypothesis significance
+testing. The reason is that we learn much more from an estimate of the
+effect and a CI than from a \(t\) and \emph{p}-value. But, it is also
+good to know that a \(t\) test is a special case of a linear model, and
+you can get that \(t\) and \(p\) using a statistical modeling approach
+should your boss want them (and you cannot convince them otherwise).
+Let's explore this.
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
@@ -2582,8 +2746,8 @@ test is a special case of a linear model, and you can get that \(t\) and
   their 95\% CI and the \(t\) and \(p\) values for the cold-reared vole
   data.
 \item
-  Compute a separate \(t\)-test of vitamin-E vs.~control and vitamin C
-  vs.~control.
+  Compute a separate \emph{t}-test of vitamin-E vs.~control and vitamin
+  C vs.~control.
 \end{enumerate}
 
 Are the \(t\) and \(p\) values the same? No! The reason is that the
@@ -2598,10 +2762,10 @@ linear model instead of the separate t-tests.
 \def\labelenumi{\arabic{enumi}.}
 \setcounter{enumi}{2}
 \item
-  To convince yourself that a \(t\)-test is a special case as of a
+  To convince yourself that a \emph{t}-test is a special case as of a
   linear model, compute the effects of the vitamin E treatment (relative
   to control) \textbf{but exclude the vitamin C data from the model
-  fit}. Now compare the \(t\) and \(p\) values with the \(t\)-test.
+  fit}. Now compare the \(t\) and \(p\) values with the \emph{t}-test.
   These should be the same.
 \item
   Now use the default t.test function by deleting ``var.equal=TRUE''
@@ -2611,14 +2775,14 @@ linear model instead of the separate t-tests.
   This test allows for heterogenity of variances. Several sources argue
   that one should always uses Welsch's test since it simplifies to the
   classical t-test when the sample variances are equal. This is true,
-  but only relevant if you're into \(t\)-tests. And, we can model
+  but only relevant if you're into \emph{t}-tests. And, we can model
   heterogenous variances using a statistical model. We'll do this in a
   later chapter.
 \item
   Use the function \texttt{pairwise.t.test} to compute all pairwise
-  t.tests among the three treatment levels. Is the \(p\)-value for the
-  vitamin\_E - control contrast the same as that if using t.test (with
-  var.equal=TRUE) or the statistical model with vitamin\_C data
+  t.tests among the three treatment levels. Is the \emph{p}-value for
+  the vitamin\_E - control contrast the same as that if using t.test
+  (with var.equal=TRUE) or the statistical model with vitamin\_C data
   excluded? No! The reason is that pairwise.t.test adjusts the p-values
   for multiple testing as a default.
 \end{enumerate}
@@ -2669,25 +2833,25 @@ There are at least three different meanings of \textbf{probability}.
 
 \subsection{\texorpdfstring{This book covers frequentist approaches to
 statistical modeling and when a probability arises, such as the
-\(p\)-value of a test statistic, this will be a frequentist
+\emph{p}-value of a test statistic, this will be a frequentist
 probability.}{This book covers frequentist approaches to statistical modeling and when a probability arises, such as the p-value of a test statistic, this will be a frequentist probability.}}\label{this-book-covers-frequentist-approaches-to-statistical-modeling-and-when-a-probability-arises-such-as-the-p-value-of-a-test-statistic-this-will-be-a-frequentist-probability.}
 
-When we do a \(t\)-test, we get a \(p\)-value. There are several ways to
-think about this probability. The most compact way is
+When we do a \emph{t}-test, we get a \emph{p}-value. There are several
+ways to think about this probability. The most compact way is
 \(P(data | null)\), which is literally read as the probability of the
 data given the null (or ``conditional'' on the null), but is really
 short for \emph{the probability of the data, or something more extreme
 than the data, given that the null hypothesis is true}. The
 ``probability of the data'' is kinda vague. More specifically, we mean
 the probability of some statistic about the data such as the difference
-in means between group A and group B or the \(t\)-value associated with
-this difference. So, a bit more formally, the probability returned in a
-\(t\)-test is \(\mathrm{prob}(t \ge t_{obs} | H_0)\). This is the long
-run frequency of observing a \(t\)-value as big or bigger than the
-observed \(t\)-value (the one you actually got with your data) if the
-null is true. Let's parse this into ``long run frequency of observing a
-\(t\)-value as big or bigger than the observed \(t\)-value'' and ``null
-is true''.
+in means between group A and group B or the \emph{t}-value associated
+with this difference. So, a bit more formally, the probability returned
+in a \emph{t}-test is \(\mathrm{prob}(t \ge t_{obs} | H_0)\). This is
+the long run frequency of observing a \emph{t}-value as big or bigger
+than the observed \emph{t}-value (the one you actually got with your
+data) if the null is true. Let's parse this into ``long run frequency of
+observing a \emph{t}-value as big or bigger than the observed
+\emph{t}-value'' and ``null is true''.
 
 A thought experiment: You open a google sheet and insert 12 standard,
 normal random deviates (so the true mean is zero and the true variance
@@ -2695,34 +2859,34 @@ is one) in Column A, rows 1-12. You arbitrarily assign the first six
 values (rows 1-6) to treatment A and the second six values (rows 7-12)
 to treatment B. You use the space immediately below these data to
 compute the mean of treatment A, the mean of treatment B, the difference
-in means (A - B), and a \(t\)-value. Unfortunately, google sheets
-doesn't have a \(t\)-value function so you'd have to compute this
+in means (A - B), and a \emph{t}-value. Unfortunately, google sheets
+doesn't have a \emph{t}-value function so you'd have to compute this
 yourself. Or not, since this is a thought experiment. Now ``fill right''
 or copy and paste these functions into 999 new columns. You now have
 1000 \(t\) tests. The expected value of the difference in means is zero
 (why?) but the actual values will form a normal distribution about zero.
 Most will be close to zero (either in the negative or positive
-direction) but some will be further from zero. The expected \(t\)-value
-will also be zero (why?) and the distribution of these 1000 \(t\) values
-will look normal but the tails are a little fuller. This row of \(t\)
-values is a null distribution, because in generating the data we used
-the exact same formula for the values assigned to A and the values
-assigned to B. Now think of a \(t\)-value in your head, say 0.72
-(remember that \(t\) values will largely range from about -3 to +3
-although the theoretical range is \(-\infty\) to \(+\infty\). What is
+direction) but some will be further from zero. The expected
+\emph{t}-value will also be zero (why?) and the distribution of these
+1000 \(t\) values will look normal but the tails are a little fuller.
+This row of \(t\) values is a null distribution, because in generating
+the data we used the exact same formula for the values assigned to A and
+the values assigned to B. Now think of a \emph{t}-value in your head,
+say 0.72 (remember that \(t\) values will largely range from about -3 to
++3 although the theoretical range is \(-\infty\) to \(+\infty\). What is
 the probability of observing a \(t\) of 0.72 \emph{or bigger} if the
-null is true? Look at the row of \(t\)-values! Count the number of
-\(t \ge 0.72\) and then divide by the total number of \(t\)-values in
+null is true? Look at the row of \emph{t}-values! Count the number of
+\(t \ge 0.72\) and then divide by the total number of \emph{t}-values in
 the row (1000) and you have a probability computed as a frequency. But
 remember the frequentist definition is the long run frequency, or the
 expected frequency at the limit (when you've generated not 1000 or even
-1,000,000 but an infinite number of columns and \(t\)-values).
+1,000,000 but an infinite number of columns and \emph{t}-values).
 
 Some asides to the thought experiment: First, why ``as big or bigger''
 and not just the probability of the value itself? The reason is that the
 probability of finding the exact \(t\) is 1/infinity, which doesn't do
 us much good. So instead we compute the probability of finding \(t\) as
-big, or bigger, than our observed \(t\). Second, the \(t\)-test
+big, or bigger, than our observed \(t\). Second, the \emph{t}-test
 probability described above is a ``one-tail probability''. Because a
 difference can be both in the positive direction and the negative
 direction, we usually want to count all the \(t \ge 0.72\) and the
@@ -2732,51 +2896,52 @@ of \emph{as extreme or more extreme} values. This is called a
 distribution. Third, we don't really count \(t \ge 0.72\) but take
 advantage of the beautiful mathematical properties of the theoretical
 \(t\) distribution, which allows us to compute the frequentist
-probability (expected long range frequency) given the \(t\)-value and
-the degrees of freedom using the \(t\)-distribution.
+probability (expected long range frequency) given the \emph{t}-value and
+the degrees of freedom using the \emph{t}-distribution.
 
 Now what do I mean with the phrase ``null is true''? Most people equate
 ``null is true'' with ``no difference in means'' but the phrase entails
-much more than this. Effectively, the phrase means that the \(p\)-value
-is based on modeling the real data with a theoretical sample in which
-all the points were randomly sampled from the same distribution and that
-the assignment of the individual points to treatment was random. This
-model means the theoretical sample has three properties: First, random
-assignment to treatment after sampling from the same distribution means
-that the expected means are the same, or put differently, the expected
-difference in means between the assigned groups is zero. Second, random
-assignment to treatment after sampling from the same distribution
-\emph{also} means that the expected variances of the two groups are
-equal. And third, random sampling means that the values of each point
-are independent -- we cannot predict the value of one point knowing
-information about any other point. \textbf{Here is what is super
-important about this}: if we get a really low \(p\)-value, any one of
-these consequences may be untrue about our data, for example it could be
-that the true means of the two treatment groups really are different, or
-it could mean it is the variances that differ between the two groups, or
-it could mean that the data (or technically, the errors) are not
-independent of each other. This is why we need certain assumptions to
-make a \(p\)-value meaningful for empirical data. By assuming
-independent error and homogenous (equal) variances in our two samples, a
-low \(p\) value is evidence of unequal means.
+much more than this. Effectively, the phrase means that the
+\emph{p}-value is based on modeling the real data with a theoretical
+sample in which all the points were randomly sampled from the same
+distribution and that the assignment of the individual points to
+treatment was random. This model means the theoretical sample has three
+properties: First, random assignment to treatment after sampling from
+the same distribution means that the expected means are the same, or put
+differently, the expected difference in means between the assigned
+groups is zero. Second, random assignment to treatment after sampling
+from the same distribution \emph{also} means that the expected variances
+of the two groups are equal. And third, random sampling means that the
+values of each point are independent -- we cannot predict the value of
+one point knowing information about any other point. \textbf{Here is
+what is super important about this}: if we get a really low
+\emph{p}-value, any one of these consequences may be untrue about our
+data, for example it could be that the true means of the two treatment
+groups really are different, or it could mean it is the variances that
+differ between the two groups, or it could mean that the data (or
+technically, the errors) are not independent of each other. This is why
+we need certain assumptions to make a \emph{p}-value meaningful for
+empirical data. By assuming independent error and homogenous (equal)
+variances in our two samples, a low \(p\) value is evidence of unequal
+means.
 
 \subsection{\texorpdfstring{Two interpretations of the
-\(p\)-value}{Two interpretations of the p-value}}\label{two-interpretations-of-the-p-value}
+\emph{p}-value}{Two interpretations of the p-value}}\label{two-interpretations-of-the-p-value}
 
-Since we want to be working scientists who want to use \(p\)-values as a
-tool, we need to know how to interpret (or use) the \(p\)-value to make
-reasonable inferences and how to avoid mis-interpreting the \(p\)-value
-and making unreasonable or even incorrect inferences. Ronald Fisher, the
-inventor of frequentist statistics, developed an interpretation of the
-\(p\)-value that is probably most useful for academic and applied
-research programs. Neyman and Pearson (Neyman-Pearson) gave the
-\(p\)-value a different interpretation, one that is probably most useful
-for industrial quality control. Today's biology researchers use an
-interpretation that is an odd hybrid of the two, which often leads to
-silly inference. Regardless, understanding the distinction between
-Fisher and Neyman-Pearson will inform how we write up our results in a
-manuscript. I'll describe these in the context of the two-sample
-\(t\)-test.
+Since we want to be working scientists who want to use \emph{p}-values
+as a tool, we need to know how to interpret (or use) the \emph{p}-value
+to make reasonable inferences and how to avoid mis-interpreting the
+\emph{p}-value and making unreasonable or even incorrect inferences.
+Ronald Fisher, the inventor of frequentist statistics, developed an
+interpretation of the \emph{p}-value that is probably most useful for
+academic and applied research programs. Neyman and Pearson
+(Neyman-Pearson) gave the \emph{p}-value a different interpretation, one
+that is probably most useful for industrial quality control. Today's
+biology researchers use an interpretation that is an odd hybrid of the
+two, which often leads to silly inference. Regardless, understanding the
+distinction between Fisher and Neyman-Pearson will inform how we write
+up our results in a manuscript. I'll describe these in the context of
+the two-sample \emph{t}-test.
 
 \subsubsection{Fisher's interpretation}\label{fishers-interpretation}
 
@@ -2787,13 +2952,13 @@ of much of modern biosciences and clinical medicine. Fisher thought of
 \(p\) as evidence against the null; the smaller the \(p\) the better the
 evidence that the means differ, which, in an experimental context,
 implies a treatment effect. If an experiment results in a large
-\(p\)-value, we can move on and test other fertilizers. If an experiment
-results in a small \(p\)-value, we want to pursue this new fertilizer
-more. Do more experiments! Fisher never thought of a single experiment
-as definitive. The decision to move on or pursue is only partly informed
-by the \(p\)-value and Fisher offered no rule about what \(p\)-value
-lies on the threshold of this decision. When pressed, Fisher might say
-that \(p=0.05\) is a reasonable threshold.
+\emph{p}-value, we can move on and test other fertilizers. If an
+experiment results in a small \emph{p}-value, we want to pursue this new
+fertilizer more. Do more experiments! Fisher never thought of a single
+experiment as definitive. The decision to move on or pursue is only
+partly informed by the \emph{p}-value and Fisher offered no rule about
+what \emph{p}-value lies on the threshold of this decision. When
+pressed, Fisher might say that \(p=0.05\) is a reasonable threshold.
 
 \subsubsection{Neyman-Pearson
 interpretation}\label{neyman-pearson-interpretation}
@@ -2823,9 +2988,9 @@ really is an effect. This is called the \textbf{power} of the
 experiment. An experiment with high power will have a low probability of
 a Type II error. An experiment with low power will have a high
 probability of a Type II error. Power is partly determined by sample
-size, the bigger the sample the smaller the \(p\)-value, all other
+size, the bigger the sample the smaller the \emph{p}-value, all other
 things equal (think about why in the context of the formula for the
-\(t\)-value). Power is also a function of \(\alpha\). If we set a low
+\emph{t}-value). Power is also a function of \(\alpha\). If we set a low
 \(\alpha\) (say, \(\alpha=0.01\)), the test is conservative. We are more
 likely to fail to reject the null even if the null is false. This is the
 balance. We want to make sure that we test our batch of beer using
@@ -2851,9 +3016,9 @@ Neyman-Pearson, \(p\) is not treated as continuous information.
 
 Modern researchers interpret \(p\) using a combination of Fisher and
 Neyman-Pearson concepts in what has become known as Null Hypothesis
-Significance Testing (NHST). Similar to Neyman-Pearson, a \(p\)-value is
-compared to \(\alpha\) but similar to Fisher, many researchers, and many
-textbooks and statistics software (including base R) trichtomize a
+Significance Testing (NHST). Similar to Neyman-Pearson, a \emph{p}-value
+is compared to \(\alpha\) but similar to Fisher, many researchers, and
+many textbooks and statistics software (including base R) trichtomize a
 statistically significant \(p\) into ``significance levels'' (three
 asterisks for \(p < 0.001\), two asterisks for \(0.001 < p < 0.01\), and
 one asterisk for \(0.01 < p < 0.05\)) but many researchers also
@@ -2896,7 +3061,7 @@ test statistic as extreme or more extreme than the observed effect.
 
 The two errors above are gross misconceptions that are pervasive in the
 biology literature. A more subtle issue is the belief that a low
-\(p\)-value shows that the researcher's explanatory hypothesis is
+\emph{p}-value shows that the researcher's explanatory hypothesis is
 correct. For example, researchers believe the result ``the prey fish fed
 14.2 (95\% CI: 9.2, 19.2) minutes shorter in the presence of the
 predator fish'' confirms their hypothesis that prey modulate feeding
@@ -2923,40 +3088,40 @@ different controls to ``rigrously probe'' the preferred hypothesis.
 \subsubsection{\texorpdfstring{Misconception: a \(p\)-value is
 repeatable}{Misconception: a p-value is repeatable}}\label{misconception-a-p-value-is-repeatable}
 
-Many researchers believe that a \(p\)-value is a precise measure -- that
-if the experiment were replicated, a similar \(p\) would result. This
-belief requires at least two misconceptions. First, if the null were
-true, then \emph{any} \(p\)-value is equally likely. \(p=0.00137\) is
-just as likely as \(p=0.492\). In other words, if the null were true,
-the \(p\)-value is not replicable at all! Second, the \(p\) value is
-highly dependent on the sample, and can be highly variable among
-replications, but there is no true \(p\)-value, so there can be no
-estimate or standard error. Let's explore these.
+Many researchers believe that a \emph{p}-value is a precise measure --
+that if the experiment were replicated, a similar \(p\) would result.
+This belief requires at least two misconceptions. First, if the null
+were true, then \emph{any} \emph{p}-value is equally likely.
+\(p=0.00137\) is just as likely as \(p=0.492\). In other words, if the
+null were true, the \emph{p}-value is not replicable at all! Second, the
+\(p\) value is highly dependent on the sample, and can be highly
+variable among replications, but there is no true \emph{p}-value, so
+there can be no estimate or standard error. Let's explore these.
 
 \textbf{What is the distribution of \(p\)-values under the null?} I
 often ask students, ``if the null were true, what is the most likely
-\(p\)-value?'' or ``if the null were true, what kind of \(p\)-values
-would we expect, that is what is the expected distribution''. A common
-answer is \(p=0.5\) is the most likely value and something like a normal
-curve, except the tails abruptly stop at 0 and 1, is the expected
-distribution.
+\emph{p}-value?'' or ``if the null were true, what kind of
+\emph{p}-values would we expect, that is what is the expected
+distribution''. A common answer is \(p=0.5\) is the most likely value
+and something like a normal curve, except the tails abruptly stop at 0
+and 1, is the expected distribution.
 
 \includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/uniform-1.pdf}
 
 \textbf{The incredible inconsistency of the \(p\)-value}
 
-How replicable is the conclusion of an experiment if the \(p\)-value for
-a \(t\)-test is 0.03? If our conclusion is based on \(p < 0.05\), then
-the conclusion is not very replicable. The simulation below shows the
-results of 15 replicates of an experiment with true power of 40\%. There
-are five ``significant'' results (one less than expected) but several
-replicates have very high \(p\)-values.
+How replicable is the conclusion of an experiment if the \emph{p}-value
+for a \emph{t}-test is 0.03? If our conclusion is based on \(p < 0.05\),
+then the conclusion is not very replicable. The simulation below shows
+the results of 15 replicates of an experiment with true power of 40\%.
+There are five ``significant'' results (one less than expected) but
+several replicates have very high \emph{p}-values.
 
 \begin{figure}
 \centering
 \includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/dance-fig-1.pdf}
-\caption{\label{fig:dance-fig}Variability of \(p\)-values when the power is
-0.4}
+\caption{\label{fig:dance-fig}Variability of \emph{p}-values when the power
+is 0.4}
 \end{figure}
 
 \subsubsection{Misconception: 0.05 is the lifetime rate of false
@@ -2965,8 +3130,11 @@ discoveries}\label{misconception-0.05-is-the-lifetime-rate-of-false-discoveries}
 An important and widespread misconception is that if a researcher
 consistently uses \(\alpha=0.05\), then the frequency of incorrectly
 concluding an effect exists, or ``discovering'' an effect, over the
-lifetime of the researcher, will be 5\%. This is incorrect. This ``false
-discovery rate'' is the frequency of false positives divided by the
+lifetime of the researcher, will be 5\%. This is incorrect. \(\alpha\)
+is the rate of false positive if the null hypothesis is true, so our
+lifetime ``false discovery'' rate could only be 5\% if everything we
+ever tested has no true effect! More generally, the \textbf{false
+discovery rate} is the frequency of false positives divided by the
 frequency of positives (the sum of false and true positives). This
 differs from the the Type I error rate, which is the frequency of false
 positives divided by the frequency of tests \emph{in which the null is
@@ -2992,10 +3160,9 @@ Imagine we test
   We have made \(30 + 100=130\) ``discoveries'' (all experiments with
   \(p \le 0.05\)), but
 \item
-  30 of the 130, or 23\%, are ``false discoveries''.
+  30 of the 130, or 23\%, are ``false discoveries''. This is the false
+  discovery rate.
 \end{enumerate}
-
-That is 11.7\% is the ``false discovery rate''.
 
 Think about this. If the null is never true, you cannot have a false
 discovery--every \(p \le 0.05\) is a true discovery (the false discovery
@@ -3007,15 +3174,15 @@ indicates an important
 effect}{Misconception: a low p-value indicates an important effect}}\label{misconception-a-low-p-value-indicates-an-important-effect}
 
 Many researchers write results as if they believe that a small
-\(p\)-value means the effect is big or important. This may misconception
-may arise because of the ubiquitous use of ``significant'' to indicate a
-small p-value and ``very'' or ``extremely'' or ``wicked'' significant to
-indicate a really small p-value. Regardless, this is a misconception. A
-small p-value will usually result when there is high power (but can
-occur even if power is low) and power is a function of effect size,
-variability (the standard deviation), and sample size. A small \(p\)
-could result from a large effect size but can also result with a small
-effect size if the sample size is big enough.
+\emph{p}-value means the effect is big or important. This may
+misconception may arise because of the ubiquitous use of ``significant''
+to indicate a small p-value and ``very'' or ``extremely'' or ``wicked''
+significant to indicate a really small p-value. Regardless, this is a
+misconception. A small p-value will usually result when there is high
+power (but can occur even if power is low) and power is a function of
+effect size, variability (the standard deviation), and sample size. A
+small \(p\) could result from a large effect size but can also result
+with a small effect size if the sample size is big enough.
 
 This is easy to simulate (see script below). Let's model the effect of
 the genotype of a gene on height
@@ -3052,14 +3219,14 @@ On page 606, of Lock et al ``Statistics: Unlocking the Power of Data'',
 the authors state in item D ``The p-value from the ANOVA table is 0.000
 so the model as a whole is effective at predicting grade point
 averages.'' This is incorrect. A p-value is not a measure of the
-predictive capacity of a model because the p-value is a function of 1)
-signal, 2) noise (unmodeled error), and 3) sample size while predictive
-capacity is a function of the signal:noise ratio. If the signal:noise
-ratio is tiny, the predictive capacity is small but the p-value can be
-tiny if the sample size is large. This is easy to simulate (see script
-below). The whole-model p-value is exceptionally small (0.00001002) but
-the relative predictive ability, measured by the \(R^2\), is near zero
-(0.002).
+predictive capacity of a model because the p-value is a function of the
+signal, noise (unmodeled error), and \emph{sample size} while predictive
+capacity is a function of just the signal:noise ratio. If the
+signal:noise ratio is tiny, the predictive capacity is small but the
+p-value can be tiny if the sample size is large. This is easy to
+simulate (see script below). The whole-model p-value is exceptionally
+small (0.00001002) but the relative predictive ability, measured by the
+\(R^2\), is near zero (0.002).
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -3107,7 +3274,7 @@ mean}{What the p-value does not mean}}\label{what-the-p-value-does-not-mean}
 \tightlist
 \item
   \(p\) is not the probability of the null being true. More formally,
-  this probability is \(P(null | data)\) but our \(p\)-value is
+  this probability is \(P(null | data)\) but our \emph{p}-value is
   \(P(data | null)\). These are not the same. \(P(null | data)\) is the
   probability of the null being true given the data. \(P(data | null)\)
   is the probability of our data, or something more extreme than our
@@ -3130,10 +3297,10 @@ mean}{What the p-value does not mean}}\label{what-the-p-value-does-not-mean}
 \subsection{Recommendations}\label{recommendations}
 
 \textbf{If you are working on basic science research} simply report the
-exact \(p\)-value, along with a CI. If \(p < 0.05\) (or some other
+exact \emph{p}-value, along with a CI. If \(p < 0.05\) (or some other
 \(\alpha\)) do not report this as ``significant'' -- in fact, avoid the
 word ``significant''. In the english language, ``significant'' implies
-big or important. Small \(p\)-values can result even with trivially
+big or important. Small \emph{p}-values can result even with trivially
 small effects if \(n\) is big or sample variation is small. If \(p\) is
 smaller than say 0.001, then this is pretty good evidence that the data
 is not a fluke of sampling. But if \(p\) is closer to 0.01 or 0.05, this
@@ -3157,11 +3324,11 @@ are many ways to do this but a straightforard approach is to
   Create a \(2n \times m\) matrix of random normal deviates with mean 0
   and sd 1
 \item
-  Do a \(t\)-test on each column, with the first \(n\) values assigned
-  to one group and the remaining \(n\) values assigned to the second
-  group. Save the \(p\)-value from each.
+  Do a \emph{t}-test on each column, with the first \(n\) values
+  assigned to one group and the remaining \(n\) values assigned to the
+  second group. Save the \emph{p}-value from each.
 \item
-  Plot a histogram of the \(p\)-values.
+  Plot a histogram of the \emph{p}-values.
 \item
   What is the distribution? What is the most likely value of \(p\)?
 \end{enumerate}
@@ -3174,15 +3341,15 @@ add? The effect/sd ratio, known as Cohen's d, is a relative (or
 standardized) measure of effect size. Cohen suggest 0.2, 0.5, and 0.8 as
 small, medium, and large standardized effects. b. should the same effect
 be added to each individual? Yes! It is the random component that
-captures the individual variation in the response. 3. Do a \(t\)-test on
-each column of the matrix, using the first \(n\) values in group 1 and
-the remaining \(n\) values in group 2. Save the p-values for each. 4.
-Compute the power, the relative frequency \(p \le 0.05\). 5. Repeat with
-different values of \(n\), effect size, and sd, but only vary one at a
-time. How does power vary with these three parameters?
+captures the individual variation in the response. 3. Do a \emph{t}-test
+on each column of the matrix, using the first \(n\) values in group 1
+and the remaining \(n\) values in group 2. Save the p-values for each.
+4. Compute the power, the relative frequency \(p \le 0.05\). 5. Repeat
+with different values of \(n\), effect size, and sd, but only vary one
+at a time. How does power vary with these three parameters?
 
 Problem 3 -- write a script for a permutation test of the vitamin E and
-vitamin C levels of the vole data. Compare this to the \(t\)-test.
+vitamin C levels of the vole data. Compare this to the \emph{t}-test.
 
 Problem 4 -- grad students only. Simulate the false discovery rate.
 Explore the parameters: the frequency of true nulls and the power.
@@ -3368,7 +3535,7 @@ effect from Z to both X equal to \(\sqrt(0.6)\).
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-13-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-16-1.pdf}
 
 Now create fake \(Y\) that is a function of both \(X_1\) and \(X_2\).
 Create ``standardized'' fake data, where \(\sigma_Y = 1\).
@@ -4843,7 +5010,7 @@ Here is the default plot
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-21-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-24-1.pdf}
 
 \chapter{Model Checking}\label{model-checking-1}
 
@@ -5211,7 +5378,7 @@ nests or a host with no parasites), resulting in positive deviations
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-22-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-25-1.pdf}
 
 \subsubsection{Constrained lower and upper
 bounds}\label{constrained-lower-and-upper-bounds}
@@ -5396,520 +5563,6 @@ which is an obvious alternative given the decomposition. I prefer the
 former equation because it emphasizes the model fit instead of model
 ill-fit.
 
-\chapter{Plotting Models}\label{plotting-models}
-
-\emph{So, along the lines of Sarah Susanka's ``Not So Big House,''
-Kolbert asks the group, ``What would a Pretty Good House look like?''}
--- Michael Maines\footnote{``The Pretty Good House - Finding the right
-  balance between construction cost and energy performance''.
-  \url{https://www.greenbuildingadvisor.com/article/the-pretty-good-house}}
-
-When it comes to plotting, many researchers mindlessly generate plots
-that are easily generated by the software and look like the typical
-plots published in the field. The resulting plot is comforting because
-it is familiar, not because it effectively communicates what a good plot
-should communicate -- the model results.
-
-Plots should be the focus of both the reader and researcher. Instead of
-mindless plotting, a researcher should ask a series of questions of
-every plot
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\tightlist
-\item
-  What is the point of each element in a plot?
-\item
-  Are these the points that I most want to communicate?
-\item
-  Are there better practices for communicating these points?
-\item
-  Are the points that I want to communicate that are not covered by
-  these elements?
-\end{enumerate}
-
-The answer to these questions should inform what is and what is not
-plotted. The result is a pretty good plot. The idea of a pretty good
-plot is borrowed from the ``pretty good house'' concept that grew out of
-a collaborative group of builders and architects in Northern New
-England. The ``pretty good house'' combines best practices for building
-an earth friendly, high performance home at a reasonable cost. There is
-no pretty good house governing body that awards certificates of
-achievement but, instead, a set of metrics and a collection of building
-practices that can achieve these.
-
-A typical pretty good plot contains some combination of
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\tightlist
-\item
-  Modeled effects with confidence intervals. ``Effects'' are the
-  coefficients of a model, or contrasts constructed from the model, such
-  as all pairwise differences between the means of the levels of a
-  factor. Inferences are typically made from the estimated effects
-\item
-  Modeled means and standard errors or confidence intervals.
-\item
-  Raw data points or a summary distribution of these.
-\end{enumerate}
-
-\section{Pretty good plots show the model and the
-data}\label{pretty-good-plots-show-the-model-and-the-data}
-
-The data to introduce best practices in plotting come from ``The enteric
-nervous system promotes intestinal health by constraining microbiota
-composition''\footnote{Rolig, A.S., Mittge, E.K., Ganz, J., Troll, J.V.,
-  Melancon, E., Wiles, T.J., Alligood, K., Stephens, W.Z., Eisen, J.S.
-  and Guillemin, K., 2017. The enteric nervous system promotes
-  intestinal health by constraining microbiota composition. PLoS
-  biology, 15(2), p.e2000689}. The researchers found that zebrafish with
-a \emph{sox10} mutation lacked an enteric nervous system and developed a
-microbiota-dependent inflammation. The paper includes several
-experiments to probe the hypothesis that the ENS regulates microbial
-community composition and, in turn, inflammatory status. The data here
-are from Fig. 2 of the paper, which reports the results of one of a set
-of experiments to test the hypothesis that microbiota from \emph{sox10}
-mutants (that induce inflammation) are necessary and sufficient to
-induce inflammation in wildtype guts. In this experiment, homogenized
-intestines and their microbial community from four different donor
-groups were added to the flasks housing the zebrafish. The response
-variable is neutrophil count. Neutrophils are a white blood cell that
-increase in number during inflammation. The four treatment levels are
-the different donors of intestinal microbes: WT (wild type), GF (germ
-free, so no microbes are transferred), iapMO (a control ``for the
-possibility that nonbacterial factors such as host pro-inflammatory
-cytokines rather than microbial derived factors cause transmissible
-intestinal inflammation''), and sox10.
-
-\subsection{Pretty good plot component 1: Modeled effects
-plot}\label{pretty-good-plot-component-1-modeled-effects-plot}
-
-Biologists infer the biological consequences of a treatment by
-interpreting the magnitude and sign of treatment ``effects'', such as
-the differences in means among treatment levels. Why then do we mostly
-plot treatment level means, where effects can only be inferred
-\emph{indirectly}, by mentally computing differences in means? Instead,
-our primary plots should be effects plots, which \emph{directly}
-communicate treatment effects, and the uncertainty in the estimates of
-these effects.
-
-\begin{figure}
-\centering
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/plots-effect-1.pdf}
-\caption{\label{fig:plots-effect}Effects Plot}
-\end{figure}
-
-The y-axis contains each of the \emph{paired comparisons} among the four
-treatment levels. The x-axis is the response, which is the ratio of the
-means of the two groups in the comparison. For example, the top
-comparison shows that guts in fish exposed to sox10 donors have 2.7X
-more neutrophils per length of gut than guts in fish exposed to wild
-type donors. The bars are 95\% confidence intervals, with is the range
-of effects that are compatible with the observed data at the 95\% level
-(confidence intervals are disscussed in depth in chapter xxx.). The
-small end of the interval for the sox10/WT comparison is 1.31, meaning
-that effects as small as 31\% increased neutrophil count are compatible
-with the data. It is up to the research community to decide if 2.7X or
-1.31X are physiologically meaningful effects. \emph{p}-values from the
-hypothesis tests are included.
-
-\subsection{Pretty good plot component 2: Modeled mean and CI plot with
-jittered raw
-data}\label{pretty-good-plot-component-2-modeled-mean-and-ci-plot-with-jittered-raw-data}
-
-Often the means of the treatment levels are meaningful, for example, if
-neutrophils per length of gut is a standard measure then researchers
-working in this area will be familiar with usual and unusal values. The
-data used in Fig \ref{fig:plots-effect} are used to plot means and
-confidence intervals of the mean using a \textbf{bar chart}, which is a
-pretty good chart type for measures such as counts in which negative
-values are prohibited and zero is meaningful.
-
-\begin{figure}
-\centering
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/plots-means-1.pdf}
-\caption{\label{fig:plots-means}Mean and error plot}
-\end{figure}
-
-Fig. \ref{fig:plots-means} plots the \emph{modeled} means, represented
-by the tops of the bars, the modeled 95\% confidence intervals of each
-mean, represented by the error bars, and the \emph{p}-values for all
-pairwise comparisons. What do I mean by \emph{modeled} means and error
-intervals?
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\tightlist
-\item
-  Modeled means and error intervals are estimated from the statistical
-  model. Many published plots are of raw means and error intervals,
-  meaning that the mean and error for each treatment level is computed
-  only using the response measures in that treatment level.
-\item
-  A modeled mean will often be equal to the raw mean, but this will not
-  always be the case, for example if there are covariates in the model,
-  or the researchers are using a \emph{hierarchical model} (Chapter
-  xxx).
-\item
-  Modeled error intervals are never the same as the raw error intervals,
-  and are commonly conspicuously different. Almost always, we should
-  plot modeled means and error intervals, since these represent the
-  means that are relevant to inference.
-\end{enumerate}
-
-Fig. \ref{fig:plots-means} also plots the raw count data as ``jittered''
-black dots. ``Showing the data'' is a pretty good feature of a plot
-because it allows the reader to get a sense of the underlying sample
-size and distribution including outliers, which can be used to mentally
-model check the published statistical analysis. For example, the
-jittered dots in Fig. \ref{fig:plots-means} suggest a
-\textbf{heterogeneity} of variances; specifically, the treatment level
-with the largest mean has a conspicuously higher variance. This pattern
-violates the assumptions of a general linear model and should raise a
-red flag to a reader if the researchers used a general linear model to
-analyze the data.
-
-What a mean-and-error plot fails to show, at least directly, are the
-effects. To infer the effects from the plot, a reader must perform
-mental math -- either compute the difference or the ratio between pairs
-of means. This mental math is easy enough if the comparisons are between
-individual treatment levels but much harder if the comparisons are
-between pooled sets of treatment levels, for example in a factorial
-experimental design. The mental math that is excessively difficult is
-the reconstruction of some kind of error interval of the contrasts, for
-example the 95\% confidence intervals in Fig. \ref{plots-effect} and it
-is this interval that is necessary for a researcher to infer the range
-of biological consequences that are compatible with the experiment. The
-inclusion of the \emph{p}-values for all pairwise comparisons gives the
-significance level of these contrasts, but of the kinds of summary
-results that we could present (contrasts, error intervals,
-\emph{p}-values), the \emph{p}-values are the least informative.
-
-\subsection{Combining Effects and Modeled mean and CI plots -- an
-Effects and response
-plot.}\label{combining-effects-and-modeled-mean-and-ci-plots-an-effects-and-response-plot.}
-
-If one wants to show both effects and the data, then these can be
-combined.
-
-\begin{figure}
-\centering
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/plots-harrellplot-1.pdf}
-\caption{\label{fig:plots-harrellplot}A pretty good plot}
-\end{figure}
-
-If the means do not have any importance in understanding the results,
-the effects plot can be combined with some kind of a plot summarizing
-the distribution, such as a boxplot.
-
-\begin{figure}
-\centering
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/plots-harrelplot2-1.pdf}
-\caption{\label{fig:plots-harrelplot2}Another pretty good plot}
-\end{figure}
-
-Regardless, the effects plot is the most important component as this is
-the illustration of the story a researcher wants to tell.
-
-\section{Some comments on plot
-components}\label{some-comments-on-plot-components}
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\tightlist
-\item
-  \textbf{Alternatives to barplots make good plots for the supplement,
-  not the main paper}. A prominent trend over the last few years has
-  been the replacement of bar plots with plots that ``show the data'',
-  such as jitter plots or dot plots, or that show summaries of the
-  distribution, such as box plots or violin plots. These plot types were
-  developed for exploratory data analysis, not to communicate the
-  results of experiments. All of these plots fail to communicate the
-  results of the statistical model and, because of this, are inferior to
-  an effects plot, and even a mean-and-error plot, if the mean and error
-  are the modeled values. Box/Violoin/Dot/Jitter plots are a useful
-  supplement to an effects plot, either combined with the effects plot
-  as above, or as a supplementary figure.
-\item
-  Standard error bars, computed from the raw data, can have absurd
-  implications. For example, I sometimes see standard error bars cross
-  \(y=0\) for a response that cannot be negative, such as a count. Even
-  if the standard error bar doesn't cross zero, it is common to see
-  standard error bars that imply (but do not explicitly show) 95\%
-  confidence intervals that cross zero, again for responses that cannot
-  be negative. A standard error bar or confidence interval that crosses
-  zero implies that negative means are compatible with the data. This is
-  an absurd implication for responses that cannot have negative values
-  (or are ``bounded by'' zero). Explicit or implicit error bars that
-  cross zero are especially common for count responses with small means.
-  \emph{If} a researcher plots confidence intervals, these should be
-  computed using a method that avoids absurd implications, such methods
-  include the bootstrap and generalized linear models.
-\item
-  \textbf{Stars add minimal value}. Many researchers add star symbols to
-  a plot indicating the level of significance of a particular paired
-  comparison. An uncommon, but better, alternative would be to add the
-  actual p-value (as above). Adding a p-value (or stars) does
-  communicate model results, and so adds value to a mean-and-error or
-  box/violin/jitter plot. However, much more value would be added by
-  simply reporting an effects plot or a combined effects-and-response
-  plot.
-\end{enumerate}
-
-\section{Working in R}\label{working-in-r-2}
-
-A reasonable goal of any research project should be a script to generate
-the final plots entirely within the R environment and not rely on
-external drawing software to add finishing features. \texttt{ggplot2} is
-one of the major plotting environments in R and the one that seems to
-have the strongest following, especially among new R users.
-\texttt{ggplot2} has the ability to generate extremely personalized and
-finished plots. However, creating a plot with multiple layers (bars,
-lines, error intervals, raw data points, p-values) can often require
-many hours of googling.
-
-\texttt{ggpubr} is an extension to \texttt{ggplot2} (it calls ggplot2
-functions under the hood) and provides many canned functions for
-producing the kinds of ggplots that are published in biological
-journals. With one line of script, a researcher can generate a
-publishable plot that is as good or better than many published plot.
-That said, the means and error intervals used in \texttt{ggpubr} plots
-are the raw and not modeled values, and, consequently, \texttt{ggpubr}
-is not sufficient to generate pretty good plots. It is easy enough to
-add custom error bars to a ggpubr plot.
-
-\subsection{Adding modeled error
-intervals}\label{adding-modeled-error-intervals}
-
-\texttt{ggplot2} and \texttt{ggpubr} compute and plot unpooled error
-intervals (standard error bars and confidence intervals). Plotting the
-modeled error intervals ``shows the model''. \texttt{emmeans} is a
-comprehensive and flexible package for computing modeled standard errors
-and confidence intervals for all of the statistical models covered in
-this text.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{m1 <-}\StringTok{ }\KeywordTok{glm.nb}\NormalTok{(count }\OperatorTok{~}\StringTok{ }\NormalTok{donor, }\DataTypeTok{data=}\NormalTok{exp2d)}
-\NormalTok{emm.m1 <-}\StringTok{ }\KeywordTok{emmeans}\NormalTok{(m1, }\DataTypeTok{specs=}\StringTok{"donor"}\NormalTok{, }\DataTypeTok{type=}\StringTok{"response"}\NormalTok{)}
-\NormalTok{effects.m1 <-}\StringTok{ }\KeywordTok{summary}\NormalTok{(}\KeywordTok{contrast}\NormalTok{(emm.m1, }\DataTypeTok{method=}\StringTok{"revpairwise"}\NormalTok{), }\DataTypeTok{infer=}\KeywordTok{c}\NormalTok{(}\OtherTok{TRUE}\NormalTok{, }\OtherTok{TRUE}\NormalTok{))}
-
-\CommentTok{# make emm.m1 a data.table}
-\NormalTok{emm.m1 <-}\StringTok{ }\KeywordTok{data.table}\NormalTok{(}\KeywordTok{summary}\NormalTok{(emm.m1))}
-\CommentTok{# the y column needs to have the same label as the plotted data}
-\KeywordTok{setnames}\NormalTok{(emm.m1, }\DataTypeTok{old=}\StringTok{"response"}\NormalTok{, }\DataTypeTok{new=}\StringTok{"count"}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
-\subsubsection{Modeled error intervals of the
-effect}\label{modeled-error-intervals-of-the-effect}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{(gg1 <-}\StringTok{ }\KeywordTok{ggdotplot}\NormalTok{(}\DataTypeTok{x=}\StringTok{"contrast"}\NormalTok{, }
-                 \DataTypeTok{y=}\StringTok{"ratio"}\NormalTok{, }
-                 \DataTypeTok{data=}\NormalTok{effects.m1, }
-                 \DataTypeTok{color =} \StringTok{"steelblue"}\NormalTok{,}
-                 \DataTypeTok{fill =} \StringTok{"steelblue"}\NormalTok{,}
-                 \DataTypeTok{size=}\FloatTok{0.5}\NormalTok{) }\OperatorTok{+}
-\StringTok{   }
-\StringTok{  }\CommentTok{# add either the SE or CI, contained in effects.m1}
-\StringTok{  }\KeywordTok{geom_errorbar}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{contrast, }\DataTypeTok{ymin=}\NormalTok{asymp.LCL, }\DataTypeTok{ymax=}\NormalTok{asymp.UCL),}
-                \DataTypeTok{width=}\FloatTok{0.15}\NormalTok{, }\DataTypeTok{color=}\StringTok{"steelblue"}\NormalTok{) }\OperatorTok{+}
-\StringTok{  }\KeywordTok{ylab}\NormalTok{(}\StringTok{"Effect ratio"}\NormalTok{) }\OperatorTok{+}
-\StringTok{  }\KeywordTok{geom_hline}\NormalTok{(}\DataTypeTok{yintercept=}\DecValTok{1}\NormalTok{, }\DataTypeTok{linetype =} \DecValTok{2}\NormalTok{) }\OperatorTok{+}
-\StringTok{  }\KeywordTok{coord_flip}\NormalTok{() }\OperatorTok{+}\StringTok{ }
-\StringTok{  }
-\StringTok{  }\OtherTok{NULL}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-24-1.pdf}
-
-\subsubsection{Modeled error intervals of the
-mean}\label{modeled-error-intervals-of-the-mean}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{(gg2 <-}\StringTok{ }\KeywordTok{ggbarplot}\NormalTok{(}\DataTypeTok{x=}\StringTok{"donor"}\NormalTok{, }
-          \DataTypeTok{y=}\StringTok{"count"}\NormalTok{, }
-          \DataTypeTok{data=}\NormalTok{exp2d,}
-          \DataTypeTok{add=}\KeywordTok{c}\NormalTok{(}\StringTok{"mean"}\NormalTok{, }\StringTok{"jitter"}\NormalTok{),}
-          \DataTypeTok{color =} \StringTok{"darkgray"}\NormalTok{,}
-          \DataTypeTok{fill =} \StringTok{"steelblue"}\NormalTok{,}
-          \DataTypeTok{size=}\FloatTok{0.5}\NormalTok{) }\OperatorTok{+}
-\StringTok{  }\KeywordTok{ylab}\NormalTok{(}\StringTok{"Neutrophil count"}\NormalTok{) }\OperatorTok{+}
-\StringTok{  }
-\StringTok{  }\CommentTok{# emm.m1 contains the SE and 95% CIs. Either could be plotted. Here I plot the CI}
-\StringTok{  }\KeywordTok{geom_errorbar}\NormalTok{(}\DataTypeTok{data=}\NormalTok{emm.m1, }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{ymin=}\NormalTok{asymp.LCL, }\DataTypeTok{ymax=}\NormalTok{asymp.UCL), }\DataTypeTok{width=}\FloatTok{0.1}\NormalTok{) }\OperatorTok{+}
-\StringTok{  }\OtherTok{NULL}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-25-1.pdf}
-
-Note that the CIs are asymmetric about the mean (and these modeled CIs
-will never include negative values for count data).
-
-\subsubsection{Combining effects and response
-plots}\label{combining-effects-and-response-plots}
-
-The ggplots are combined using the package \texttt{cowplot}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{gg_top <-}\StringTok{ }\NormalTok{gg1 }\OperatorTok{+}\StringTok{ }\KeywordTok{scale_y_continuous}\NormalTok{(}\DataTypeTok{position=}\StringTok{"right"}\NormalTok{)}
-\KeywordTok{plot_grid}\NormalTok{(gg_top, gg2, }\DataTypeTok{nrow=}\DecValTok{2}\NormalTok{, }\DataTypeTok{align =} \StringTok{"v"}\NormalTok{, }\DataTypeTok{rel_heights =} \KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{1}\NormalTok{))}
-\end{Highlighting}
-\end{Shaded}
-
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-26-1.pdf}
-
-\subsection{Adding p-values}\label{adding-p-values}
-
-p-values are added to the base ggpubr plot using
-\texttt{stat\_compare\_means}. The pairs to compare are specified with
-\texttt{comparison\ =}. The model to compute the p-values is ``t.test''.
-\textbf{It is important to know what exactly is being computed when
-analyzing data and reporting results} and ``t test'' is not sufficient
-to know this. The t-test could be the classic t-test or a Welch test
-(which adjusts the standard error to account for heterogenity in
-variance between groups). In this example, there are multiple tests and
-the standard error could be the pooled estimate estimated from the
-linear model, or a pairwise estimate. And, given the multiple
-comparisons, the p-values could be adjusted or not. These kinds of
-questions can be checked with a function's help page.
-\texttt{?stat\_compare\_means} doesn't answer these questions but
-suggests \texttt{compare\_means}, which also doesn't answer these
-questions. The script below has checks to see what p-values the function
-is returning.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{pairs_i <-}\StringTok{ }\KeywordTok{list}\NormalTok{(}\KeywordTok{c}\NormalTok{(}\StringTok{"sox10"}\NormalTok{, }\StringTok{"iapMO"}\NormalTok{), }\KeywordTok{c}\NormalTok{(}\StringTok{"sox10"}\NormalTok{, }\StringTok{"GF"}\NormalTok{), }\KeywordTok{c}\NormalTok{(}\StringTok{"sox10"}\NormalTok{, }\StringTok{"WT"}\NormalTok{))}
-\KeywordTok{ggbarplot}\NormalTok{(}\DataTypeTok{x=}\StringTok{"donor"}\NormalTok{, }
-          \DataTypeTok{y=}\StringTok{"count"}\NormalTok{, }
-          \DataTypeTok{data=}\NormalTok{exp2d,}
-          \DataTypeTok{add=}\KeywordTok{c}\NormalTok{(}\StringTok{"mean_se"}\NormalTok{, }\StringTok{"jitter"}\NormalTok{),}
-          \DataTypeTok{color =} \StringTok{"black"}\NormalTok{,}
-          \DataTypeTok{fill =} \StringTok{"steelblue"}\NormalTok{,}
-          \DataTypeTok{size=}\FloatTok{0.5}\NormalTok{) }\OperatorTok{+}
-\StringTok{  }\KeywordTok{stat_compare_means}\NormalTok{(}\DataTypeTok{method =} \StringTok{"t.test"}\NormalTok{, }\DataTypeTok{comparisons=}\NormalTok{pairs_i) }\OperatorTok{+}
-\StringTok{  }\KeywordTok{ylab}\NormalTok{(}\StringTok{"Neutrophil count"}\NormalTok{) }\OperatorTok{+}
-\StringTok{  }\OtherTok{NULL}
-\end{Highlighting}
-\end{Shaded}
-
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-27-1.pdf}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{# checks on the p-value}
-\CommentTok{# t-tests using SE pooled over all four groups}
-\NormalTok{check_it <-}\StringTok{ }\OtherTok{FALSE}
-\ControlFlowTok{if}\NormalTok{(check_it}\OperatorTok{==}\OtherTok{TRUE}\NormalTok{)\{}
-\NormalTok{  m1 <-}\StringTok{ }\KeywordTok{lm}\NormalTok{(count}\OperatorTok{~}\NormalTok{donor, }\DataTypeTok{data=}\NormalTok{exp2d)}
-\NormalTok{  m1.emm <-}\StringTok{ }\KeywordTok{emmeans}\NormalTok{(m1, }\DataTypeTok{specs=}\StringTok{"donor"}\NormalTok{)}
-  \KeywordTok{contrast}\NormalTok{(m1.emm, }\DataTypeTok{method=}\StringTok{"trt.vs.ctrl"}\NormalTok{, }\DataTypeTok{ref=}\DecValTok{3}\NormalTok{, }\DataTypeTok{adjust=}\StringTok{"none"}\NormalTok{) }\CommentTok{# not pooled SE}
-  
-  \KeywordTok{pairwise.t.test}\NormalTok{(exp2d}\OperatorTok{$}\NormalTok{count, exp2d}\OperatorTok{$}\NormalTok{donor, }\DataTypeTok{p.adjust.method=}\StringTok{"none"}\NormalTok{, }\DataTypeTok{pool.sd=}\OtherTok{FALSE}\NormalTok{) }\CommentTok{# this matches}
-  \CommentTok{# compare}
-  \KeywordTok{t.test}\NormalTok{(count}\OperatorTok{~}\NormalTok{donor, }\DataTypeTok{data=}\NormalTok{exp2d[donor}\OperatorTok{==}\StringTok{"WT"} \OperatorTok{|}\StringTok{ }\NormalTok{donor}\OperatorTok{==}\StringTok{"sox10"}\NormalTok{]) }\CommentTok{# matches, this is Welch t}
-  \KeywordTok{t.test}\NormalTok{(count}\OperatorTok{~}\NormalTok{donor, }\DataTypeTok{data=}\NormalTok{exp2d[donor}\OperatorTok{==}\StringTok{"WT"} \OperatorTok{|}\StringTok{ }\NormalTok{donor}\OperatorTok{==}\StringTok{"sox10"}\NormalTok{], }\DataTypeTok{var.equal=}\OtherTok{TRUE}\NormalTok{)}
-\NormalTok{\}}
-\end{Highlighting}
-\end{Shaded}
-
-So the p-values returned by
-\texttt{stat\_compare\_means(method="t.test")} are computed from
-independent Welch t-tests.
-
-\subsection{Adding custom p-values}\label{adding-custom-p-values}
-
-\subsection{Plotting two factors}\label{plotting-two-factors}
-
-The data are from figure 6d. This solution requires computing either the
-raw or modeled means and errors and adding these to a base ggpubr plot.
-Many packages have summary statistics functions for means, standard
-deviations, and standard errors. This is easily done by simply computing
-the statistics using data.table functionality.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{# compute raw statistics}
-\CommentTok{# enclosing the line within parentheses prints the result to the console!}
-\NormalTok{(exp6d.raw <-}\StringTok{ }\NormalTok{exp6d[}\OperatorTok{!}\KeywordTok{is.na}\NormalTok{(count), .(}\DataTypeTok{count=}\KeywordTok{mean}\NormalTok{(count),}
-                       \DataTypeTok{se=}\KeywordTok{sd}\NormalTok{(count)}\OperatorTok{/}\KeywordTok{sqrt}\NormalTok{(.N)),}
-                   \DataTypeTok{by=}\NormalTok{.(treatment, strain)]}
-\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-##     treatment strain    count       se
-## 1:    control     WT 13.08333 2.310904
-## 2:    control  sox10 45.61538 6.259903
-## 3: transplant     WT 16.35714 2.259552
-## 4: transplant  sox10 18.33333 4.536274
-\end{verbatim}
-
-Modeled means, standard errors, and confidence limits are conveniently
-computed using the \texttt{emmeans} (``estimated marginal means'')
-function from the emmeans package.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{# modeled statsistics}
-\NormalTok{m1 <-}\StringTok{ }\KeywordTok{glm.nb}\NormalTok{(count }\OperatorTok{~}\StringTok{ }\NormalTok{treatment}\OperatorTok{*}\NormalTok{strain, }\DataTypeTok{data=}\NormalTok{exp6d)}
-\NormalTok{(m1.emm <-}\StringTok{ }\KeywordTok{data.table}\NormalTok{(}\KeywordTok{summary}\NormalTok{(}\KeywordTok{emmeans}\NormalTok{(m1, }\DataTypeTok{specs=}\KeywordTok{c}\NormalTok{(}\StringTok{"treatment"}\NormalTok{, }\StringTok{"strain"}\NormalTok{), }\DataTypeTok{type=}\StringTok{"response"}\NormalTok{))))}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-##     treatment strain response       SE  df asymp.LCL asymp.UCL
-## 1:    control     WT 13.08333 2.032161 Inf  9.649528  17.73907
-## 2: transplant     WT 16.35714 2.289208 Inf 12.433129  21.51961
-## 3:    control  sox10 45.61538 6.132974 Inf 35.048350  59.36837
-## 4: transplant  sox10 18.33333 3.871911 Inf 12.119140  27.73391
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{# change column "response" to "count" for the ggplot}
-\KeywordTok{setnames}\NormalTok{(m1.emm, }\DataTypeTok{old=}\StringTok{"response"}\NormalTok{, }\DataTypeTok{new=}\StringTok{"count"}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{#pairs_i <- list(c("sox10", "iapMO"), c("sox10", "GF"), c("sox10", "WT"))}
-\NormalTok{pd =}\StringTok{ }\KeywordTok{position_dodge}\NormalTok{(}\FloatTok{0.7}\NormalTok{)}
-\KeywordTok{ggbarplot}\NormalTok{(}\DataTypeTok{x=}\StringTok{"treatment"}\NormalTok{, }
-          \DataTypeTok{y=}\StringTok{"count"}\NormalTok{,}
-          \DataTypeTok{data=}\NormalTok{exp6d,}
-          \DataTypeTok{add=}\KeywordTok{c}\NormalTok{(}\StringTok{"mean"}\NormalTok{),}
-          \DataTypeTok{color =} \StringTok{"black"}\NormalTok{,}
-          \DataTypeTok{fill =} \StringTok{"strain"}\NormalTok{,}
-          \DataTypeTok{palette =} \StringTok{"jco"}\NormalTok{,}
-          \DataTypeTok{position =}\NormalTok{ pd,}
-          \DataTypeTok{size=}\FloatTok{0.5}\NormalTok{) }\OperatorTok{+}
-\StringTok{  }\CommentTok{#stat_compare_means(method = "t.test", comparisons=pairs_i) +}
-\StringTok{  }\KeywordTok{ylab}\NormalTok{(}\StringTok{"Neutrophil count"}\NormalTok{) }\OperatorTok{+}
-\StringTok{  }\CommentTok{# geom_dotplot(aes(fill=strain),}
-\StringTok{  }\CommentTok{#              binaxis='y', stackdir='center', position=pd, show.legend=FALSE,}
-\StringTok{  }\CommentTok{#              color="grey") +}
-\StringTok{  }\KeywordTok{geom_point}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{fill=}\NormalTok{strain), }\DataTypeTok{position=}\KeywordTok{position_jitterdodge}\NormalTok{(}\DataTypeTok{jitter.width=}\FloatTok{0.2}\NormalTok{), }\DataTypeTok{show.legend=}\OtherTok{FALSE}\NormalTok{, }\DataTypeTok{alpha=}\FloatTok{0.5}\NormalTok{) }\OperatorTok{+}
-\StringTok{  }\KeywordTok{geom_errorbar}\NormalTok{(}\DataTypeTok{data=}\NormalTok{m1.emm, }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{treatment, }\DataTypeTok{ymin=}\NormalTok{asymp.LCL, }\DataTypeTok{ymax=}\NormalTok{asymp.UCL, }\DataTypeTok{group=}\NormalTok{strain),}
-                \DataTypeTok{position=}\NormalTok{pd, }\DataTypeTok{width=}\FloatTok{0.1}\NormalTok{) }\OperatorTok{+}
-\StringTok{  }\OtherTok{NULL}
-\end{Highlighting}
-\end{Shaded}
-
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-30-1.pdf}
-
-\subsubsection{Three factors}\label{three-factors}
-
 \chapter*{\texorpdfstring{Part IV: More than one \(X\) -- Multivariable
 Models}{Part IV: More than one X -- Multivariable Models}}\label{part-iv-more-than-one-x-multivariable-models}
 \addcontentsline{toc}{chapter}{Part IV: More than one \(X\) --
@@ -6032,7 +5685,7 @@ residuals is
 ## `stat_bindot()` using `bins = 30`. Pick better value with `binwidth`.
 \end{verbatim}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-31-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-26-1.pdf}
 
 \begin{verbatim}
 ##              Estimate Std. Error   t value     Pr(>|t|)
@@ -6730,7 +6383,7 @@ scientific model.
   term.
 \end{enumerate}
 
-\section{Working in R}\label{working-in-r-3}
+\section{Working in R}\label{working-in-r-2}
 
 A \textbf{full-factorial} model with two factors is specified in the
 model formula as \texttt{y\ \textasciitilde{}\ A*B} where A is the first
@@ -7766,7 +7419,7 @@ effects}\label{back-to-interpretation-of-main-effects}
 the same if the design is
 balanced.}\label{the-anova-tables-for-type-i-ii-and-iii-sum-of-squares-are-the-same-if-the-design-is-balanced.}
 
-\section{Working in R}\label{working-in-r-4}
+\section{Working in R}\label{working-in-r-3}
 
 \subsection{Type I sum of squares in
 R}\label{type-i-sum-of-squares-in-r}
@@ -8627,7 +8280,7 @@ the \(RR_j < 1\).
   \(b_{Control} + b_{Infected\_HG}\)). Check and see if this works.
 \end{enumerate}
 
-\section{Working in R}\label{working-in-r-5}
+\section{Working in R}\label{working-in-r-4}
 
 Source publication: Benesh, D. P., \& Kalbe, M. (2016). Experimental
 parasite community ecology: intraspecific variation in a large tapeworm
@@ -8671,7 +8324,7 @@ statistic is \(df\).
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-33-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-28-1.pdf}
 
 \begin{verbatim}
 ## 
@@ -9241,7 +8894,7 @@ has the consequence that the \textbf{differences} in parameter estimates
 among sites are shrunk toward zero. A consequence of this shrinkage is
 that the variance of the intercept estimates or of the slope estimates
 is smaller than that in the no-pooling analysis. Figure
-\ref{fig:lmm-partialpoolin} shows this shrinkage effect using fake data
+\ref{fig:lmm-partialpooling} shows this shrinkage effect using fake data
 simulating the seedling experiment.
 
 \begin{figure}
@@ -9367,7 +9020,7 @@ Re-imagining the design as a single, linear mixed model with each gene
 modeled as a block would lead to a rank order in which the biggest
 measured effects more closely approximate the true effects.
 
-\section{Working in R}\label{working-in-r-6}
+\section{Working in R}\label{working-in-r-5}
 
 The major function for working with linear mixed models is
 \texttt{lmer()} from the lme4 package. An older, and still sometimes
