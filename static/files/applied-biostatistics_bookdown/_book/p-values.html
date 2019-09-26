@@ -356,6 +356,17 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <h1><span class="header-section-number">Chapter 6</span> P-values</h1>
 <div id="p-values-1" class="section level2">
 <h2><span class="header-section-number">6.1</span> <span class="math inline">\(p\)</span>-values</h2>
+<p>Let’s use the vole data to introduce the <em>p</em>-value. The vole data were archived in a format that requires some cleaning before it can be analyzed. The “lifespan (days)” column contains the lifespan for all three treatment levels, that is, the lifespan values are “stacked” or in “long” format. What is unusual is that there is no “treatment” column specifying the three treatment levels (control, vitamin E, vitamin C). Instead there are control, vitamin E, and vitamin C columns that contain a 1, if the lifespan value belongs to that treatment, and a NULL value if not. On import, the NULL value is replaced with NA, to indicate “missing”. In order to analyze the data, the three treatment assignment columns need to be combined into a single “treatment” column.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">folder &lt;-<span class="st"> &quot;Data from Deleterious consequences of antioxidant supplementation on lifespan in a wild-derived mammal&quot;</span>
+filename &lt;-<span class="st"> &quot;RSBL-2013-0432 vole data.xlsx&quot;</span>
+file_path &lt;-<span class="st"> </span><span class="kw">here</span>(data_path, folder, filename)
+vole &lt;-<span class="st"> </span><span class="kw">data.table</span>(<span class="kw">read_excel</span>(file_path, <span class="dt">sheet=</span><span class="st">&quot;COLD VOLES LIFESPAN&quot;</span>, <span class="dt">range=</span><span class="st">&quot;a2:d98&quot;</span>))
+<span class="kw">setnames</span>(vole, <span class="dt">old=</span><span class="kw">colnames</span>(vole), <span class="dt">new=</span><span class="kw">c</span>(<span class="st">&quot;lifespan&quot;</span>, <span class="st">&quot;control&quot;</span>, <span class="st">&quot;vitamin_E&quot;</span>, <span class="st">&quot;vitamin_C&quot;</span>))
+<span class="co"># not sure why ifelse fails so this is alternative</span>
+vole[control<span class="op">==</span><span class="dv">1</span>, treatment<span class="op">:</span><span class="er">=</span><span class="st">&quot;control&quot;</span>]
+vole[vitamin_C<span class="op">==</span><span class="dv">1</span>, treatment<span class="op">:</span><span class="er">=</span><span class="st">&quot;vitamin_C&quot;</span>]
+vole[vitamin_E<span class="op">==</span><span class="dv">1</span>, treatment<span class="op">:</span><span class="er">=</span><span class="st">&quot;vitamin_E&quot;</span>]</code></pre></div>
+<p>A typical analysis would compare the means of the two supplement treatment levels with the control treatment level and use a <em>p</em>-value as evidence of “an effect”.</p>
 <table>
 <thead>
 <tr class="header">
@@ -371,16 +382,6 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 </thead>
 <tbody>
 <tr class="odd">
-<td align="left">vitamin_E - control</td>
-<td align="right">-89.9</td>
-<td align="right">52</td>
-<td align="right">93</td>
-<td align="right">-194.1</td>
-<td align="right">14.3</td>
-<td align="right">-1.7</td>
-<td align="right">0.090</td>
-</tr>
-<tr class="even">
 <td align="left">vitamin_C - control</td>
 <td align="right">-115.1</td>
 <td align="right">54</td>
@@ -390,19 +391,29 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <td align="right">-2.1</td>
 <td align="right">0.037</td>
 </tr>
+<tr class="even">
+<td align="left">vitamin_E - control</td>
+<td align="right">-89.9</td>
+<td align="right">52</td>
+<td align="right">93</td>
+<td align="right">-194.1</td>
+<td align="right">14.3</td>
+<td align="right">-1.7</td>
+<td align="right">0.090</td>
+</tr>
 <tr class="odd">
-<td align="left">vitamin_C - vitamin_E</td>
-<td align="right">-25.2</td>
+<td align="left">vitamin_E - vitamin_C</td>
+<td align="right">25.2</td>
 <td align="right">65</td>
 <td align="right">93</td>
-<td align="right">-154.1</td>
-<td align="right">103.8</td>
-<td align="right">-0.4</td>
+<td align="right">-103.8</td>
+<td align="right">154.1</td>
+<td align="right">0.4</td>
 <td align="right">0.699</td>
 </tr>
 </tbody>
 </table>
-<p>Let’s use the vole data to introduce the <em>p</em>-value. The table above gives a SE, <span class="math inline">\(t\)</span> and <em>p</em>-value for each pairwise contrast among the three treatment levels. A typical report (one with several misconceptions) might read</p>
+<p>The table above gives the SE, <span class="math inline">\(t\)</span> and <em>p</em>-value for each pairwise contrast (difference in means) among the three treatment levels. A typical report (one with several misconceptions) might read</p>
 <p>“We found a significant effect of Vitamin C (<span class="math inline">\(t=\)</span> -2.1, <span class="math inline">\(p=\)</span> 0.037) on lifespan, but no effect of vitamin E (<span class="math inline">\(t=\)</span> -1.7, <span class="math inline">\(p=\)</span> 0.09) on lifespan.”</p>
 <p>A <span class="math inline">\(p\)</span> value <em>is a continuous measure of evidence against the null</em>. As long as the data approximate the assumptions of the null hypothesis pretty well, a very small <em>p</em>-value, such as 0.002 or 0.0005, is pretty good evidence against the null hypothesis – but does not mean “an effect exists”. To show an effect exists, we should have small <em>p</em>-values in multiple replicates <em>and</em> we should rigorously probe the hypothesis with different experiments that challenge the hypothesis in different ways. A small <span class="math inline">\(p\)</span> is evidence for a research program to move forward with replication and probing. A big <em>p</em>-value, say 0.22 or 0.76, is pretty weak evidence against the null, but does not mean “there is no effect.” If an experiment is well designed, a big <span class="math inline">\(p\)</span> could suggest abandoning any hypotheses that predict biologically consequential effects. Unfortunately, a big <span class="math inline">\(p\)</span> could also reflect a weak experimental design. Between small and big <span class="math inline">\(p\)</span> values, such as 0.009 or 0.011, problems arise. These intermediate <em>p</em>-values beg for replication. A major problem of inference using <span class="math inline">\(p\)</span> values is that there is no sharp boundaries between these three regions. Instead biologists typically use the <span class="math inline">\(p &lt; 0.05\)</span> as a sharp boundary to declare that an effect exists or not.</p>
 <p>Okay. so what <em>is</em> a <em>p</em>-value? When we do a <em>t</em>-test, we get a <em>p</em>-value. There are several ways to think about this probability. The most compact way is <span class="math inline">\(P(data | null)\)</span>, which is literally read as the probability of the data given the null (or “conditional” on the null), but is really short for <em>the probability of the data, or something more extreme than the data, given that the null hypothesis is true</em>. The “probability of the data” is kinda vague. More specifically, we mean the probability of some statistic about the data such as the difference in means between group A and group B or the <em>t</em>-value associated with this difference. So, a bit more formally, the probability returned in a <em>t</em>-test is <span class="math inline">\(\mathrm{prob}(t \ge t_{obs} | H_0)\)</span>. This is the long run frequency of observing a <em>t</em>-value as big or bigger than the observed <em>t</em>-value (the one you actually got with your data) if the null is true. Let’s parse this into “long run frequency of observing a <em>t</em>-value as big or bigger than the observed <em>t</em>-value” and “null is true”.</p>

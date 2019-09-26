@@ -2364,22 +2364,52 @@ each variable) instead of the product of a deviation with itself.
 
 \section{\texorpdfstring{\(p\)-values}{p-values}}\label{p-values-1}
 
+Let's use the vole data to introduce the \emph{p}-value. The vole data
+were archived in a format that requires some cleaning before it can be
+analyzed. The ``lifespan (days)'' column contains the lifespan for all
+three treatment levels, that is, the lifespan values are ``stacked'' or
+in ``long'' format. What is unusual is that there is no ``treatment''
+column specifying the three treatment levels (control, vitamin E,
+vitamin C). Instead there are control, vitamin E, and vitamin C columns
+that contain a 1, if the lifespan value belongs to that treatment, and a
+NULL value if not. On import, the NULL value is replaced with NA, to
+indicate ``missing''. In order to analyze the data, the three treatment
+assignment columns need to be combined into a single ``treatment''
+column.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{folder <-}\StringTok{ "Data from Deleterious consequences of antioxidant supplementation on lifespan in a wild-derived mammal"}
+\NormalTok{filename <-}\StringTok{ "RSBL-2013-0432 vole data.xlsx"}
+\NormalTok{file_path <-}\StringTok{ }\KeywordTok{here}\NormalTok{(data_path, folder, filename)}
+\NormalTok{vole <-}\StringTok{ }\KeywordTok{data.table}\NormalTok{(}\KeywordTok{read_excel}\NormalTok{(file_path, }\DataTypeTok{sheet=}\StringTok{"COLD VOLES LIFESPAN"}\NormalTok{, }\DataTypeTok{range=}\StringTok{"a2:d98"}\NormalTok{))}
+\KeywordTok{setnames}\NormalTok{(vole, }\DataTypeTok{old=}\KeywordTok{colnames}\NormalTok{(vole), }\DataTypeTok{new=}\KeywordTok{c}\NormalTok{(}\StringTok{"lifespan"}\NormalTok{, }\StringTok{"control"}\NormalTok{, }\StringTok{"vitamin_E"}\NormalTok{, }\StringTok{"vitamin_C"}\NormalTok{))}
+\CommentTok{# not sure why ifelse fails so this is alternative}
+\NormalTok{vole[control}\OperatorTok{==}\DecValTok{1}\NormalTok{, treatment}\OperatorTok{:}\ErrorTok{=}\StringTok{"control"}\NormalTok{]}
+\NormalTok{vole[vitamin_C}\OperatorTok{==}\DecValTok{1}\NormalTok{, treatment}\OperatorTok{:}\ErrorTok{=}\StringTok{"vitamin_C"}\NormalTok{]}
+\NormalTok{vole[vitamin_E}\OperatorTok{==}\DecValTok{1}\NormalTok{, treatment}\OperatorTok{:}\ErrorTok{=}\StringTok{"vitamin_E"}\NormalTok{]}
+\end{Highlighting}
+\end{Shaded}
+
+A typical analysis would compare the means of the two supplement
+treatment levels with the control treatment level and use a
+\emph{p}-value as evidence of ``an effect''.
+
 \begin{tabular}{l|r|r|r|r|r|r|r}
 \hline
 contrast & estimate & SE & df & lower.CL & upper.CL & t.ratio & p.value\\
 \hline
-vitamin\_E - control & -89.9 & 52 & 93 & -194.1 & 14.3 & -1.7 & 0.090\\
-\hline
 vitamin\_C - control & -115.1 & 54 & 93 & -223.2 & -6.9 & -2.1 & 0.037\\
 \hline
-vitamin\_C - vitamin\_E & -25.2 & 65 & 93 & -154.1 & 103.8 & -0.4 & 0.699\\
+vitamin\_E - control & -89.9 & 52 & 93 & -194.1 & 14.3 & -1.7 & 0.090\\
+\hline
+vitamin\_E - vitamin\_C & 25.2 & 65 & 93 & -103.8 & 154.1 & 0.4 & 0.699\\
 \hline
 \end{tabular}
 
-Let's use the vole data to introduce the \emph{p}-value. The table above
-gives a SE, \(t\) and \emph{p}-value for each pairwise contrast among
-the three treatment levels. A typical report (one with several
-misconceptions) might read
+The table above gives the SE, \(t\) and \emph{p}-value for each pairwise
+contrast (difference in means) among the three treatment levels. A
+typical report (one with several misconceptions) might read
 
 ``We found a significant effect of Vitamin C (\(t=\) -2.1, \(p=\) 0.037)
 on lifespan, but no effect of vitamin E (\(t=\) -1.7, \(p=\) 0.09) on
