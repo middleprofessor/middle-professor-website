@@ -125,7 +125,7 @@
   \postauthor{\par}
       \predate{\centering\large\emph}
   \postdate{\par}
-    \date{Draft: 2019-09-25}
+    \date{Draft: 2019-09-27}
 
 \usepackage{booktabs}
 \usepackage{amsthm}
@@ -2684,7 +2684,7 @@ error. Standardizing by a standard deviation (remember that a standard
 error is an estimate of the statistic's standard deviation) removes the
 effect of sample variability on the distribution. A
 \emph{t}-distribution, then, is only a function of sample size (or
-``degrees of freedom''). As \(n\) increases a \(t\) distribution becomes
+``degrees of freedom''). As \(n\) increases a \(t\) distribution
 converges on the standard, normal distribution.
 
 The difference between the mean of the vitamin\_E treatment and the
@@ -2712,26 +2712,60 @@ probability of a \(t\) more extreme than the observed value, and \(t\)
 can be more extreme in the negative direction and in the positive
 direction. We can simulate this with a finite, instead of infinite, null
 distribution using the t-distribution instead of the distribution of
-mean differences, as above. I hide the script, but its the same as
-above, except that the \emph{t}-value is computed for each simulated
-experiment and not just the difference in means.
+mean differences, as above. I show the script, but don't just cut and
+paste the code. Spend time thinking about what the each line does.
+Explore it by copying parts and pasting into console.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{set.seed}\NormalTok{(}\DecValTok{1}\NormalTok{)}
+\NormalTok{n_iter <-}\StringTok{ }\DecValTok{10}\OperatorTok{^}\DecValTok{4} \CommentTok{# number of iterations}
+\NormalTok{mu <-}\StringTok{ }\KeywordTok{mean}\NormalTok{(vole[treatment}\OperatorTok{==}\StringTok{'control'}\NormalTok{, lifespan]) }
+\NormalTok{sigma <-}\StringTok{ }\KeywordTok{sd}\NormalTok{(vole[treatment}\OperatorTok{==}\StringTok{'control'}\NormalTok{, lifespan])}
+\NormalTok{n <-}\StringTok{ }\KeywordTok{nrow}\NormalTok{((vole[treatment}\OperatorTok{==}\StringTok{'control'}\NormalTok{,]))}
+\NormalTok{sample1 <-}\StringTok{ }\KeywordTok{matrix}\NormalTok{(}\KeywordTok{rnorm}\NormalTok{(n}\OperatorTok{*}\NormalTok{n_iter, }\DataTypeTok{mean=}\NormalTok{mu, }\DataTypeTok{sd=}\NormalTok{sigma), }\DataTypeTok{nrow=}\NormalTok{n) }\CommentTok{# 100,000 samples}
+\NormalTok{sample2 <-}\StringTok{ }\KeywordTok{matrix}\NormalTok{(}\KeywordTok{rnorm}\NormalTok{(n}\OperatorTok{*}\NormalTok{n_iter, }\DataTypeTok{mean=}\NormalTok{mu, }\DataTypeTok{sd=}\NormalTok{sigma), }\DataTypeTok{nrow=}\NormalTok{n) }\CommentTok{# 100,000 samples}
+
+\CommentTok{#way no. 1 - compute the t-tests manually}
+\NormalTok{mean_diffs <-}\StringTok{ }\KeywordTok{apply}\NormalTok{(sample2, }\DecValTok{2}\NormalTok{, mean) }\OperatorTok{-}\StringTok{ }\KeywordTok{apply}\NormalTok{(sample1, }\DecValTok{2}\NormalTok{, mean) }\CommentTok{# what is the apply function returning?}
+\NormalTok{se_mean_diffs <-}\StringTok{ }\KeywordTok{sqrt}\NormalTok{(}\KeywordTok{apply}\NormalTok{(sample2, }\DecValTok{2}\NormalTok{, sd)}\OperatorTok{^}\DecValTok{2}\OperatorTok{/}\NormalTok{n }\OperatorTok{+}\StringTok{ }\KeywordTok{apply}\NormalTok{(sample1, }\DecValTok{2}\NormalTok{, sd)}\OperatorTok{^}\DecValTok{2}\OperatorTok{/}\NormalTok{n)}
+\NormalTok{t_dis <-}\StringTok{ }\NormalTok{mean_diffs}\OperatorTok{/}\NormalTok{se_mean_diffs}
+
+\CommentTok{#way no.2 - compute the t-tests using the base R function t.test}
+\CommentTok{# rbind stacks sample1 under sample2. I used this order to be consistent with}
+\CommentTok{# t.test function}
+\NormalTok{t_dis2 <-}\StringTok{ }\KeywordTok{apply}\NormalTok{(}\KeywordTok{rbind}\NormalTok{(sample2, sample1), }\DecValTok{2}\NormalTok{, }\ControlFlowTok{function}\NormalTok{(x) }
+\NormalTok{  \{}\KeywordTok{t.test}\NormalTok{(x[}\DecValTok{1}\OperatorTok{:}\NormalTok{n], x[(n}\OperatorTok{+}\DecValTok{1}\NormalTok{)}\OperatorTok{:}\NormalTok{(}\DecValTok{2}\OperatorTok{*}\NormalTok{n)], }\DataTypeTok{var.equal=}\OtherTok{TRUE}\NormalTok{)}\OperatorTok{$}\NormalTok{statistic\})}
+\CommentTok{# confirm that t_dis = t_dis2}
+
+\CommentTok{# plot the null distribution of t-values}
+\KeywordTok{qplot}\NormalTok{(t_dis)}
+\end{Highlighting}
+\end{Shaded}
 
 \begin{figure}
 \centering
 \includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/null-distribution-t-1.pdf}
 \caption{\label{fig:null-distribution-t}Null distribution of t-values. The
-simulation generated 100,000 t-tests with a true null.}
+simulation generated 10,000 t-tests with a true null.}
 \end{figure}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# what is the p-value?}
+\NormalTok{count <-}\StringTok{ }\KeywordTok{sum}\NormalTok{(}\KeywordTok{abs}\NormalTok{(t_dis) }\OperatorTok{>=}\StringTok{ }\KeywordTok{abs}\NormalTok{(ttest.E}\OperatorTok{$}\NormalTok{statistic)) }\OperatorTok{+}\StringTok{ }\DecValTok{1}
+\NormalTok{p_vitamin_E <-}\StringTok{ }\NormalTok{count}\OperatorTok{/}\NormalTok{(n_iter }\OperatorTok{+}\StringTok{ }\DecValTok{1}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
 
 Hey that looks pretty good! A \(p\) value can be computed by counting
 the number of simulated \emph{t}-values, \emph{including the observed
 value}, that are more extreme (in either the positive or negative
 direction) than the observed \(t\). Including the observed \(t\), there
-are 10904 values that are more extreme than that observed. An
-approximate measure of \(p\) is this count divided by 100,001 (why is 1
-added to the denominator?), which is 0.1090389. This simulation-based
-\emph{p}-value is very (very!) close to that computed from the observed
-\emph{t}-test.
+are 1015 values that are more extreme than that observed. An approximate
+measure of \(p\) is this count divided by 100,001 (why is 1 added to the
+denominator?), which is 0.1014899. This simulation-based \emph{p}-value
+is very (very!) close to that computed from the observed \emph{t}-test.
 
 \subsection{P-values from the perspective of
 permutation}\label{p-values-from-the-perspective-of-permutation}
