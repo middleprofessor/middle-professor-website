@@ -124,8 +124,12 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="2.2.1" data-path="data-importing-and-saving-data.html"><a href="data-importing-and-saving-data.html#excel-file"><i class="fa fa-check"></i><b>2.2.1</b> Excel File</a></li>
 <li class="chapter" data-level="2.2.2" data-path="data-importing-and-saving-data.html"><a href="data-importing-and-saving-data.html#text-file"><i class="fa fa-check"></i><b>2.2.2</b> Text File</a></li>
 </ul></li>
-<li class="chapter" data-level="2.3" data-path="data-importing-and-saving-data.html"><a href="data-importing-and-saving-data.html#saving-data"><i class="fa fa-check"></i><b>2.3</b> Saving Data</a></li>
-<li class="chapter" data-level="2.4" data-path="data-importing-and-saving-data.html"><a href="data-importing-and-saving-data.html#problems"><i class="fa fa-check"></i><b>2.4</b> Problems</a></li>
+<li class="chapter" data-level="2.3" data-path="data-importing-and-saving-data.html"><a href="data-importing-and-saving-data.html#tidying-data"><i class="fa fa-check"></i><b>2.3</b> Tidying Data</a><ul>
+<li class="chapter" data-level="2.3.1" data-path="data-importing-and-saving-data.html"><a href="data-importing-and-saving-data.html#wide-to-long"><i class="fa fa-check"></i><b>2.3.1</b> Wide to long</a></li>
+<li class="chapter" data-level="2.3.2" data-path="data-importing-and-saving-data.html"><a href="data-importing-and-saving-data.html#re-order-factors"><i class="fa fa-check"></i><b>2.3.2</b> Re-order factors</a></li>
+</ul></li>
+<li class="chapter" data-level="2.4" data-path="data-importing-and-saving-data.html"><a href="data-importing-and-saving-data.html#saving-data"><i class="fa fa-check"></i><b>2.4</b> Saving Data</a></li>
+<li class="chapter" data-level="2.5" data-path="data-importing-and-saving-data.html"><a href="data-importing-and-saving-data.html#problems"><i class="fa fa-check"></i><b>2.5</b> Problems</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="part-ii-some-fundamentals-of-statistical-modeling.html"><a href="part-ii-some-fundamentals-of-statistical-modeling.html"><i class="fa fa-check"></i>Part II: Some Fundamentals of Statistical Modeling</a></li>
 <li class="chapter" data-level="3" data-path="an-introduction-to-statistical-modeling.html"><a href="an-introduction-to-statistical-modeling.html"><i class="fa fa-check"></i><b>3</b> An Introduction to Statistical Modeling</a><ul>
@@ -538,8 +542,50 @@ gg</code></pre></div>
 <p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/data-alternative-plots-3.png" width="576" /></p>
 </div>
 </div>
+<div id="tidying-data" class="section level2">
+<h2><span class="header-section-number">2.3</span> Tidying Data</h2>
+<p>Cell/microbiologists biologists tend to organize data in wide format.</p>
+<div id="wide-to-long" class="section level3">
+<h3><span class="header-section-number">2.3.1</span> Wide to long</h3>
+<p>There are many functions to tidy data from wide to long. melt from the data.table package is especially useful. It is data.table’s version of melt from the reshape2 package.</p>
+<p>The major arguments of melt are</p>
+<p><code>melt(data, id.vars, measure.vars, variable.name, value.name)</code></p>
+<p>melt takes the data in the columns listed in <code>measure.vars</code> and stacks these into a single column named <code>value.name</code>. The names of the columns in <code>measure.vars</code> are the values of the elements in a new column named <code>variable.name</code>. The elements of any column in <code>id.vars</code> are repeated <em>p</em> times, where <em>p</em> is the number of columns that were stacked.</p>
+<p>Article: Rolig, A. S., Mittge, E. K., Ganz, J., Troll, J. V., Melancon, E., Wiles, T. J., … Guillemin, K. (2017). The enteric nervous system promotes intestinal health by constraining microbiota composition. PLOS Biology, 15(2), e2000689. <a href="https://doi.org/10.1371/journal.pbio.2000689" class="uri">https://doi.org/10.1371/journal.pbio.2000689</a></p>
+<p><strong>Data source</strong> <a href="https://doi.org/10.1371/journal.pbio.2000689.s008" class="uri">https://doi.org/10.1371/journal.pbio.2000689.s008</a></p>
+<p><strong>file name</strong>: “journal.pbio.2000689.s008.xlsx”</p>
+<p>Let’s import and tidy the data for figure 2d. Look at the excel file and the data in Fig. 2d. There is a single treament with four levels, but the authors have organized the data in each level in separate columns and used the column header as the level name.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">folder &lt;-<span class="st"> &quot;Data from The enteric nervous system promotes intestinal health by constraining microbiota composition&quot;</span>
+filename &lt;-<span class="st"> &quot;journal.pbio.2000689.s008.xlsx&quot;</span>
+
+<span class="co"># figure 2D data</span>
+sheet_i &lt;-<span class="st"> &quot;Figure 2&quot;</span>
+range_i &lt;-<span class="st"> &quot;F2:I24&quot;</span>
+file_path &lt;-<span class="st"> </span><span class="kw">here</span>(data_path, folder, filename)
+<span class="co">#file_path &lt;- paste(data_path, folder, fn, sep=&quot;/&quot;)</span>
+dt_wide &lt;-<span class="st"> </span><span class="kw">data.table</span>(<span class="kw">read_excel</span>(file_path, <span class="dt">sheet=</span>sheet_i, <span class="dt">range=</span>range_i))
+<span class="co"># clean names</span>
+dt_wide &lt;-<span class="st"> </span><span class="kw">clean_names</span>(dt_wide)
+<span class="co"># get rid of &quot;_donor&quot;</span>
+new_colnames &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;gf&quot;</span>, <span class="st">&quot;wt&quot;</span>, <span class="st">&quot;sox10&quot;</span>, <span class="st">&quot;iap_mo&quot;</span>)
+<span class="kw">setnames</span>(dt_wide, <span class="dt">old=</span><span class="kw">colnames</span>(dt_wide), <span class="dt">new=</span>new_colnames)
+
+<span class="co"># wide to long</span>
+exp2d &lt;-<span class="st"> </span><span class="kw">melt</span>(dt_wide, 
+              <span class="dt">measure.vars=</span><span class="kw">colnames</span>(dt_wide), 
+              <span class="dt">variable.name=</span><span class="st">&quot;donor&quot;</span>, 
+              <span class="dt">value.name=</span><span class="st">&quot;count&quot;</span>)</code></pre></div>
+<p>Look at the before and after using View. Now we want to get rid of the rows with missing data that were created because of variable sample size in each treatment level.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># delete rows with no data</span>
+exp2d &lt;-<span class="st"> </span><span class="kw">na.omit</span>(exp2d)</code></pre></div>
+</div>
+<div id="re-order-factors" class="section level3">
+<h3><span class="header-section-number">2.3.2</span> Re-order factors</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">exp2d[, donor<span class="op">:</span><span class="er">=</span><span class="kw">factor</span>(donor, <span class="kw">c</span>(<span class="st">&quot;wt&quot;</span>, <span class="st">&quot;gf&quot;</span>, <span class="st">&quot;sox10&quot;</span>, <span class="st">&quot;iap_mo&quot;</span>))]</code></pre></div>
+</div>
+</div>
 <div id="saving-data" class="section level2">
-<h2><span class="header-section-number">2.3</span> Saving Data</h2>
+<h2><span class="header-section-number">2.4</span> Saving Data</h2>
 <p>For many projects, it is uncommon to save data. I might save simulated data if it takes a long time (hours or days) to generate these and I simply want to work with the simulated data in the future (and not have to regenerate it). Or I might save processed data if it takes a long time to process it and I want to analyze the processed data in the future and not have to re-process it.</p>
 <p>Here, we will create a small, simulated data set and save it to the “output” folder. You should have an “output” folder directly (one-level) inside the project folder. Create a folder within the output folder names “chapter_02”. Make sure that you have the script assigning the path to the output folder code in the setup chunk.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">set.seed</span>(<span class="dv">1</span>)
@@ -559,7 +605,7 @@ save_file_path &lt;-<span class="st"> </span><span class="kw">here</span>(output
 <p>Look at your project directory to make sure the file is where it should be! We used <code>write.table()</code> to create a tab-delimited text file using <code>sep=&quot;\t&quot;</code> to specify tabs to separate the row elements. “” is the standard character string for a tab. Check in your Fake_Data folder and open the file in a text editor.</p>
 </div>
 <div id="problems" class="section level2">
-<h2><span class="header-section-number">2.4</span> Problems</h2>
+<h2><span class="header-section-number">2.5</span> Problems</h2>
 <ol style="list-style-type: decimal">
 <li><p>Download the dataset “data-Lodjak.et.al-2016-FuncEcol.xlsx” from the Dryad repository at <a href="https://datadryad.org/resource/doi:10.5061/dryad.rd01s" class="uri">https://datadryad.org/resource/doi:10.5061/dryad.rd01s</a>. The .xlsx file presents the data cleanly but the trade-off is that the 1) multiple header rows, and 2) spaces in the header labels, 3) parentheses in the header labels make it more complex to import in a usable way. Import the data and plot Body Mass against Age (that is make Body Mass the “Y” variable and Age the “X” variable) using the qplot function. You should recode the column labels to remove spaces and parentheses using the setnames function.</p></li>
 <li><p>Download the dataset “Results2015.txt” from the Dryad repository at <a href="https://datadryad.org//resource/doi:10.5061/dryad.65vk4" class="uri">https://datadryad.org//resource/doi:10.5061/dryad.65vk4</a>. Try to reproduce Fig. 1. It’s not easy. I’ve inserted the figure below but also download the paper and look at Fig. 1.</p></li>

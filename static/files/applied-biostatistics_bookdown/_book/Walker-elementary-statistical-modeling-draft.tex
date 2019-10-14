@@ -125,7 +125,7 @@
   \postauthor{\par}
       \predate{\centering\large\emph}
   \postdate{\par}
-    \date{Draft: 2019-10-12}
+    \date{Draft: 2019-10-14}
 
 \usepackage{booktabs}
 \usepackage{amsthm}
@@ -1038,6 +1038,87 @@ and analysis to later chapters.
 \end{Shaded}
 
 \includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/data-alternative-plots-3.pdf}
+
+\section{Tidying Data}\label{tidying-data}
+
+Cell/microbiologists biologists tend to organize data in wide format.
+
+\subsection{Wide to long}\label{wide-to-long}
+
+There are many functions to tidy data from wide to long. melt from the
+data.table package is especially useful. It is data.table's version of
+melt from the reshape2 package.
+
+The major arguments of melt are
+
+\texttt{melt(data,\ id.vars,\ measure.vars,\ variable.name,\ value.name)}
+
+melt takes the data in the columns listed in \texttt{measure.vars} and
+stacks these into a single column named \texttt{value.name}. The names
+of the columns in \texttt{measure.vars} are the values of the elements
+in a new column named \texttt{variable.name}. The elements of any column
+in \texttt{id.vars} are repeated \emph{p} times, where \emph{p} is the
+number of columns that were stacked.
+
+Article: Rolig, A. S., Mittge, E. K., Ganz, J., Troll, J. V., Melancon,
+E., Wiles, T. J., \ldots{} Guillemin, K. (2017). The enteric nervous
+system promotes intestinal health by constraining microbiota
+composition. PLOS Biology, 15(2), e2000689.
+\url{https://doi.org/10.1371/journal.pbio.2000689}
+
+\textbf{Data source}
+\url{https://doi.org/10.1371/journal.pbio.2000689.s008}
+
+\textbf{file name}: ``journal.pbio.2000689.s008.xlsx''
+
+Let's import and tidy the data for figure 2d. Look at the excel file and
+the data in Fig. 2d. There is a single treament with four levels, but
+the authors have organized the data in each level in separate columns
+and used the column header as the level name.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{folder <-}\StringTok{ "Data from The enteric nervous system promotes intestinal health by constraining microbiota composition"}
+\NormalTok{filename <-}\StringTok{ "journal.pbio.2000689.s008.xlsx"}
+
+\CommentTok{# figure 2D data}
+\NormalTok{sheet_i <-}\StringTok{ "Figure 2"}
+\NormalTok{range_i <-}\StringTok{ "F2:I24"}
+\NormalTok{file_path <-}\StringTok{ }\KeywordTok{here}\NormalTok{(data_path, folder, filename)}
+\CommentTok{#file_path <- paste(data_path, folder, fn, sep="/")}
+\NormalTok{dt_wide <-}\StringTok{ }\KeywordTok{data.table}\NormalTok{(}\KeywordTok{read_excel}\NormalTok{(file_path, }\DataTypeTok{sheet=}\NormalTok{sheet_i, }\DataTypeTok{range=}\NormalTok{range_i))}
+\CommentTok{# clean names}
+\NormalTok{dt_wide <-}\StringTok{ }\KeywordTok{clean_names}\NormalTok{(dt_wide)}
+\CommentTok{# get rid of "_donor"}
+\NormalTok{new_colnames <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"gf"}\NormalTok{, }\StringTok{"wt"}\NormalTok{, }\StringTok{"sox10"}\NormalTok{, }\StringTok{"iap_mo"}\NormalTok{)}
+\KeywordTok{setnames}\NormalTok{(dt_wide, }\DataTypeTok{old=}\KeywordTok{colnames}\NormalTok{(dt_wide), }\DataTypeTok{new=}\NormalTok{new_colnames)}
+
+\CommentTok{# wide to long}
+\NormalTok{exp2d <-}\StringTok{ }\KeywordTok{melt}\NormalTok{(dt_wide, }
+              \DataTypeTok{measure.vars=}\KeywordTok{colnames}\NormalTok{(dt_wide), }
+              \DataTypeTok{variable.name=}\StringTok{"donor"}\NormalTok{, }
+              \DataTypeTok{value.name=}\StringTok{"count"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+Look at the before and after using View. Now we want to get rid of the
+rows with missing data that were created because of variable sample size
+in each treatment level.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# delete rows with no data}
+\NormalTok{exp2d <-}\StringTok{ }\KeywordTok{na.omit}\NormalTok{(exp2d)}
+\end{Highlighting}
+\end{Shaded}
+
+\subsection{Re-order factors}\label{re-order-factors}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{exp2d[, donor}\OperatorTok{:}\ErrorTok{=}\KeywordTok{factor}\NormalTok{(donor, }\KeywordTok{c}\NormalTok{(}\StringTok{"wt"}\NormalTok{, }\StringTok{"gf"}\NormalTok{, }\StringTok{"sox10"}\NormalTok{, }\StringTok{"iap_mo"}\NormalTok{))]}
+\end{Highlighting}
+\end{Shaded}
 
 \section{Saving Data}\label{saving-data}
 
@@ -2036,7 +2117,7 @@ means
 ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 \end{verbatim}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-10-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-13-1.pdf}
 
 Compute the mean of the means
 
@@ -3628,7 +3709,7 @@ effect from Z to both X equal to \(\sqrt(0.6)\).
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-17-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-20-1.pdf}
 
 Now create fake \(Y\) that is a function of both \(X_1\) and \(X_2\).
 Create ``standardized'' fake data, where \(\sigma_Y = 1\).
@@ -5103,7 +5184,7 @@ Here is the default plot
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-25-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-28-1.pdf}
 
 \chapter{Model Checking}\label{model-checking-1}
 
@@ -5471,7 +5552,7 @@ nests or a host with no parasites), resulting in positive deviations
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-26-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-29-1.pdf}
 
 \subsubsection{Constrained lower and upper
 bounds}\label{constrained-lower-and-upper-bounds}
@@ -5989,7 +6070,7 @@ intervals}\label{adding-bootstrap-intervals}
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-27-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-30-1.pdf}
 
 \subsection{Adding modeled error
 intervals}\label{adding-modeled-error-intervals}
@@ -6035,7 +6116,7 @@ effect}\label{modeled-error-intervals-of-the-effect}
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-29-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-32-1.pdf}
 
 \subsubsection{Modeled error intervals of the
 mean}\label{modeled-error-intervals-of-the-mean}
@@ -6057,7 +6138,7 @@ mean}\label{modeled-error-intervals-of-the-mean}
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-30-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-33-1.pdf}
 
 Note that the CIs are asymmetric about the mean (and these modeled CIs
 will never include negative values for count data).
@@ -6074,7 +6155,7 @@ The ggplots are combined using the package \texttt{cowplot}
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-31-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-34-1.pdf}
 
 \subsection{Adding p-values}\label{adding-p-values}
 
@@ -6111,7 +6192,7 @@ is returning.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-32-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-35-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -6216,7 +6297,7 @@ function from the emmeans package.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-35-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-38-1.pdf}
 
 \subsubsection{Three factors}\label{three-factors}
 
@@ -6342,7 +6423,7 @@ residuals is
 ## `stat_bindot()` using `bins = 30`. Pick better value with `binwidth`.
 \end{verbatim}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-36-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-39-1.pdf}
 
 \begin{verbatim}
 ##              Estimate Std. Error   t value     Pr(>|t|)
@@ -8981,7 +9062,7 @@ statistic is \(df\).
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-38-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-41-1.pdf}
 
 \begin{verbatim}
 ## 
