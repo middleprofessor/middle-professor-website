@@ -1041,13 +1041,86 @@ and analysis to later chapters.
 
 \section{Tidying Data}\label{tidying-data}
 
-Cell/microbiologists biologists tend to organize data in wide format.
+In general, your data should be in long format. What is long format?
+Consider data from a simple experiment with a response variable and a
+treatment variable with three levels. A common way to organize these
+data in Microsoft Excel is in \textbf{wide format}.
+
+\begin{table}[t]
+
+\caption{\label{tab:unnamed-chunk-7}Root mass for three treatment levels in wide format}
+\centering
+\begin{tabular}{r|r|r}
+\hline
+control & extract & charcoal\\
+\hline
+10.80 & 3.88 & 9.50\\
+\hline
+11.19 & 4.18 & 11.53\\
+\hline
+8.31 & 5.28 & 9.55\\
+\hline
+11.24 & 2.27 & 9.24\\
+\hline
+9.89 & 5.69 & 7.95\\
+\hline
+\end{tabular}
+\end{table}
+
+Wide format is efficient for computations in a spreadsheet, such as
+computing means and standard deviations of columns and for plotting. For
+most statistical analyses in R (and most statistics software), all
+measures of a variable (such as root biomass in the example above)
+should be in a single column with a second column identifying the
+treatment level associated with each measure. This is called
+\textbf{long format}.
+
+\begin{table}[t]
+
+\caption{\label{tab:unnamed-chunk-8}Root mass for three treatment levels in long format}
+\centering
+\begin{tabular}{l|r}
+\hline
+treatment & root\_mass\\
+\hline
+control & 10.80\\
+\hline
+control & 11.19\\
+\hline
+control & 8.31\\
+\hline
+control & 11.24\\
+\hline
+control & 9.89\\
+\hline
+extract & 3.88\\
+\hline
+extract & 4.18\\
+\hline
+extract & 5.28\\
+\hline
+extract & 2.27\\
+\hline
+extract & 5.69\\
+\hline
+charcoal & 9.50\\
+\hline
+charcoal & 11.53\\
+\hline
+charcoal & 9.55\\
+\hline
+charcoal & 9.24\\
+\hline
+charcoal & 7.95\\
+\hline
+\end{tabular}
+\end{table}
 
 \subsection{Wide to long}\label{wide-to-long}
 
-There are many functions to tidy data from wide to long. melt from the
-data.table package is especially useful. It is data.table's version of
-melt from the reshape2 package.
+There are many functions to tidy data from wide to long. \texttt{melt()}
+from the data.table package is especially useful. It is data.table's
+version of melt from the reshape2 package.
 
 The major arguments of melt are
 
@@ -1101,9 +1174,10 @@ and used the column header as the level name.
 \end{Highlighting}
 \end{Shaded}
 
-Look at the before and after using View. Now we want to get rid of the
-rows with missing data that were created because of variable sample size
-in each treatment level.
+Look at the before and after using View. For these data, the number of
+measures within the different treatments differs, and as a consequence,
+there are multiple cells with \texttt{NA} which indicates a missing
+value. To delete the rows with the missing values, use
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -1112,13 +1186,141 @@ in each treatment level.
 \end{Highlighting}
 \end{Shaded}
 
-\subsection{Re-order factors}\label{re-order-factors}
+For both analysis and plots, we want to compare values to the control
+level, which is named ``wt'' for the exp2d data. That is, we want ``wt''
+to be the \emph{reference} level. To achieve this, the levels of the
+factor \emph{donor} need to be re-ordered.
 
 \begin{Shaded}
 \begin{Highlighting}[]
 \NormalTok{exp2d[, donor}\OperatorTok{:}\ErrorTok{=}\KeywordTok{factor}\NormalTok{(donor, }\KeywordTok{c}\NormalTok{(}\StringTok{"wt"}\NormalTok{, }\StringTok{"gf"}\NormalTok{, }\StringTok{"sox10"}\NormalTok{, }\StringTok{"iap_mo"}\NormalTok{))]}
 \end{Highlighting}
 \end{Shaded}
+
+The example above is pretty easy, because the all columns in the
+original data frame are melted (stacked). Here is an example in which
+only a subset of columns are stacked. In addition, only a subset of the
+remaining columns are retained in the long format data frame. The data
+are from Panel A of supplement Fig. 8
+(\url{https://journals.plos.org/plosbiology/article/file?type=supplementary\&id=info:doi/10.1371/journal.pbio.2003467.s019})
+from
+
+Kešnerová, L., Mars, R.A., Ellegaard, K.M., Troilo, M., Sauer, U. and
+Engel, P., 2017. Disentangling metabolic functions of bacteria in the
+honey bee gut. PLoS biology, 15(12), p.e2003467.
+
+**data source*:**
+\url{https://doi.org/10.1371/journal.pbio.2003467.s001}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{folder <-}\StringTok{ "Data from Disentangling metabolic functions of bacteria in the honey bee gut"}
+\NormalTok{filename <-}\StringTok{ "journal.pbio.2003467.s001.xlsx"}
+
+\CommentTok{# figure 2D data}
+\NormalTok{sheet_i <-}\StringTok{ "S8 Fig"}
+\NormalTok{range_i <-}\StringTok{ "A2:H12"}
+\NormalTok{file_path <-}\StringTok{ }\KeywordTok{here}\NormalTok{(data_path, folder, filename)}
+\CommentTok{#file_path <- paste(data_path, folder, fn, sep="/")}
+\NormalTok{dt_wide <-}\StringTok{ }\KeywordTok{data.table}\NormalTok{(}\KeywordTok{read_excel}\NormalTok{(file_path, }\DataTypeTok{sheet=}\NormalTok{sheet_i, }\DataTypeTok{range=}\NormalTok{range_i))}
+\CommentTok{# clean names}
+\NormalTok{dt_wide <-}\StringTok{ }\KeywordTok{clean_names}\NormalTok{(dt_wide)}
+
+\CommentTok{# wide to long}
+\NormalTok{stack_cols <-}\StringTok{ }\KeywordTok{paste0}\NormalTok{(}\StringTok{"replicate"}\NormalTok{, }\DecValTok{1}\OperatorTok{:}\DecValTok{5}\NormalTok{)}
+\NormalTok{exp_s8a <-}\StringTok{ }\KeywordTok{melt}\NormalTok{(dt_wide,}
+              \DataTypeTok{id.vars=}\KeywordTok{c}\NormalTok{(}\StringTok{"media"}\NormalTok{, }\StringTok{"time_h"}\NormalTok{), }\CommentTok{# strain col not adding any information}
+              \DataTypeTok{measure.vars=}\NormalTok{stack_cols, }
+              \DataTypeTok{variable.name=}\StringTok{"Replicate"}\NormalTok{, }
+              \DataTypeTok{value.name=}\StringTok{"OD600"}\NormalTok{) }\CommentTok{# measure of absorbance at 600nm}
+\end{Highlighting}
+\end{Shaded}
+
+\subsubsection{Stacking multiple sets of
+columns}\label{stacking-multiple-sets-of-columns}
+
+This example comes from my lab, where a student measured sprint speed in
+each fish three times prior to treatment and three times following
+treatment. The wide format data looked something like this
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{set.seed}\NormalTok{(}\DecValTok{1}\NormalTok{)}
+\NormalTok{fd_wide <-}\StringTok{ }\KeywordTok{data.table}\NormalTok{(}\DataTypeTok{fish_ID=}\KeywordTok{paste0}\NormalTok{(}\StringTok{"fish"}\NormalTok{,}\DecValTok{1}\OperatorTok{:}\DecValTok{4}\NormalTok{),}
+                      \DataTypeTok{treatment=}\KeywordTok{rep}\NormalTok{(}\KeywordTok{c}\NormalTok{(}\StringTok{"cn"}\NormalTok{, }\StringTok{"tr"}\NormalTok{), }\DataTypeTok{each=}\DecValTok{2}\NormalTok{),}
+                      \DataTypeTok{length=}\KeywordTok{rnorm}\NormalTok{(}\DecValTok{4}\NormalTok{, }\DecValTok{12}\NormalTok{, }\DecValTok{2}\NormalTok{),}
+                      \DataTypeTok{pre_1=}\KeywordTok{rnorm}\NormalTok{(}\DecValTok{4}\NormalTok{, }\DecValTok{50}\NormalTok{, }\DecValTok{5}\NormalTok{),}
+                      \DataTypeTok{pre_2=}\KeywordTok{rnorm}\NormalTok{(}\DecValTok{4}\NormalTok{, }\DecValTok{50}\NormalTok{, }\DecValTok{5}\NormalTok{),}
+                      \DataTypeTok{pre_3=}\KeywordTok{rnorm}\NormalTok{(}\DecValTok{4}\NormalTok{, }\DecValTok{50}\NormalTok{, }\DecValTok{5}\NormalTok{),}
+                      \DataTypeTok{post_1=}\KeywordTok{rnorm}\NormalTok{(}\DecValTok{4}\NormalTok{, }\DecValTok{50}\NormalTok{, }\DecValTok{5}\NormalTok{),}
+                      \DataTypeTok{post_2=}\KeywordTok{rnorm}\NormalTok{(}\DecValTok{4}\NormalTok{, }\DecValTok{50}\NormalTok{, }\DecValTok{5}\NormalTok{),}
+                      \DataTypeTok{post_3=}\KeywordTok{rnorm}\NormalTok{(}\DecValTok{4}\NormalTok{, }\DecValTok{50}\NormalTok{, }\DecValTok{5}\NormalTok{)}
+\NormalTok{                      )}
+\NormalTok{knitr}\OperatorTok{::}\KeywordTok{kable}\NormalTok{(fd_wide, }\DataTypeTok{digits=}\DecValTok{1}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{tabular}{l|l|r|r|r|r|r|r|r}
+\hline
+fish\_ID & treatment & length & pre\_1 & pre\_2 & pre\_3 & post\_1 & post\_2 & post\_3\\
+\hline
+fish1 & cn & 10.7 & 51.6 & 52.9 & 46.9 & 49.9 & 54.6 & 53.1\\
+\hline
+fish2 & cn & 12.4 & 45.9 & 48.5 & 38.9 & 54.7 & 53.9 & 49.7\\
+\hline
+fish3 & tr & 10.3 & 52.4 & 57.6 & 55.6 & 54.1 & 50.4 & 49.2\\
+\hline
+fish4 & tr & 15.2 & 53.7 & 51.9 & 49.8 & 53.0 & 40.1 & 42.6\\
+\hline
+\end{tabular}
+
+To analyze the data with the pre measures as covariates, the student
+wanted to stack the three pre measures into a single column and the
+three post measures into a single column. This is easy using
+\texttt{melt} from data.table.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{pre_cols <-}\StringTok{ }\KeywordTok{paste}\NormalTok{(}\StringTok{"pre"}\NormalTok{, }\DecValTok{1}\OperatorTok{:}\DecValTok{3}\NormalTok{, }\DataTypeTok{sep=}\StringTok{"_"}\NormalTok{)}
+\NormalTok{post_cols <-}\StringTok{ }\KeywordTok{paste}\NormalTok{(}\StringTok{"post"}\NormalTok{, }\DecValTok{1}\OperatorTok{:}\DecValTok{3}\NormalTok{, }\DataTypeTok{sep=}\StringTok{"_"}\NormalTok{)}
+\NormalTok{fd <-}\StringTok{ }\KeywordTok{melt}\NormalTok{(fd_wide,}
+           \DataTypeTok{id.vars=}\KeywordTok{c}\NormalTok{(}\StringTok{"fish_ID"}\NormalTok{, }\StringTok{"treatment"}\NormalTok{, }\StringTok{"length"}\NormalTok{),}
+           \DataTypeTok{measure.vars=}\KeywordTok{list}\NormalTok{(pre_cols, post_cols),}
+           \DataTypeTok{variable.name=}\StringTok{"Order"}\NormalTok{,}
+           \DataTypeTok{value.name=}\KeywordTok{c}\NormalTok{(}\StringTok{"sprint_pre"}\NormalTok{, }\StringTok{"sprint_post"}\NormalTok{))}
+\NormalTok{knitr}\OperatorTok{::}\KeywordTok{kable}\NormalTok{(fd, }\DataTypeTok{digits=}\DecValTok{1}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{tabular}{l|l|r|l|r|r}
+\hline
+fish\_ID & treatment & length & Order & sprint\_pre & sprint\_post\\
+\hline
+fish1 & cn & 10.7 & 1 & 51.6 & 49.9\\
+\hline
+fish2 & cn & 12.4 & 1 & 45.9 & 54.7\\
+\hline
+fish3 & tr & 10.3 & 1 & 52.4 & 54.1\\
+\hline
+fish4 & tr & 15.2 & 1 & 53.7 & 53.0\\
+\hline
+fish1 & cn & 10.7 & 2 & 52.9 & 54.6\\
+\hline
+fish2 & cn & 12.4 & 2 & 48.5 & 53.9\\
+\hline
+fish3 & tr & 10.3 & 2 & 57.6 & 50.4\\
+\hline
+fish4 & tr & 15.2 & 2 & 51.9 & 40.1\\
+\hline
+fish1 & cn & 10.7 & 3 & 46.9 & 53.1\\
+\hline
+fish2 & cn & 12.4 & 3 & 38.9 & 49.7\\
+\hline
+fish3 & tr & 10.3 & 3 & 55.6 & 49.2\\
+\hline
+fish4 & tr & 15.2 & 3 & 49.8 & 42.6\\
+\hline
+\end{tabular}
 
 \section{Saving Data}\label{saving-data}
 
@@ -2117,7 +2319,7 @@ means
 ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 \end{verbatim}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-13-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-18-1.pdf}
 
 Compute the mean of the means
 
@@ -3709,7 +3911,7 @@ effect from Z to both X equal to \(\sqrt(0.6)\).
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-20-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-25-1.pdf}
 
 Now create fake \(Y\) that is a function of both \(X_1\) and \(X_2\).
 Create ``standardized'' fake data, where \(\sigma_Y = 1\).
@@ -5184,7 +5386,7 @@ Here is the default plot
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-28-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-33-1.pdf}
 
 \chapter{Model Checking}\label{model-checking-1}
 
@@ -5552,7 +5754,7 @@ nests or a host with no parasites), resulting in positive deviations
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-29-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-34-1.pdf}
 
 \subsubsection{Constrained lower and upper
 bounds}\label{constrained-lower-and-upper-bounds}
@@ -6070,7 +6272,7 @@ intervals}\label{adding-bootstrap-intervals}
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-30-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-35-1.pdf}
 
 \subsection{Adding modeled error
 intervals}\label{adding-modeled-error-intervals}
@@ -6116,7 +6318,7 @@ effect}\label{modeled-error-intervals-of-the-effect}
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-32-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-37-1.pdf}
 
 \subsubsection{Modeled error intervals of the
 mean}\label{modeled-error-intervals-of-the-mean}
@@ -6138,7 +6340,7 @@ mean}\label{modeled-error-intervals-of-the-mean}
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-33-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-38-1.pdf}
 
 Note that the CIs are asymmetric about the mean (and these modeled CIs
 will never include negative values for count data).
@@ -6155,7 +6357,7 @@ The ggplots are combined using the package \texttt{cowplot}
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-34-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-39-1.pdf}
 
 \subsection{Adding p-values}\label{adding-p-values}
 
@@ -6192,7 +6394,7 @@ is returning.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-35-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-40-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -6297,7 +6499,7 @@ function from the emmeans package.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-38-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-43-1.pdf}
 
 \subsubsection{Three factors}\label{three-factors}
 
@@ -6423,7 +6625,7 @@ residuals is
 ## `stat_bindot()` using `bins = 30`. Pick better value with `binwidth`.
 \end{verbatim}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-39-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-44-1.pdf}
 
 \begin{verbatim}
 ##              Estimate Std. Error   t value     Pr(>|t|)
@@ -9062,7 +9264,7 @@ statistic is \(df\).
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-41-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-46-1.pdf}
 
 \begin{verbatim}
 ## 

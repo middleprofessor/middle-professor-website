@@ -126,7 +126,6 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 </ul></li>
 <li class="chapter" data-level="2.3" data-path="data-importing-and-saving-data.html"><a href="data-importing-and-saving-data.html#tidying-data"><i class="fa fa-check"></i><b>2.3</b> Tidying Data</a><ul>
 <li class="chapter" data-level="2.3.1" data-path="data-importing-and-saving-data.html"><a href="data-importing-and-saving-data.html#wide-to-long"><i class="fa fa-check"></i><b>2.3.1</b> Wide to long</a></li>
-<li class="chapter" data-level="2.3.2" data-path="data-importing-and-saving-data.html"><a href="data-importing-and-saving-data.html#re-order-factors"><i class="fa fa-check"></i><b>2.3.2</b> Re-order factors</a></li>
 </ul></li>
 <li class="chapter" data-level="2.4" data-path="data-importing-and-saving-data.html"><a href="data-importing-and-saving-data.html#saving-data"><i class="fa fa-check"></i><b>2.4</b> Saving Data</a></li>
 <li class="chapter" data-level="2.5" data-path="data-importing-and-saving-data.html"><a href="data-importing-and-saving-data.html#problems"><i class="fa fa-check"></i><b>2.5</b> Problems</a></li>
@@ -544,10 +543,119 @@ gg</code></pre></div>
 </div>
 <div id="tidying-data" class="section level2">
 <h2><span class="header-section-number">2.3</span> Tidying Data</h2>
-<p>Cell/microbiologists biologists tend to organize data in wide format.</p>
+<p>In general, your data should be in long format. What is long format? Consider data from a simple experiment with a response variable and a treatment variable with three levels. A common way to organize these data in Microsoft Excel is in <strong>wide format</strong>.</p>
+<table>
+<caption><span id="tab:unnamed-chunk-7">Table 2.1: </span>Root mass for three treatment levels in wide format</caption>
+<thead>
+<tr class="header">
+<th align="right">control</th>
+<th align="right">extract</th>
+<th align="right">charcoal</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">10.80</td>
+<td align="right">3.88</td>
+<td align="right">9.50</td>
+</tr>
+<tr class="even">
+<td align="right">11.19</td>
+<td align="right">4.18</td>
+<td align="right">11.53</td>
+</tr>
+<tr class="odd">
+<td align="right">8.31</td>
+<td align="right">5.28</td>
+<td align="right">9.55</td>
+</tr>
+<tr class="even">
+<td align="right">11.24</td>
+<td align="right">2.27</td>
+<td align="right">9.24</td>
+</tr>
+<tr class="odd">
+<td align="right">9.89</td>
+<td align="right">5.69</td>
+<td align="right">7.95</td>
+</tr>
+</tbody>
+</table>
+<p>Wide format is efficient for computations in a spreadsheet, such as computing means and standard deviations of columns and for plotting. For most statistical analyses in R (and most statistics software), all measures of a variable (such as root biomass in the example above) should be in a single column with a second column identifying the treatment level associated with each measure. This is called <strong>long format</strong>.</p>
+<table>
+<caption><span id="tab:unnamed-chunk-8">Table 2.2: </span>Root mass for three treatment levels in long format</caption>
+<thead>
+<tr class="header">
+<th align="left">treatment</th>
+<th align="right">root_mass</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">control</td>
+<td align="right">10.80</td>
+</tr>
+<tr class="even">
+<td align="left">control</td>
+<td align="right">11.19</td>
+</tr>
+<tr class="odd">
+<td align="left">control</td>
+<td align="right">8.31</td>
+</tr>
+<tr class="even">
+<td align="left">control</td>
+<td align="right">11.24</td>
+</tr>
+<tr class="odd">
+<td align="left">control</td>
+<td align="right">9.89</td>
+</tr>
+<tr class="even">
+<td align="left">extract</td>
+<td align="right">3.88</td>
+</tr>
+<tr class="odd">
+<td align="left">extract</td>
+<td align="right">4.18</td>
+</tr>
+<tr class="even">
+<td align="left">extract</td>
+<td align="right">5.28</td>
+</tr>
+<tr class="odd">
+<td align="left">extract</td>
+<td align="right">2.27</td>
+</tr>
+<tr class="even">
+<td align="left">extract</td>
+<td align="right">5.69</td>
+</tr>
+<tr class="odd">
+<td align="left">charcoal</td>
+<td align="right">9.50</td>
+</tr>
+<tr class="even">
+<td align="left">charcoal</td>
+<td align="right">11.53</td>
+</tr>
+<tr class="odd">
+<td align="left">charcoal</td>
+<td align="right">9.55</td>
+</tr>
+<tr class="even">
+<td align="left">charcoal</td>
+<td align="right">9.24</td>
+</tr>
+<tr class="odd">
+<td align="left">charcoal</td>
+<td align="right">7.95</td>
+</tr>
+</tbody>
+</table>
 <div id="wide-to-long" class="section level3">
 <h3><span class="header-section-number">2.3.1</span> Wide to long</h3>
-<p>There are many functions to tidy data from wide to long. melt from the data.table package is especially useful. It is data.table’s version of melt from the reshape2 package.</p>
+<p>There are many functions to tidy data from wide to long. <code>melt()</code> from the data.table package is especially useful. It is data.table’s version of melt from the reshape2 package.</p>
 <p>The major arguments of melt are</p>
 <p><code>melt(data, id.vars, measure.vars, variable.name, value.name)</code></p>
 <p>melt takes the data in the columns listed in <code>measure.vars</code> and stacks these into a single column named <code>value.name</code>. The names of the columns in <code>measure.vars</code> are the values of the elements in a new column named <code>variable.name</code>. The elements of any column in <code>id.vars</code> are repeated <em>p</em> times, where <em>p</em> is the number of columns that were stacked.</p>
@@ -575,13 +683,239 @@ exp2d &lt;-<span class="st"> </span><span class="kw">melt</span>(dt_wide,
               <span class="dt">measure.vars=</span><span class="kw">colnames</span>(dt_wide), 
               <span class="dt">variable.name=</span><span class="st">&quot;donor&quot;</span>, 
               <span class="dt">value.name=</span><span class="st">&quot;count&quot;</span>)</code></pre></div>
-<p>Look at the before and after using View. Now we want to get rid of the rows with missing data that were created because of variable sample size in each treatment level.</p>
+<p>Look at the before and after using View. For these data, the number of measures within the different treatments differs, and as a consequence, there are multiple cells with <code>NA</code> which indicates a missing value. To delete the rows with the missing values, use</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># delete rows with no data</span>
 exp2d &lt;-<span class="st"> </span><span class="kw">na.omit</span>(exp2d)</code></pre></div>
-</div>
-<div id="re-order-factors" class="section level3">
-<h3><span class="header-section-number">2.3.2</span> Re-order factors</h3>
+<p>For both analysis and plots, we want to compare values to the control level, which is named “wt” for the exp2d data. That is, we want “wt” to be the <em>reference</em> level. To achieve this, the levels of the factor <em>donor</em> need to be re-ordered.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">exp2d[, donor<span class="op">:</span><span class="er">=</span><span class="kw">factor</span>(donor, <span class="kw">c</span>(<span class="st">&quot;wt&quot;</span>, <span class="st">&quot;gf&quot;</span>, <span class="st">&quot;sox10&quot;</span>, <span class="st">&quot;iap_mo&quot;</span>))]</code></pre></div>
+<p>The example above is pretty easy, because the all columns in the original data frame are melted (stacked). Here is an example in which only a subset of columns are stacked. In addition, only a subset of the remaining columns are retained in the long format data frame. The data are from Panel A of supplement Fig. 8 (<a href="https://journals.plos.org/plosbiology/article/file?type=supplementary&amp;id=info:doi/10.1371/journal.pbio.2003467.s019" class="uri">https://journals.plos.org/plosbiology/article/file?type=supplementary&amp;id=info:doi/10.1371/journal.pbio.2003467.s019</a>) from</p>
+<p>Kešnerová, L., Mars, R.A., Ellegaard, K.M., Troilo, M., Sauer, U. and Engel, P., 2017. Disentangling metabolic functions of bacteria in the honey bee gut. PLoS biology, 15(12), p.e2003467.</p>
+<p>**data source*:** <a href="https://doi.org/10.1371/journal.pbio.2003467.s001" class="uri">https://doi.org/10.1371/journal.pbio.2003467.s001</a></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">folder &lt;-<span class="st"> &quot;Data from Disentangling metabolic functions of bacteria in the honey bee gut&quot;</span>
+filename &lt;-<span class="st"> &quot;journal.pbio.2003467.s001.xlsx&quot;</span>
+
+<span class="co"># figure 2D data</span>
+sheet_i &lt;-<span class="st"> &quot;S8 Fig&quot;</span>
+range_i &lt;-<span class="st"> &quot;A2:H12&quot;</span>
+file_path &lt;-<span class="st"> </span><span class="kw">here</span>(data_path, folder, filename)
+<span class="co">#file_path &lt;- paste(data_path, folder, fn, sep=&quot;/&quot;)</span>
+dt_wide &lt;-<span class="st"> </span><span class="kw">data.table</span>(<span class="kw">read_excel</span>(file_path, <span class="dt">sheet=</span>sheet_i, <span class="dt">range=</span>range_i))
+<span class="co"># clean names</span>
+dt_wide &lt;-<span class="st"> </span><span class="kw">clean_names</span>(dt_wide)
+
+<span class="co"># wide to long</span>
+stack_cols &lt;-<span class="st"> </span><span class="kw">paste0</span>(<span class="st">&quot;replicate&quot;</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">5</span>)
+exp_s8a &lt;-<span class="st"> </span><span class="kw">melt</span>(dt_wide,
+              <span class="dt">id.vars=</span><span class="kw">c</span>(<span class="st">&quot;media&quot;</span>, <span class="st">&quot;time_h&quot;</span>), <span class="co"># strain col not adding any information</span>
+              <span class="dt">measure.vars=</span>stack_cols, 
+              <span class="dt">variable.name=</span><span class="st">&quot;Replicate&quot;</span>, 
+              <span class="dt">value.name=</span><span class="st">&quot;OD600&quot;</span>) <span class="co"># measure of absorbance at 600nm</span></code></pre></div>
+<div id="stacking-multiple-sets-of-columns" class="section level4">
+<h4><span class="header-section-number">2.3.1.1</span> Stacking multiple sets of columns</h4>
+<p>This example comes from my lab, where a student measured sprint speed in each fish three times prior to treatment and three times following treatment. The wide format data looked something like this</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">set.seed</span>(<span class="dv">1</span>)
+fd_wide &lt;-<span class="st"> </span><span class="kw">data.table</span>(<span class="dt">fish_ID=</span><span class="kw">paste0</span>(<span class="st">&quot;fish&quot;</span>,<span class="dv">1</span><span class="op">:</span><span class="dv">4</span>),
+                      <span class="dt">treatment=</span><span class="kw">rep</span>(<span class="kw">c</span>(<span class="st">&quot;cn&quot;</span>, <span class="st">&quot;tr&quot;</span>), <span class="dt">each=</span><span class="dv">2</span>),
+                      <span class="dt">length=</span><span class="kw">rnorm</span>(<span class="dv">4</span>, <span class="dv">12</span>, <span class="dv">2</span>),
+                      <span class="dt">pre_1=</span><span class="kw">rnorm</span>(<span class="dv">4</span>, <span class="dv">50</span>, <span class="dv">5</span>),
+                      <span class="dt">pre_2=</span><span class="kw">rnorm</span>(<span class="dv">4</span>, <span class="dv">50</span>, <span class="dv">5</span>),
+                      <span class="dt">pre_3=</span><span class="kw">rnorm</span>(<span class="dv">4</span>, <span class="dv">50</span>, <span class="dv">5</span>),
+                      <span class="dt">post_1=</span><span class="kw">rnorm</span>(<span class="dv">4</span>, <span class="dv">50</span>, <span class="dv">5</span>),
+                      <span class="dt">post_2=</span><span class="kw">rnorm</span>(<span class="dv">4</span>, <span class="dv">50</span>, <span class="dv">5</span>),
+                      <span class="dt">post_3=</span><span class="kw">rnorm</span>(<span class="dv">4</span>, <span class="dv">50</span>, <span class="dv">5</span>)
+                      )
+knitr<span class="op">::</span><span class="kw">kable</span>(fd_wide, <span class="dt">digits=</span><span class="dv">1</span>)</code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">fish_ID</th>
+<th align="left">treatment</th>
+<th align="right">length</th>
+<th align="right">pre_1</th>
+<th align="right">pre_2</th>
+<th align="right">pre_3</th>
+<th align="right">post_1</th>
+<th align="right">post_2</th>
+<th align="right">post_3</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">fish1</td>
+<td align="left">cn</td>
+<td align="right">10.7</td>
+<td align="right">51.6</td>
+<td align="right">52.9</td>
+<td align="right">46.9</td>
+<td align="right">49.9</td>
+<td align="right">54.6</td>
+<td align="right">53.1</td>
+</tr>
+<tr class="even">
+<td align="left">fish2</td>
+<td align="left">cn</td>
+<td align="right">12.4</td>
+<td align="right">45.9</td>
+<td align="right">48.5</td>
+<td align="right">38.9</td>
+<td align="right">54.7</td>
+<td align="right">53.9</td>
+<td align="right">49.7</td>
+</tr>
+<tr class="odd">
+<td align="left">fish3</td>
+<td align="left">tr</td>
+<td align="right">10.3</td>
+<td align="right">52.4</td>
+<td align="right">57.6</td>
+<td align="right">55.6</td>
+<td align="right">54.1</td>
+<td align="right">50.4</td>
+<td align="right">49.2</td>
+</tr>
+<tr class="even">
+<td align="left">fish4</td>
+<td align="left">tr</td>
+<td align="right">15.2</td>
+<td align="right">53.7</td>
+<td align="right">51.9</td>
+<td align="right">49.8</td>
+<td align="right">53.0</td>
+<td align="right">40.1</td>
+<td align="right">42.6</td>
+</tr>
+<tr class="odd">
+<td align="left">To analyze</td>
+<td align="left">the data wi</td>
+<td align="right">th the pr</td>
+<td align="right">e measur</td>
+<td align="right">es as co</td>
+<td align="right">variates</td>
+<td align="right">, the stu</td>
+<td align="right">dent want</td>
+<td align="right">ed to stack the three pre measures into a single column and the three post measures into a single column. This is easy using <code>melt</code> from data.table.</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">pre_cols &lt;-<span class="st"> </span><span class="kw">paste</span>(<span class="st">&quot;pre&quot;</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">3</span>, <span class="dt">sep=</span><span class="st">&quot;_&quot;</span>)
+post_cols &lt;-<span class="st"> </span><span class="kw">paste</span>(<span class="st">&quot;post&quot;</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">3</span>, <span class="dt">sep=</span><span class="st">&quot;_&quot;</span>)
+fd &lt;-<span class="st"> </span><span class="kw">melt</span>(fd_wide,
+           <span class="dt">id.vars=</span><span class="kw">c</span>(<span class="st">&quot;fish_ID&quot;</span>, <span class="st">&quot;treatment&quot;</span>, <span class="st">&quot;length&quot;</span>),
+           <span class="dt">measure.vars=</span><span class="kw">list</span>(pre_cols, post_cols),
+           <span class="dt">variable.name=</span><span class="st">&quot;Order&quot;</span>,
+           <span class="dt">value.name=</span><span class="kw">c</span>(<span class="st">&quot;sprint_pre&quot;</span>, <span class="st">&quot;sprint_post&quot;</span>))
+knitr<span class="op">::</span><span class="kw">kable</span>(fd, <span class="dt">digits=</span><span class="dv">1</span>)</code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">fish_ID</th>
+<th align="left">treatment</th>
+<th align="right">length</th>
+<th align="left">Order</th>
+<th align="right">sprint_pre</th>
+<th align="right">sprint_post</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">fish1</td>
+<td align="left">cn</td>
+<td align="right">10.7</td>
+<td align="left">1</td>
+<td align="right">51.6</td>
+<td align="right">49.9</td>
+</tr>
+<tr class="even">
+<td align="left">fish2</td>
+<td align="left">cn</td>
+<td align="right">12.4</td>
+<td align="left">1</td>
+<td align="right">45.9</td>
+<td align="right">54.7</td>
+</tr>
+<tr class="odd">
+<td align="left">fish3</td>
+<td align="left">tr</td>
+<td align="right">10.3</td>
+<td align="left">1</td>
+<td align="right">52.4</td>
+<td align="right">54.1</td>
+</tr>
+<tr class="even">
+<td align="left">fish4</td>
+<td align="left">tr</td>
+<td align="right">15.2</td>
+<td align="left">1</td>
+<td align="right">53.7</td>
+<td align="right">53.0</td>
+</tr>
+<tr class="odd">
+<td align="left">fish1</td>
+<td align="left">cn</td>
+<td align="right">10.7</td>
+<td align="left">2</td>
+<td align="right">52.9</td>
+<td align="right">54.6</td>
+</tr>
+<tr class="even">
+<td align="left">fish2</td>
+<td align="left">cn</td>
+<td align="right">12.4</td>
+<td align="left">2</td>
+<td align="right">48.5</td>
+<td align="right">53.9</td>
+</tr>
+<tr class="odd">
+<td align="left">fish3</td>
+<td align="left">tr</td>
+<td align="right">10.3</td>
+<td align="left">2</td>
+<td align="right">57.6</td>
+<td align="right">50.4</td>
+</tr>
+<tr class="even">
+<td align="left">fish4</td>
+<td align="left">tr</td>
+<td align="right">15.2</td>
+<td align="left">2</td>
+<td align="right">51.9</td>
+<td align="right">40.1</td>
+</tr>
+<tr class="odd">
+<td align="left">fish1</td>
+<td align="left">cn</td>
+<td align="right">10.7</td>
+<td align="left">3</td>
+<td align="right">46.9</td>
+<td align="right">53.1</td>
+</tr>
+<tr class="even">
+<td align="left">fish2</td>
+<td align="left">cn</td>
+<td align="right">12.4</td>
+<td align="left">3</td>
+<td align="right">38.9</td>
+<td align="right">49.7</td>
+</tr>
+<tr class="odd">
+<td align="left">fish3</td>
+<td align="left">tr</td>
+<td align="right">10.3</td>
+<td align="left">3</td>
+<td align="right">55.6</td>
+<td align="right">49.2</td>
+</tr>
+<tr class="even">
+<td align="left">fish4</td>
+<td align="left">tr</td>
+<td align="right">15.2</td>
+<td align="left">3</td>
+<td align="right">49.8</td>
+<td align="right">42.6</td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 </div>
 <div id="saving-data" class="section level2">
