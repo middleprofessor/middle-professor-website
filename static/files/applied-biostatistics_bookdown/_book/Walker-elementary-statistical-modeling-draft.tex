@@ -21,7 +21,6 @@
 \usepackage{microtype}
 \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
 }{}
-\usepackage[margin=1in]{geometry}
 \usepackage{hyperref}
 \hypersetup{unicode=true,
             pdftitle={Elementary Statistical Modeling for Applied Biostatistics},
@@ -125,7 +124,7 @@
   \postauthor{\par}
       \predate{\centering\large\emph}
   \postdate{\par}
-    \date{Draft: 2019-10-14}
+    \date{Draft: 2019-10-26}
 
 \usepackage{booktabs}
 \usepackage{amsthm}
@@ -252,21 +251,37 @@ each time you start a new R session, you will need to load a package
 using the \texttt{library()} function. Now is a good time to import
 packages that we will use
 
+Open R Studio and choose the menu item ``Tools'' \textgreater{}
+``Install Packages''. In the ``packages'' input box, insert the names of
+packages to install the package. The names can be separated by spaces or
+commas, for example ``data.table, emmeans, ggplot2''. Make sure that
+``install dependencies'' is clicked before you click ``Install''.
+Packages that we will use in this book are
+
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
 \tightlist
 \item
-  Open R Studio and choose the menu item ``Tools'' \textgreater{}
-  ``Install Packages''
+  data.table -- improves functionality of data frames
 \item
-  In the ``packages'' input box, insert ``ggplot2, data.table, emmeans,
-  lme4, reshape2''. Make sure that ``install dependencies'' is clicked
-  before you click ``Install''
+  readxl -- elegant importing from microsoft Excel spreadsheets
+\item
+  janitor -- we use the function clean\_names from this package
+\item
+  ggplot2 -- we use this for plotting
+\item
+  ggpubr -- we use this to make ggplots a bit easier
+\item
+  emmeans -- we use this to compute modeled means and contrasts
+\item
+  nlme, lme4, lmerTest -- these are packages for multilevel modeling
+\item
+  MASS -- we will use glm.nb from this package
 \end{enumerate}
 
 Again, once these are installed, you don't need to do this again. You
 simply need to use the \texttt{library()} function at the start of a
-script.
+markdown script.
 
 \section{Create an R Studio Project for this
 Class}\label{create-an-r-studio-project-for-this-class}
@@ -290,7 +305,7 @@ Class}\label{create-an-r-studio-project-for-this-class}
   \item
     ``notebooks'' -- this is where your R notebooks are stored
   \item
-    ``R'' -- this is where R scripts are stored
+    ``R'' -- this is where additional R scripts are stored
   \item
     ``data'' -- this is where data that we download from public archives
     are stored
@@ -325,6 +340,8 @@ A typical statistical modeling project will consist of:
 \item
   analysis
 \item
+  model checking
+\item
   generating plots
 \item
   generating tables
@@ -333,7 +350,7 @@ A typical statistical modeling project will consist of:
   the interpretation of the results (plots and tables)
 \end{enumerate}
 
-The best practice for reproducible research is to have all six of these
+The best practice for reproducible research is to have all of these
 steps in your R Notebook. Too many research projects are not
 reproducible because the data were cleaned in Excel, and then different
 parts of the data were separately imported into a GUI statistics
@@ -905,7 +922,7 @@ ggplot2 package extensively.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/plotchickdata-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/data-plotchickdata-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -914,7 +931,7 @@ ggplot2 package extensively.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/plotchickdata-2.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/data-plotchickdata-2.pdf}
 
 \subsection{Text File}\label{text-file}
 
@@ -986,7 +1003,7 @@ Here is a reproduction of Fig 2 from the journal article.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/plot-bee-fig-2-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/data-plot-bee-fig-2-1.pdf}
 
 The plot suggests immediately some problems with the plot itself and the
 associated analysis. First, the y-axis is counts, which means that
@@ -1039,79 +1056,79 @@ and analysis to later chapters.
 
 \includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/data-alternative-plots-3.pdf}
 
-\section{Tidying Data}\label{tidying-data}
+\section{Reshaping Data}\label{reshaping-data}
 
 In general, your data should be in long format. What is long format?
 Consider data from a simple experiment with a response variable and a
 treatment variable with three levels. A common way to organize these
 data in Microsoft Excel is in \textbf{wide format}.
 
-\begin{table}[t]
+\begin{table}
 
 \caption{\label{tab:unnamed-chunk-7}Root mass for three treatment levels in wide format}
 \centering
-\begin{tabular}{r|r|r}
+\begin{tabular}[t]{r|r|r}
 \hline
 control & extract & charcoal\\
 \hline
-10.80 & 3.88 & 9.50\\
+10.18 & 4.34 & 9.57\\
 \hline
-11.19 & 4.18 & 11.53\\
+10.40 & 3.74 & 8.59\\
 \hline
-8.31 & 5.28 & 9.55\\
+8.61 & 4.58 & 9.69\\
 \hline
-11.24 & 2.27 & 9.24\\
+11.04 & 4.12 & 8.07\\
 \hline
-9.89 & 5.69 & 7.95\\
+9.24 & 2.44 & 7.63\\
 \hline
 \end{tabular}
 \end{table}
 
 Wide format is efficient for computations in a spreadsheet, such as
-computing means and standard deviations of columns and for plotting. For
-most statistical analyses in R (and most statistics software), all
+computing means and standard deviations of columns, and for plotting.
+For most statistical analyses in R (and most statistics software), all
 measures of a variable (such as root biomass in the example above)
 should be in a single column with a second column identifying the
 treatment level associated with each measure. This is called
 \textbf{long format}.
 
-\begin{table}[t]
+\begin{table}
 
 \caption{\label{tab:unnamed-chunk-8}Root mass for three treatment levels in long format}
 \centering
-\begin{tabular}{l|r}
+\begin{tabular}[t]{l|r}
 \hline
 treatment & root\_mass\\
 \hline
-control & 10.80\\
+control & 10.18\\
 \hline
-control & 11.19\\
+control & 10.40\\
 \hline
-control & 8.31\\
+control & 8.61\\
 \hline
-control & 11.24\\
+control & 11.04\\
 \hline
-control & 9.89\\
+control & 9.24\\
 \hline
-extract & 3.88\\
+extract & 4.34\\
 \hline
-extract & 4.18\\
+extract & 3.74\\
 \hline
-extract & 5.28\\
+extract & 4.58\\
 \hline
-extract & 2.27\\
+extract & 4.12\\
 \hline
-extract & 5.69\\
+extract & 2.44\\
 \hline
-charcoal & 9.50\\
+charcoal & 9.57\\
 \hline
-charcoal & 11.53\\
+charcoal & 8.59\\
 \hline
-charcoal & 9.55\\
+charcoal & 9.69\\
 \hline
-charcoal & 9.24\\
+charcoal & 8.07\\
 \hline
-charcoal & 7.95\\
+charcoal & 7.63\\
 \hline
 \end{tabular}
 \end{table}
@@ -1122,7 +1139,7 @@ There are many functions to tidy data from wide to long. \texttt{melt()}
 from the data.table package is especially useful. It is data.table's
 version of melt from the reshape2 package.
 
-The major arguments of melt are
+The major arguments of data.table::melt are
 
 \texttt{melt(data,\ id.vars,\ measure.vars,\ variable.name,\ value.name)}
 
@@ -1174,10 +1191,10 @@ and used the column header as the level name.
 \end{Highlighting}
 \end{Shaded}
 
-Look at the before and after using View. For these data, the number of
-measures within the different treatments differs, and as a consequence,
-there are multiple cells with \texttt{NA} which indicates a missing
-value. To delete the rows with the missing values, use
+Look at the wide and long data frames using View. For these data, the
+number of measures within the different treatments differs, and as a
+consequence, there are multiple cells with \texttt{NA} which indicates a
+missing value. To delete the rows with the missing values, use
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -1236,7 +1253,7 @@ honey bee gut. PLoS biology, 15(12), p.e2003467.
 \end{Highlighting}
 \end{Shaded}
 
-\subsubsection{Stacking multiple sets of
+\subsection{Stacking multiple sets of
 columns}\label{stacking-multiple-sets-of-columns}
 
 This example comes from my lab, where a student measured sprint speed in
@@ -1274,10 +1291,11 @@ fish4 & tr & 15.2 & 53.7 & 51.9 & 49.8 & 53.0 & 40.1 & 42.6\\
 \hline
 \end{tabular}
 
-To analyze the data with the pre measures as covariates, the student
-wanted to stack the three pre measures into a single column and the
-three post measures into a single column. This is easy using
-\texttt{melt} from data.table.
+To analyze the response (post-treatment sprint) adjusted for
+pre-treatment sprint, the three pre-treatment sprint measures need to be
+stacked into a single column and the three post-treatment measures need
+to be stacked into a single column. This is easy using
+\texttt{data.table::melt}.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -1322,43 +1340,115 @@ fish4 & tr & 15.2 & 3 & 49.8 & 42.6\\
 \hline
 \end{tabular}
 
-\section{Saving Data}\label{saving-data}
+\section{Miscellaneous data
+wrangling}\label{miscellaneous-data-wrangling}
 
-For many projects, it is uncommon to save data. I might save simulated
-data if it takes a long time (hours or days) to generate these and I
-simply want to work with the simulated data in the future (and not have
-to regenerate it). Or I might save processed data if it takes a long
-time to process it and I want to analyze the processed data in the
-future and not have to re-process it.
+\hypertarget{vole-data}{\subsection{Vole data}\label{vole-data}}
 
-Here, we will create a small, simulated data set and save it to the
-``output'' folder. You should have an ``output'' folder directly
-(one-level) inside the project folder. Create a folder within the output
-folder names ``chapter\_02''. Make sure that you have the script
-assigning the path to the output folder code in the setup chunk.
+This books uses data on the lifespans of voles given three different
+treatments (control, vitamin E supplementation, vitamin C
+supplmentation), from
+
+Selman, C., McLaren, J.S., Collins, A.R., Duthie, G.G. and Speakman,
+J.R., 2013. Deleterious consequences of antioxidant supplementation on
+lifespan in a wild-derived mammal. Biology letters, 9(4), p.20130432.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Source: Dryad Digital Repository.
+  \url{https://doi.org/10.5061/dryad.31cc4/1}
+\item
+  File: ``RSBL-2013-0432 vole data.xlsx''
+\item
+  Sheet: ``COLD VOLES LIFESPAN''
+\end{enumerate}
+
+The vole data were archived in a format that requires some wrangling
+before it can be analyzed. The ``lifespan (days)'' column contains the
+lifespan for all three treatment levels, that is, the lifespan values
+are ``stacked'' or in ``long'' format. What is unusual is that there is
+no ``treatment'' column specifying the three treatment levels (control,
+vitamin E, vitamin C). Instead there are control, vitamin E, and vitamin
+C columns that contain a 1, if the lifespan value belongs to that
+treatment, and a NULL value if not. On import, the NULL value is
+replaced with NA, to indicate ``missing''. In order to analyze the data,
+the three treatment assignment columns need to be combined into a single
+``treatment'' column.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\KeywordTok{set.seed}\NormalTok{(}\DecValTok{1}\NormalTok{)}
-\NormalTok{n <-}\StringTok{ }\DecValTok{10}
-\NormalTok{beta_}\DecValTok{0}\NormalTok{ <-}\StringTok{ }\FloatTok{10.3}
-\NormalTok{beta_}\DecValTok{1}\NormalTok{ <-}\StringTok{ }\FloatTok{1.1}
-\NormalTok{sigma <-}\StringTok{ }\FloatTok{1.5}
-\NormalTok{fake_data <-}\StringTok{ }\KeywordTok{data.table}\NormalTok{(}\DataTypeTok{treatment=}\KeywordTok{rep}\NormalTok{(}\KeywordTok{c}\NormalTok{(}\StringTok{"Cn"}\NormalTok{,}\StringTok{"Tr"}\NormalTok{), }\DataTypeTok{each=}\NormalTok{n),}
-                        \DataTypeTok{weight=}\KeywordTok{c}\NormalTok{(}\KeywordTok{rnorm}\NormalTok{(n, }\DataTypeTok{mean=}\NormalTok{beta_}\DecValTok{0}\NormalTok{, }\DataTypeTok{sd=}\NormalTok{sigma), }
-                                 \KeywordTok{rnorm}\NormalTok{(n, }\DataTypeTok{mean=}\NormalTok{beta_}\DecValTok{0} \OperatorTok{+}\StringTok{ }\NormalTok{beta_}\DecValTok{1}\NormalTok{, }\DataTypeTok{sd=}\NormalTok{sigma)))}
-\KeywordTok{ggstripchart}\NormalTok{(}\DataTypeTok{data=}\NormalTok{fake_data, }\DataTypeTok{x=}\StringTok{"treatment"}\NormalTok{, }\DataTypeTok{y=}\StringTok{"weight"}\NormalTok{, }\DataTypeTok{add=}\StringTok{"mean_ci"}\NormalTok{)}
+\NormalTok{folder <-}\StringTok{ "Data from Deleterious consequences of antioxidant supplementation on lifespan in a wild-derived mammal"}
+\NormalTok{filename <-}\StringTok{ "RSBL-2013-0432 vole data.xlsx"}
+\NormalTok{file_path <-}\StringTok{ }\KeywordTok{here}\NormalTok{(data_path, folder, filename)}
+\NormalTok{vole <-}\StringTok{ }\KeywordTok{data.table}\NormalTok{(}\KeywordTok{read_excel}\NormalTok{(file_path, }\DataTypeTok{sheet=}\StringTok{"COLD VOLES LIFESPAN"}\NormalTok{, }\DataTypeTok{range=}\StringTok{"a2:d98"}\NormalTok{))}
+\CommentTok{# clean column names}
+\NormalTok{vole <-}\StringTok{ }\KeywordTok{clean_names}\NormalTok{(vole)}
+
+\CommentTok{# create treatment column}
+\CommentTok{# in rows where control=1, set treatment value to "control"}
+\NormalTok{vole[control}\OperatorTok{==}\DecValTok{1}\NormalTok{, treatment}\OperatorTok{:}\ErrorTok{=}\StringTok{"control"}\NormalTok{]}
+\CommentTok{# in rows where vitamin_e=1, set treatment value to "vitamin_e"}
+\NormalTok{vole[vitamin_e}\OperatorTok{==}\DecValTok{1}\NormalTok{, treatment}\OperatorTok{:}\ErrorTok{=}\StringTok{"vitamin_E"}\NormalTok{]}
+\CommentTok{# in rows where vitamin_c=1, set treatment value to "vitamin_c"}
+\NormalTok{vole[vitamin_c}\OperatorTok{==}\DecValTok{1}\NormalTok{, treatment}\OperatorTok{:}\ErrorTok{=}\StringTok{"vitamin_C"}\NormalTok{]}
+
+\CommentTok{# change column "lifespan_days" to "lifespan"}
+\KeywordTok{setnames}\NormalTok{(vole, }\DataTypeTok{old=}\StringTok{"lifespan_days"}\NormalTok{, }\StringTok{"lifespan"}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/data-fake-data-1.pdf}
+Plot the data with a stripchart (often called a dot plot) to view the
+lifespan as a function of treatment level
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{save_data_folder <-}\StringTok{ "chapter_02"}
-\NormalTok{save_filename <-}\StringTok{ "my_first_fake_data.txt"}
-\NormalTok{save_file_path <-}\StringTok{ }\KeywordTok{here}\NormalTok{(output_path, save_data_folder, save_filename)}
-\KeywordTok{write.table}\NormalTok{(fake_data, save_file_path, }\DataTypeTok{sep=}\StringTok{"}\CharTok{\textbackslash{}t}\StringTok{"}\NormalTok{, }\DataTypeTok{quote=}\OtherTok{FALSE}\NormalTok{)}
+\KeywordTok{ggstripchart}\NormalTok{(}\DataTypeTok{x=}\StringTok{"treatment"}\NormalTok{, }\DataTypeTok{y=}\StringTok{"lifespan"}\NormalTok{, }\DataTypeTok{data=}\NormalTok{vole,}
+             \DataTypeTok{add =} \KeywordTok{c}\NormalTok{(}\StringTok{"mean_ci"}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/data-vole-plot-1.pdf}
+
+\section{Saving Data}\label{saving-data}
+
+For many projects, it is uncommon to save data. I might save simulated
+data if it takes a long time (tens of minutes to hours or even days) to
+generate these and I simply want to work with the simulated data in the
+future and not have to regenerate it. Or I might save processed data if
+it takes a long time import and process and I want to analyze the
+processed data in the future and not have to re-import and process it.
+
+If the data will only be used in this or future R projects, the data can
+be saved as an R object using \texttt{saveRDS()}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{save_file_path <-}\StringTok{ }\KeywordTok{here}\NormalTok{(output_path, }\StringTok{"vole.Rds"}\NormalTok{)}
+\KeywordTok{saveRDS}\NormalTok{(}\DataTypeTok{object =}\NormalTok{ vole, }\DataTypeTok{file =}\NormalTok{ save_file_path)}
+
+\CommentTok{# to read this use}
+\NormalTok{vole <-}\StringTok{ }\KeywordTok{readRDS}\NormalTok{(save_file_path)}
+\end{Highlighting}
+\end{Shaded}
+
+Reading a large .Rds file is very fast compared to reading the same data
+stored as a text file. However, if the data need to be imported into
+some other software, such as a spreadsheet, then save the data as a text
+file.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# save the data to output folder}
+
+\CommentTok{# tab delimited}
+\NormalTok{save_file_path <-}\StringTok{ }\KeywordTok{here}\NormalTok{(output_path, }\StringTok{"vole.txt"}\NormalTok{)}
+\KeywordTok{write.table}\NormalTok{(vole, save_file_path, }\DataTypeTok{sep=}\StringTok{"}\CharTok{\textbackslash{}t}\StringTok{"}\NormalTok{, }\DataTypeTok{quote=}\OtherTok{FALSE}\NormalTok{)}
+
+\CommentTok{# comma delimited}
+\NormalTok{save_file_path <-}\StringTok{ }\KeywordTok{here}\NormalTok{(output_path, }\StringTok{"vole.csv"}\NormalTok{)}
+\KeywordTok{write.table}\NormalTok{(vole, save_file_path, }\DataTypeTok{sep=}\StringTok{","}\NormalTok{, }\DataTypeTok{quote=}\OtherTok{FALSE}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
@@ -1366,7 +1456,7 @@ Look at your project directory to make sure the file is where it should
 be! We used \texttt{write.table()} to create a tab-delimited text file
 using \texttt{sep="\textbackslash{}t"} to specify tabs to separate the
 row elements. ``\t'' is the standard character string for a tab. Check
-in your Fake\_Data folder and open the file in a text editor.
+in your output folder and open the file in a text editor.
 
 \section{Problems}\label{problems}
 
@@ -1391,13 +1481,6 @@ in your Fake\_Data folder and open the file in a text editor.
 \item
   (grad students only) Download and plot data from a Dryad Repository
   dataset of your choice.
-\item
-  (grad students only) Create fake experimental data with three
-  treatment levels (control, lo\_temp, high\_temp). This will require
-  three parameters: an intercept (beta\_0), an effect of lo\_temp
-  (beta\_1), and an effect of high\_temp (beta\_2). You should be able
-  to plug and play from the script above even if you don't underdstand
-  at this point what any of it is! Plot it as a strip chart, as above.
 \end{enumerate}
 
 \includegraphics{images/Dung_beetles_reduce_livestock-fig_1.png}
@@ -2645,32 +2728,9 @@ each variable) instead of the product of a deviation with itself.
 
 \section{\texorpdfstring{\(p\)-values}{p-values}}\label{p-values-1}
 
-Let's use the vole data to introduce the \emph{p}-value. The vole data
-were archived in a format that requires some cleaning before it can be
-analyzed. The ``lifespan (days)'' column contains the lifespan for all
-three treatment levels, that is, the lifespan values are ``stacked'' or
-in ``long'' format. What is unusual is that there is no ``treatment''
-column specifying the three treatment levels (control, vitamin E,
-vitamin C). Instead there are control, vitamin E, and vitamin C columns
-that contain a 1, if the lifespan value belongs to that treatment, and a
-NULL value if not. On import, the NULL value is replaced with NA, to
-indicate ``missing''. In order to analyze the data, the three treatment
-assignment columns need to be combined into a single ``treatment''
-column.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{folder <-}\StringTok{ "Data from Deleterious consequences of antioxidant supplementation on lifespan in a wild-derived mammal"}
-\NormalTok{filename <-}\StringTok{ "RSBL-2013-0432 vole data.xlsx"}
-\NormalTok{file_path <-}\StringTok{ }\KeywordTok{here}\NormalTok{(data_path, folder, filename)}
-\NormalTok{vole <-}\StringTok{ }\KeywordTok{data.table}\NormalTok{(}\KeywordTok{read_excel}\NormalTok{(file_path, }\DataTypeTok{sheet=}\StringTok{"COLD VOLES LIFESPAN"}\NormalTok{, }\DataTypeTok{range=}\StringTok{"a2:d98"}\NormalTok{))}
-\KeywordTok{setnames}\NormalTok{(vole, }\DataTypeTok{old=}\KeywordTok{colnames}\NormalTok{(vole), }\DataTypeTok{new=}\KeywordTok{c}\NormalTok{(}\StringTok{"lifespan"}\NormalTok{, }\StringTok{"control"}\NormalTok{, }\StringTok{"vitamin_E"}\NormalTok{, }\StringTok{"vitamin_C"}\NormalTok{))}
-\CommentTok{# not sure why ifelse fails so this is alternative}
-\NormalTok{vole[control}\OperatorTok{==}\DecValTok{1}\NormalTok{, treatment}\OperatorTok{:}\ErrorTok{=}\StringTok{"control"}\NormalTok{]}
-\NormalTok{vole[vitamin_C}\OperatorTok{==}\DecValTok{1}\NormalTok{, treatment}\OperatorTok{:}\ErrorTok{=}\StringTok{"vitamin_C"}\NormalTok{]}
-\NormalTok{vole[vitamin_E}\OperatorTok{==}\DecValTok{1}\NormalTok{, treatment}\OperatorTok{:}\ErrorTok{=}\StringTok{"vitamin_E"}\NormalTok{]}
-\end{Highlighting}
-\end{Shaded}
+Let's use the vole data to introduce the \emph{p}-value. The archived
+format of these data requires some wrangling -- a method for this is in
+\protect\hyperlink{vole-data}{Vole data}.
 
 A typical analysis would compare the means of the two supplement
 treatment levels with the control treatment level and use a
@@ -2698,23 +2758,24 @@ lifespan.''
 
 A \(p\) value \emph{is a continuous measure of evidence against the
 null}. As long as the data approximate the assumptions of the null
-hypothesis pretty well, a very small \emph{p}-value, such as 0.002 or
-0.0005, is pretty good evidence against the null hypothesis -- but does
-not mean ``an effect exists''. To show an effect exists, we should have
-small \emph{p}-values in multiple replicates \emph{and} we should
-rigorously probe the hypothesis with different experiments that
-challenge the hypothesis in different ways. A small \(p\) is evidence
-for a research program to move forward with replication and probing. A
-big \emph{p}-value, say 0.22 or 0.76, is pretty weak evidence against
-the null, but does not mean ``there is no effect.'' If an experiment is
-well designed, a big \(p\) could suggest abandoning any hypotheses that
+hypothesis pretty well, a very small \emph{p}-value, such as 0.0005, is
+pretty good evidence against the null hypothesis -- but does not mean
+``an effect exists''. To show an effect exists, we should have small
+\emph{p}-values in multiple replicates \emph{and} we should rigorously
+probe the hypothesis with different experiments that challenge the
+hypothesis in different ways. A small \(p\) is evidence for a research
+program to move forward with replication and probing. A big
+\emph{p}-value, say 0.22 or 0.76, is pretty weak evidence against the
+null, but does not mean ``there is no effect.'' If an experiment is well
+designed, a big \(p\) could suggest abandoning any hypotheses that
 predict biologically consequential effects. Unfortunately, a big \(p\)
 could also reflect a weak experimental design. Between small and big
-\(p\) values, such as 0.009 or 0.011, problems arise. These intermediate
+\(p\) values, such as 0.009 or 0.11, problems arise. These intermediate
 \emph{p}-values beg for replication. A major problem of inference using
-\(p\) values is that there is no sharp boundaries between these three
-regions. Instead biologists typically use the \(p < 0.05\) as a sharp
-boundary to declare that an effect exists or not.
+\(p\) values is that there is no sharp boundaries in how to interpret
+p-values. Biologists, encouraged by both the literature and textbooks,
+typically use \(p < 0.05\) as a sharp boundary to declare that an effect
+exists or not. This ``dichotomania'' is discussed below.
 
 Okay. so what \emph{is} a \emph{p}-value? When we do a \emph{t}-test, we
 get a \emph{p}-value. There are several ways to think about this
@@ -2840,10 +2901,10 @@ which is what most biology researchers call this type of chart.
 
 \subsection{the Null Distribution}\label{the-null-distribution}
 
-The mean lifespan in the vitamin\_E treatment is -89.9 days shorter than
+The mean lifespan in the vitamin\_E treatment is 89.9 days shorter than
 the mean lifespan in the control treatment. And, the mean lifespan in
-the vitamin\_E treatment is -115.1 days shorter than the mean lifespan
-in the control treatment. These are the measured effects, or the
+the vitamin\_E treatment is 115.1 days shorter than the mean lifespan in
+the control treatment. These are the measured effects, or the
 \textbf{observed differences in means}. How confident are we in these
 effects? Certainly, if the researchers did the experiment with
 \emph{two} control treatment groups, they would measure some difference
@@ -4883,33 +4944,19 @@ comparing the effects between the groups)
 \emph{X}}{A linear model with a single, categorical X}}\label{a-linear-model-with-a-single-categorical-x}
 
 \section{\texorpdfstring{A linear model with a single, categorical
-\emph{X} is the engine behind a single factor (one-way) ANOVA and a
-t-test is a special case of this
-model.}{A linear model with a single, categorical X is the engine behind a single factor (one-way) ANOVA and a t-test is a special case of this model.}}\label{a-linear-model-with-a-single-categorical-x-is-the-engine-behind-a-single-factor-one-way-anova-and-a-t-test-is-a-special-case-of-this-model.}
+\emph{X} estimates the effects of \emph{X} on the
+response.}{A linear model with a single, categorical X estimates the effects of X on the response.}}\label{a-linear-model-with-a-single-categorical-x-estimates-the-effects-of-x-on-the-response.}
 
 To introduce modeling with a single, categorical \(X\) variable, I'll
-use the vole data from
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\tightlist
-\item
-  Source: Dryad Digital Repository.
-  \url{https://doi.org/10.5061/dryad.31cc4/1}
-\item
-  File: ``RSBL-2013-0432 vole data.xlsx''
-\item
-  Sheet: ``COLD VOLES LIFESPAN''
-\end{enumerate}
-
-Normal cellular metabolism creates reactive oxygen species (ROS) that
-can disrupt cell function and potentially cause cell damage.
-Anti-oxidants are molecules that bind ROS, inhibiting their ability to
-disrupt cell activity. A working hypothesis for many years is that
-supplemental anti-oxidants should improve cell function and, scaling up,
-whole-animal function (such as lifespan). The vole data explores this
-with supplemental Vitamins C and E, which are anti-oxidants, in the diet
-of the short-tailed field vole (\emph{Microtus agrestis}).
+use the \protect\hyperlink{vole-data}{Vole data} from Chapter 2. Normal
+cellular metabolism creates reactive oxygen species (ROS) that can
+disrupt cell function and potentially cause cell damage. Anti-oxidants
+are molecules that bind ROS, inhibiting their ability to disrupt cell
+activity. A working hypothesis for many years is that supplemental
+anti-oxidants should improve cell function and, scaling up, whole-animal
+function (such as lifespan). The vole data explores this with
+supplemental Vitamins C and E, which are anti-oxidants, in the diet of
+the short-tailed field vole (\emph{Microtus agrestis}).
 
 The goal of the study is to measure the effect of anti-oxidants on
 lifespan. The researchers randomly assigned the voles to one of thre
@@ -4923,12 +4970,21 @@ each anti-oxidant was supplemented). The response (\(Y\)) is
 
 The linear model with a categorical \(X\) variable with three levels is
 not immediately obvious, and so I don't present the model until after
-showing the table of model coefficients
+showing the table of model coefficients. The verbal model is
+
+\begin{equation}
+lifespan \sim treatment
+\end{equation}
+
+which can be read as ``lifespan as a function of treatment''.
 
 \subsection{Table of model
 coefficients}\label{table-of-model-coefficients}
 
-Here is the table of coefficients from the linear model fit
+The \emph{table of coefficients} from a linear model fit to some data is
+critically important for understanding a linear model and interpreting
+results. Read this section carefully. The coefficient table for a linear
+model fit to the vole data is
 
 \begin{tabular}{l|r|r|r|r}
 \hline
@@ -4936,27 +4992,30 @@ Here is the table of coefficients from the linear model fit
 \hline
 (Intercept) & 503.4 & 27.4 & 18.4 & 0.000\\
 \hline
-treatmentvitamin\_E & -89.9 & 52.5 & -1.7 & 0.090\\
-\hline
 treatmentvitamin\_C & -115.1 & 54.5 & -2.1 & 0.037\\
+\hline
+treatmentvitamin\_E & -89.9 & 52.5 & -1.7 & 0.090\\
 \hline
 \end{tabular}
 
-The table has estimates for three parameters. The first estimate (the
-intercept) is the mean response in the reference level. Here the
-reference level is the ``control'' group. The additional estimates are
-the differences in the mean between each of the other treatment levels
-and the reference level. These are the ``effects'' in the model. So
-typically with categorical \(X\), when we speak of an \emph{effect} we
-mean a difference in means. These estimates and their meaning are
-illustrated in Figure \ref{fig:vole-mean-plot}.
+The table has three values in the column ``Estimate''. The first
+estimate, that for ``(intercept)'' is the mean response in the reference
+level. Here, the reference level is the ``control'' group. The second
+estimate, that for ``treatmentvitamin\_C'' is the difference between the
+mean of the vitamin C group and the the mean of the reference (control)
+group. The \emph{direction} of this difference is important; it is
+\(\bar{Y}_{vitamin\_c} - \bar{Y}_{control}\), that is the non-reference
+level minus the reference level. The third estimate, that for
+``treatmentvitamin\_E'' is just like the second estimate, except for the
+vitamin E group. That is, it is
+\(\bar{Y}_{vitamin\_e} - \bar{Y}_{control}\). The 2nd and 3rd values in
+the ``Estimate'' columns are the ``effects'' in the model. These effects
+are ``what happens'' when we add a treatment, such as vitamin E
+supplementation. When we add the vitamin E supplement, we find the
+lifespan changes by -89.9166667 days, relative to the control.
 
-(note. The default in R is to set the level that is first alphabetically
-as the reference level. In the vole data, ``control'' comes before
-``vitamin\_E'' and ``vitamin\_C'' alphabetically, and so by default, it
-is the reference level. This makes sense for these data -- we want to
-compare the lifespan of the vitamins E and C groups to that of the
-control group. The reference level can be changed of course.)
+So typically with categorical \(X\), when we speak of an \emph{effect}
+we mean a difference in means.
 
 \begin{figure}
 \centering
@@ -4983,29 +5042,37 @@ The linear model for a single, continuous \(X\) with three factor levels
 is
 
 \begin{equation}
-lifespan = \beta_0 + \beta_1 vitamin\_E + \beta_2 vitamin\_C + \varepsilon
+lifespan = \beta_0 + \beta_1 vitamin\_C + \beta_2 vitamin\_E + \varepsilon
 \end{equation}
 
-and the estimates in the coefficient table are the coefficients of the
-fit model
+The estimates in the coefficient table are the estimates of the
+parameters in the linear model. The estimates are the coefficients of
+the fit model
 
 \begin{equation}
-lifespan_i = b_0 + b_1 vitamin\_E + b_2 vitamin\_C + e_i
+lifespan_i = b_0 + b_1 vitamin\_C_i + b_2 vitamin\_E_i + e_i
 \label{eq:model-cat-x}
 \end{equation}
 
-Remember, \(b_0\) is the mean of the control group, \(b_1\) is the
-difference in means between the vitamin E and control groups, and
-\(b_2\) is the difference in means between the vitamin C and control
-groups (Figure \ref{fig:vole-mean-plot}).
+Given the interpretation of the estimates above, \(b_0\) is the mean of
+the control group, \(b_1\) is the difference in means between the
+vitamin C and control groups, and \(b_2\) is the difference in means
+between the vitamin E and control groups. These estimates and their
+meaning are illustrated in Figure \ref{fig:vole-mean-plot}. Take a while
+to understand this plot. Be able to ``visualize'' the meaning of the
+coefficients of a linear model in this way.
 
-In this model, \(vitamin\_E\) and \(vitamin\_C\) are \textbf{dummy
-variables} that contain a one, if the data is from that treatment level,
-and zero otherwise. This is called dummy coding or treatment coding. The
-\texttt{lm} function creates these dummy variables under the table, in
-something called the \textbf{model matrix}, which we'll cover in the
-next chapter. You won't see these columns in your data. But if you did,
-it would look something like this
+Model \eqref{eq:model-cat-x} is a regression model. A regression model
+requires that the \(X\) variables be numeric, so how can this model be a
+regression model? What are the numeric values of \(vitamin_C\) and
+\(vitamin_E\)? The answer is very clever: \(vitamin\_E\) and
+\(vitamin\_C\) are \textbf{dummy variables} that contain a one, if
+response \(i\) is from that treatment level, and zero otherwise. This is
+called dummy coding or treatment coding. The \texttt{lm} function
+creates these dummy variables under the table, in something called the
+\textbf{model matrix}, which we'll cover in another chapter. You won't
+see these columns in your data. But if you did, it would look something
+like this
 
 \begin{tabular}{r|l|r|r}
 \hline
@@ -5025,12 +5092,12 @@ lifespan & treatment & vitamin\_E & vitamin\_C\\
 \hline
 \end{tabular}
 
-There are alternative coding methods. Dummy coding is the default in R.
-Note that the method of coding can make a difference in an ANOVA table,
-and many published papers using R have published incorrect
-interpretations of ANOVA table outputs. This is both getting ahead of
-ourselves and somewhat moot, because I don't advocate publishing ANOVA
-tables.
+There are alternative coding methods. Dummy coding is the default in R
+and it makes since when thinking about experimental data. Note that the
+method of coding can make a difference in an ANOVA table, and many
+published papers using R have published incorrect interpretations of
+ANOVA table outputs. This is both getting ahead of ourselves and
+somewhat moot, because I don't advocate publishing ANOVA tables.
 
 \subsubsection{\texorpdfstring{Some math to convince you that the
 intercept of a linear model with a categorical \(X\) is the mean of the
@@ -5074,9 +5141,9 @@ and since \(\mathrm{E}(lifespan|X_1=0, X_2=0) = b_0\) then
 b_1 = \mathrm{E}(lifespan|X_1=1, X_2=0) - \mathrm{E}(lifespan|X_1=0, X_2=0)
 \end{equation}
 
-or, the coefficient of vitamin E is the difference in means between the
-vitamin E and control groups, which is also a slope since this is the
-expected difference given a one unit increase in \(vitamin\_E\).
+or, the coefficient of vitamin C is the difference in means between the
+vitamin C and control groups, which is also a slope since this is the
+expected difference given a one unit increase in \(vitamin\_C\).
 
 \subsection{Reporting results}\label{reporting-results-1}
 
@@ -5130,11 +5197,11 @@ the reference level is the control group.
 
 \subsubsection{In-text reporting}\label{in-text-reporting}
 
-``The mean lifespan of cold-reared voles supplmented with vitamin E was
--89.9 days shorter than the mean lifespan for the control group (95\%
-CI: -194.1, 14.3). The mean lifespan of cold-reared voles supplmented
-with vitamin C was -115.1 days shorter than the mean lifespan for the
-control group (95\% CI: -223.2, -6.9).
+``The mean lifespan of cold-reared voles supplemented with vitamin E was
+89.9 days shorter than the mean lifespan for the control group (95\% CI:
+-194.1, 14.3). The mean lifespan of cold-reared voles supplmented with
+vitamin C was 115.1 days shorter than the mean lifespan for the control
+group (95\% CI: -223.2, -6.9).
 
 \subsubsection{Correct interpretation of the Confidence Interval is
 key}\label{correct-interpretation-of-the-confidence-interval-is-key}
@@ -5154,53 +5221,8 @@ have important ecological, behavioral, or fitness consequences.
 
 \section{Working in R}\label{working-in-r-1}
 
-\subsection{\texorpdfstring{Exploring the relationship between \emph{Y}
-and
-\emph{X}}{Exploring the relationship between Y and X}}\label{exploring-the-relationship-between-y-and-x}
-
-Questions
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\tightlist
-\item
-  Import the vole data from the Dryad repository as the data.table
-  \texttt{vole\_wide}. Replace the spaces in the column labels with the
-  underscore ``\_``.
-\end{enumerate}
-
-The data are in ``wide'' format. A pretty good script for for converting
-these to long format is
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{vole_long <-}\StringTok{ }\KeywordTok{melt}\NormalTok{(vole_wide, }\DataTypeTok{measure.vars=}\KeywordTok{c}\NormalTok{(}\StringTok{"control"}\NormalTok{, }\StringTok{"vitamin_E"}\NormalTok{, }\StringTok{"vitamin_C"}\NormalTok{), }\DataTypeTok{variable.name=}\StringTok{"treatment"}\NormalTok{)}
-\NormalTok{vole <-}\StringTok{ }\KeywordTok{na.omit}\NormalTok{(vole_long)}
-\CommentTok{# melt is from reshape2 package and is a workhorse in R}
-\CommentTok{# the resulting data frame has 3 stacked copies of the same rows}
-\CommentTok{# na.omit removes the superfluous two extra sets of rows created by melt}
-\CommentTok{# the more compact way to do this is combine the steps:}
-\CommentTok{# vole <- na.omit(melt(vole_wide, measure.vars=c("control", "vitamin_E", "vitamin_C"))}
-\CommentTok{# but I suggest two steps so you can see what melt does. This isn't the best example of using melt.}
-\end{Highlighting}
-\end{Shaded}
-
-Use the ggpubr package to create a box plot, grouped by treatment, with
-superimposed strip chart (``dots'')
-
-Questions
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\setcounter{enumi}{1}
-\tightlist
-\item
-  Do the response as a function of group look fairly normally
-  distributed or are there red flags such as skewness, outliers, bimodal
-  clusters, etc.
-\item
-  Is the direction of the effect consistent with the expected direction?
-\end{enumerate}
+Import the vole data from the Dryad repository using the information
+above and in Chapter 2 section \protect\hyperlink{vole-data}{Vole data}.
 
 \subsection{Fitting the model}\label{fitting-the-model}
 
@@ -5221,35 +5243,80 @@ model.
 All of the same scripts to access the information in \texttt{fit} that
 we used with the continuous \(X\) analysis are the same. For example,
 the base R \texttt{summary} function gives the same information as in
-the continuous \(X\) example.
-
-Questions
+the continuous \(X\) example. Other useful functions on the lm object
+(``fit'') are
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
-\setcounter{enumi}{3}
 \tightlist
 \item
-  Review different output in the \texttt{summary} function and list
-  which are useful and which are not so useful and why.
+  \texttt{coefficients(fit)} and \texttt{coefficients(summary(fit))}.
+  Note the difference between these. The first is useful if we just want
+  to extract the coefficient. The second if we want the addtional
+  information. These can both be shortened using \texttt{coef} in place
+  of \texttt{coefficients}.
 \end{enumerate}
 
-Other useful functions on the lm object (``fit'') are
-\texttt{coefficients(summary())}, \texttt{coef()} or
-\texttt{coefficients()} and \texttt{confint}. Assigning the output of
-these functions to an R object allows you to increase reproducibility.
-For example, if I assign the coefficients to \texttt{b}
+Let's look at the coefficient table
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{b <-}\StringTok{ }\KeywordTok{coef}\NormalTok{(fit)}
+\KeywordTok{coef}\NormalTok{(}\KeywordTok{summary}\NormalTok{(fit))}
 \end{Highlighting}
 \end{Shaded}
 
-then I can report these in R markdown text by embedding r code directly
-in the text. For example, if I embed ``r
-round(b{[}``treatmentvitamin\_E''{]}, 1)'' between a pair of single
-accent characters, then r markdown inserts -89.9 into the rendered text.
+\begin{verbatim}
+##                      Estimate Std. Error   t value     Pr(>|t|)
+## (Intercept)         503.39286   27.40978 18.365445 1.078296e-32
+## treatmentvitamin_C -115.07707   54.45772 -2.113145 3.726632e-02
+## treatmentvitamin_E  -89.91667   52.48574 -1.713164 9.001428e-02
+\end{verbatim}
+
+The reference level is ``control'' -- we know this because there are
+estimates of the effects for the other two levels.
+
+\subsection{Changing the reference
+level}\label{changing-the-reference-level}
+
+R assigns the order of the levels of a factor alphabetically, so the
+order of the levels of treatment are ``control'', ``vitamin\_C'',
+``vitamin\_E''. The first of these is the reference level. Remember the
+intercept is the mean of the reference group and the remaining estimates
+are the differences in means from this reference. If we want to make
+some other level the reference, we can change the order of the factor
+levels using
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{vole[, treatment_reorder}\OperatorTok{:}\ErrorTok{=}\KeywordTok{factor}\NormalTok{(treatment, }
+                         \DataTypeTok{levels=}\KeywordTok{c}\NormalTok{(}\StringTok{"vitamin_C"}\NormalTok{, }\StringTok{"vitamin_E"}\NormalTok{, }\StringTok{"control"}\NormalTok{))]}
+\end{Highlighting}
+\end{Shaded}
+
+The order of the levels in the levels argument sets the new order for
+any further analysis. One would typically replace the original variable
+with the re-ordered levels instead of creating a new variable as here,
+but the new variable was created to avoid bugs with the model fit object
+``fit'' (the level order in the data and in the model object need to be
+the same). Regardless, Refit the model to see how this re-ordering
+changes the coefficients
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{fit2 <-}\StringTok{ }\KeywordTok{lm}\NormalTok{(lifespan }\OperatorTok{~}\StringTok{ }\NormalTok{treatment_reorder, }\DataTypeTok{data=}\NormalTok{vole)}
+\KeywordTok{coef}\NormalTok{(}\KeywordTok{summary}\NormalTok{(fit2))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##                            Estimate Std. Error   t value     Pr(>|t|)
+## (Intercept)                388.3158   47.05685 8.2520573 1.005619e-12
+## treatment_reordervitamin_E  25.1604   64.94462 0.3874132 6.993356e-01
+## treatment_reordercontrol   115.0771   54.45772 2.1131453 3.726632e-02
+\end{verbatim}
+
+Understand why the values of these coefficients differ from those in the
+coefficient table above.
 
 \subsection{An introduction to
 contrasts}\label{an-introduction-to-contrasts}
@@ -5266,7 +5333,7 @@ models. If you haven't already, download the emmeans package.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{fit.em <-}\StringTok{ }\KeywordTok{emmeans}\NormalTok{(fit, }\DataTypeTok{spec=}\StringTok{"treatment"}\NormalTok{)}
+\NormalTok{fit.em <-}\StringTok{ }\KeywordTok{emmeans}\NormalTok{(fit, }\DataTypeTok{specs=}\StringTok{"treatment"}\NormalTok{)}
 \NormalTok{fit.em}
 \end{Highlighting}
 \end{Shaded}
@@ -5274,8 +5341,8 @@ models. If you haven't already, download the emmeans package.
 \begin{verbatim}
 ##  treatment emmean   SE df lower.CL upper.CL
 ##  control      503 27.4 93      449      558
-##  vitamin_E    413 44.8 93      325      502
 ##  vitamin_C    388 47.1 93      295      482
+##  vitamin_E    413 44.8 93      325      502
 ## 
 ## Confidence level used: 0.95
 \end{verbatim}
@@ -5300,9 +5367,9 @@ of treatment levels.
 
 \begin{verbatim}
 ##  contrast              estimate   SE df lower.CL upper.CL t.ratio p.value
-##  vitamin_E - control      -89.9 52.5 93     -194    14.31 -1.713  0.0900 
 ##  vitamin_C - control     -115.1 54.5 93     -223    -6.93 -2.113  0.0373 
-##  vitamin_C - vitamin_E    -25.2 64.9 93     -154   103.81 -0.387  0.6993 
+##  vitamin_E - control      -89.9 52.5 93     -194    14.31 -1.713  0.0900 
+##  vitamin_E - vitamin_C     25.2 64.9 93     -104   154.13  0.387  0.6993 
 ## 
 ## Confidence level used: 0.95
 \end{verbatim}
@@ -5372,8 +5439,8 @@ console, type
 treatment
 effects}\label{using-harrellplot-to-make-a-nice-publishable-plot-of-treatment-effects}
 
-In the console type `?harrellplot to see the many parameters. Unlike
-ggplot2, variable names need to be specified with quotes in the
+In the console type \texttt{?harrellplot} to see the many parameters.
+Unlike ggplot2, variable names need to be specified with quotes in the
 harrellplot function. The harrellplot function is a list with several
 elements.
 
@@ -5386,7 +5453,7 @@ Here is the default plot
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-33-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-36-1.pdf}
 
 \chapter{Model Checking}\label{model-checking-1}
 
@@ -5754,7 +5821,7 @@ nests or a host with no parasites), resulting in positive deviations
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-34-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-37-1.pdf}
 
 \subsubsection{Constrained lower and upper
 bounds}\label{constrained-lower-and-upper-bounds}
@@ -6272,7 +6339,7 @@ intervals}\label{adding-bootstrap-intervals}
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-35-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-38-1.pdf}
 
 \subsection{Adding modeled error
 intervals}\label{adding-modeled-error-intervals}
@@ -6318,7 +6385,7 @@ effect}\label{modeled-error-intervals-of-the-effect}
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-37-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-40-1.pdf}
 
 \subsubsection{Modeled error intervals of the
 mean}\label{modeled-error-intervals-of-the-mean}
@@ -6340,7 +6407,7 @@ mean}\label{modeled-error-intervals-of-the-mean}
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-38-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-41-1.pdf}
 
 Note that the CIs are asymmetric about the mean (and these modeled CIs
 will never include negative values for count data).
@@ -6357,7 +6424,7 @@ The ggplots are combined using the package \texttt{cowplot}
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-39-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-42-1.pdf}
 
 \subsection{Adding p-values}\label{adding-p-values}
 
@@ -6394,7 +6461,7 @@ is returning.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-40-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-43-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -6499,7 +6566,7 @@ function from the emmeans package.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-43-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-46-1.pdf}
 
 \subsubsection{Three factors}\label{three-factors}
 
@@ -6625,7 +6692,7 @@ residuals is
 ## `stat_bindot()` using `bins = 30`. Pick better value with `binwidth`.
 \end{verbatim}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-44-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-47-1.pdf}
 
 \begin{verbatim}
 ##              Estimate Std. Error   t value     Pr(>|t|)
@@ -9264,7 +9331,7 @@ statistic is \(df\).
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-46-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-49-1.pdf}
 
 \begin{verbatim}
 ## 
@@ -9552,11 +9619,11 @@ within a pair of parentheses in the equation above.
 ## boundary (singular) fit: see ?isSingular
 \end{verbatim}
 
-\begin{table}[t]
+\begin{table}
 
 \caption{\label{tab:lmm-table}The linear mixed model specified above estimates a fixed intercept and fixed slope (treatment effect) that are common to all observations and a random intercept and random slope for each block, each of which is common among observations within a block but differ among observations in different blocks.}
 \centering
-\begin{tabular}{r|l|l|l|l}
+\begin{tabular}[t]{r|l|l|l|l}
 \hline
 block & \$b\_0\$ & \$b\_\{0j\}\$ & \$b\_1\$ & \$b\_\{1j\}\$\\
 \hline
@@ -9893,11 +9960,11 @@ effects because they will choose the three strains with the largest
 effects for further testing. The researchers measure the response of
 each strain five times.
 
-\begin{table}[t]
+\begin{table}
 
 \caption{\label{tab:lmm-fish-passage}Effect of new expression vector on protein production in ten strains of *E. coli* using a fixed effect factorial model and linear mixed model.}
 \centering
-\begin{tabular}{l|r|r|r}
+\begin{tabular}[t]{l|r|r|r}
 \hline
 Strain & \$\textbackslash{}beta\_\{1j\}\$ & fixed \$b\_\{1j\}\$ & random \$b\_\{1j\}\$\\
 \hline
