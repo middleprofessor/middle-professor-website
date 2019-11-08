@@ -124,7 +124,7 @@
   \postauthor{\par}
       \predate{\centering\large\emph}
   \postdate{\par}
-    \date{Draft: 2019-11-07}
+    \date{Draft: 2019-11-08}
 
 \usepackage{booktabs}
 \usepackage{amsthm}
@@ -8666,9 +8666,12 @@ nor reject the predictions of the scientific model using these results).
 
 \section{Working in R}\label{working-in-r-3}
 
-A \textbf{full-factorial} model with two factors is specified in the
-model formula as \texttt{y\ \textasciitilde{}\ A*B} where A is the first
-factor, and B is the second factor. R expands this formula to
+\subsection{Model formula}\label{model-formula}
+
+A full-factorial model with two factors is specified in the model
+formula as \texttt{y\ \textasciitilde{}\ A*B} where A is the first
+factor, and B is the second factor. The * indicates to cross A and B. R
+expands this formula to
 \texttt{y\ \textasciitilde{}\ 1\ +\ A\ +\ B\ +\ A:B} where the colon
 indicates an interaction (multiplicative) effect.
 
@@ -8686,6 +8689,25 @@ indicates an interaction (multiplicative) effect.
 ## CO21100        -0.3166667  1.0260936 -0.3086138 7.608069e-01
 ## Temp18:CO21100 -2.6850000  1.4511155 -1.8503007 7.910035e-02
 \end{verbatim}
+
+The additive model is specified by the formula
+\texttt{y\ \textasciitilde{}\ A\ +\ B}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{m2 <-}\StringTok{ }\KeywordTok{lm}\NormalTok{(Resp }\OperatorTok{~}\StringTok{ }\NormalTok{Temp }\OperatorTok{+}\StringTok{ }\NormalTok{CO2, }\DataTypeTok{data=}\NormalTok{urchin) }\CommentTok{# use urchin1 data with relabeled levels}
+\KeywordTok{coef}\NormalTok{(}\KeywordTok{summary}\NormalTok{(m2))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##              Estimate Std. Error   t value     Pr(>|t|)
+## (Intercept)  8.904583  0.6636207 13.418183 9.038657e-12
+## Temp18       3.167500  0.7662831  4.133590 4.721000e-04
+## CO21100     -1.659167  0.7662831 -2.165214 4.203445e-02
+\end{verbatim}
+
+\subsection{Modeled means}\label{modeled-means}
 
 Modeled means are estimated using \texttt{emmeans::emmeans}. The means
 for all combinations of Temp and CO2 are obtained with the specs
@@ -8707,6 +8729,8 @@ argument.
 ## 
 ## Confidence level used: 0.95
 \end{verbatim}
+
+\subsection{Marginal means}\label{marginal-means}
 
 The marginal means are
 
@@ -8742,6 +8766,8 @@ The marginal means are
 ## Confidence level used: 0.95
 \end{verbatim}
 
+\subsection{Contrasts}\label{contrasts}
+
 All six pairwise contrasts are computed using
 \texttt{emmeans::contrast}. The adjust argument specifies the adjustment
 for multiple testing. The method argument specifies the type of contrast
@@ -8751,26 +8777,9 @@ simply gives the reverse of pairwise)
 \begin{Shaded}
 \begin{Highlighting}[]
 \NormalTok{m1.contrast <-}\StringTok{ }\KeywordTok{contrast}\NormalTok{(m1.emm, }\DataTypeTok{adjust=}\StringTok{"none"}\NormalTok{, }\DataTypeTok{method=}\StringTok{"revpairwise"}\NormalTok{)}
-\NormalTok{m1.contrast}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-##  contrast          estimate   SE df t.ratio p.value
-##  18,400 - 13,400      4.510 1.03 20  4.395  0.0003 
-##  13,1100 - 13,400    -0.317 1.03 20 -0.309  0.7608 
-##  13,1100 - 18,400    -4.827 1.03 20 -4.704  0.0001 
-##  18,1100 - 13,400     1.508 1.03 20  1.470  0.1571 
-##  18,1100 - 18,400    -3.002 1.03 20 -2.925  0.0084 
-##  18,1100 - 13,1100    1.825 1.03 20  1.779  0.0905
-\end{verbatim}
-
-To add the CIs to this table use
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{m1.contrast_}\DecValTok{2}\NormalTok{ <-}\StringTok{ }\KeywordTok{summary}\NormalTok{(m1.contrast, }\DataTypeTok{infer=}\KeywordTok{c}\NormalTok{(}\OtherTok{TRUE}\NormalTok{, }\OtherTok{TRUE}\NormalTok{))}
-\NormalTok{m1.contrast_}\DecValTok{2}
+\CommentTok{# add CIs}
+\NormalTok{m1.contrast.ci <-}\StringTok{ }\KeywordTok{summary}\NormalTok{(m1.contrast, }\DataTypeTok{infer=}\KeywordTok{c}\NormalTok{(}\OtherTok{TRUE}\NormalTok{, }\OtherTok{TRUE}\NormalTok{))}
+\NormalTok{m1.contrast.ci}
 \end{Highlighting}
 \end{Shaded}
 
@@ -8785,6 +8794,8 @@ To add the CIs to this table use
 ## 
 ## Confidence level used: 0.95
 \end{verbatim}
+
+\subsection{Simple effects}\label{simple-effects}
 
 The four conditional (simple) effects are a subset of the contrasts
 above and are computed using the arguments \texttt{simple="each"} and
@@ -8811,6 +8822,8 @@ above and are computed using the arguments \texttt{simple="each"} and
 ## 
 ## Confidence level used: 0.95
 \end{verbatim}
+
+\subsection{Marginal effects}\label{marginal-effects-1}
 
 The marginal effects of the factorial model are
 
@@ -8888,26 +8901,6 @@ These can be combined into a single table using \texttt{rbind}
 ## 2: 0.0332473272
 \end{verbatim}
 
-The additive model is specified by the formula
-\texttt{y\ \textasciitilde{}\ A\ +\ B}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{m2 <-}\StringTok{ }\KeywordTok{lm}\NormalTok{(Resp }\OperatorTok{~}\StringTok{ }\NormalTok{Temp }\OperatorTok{+}\StringTok{ }\NormalTok{CO2, }\DataTypeTok{data=}\NormalTok{urchin) }\CommentTok{# use urchin1 data with relabeled levels}
-\KeywordTok{coef}\NormalTok{(}\KeywordTok{summary}\NormalTok{(m2))}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-##              Estimate Std. Error   t value     Pr(>|t|)
-## (Intercept)  8.904583  0.6636207 13.418183 9.038657e-12
-## Temp18       3.167500  0.7662831  4.133590 4.721000e-04
-## CO21100     -1.659167  0.7662831 -2.165214 4.203445e-02
-\end{verbatim}
-
-The modeled means, marginal means, and marginal effects are computed as
-above.
-
 \subsection{Plotting results}\label{plotting-results}
 
 \subsubsection{Bar plot with uniform coloring poorly communicate the
@@ -8928,7 +8921,7 @@ design}\label{bar-plot-with-uniform-coloring-poorly-communicate-the-factorial-de
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-67-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-66-1.pdf}
 
 \subsubsection{Plots that communicate the factorial
 design}\label{plots-that-communicate-the-factorial-design}
@@ -9004,10 +8997,18 @@ design}\label{plots-that-communicate-the-factorial-design}
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-68-1.pdf}
+\begin{figure}
+\centering
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/factorial-interaction-plots-1.pdf}
+\caption{\label{fig:factorial-interaction-plots}Interaction plots. (B) is
+the classic interaction plot, which is characterized by lines connecting
+the groups that share the same Factor B level. This line allows one to
+visual the effect of Factor A (the slope) at each level of Factor B.}
+\end{figure}
 
 A common way to plot the results of factorial models is with an
-\textbf{interaction plot} (Fig xxxB). In the interaction plot of the
+\textbf{interaction plot} (Figure
+\ref{fig:factorial-interaction-plots}). In the interaction plot of the
 urchin data, the \(X\)-axis contains the two \(Temp\) treatment levels
 and the \(Y\)-axis is the outcome (\(Resp\)). The plot shows the four
 cell means indicated by the circles (low CO2 levels) or triangles (high
@@ -9073,7 +9074,8 @@ reflect our pre-conceived scientific model.
 
 \CommentTok{# effects plot}
 \CommentTok{# get p-values}
-\NormalTok{pval <-}\StringTok{ }\KeywordTok{round}\NormalTok{(m1.effects.dt}\OperatorTok{$}\NormalTok{p.value, }\DecValTok{4}\NormalTok{)}
+\NormalTok{pval <-}\StringTok{ }\KeywordTok{as.character}\NormalTok{(}\KeywordTok{round}\NormalTok{(m1.effects.dt}\OperatorTok{$}\NormalTok{p.value, }\DecValTok{3}\NormalTok{))}
+\NormalTok{pval[}\DecValTok{2}\NormalTok{] <-}\StringTok{ "0.0003"}
 \NormalTok{gg_effects <-}\StringTok{ }\KeywordTok{ggdotplot}\NormalTok{(}\DataTypeTok{x=}\StringTok{"Term"}\NormalTok{, }
                  \DataTypeTok{y=}\StringTok{"estimate"}\NormalTok{, }
                  \DataTypeTok{data=}\NormalTok{m1.effects.dt, }
@@ -9084,8 +9086,9 @@ reflect our pre-conceived scientific model.
                 \DataTypeTok{width=}\FloatTok{0.15}\NormalTok{, }\DataTypeTok{color=}\NormalTok{(}\KeywordTok{pal_jco}\NormalTok{(}\StringTok{"default"}\NormalTok{)(}\DecValTok{4}\NormalTok{))[}\DecValTok{1}\NormalTok{]) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{ylab}\NormalTok{(}\StringTok{"Contrast"}\NormalTok{) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{geom_hline}\NormalTok{(}\DataTypeTok{yintercept=}\DecValTok{0}\NormalTok{, }\DataTypeTok{linetype =} \DecValTok{2}\NormalTok{) }\OperatorTok{+}
-\StringTok{  }\KeywordTok{annotate}\NormalTok{(}\StringTok{"text"}\NormalTok{, }\DataTypeTok{x =} \DecValTok{1}\OperatorTok{:}\DecValTok{5}\NormalTok{, }\DataTypeTok{y =} \KeywordTok{rep}\NormalTok{(}\FloatTok{8.0}\NormalTok{, }\DecValTok{5}\NormalTok{), }\DataTypeTok{label =}\NormalTok{ pval) }\OperatorTok{+}
-\StringTok{  }\KeywordTok{annotate}\NormalTok{(}\StringTok{"text"}\NormalTok{, }\DataTypeTok{x=}\FloatTok{5.4}\NormalTok{, }\DataTypeTok{y=}\FloatTok{8.0}\NormalTok{, }\DataTypeTok{label=}\StringTok{"p-value"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{annotate}\NormalTok{(}\StringTok{"text"}\NormalTok{, }\DataTypeTok{x =} \DecValTok{1}\OperatorTok{:}\DecValTok{5}\NormalTok{, }\DataTypeTok{y =} \KeywordTok{rep}\NormalTok{(}\FloatTok{7.75}\NormalTok{, }\DecValTok{5}\NormalTok{), }\DataTypeTok{label =}\NormalTok{ pval) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{annotate}\NormalTok{(}\StringTok{"text"}\NormalTok{, }\DataTypeTok{x=}\FloatTok{5.4}\NormalTok{, }\DataTypeTok{y=}\FloatTok{7.75}\NormalTok{, }\DataTypeTok{label=}\StringTok{"p-value"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{expand_limits}\NormalTok{(}\DataTypeTok{y =} \FloatTok{8.3}\NormalTok{) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{xlab}\NormalTok{(}\StringTok{"Contrast"}\NormalTok{) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{coord_flip}\NormalTok{() }\OperatorTok{+}\StringTok{ }
 \StringTok{  }\OtherTok{NULL}
@@ -9094,7 +9097,7 @@ reflect our pre-conceived scientific model.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-69-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-67-1.pdf}
 
 This effects plot shows the four simple effects, the single interaction
 (Temp18:CO21100), and their 95\% confidence intervals. In the original
@@ -9114,11 +9117,13 @@ to small) to have much confidence in the size of the interaction effect.
 \begin{Highlighting}[]
 \NormalTok{gg_effects <-}\StringTok{ }\NormalTok{gg_effects }\OperatorTok{+}\StringTok{ }\KeywordTok{scale_y_continuous}\NormalTok{(}\DataTypeTok{position=}\StringTok{"right"}\NormalTok{)}
 
-\KeywordTok{plot_grid}\NormalTok{(gg_effects, gg_response, }\DataTypeTok{nrow=}\DecValTok{2}\NormalTok{, }\DataTypeTok{align =} \StringTok{"v"}\NormalTok{, }\DataTypeTok{rel_heights =} \KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{1}\NormalTok{))}
+\KeywordTok{plot_grid}\NormalTok{(gg_effects, gg_response, }\DataTypeTok{nrow=}\DecValTok{2}\NormalTok{, }
+          \DataTypeTok{align =} \StringTok{"v"}\NormalTok{, }
+          \DataTypeTok{rel_heights =} \KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\FloatTok{1.75}\NormalTok{))}
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-70-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-68-1.pdf}
 
 The effects and interaction plot are combined into a single plot.
 
@@ -11524,7 +11529,7 @@ statistic is \(df\).
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-73-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-71-1.pdf}
 
 \begin{verbatim}
 ## 

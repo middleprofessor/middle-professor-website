@@ -292,7 +292,13 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="14.2.1" data-path="two-or-more-categorical-x-factorial-designs.html"><a href="two-or-more-categorical-x-factorial-designs.html#text-results"><i class="fa fa-check"></i><b>14.2.1</b> Text results</a></li>
 </ul></li>
 <li class="chapter" data-level="14.3" data-path="two-or-more-categorical-x-factorial-designs.html"><a href="two-or-more-categorical-x-factorial-designs.html#working-in-r-3"><i class="fa fa-check"></i><b>14.3</b> Working in R</a><ul>
-<li class="chapter" data-level="14.3.1" data-path="two-or-more-categorical-x-factorial-designs.html"><a href="two-or-more-categorical-x-factorial-designs.html#plotting-results"><i class="fa fa-check"></i><b>14.3.1</b> Plotting results</a></li>
+<li class="chapter" data-level="14.3.1" data-path="two-or-more-categorical-x-factorial-designs.html"><a href="two-or-more-categorical-x-factorial-designs.html#model-formula"><i class="fa fa-check"></i><b>14.3.1</b> Model formula</a></li>
+<li class="chapter" data-level="14.3.2" data-path="two-or-more-categorical-x-factorial-designs.html"><a href="two-or-more-categorical-x-factorial-designs.html#modeled-means"><i class="fa fa-check"></i><b>14.3.2</b> Modeled means</a></li>
+<li class="chapter" data-level="14.3.3" data-path="two-or-more-categorical-x-factorial-designs.html"><a href="two-or-more-categorical-x-factorial-designs.html#marginal-means"><i class="fa fa-check"></i><b>14.3.3</b> Marginal means</a></li>
+<li class="chapter" data-level="14.3.4" data-path="two-or-more-categorical-x-factorial-designs.html"><a href="two-or-more-categorical-x-factorial-designs.html#contrasts"><i class="fa fa-check"></i><b>14.3.4</b> Contrasts</a></li>
+<li class="chapter" data-level="14.3.5" data-path="two-or-more-categorical-x-factorial-designs.html"><a href="two-or-more-categorical-x-factorial-designs.html#simple-effects"><i class="fa fa-check"></i><b>14.3.5</b> Simple effects</a></li>
+<li class="chapter" data-level="14.3.6" data-path="two-or-more-categorical-x-factorial-designs.html"><a href="two-or-more-categorical-x-factorial-designs.html#marginal-effects-1"><i class="fa fa-check"></i><b>14.3.6</b> Marginal effects</a></li>
+<li class="chapter" data-level="14.3.7" data-path="two-or-more-categorical-x-factorial-designs.html"><a href="two-or-more-categorical-x-factorial-designs.html#plotting-results"><i class="fa fa-check"></i><b>14.3.7</b> Plotting results</a></li>
 </ul></li>
 <li class="chapter" data-level="14.4" data-path="two-or-more-categorical-x-factorial-designs.html"><a href="two-or-more-categorical-x-factorial-designs.html#problems-3"><i class="fa fa-check"></i><b>14.4</b> Problems</a></li>
 </ul></li>
@@ -1628,7 +1634,9 @@ Y = \beta_0 + \beta_1 A^+ + \beta_1 B^+ + \beta_3 C^+ + \beta_4 A^+ B^+ + \beta_
 </div>
 <div id="working-in-r-3" class="section level2">
 <h2><span class="header-section-number">14.3</span> Working in R</h2>
-<p>A <strong>full-factorial</strong> model with two factors is specified in the model formula as <code>y ~ A*B</code> where A is the first factor, and B is the second factor. R expands this formula to <code>y ~ 1 + A + B + A:B</code> where the colon indicates an interaction (multiplicative) effect.</p>
+<div id="model-formula" class="section level3">
+<h3><span class="header-section-number">14.3.1</span> Model formula</h3>
+<p>A full-factorial model with two factors is specified in the model formula as <code>y ~ A*B</code> where A is the first factor, and B is the second factor. The * indicates to cross A and B. R expands this formula to <code>y ~ 1 + A + B + A:B</code> where the colon indicates an interaction (multiplicative) effect.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">m1 &lt;-<span class="st"> </span><span class="kw">lm</span>(Resp <span class="op">~</span><span class="st"> </span>Temp<span class="op">*</span>CO2, <span class="dt">data=</span>urchin) <span class="co"># use urchin1 data with relabeled levels</span>
 <span class="kw">coef</span>(<span class="kw">summary</span>(m1))</code></pre></div>
 <pre><code>##                  Estimate Std. Error    t value     Pr(&gt;|t|)
@@ -1636,6 +1644,16 @@ Y = \beta_0 + \beta_1 A^+ + \beta_1 B^+ + \beta_3 C^+ + \beta_4 A^+ B^+ + \beta_
 ## Temp18          4.5100000  1.0260936  4.3953106 2.792573e-04
 ## CO21100        -0.3166667  1.0260936 -0.3086138 7.608069e-01
 ## Temp18:CO21100 -2.6850000  1.4511155 -1.8503007 7.910035e-02</code></pre>
+<p>The additive model is specified by the formula <code>y ~ A + B</code></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">m2 &lt;-<span class="st"> </span><span class="kw">lm</span>(Resp <span class="op">~</span><span class="st"> </span>Temp <span class="op">+</span><span class="st"> </span>CO2, <span class="dt">data=</span>urchin) <span class="co"># use urchin1 data with relabeled levels</span>
+<span class="kw">coef</span>(<span class="kw">summary</span>(m2))</code></pre></div>
+<pre><code>##              Estimate Std. Error   t value     Pr(&gt;|t|)
+## (Intercept)  8.904583  0.6636207 13.418183 9.038657e-12
+## Temp18       3.167500  0.7662831  4.133590 4.721000e-04
+## CO21100     -1.659167  0.7662831 -2.165214 4.203445e-02</code></pre>
+</div>
+<div id="modeled-means" class="section level3">
+<h3><span class="header-section-number">14.3.2</span> Modeled means</h3>
 <p>Modeled means are estimated using <code>emmeans::emmeans</code>. The means for all combinations of Temp and CO2 are obtained with the specs argument.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">m1.emm &lt;-<span class="st"> </span><span class="kw">emmeans</span>(m1, <span class="dt">specs=</span><span class="kw">c</span>(<span class="st">&quot;Temp&quot;</span>, <span class="st">&quot;CO2&quot;</span>))
 m1.emm</code></pre></div>
@@ -1646,6 +1664,9 @@ m1.emm</code></pre></div>
 ##  18   1100   9.74 0.726 20     8.23    11.26
 ## 
 ## Confidence level used: 0.95</code></pre>
+</div>
+<div id="marginal-means" class="section level3">
+<h3><span class="header-section-number">14.3.3</span> Marginal means</h3>
 <p>The marginal means are</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">m1.emm.temp &lt;-<span class="st"> </span><span class="kw">emmeans</span>(m1, <span class="dt">specs=</span><span class="kw">c</span>(<span class="st">&quot;Temp&quot;</span>))
 m1.emm.co2 &lt;-<span class="st"> </span><span class="kw">emmeans</span>(m1, <span class="dt">specs=</span><span class="kw">c</span>(<span class="st">&quot;CO2&quot;</span>))
@@ -1663,19 +1684,14 @@ m1.emm.temp</code></pre></div>
 ## 
 ## Results are averaged over the levels of: Temp 
 ## Confidence level used: 0.95</code></pre>
+</div>
+<div id="contrasts" class="section level3">
+<h3><span class="header-section-number">14.3.4</span> Contrasts</h3>
 <p>All six pairwise contrasts are computed using <code>emmeans::contrast</code>. The adjust argument specifies the adjustment for multiple testing. The method argument specifies the type of contrast (pairwise and revpairwise give all pairwise contrasts. revpairwise simply gives the reverse of pairwise)</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">m1.contrast &lt;-<span class="st"> </span><span class="kw">contrast</span>(m1.emm, <span class="dt">adjust=</span><span class="st">&quot;none&quot;</span>, <span class="dt">method=</span><span class="st">&quot;revpairwise&quot;</span>)
-m1.contrast</code></pre></div>
-<pre><code>##  contrast          estimate   SE df t.ratio p.value
-##  18,400 - 13,400      4.510 1.03 20  4.395  0.0003 
-##  13,1100 - 13,400    -0.317 1.03 20 -0.309  0.7608 
-##  13,1100 - 18,400    -4.827 1.03 20 -4.704  0.0001 
-##  18,1100 - 13,400     1.508 1.03 20  1.470  0.1571 
-##  18,1100 - 18,400    -3.002 1.03 20 -2.925  0.0084 
-##  18,1100 - 13,1100    1.825 1.03 20  1.779  0.0905</code></pre>
-<p>To add the CIs to this table use</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">m1.contrast_<span class="dv">2</span> &lt;-<span class="st"> </span><span class="kw">summary</span>(m1.contrast, <span class="dt">infer=</span><span class="kw">c</span>(<span class="ot">TRUE</span>, <span class="ot">TRUE</span>))
-m1.contrast_<span class="dv">2</span></code></pre></div>
+<span class="co"># add CIs</span>
+m1.contrast.ci &lt;-<span class="st"> </span><span class="kw">summary</span>(m1.contrast, <span class="dt">infer=</span><span class="kw">c</span>(<span class="ot">TRUE</span>, <span class="ot">TRUE</span>))
+m1.contrast.ci</code></pre></div>
 <pre><code>##  contrast          estimate   SE df lower.CL upper.CL t.ratio p.value
 ##  18,400 - 13,400      4.510 1.03 20    2.370    6.650  4.395  0.0003 
 ##  13,1100 - 13,400    -0.317 1.03 20   -2.457    1.824 -0.309  0.7608 
@@ -1685,6 +1701,9 @@ m1.contrast_<span class="dv">2</span></code></pre></div>
 ##  18,1100 - 13,1100    1.825 1.03 20   -0.315    3.965  1.779  0.0905 
 ## 
 ## Confidence level used: 0.95</code></pre>
+</div>
+<div id="simple-effects" class="section level3">
+<h3><span class="header-section-number">14.3.5</span> Simple effects</h3>
 <p>The four conditional (simple) effects are a subset of the contrasts above and are computed using the arguments <code>simple=&quot;each&quot;</code> and <code>combine=TRUE</code>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">m1.effects &lt;-<span class="st"> </span><span class="kw">summary</span>(<span class="kw">contrast</span>(m1.emm,
                  <span class="dt">method=</span><span class="st">&quot;revpairwise&quot;</span>,
@@ -1700,6 +1719,9 @@ m1.effects</code></pre></div>
 ##  .    18   1100 - 400   -3.002 1.03 20   -5.142   -0.861 -2.925  0.0084 
 ## 
 ## Confidence level used: 0.95</code></pre>
+</div>
+<div id="marginal-effects-1" class="section level3">
+<h3><span class="header-section-number">14.3.6</span> Marginal effects</h3>
 <p>The marginal effects of the factorial model are</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">m1.emm.<span class="dv">1</span> &lt;-<span class="st"> </span><span class="kw">emmeans</span>(m1, <span class="dt">specs=</span><span class="kw">c</span>(<span class="st">&quot;Temp&quot;</span>))</code></pre></div>
 <pre><code>## NOTE: Results may be misleading due to involvement in interactions</code></pre>
@@ -1734,18 +1756,11 @@ m1.effects.marginal</code></pre></div>
 ##         p.value
 ## 1: 0.0002993051
 ## 2: 0.0332473272</code></pre>
-<p>The additive model is specified by the formula <code>y ~ A + B</code></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">m2 &lt;-<span class="st"> </span><span class="kw">lm</span>(Resp <span class="op">~</span><span class="st"> </span>Temp <span class="op">+</span><span class="st"> </span>CO2, <span class="dt">data=</span>urchin) <span class="co"># use urchin1 data with relabeled levels</span>
-<span class="kw">coef</span>(<span class="kw">summary</span>(m2))</code></pre></div>
-<pre><code>##              Estimate Std. Error   t value     Pr(&gt;|t|)
-## (Intercept)  8.904583  0.6636207 13.418183 9.038657e-12
-## Temp18       3.167500  0.7662831  4.133590 4.721000e-04
-## CO21100     -1.659167  0.7662831 -2.165214 4.203445e-02</code></pre>
-<p>The modeled means, marginal means, and marginal effects are computed as above.</p>
+</div>
 <div id="plotting-results" class="section level3">
-<h3><span class="header-section-number">14.3.1</span> Plotting results</h3>
+<h3><span class="header-section-number">14.3.7</span> Plotting results</h3>
 <div id="bar-plot-with-uniform-coloring-poorly-communicate-the-factorial-design" class="section level4">
-<h4><span class="header-section-number">14.3.1.1</span> Bar plot with uniform coloring poorly communicate the factorial design</h4>
+<h4><span class="header-section-number">14.3.7.1</span> Bar plot with uniform coloring poorly communicate the factorial design</h4>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># bar plot with uniform color</span>
 urchin[, xlabel <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">paste0</span>(<span class="st">&quot;Temp:&quot;</span>,Temp,<span class="st">&quot;/&quot;</span>,<span class="st">&quot;CO2:&quot;</span>,CO2)]
 <span class="kw">ggbarplot</span>(<span class="dt">x=</span><span class="st">&quot;xlabel&quot;</span>,
@@ -1755,10 +1770,10 @@ urchin[, xlabel <span class="op">:</span><span class="er">=</span><span class="s
           <span class="dt">fill=</span>(<span class="kw">pal_jco</span>(<span class="st">&quot;default&quot;</span>)(<span class="dv">4</span>))[<span class="dv">1</span>]) <span class="op">+</span>
 <span class="st">  </span><span class="kw">xlab</span>(<span class="st">&quot;Treatment&quot;</span>) <span class="op">+</span>
 <span class="st">  </span><span class="ot">NULL</span></code></pre></div>
-<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/unnamed-chunk-67-1.png" width="576" /></p>
+<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/unnamed-chunk-66-1.png" width="576" /></p>
 </div>
 <div id="plots-that-communicate-the-factorial-design" class="section level4">
-<h4><span class="header-section-number">14.3.1.2</span> Plots that communicate the factorial design</h4>
+<h4><span class="header-section-number">14.3.7.2</span> Plots that communicate the factorial design</h4>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># bar-plot with 2nd factor different color</span>
 pd &lt;-<span class="st"> </span><span class="kw">position_dodge</span>(<span class="fl">0.7</span>)
 gg1 &lt;-<span class="st"> </span><span class="kw">ggbarplot</span>(<span class="dt">x=</span><span class="st">&quot;Temp&quot;</span>,
@@ -1825,8 +1840,13 @@ gg4 &lt;-<span class="st"> </span><span class="kw">ggboxplot</span>(<span class=
 <span class="st">  </span><span class="ot">NULL</span>
 
 <span class="kw">plot_grid</span>(gg1, gg2, gg3, gg4, <span class="dt">nrow=</span><span class="dv">2</span>, <span class="dt">labels=</span><span class="st">&quot;AUTO&quot;</span>)</code></pre></div>
-<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/unnamed-chunk-68-1.png" width="576" /></p>
-<p>A common way to plot the results of factorial models is with an <strong>interaction plot</strong> (Fig xxxB). In the interaction plot of the urchin data, the <span class="math inline">\(X\)</span>-axis contains the two <span class="math inline">\(Temp\)</span> treatment levels and the <span class="math inline">\(Y\)</span>-axis is the outcome (<span class="math inline">\(Resp\)</span>). The plot shows the four cell means indicated by the circles (low CO2 levels) or triangles (high CO2 levels). The solid lines connect the cell means <em>across Temp levels within CO2 levels</em>.</p>
+<div class="figure"><span id="fig:factorial-interaction-plots"></span>
+<img src="Walker-elementary-statistical-modeling-draft_files/figure-html/factorial-interaction-plots-1.png" alt="Interaction plots. (B) is the classic interaction plot, which is characterized by lines connecting the groups that share the same Factor B level. This line allows one to visual the effect of Factor A (the slope) at each level of Factor B." width="576" />
+<p class="caption">
+Figure 14.2: Interaction plots. (B) is the classic interaction plot, which is characterized by lines connecting the groups that share the same Factor B level. This line allows one to visual the effect of Factor A (the slope) at each level of Factor B.
+</p>
+</div>
+<p>A common way to plot the results of factorial models is with an <strong>interaction plot</strong> (Figure <a href="two-or-more-categorical-x-factorial-designs.html#fig:factorial-interaction-plots">14.2</a>). In the interaction plot of the urchin data, the <span class="math inline">\(X\)</span>-axis contains the two <span class="math inline">\(Temp\)</span> treatment levels and the <span class="math inline">\(Y\)</span>-axis is the outcome (<span class="math inline">\(Resp\)</span>). The plot shows the four cell means indicated by the circles (low CO2 levels) or triangles (high CO2 levels). The solid lines connect the cell means <em>across Temp levels within CO2 levels</em>.</p>
 <ol style="list-style-type: decimal">
 <li>The slope of a line is the effect of <span class="math inline">\(Temp\)</span> on <span class="math inline">\(Resp\)</span></li>
 <li>The relative <em>elevation</em> of the two lines is the effect of <span class="math inline">\(CO2\)</span> on <span class="math inline">\(Resp\)</span></li>
@@ -1837,7 +1857,7 @@ gg4 &lt;-<span class="st"> </span><span class="kw">ggboxplot</span>(<span class=
 <p>An interaction plot is an okay plot. It doesn’t show the data, only a minimal, descriptive summary (means and standard errors). If we are interested in the interaction effect, it doesn’t give us a very good sense of the error in this effect. And <em>that</em> is a problem because with real data, two lines are never precisely parallel. Our interpretation of the similarity of the slopes would probably mostly reflect our pre-conceived scientific model.</p>
 </div>
 <div id="effects-plots" class="section level4">
-<h4><span class="header-section-number">14.3.1.3</span> Effects plots</h4>
+<h4><span class="header-section-number">14.3.7.3</span> Effects plots</h4>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># need m1.emm and m1.effects from above</span>
 <span class="co"># convert to data.table</span>
 m1.coefs &lt;-<span class="st"> </span><span class="kw">coef</span>(<span class="kw">summary</span>(m1))
@@ -1856,7 +1876,8 @@ m1.effects.dt &lt;-<span class="st"> </span><span class="kw">rbind</span>(m1.coe
 
 <span class="co"># effects plot</span>
 <span class="co"># get p-values</span>
-pval &lt;-<span class="st"> </span><span class="kw">round</span>(m1.effects.dt<span class="op">$</span>p.value, <span class="dv">4</span>)
+pval &lt;-<span class="st"> </span><span class="kw">as.character</span>(<span class="kw">round</span>(m1.effects.dt<span class="op">$</span>p.value, <span class="dv">3</span>))
+pval[<span class="dv">2</span>] &lt;-<span class="st"> &quot;0.0003&quot;</span>
 gg_effects &lt;-<span class="st"> </span><span class="kw">ggdotplot</span>(<span class="dt">x=</span><span class="st">&quot;Term&quot;</span>, 
                  <span class="dt">y=</span><span class="st">&quot;estimate&quot;</span>, 
                  <span class="dt">data=</span>m1.effects.dt, 
@@ -1867,22 +1888,25 @@ gg_effects &lt;-<span class="st"> </span><span class="kw">ggdotplot</span>(<span
                 <span class="dt">width=</span><span class="fl">0.15</span>, <span class="dt">color=</span>(<span class="kw">pal_jco</span>(<span class="st">&quot;default&quot;</span>)(<span class="dv">4</span>))[<span class="dv">1</span>]) <span class="op">+</span>
 <span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;Contrast&quot;</span>) <span class="op">+</span>
 <span class="st">  </span><span class="kw">geom_hline</span>(<span class="dt">yintercept=</span><span class="dv">0</span>, <span class="dt">linetype =</span> <span class="dv">2</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw">annotate</span>(<span class="st">&quot;text&quot;</span>, <span class="dt">x =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">5</span>, <span class="dt">y =</span> <span class="kw">rep</span>(<span class="fl">8.0</span>, <span class="dv">5</span>), <span class="dt">label =</span> pval) <span class="op">+</span>
-<span class="st">  </span><span class="kw">annotate</span>(<span class="st">&quot;text&quot;</span>, <span class="dt">x=</span><span class="fl">5.4</span>, <span class="dt">y=</span><span class="fl">8.0</span>, <span class="dt">label=</span><span class="st">&quot;p-value&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">annotate</span>(<span class="st">&quot;text&quot;</span>, <span class="dt">x =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">5</span>, <span class="dt">y =</span> <span class="kw">rep</span>(<span class="fl">7.75</span>, <span class="dv">5</span>), <span class="dt">label =</span> pval) <span class="op">+</span>
+<span class="st">  </span><span class="kw">annotate</span>(<span class="st">&quot;text&quot;</span>, <span class="dt">x=</span><span class="fl">5.4</span>, <span class="dt">y=</span><span class="fl">7.75</span>, <span class="dt">label=</span><span class="st">&quot;p-value&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">expand_limits</span>(<span class="dt">y =</span> <span class="fl">8.3</span>) <span class="op">+</span>
 <span class="st">  </span><span class="kw">xlab</span>(<span class="st">&quot;Contrast&quot;</span>) <span class="op">+</span>
 <span class="st">  </span><span class="kw">coord_flip</span>() <span class="op">+</span><span class="st"> </span>
 <span class="st">  </span><span class="ot">NULL</span>
 
 gg_effects</code></pre></div>
-<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/unnamed-chunk-69-1.png" width="576" /></p>
+<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/unnamed-chunk-67-1.png" width="576" /></p>
 <p>This effects plot shows the four simple effects, the single interaction (Temp18:CO21100), and their 95% confidence intervals. In the original paper, the researchers were testing a scientific (not statistical!) model that predicted no interaction between CO2 and Temp, and the researchers argued that these data supported this model because of the “not statistically significant” <em>p</em>-value for the interaction effect. The data are consistent with this model (one end of the 95% CI for the interaction includes zero) but also support a model of a large, negative interaction (the other end of the 95% CI includes large negative values). The data are too course (or the signal:noise ratio is to small) to have much confidence in the size of the interaction effect.</p>
 </div>
 <div id="harrell-plots" class="section level4">
-<h4><span class="header-section-number">14.3.1.4</span> Harrell plots</h4>
+<h4><span class="header-section-number">14.3.7.4</span> Harrell plots</h4>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">gg_effects &lt;-<span class="st"> </span>gg_effects <span class="op">+</span><span class="st"> </span><span class="kw">scale_y_continuous</span>(<span class="dt">position=</span><span class="st">&quot;right&quot;</span>)
 
-<span class="kw">plot_grid</span>(gg_effects, gg_response, <span class="dt">nrow=</span><span class="dv">2</span>, <span class="dt">align =</span> <span class="st">&quot;v&quot;</span>, <span class="dt">rel_heights =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">1</span>))</code></pre></div>
-<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/unnamed-chunk-70-1.png" width="576" /></p>
+<span class="kw">plot_grid</span>(gg_effects, gg_response, <span class="dt">nrow=</span><span class="dv">2</span>, 
+          <span class="dt">align =</span> <span class="st">&quot;v&quot;</span>, 
+          <span class="dt">rel_heights =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="fl">1.75</span>))</code></pre></div>
+<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/unnamed-chunk-68-1.png" width="576" /></p>
 <p>The effects and interaction plot are combined into a single plot.</p>
 </div>
 </div>
