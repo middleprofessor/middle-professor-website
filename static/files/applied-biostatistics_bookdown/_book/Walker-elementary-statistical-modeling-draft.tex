@@ -124,7 +124,7 @@
   \postauthor{\par}
       \predate{\centering\large\emph}
   \postdate{\par}
-    \date{Draft: 2019-11-08}
+    \date{Draft: 2019-11-09}
 
 \usepackage{booktabs}
 \usepackage{amsthm}
@@ -159,29 +159,30 @@ students and researchers to ``discover by p-value'' using hypothesis
 tests (Chapter \ref{p-values}). Over the course of many chapters, the
 student learns to use something like a look-up table or a dichotomous
 key to choose the correct ``test'' for the data at hand, compute a test
-statistic for their data, compute a \(p\)-value based on the test
+statistic for their data, compute a \emph{p}-value based on the test
 statistic, and compare the \emph{p}-value to 0.05. Textbooks typically
 give very little guidance about what can be concluded if \(p < 0.05\) or
 if \(p > 0.05\), but many researchers conclude, incorrectly, they have
 ``discovered'' something or ``shown'' an effect if \(p < 0.05\) but
 found ``no effect'' if \(p > 0.05\).
 
-Researchers learn nothing useful from a hypothesis test -- that is,
-comparing \(p\) to 0.05 (or some other arbitrary value). A \(p\)-value
-is a measure of compatibility between the data and the null hypothesis
-and, consequently, a pretty good, but imperfect tool to dampen the
-frequency that we are fooled by randomness. But if we are investigating
-the effects of an increasingly acidified ocean on coral growth,
-\(p=0.002\) may be evidence of an effect of the experimental
-intervention, but, from everything we know about pH and cell biology, it
-would be absurd to conclude from any data that pH does not affect
-growth. To build useful models of how biological systems work, we want
-to know the magnitude of effects and our uncertainty in estimating these
-magnitudes. We can use a magnitude and uncertainty to make predictions
-about the future of coral reefs, under different scenarios of ocean
-acidification. We can use the estimated effects and uncertainty to model
-the consequences of the effects of acidification on coral growth on fish
-production or carbon cycling.
+Researchers learn little from a hypothesis test -- that is, comparing
+\emph{p} to 0.05. A \emph{p}-value is a measure of compatibility between
+the data and the null hypothesis and, consequently, a pretty good, but
+imperfect tool to dampen the frequency that we are fooled by randomness.
+But if we are investigating the effects of an increasingly acidified
+ocean on coral growth, \(p=0.002\) may be evidence of an effect of the
+experimental intervention, but, from everything we know about pH and
+cell biology, it would be absurd to conclude from any data that pH does
+not affect growth. To build useful models of how biological systems
+work, we want to know the magnitude of effects and our uncertainty in
+estimating these magnitudes. We can compare the magnitude to a
+prediction of the magnitude from a mechanistic model of growth. We can
+use a magnitude and uncertainty to make predictions about the future of
+coral reefs, under different scenarios of ocean acidification. We can
+use the estimated effects and uncertainty to model the consequences of
+the effects of acidification on coral growth on fish production or
+carbon cycling.
 
 This book is an introduction to the estimation of effects of biological
 data, and measures of the uncertainty of theses estimates, using a
@@ -478,8 +479,8 @@ chunk}{Create a simple plot chunk}}\label{create-a-simple-plot-chunk}
 \subsection{Create more R chunks and explore options and play with R
 code}\label{create-more-r-chunks-and-explore-options-and-play-with-r-code}
 
-\chapter{Data -- Importing and Saving
-Data}\label{data-importing-and-saving-data}
+\chapter{Data -- Reading, Writing, and
+Wrangling}\label{data-reading-writing-and-wrangling}
 
 Importing data into R can be a struggle for new R users and,
 unfortunately, most online sources give easy but superficial methods
@@ -670,7 +671,7 @@ setup chunk ``setup'' is not imperative).
 \end{Highlighting}
 \end{Shaded}
 
-\section{Importing Data}\label{importing-data}
+\section{Importing data}\label{importing-data}
 
 Throughout this book, we will download data from the
 \href{https://datadryad.org}{Dryad Digital Repository}, which is a major
@@ -679,7 +680,7 @@ resource for increasing reproducibility in science. My own view is that
 include data that are proprietary or contain sensitive information --
 such as human health measures).
 
-\subsection{Excel File}\label{excel-file}
+\subsection{Excel file}\label{excel-file}
 
 The Excel dataset is from an experiment on the growth response of zebra
 finch chicks to an incubation call that presumably signals ``hot
@@ -772,8 +773,8 @@ nestlingMass sheet only. The next
 line:\texttt{chick\ \textless{}-\ data.table(chick)} converts the
 data.frame into a data.table.
 
-\subsubsection{Troubleshooting File
-Import}\label{troubleshooting-file-import}
+\subsubsection{Troubleshooting file
+import}\label{troubleshooting-file-import}
 
 If you get an error that starts with ``Error: \texttt{path} does not
 exist:'' then R is not ``seeing'' your specified file given the path
@@ -932,7 +933,7 @@ ggplot2 package extensively.
 
 \includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/data-plotchickdata-2.pdf}
 
-\subsection{Text File}\label{text-file}
+\subsection{Text file}\label{text-file}
 
 The example dataset comes from an experiment on the effect of
 \href{http://science.sciencemag.org/content/early/2012/03/28/science.1215025}{neonicotinoid
@@ -1055,14 +1056,280 @@ and analysis to later chapters.
 
 \includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/data-alternative-plots-3.pdf}
 
-\section{Reshaping Data}\label{reshaping-data}
+\section{Data wrangling}\label{data-wrangling}
+
+\subsection{Combining data}\label{combining-data}
+
+\textbf{Source article} Bak, A.M., Vendelbo, M.H., Christensen, B.,
+Viggers, R., Bibby, B.M., Rungby, J., Jørgensen, J.O.L., Møller, N. and
+Jessen, N., 2018. Prolonged fasting-induced metabolic signatures in
+human skeletal muscle of lean and obese men. PloS one, 13(9),
+p.e0200817.
+
+\textbf{Data source}
+\url{https://datadryad.org/stash/dataset/doi:10.5061/dryad.6121hj7}
+
+\textbf{file name}: datafiles.xlsx
+
+The data are from a randomized \textbf{crossover} design where 18 men (9
+lean and 9 obese) were measured for multiple metabolic markers at two
+times: 1) in a post-absorptive state after 12 hours overnight fast, and
+2) in a prolonged fasting state after 72 hours of fasting. In addition,
+at each time point, metabolic markers were measured prior to and after
+an insulin infusion. Here, we want to reproduce values in Table 2, which
+are measures of mean blood insulin and metabolite levels after 12 hours
+and 72 hours fasting in both the lean and obese groups.
+
+A difficulty for the analyst is that the response data are in the
+``Table 2'' sheet but the variable containing the assignment to ``lean''
+or ``obese'' group is in the ``Table 1'' sheet. To analyze these
+response, the two datasets need to be combined into a single data frame.
+The important consideration when combining data is that like is matched
+with like. For the fasting dataset, ``like'' is the subject id, and we
+have some data for each subject id in Table 1 and other data for the
+same subject ids in Table 2. This means that we essentially want to glue
+the columns of table 2 to the columns of table 1 in a way that insures
+that the correct data for each subject id is on the same row. This is a
+bit more complicated for these data because Table 1 contains 18 data
+rows, one for each subject id and Table 2 contains 36 data rows, 2 for
+each subject id, because each subject has data measured at 12 hours and
+at 72 hours.
+
+\subsection{Subsetting data}\label{subsetting-data}
+
+It is common to see researchers create multiple subsets of data for
+further processing. This practice should be be discouraged because the
+same variables will be in multiple data frames and it can be hard to
+keep track of any processing of variables in the different datasets.
+Instead, subset the data at the level of analysis.
+
+There are many ways to subset data in R. Experienced users tend to
+divide up into those using base R, those using the tidyverse packages,
+or those using data.table. Learn one well. This book uses data.table.
+
+In these examples, dt is the name of a data frame (that has been
+converted to a data table), not a function. Remember that all functions
+are followed by parentheses.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \texttt{dt{[}sex=="female",{]}} includes all rows in which the column
+  \emph{sex} contains the value ``female''
+\item
+  \texttt{dt{[}sex=="female"\ \&\ age\ \textgreater{}\ 18,\ {]}}
+  includes all rows in which the column \texttt{sex} contains the value
+  ``female'' AND the column \emph{age} contains values greater than 18
+\item
+  \texttt{dt{[}site=="wells\ marsh"\ \textbar{}\ site=="scarborough\ marsh",\ {]}}
+  contains the rows in which the column ``site'' contains either the
+  value ``wells marsh'' OR ``scarborough marsh''
+\item
+  \texttt{dt{[}(site=="wells\ marsh"\ \textbar{}\ site=="scarborough\ marsh")\ \&\ sex\ ==\ "female",\ {]}}
+  contains the rows in which the column ``site'' contains either the
+  value ``wells marsh'' OR ``scarborough marsh'' AND the column
+  \emph{sex} contains the value ``female''.
+\end{enumerate}
+
+Here I fit a linear model of glucose \textasciitilde{} group to the ``12
+hour fast'' subset of the fasting data that was just imported
+(\emph{group} is the column containing either ``lean'' or ``obese'').
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{m1 <-}\StringTok{ }\KeywordTok{lm}\NormalTok{(glucose_t_240_min_m_m }\OperatorTok{~}\StringTok{ }\NormalTok{group, }\DataTypeTok{data=}\NormalTok{fasting[intervention}\OperatorTok{==}\StringTok{"12 h fast"}\NormalTok{, ])}
+\KeywordTok{coef}\NormalTok{(}\KeywordTok{summary}\NormalTok{(m1))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##             Estimate Std. Error    t value     Pr(>|t|)
+## (Intercept)   4.8375  0.1201747 40.2538890 7.115319e-16
+## groupobese    0.0250  0.1699527  0.1470997 8.851507e-01
+\end{verbatim}
+
+\subsection{missing data}\label{missing-data}
+
+The function \texttt{na.omit} omits all rows with at least one missing
+value. In general, be vary careful if using \texttt{na.omit} because you
+may delete values that you should be analyzing. For example, here is a
+fake data set, call it ``plant'', with two response variables, one of
+which has a missing value.
+
+treatment
+
+root\_mass
+
+shoot\_mass
+
+cn
+
+100.2
+
+239.9
+
+cn
+
+205.4
+
+cn
+
+95.6
+
+244.6
+
+cn
+
+149.1
+
+252.1
+
+tr
+
+100.2
+
+239.9
+
+tr
+
+118.0
+
+205.4
+
+tr
+
+95.6
+
+244.6
+
+tr
+
+149.1
+
+252.1
+
+This ``cleans'' plant by omitting rows with any missing value
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{plant <-}\StringTok{ }\KeywordTok{na.omit}\NormalTok{(plant)}
+\end{Highlighting}
+\end{Shaded}
+
+The problem is, any analysis of \(shoot\_mass\) will not contain the
+value `round(plant{[}2, shoot\_mass{]}, 1) because it was deleted from
+the data frame along the rest of the row with the missing value.
+
+As with subsetting, handle missing values at the level of the analysis
+by effectively using the subset of data with no missing values \emph{for
+that analysis}. The function \texttt{is.na} returns a boolean (TRUE,
+FALSE) for each element in a list. Consequently, the function
+\texttt{!is.na} can be used to obtain the rows in which the value of
+\(root_mass\) is ``not na''.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{summary_table <-}\StringTok{ }\NormalTok{plant[}\OperatorTok{!}\KeywordTok{is.na}\NormalTok{(root_mass),}
+\NormalTok{                       .(}\DataTypeTok{mean=}\KeywordTok{mean}\NormalTok{(root_mass),}
+                         \DataTypeTok{sd=}\KeywordTok{sd}\NormalTok{(root_mass),}
+                         \DataTypeTok{se=}\KeywordTok{sd}\NormalTok{(root_mass)}\OperatorTok{/}\KeywordTok{sqrt}\NormalTok{(.N),}
+                         \DataTypeTok{N=}\NormalTok{.N), }
+\NormalTok{                       by=.(treatment)]}
+\NormalTok{knitr}\OperatorTok{::}\KeywordTok{kable}\NormalTok{(summary_table, }\DataTypeTok{digits=}\DecValTok{1}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+treatment
+
+mean
+
+sd
+
+se
+
+N
+
+cn
+
+115.0
+
+29.6
+
+17.1
+
+3
+
+tr
+
+115.7
+
+24.2
+
+12.1
+
+4
+
+The \texttt{mean} and \texttt{sd} functions have NA handling methods.
+These are used in the script below Compare the results to the script
+using \texttt{!is.na}. Without using \texttt{!is.na}, the sample size
+for the control, \emph{for the variable root\_mass}, is incorrect--it is
+simply the number of rows where \(Treatment\) is ``cn''. Consequently,
+the computation of the SE for root mass for the control is incorrect.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{summary_table <-}\StringTok{ }\NormalTok{plant[,}
+\NormalTok{                       .(}\DataTypeTok{mean=}\KeywordTok{mean}\NormalTok{(root_mass, }\DataTypeTok{na.rm=}\OtherTok{TRUE}\NormalTok{),}
+                         \DataTypeTok{sd=}\KeywordTok{sd}\NormalTok{(root_mass, }\DataTypeTok{na.rm=}\OtherTok{TRUE}\NormalTok{),}
+                         \DataTypeTok{se=}\KeywordTok{sd}\NormalTok{(root_mass, }\DataTypeTok{na.rm=}\OtherTok{TRUE}\NormalTok{)}\OperatorTok{/}\KeywordTok{sqrt}\NormalTok{(.N),}
+                         \DataTypeTok{N=}\NormalTok{.N), }
+\NormalTok{                       by=.(treatment)]}
+\NormalTok{knitr}\OperatorTok{::}\KeywordTok{kable}\NormalTok{(summary_table, }\DataTypeTok{digits=}\DecValTok{1}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+treatment
+
+mean
+
+sd
+
+se
+
+N
+
+cn
+
+115.0
+
+29.6
+
+17.1
+
+3
+
+tr
+
+115.7
+
+24.2
+
+12.1
+
+4
+
+Familiarize yourself with these and with the NA handling methods of
+other functions such as \texttt{lm} and \texttt{predict}.
+
+\subsection{Reshaping data}\label{reshaping-data}
 
 In general, your data should be in long format. What is long format?
 Consider data from a simple experiment with a response variable and a
 treatment variable with three levels. A common way to organize these
 data in Microsoft Excel is in \textbf{wide format}.
 
-\label{tab:unnamed-chunk-7}Root mass for three treatment levels in wide
+\label{tab:unnamed-chunk-12}Root mass for three treatment levels in wide
 format
 
 control
@@ -1109,7 +1376,7 @@ should be in a single column with a second column identifying the
 treatment level associated with each measure. This is called
 \textbf{long format}.
 
-\label{tab:unnamed-chunk-8}Root mass for three treatment levels in long
+\label{tab:unnamed-chunk-13}Root mass for three treatment levels in long
 format
 
 treatment
@@ -1176,7 +1443,7 @@ charcoal
 
 7.63
 
-\subsection{Wide to long}\label{wide-to-long}
+\subsubsection{Wide to long}\label{wide-to-long}
 
 There are many functions to tidy data from wide to long. \texttt{melt()}
 from the data.table package is especially useful. It is data.table's
@@ -1296,7 +1563,7 @@ honey bee gut. PLoS biology, 15(12), p.e2003467.
 \end{Highlighting}
 \end{Shaded}
 
-\subsection{Stacking multiple sets of
+\subsubsection{Stacking multiple sets of
 columns}\label{stacking-multiple-sets-of-columns}
 
 This example comes from my lab, where a student measured sprint speed in
@@ -1585,10 +1852,10 @@ tr
 
 42.6
 
-\section{Miscellaneous data
+\subsection{Miscellaneous data
 wrangling}\label{miscellaneous-data-wrangling}
 
-\hypertarget{vole-data}{\subsection{Vole data}\label{vole-data}}
+\hypertarget{vole-data}{\subsubsection{Vole data}\label{vole-data}}
 
 This books uses data on the lifespans of voles given three different
 treatments (control, vitamin E supplementation, vitamin C
@@ -1656,7 +1923,7 @@ lifespan as a function of treatment level
 
 \includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/data-vole-plot-1.pdf}
 
-\section{Saving Data}\label{saving-data}
+\section{Saving data}\label{saving-data}
 
 For many projects, it is uncommon to save data. I might save simulated
 data if it takes a long time (tens of minutes to hours or even days) to
@@ -2653,7 +2920,7 @@ means
 ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 \end{verbatim}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-18-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-23-1.pdf}
 
 Compute the mean of the means
 
@@ -4311,7 +4578,7 @@ effect from Z to both X equal to \(\sqrt(0.6)\).
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-25-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-30-1.pdf}
 
 Now create fake \(Y\) that is a function of both \(X_1\) and \(X_2\).
 Create ``standardized'' fake data, where \(\sigma_Y = 1\).
@@ -6080,7 +6347,7 @@ Here is the default plot
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-41-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-46-1.pdf}
 
 \chapter{Model Checking}\label{model-checking-1}
 
@@ -6448,7 +6715,7 @@ nests or a host with no parasites), resulting in positive deviations
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-42-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-47-1.pdf}
 
 \subsubsection{Constrained lower and upper
 bounds}\label{constrained-lower-and-upper-bounds}
@@ -6966,7 +7233,7 @@ intervals}\label{adding-bootstrap-intervals}
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-43-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-48-1.pdf}
 
 \subsection{Adding modeled error
 intervals}\label{adding-modeled-error-intervals}
@@ -7012,7 +7279,7 @@ effect}\label{modeled-error-intervals-of-the-effect}
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-45-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-50-1.pdf}
 
 \subsubsection{Modeled error intervals of the
 mean}\label{modeled-error-intervals-of-the-mean}
@@ -7034,7 +7301,7 @@ mean}\label{modeled-error-intervals-of-the-mean}
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-46-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-51-1.pdf}
 
 Note that the CIs are asymmetric about the mean (and these modeled CIs
 will never include negative values for count data).
@@ -7051,7 +7318,7 @@ The ggplots are combined using the package \texttt{cowplot}
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-47-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-52-1.pdf}
 
 \subsection{Adding p-values}\label{adding-p-values}
 
@@ -7088,7 +7355,7 @@ is returning.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-48-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-53-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -7193,7 +7460,7 @@ function from the emmeans package.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-51-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-56-1.pdf}
 
 \subsection{Interaction plot}\label{interaction-plot}
 
@@ -7213,7 +7480,7 @@ function from the emmeans package.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-52-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-57-1.pdf}
 
 \chapter*{\texorpdfstring{Part IV: More than one \(X\) -- Multivariable
 Models}{Part IV: More than one X -- Multivariable Models}}\label{part-iv-more-than-one-x-multivariable-models}
@@ -7342,7 +7609,7 @@ ldlc.r = \beta_0 + \beta_1 treatment + \varepsilon
 
 where \(ldlc.r\) is the set of residuals.
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-54-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-59-1.pdf}
 
 Now the estimate of the effect is -4.7 mg/dL blood and the SE is only
 0.88. In this two-stage analysis (stage 1: fit ldlc \textasciitilde{}
@@ -7370,11 +7637,11 @@ ldlc = \beta_0 + \beta_1 age + \beta_2 treatment + \varepsilon
 
 which results in the Harrell Plot
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-55-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-60-1.pdf}
 
 and the coefficient table
 
-\label{tab:unnamed-chunk-56}Coefficients of the model that includes the
+\label{tab:unnamed-chunk-61}Coefficients of the model that includes the
 covariate age.
 
 Estimate
@@ -8921,7 +9188,7 @@ design}\label{bar-plot-with-uniform-coloring-poorly-communicate-the-factorial-de
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-66-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-71-1.pdf}
 
 \subsubsection{Plots that communicate the factorial
 design}\label{plots-that-communicate-the-factorial-design}
@@ -9097,7 +9364,7 @@ reflect our pre-conceived scientific model.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-67-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-72-1.pdf}
 
 This effects plot shows the four simple effects, the single interaction
 (Temp18:CO21100), and their 95\% confidence intervals. In the original
@@ -9123,7 +9390,7 @@ to small) to have much confidence in the size of the interaction effect.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-68-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-73-1.pdf}
 
 The effects and interaction plot are combined into a single plot.
 
@@ -11529,7 +11796,7 @@ statistic is \(df\).
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-71-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-76-1.pdf}
 
 \begin{verbatim}
 ## 
