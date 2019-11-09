@@ -646,10 +646,10 @@ gg</code></pre></div>
 </tr>
 </tbody>
 </table>
-<p>This “cleans” plant by omitting rows with any missing value</p>
+<p>This code “cleans” the data.table <em>plant</em> by omitting rows with any missing value</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">plant &lt;-<span class="st"> </span><span class="kw">na.omit</span>(plant)</code></pre></div>
-<p>The problem is, any analysis of <span class="math inline">\(shoot\_mass\)</span> will not contain the value `round(plant[2, shoot_mass], 1) because it was deleted from the data frame along the rest of the row with the missing value.</p>
-<p>As with subsetting, handle missing values at the level of the analysis by effectively using the subset of data with no missing values <em>for that analysis</em>. The function <code>is.na</code> returns a boolean (TRUE, FALSE) for each element in a list. Consequently, the function <code>!is.na</code> can be used to obtain the rows in which the value of <span class="math inline">\(root_mass\)</span> is “not na”.</p>
+<p>The problem is, any analysis of <span class="math inline">\(shoot\_mass\)</span> will not contain the value 244.6 because it was deleted from the data frame along the rest of the row with the missing value.</p>
+<p>Instead of deleting the entire row, retain all data but handle missing values at the level of the analysis. This can be done using the subset mechanism. The function <code>is.na</code> returns a boolean (a variable with values TRUE or FALSE) for each element in a list. Consequently, the function <code>!is.na</code> can be used to obtain the rows in which the value of <span class="math inline">\(root_mass\)</span> is “not na”.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">summary_table &lt;-<span class="st"> </span>plant[<span class="op">!</span><span class="kw">is.na</span>(root_mass),
                        .(<span class="dt">mean=</span><span class="kw">mean</span>(root_mass),
                          <span class="dt">sd=</span><span class="kw">sd</span>(root_mass),
@@ -684,7 +684,7 @@ knitr<span class="op">::</span><span class="kw">kable</span>(summary_table, <spa
 </tr>
 </tbody>
 </table>
-<p>The <code>mean</code> and <code>sd</code> functions have NA handling methods. These are used in the script below Compare the results to the script using <code>!is.na</code>. Without using <code>!is.na</code>, the sample size for the control, <em>for the variable root_mass</em>, is incorrect–it is simply the number of rows where <span class="math inline">\(Treatment\)</span> is “cn”. Consequently, the computation of the SE for root mass for the control is incorrect.</p>
+<p>Many R functions automatically handle missing values. For example, the <code>mean</code> and <code>sd</code> functions have NA handling methods. These are used in the script below and generate the correct mean and sd. But the computation of the standard error fails to compute the correct answer because it uses the wrong N. Compare the results to the script using <code>!is.na</code>. Without using <code>!is.na</code>, the sample size for the control, <em>for the variable root_mass</em>, is incorrect–it is simply the number of rows where <span class="math inline">\(Treatment\)</span> is “cn”.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">summary_table &lt;-<span class="st"> </span>plant[,
                        .(<span class="dt">mean=</span><span class="kw">mean</span>(root_mass, <span class="dt">na.rm=</span><span class="ot">TRUE</span>),
                          <span class="dt">sd=</span><span class="kw">sd</span>(root_mass, <span class="dt">na.rm=</span><span class="ot">TRUE</span>),
@@ -719,7 +719,7 @@ knitr<span class="op">::</span><span class="kw">kable</span>(summary_table, <spa
 </tr>
 </tbody>
 </table>
-<p>Familiarize yourself with these and with the NA handling methods of other functions such as <code>lm</code> and <code>predict</code>.</p>
+<p>Familiarize yourself with these and with the NA handling methods of other functions, especially <code>lm</code> and <code>predict</code>.</p>
 </div>
 <div id="reshaping-data" class="section level3">
 <h3><span class="header-section-number">2.3.4</span> Reshaping data</h3>

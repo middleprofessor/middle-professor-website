@@ -1209,7 +1209,8 @@ tr
 
 252.1
 
-This ``cleans'' plant by omitting rows with any missing value
+This code ``cleans'' the data.table \emph{plant} by omitting rows with
+any missing value
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -1218,15 +1219,15 @@ This ``cleans'' plant by omitting rows with any missing value
 \end{Shaded}
 
 The problem is, any analysis of \(shoot\_mass\) will not contain the
-value `round(plant{[}2, shoot\_mass{]}, 1) because it was deleted from
-the data frame along the rest of the row with the missing value.
+value 244.6 because it was deleted from the data frame along the rest of
+the row with the missing value.
 
-As with subsetting, handle missing values at the level of the analysis
-by effectively using the subset of data with no missing values \emph{for
-that analysis}. The function \texttt{is.na} returns a boolean (TRUE,
-FALSE) for each element in a list. Consequently, the function
-\texttt{!is.na} can be used to obtain the rows in which the value of
-\(root_mass\) is ``not na''.
+Instead of deleting the entire row, retain all data but handle missing
+values at the level of the analysis. This can be done using the subset
+mechanism. The function \texttt{is.na} returns a boolean (a variable
+with values TRUE or FALSE) for each element in a list. Consequently, the
+function \texttt{!is.na} can be used to obtain the rows in which the
+value of \(root_mass\) is ``not na''.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -1270,12 +1271,14 @@ tr
 
 4
 
-The \texttt{mean} and \texttt{sd} functions have NA handling methods.
-These are used in the script below Compare the results to the script
+Many R functions automatically handle missing values. For example, the
+\texttt{mean} and \texttt{sd} functions have NA handling methods. These
+are used in the script below and generate the correct mean and sd. But
+the computation of the standard error fails to compute the correct
+answer because it uses the wrong N. Compare the results to the script
 using \texttt{!is.na}. Without using \texttt{!is.na}, the sample size
 for the control, \emph{for the variable root\_mass}, is incorrect--it is
-simply the number of rows where \(Treatment\) is ``cn''. Consequently,
-the computation of the SE for root mass for the control is incorrect.
+simply the number of rows where \(Treatment\) is ``cn''.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -1320,7 +1323,7 @@ tr
 4
 
 Familiarize yourself with these and with the NA handling methods of
-other functions such as \texttt{lm} and \texttt{predict}.
+other functions, especially \texttt{lm} and \texttt{predict}.
 
 \subsection{Reshaping data}\label{reshaping-data}
 
