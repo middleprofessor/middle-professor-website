@@ -640,14 +640,31 @@ fake_data &lt;-<span class="st"> </span><span class="kw">data.table</span>(
 ## data:  count by treatment
 ## W = 24, p-value = 0.05336
 ## alternative hypothesis: true location shift is not equal to 0</code></pre>
-<p>Finally, a randomization, or permutation, test. The test statistic is the difference in means. The test is two-tailed, so the absolute difference is recorded. The first value computed is the observed absolute difference. The <em>p</em>-value is computed as the relative frequency of values greater than or equal to this observed value.</p>
+<p>Finally, a permutation, test. The basic algorithm is</p>
+<ol style="list-style-type: decimal">
+<li>compute the test statistic for the observed data, assign this to <span class="math inline">\(\theta_1\)</span></li>
+<li>permute the response</li>
+<li>compute the test statistic for the permuted data, assign these to <span class="math inline">\(\theta_{2..m}\)</span></li>
+<li>repeat 2 and 3 <span class="math inline">\(m-1\)</span> times</li>
+<li>compute <span class="math inline">\(p\)</span> as</li>
+</ol>
+<span class="math display">\[\begin{equation}
+p_{perm} = \frac{N_{\theta_i \ge \theta_{1}}}{m}
+\end{equation}\]</span>
+<p>This is easily done with a <strong>for loop</strong> in which the observed statistic is the first value in the vector of statistics. If this is done, the minimum value in the numerator for the computation of <span class="math inline">\(p_{perm}\)</span> is 1, which insures that <span class="math inline">\(p_{perm}\)</span> is not zero.</p>
+<p>The test statistic depends on the analysis. For the simple comparison of means, a simple test statistic is the difference in means. This is the numerator of the test statistic in a <em>t</em>-test. The test has more power if the test-statistic is scaled (Manley xxx), so a better test statistic would be <em>t</em>, which scales the difference by its standard error.</p>
+<p>Here, I implement this algorithm. The test is two-tailed, so the absolute difference is recorded. The first value computed is the observed absolute difference.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">set.seed</span>(<span class="dv">1</span>)
 n_permutations &lt;-<span class="st"> </span><span class="dv">5000</span>
 d &lt;-<span class="st"> </span><span class="kw">numeric</span>(n_permutations)
+
+<span class="co"># create a new column which will contain the permuted response</span>
+<span class="co"># for the first iteration, this will be the observed order</span>
 fake_data[, count_perm <span class="op">:</span><span class="er">=</span><span class="st"> </span>count]
+
 <span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>n_permutations){
-  d[i] &lt;-<span class="st"> </span><span class="kw">abs</span>(<span class="kw">mean</span>(fake_data[treatment<span class="op">==</span><span class="st">&quot;tr&quot;</span>, count_perm]) <span class="op">-</span><span class="st"> </span>
-<span class="st">    </span><span class="kw">mean</span>(fake_data[treatment<span class="op">==</span><span class="st">&quot;cn&quot;</span>, count_perm]))
+  d[i] &lt;-<span class="st"> </span><span class="kw">abs</span>(<span class="kw">t.test</span>(count_perm <span class="op">~</span><span class="st"> </span>treatment, <span class="dt">data =</span> fake_data)<span class="op">$</span>statistic)
+  
   <span class="co"># permute the count_perm column for the next iteration</span>
   fake_data[, count_perm <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">sample</span>(count)]
 }
@@ -657,7 +674,7 @@ p</code></pre></div>
 </div>
 <div id="some-r-packages-with-permutation-tests." class="section level4">
 <h4><span class="header-section-number">12.6.2.2</span> Some R packages with permutation tests.</h4>
-<p><code>lmPerm::lmp</code> generates permutation p-values for parameters of any kind of linear model. The test statistic is the sum of squares due to the term divided by the residual sum of squares of the model.</p>
+<p><code>lmPerm::lmp</code> generates permutation p-values for parameters of any kind of linear model. The test statistic is the sum of squares of the term scaled by the residual sum of squares of the model.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">coef</span>(<span class="kw">summary</span>(<span class="kw">lmp</span>(count <span class="op">~</span><span class="st"> </span>treatment, <span class="dt">perm=</span><span class="st">&quot;Prob&quot;</span>, <span class="dt">Ca=</span><span class="fl">0.01</span>, 
                  <span class="dt">data=</span>fake_data)))</code></pre></div>
 <pre><code>## [1] &quot;Settings:  unique SS &quot;</code></pre>
@@ -696,7 +713,7 @@ res_matrix &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span cl
 <div id="power-1" class="section level4">
 <h4><span class="header-section-number">12.6.3.2</span> Power</h4>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># first create a matrix with a bunch of data sets, each in its own column</span>
-n &lt;-<span class="st"> </span><span class="dv">10</span>
+n &lt;-<span class="st"> </span><span class="dv">5</span>
 n_sets &lt;-<span class="st"> </span><span class="dv">4000</span>
 fake_matrix &lt;-<span class="st"> </span><span class="kw">rbind</span>(<span class="kw">matrix</span>(<span class="kw">rnegbin</span>(n<span class="op">*</span>n_sets, <span class="dt">mu=</span><span class="dv">10</span>, <span class="dt">theta=</span><span class="dv">1</span>), <span class="dt">nrow=</span>n),
                    <span class="kw">matrix</span>(<span class="kw">rnegbin</span>(n<span class="op">*</span>n_sets, <span class="dt">mu=</span><span class="dv">20</span>, <span class="dt">theta=</span><span class="dv">1</span>), <span class="dt">nrow=</span>n))
@@ -715,8 +732,8 @@ res_matrix &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span cl
 }</code></pre></div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">apply</span>(res_matrix, <span class="dv">2</span>, <span class="cf">function</span>(x) <span class="kw">sum</span>(x <span class="op">&lt;</span><span class="st"> </span><span class="fl">0.05</span>)<span class="op">/</span>n_sets)</code></pre></div>
 <pre><code>##      lm     mww    perm 
-## 0.22600 0.21225 0.25600</code></pre>
-<p>At this sample size, and for the modeled fake data, the permutation test has about 13-15% more power than the linear model and Mann-Whitney-Wilcoxan test.</p>
+## 0.09300 0.09350 0.11125</code></pre>
+<p>I have compared a linear model, Mann-Whitney-Wilcoxan, and permutation, by simulating a “low power” experiment. The effect is huge (twice as many cells) but the power is low because the sample size is small (<span class="math inline">\(n = 5\)</span>). At this sample size, and for this model of fake data, the power of the permutation test is small (11%) but it is about 25% larger than that of the linear model and Mann-Whitney-Wilcoxan test. Repeat this simulation using <span class="math inline">\(n=40\)</span> do see how the relative power among the three change in a simulation of an experiment with more power.</p>
 </div>
 </div>
 </div>
