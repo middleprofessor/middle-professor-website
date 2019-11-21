@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Part I: R fundamentals | Elementary Statistical Modeling for Applied Biostatistics</title>
+  <title>Chapter 12 Best Practices – Issues in Inference | Elementary Statistical Modeling for Applied Biostatistics</title>
   <meta name="description" content="A first course in statistical modeling for biology students" />
   <meta name="generator" content="bookdown 0.14 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Part I: R fundamentals | Elementary Statistical Modeling for Applied Biostatistics" />
+  <meta property="og:title" content="Chapter 12 Best Practices – Issues in Inference | Elementary Statistical Modeling for Applied Biostatistics" />
   <meta property="og:type" content="book" />
   
   
@@ -16,7 +16,7 @@
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Part I: R fundamentals | Elementary Statistical Modeling for Applied Biostatistics" />
+  <meta name="twitter:title" content="Chapter 12 Best Practices – Issues in Inference | Elementary Statistical Modeling for Applied Biostatistics" />
   
   <meta name="twitter:description" content="A first course in statistical modeling for biology students" />
   
@@ -30,8 +30,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="index.html"/>
-<link rel="next" href="organization-r-projects-and-r-notebooks.html"/>
+<link rel="prev" href="model-fitting-and-model-fit-ols.html"/>
+<link rel="next" href="plotting-models.html"/>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -414,16 +414,327 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="part-i-r-fundamentals" class="section level1 unnumbered">
-<h1>Part I: R fundamentals</h1>
+<div id="best-practices-issues-in-inference" class="section level1">
+<h1><span class="header-section-number">Chapter 12</span> Best Practices – Issues in Inference</h1>
+<div id="t-tests-and-anova" class="section level2">
+<h2><span class="header-section-number">12.1</span> t-tests and ANOVA</h2>
+<p>Welch, paired</p>
+</div>
+<div id="power" class="section level2">
+<h2><span class="header-section-number">12.2</span> Power</h2>
+<div id="types-of-error" class="section level3">
+<h3><span class="header-section-number">12.2.1</span> “Types” of Error</h3>
+<p>I, II, S, M</p>
+</div>
+</div>
+<div id="multiple-testing" class="section level2">
+<h2><span class="header-section-number">12.3</span> multiple testing</h2>
+<p><strong>Multiple testing</strong> is the practice of adjusting <em>p</em>-values (and less commonly confidence intervals) to account for the expected increase in the frequency of Type I error when there are multiple tests (typically Null Hypothesis Significance Tests). Multiple testing tends to arise in two types of situations:</p>
+<ol style="list-style-type: decimal">
+<li>Multiple pairwise contrasts among treatment levels (or combinations of levels) are estimated.</li>
+<li>The effects of a treatment on multiple responses are estimated. This can arise if
+<ol style="list-style-type: lower-alpha">
+<li>there are multiple ways of measuring the consequences of something – for example, an injurious treatment on plant health might effect root biomass, shoot biomass, leaf number, leaf area, etc.</li>
+<li>one is exploring the consequences of an effect on many, many outcomes – for example, the expression levels of 10,000 genes between normal and obese mice.</li>
+</ol></li>
+</ol>
+<p>Despite the ubiquitous presence of multiple testing in elementary biostatistics textbooks, in the applied biology literature, and in journal guidelines, the practice of adjusting <em>p</em>-values for multiple tests is highly controversial among statisticians. My thoughts:</p>
+<ol style="list-style-type: decimal">
+<li>In situations like (1) above, I advocate that researchers <strong>do not adjust p-values for multiple tests</strong>. In general, its a best practice to only estimate contrasts for which you care about because of some <em>a priori</em> model of how the system works. If you compare all pairwise contrasts of an experiment with many treatment levels and/or combinations, expect to find some false discoveries.</li>
+<li>In situations like (2a) above, I advocate that researchers <strong>do not adjust p-values for multiple tests</strong>.</li>
+<li>In situations like (2b) above, adjusting for the <strong>False Discovery Rate</strong> is an interesting approach. But, recognize that tests with small <em>p</em>-values are <em>highly provisional</em> discoveries of a patterns only and not a discovery of the causal sequelae of the treatment. For that, one needs to do the hard work of designing experiments that rigorously probe a working, mechanistic model of the system.</li>
+</ol>
+<p>Finally, recognize that anytime there are multiple tests, Type M errors will arise due to the vagaries of sampling. This means that in a rank-ordered list of the effects, those at the top have measured effects that are probably bigger than the true effect. An alternative to adjusted <em>p</em>-values is a <strong>penalized regression</strong> model that shrinks effects toward the mean effect.</p>
+<div id="some-background" class="section level3">
+<h3><span class="header-section-number">12.3.1</span> Some background</h3>
+<p>The logic of multiple testing goes something like this: the more tests that a researcher does, the higher the probability that a false positive (Type I error) will occur, therefore a researcher should should adjust <em>p</em>-values so that the Type I error over the set (or “family”) of tests is 5%. This adjusted Type I error rate is the “family-wise error rate”.</p>
+<p>If a researcher carries out multiple tests <em>of data in which the null hypothesis is true</em>, what is the probability of finding at least one Type I error? This is easy to compute. If the frequency of Type I error for a single test is <span class="math inline">\(\alpha\)</span>, then the probability of no Type I error is <span class="math inline">\(1 - \alpha\)</span>. For two tests, the probability of no Type I error in either test is the product of the probability for each test, or <span class="math inline">\((1 - \alpha)^2\)</span>. By the same logic, for <span class="math inline">\(m\)</span> tests, the probabilty of no type I error in any of the tests is <span class="math inline">\((1 - \alpha)^m\)</span>. The probability of at least one type one error, across the <span class="math inline">\(m\)</span> tests, then, is <span class="math inline">\(1 - (1 - \alpha)^m\)</span>. A table of these probabilities for different <span class="math inline">\(m\)</span> is given below. If the null is true in all tests, then at least one Type I error is more likely than not if there are 14 tests, and close to certain if there more than 50 tests. Don’t skip over this paragraph – the logic is important even if I don’t advocate adjusting for multiple tests.</p>
+<table>
+<caption><span id="tab:best-type1-table">Table 12.1: </span>Probability of at least one type I error within the set of multiple tests, for data in which the null hypothesis is true. The Type I error rate for a single test is 0.05. The number of tests is m. The probability is p.</caption>
+<thead>
+<tr class="header">
+<th align="right">m</th>
+<th align="right">p</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">1</td>
+<td align="right">0.05</td>
+</tr>
+<tr class="even">
+<td align="right">3</td>
+<td align="right">0.14</td>
+</tr>
+<tr class="odd">
+<td align="right">6</td>
+<td align="right">0.26</td>
+</tr>
+<tr class="even">
+<td align="right">10</td>
+<td align="right">0.40</td>
+</tr>
+<tr class="odd">
+<td align="right">50</td>
+<td align="right">0.92</td>
+</tr>
+<tr class="even">
+<td align="right">100</td>
+<td align="right">0.99</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="multiple-testing-working-in-r" class="section level3">
+<h3><span class="header-section-number">12.3.2</span> Multiple testing – working in R</h3>
+<div id="multiple-pairwise-contrasts" class="section level4">
+<h4><span class="header-section-number">12.3.2.1</span> Multiple pairwise contrasts</h4>
+<p>The <code>adjust</code> argument in <code>emmeans::contrast()</code> controls the method for <em>p</em>-value adjustment. The default is “tukey”.</p>
+<ol style="list-style-type: decimal">
+<li>“none” – no adjustment, in general my preference.</li>
+<li>“tukey” – Tukey’s HSD, the default</li>
+<li>“bonferroni” – the standard bonferroni, which is conservative</li>
+<li>“fdr” – the false discovery rate</li>
+<li>“mvt” – based on the multivariate <em>t</em> distribution and using covariance structure of the variables</li>
+</ol>
+</div>
+<div id="tukey-hsd-adjustment-of-all-pairwise-comparisons" class="section level4">
+<h4><span class="header-section-number">12.3.2.2</span> Tukey HSD adjustment of all pairwise comparisons</h4>
+<p>The data are those from Fig. 2D of “Data from The enteric nervous system promotes intestinal health by constraining microbiota composition”. There is a single factor with four treatment levels. The response is neutrophil count.</p>
+<p>No adjustment:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">m1 &lt;-<span class="st"> </span><span class="kw">lm</span>(count <span class="op">~</span><span class="st"> </span>donor, <span class="dt">data=</span>exp2d)
+m1.emm &lt;-<span class="st"> </span><span class="kw">emmeans</span>(m1, <span class="dt">specs=</span><span class="st">&quot;donor&quot;</span>)
+m1.pairs.none &lt;-<span class="st"> </span><span class="kw">contrast</span>(m1.emm, <span class="dt">method=</span><span class="st">&quot;revpairwise&quot;</span>, <span class="dt">adjust=</span><span class="st">&quot;none&quot;</span>)
+<span class="kw">summary</span>(m1.pairs.none, <span class="dt">infer=</span><span class="kw">c</span>(<span class="ot">TRUE</span>, <span class="ot">TRUE</span>))</code></pre></div>
+<pre><code>##  contrast       estimate   SE df lower.CL upper.CL t.ratio p.value
+##  gf - wt          -1.502 1.48 58    -4.47     1.47 -1.013  0.3153 
+##  sox10 - wt        4.679 1.23 58     2.23     7.13  3.817  0.0003 
+##  sox10 - gf        6.182 1.45 58     3.29     9.08  4.276  0.0001 
+##  iap_mo - wt      -0.384 1.53 58    -3.45     2.68 -0.251  0.8025 
+##  iap_mo - gf       1.118 1.71 58    -2.31     4.54  0.654  0.5159 
+##  iap_mo - sox10   -5.064 1.49 58    -8.05    -2.07 -3.391  0.0013 
+## 
+## Confidence level used: 0.95</code></pre>
+<p>Tukey HSD:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">m1.pairs.tukey &lt;-<span class="st"> </span><span class="kw">contrast</span>(m1.emm, <span class="dt">method=</span><span class="st">&quot;revpairwise&quot;</span>, <span class="dt">adjust=</span><span class="st">&quot;tukey&quot;</span>)
+<span class="kw">summary</span>(m1.pairs.tukey, <span class="dt">infer=</span><span class="kw">c</span>(<span class="ot">TRUE</span>, <span class="ot">TRUE</span>))</code></pre></div>
+<pre><code>##  contrast       estimate   SE df lower.CL upper.CL t.ratio p.value
+##  gf - wt          -1.502 1.48 58    -5.43     2.42 -1.013  0.7426 
+##  sox10 - wt        4.679 1.23 58     1.44     7.92  3.817  0.0018 
+##  sox10 - gf        6.182 1.45 58     2.36    10.01  4.276  0.0004 
+##  iap_mo - wt      -0.384 1.53 58    -4.43     3.66 -0.251  0.9944 
+##  iap_mo - gf       1.118 1.71 58    -3.41     5.64  0.654  0.9138 
+##  iap_mo - sox10   -5.064 1.49 58    -9.01    -1.11 -3.391  0.0067 
+## 
+## Confidence level used: 0.95 
+## Conf-level adjustment: tukey method for comparing a family of 4 estimates 
+## P value adjustment: tukey method for comparing a family of 4 estimates</code></pre>
+</div>
+<div id="tukey-hsd-adjustment-of-conditional-effects" class="section level4">
+<h4><span class="header-section-number">12.3.2.3</span> Tukey HSD adjustment of conditional effects</h4>
+<p>Here I compare the Tukey HSD adjustment between all pairwise comparisons and the subset that are the conditional (simple) effects.</p>
+</div>
+</div>
+</div>
+<div id="p-hacking" class="section level2">
+<h2><span class="header-section-number">12.4</span> p-hacking</h2>
+</div>
+<div id="difference-in-p-is-not-different" class="section level2">
+<h2><span class="header-section-number">12.5</span> difference in p is not different</h2>
+</div>
+<div id="inference-when-data-are-not-normal" class="section level2">
+<h2><span class="header-section-number">12.6</span> Inference when data are not Normal</h2>
+<p>Inference in statistical models (standard errors, confidence intervals, <em>p</em>-values) are a function of the modeled distributions of the parameters (for linear models, this parameter is the conditional (or error) variance <span class="math inline">\(\sigma^2\)</span>); if the data do not approximate the modeled distribution, then inferential statistics might be to liberal (standard errors are too small, confidence intervals are too narrow, Type I error is more than nominal) or to conservative (standard errors are too large, confidence intervals are too wide, Type I error is less than nominal).</p>
+<p>Linear models assume that the “the data” (specifically, the conditional values, or, equivalently, the residuals from the model) approximate a Normal distribution. Chapter xxx showed how to qualitatively assess how well residuals approximate a Normal distribution using a Q-Q plot. If the researcher concludes that the data poorly approximate a normal distribution because of outliers, the researcher can use robust methods to estimate the parameters. If the approximation is poor because the residuals suggest a skewed distribution or one with heavy or light tails, the researcher cancan choose among several strategies</p>
+<ol style="list-style-type: decimal">
+<li>continue to use the linear model, many of which are fairly robust to non-normal data, especially when the sample size is not small.</li>
+<li>transform the data in a way that makes the conditional response more closely approximate a normal distribution.</li>
+<li>use a non-parametric method, which are methods that do not assume a particular distribution</li>
+<li>use a generalized linear model (GLM), which is appropriate if the conditional response approximates any of the distributions that can be modeled using GLM.</li>
+</ol>
+<p>Do not use the <em>p</em>-value from a “test for normality” (such as a Shapiro-Wilk test) to decide between using the linear model (or t-test or ANOVA) and an alternative such as a generalized linear model (or transformation or non-parametric test). No real data is normal. Tests of normality will tend to “not reject” normality (p &gt; 0.05) when the sample size is small and “reject” normality (p &lt; 0.05) when the sample size is very large. But again, a “not rejected” hypothesis test does not mean the null (in this case, the data are normal) is true. More importantly, where the test for normality tends to fail to reject (encouraging a researcher to use parametric statistics) is where parametric inference performs the worst (because of small <em>n</em>) and where the test for normality tends to reject (encouraging a researcher to use non-parametric statistics) is where the parametric inference performs the best (because of large sample size) (Lumley xxx).</p>
+<div id="log-transformations" class="section level3">
+<h3><span class="header-section-number">12.6.1</span> Log transformations</h3>
+<p>Many response variables within biology, including count data, and almost anything that grows, are right skewed and have variances that increase with the mean. A log transform of a response variable with this kind of distribution will tend to make the residuals more approximately normal and the variance less dependent of the mean. At least two issues arise</p>
+<ol style="list-style-type: decimal">
+<li>if the response is count data, and the data include counts of zero, then a fudge factor has to be added to the response since log(0) doesn’t exist. The typical fudge factor is to add 1 to <em>all</em> values, but this is arbitrary and results do depend on the magnitude of this fudge factor.</li>
+<li>the estimates are on a log scale and do not have the units of the response. The estimates can be back-transformed by taking the exponent of a coefficient or contrast but this itself produces problems. For example, the backtransformed mean of the log-transformed response is not the mean on the origianl scale (the arithmetic mean) but the <strong>geometric mean</strong>. Geometric means are smaller than arithmetic means, appreciably so if the data are heavily skewed. Do we want our understanding of a system to be based on geometric means?</li>
+</ol>
+</div>
+<div id="non-parametric-tests" class="section level3">
+<h3><span class="header-section-number">12.6.2</span> Non-parametric tests</h3>
+<ol style="list-style-type: decimal">
+<li>In general, the role of a non-parametric test is a better-behaved <em>p</em>-value, that is, one whose Type I error is well controlled. As such, non-parametric tests are more about Null-Hypothesis Statistical Testing and less (or not at all) about Estimation.</li>
+<li>In general, classic non-parametric tests are only available for fairly simple experimental designs. Classic non-parametric tests include
+<ul>
+<li>Independent sample (Student’s) <em>t</em> test: Mann-Whitney-Wilcoxan</li>
+<li>Paired <em>t</em> test: Wilcoxan signed-rank test</li>
+</ul></li>
+</ol>
+<p>One rarely sees non-parametric tests for more complex designs that include covariates, or multiple factors, but for these, one could 1) convert the response to ranks and fit the usual linear model, or 2) implement a permutation test that properly preserves <strong>exchangeability</strong>.</p>
+<p>Permutation tests control Type I error and are powerful. That said, I would recommend a permutation test as a supplment to, and not replacement of, inference from a generalized linear model.</p>
+<div id="permutation-test" class="section level4">
+<h4><span class="header-section-number">12.6.2.1</span> Permutation test</h4>
+<p>A permutation test effectively computes the probability that a random assignment of a response to a particular value of <em>X</em> generates a test statistic as large or larger than the observed statistic. If this probability is small, then this “random assignment” is unlikely. From this we infer that the actual assignment matters, which implies a treatment effect.</p>
+<p>Create data from a negative binomial distribution, which is right skewed</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">set.seed</span>(<span class="dv">5</span>)
+n &lt;-<span class="st"> </span><span class="dv">10</span>
+fake_data &lt;-<span class="st"> </span><span class="kw">data.table</span>(
+  <span class="dt">treatment =</span> <span class="kw">rep</span>(<span class="kw">c</span>(<span class="st">&quot;cn&quot;</span>, <span class="st">&quot;tr&quot;</span>), <span class="dt">each=</span>n),
+  <span class="dt">count =</span> <span class="kw">rnegbin</span>(n<span class="op">*</span><span class="dv">2</span>, <span class="dt">mu=</span><span class="kw">rep</span>(<span class="kw">c</span>(<span class="dv">10</span>, <span class="dv">14</span>), <span class="dt">each=</span>n), <span class="dt">theta=</span><span class="dv">1</span>)
+)</code></pre></div>
+<p>Some statistics of the fake data</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fake_data[, .(<span class="dt">N=</span>.N, <span class="dt">mean=</span><span class="kw">mean</span>(count), <span class="dt">sd=</span><span class="kw">sd</span>(count)), by=treatment]</code></pre></div>
+<pre><code>##    treatment  N mean        sd
+## 1:        cn 10  7.1  8.372574
+## 2:        tr 10 18.5 16.029487</code></pre>
+<p>A plot of the fake data</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggerrorplot</span>(<span class="dt">x=</span><span class="st">&quot;treatment&quot;</span>,
+            <span class="dt">y =</span> <span class="st">&quot;count&quot;</span>,
+            <span class="dt">data =</span> fake_data,
+            <span class="dt">add =</span> <span class="kw">c</span>(<span class="st">&quot;mean_ci&quot;</span>, <span class="st">&quot;jitter&quot;</span>),
+            <span class="dt">palette =</span> <span class="st">&quot;jco&quot;</span>,
+            <span class="dt">color =</span> <span class="st">&quot;treatment&quot;</span>)</code></pre></div>
+<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/unnamed-chunk-52-1.png" width="576" /></p>
+<p>What the distribution of the fake data looks like</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">n &lt;-<span class="st"> </span><span class="dv">10</span><span class="op">^</span><span class="dv">4</span>
+<span class="kw">qplot</span>(<span class="kw">rnegbin</span>(n, <span class="dt">mu=</span><span class="dv">10</span>, <span class="dt">theta=</span><span class="dv">1</span>))</code></pre></div>
+<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/unnamed-chunk-53-1.png" width="576" /></p>
+<p>A linear model to estimate the treatment effect.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">knitr<span class="op">::</span><span class="kw">kable</span>(<span class="kw">coef</span>(<span class="kw">summary</span>(<span class="kw">lm</span>(count <span class="op">~</span><span class="st"> </span>treatment, <span class="dt">data=</span>fake_data))),
+             <span class="dt">digits =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">3</span>))</code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th></th>
+<th align="right">Estimate</th>
+<th align="right">Std. Error</th>
+<th align="right">t value</th>
+<th align="right">Pr(&gt;|t|)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>(Intercept)</td>
+<td align="right">7.1</td>
+<td align="right">4.0</td>
+<td align="right">1.8</td>
+<td align="right">0.096</td>
+</tr>
+<tr class="even">
+<td>treatmenttr</td>
+<td align="right">11.4</td>
+<td align="right">5.7</td>
+<td align="right">2.0</td>
+<td align="right">0.062</td>
+</tr>
+</tbody>
+</table>
+<p>A non-parametric (Mann-Whitney-Wilcoxon) test</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">wilcox.test</span>(count <span class="op">~</span><span class="st"> </span>treatment, <span class="dt">data=</span>fake_data)</code></pre></div>
+<pre><code>## Warning in wilcox.test.default(x = c(0L, 1L, 4L, 20L, 0L, 9L, 3L, 12L,
+## 22L, : cannot compute exact p-value with ties</code></pre>
+<pre><code>## 
+##  Wilcoxon rank sum test with continuity correction
+## 
+## data:  count by treatment
+## W = 24, p-value = 0.05336
+## alternative hypothesis: true location shift is not equal to 0</code></pre>
+<p>Finally, a randomization, or permutation, test. The test statistic is the difference in means. The test is two-tailed, so the absolute difference is recorded. The first value computed is the observed absolute difference. The <em>p</em>-value is computed as the relative frequency of values greater than or equal to this observed value.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">set.seed</span>(<span class="dv">1</span>)
+n_permutations &lt;-<span class="st"> </span><span class="dv">5000</span>
+d &lt;-<span class="st"> </span><span class="kw">numeric</span>(n_permutations)
+fake_data[, count_perm <span class="op">:</span><span class="er">=</span><span class="st"> </span>count]
+<span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>n_permutations){
+  d[i] &lt;-<span class="st"> </span><span class="kw">abs</span>(<span class="kw">mean</span>(fake_data[treatment<span class="op">==</span><span class="st">&quot;tr&quot;</span>, count_perm]) <span class="op">-</span><span class="st"> </span>
+<span class="st">    </span><span class="kw">mean</span>(fake_data[treatment<span class="op">==</span><span class="st">&quot;cn&quot;</span>, count_perm]))
+  <span class="co"># permute the count_perm column for the next iteration</span>
+  fake_data[, count_perm <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">sample</span>(count)]
+}
+p &lt;-<span class="st"> </span><span class="kw">sum</span>(d <span class="op">&gt;=</span><span class="st"> </span>d[<span class="dv">1</span>])<span class="op">/</span>n_permutations
+p</code></pre></div>
+<pre><code>## [1] 0.0642</code></pre>
+</div>
+<div id="some-r-packages-with-permutation-tests." class="section level4">
+<h4><span class="header-section-number">12.6.2.2</span> Some R packages with permutation tests.</h4>
+<p><code>lmPerm::lmp</code> generates permutation p-values for parameters of any kind of linear model. The test statistic is the sum of squares due to the term divided by the residual sum of squares of the model.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">coef</span>(<span class="kw">summary</span>(<span class="kw">lmp</span>(count <span class="op">~</span><span class="st"> </span>treatment, <span class="dt">perm=</span><span class="st">&quot;Prob&quot;</span>, <span class="dt">Ca=</span><span class="fl">0.01</span>, 
+                 <span class="dt">data=</span>fake_data)))</code></pre></div>
+<pre><code>## [1] &quot;Settings:  unique SS &quot;</code></pre>
+<pre><code>##             Estimate Iter Pr(Prob)
+## (Intercept)     12.8 5000   0.0642
+## treatment1      -5.7 5000   0.0642</code></pre>
+</div>
+</div>
+<div id="performance-of-parametric-classic-non-parametric-and-permutation-test" class="section level3">
+<h3><span class="header-section-number">12.6.3</span> Performance of parametric, classic non-parametric, and permutation test</h3>
+<div id="type-i-error" class="section level4">
+<h4><span class="header-section-number">12.6.3.1</span> Type I error</h4>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># first create a matrix with a bunch of data sets, each in its own column</span>
+n &lt;-<span class="st"> </span><span class="dv">10</span>
+n_sets &lt;-<span class="st"> </span><span class="dv">4000</span>
+fake_matrix &lt;-<span class="st"> </span><span class="kw">rbind</span>(<span class="kw">matrix</span>(<span class="kw">rnegbin</span>(n<span class="op">*</span>n_sets, <span class="dt">mu=</span><span class="dv">10</span>, <span class="dt">theta=</span><span class="dv">1</span>), <span class="dt">nrow=</span>n),
+                   <span class="kw">matrix</span>(<span class="kw">rnegbin</span>(n<span class="op">*</span>n_sets, <span class="dt">mu=</span><span class="dv">10</span>, <span class="dt">theta=</span><span class="dv">1</span>), <span class="dt">nrow=</span>n))
+treatment &lt;-<span class="st"> </span><span class="kw">rep</span>(<span class="kw">c</span>(<span class="st">&quot;cn&quot;</span>, <span class="st">&quot;tr&quot;</span>), <span class="dt">each=</span>n)
+
+tests &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;lm&quot;</span>, <span class="st">&quot;mww&quot;</span>, <span class="st">&quot;perm&quot;</span>)
+res_matrix &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="ot">NA</span>, <span class="dt">nrow=</span>n_sets, <span class="dt">ncol=</span><span class="kw">length</span>(tests))
+<span class="kw">colnames</span>(res_matrix) &lt;-<span class="st"> </span>tests
+<span class="cf">for</span>(j <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>n_sets){
+  res_matrix[j, <span class="st">&quot;lm&quot;</span>] &lt;-<span class="st"> </span><span class="kw">coef</span>(<span class="kw">summary</span>(<span class="kw">lm</span>(fake_matrix[,j] <span class="op">~</span><span class="st"> </span>treatment
+                                 )))[<span class="dv">2</span>, <span class="st">&quot;Pr(&gt;|t|)&quot;</span>]
+  res_matrix[j, <span class="st">&quot;mww&quot;</span>] &lt;-<span class="st"> </span><span class="kw">wilcox.test</span>(fake_matrix[,j] <span class="op">~</span><span class="st"> </span>treatment,
+                                      <span class="dt">exact=</span><span class="ot">FALSE</span>)<span class="op">$</span>p.value
+  res_matrix[j, <span class="st">&quot;perm&quot;</span>] &lt;-<span class="st"> </span><span class="kw">coef</span>(<span class="kw">summary</span>(<span class="kw">lmp</span>(fake_matrix[,j] <span class="op">~</span><span class="st"> </span>treatment,
+                                 <span class="dt">perm=</span><span class="st">&quot;Prob&quot;</span>, <span class="dt">Ca=</span><span class="fl">0.01</span>)))[<span class="dv">2</span>, <span class="st">&quot;Pr(Prob)&quot;</span>]
+}</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">apply</span>(res_matrix, <span class="dv">2</span>, <span class="cf">function</span>(x) <span class="kw">sum</span>(x <span class="op">&lt;</span><span class="st"> </span><span class="fl">0.05</span>)<span class="op">/</span>n_sets)</code></pre></div>
+<pre><code>##      lm     mww    perm 
+## 0.04300 0.04525 0.04825</code></pre>
+<p>All three tests are slightly conservative for data that look like that modeled. The computed Type I error of the permutation test is closest to the nominal value of 0.05.</p>
+</div>
+<div id="power-1" class="section level4">
+<h4><span class="header-section-number">12.6.3.2</span> Power</h4>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># first create a matrix with a bunch of data sets, each in its own column</span>
+n &lt;-<span class="st"> </span><span class="dv">10</span>
+n_sets &lt;-<span class="st"> </span><span class="dv">4000</span>
+fake_matrix &lt;-<span class="st"> </span><span class="kw">rbind</span>(<span class="kw">matrix</span>(<span class="kw">rnegbin</span>(n<span class="op">*</span>n_sets, <span class="dt">mu=</span><span class="dv">10</span>, <span class="dt">theta=</span><span class="dv">1</span>), <span class="dt">nrow=</span>n),
+                   <span class="kw">matrix</span>(<span class="kw">rnegbin</span>(n<span class="op">*</span>n_sets, <span class="dt">mu=</span><span class="dv">20</span>, <span class="dt">theta=</span><span class="dv">1</span>), <span class="dt">nrow=</span>n))
+treatment &lt;-<span class="st"> </span><span class="kw">rep</span>(<span class="kw">c</span>(<span class="st">&quot;cn&quot;</span>, <span class="st">&quot;tr&quot;</span>), <span class="dt">each=</span>n)
+
+tests &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;lm&quot;</span>, <span class="st">&quot;mww&quot;</span>, <span class="st">&quot;perm&quot;</span>)
+res_matrix &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="ot">NA</span>, <span class="dt">nrow=</span>n_sets, <span class="dt">ncol=</span><span class="kw">length</span>(tests))
+<span class="kw">colnames</span>(res_matrix) &lt;-<span class="st"> </span>tests
+<span class="cf">for</span>(j <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>n_sets){
+  res_matrix[j, <span class="st">&quot;lm&quot;</span>] &lt;-<span class="st"> </span><span class="kw">coef</span>(<span class="kw">summary</span>(<span class="kw">lm</span>(fake_matrix[,j] <span class="op">~</span><span class="st"> </span>treatment
+                                 )))[<span class="dv">2</span>, <span class="st">&quot;Pr(&gt;|t|)&quot;</span>]
+  res_matrix[j, <span class="st">&quot;mww&quot;</span>] &lt;-<span class="st"> </span><span class="kw">wilcox.test</span>(fake_matrix[,j] <span class="op">~</span><span class="st"> </span>treatment,
+                                      <span class="dt">exact=</span><span class="ot">FALSE</span>)<span class="op">$</span>p.value
+  res_matrix[j, <span class="st">&quot;perm&quot;</span>] &lt;-<span class="st"> </span><span class="kw">coef</span>(<span class="kw">summary</span>(<span class="kw">lmp</span>(fake_matrix[,j] <span class="op">~</span><span class="st"> </span>treatment,
+                                 <span class="dt">perm=</span><span class="st">&quot;Prob&quot;</span>, <span class="dt">Ca=</span><span class="fl">0.01</span>)))[<span class="dv">2</span>, <span class="st">&quot;Pr(Prob)&quot;</span>]
+}</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">apply</span>(res_matrix, <span class="dv">2</span>, <span class="cf">function</span>(x) <span class="kw">sum</span>(x <span class="op">&lt;</span><span class="st"> </span><span class="fl">0.05</span>)<span class="op">/</span>n_sets)</code></pre></div>
+<pre><code>##      lm     mww    perm 
+## 0.22600 0.21225 0.25600</code></pre>
+<p>At this sample size, and for the modeled fake data, the permutation test has about 13-15% more power than the linear model and Mann-Whitney-Wilcoxan test.</p>
+</div>
+</div>
+</div>
+<div id="max-vs.mean" class="section level2">
+<h2><span class="header-section-number">12.7</span> max vs. mean</h2>
+</div>
+<div id="pre-post-normalization" class="section level2">
+<h2><span class="header-section-number">12.8</span> pre-post, normalization</h2>
+
+</div>
 </div>
             </section>
 
           </div>
         </div>
       </div>
-<a href="index.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="organization-r-projects-and-r-notebooks.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="model-fitting-and-model-fit-ols.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="plotting-models.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -455,7 +766,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/rstudio/bookdown-demo/edit/master/chapters/04-setup.Rmd",
+"link": "https://github.com/rstudio/bookdown-demo/edit/master/chapters/28-best_practices.Rmd",
 "text": "Edit"
 },
 "history": {
