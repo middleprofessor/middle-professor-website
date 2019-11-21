@@ -21,6 +21,7 @@
 \usepackage{microtype}
 \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
 }{}
+\usepackage[margin=1in]{geometry}
 \usepackage{hyperref}
 \hypersetup{unicode=true,
             pdftitle={Elementary Statistical Modeling for Applied Biostatistics},
@@ -108,7 +109,7 @@
 \usepackage{titling}
 
 % Create subtitle command for use in maketitle
-\providecommand{\subtitle}[1]{
+\newcommand{\subtitle}[1]{
   \posttitle{
     \begin{center}\large#1\end{center}
     }
@@ -135,6 +136,20 @@
 }
 \makeatother
 
+\usepackage{amsthm}
+\newtheorem{theorem}{Theorem}[chapter]
+\newtheorem{lemma}{Lemma}[chapter]
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[chapter]
+\newtheorem{corollary}{Corollary}[chapter]
+\newtheorem{proposition}{Proposition}[chapter]
+\theoremstyle{definition}
+\newtheorem{example}{Example}[chapter]
+\theoremstyle{definition}
+\newtheorem{exercise}{Exercise}[chapter]
+\theoremstyle{remark}
+\newtheorem*{remark}{Remark}
+\newtheorem*{solution}{Solution}
 \begin{document}
 \maketitle
 
@@ -3162,7 +3177,7 @@ A for-loop automates this algorithm.
 \end{Shaded}
 
 \begin{verbatim}
-## [1] "/Users/jwalker/Documents/Github projects/Bookdown projects/applied-biostats"
+## [1] "/Users/walker/Documents/Github projects/Bookdown projects/applied-biostats"
 \end{verbatim}
 
 The SEM using the bootstrap is 31.43. Again, the SEM using equation
@@ -6239,10 +6254,10 @@ models. If you haven't already, download the emmeans package.
 \end{Shaded}
 
 \begin{verbatim}
-##  treatment emmean   SE df lower.CL upper.CL
-##  control      503 27.4 93      449      558
-##  vitamin_C    388 47.1 93      295      482
-##  vitamin_E    413 44.8 93      325      502
+##  treatment   emmean       SE df lower.CL upper.CL
+##  control   503.3929 27.40978 93 448.9625 557.8233
+##  vitamin_C 388.3158 47.05685 93 294.8702 481.7614
+##  vitamin_E 413.4762 44.75999 93 324.5917 502.3607
 ## 
 ## Confidence level used: 0.95
 \end{verbatim}
@@ -6266,10 +6281,14 @@ of treatment levels.
 \end{Shaded}
 
 \begin{verbatim}
-##  contrast              estimate   SE df lower.CL upper.CL t.ratio p.value
-##  vitamin_C - control     -115.1 54.5 93     -223    -6.93 -2.113  0.0373 
-##  vitamin_E - control      -89.9 52.5 93     -194    14.31 -1.713  0.0900 
-##  vitamin_E - vitamin_C     25.2 64.9 93     -104   154.13  0.387  0.6993 
+##  contrast                estimate       SE df  lower.CL   upper.CL t.ratio
+##  vitamin_C - control   -115.07707 54.45772 93 -223.2193  -6.934834  -2.113
+##  vitamin_E - control    -89.91667 52.48574 93 -194.1429  14.309609  -1.713
+##  vitamin_E - vitamin_C   25.16040 64.94462 93 -103.8067 154.127540   0.387
+##  p.value
+##   0.0373
+##   0.0900
+##   0.6993
 ## 
 ## Confidence level used: 0.95
 \end{verbatim}
@@ -6986,6 +7005,8 @@ shrinks effects toward the mean effect.
 
 \subsection{Some background}\label{some-background}
 
+\subsubsection{Family-wise error rate}\label{family-wise-error-rate}
+
 The logic of multiple testing goes something like this: the more tests
 that a researcher does, the higher the probability that a false positive
 (Type I error) will occur, therefore a researcher should should adjust
@@ -7042,11 +7063,13 @@ p
 
 0.99
 
+\subsubsection{False discovery rate}\label{false-discovery-rate}
+
 \subsection{Multiple testing -- working in
 R}\label{multiple-testing-working-in-r}
 
-\subsubsection{Multiple pairwise
-contrasts}\label{multiple-pairwise-contrasts}
+\subsubsection{Tukey HSD adjustment of all pairwise
+comparisons}\label{tukey-hsd-adjustment-of-all-pairwise-comparisons}
 
 The \texttt{adjust} argument in \texttt{emmeans::contrast()} controls
 the method for \emph{p}-value adjustment. The default is ``tukey''.
@@ -7067,9 +7090,6 @@ the method for \emph{p}-value adjustment. The default is ``tukey''.
   covariance structure of the variables
 \end{enumerate}
 
-\subsubsection{Tukey HSD adjustment of all pairwise
-comparisons}\label{tukey-hsd-adjustment-of-all-pairwise-comparisons}
-
 The data are those from Fig. 2D of ``Data from The enteric nervous
 system promotes intestinal health by constraining microbiota
 composition''. There is a single factor with four treatment levels. The
@@ -7087,13 +7107,13 @@ No adjustment:
 \end{Shaded}
 
 \begin{verbatim}
-##  contrast       estimate   SE df lower.CL upper.CL t.ratio p.value
-##  gf - wt          -1.502 1.48 58    -4.47     1.47 -1.013  0.3153 
-##  sox10 - wt        4.679 1.23 58     2.23     7.13  3.817  0.0003 
-##  sox10 - gf        6.182 1.45 58     3.29     9.08  4.276  0.0001 
-##  iap_mo - wt      -0.384 1.53 58    -3.45     2.68 -0.251  0.8025 
-##  iap_mo - gf       1.118 1.71 58    -2.31     4.54  0.654  0.5159 
-##  iap_mo - sox10   -5.064 1.49 58    -8.05    -2.07 -3.391  0.0013 
+##  contrast         estimate       SE df  lower.CL  upper.CL t.ratio p.value
+##  gf - wt        -1.5023923 1.483228 58 -4.471396  1.466611  -1.013  0.3153
+##  sox10 - wt      4.6794258 1.226095 58  2.225130  7.133722   3.817  0.0003
+##  sox10 - gf      6.1818182 1.445672 58  3.287992  9.075645   4.276  0.0001
+##  iap_mo - wt    -0.3842105 1.529476 58 -3.445789  2.677368  -0.251  0.8025
+##  iap_mo - gf     1.1181818 1.710542 58 -2.305840  4.542203   0.654  0.5159
+##  iap_mo - sox10 -5.0636364 1.493083 58 -8.052367 -2.074905  -3.391  0.0013
 ## 
 ## Confidence level used: 0.95
 \end{verbatim}
@@ -7108,24 +7128,20 @@ Tukey HSD:
 \end{Shaded}
 
 \begin{verbatim}
-##  contrast       estimate   SE df lower.CL upper.CL t.ratio p.value
-##  gf - wt          -1.502 1.48 58    -5.43     2.42 -1.013  0.7426 
-##  sox10 - wt        4.679 1.23 58     1.44     7.92  3.817  0.0018 
-##  sox10 - gf        6.182 1.45 58     2.36    10.01  4.276  0.0004 
-##  iap_mo - wt      -0.384 1.53 58    -4.43     3.66 -0.251  0.9944 
-##  iap_mo - gf       1.118 1.71 58    -3.41     5.64  0.654  0.9138 
-##  iap_mo - sox10   -5.064 1.49 58    -9.01    -1.11 -3.391  0.0067 
+##  contrast         estimate       SE df  lower.CL  upper.CL t.ratio p.value
+##  gf - wt        -1.5023923 1.483228 58 -5.425693  2.420908  -1.013  0.7426
+##  sox10 - wt      4.6794258 1.226095 58  1.436269  7.922582   3.817  0.0018
+##  sox10 - gf      6.1818182 1.445672 58  2.357858 10.005779   4.276  0.0004
+##  iap_mo - wt    -0.3842105 1.529476 58 -4.429842  3.661421  -0.251  0.9944
+##  iap_mo - gf     1.1181818 1.710542 58 -3.406389  5.642753   0.654  0.9138
+##  iap_mo - sox10 -5.0636364 1.493083 58 -9.013006 -1.114267  -3.391  0.0067
 ## 
 ## Confidence level used: 0.95 
 ## Conf-level adjustment: tukey method for comparing a family of 4 estimates 
 ## P value adjustment: tukey method for comparing a family of 4 estimates
 \end{verbatim}
 
-\subsubsection{Tukey HSD adjustment of conditional
-effects}\label{tukey-hsd-adjustment-of-conditional-effects}
-
-Here I compare the Tukey HSD adjustment between all pairwise comparisons
-and the subset that are the conditional (simple) effects.
+\subsection{False Discovery Rate}\label{false-discovery-rate-1}
 
 \section{p-hacking}\label{p-hacking}
 
@@ -7145,112 +7161,118 @@ Type I error is more than nominal) or to conservative (standard errors
 are too large, confidence intervals are too wide, Type I error is less
 than nominal).
 
-Linear models assume that the ``the data'' (specifically, the
-conditional values, or, equivalently, the residuals from the model)
-approximate a Normal distribution. Chapter xxx showed how to
-qualitatively assess how well residuals approximate a Normal
-distribution using a Q-Q plot. If the researcher concludes that the data
-poorly approximate a normal distribution because of outliers, the
-researcher can use robust methods to estimate the parameters. If the
-approximation is poor because the residuals suggest a skewed
-distribution or one with heavy or light tails, the researcher cancan
-choose among several strategies
+Linear models assume that ``the data'' (specifically, the conditional
+values, or, equivalently, the residuals from the model) approximate a
+Normal distribution. Chapter xxx showed how to qualitatively assess how
+well residuals approximate a Normal distribution using a Q-Q plot. If
+the researcher concludes that the data poorly approximate a normal
+distribution because of outliers, the researcher can use robust methods
+to estimate the parameters. If the approximation is poor because the
+residuals suggest a skewed distribution or one with heavy or light
+tails, the researcher can choose among several strategies
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
 \tightlist
 \item
-  continue to use the linear model, many of which are fairly robust to
+  continue to use the linear model; inference can be fairly robust to
   non-normal data, especially when the sample size is not small.
+\item
+  use a generalized linear model (GLM), which is appropriate if the
+  conditional response approximates any of the distributions that can be
+  modeled using GLM (Chapter xxx)
+\item
+  use bootstrap for confidence intervals and permutation test for
+  \emph{p}-values
 \item
   transform the data in a way that makes the conditional response more
   closely approximate a normal distribution.
 \item
-  use a non-parametric method, which are methods that do not assume a
-  particular distribution
-\item
-  use a generalized linear model (GLM), which is appropriate if the
-  conditional response approximates any of the distributions that can be
-  modeled using GLM.
+  use a classic non-parametric test, which are methods that do not
+  assume a particular distribution
 \end{enumerate}
 
-Do not use the \emph{p}-value from a ``test for normality'' (such as a
-Shapiro-Wilk test) to decide between using the linear model (or t-test
-or ANOVA) and an alternative such as a generalized linear model (or
-transformation or non-parametric test). No real data is normal. Tests of
-normality will tend to ``not reject'' normality (p \textgreater{} 0.05)
-when the sample size is small and ``reject'' normality (p \textless{}
-0.05) when the sample size is very large. But again, a ``not rejected''
-hypothesis test does not mean the null (in this case, the data are
-normal) is true. More importantly, where the test for normality tends to
-fail to reject (encouraging a researcher to use parametric statistics)
-is where parametric inference performs the worst (because of small
-\emph{n}) and where the test for normality tends to reject (encouraging
-a researcher to use non-parametric statistics) is where the parametric
-inference performs the best (because of large sample size) (Lumley xxx).
+This list is roughly in the order of how I would advise researchers,
+although the order of 1-3 is pretty arbitrary. I would rarely advise a
+researcher to use (4) and never advise (5). Probably the most common
+strategies in the biology literature are (4) and (5). The first is also
+common but probably more from lack of recognition of issues or because a
+``test of normality'' failed to reject that the data are ``not normal''.
 
-\subsection{Log transformations}\label{log-transformations}
+On this last point, do not use the \emph{p}-value from a ``test for
+normality'' (such as a Shapiro-Wilk test) to decide between using the
+linear model (or t-test or ANOVA) and an alternative such as a
+generalized linear model (or transformation or non-parametric test). No
+real data is normal. Tests of normality will tend to ``not reject''
+normality (p \textgreater{} 0.05) when the sample size is small and
+``reject'' normality (p \textless{} 0.05) when the sample size is very
+large. But again, a ``not rejected'' hypothesis test does not mean the
+null (in this case, the data are normal) is true. More importantly,
+where the test for normality tends to fail to reject (encouraging a
+researcher to use parametric statistics) is where parametric inference
+performs the worst (because of small \emph{n}) and where the test for
+normality tends to reject (encouraging a researcher to use
+non-parametric statistics) is where the parametric inference performs
+the best (because of large sample size) (Lumley xxx).
 
-Many response variables within biology, including count data, and almost
-anything that grows, are right skewed and have variances that increase
-with the mean. A log transform of a response variable with this kind of
-distribution will tend to make the residuals more approximately normal
-and the variance less dependent of the mean. At least two issues arise
+\subsection{Working in R}\label{working-in-r-2}
 
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\tightlist
-\item
-  if the response is count data, and the data include counts of zero,
-  then a fudge factor has to be added to the response since log(0)
-  doesn't exist. The typical fudge factor is to add 1 to \emph{all}
-  values, but this is arbitrary and results do depend on the magnitude
-  of this fudge factor.
-\item
-  the estimates are on a log scale and do not have the units of the
-  response. The estimates can be back-transformed by taking the exponent
-  of a coefficient or contrast but this itself produces problems. For
-  example, the backtransformed mean of the log-transformed response is
-  not the mean on the origianl scale (the arithmetic mean) but the
-  \textbf{geometric mean}. Geometric means are smaller than arithmetic
-  means, appreciably so if the data are heavily skewed. Do we want our
-  understanding of a system to be based on geometric means?
-\end{enumerate}
+The data for demonstrating different strategies are from Fig. 4A of
+``Data from The enteric nervous system promotes intestinal health by
+constraining microbiota composition''. There is a single factor with two
+treatment levels. The response is neutrophil count.
 
-\subsection{Non-parametric tests}\label{non-parametric-tests}
+\begin{figure}
+\centering
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-50-1.pdf}
+\caption{\label{fig:unnamed-chunk-50}Distribution of the counts in the
+wildtype (WT) and sox10 knockout (sox10-) groups. Both groups show a
+strong right skew, which is common with count data.}
+\end{figure}
 
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\tightlist
-\item
-  In general, the role of a non-parametric test is a better-behaved
-  \emph{p}-value, that is, one whose Type I error is well controlled. As
-  such, non-parametric tests are more about Null-Hypothesis Statistical
-  Testing and less (or not at all) about Estimation.
-\item
-  In general, classic non-parametric tests are only available for fairly
-  simple experimental designs. Classic non-parametric tests include
+A linear model to estimate the treatment effect and 95\% confidence
+interval.
 
-  \begin{itemize}
-  \tightlist
-  \item
-    Independent sample (Student's) \emph{t} test: Mann-Whitney-Wilcoxan
-  \item
-    Paired \emph{t} test: Wilcoxan signed-rank test
-  \end{itemize}
-\end{enumerate}
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{m1 <-}\StringTok{ }\KeywordTok{lm}\NormalTok{(count }\OperatorTok{~}\StringTok{ }\NormalTok{treatment, }\DataTypeTok{data=}\NormalTok{fig4a)}
+\NormalTok{m1_emm <-}\StringTok{ }\KeywordTok{emmeans}\NormalTok{(m1, }\DataTypeTok{specs=}\StringTok{"treatment"}\NormalTok{)}
+\KeywordTok{summary}\NormalTok{(}\KeywordTok{contrast}\NormalTok{(m1_emm, }\DataTypeTok{method=}\StringTok{"revpairwise"}\NormalTok{), }\DataTypeTok{infer=}\KeywordTok{c}\NormalTok{(}\OtherTok{TRUE}\NormalTok{, }\OtherTok{TRUE}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
 
-One rarely sees non-parametric tests for more complex designs that
-include covariates, or multiple factors, but for these, one could 1)
-convert the response to ranks and fit the usual linear model, or 2)
-implement a permutation test that properly preserves
-\textbf{exchangeability}.
+\begin{verbatim}
+##  contrast   estimate       SE  df lower.CL upper.CL t.ratio p.value
+##  sox10 - wt 5.163215 1.752231 174 1.704852 8.621578   2.947  0.0037
+## 
+## Confidence level used: 0.95
+\end{verbatim}
 
-Permutation tests control Type I error and are powerful. That said, I
-would recommend a permutation test as a supplment to, and not
-replacement of, inference from a generalized linear model.
+\subsection{Bootstrap Confidence
+Intervals}\label{bootstrap-confidence-intervals}
 
-\subsubsection{Permutation test}\label{permutation-test}
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{n_iter <-}\StringTok{ }\DecValTok{5000}
+\NormalTok{b1 <-}\StringTok{ }\KeywordTok{numeric}\NormalTok{(}\DecValTok{5000}\NormalTok{)}
+\NormalTok{inc <-}\StringTok{ }\DecValTok{1}\OperatorTok{:}\KeywordTok{nrow}\NormalTok{(fig4a) }\CommentTok{# the rows for the first iteration are all rows, so this is the observed effect}
+\ControlFlowTok{for}\NormalTok{(i }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\NormalTok{n_iter)\{}
+  \CommentTok{# inc creates the index of rows to resample preserving the sample size specific to each group}
+\NormalTok{  b1[i] <-}\StringTok{ }\KeywordTok{coef}\NormalTok{(}\KeywordTok{lm}\NormalTok{(count }\OperatorTok{~}\StringTok{ }\NormalTok{treatment, }\DataTypeTok{data=}\NormalTok{fig4a[inc, ]))[}\StringTok{"treatmentsox10"}\NormalTok{]}
+\NormalTok{  inc <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\KeywordTok{sample}\NormalTok{(}\KeywordTok{which}\NormalTok{(fig4a[, treatment] }\OperatorTok{==}\StringTok{ "wt"}\NormalTok{), }\DataTypeTok{replace=}\OtherTok{TRUE}\NormalTok{),}
+           \KeywordTok{sample}\NormalTok{(}\KeywordTok{which}\NormalTok{(fig4a[, treatment] }\OperatorTok{==}\StringTok{ "sox10"}\NormalTok{), }\DataTypeTok{replace=}\OtherTok{TRUE}\NormalTok{))}
+\NormalTok{\}}
+\NormalTok{ci <-}\StringTok{ }\KeywordTok{quantile}\NormalTok{(b1, }\KeywordTok{c}\NormalTok{(}\FloatTok{0.025}\NormalTok{, }\FloatTok{0.975}\NormalTok{))}
+\KeywordTok{c}\NormalTok{(}\DataTypeTok{contrast =}\NormalTok{ b1[}\DecValTok{1}\NormalTok{], ci[}\DecValTok{1}\NormalTok{], ci[}\DecValTok{2}\NormalTok{])}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## contrast     2.5%    97.5% 
+## 5.163215 1.891825 8.290870
+\end{verbatim}
+
+\subsection{Permutation test}\label{permutation-test}
 
 A permutation test effectively computes the probability that a random
 assignment of a response to a particular value of \emph{X} generates a
@@ -7259,119 +7281,7 @@ probability is small, then this ``random assignment'' is unlikely. From
 this we infer that the actual assignment matters, which implies a
 treatment effect.
 
-Create data from a negative binomial distribution, which is right skewed
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{set.seed}\NormalTok{(}\DecValTok{5}\NormalTok{)}
-\NormalTok{n <-}\StringTok{ }\DecValTok{10}
-\NormalTok{fake_data <-}\StringTok{ }\KeywordTok{data.table}\NormalTok{(}
-  \DataTypeTok{treatment =} \KeywordTok{rep}\NormalTok{(}\KeywordTok{c}\NormalTok{(}\StringTok{"cn"}\NormalTok{, }\StringTok{"tr"}\NormalTok{), }\DataTypeTok{each=}\NormalTok{n),}
-  \DataTypeTok{count =} \KeywordTok{rnegbin}\NormalTok{(n}\OperatorTok{*}\DecValTok{2}\NormalTok{, }\DataTypeTok{mu=}\KeywordTok{rep}\NormalTok{(}\KeywordTok{c}\NormalTok{(}\DecValTok{10}\NormalTok{, }\DecValTok{14}\NormalTok{), }\DataTypeTok{each=}\NormalTok{n), }\DataTypeTok{theta=}\DecValTok{1}\NormalTok{)}
-\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
-Some statistics of the fake data
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{fake_data[, .(}\DataTypeTok{N=}\NormalTok{.N, }\DataTypeTok{mean=}\KeywordTok{mean}\NormalTok{(count), }\DataTypeTok{sd=}\KeywordTok{sd}\NormalTok{(count)), by=treatment]}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-##    treatment  N mean        sd
-## 1:        cn 10  7.1  8.372574
-## 2:        tr 10 18.5 16.029487
-\end{verbatim}
-
-A plot of the fake data
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{ggerrorplot}\NormalTok{(}\DataTypeTok{x=}\StringTok{"treatment"}\NormalTok{,}
-            \DataTypeTok{y =} \StringTok{"count"}\NormalTok{,}
-            \DataTypeTok{data =}\NormalTok{ fake_data,}
-            \DataTypeTok{add =} \KeywordTok{c}\NormalTok{(}\StringTok{"mean_ci"}\NormalTok{, }\StringTok{"jitter"}\NormalTok{),}
-            \DataTypeTok{palette =} \StringTok{"jco"}\NormalTok{,}
-            \DataTypeTok{color =} \StringTok{"treatment"}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-52-1.pdf}
-
-What the distribution of the fake data looks like
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{n <-}\StringTok{ }\DecValTok{10}\OperatorTok{^}\DecValTok{4}
-\KeywordTok{qplot}\NormalTok{(}\KeywordTok{rnegbin}\NormalTok{(n, }\DataTypeTok{mu=}\DecValTok{10}\NormalTok{, }\DataTypeTok{theta=}\DecValTok{1}\NormalTok{))}
-\end{Highlighting}
-\end{Shaded}
-
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-53-1.pdf}
-
-A linear model to estimate the treatment effect.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{knitr}\OperatorTok{::}\KeywordTok{kable}\NormalTok{(}\KeywordTok{coef}\NormalTok{(}\KeywordTok{summary}\NormalTok{(}\KeywordTok{lm}\NormalTok{(count }\OperatorTok{~}\StringTok{ }\NormalTok{treatment, }\DataTypeTok{data=}\NormalTok{fake_data))),}
-             \DataTypeTok{digits =} \KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{3}\NormalTok{))}
-\end{Highlighting}
-\end{Shaded}
-
-Estimate
-
-Std. Error
-
-t value
-
-Pr(\textgreater{}\textbar{}t\textbar{})
-
-(Intercept)
-
-7.1
-
-4.0
-
-1.8
-
-0.096
-
-treatmenttr
-
-11.4
-
-5.7
-
-2.0
-
-0.062
-
-A non-parametric (Mann-Whitney-Wilcoxon) test
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{wilcox.test}\NormalTok{(count }\OperatorTok{~}\StringTok{ }\NormalTok{treatment, }\DataTypeTok{data=}\NormalTok{fake_data)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-## Warning in wilcox.test.default(x = c(0L, 1L, 4L, 20L, 0L, 9L, 3L, 12L,
-## 22L, : cannot compute exact p-value with ties
-\end{verbatim}
-
-\begin{verbatim}
-## 
-##  Wilcoxon rank sum test with continuity correction
-## 
-## data:  count by treatment
-## W = 24, p-value = 0.05336
-## alternative hypothesis: true location shift is not equal to 0
-\end{verbatim}
-
-Finally, a permutation, test. The basic algorithm is
+The basic algorithm is
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
@@ -7418,13 +7328,13 @@ observed absolute difference.
 
 \CommentTok{# create a new column which will contain the permuted response}
 \CommentTok{# for the first iteration, this will be the observed order}
-\NormalTok{fake_data[, count_perm }\OperatorTok{:}\ErrorTok{=}\StringTok{ }\NormalTok{count]}
+\NormalTok{fig4a[, count_perm }\OperatorTok{:}\ErrorTok{=}\StringTok{ }\NormalTok{count]}
 
 \ControlFlowTok{for}\NormalTok{(i }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\NormalTok{n_permutations)\{}
-\NormalTok{  d[i] <-}\StringTok{ }\KeywordTok{abs}\NormalTok{(}\KeywordTok{t.test}\NormalTok{(count_perm }\OperatorTok{~}\StringTok{ }\NormalTok{treatment, }\DataTypeTok{data =}\NormalTok{ fake_data)}\OperatorTok{$}\NormalTok{statistic)}
+\NormalTok{  d[i] <-}\StringTok{ }\KeywordTok{abs}\NormalTok{(}\KeywordTok{t.test}\NormalTok{(count_perm }\OperatorTok{~}\StringTok{ }\NormalTok{treatment, }\DataTypeTok{data =}\NormalTok{ fig4a)}\OperatorTok{$}\NormalTok{statistic)}
   
   \CommentTok{# permute the count_perm column for the next iteration}
-\NormalTok{  fake_data[, count_perm }\OperatorTok{:}\ErrorTok{=}\StringTok{ }\KeywordTok{sample}\NormalTok{(count)]}
+\NormalTok{  fig4a[, count_perm }\OperatorTok{:}\ErrorTok{=}\StringTok{ }\KeywordTok{sample}\NormalTok{(count)]}
 \NormalTok{\}}
 \NormalTok{p <-}\StringTok{ }\KeywordTok{sum}\NormalTok{(d }\OperatorTok{>=}\StringTok{ }\NormalTok{d[}\DecValTok{1}\NormalTok{])}\OperatorTok{/}\NormalTok{n_permutations}
 \NormalTok{p}
@@ -7432,7 +7342,7 @@ observed absolute difference.
 \end{Shaded}
 
 \begin{verbatim}
-## [1] 0.0642
+## [1] 0.0024
 \end{verbatim}
 
 \subsubsection{Some R packages with permutation
@@ -7444,8 +7354,9 @@ the term scaled by the residual sum of squares of the model.
 
 \begin{Shaded}
 \begin{Highlighting}[]
+\KeywordTok{set.seed}\NormalTok{(}\DecValTok{2}\NormalTok{)}
 \KeywordTok{coef}\NormalTok{(}\KeywordTok{summary}\NormalTok{(}\KeywordTok{lmp}\NormalTok{(count }\OperatorTok{~}\StringTok{ }\NormalTok{treatment, }\DataTypeTok{perm=}\StringTok{"Prob"}\NormalTok{, }\DataTypeTok{Ca=}\FloatTok{0.01}\NormalTok{, }
-                 \DataTypeTok{data=}\NormalTok{fake_data)))}
+                 \DataTypeTok{data=}\NormalTok{fig4a)))}
 \end{Highlighting}
 \end{Shaded}
 
@@ -7454,16 +7365,111 @@ the term scaled by the residual sum of squares of the model.
 \end{verbatim}
 
 \begin{verbatim}
-##             Estimate Iter Pr(Prob)
-## (Intercept)     12.8 5000   0.0642
-## treatment1      -5.7 5000   0.0642
+##              Estimate Iter Pr(Prob)
+## (Intercept) 13.694815 5000   0.0042
+## treatment1  -2.581608 5000   0.0042
 \end{verbatim}
 
-\subsection{Performance of parametric, classic non-parametric, and
-permutation
-test}\label{performance-of-parametric-classic-non-parametric-and-permutation-test}
+\subsection{Non-parametric tests}\label{non-parametric-tests}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  In general, the role of a non-parametric test is a better-behaved
+  \emph{p}-value, that is, one whose Type I error is well controlled. As
+  such, non-parametric tests are more about Null-Hypothesis Statistical
+  Testing and less (or not at all) about Estimation.
+\item
+  In general, classic non-parametric tests are only available for fairly
+  simple experimental designs. Classic non-parametric tests include
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Independent sample (Student's) \emph{t} test: Mann-Whitney-Wilcoxan
+  \item
+    Paired \emph{t} test: Wilcoxan signed-rank test
+  \end{itemize}
+\end{enumerate}
+
+One rarely sees non-parametric tests for more complex designs that
+include covariates, or multiple factors, but for these, one could 1)
+convert the response to ranks and fit the usual linear model, or 2)
+implement a permutation test that properly preserves
+\textbf{exchangeability}.
+
+Permutation tests control Type I error and are powerful. That said, I
+would recommend a permutation test as a supplment to, and not
+replacement of, inference from a generalized linear model.
+
+A non-parametric (Mann-Whitney-Wilcoxon) test of the fake data generated
+above
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{wilcox.test}\NormalTok{(count }\OperatorTok{~}\StringTok{ }\NormalTok{treatment, }\DataTypeTok{data=}\NormalTok{fig4a)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Wilcoxon rank sum test with continuity correction
+## 
+## data:  count by treatment
+## W = 2275, p-value = 0.001495
+## alternative hypothesis: true location shift is not equal to 0
+\end{verbatim}
+
+\subsection{Log transformations}\label{log-transformations}
+
+Many response variables within biology, including count data, and almost
+anything that grows, are right skewed and have variances that increase
+with the mean. A log transform of a response variable with this kind of
+distribution will tend to make the residuals more approximately normal
+and the variance less dependent of the mean. At least two issues arise
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  if the response is count data, and the data include counts of zero,
+  then a fudge factor has to be added to the response since log(0)
+  doesn't exist. The typical fudge factor is to add 1 to \emph{all}
+  values, but this is arbitrary and results do depend on the magnitude
+  of this fudge factor.
+\item
+  the estimates are on a log scale and do not have the units of the
+  response. The estimates can be back-transformed by taking the exponent
+  of a coefficient or contrast but this itself produces problems. For
+  example, the backtransformed mean of the log-transformed response is
+  not the mean on the origianl scale (the arithmetic mean) but the
+  \textbf{geometric mean}. Geometric means are smaller than arithmetic
+  means, appreciably so if the data are heavily skewed. Do we want our
+  understanding of a system to be based on geometric means?
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{coef}\NormalTok{(}\KeywordTok{summary}\NormalTok{(}\KeywordTok{lm}\NormalTok{(}\KeywordTok{log}\NormalTok{(count }\OperatorTok{+}\StringTok{ }\DecValTok{1}\NormalTok{) }\OperatorTok{~}\StringTok{ }\NormalTok{treatment, }\DataTypeTok{data=}\NormalTok{fig4a)))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##                 Estimate Std. Error  t value     Pr(>|t|)
+## (Intercept)    2.2213501  0.1046912 21.21812 3.847185e-50
+## treatmentsox10 0.3882468  0.1252316  3.10023 2.256005e-03
+\end{verbatim}
+
+\subsection{Performance of parametric tests and
+alternatives}\label{performance-of-parametric-tests-and-alternatives}
 
 \subsubsection{Type I error}\label{type-i-error}
+
+If we are going to compute a \(p\)-value, we want it to be uniformly
+distributed ``under the null''. A simple way to check this is to compute
+Type I error. If we set \(\alpha = 0.05\), then we'd expect 5\% of tests
+of an experiment with no effect to have \(p < 0.05\).
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -7474,11 +7480,13 @@ test}\label{performance-of-parametric-classic-non-parametric-and-permutation-tes
                    \KeywordTok{matrix}\NormalTok{(}\KeywordTok{rnegbin}\NormalTok{(n}\OperatorTok{*}\NormalTok{n_sets, }\DataTypeTok{mu=}\DecValTok{10}\NormalTok{, }\DataTypeTok{theta=}\DecValTok{1}\NormalTok{), }\DataTypeTok{nrow=}\NormalTok{n))}
 \NormalTok{treatment <-}\StringTok{ }\KeywordTok{rep}\NormalTok{(}\KeywordTok{c}\NormalTok{(}\StringTok{"cn"}\NormalTok{, }\StringTok{"tr"}\NormalTok{), }\DataTypeTok{each=}\NormalTok{n)}
 
-\NormalTok{tests <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"lm"}\NormalTok{, }\StringTok{"mww"}\NormalTok{, }\StringTok{"perm"}\NormalTok{)}
+\NormalTok{tests <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"lm"}\NormalTok{, }\StringTok{"log_lm"}\NormalTok{,}\StringTok{"mww"}\NormalTok{, }\StringTok{"perm"}\NormalTok{)}
 \NormalTok{res_matrix <-}\StringTok{ }\KeywordTok{matrix}\NormalTok{(}\OtherTok{NA}\NormalTok{, }\DataTypeTok{nrow=}\NormalTok{n_sets, }\DataTypeTok{ncol=}\KeywordTok{length}\NormalTok{(tests))}
 \KeywordTok{colnames}\NormalTok{(res_matrix) <-}\StringTok{ }\NormalTok{tests}
 \ControlFlowTok{for}\NormalTok{(j }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\NormalTok{n_sets)\{}
 \NormalTok{  res_matrix[j, }\StringTok{"lm"}\NormalTok{] <-}\StringTok{ }\KeywordTok{coef}\NormalTok{(}\KeywordTok{summary}\NormalTok{(}\KeywordTok{lm}\NormalTok{(fake_matrix[,j] }\OperatorTok{~}\StringTok{ }\NormalTok{treatment}
+\NormalTok{                                 )))[}\DecValTok{2}\NormalTok{, }\StringTok{"Pr(>|t|)"}\NormalTok{]}
+\NormalTok{  res_matrix[j, }\StringTok{"log_lm"}\NormalTok{] <-}\StringTok{ }\KeywordTok{coef}\NormalTok{(}\KeywordTok{summary}\NormalTok{(}\KeywordTok{lm}\NormalTok{(}\KeywordTok{log}\NormalTok{(fake_matrix[,j] }\OperatorTok{+}\StringTok{ }\DecValTok{1}\NormalTok{) }\OperatorTok{~}\StringTok{ }\NormalTok{treatment}
 \NormalTok{                                 )))[}\DecValTok{2}\NormalTok{, }\StringTok{"Pr(>|t|)"}\NormalTok{]}
 \NormalTok{  res_matrix[j, }\StringTok{"mww"}\NormalTok{] <-}\StringTok{ }\KeywordTok{wilcox.test}\NormalTok{(fake_matrix[,j] }\OperatorTok{~}\StringTok{ }\NormalTok{treatment,}
                                       \DataTypeTok{exact=}\OtherTok{FALSE}\NormalTok{)}\OperatorTok{$}\NormalTok{p.value}
@@ -7495,15 +7503,20 @@ test}\label{performance-of-parametric-classic-non-parametric-and-permutation-tes
 \end{Shaded}
 
 \begin{verbatim}
-##      lm     mww    perm 
-## 0.04300 0.04525 0.04825
+##      lm  log_lm     mww    perm 
+## 0.04150 0.05250 0.04350 0.04675
 \end{verbatim}
 
-All three tests are slightly conservative for data that look like that
+Type I error is computed for the linear model, the linear model with a
+log transformed responpse, Mann-Whitney-Wilcoxon, and permutation tests.
+All four tests are slightly conservative for data that look like that
 modeled. The computed Type I error of the permutation test is closest to
 the nominal value of 0.05.
 
 \subsubsection{Power}\label{power-1}
+
+If all we care about is a \(p-value\) then we want to use a test that is
+most powerful.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -7514,11 +7527,13 @@ the nominal value of 0.05.
                    \KeywordTok{matrix}\NormalTok{(}\KeywordTok{rnegbin}\NormalTok{(n}\OperatorTok{*}\NormalTok{n_sets, }\DataTypeTok{mu=}\DecValTok{20}\NormalTok{, }\DataTypeTok{theta=}\DecValTok{1}\NormalTok{), }\DataTypeTok{nrow=}\NormalTok{n))}
 \NormalTok{treatment <-}\StringTok{ }\KeywordTok{rep}\NormalTok{(}\KeywordTok{c}\NormalTok{(}\StringTok{"cn"}\NormalTok{, }\StringTok{"tr"}\NormalTok{), }\DataTypeTok{each=}\NormalTok{n)}
 
-\NormalTok{tests <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"lm"}\NormalTok{, }\StringTok{"mww"}\NormalTok{, }\StringTok{"perm"}\NormalTok{)}
+\NormalTok{tests <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"lm"}\NormalTok{, }\StringTok{"log_lm"}\NormalTok{,}\StringTok{"mww"}\NormalTok{, }\StringTok{"perm"}\NormalTok{)}
 \NormalTok{res_matrix <-}\StringTok{ }\KeywordTok{matrix}\NormalTok{(}\OtherTok{NA}\NormalTok{, }\DataTypeTok{nrow=}\NormalTok{n_sets, }\DataTypeTok{ncol=}\KeywordTok{length}\NormalTok{(tests))}
 \KeywordTok{colnames}\NormalTok{(res_matrix) <-}\StringTok{ }\NormalTok{tests}
 \ControlFlowTok{for}\NormalTok{(j }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\NormalTok{n_sets)\{}
 \NormalTok{  res_matrix[j, }\StringTok{"lm"}\NormalTok{] <-}\StringTok{ }\KeywordTok{coef}\NormalTok{(}\KeywordTok{summary}\NormalTok{(}\KeywordTok{lm}\NormalTok{(fake_matrix[,j] }\OperatorTok{~}\StringTok{ }\NormalTok{treatment}
+\NormalTok{                                 )))[}\DecValTok{2}\NormalTok{, }\StringTok{"Pr(>|t|)"}\NormalTok{]}
+\NormalTok{  res_matrix[j, }\StringTok{"log_lm"}\NormalTok{] <-}\StringTok{ }\KeywordTok{coef}\NormalTok{(}\KeywordTok{summary}\NormalTok{(}\KeywordTok{lm}\NormalTok{(}\KeywordTok{log}\NormalTok{(fake_matrix[,j] }\OperatorTok{+}\StringTok{ }\DecValTok{1}\NormalTok{) }\OperatorTok{~}\StringTok{ }\NormalTok{treatment}
 \NormalTok{                                 )))[}\DecValTok{2}\NormalTok{, }\StringTok{"Pr(>|t|)"}\NormalTok{]}
 \NormalTok{  res_matrix[j, }\StringTok{"mww"}\NormalTok{] <-}\StringTok{ }\KeywordTok{wilcox.test}\NormalTok{(fake_matrix[,j] }\OperatorTok{~}\StringTok{ }\NormalTok{treatment,}
                                       \DataTypeTok{exact=}\OtherTok{FALSE}\NormalTok{)}\OperatorTok{$}\NormalTok{p.value}
@@ -7535,16 +7550,21 @@ the nominal value of 0.05.
 \end{Shaded}
 
 \begin{verbatim}
-##      lm     mww    perm 
-## 0.09300 0.09350 0.11125
+##      lm  log_lm     mww    perm 
+## 0.09200 0.12525 0.08375 0.10600
 \end{verbatim}
 
-I have compared a linear model, Mann-Whitney-Wilcoxan, and permutation,
-by simulating a ``low power'' experiment. The effect is huge (twice as
-many cells) but the power is low because the sample size is small
-(\(n = 5\)). At this sample size, and for this model of fake data, the
-power of the permutation test is small (11\%) but it is about 25\%
-larger than that of the linear model and Mann-Whitney-Wilcoxan test.
+As above, Power is computed for the linear model, linear model with a
+log-transformed response, Mann-Whitney-Wilcoxan, and permutation, by
+simulating a ``low power'' experiment. The effect is huge (twice as many
+cells) but the power is low because the sample size is small
+(\(n = 5\)). At this sample size, and for this model of fake data, all
+tests have low power. The power of the log-transformed response is the
+largest. A problem is, this is not a test of the means but of the log
+transformed mean plus 1. The power of the permutation test is about 25\%
+larger than that of the linear model and Mann-Whitney-Wilcoxan test. An
+advantage of this test is that it is a p-value of the mean. A good
+complement to this p-value would be bootstraped confidence intervals.
 Repeat this simulation using \(n=40\) do see how the relative power
 among the three change in a simulation of an experiment with more power.
 
@@ -7813,7 +7833,7 @@ components}\label{some-comments-on-plot-components}
   plot.
 \end{enumerate}
 
-\section{Working in R}\label{working-in-r-2}
+\section{Working in R}\label{working-in-r-3}
 
 A reasonable goal of any research project should be a script to generate
 the final plots entirely within the R environment and not rely on
@@ -7885,7 +7905,7 @@ intervals}\label{adding-bootstrap-intervals}
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-62-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-61-1.pdf}
 
 \subsection{Adding modeled error
 intervals}\label{adding-modeled-error-intervals}
@@ -7931,7 +7951,7 @@ effect}\label{modeled-error-intervals-of-the-effect}
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-64-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-63-1.pdf}
 
 \subsubsection{Modeled error intervals of the
 mean}\label{modeled-error-intervals-of-the-mean}
@@ -7953,7 +7973,7 @@ mean}\label{modeled-error-intervals-of-the-mean}
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-65-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-64-1.pdf}
 
 Note that the CIs are asymmetric about the mean (and these modeled CIs
 will never include negative values for count data).
@@ -7970,7 +7990,7 @@ The ggplots are combined using the package \texttt{cowplot}
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-66-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-65-1.pdf}
 
 \subsection{Adding p-values}\label{adding-p-values}
 
@@ -8007,7 +8027,7 @@ is returning.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-67-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-66-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -8112,7 +8132,7 @@ function from the emmeans package.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-70-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-69-1.pdf}
 
 \subsection{Interaction plot}\label{interaction-plot}
 
@@ -8132,7 +8152,7 @@ function from the emmeans package.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-71-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-70-1.pdf}
 
 \chapter*{\texorpdfstring{Part IV: More than one \(X\) -- Multivariable
 Models}{Part IV: More than one X -- Multivariable Models}}\label{part-iv-more-than-one-x-multivariable-models}
@@ -8261,7 +8281,7 @@ ldlc.r = \beta_0 + \beta_1 treatment + \varepsilon
 
 where \(ldlc.r\) is the set of residuals.
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-73-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-72-1.pdf}
 
 Now the estimate of the effect is -4.7 mg/dL blood and the SE is only
 0.88. In this two-stage analysis (stage 1: fit ldlc \textasciitilde{}
@@ -8289,11 +8309,11 @@ ldlc = \beta_0 + \beta_1 age + \beta_2 treatment + \varepsilon
 
 which results in the Harrell Plot
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-74-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-73-1.pdf}
 
 and the coefficient table
 
-\label{tab:unnamed-chunk-75}Coefficients of the model that includes the
+\label{tab:unnamed-chunk-74}Coefficients of the model that includes the
 covariate age.
 
 Estimate
@@ -8670,7 +8690,7 @@ crossed design is with a \(m \times p\) table showing all combinations
 of the \(m\) levels of factor 1 (\(Temp\)) against the \(p\) levels of
 factor 2 (\(CO2\))
 
-\includegraphics{images/2x2_table.png}
+\includegraphics[width=6.53in]{images/2x2_table}
 
 The upper left cell represents the combination of 13 C and 400 µAtm
 level within the CO2 factor. The replicates in this cell were grown with
@@ -9583,7 +9603,7 @@ trivially small values, including zero, and, consequently, our data is
 compatible with both scientific models (that is, we can neither support
 nor reject the predictions of the scientific model using these results).
 
-\section{Working in R}\label{working-in-r-3}
+\section{Working in R}\label{working-in-r-4}
 
 \subsection{Model formula}\label{model-formula}
 
@@ -9640,11 +9660,11 @@ argument.
 \end{Shaded}
 
 \begin{verbatim}
-##  Temp CO2  emmean    SE df lower.CL upper.CL
-##  13   400    8.23 0.726 20     6.72     9.75
-##  18   400   12.74 0.726 20    11.23    14.26
-##  13   1100   7.92 0.726 20     6.40     9.43
-##  18   1100   9.74 0.726 20     8.23    11.26
+##  Temp CO2     emmean        SE df  lower.CL  upper.CL
+##  13   400   8.233333 0.7255577 20  6.719846  9.746820
+##  18   400  12.743333 0.7255577 20 11.229846 14.256820
+##  13   1100  7.916667 0.7255577 20  6.403180  9.430154
+##  18   1100  9.741667 0.7255577 20  8.228180 11.255154
 ## 
 ## Confidence level used: 0.95
 \end{verbatim}
@@ -9662,9 +9682,9 @@ The marginal means are
 \end{Shaded}
 
 \begin{verbatim}
-##  Temp emmean    SE df lower.CL upper.CL
-##  13     8.07 0.513 20      7.0     9.15
-##  18    11.24 0.513 20     10.2    12.31
+##  Temp  emmean        SE df  lower.CL  upper.CL
+##  13    8.0750 0.5130468 20  7.004803  9.145197
+##  18   11.2425 0.5130468 20 10.172303 12.312697
 ## 
 ## Results are averaged over the levels of: CO2 
 ## Confidence level used: 0.95
@@ -9677,9 +9697,9 @@ The marginal means are
 \end{Shaded}
 
 \begin{verbatim}
-##  CO2  emmean    SE df lower.CL upper.CL
-##  400   10.49 0.513 20     9.42     11.6
-##  1100   8.83 0.513 20     7.76      9.9
+##  CO2     emmean        SE df lower.CL  upper.CL
+##  400  10.488333 0.5130468 20 9.418136 11.558530
+##  1100  8.829167 0.5130468 20 7.758970  9.899364
 ## 
 ## Results are averaged over the levels of: Temp 
 ## Confidence level used: 0.95
@@ -9703,13 +9723,13 @@ simply gives the reverse of pairwise)
 \end{Shaded}
 
 \begin{verbatim}
-##  contrast          estimate   SE df lower.CL upper.CL t.ratio p.value
-##  18,400 - 13,400      4.510 1.03 20    2.370    6.650  4.395  0.0003 
-##  13,1100 - 13,400    -0.317 1.03 20   -2.457    1.824 -0.309  0.7608 
-##  13,1100 - 18,400    -4.827 1.03 20   -6.967   -2.686 -4.704  0.0001 
-##  18,1100 - 13,400     1.508 1.03 20   -0.632    3.649  1.470  0.1571 
-##  18,1100 - 18,400    -3.002 1.03 20   -5.142   -0.861 -2.925  0.0084 
-##  18,1100 - 13,1100    1.825 1.03 20   -0.315    3.965  1.779  0.0905 
+##  contrast            estimate       SE df   lower.CL   upper.CL t.ratio p.value
+##  18,400 - 13,400    4.5100000 1.026094 20  2.3696063  6.6503937   4.395  0.0003
+##  13,1100 - 13,400  -0.3166667 1.026094 20 -2.4570604  1.8237271  -0.309  0.7608
+##  13,1100 - 18,400  -4.8266667 1.026094 20 -6.9670604 -2.6862729  -4.704  0.0001
+##  18,1100 - 13,400   1.5083333 1.026094 20 -0.6320604  3.6487271   1.470  0.1571
+##  18,1100 - 18,400  -3.0016667 1.026094 20 -5.1420604 -0.8612729  -2.925  0.0084
+##  18,1100 - 13,1100  1.8250000 1.026094 20 -0.3153937  3.9653937   1.779  0.0905
 ## 
 ## Confidence level used: 0.95
 \end{verbatim}
@@ -9733,11 +9753,16 @@ above and are computed using the arguments \texttt{simple="each"} and
 \end{Shaded}
 
 \begin{verbatim}
-##  CO2  Temp contrast   estimate   SE df lower.CL upper.CL t.ratio p.value
-##  400  .    18 - 13       4.510 1.03 20    2.370    6.650  4.395  0.0003 
-##  1100 .    18 - 13       1.825 1.03 20   -0.315    3.965  1.779  0.0905 
-##  .    13   1100 - 400   -0.317 1.03 20   -2.457    1.824 -0.309  0.7608 
-##  .    18   1100 - 400   -3.002 1.03 20   -5.142   -0.861 -2.925  0.0084 
+##  CO2  Temp contrast     estimate       SE df   lower.CL   upper.CL t.ratio
+##  400  .    18 - 13     4.5100000 1.026094 20  2.3696063  6.6503937   4.395
+##  1100 .    18 - 13     1.8250000 1.026094 20 -0.3153937  3.9653937   1.779
+##  .    13   1100 - 400 -0.3166667 1.026094 20 -2.4570604  1.8237271  -0.309
+##  .    18   1100 - 400 -3.0016667 1.026094 20 -5.1420604 -0.8612729  -2.925
+##  p.value
+##   0.0003
+##   0.0905
+##   0.7608
+##   0.0084
 ## 
 ## Confidence level used: 0.95
 \end{verbatim}
@@ -9767,8 +9792,8 @@ The marginal effects of the factorial model are
 \end{Shaded}
 
 \begin{verbatim}
-##  contrast estimate    SE df lower.CL upper.CL t.ratio p.value
-##  18 - 13      3.17 0.726 20     1.65     4.68 4.366   0.0003 
+##  contrast estimate        SE df lower.CL upper.CL t.ratio p.value
+##  18 - 13    3.1675 0.7255577 20 1.654013 4.680987   4.366  0.0003
 ## 
 ## Results are averaged over the levels of: CO2 
 ## Confidence level used: 0.95
@@ -9795,8 +9820,8 @@ The marginal effects of the factorial model are
 \end{Shaded}
 
 \begin{verbatim}
-##  contrast   estimate    SE df lower.CL upper.CL t.ratio p.value
-##  1100 - 400    -1.66 0.726 20    -3.17   -0.146 -2.287  0.0332 
+##  contrast    estimate        SE df  lower.CL   upper.CL t.ratio p.value
+##  1100 - 400 -1.659167 0.7255577 20 -3.172654 -0.1456798  -2.287  0.0332
 ## 
 ## Results are averaged over the levels of: Temp 
 ## Confidence level used: 0.95
@@ -9840,7 +9865,7 @@ design}\label{bar-plot-with-uniform-coloring-poorly-communicate-the-factorial-de
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-85-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-84-1.pdf}
 
 \subsubsection{Plots that communicate the factorial
 design}\label{plots-that-communicate-the-factorial-design}
@@ -10016,7 +10041,7 @@ reflect our pre-conceived scientific model.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-86-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-85-1.pdf}
 
 This effects plot shows the four simple effects, the single interaction
 (Temp18:CO21100), and their 95\% confidence intervals. In the original
@@ -10042,7 +10067,7 @@ to small) to have much confidence in the size of the interaction effect.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-87-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-86-1.pdf}
 
 The effects and interaction plot are combined into a single plot.
 
@@ -10084,7 +10109,7 @@ together, keying on the common column ``plant'')
   \url{https://datadryad.org/resource/doi:10.5061/dryad.r3s16}
 \end{enumerate}
 
-\includegraphics{images/frew_fig_4b.png}
+\includegraphics[width=19in]{images/frew_fig_4b}
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
@@ -10102,7 +10127,7 @@ together, keying on the common column ``plant'')
 **Source*:**
 \url{https://datadryad.org/resource/doi:10.5061/dryad.66d5f}
 
-\includegraphics{images/kardol_fig_3.png}
+\includegraphics[width=12.19in]{images/kardol_fig_3}
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
@@ -11543,7 +11568,7 @@ effects}\label{back-to-interpretation-of-main-effects}
 the same if the design is
 balanced.}\label{the-anova-tables-for-type-i-ii-and-iii-sum-of-squares-are-the-same-if-the-design-is-balanced.}
 
-\section{Working in R}\label{working-in-r-4}
+\section{Working in R}\label{working-in-r-5}
 
 \subsection{Type I sum of squares in
 R}\label{type-i-sum-of-squares-in-r}
@@ -12282,11 +12307,11 @@ log(count).
 The modeled means on the link scale are
 
 \begin{verbatim}
-##  Treatment   emmean     SE  df asymp.LCL asymp.UCL
-##  Control       1.82 0.0804 Inf      1.66      1.98
-##  Uninfected    1.50 0.1093 Inf      1.29      1.72
-##  Infected LG   1.62 0.1362 Inf      1.36      1.89
-##  Infected HG   2.36 0.0714 Inf      2.22      2.50
+##  Treatment     emmean         SE  df asymp.LCL asymp.UCL
+##  Control     1.821408 0.08038710 Inf  1.663852  1.978964
+##  Uninfected  1.504077 0.10930511 Inf  1.289843  1.718311
+##  Infected LG 1.624144 0.13615796 Inf  1.357279  1.891009
+##  Infected HG 2.361096 0.07141332 Inf  2.221128  2.501063
 ## 
 ## Results are given on the log (not the response) scale. 
 ## Confidence level used: 0.95
@@ -12295,11 +12320,11 @@ The modeled means on the link scale are
 While the means on response scale are
 
 \begin{verbatim}
-##  Treatment   response    SE  df asymp.LCL asymp.UCL
-##  Control         6.18 0.497 Inf      5.28      7.24
-##  Uninfected      4.50 0.492 Inf      3.63      5.58
-##  Infected LG     5.07 0.691 Inf      3.89      6.63
-##  Infected HG    10.60 0.757 Inf      9.22     12.20
+##  Treatment    response        SE  df asymp.LCL asymp.UCL
+##  Control      6.180556 0.4968369 Inf  5.279611  7.235243
+##  Uninfected   4.500000 0.4918730 Inf  3.632217  5.575107
+##  Infected LG  5.074074 0.6908756 Inf  3.885608  6.626049
+##  Infected HG 10.602564 0.7571643 Inf  9.217726 12.195456
 ## 
 ## Confidence level used: 0.95 
 ## Intervals are back-transformed from the log scale
@@ -12329,14 +12354,14 @@ While the means on response scale are
 The model coefficients on the link scale are
 
 \begin{verbatim}
-##  contrast              estimate    SE  df asymp.LCL asymp.UCL z.ratio
-##  Uninfected - Control    -0.317 0.136 Inf    -0.583   -0.0514 -2.339 
-##  Infected LG - Control   -0.197 0.158 Inf    -0.507    0.1126 -1.248 
-##  Infected HG - Control    0.540 0.108 Inf     0.329    0.7504  5.019 
+##  contrast                estimate        SE  df  asymp.LCL  asymp.UCL z.ratio
+##  Uninfected - Control  -0.3173308 0.1356823 Inf -0.5832632 -0.0513983  -2.339
+##  Infected LG - Control -0.1972641 0.1581173 Inf -0.5071683  0.1126401  -1.248
+##  Infected HG - Control  0.5396877 0.1075265 Inf  0.3289396  0.7504358   5.019
 ##  p.value
-##  0.0193 
-##  0.2122 
-##  <.0001 
+##   0.0193
+##   0.2122
+##   <.0001
 ## 
 ## Results are given on the log (not the response) scale. 
 ## Confidence level used: 0.95
@@ -12347,14 +12372,14 @@ response scale (using \(\mathrm{exp}{b_j}\)) results in a
 \textbf{response ratio}.
 
 \begin{verbatim}
-##  contrast              ratio     SE  df asymp.LCL asymp.UCL z.ratio
-##  Uninfected / Control  0.728 0.0988 Inf     0.558      0.95 -2.339 
-##  Infected LG / Control 0.821 0.1298 Inf     0.602      1.12 -1.248 
-##  Infected HG / Control 1.715 0.1845 Inf     1.389      2.12  5.019 
+##  contrast                  ratio         SE  df asymp.LCL asymp.UCL z.ratio
+##  Uninfected / Control  0.7280899 0.09878893 Inf 0.5580743 0.9499002  -2.339
+##  Infected LG / Control 0.8209738 0.12981015 Inf 0.6021984 1.1192290  -1.248
+##  Infected HG / Control 1.7154710 0.18445860 Inf 1.3894940 2.1179227   5.019
 ##  p.value
-##  0.0193 
-##  0.2122 
-##  <.0001 
+##   0.0193
+##   0.2122
+##   <.0001
 ## 
 ## Confidence level used: 0.95 
 ## Intervals are back-transformed from the log scale 
@@ -12404,7 +12429,7 @@ the \(RR_j < 1\).
   \(b_{Control} + b_{Infected\_HG}\)). Check and see if this works.
 \end{enumerate}
 
-\section{Working in R}\label{working-in-r-5}
+\section{Working in R}\label{working-in-r-6}
 
 Source publication: Benesh, D. P., \& Kalbe, M. (2016). Experimental
 parasite community ecology: intraspecific variation in a large tapeworm
@@ -12429,6 +12454,11 @@ package DHARMa
 \end{Highlighting}
 \end{Shaded}
 
+\begin{verbatim}
+## DHARMa::plotResiduals - low number of unique predictor values, consider setting asFactor = T
+## DHARMa::plotResiduals - low number of unique predictor values, consider setting asFactor = T
+\end{verbatim}
+
 \includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/glm1-working-in-r-1.pdf}
 
 A plot of the dispersion statistic can be generated using the object
@@ -12448,12 +12478,12 @@ statistic is \(df\).
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-90-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-89-1.pdf}
 
 \begin{verbatim}
 ## 
-##  DHARMa nonparametric dispersion test via mean deviance residual
-##  fitted vs. simulated-refitted
+##  DHARMa nonparametric dispersion test via mean deviance residual fitted
+##  vs. simulated-refitted
 ## 
 ## data:  simulationOutput
 ## dispersion = 3.3788, p-value < 2.2e-16
@@ -12471,6 +12501,11 @@ Negative binomial fit.
 \end{Highlighting}
 \end{Shaded}
 
+\begin{verbatim}
+## DHARMa::plotResiduals - low number of unique predictor values, consider setting asFactor = T
+## DHARMa::plotResiduals - low number of unique predictor values, consider setting asFactor = T
+\end{verbatim}
+
 \includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/glm-working-in-r-2-1.pdf}
 
 \begin{Shaded}
@@ -12482,11 +12517,11 @@ Negative binomial fit.
 \end{Shaded}
 
 \begin{verbatim}
-##  Treatment   emmean     SE  df asymp.LCL asymp.UCL
-##  Control       1.82 0.0804 Inf      1.66      1.98
-##  Uninfected    1.50 0.1093 Inf      1.29      1.72
-##  Infected LG   1.62 0.1362 Inf      1.36      1.89
-##  Infected HG   2.36 0.0714 Inf      2.22      2.50
+##  Treatment     emmean         SE  df asymp.LCL asymp.UCL
+##  Control     1.821408 0.08038710 Inf  1.663852  1.978964
+##  Uninfected  1.504077 0.10930511 Inf  1.289843  1.718311
+##  Infected LG 1.624144 0.13615796 Inf  1.357279  1.891009
+##  Infected HG 2.361096 0.07141332 Inf  2.221128  2.501063
 ## 
 ## Results are given on the log (not the response) scale. 
 ## Confidence level used: 0.95
@@ -12499,14 +12534,14 @@ Negative binomial fit.
 \end{Shaded}
 
 \begin{verbatim}
-##  contrast              estimate    SE  df asymp.LCL asymp.UCL z.ratio
-##  Uninfected - Control    -0.317 0.136 Inf    -0.583   -0.0514 -2.339 
-##  Infected LG - Control   -0.197 0.158 Inf    -0.507    0.1126 -1.248 
-##  Infected HG - Control    0.540 0.108 Inf     0.329    0.7504  5.019 
+##  contrast                estimate        SE  df  asymp.LCL  asymp.UCL z.ratio
+##  Uninfected - Control  -0.3173308 0.1356823 Inf -0.5832632 -0.0513983  -2.339
+##  Infected LG - Control -0.1972641 0.1581173 Inf -0.5071683  0.1126401  -1.248
+##  Infected HG - Control  0.5396877 0.1075265 Inf  0.3289396  0.7504358   5.019
 ##  p.value
-##  0.0193 
-##  0.2122 
-##  <.0001 
+##   0.0193
+##   0.2122
+##   <.0001
 ## 
 ## Results are given on the log (not the response) scale. 
 ## Confidence level used: 0.95
@@ -12521,14 +12556,14 @@ Negative binomial fit.
 \end{Shaded}
 
 \begin{verbatim}
-##  contrast              ratio     SE  df asymp.LCL asymp.UCL z.ratio
-##  Uninfected / Control  0.728 0.0988 Inf     0.558      0.95 -2.339 
-##  Infected LG / Control 0.821 0.1298 Inf     0.602      1.12 -1.248 
-##  Infected HG / Control 1.715 0.1845 Inf     1.389      2.12  5.019 
+##  contrast                  ratio         SE  df asymp.LCL asymp.UCL z.ratio
+##  Uninfected / Control  0.7280899 0.09878893 Inf 0.5580743 0.9499002  -2.339
+##  Infected LG / Control 0.8209738 0.12981015 Inf 0.6021984 1.1192290  -1.248
+##  Infected HG / Control 1.7154710 0.18445860 Inf 1.3894940 2.1179227   5.019
 ##  p.value
-##  0.0193 
-##  0.2122 
-##  <.0001 
+##   0.0193
+##   0.2122
+##   <.0001
 ## 
 ## Confidence level used: 0.95 
 ## Intervals are back-transformed from the log scale 
@@ -12731,10 +12766,6 @@ has a fixed part (\(\beta_1\)) that is common to all observations and a
 random component (\(\beta_{1j}\)) that is common within a block but
 differs among blocks (see table below). Again, these are collected
 within a pair of parentheses in the equation above.
-
-\begin{verbatim}
-## boundary (singular) fit: see ?isSingular
-\end{verbatim}
 
 \label{tab:lmm-table}The linear mixed model specified above estimates a
 fixed intercept and fixed slope (treatment effect) that are common to
@@ -12956,8 +12987,8 @@ and a linear mixed model
 
 \begin{verbatim}
 ##               Estimate Std. Error       df   t value     Pr(>|t|)
-## (Intercept) 10.0235749  0.3954736 8.999737 25.345750 1.114804e-09
-## TreatmentT+  0.6884787  0.2700797 9.000052  2.549169 3.123718e-02
+## (Intercept) 10.0235749  0.3954692 9.000000 25.346031 1.114196e-09
+## TreatmentT+  0.6884787  0.2700725 8.999999  2.549237 3.123383e-02
 \end{verbatim}
 
 The linear mixed model has increased precision (a smaller SE of the
@@ -13258,7 +13289,7 @@ Re-imagining the design as a single, linear mixed model with each gene
 modeled as a block would lead to a rank order in which the biggest
 measured effects more closely approximate the true effects.
 
-\section{Working in R}\label{working-in-r-6}
+\section{Working in R}\label{working-in-r-7}
 
 The major function for working with linear mixed models is
 \texttt{lmer()} from the lme4 package. An older, and still sometimes
@@ -13308,26 +13339,8 @@ adds the random component as a separate argument
 \NormalTok{fit.lmer1 <-}\StringTok{ }\KeywordTok{lmer}\NormalTok{(GrowthRate }\OperatorTok{~}\StringTok{ }\NormalTok{Vermetids}\OperatorTok{*}\NormalTok{Sediment }\OperatorTok{+}\StringTok{ }\NormalTok{(}\DecValTok{1}\OperatorTok{|}\NormalTok{Block), }\DataTypeTok{data=}\NormalTok{coral[inc])}
 \CommentTok{# random intercept and slope}
 \NormalTok{fit.lmer2 <-}\StringTok{ }\KeywordTok{lmer}\NormalTok{(GrowthRate }\OperatorTok{~}\StringTok{ }\NormalTok{Vermetids}\OperatorTok{*}\NormalTok{Sediment }\OperatorTok{+}\StringTok{ }\NormalTok{(Vermetids}\OperatorTok{|}\NormalTok{Block) }\OperatorTok{+}\StringTok{ }\NormalTok{(Sediment}\OperatorTok{|}\NormalTok{Block), }\DataTypeTok{data=}\NormalTok{coral[inc])}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-## boundary (singular) fit: see ?isSingular
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
 \CommentTok{# random intercept and slope}
 \NormalTok{fit.lmer3 <-}\StringTok{ }\KeywordTok{lmer}\NormalTok{(GrowthRate }\OperatorTok{~}\StringTok{ }\NormalTok{Vermetids}\OperatorTok{*}\NormalTok{Sediment }\OperatorTok{+}\StringTok{ }\NormalTok{(Vermetids}\OperatorTok{|}\NormalTok{Block) }\OperatorTok{+}\StringTok{ }\NormalTok{(Sediment}\OperatorTok{|}\NormalTok{Block), }\DataTypeTok{data=}\NormalTok{coral[inc])}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-## boundary (singular) fit: see ?isSingular
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
 \CommentTok{# to include the interaction as a random effect we'd need subsampling within each factorial treatment combination}
 
 \CommentTok{# specification using lme}
@@ -13341,15 +13354,15 @@ adds the random component as a separate argument
 \begin{verbatim}
 ## $Block
 ##    (Intercept)  Vermetids1 Sediment1 Vermetids1:Sediment1
-## 1     1.205018 0.004655556 0.2852023           -0.7735467
-## 2     1.336068 0.004655556 0.2852023           -0.7735467
-## 3     1.213966 0.004655556 0.2852023           -0.7735467
-## 4     1.262805 0.004655556 0.2852023           -0.7735467
-## 6     1.320787 0.004655556 0.2852023           -0.7735467
-## 7     1.201242 0.004655556 0.2852023           -0.7735467
-## 8     1.314441 0.004655556 0.2852023           -0.7735467
-## 9     1.199831 0.004655556 0.2852023           -0.7735467
-## 10    1.361541 0.004655556 0.2852023           -0.7735467
+## 1     1.205030 0.004655556 0.2852037           -0.7735482
+## 2     1.336057 0.004655556 0.2852037           -0.7735482
+## 3     1.213975 0.004655556 0.2852037           -0.7735482
+## 4     1.262806 0.004655556 0.2852037           -0.7735482
+## 6     1.320778 0.004655556 0.2852037           -0.7735482
+## 7     1.201253 0.004655556 0.2852037           -0.7735482
+## 8     1.314433 0.004655556 0.2852037           -0.7735482
+## 9     1.199842 0.004655556 0.2852037           -0.7735482
+## 10    1.361526 0.004655556 0.2852037           -0.7735482
 ## 
 ## attr(,"class")
 ## [1] "coef.mer"
@@ -13362,16 +13375,11 @@ adds the random component as a separate argument
 \end{Shaded}
 
 \begin{verbatim}
-##                          Estimate Std. Error       df     t value
-## (Intercept)           1.268411111  0.1541680 30.42768  8.22745788
-## Vermetids1            0.004655556  0.2091398 22.94243  0.02226049
-## Sediment1             0.285202305  0.2160126 23.53130  1.32030428
-## Vermetids1:Sediment1 -0.773546750  0.3006674 23.24638 -2.57276556
-##                          Pr(>|t|)
-## (Intercept)          3.129900e-09
-## Vermetids1           9.824326e-01
-## Sediment1            1.994327e-01
-## Vermetids1:Sediment1 1.693404e-02
+##                          Estimate Std. Error       df     t value     Pr(>|t|)
+## (Intercept)           1.268411111  0.1541678 30.42810  8.22747196 3.129452e-09
+## Vermetids1            0.004655556  0.2091414 22.94176  0.02226033 9.824328e-01
+## Sediment1             0.285203739  0.2160141 23.53066  1.32030164 1.994339e-01
+## Vermetids1:Sediment1 -0.773548184  0.3006696 23.24572 -2.57275179 1.693478e-02
 \end{verbatim}
 
 \begin{Shaded}
@@ -13382,15 +13390,14 @@ adds the random component as a separate argument
 \end{Shaded}
 
 \begin{verbatim}
-##  contrast  estimate    SE   df lower.CL upper.CL t.ratio p.value
-##  1,0 - 0,0  0.00466 0.209 23.0   -0.428   0.4373  0.022  0.9824 
-##  0,1 - 0,0  0.28520 0.217 23.6   -0.163   0.7330  1.316  0.2009 
-##  0,1 - 1,0  0.28055 0.217 23.6   -0.167   0.7283  1.294  0.2081 
-##  1,1 - 0,0 -0.48369 0.209 23.0   -0.916  -0.0511 -2.313  0.0300 
-##  1,1 - 1,0 -0.48834 0.209 23.0   -0.921  -0.0557 -2.335  0.0286 
-##  1,1 - 0,1 -0.76889 0.217 23.6   -1.217  -0.3211 -3.547  0.0017 
+##  contrast      estimate        SE    df   lower.CL    upper.CL t.ratio p.value
+##  1,0 - 0,0  0.004655556 0.2091414 23.04 -0.4279489  0.43725999   0.022  0.9824
+##  0,1 - 0,0  0.285203739 0.2167702 23.62 -0.1625690  0.73297646   1.316  0.2009
+##  0,1 - 1,0  0.280548184 0.2167702 23.62 -0.1672245  0.72832090   1.294  0.2081
+##  1,1 - 0,0 -0.483688889 0.2091414 23.04 -0.9162933 -0.05108446  -2.313  0.0300
+##  1,1 - 1,0 -0.488344444 0.2091414 23.04 -0.9209489 -0.05574001  -2.335  0.0286
+##  1,1 - 0,1 -0.768892628 0.2167702 23.62 -1.2166653 -0.32111991  -3.547  0.0017
 ## 
-## Degrees-of-freedom method: kenward-roger 
 ## Confidence level used: 0.95
 \end{verbatim}
 
@@ -13399,15 +13406,7 @@ adds the random component as a separate argument
 \NormalTok{fit.lmer1.ml <-}\StringTok{ }\KeywordTok{lmer}\NormalTok{(GrowthRate }\OperatorTok{~}\StringTok{ }\NormalTok{Vermetids}\OperatorTok{*}\NormalTok{Sediment }\OperatorTok{+}\StringTok{ }\NormalTok{(}\DecValTok{1}\OperatorTok{|}\NormalTok{Block), }\DataTypeTok{data=}\NormalTok{coral[inc], }\DataTypeTok{REML=}\OtherTok{FALSE}\NormalTok{)}
 \CommentTok{# random intercept and slope}
 \NormalTok{fit.lmer3.ml <-}\StringTok{ }\KeywordTok{lmer}\NormalTok{(GrowthRate }\OperatorTok{~}\StringTok{ }\NormalTok{Vermetids}\OperatorTok{*}\NormalTok{Sediment }\OperatorTok{+}\StringTok{ }\NormalTok{(Vermetids}\OperatorTok{|}\NormalTok{Block) }\OperatorTok{+}\StringTok{ }\NormalTok{(Sediment}\OperatorTok{|}\NormalTok{Block), }\DataTypeTok{data=}\NormalTok{coral[inc], }\DataTypeTok{REML=}\OtherTok{FALSE}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
 
-\begin{verbatim}
-## boundary (singular) fit: see ?isSingular
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
 \KeywordTok{AIC}\NormalTok{(fit.lmer1.ml)}
 \end{Highlighting}
 \end{Shaded}
