@@ -1,15 +1,14 @@
 <!DOCTYPE html>
-<html >
-
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
 <head>
 
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Elementary Statistical Modeling for Applied Biostatistics</title>
-  <meta name="description" content="A first course in statistical modeling for biology students">
-  <meta name="generator" content="bookdown 0.7 and GitBook 2.6.7">
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Chapter 15 Two (or more) Categorical \(X\) – Factorial designs | Elementary Statistical Modeling for Applied Biostatistics</title>
+  <meta name="description" content="A first course in statistical modeling for biology students" />
+  <meta name="generator" content="bookdown 0.14 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Elementary Statistical Modeling for Applied Biostatistics" />
+  <meta property="og:title" content="Chapter 15 Two (or more) Categorical \(X\) – Factorial designs | Elementary Statistical Modeling for Applied Biostatistics" />
   <meta property="og:type" content="book" />
   
   
@@ -17,28 +16,32 @@
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Elementary Statistical Modeling for Applied Biostatistics" />
+  <meta name="twitter:title" content="Chapter 15 Two (or more) Categorical \(X\) – Factorial designs | Elementary Statistical Modeling for Applied Biostatistics" />
   
   <meta name="twitter:description" content="A first course in statistical modeling for biology students" />
   
 
-<meta name="author" content="Copyright 2018 Jeffrey A. Walker">
+<meta name="author" content="Copyright 2018 Jeffrey A. Walker" />
 
 
 
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="adding-covariates-to-a-linear-model.html">
-<link rel="next" href="anova-tables.html">
+<link rel="prev" href="adding-covariates-to-a-linear-model.html"/>
+<link rel="next" href="anova-tables.html"/>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
 
 
 
@@ -421,7 +424,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <h2><span class="header-section-number">15.1</span> Factorial experiments</h2>
 <p>A factorial experiment is one in which there are two or more categorical <span class="math inline">\(X\)</span> that are <strong>crossed</strong>, resulting in a group for all combinations of the levels of each factor. Factorial experiments are used to estimate the <strong>interaction</strong> between factors, which occurs when the effect of the level of one factor depends on the levels of the other factors. For example, a researcher wants to estimate the effect of an environmental toxin on basal metabolic rate (BMR) in a fish and designs an experiment with two factors: <span class="math inline">\(Treatment\)</span> with levels “control” and “toxin” and <span class="math inline">\(Sex\)</span>, with levels “male” and “female”. If the magnitude (and possibly sign) of the effect of the toxin on BMR differs between males and females, there is an interaction between <span class="math inline">\(Treatment\)</span> and <span class="math inline">\(Sex\)</span>. Interactions are usually denoted with a <span class="math inline">\(\times\)</span> symbol: <span class="math inline">\(Treatment \times Sex\)</span>. Interactions are ubiquitous, although sometimes they are small enough to ignore with little to no loss of understading.</p>
 <p>This chapter uses data from an experiment measuring the effect of <span class="math inline">\(Temp\)</span> and <span class="math inline">\(CO2\)</span> on larval sea urchin metabolic rate (<span class="math inline">\(Resp\)</span>) (there are other outcome measures in the study too). The units of metabolic rate are pmol O2/hr/larva. There are two <span class="math inline">\(Temp\)</span> levels (13C and 18C) and two <span class="math inline">\(CO2\)</span> levels (400 µAtm and 1100 µAtm) and the factors are fully crossed, which makes this a <span class="math inline">\(2 \times 2\)</span> (crossed or factorial) design. There are <span class="math inline">\(n=6\)</span> replicates for each combination of the levels. A good way to visualize the treatment combinations in a crossed design is with a <span class="math inline">\(m \times p\)</span> table showing all combinations of the <span class="math inline">\(m\)</span> levels of factor 1 (<span class="math inline">\(Temp\)</span>) against the <span class="math inline">\(p\)</span> levels of factor 2 (<span class="math inline">\(CO2\)</span>)</p>
-<p><img src="images/2x2_table.png" width="235" /></p>
+<p><img src="images/2x2_table.png" /><!-- --></p>
 <p>The upper left cell represents the combination of 13 C and 400 µAtm level within the CO2 factor. The replicates in this cell were grown with no added treatments, so this cell is the “control” for Temp and the control for CO2, which we will use as the “reference” group for the linear model. The replicates in the lower left cell were grown with an added temperature treatment (in this case, a 5 C higher temperature). The replicates in the upper right cell were grown with an added CO2 treatment (700 µATM higher CO2). And finally, the replicates in the bottom right cell were grown with both the added temperature (+5 C) and added CO2 (+700 µATM). Here, I use a “+” or “-” to designate the addition (or not) of the treatment, so our <span class="math inline">\(2 \times 2\)</span> treatment levels are Temp-/CO2-, Temp+/CO2-, Temp-/CO2+ and Temp+/CO2+.</p>
 <div id="model-coefficients-an-interaction-effect-is-what-is-leftover-after-adding-the-treatment-effects-to-the-control" class="section level3">
 <h3><span class="header-section-number">15.1.1</span> Model coefficients: an interaction effect is what is leftover after adding the treatment effects to the control</h3>
@@ -1676,11 +1679,11 @@ Y = \beta_0 + \beta_1 A^+ + \beta_1 B^+ + \beta_3 C^+ + \beta_4 A^+ B^+ + \beta_
 <p>Modeled means are estimated using <code>emmeans::emmeans</code>. The means for all combinations of Temp and CO2 are obtained with the specs argument.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">m1.emm &lt;-<span class="st"> </span><span class="kw">emmeans</span>(m1, <span class="dt">specs=</span><span class="kw">c</span>(<span class="st">&quot;Temp&quot;</span>, <span class="st">&quot;CO2&quot;</span>))
 m1.emm</code></pre></div>
-<pre><code>##  Temp CO2     emmean        SE df  lower.CL  upper.CL
-##  13   400   8.233333 0.7255577 20  6.719846  9.746820
-##  18   400  12.743333 0.7255577 20 11.229846 14.256820
-##  13   1100  7.916667 0.7255577 20  6.403180  9.430154
-##  18   1100  9.741667 0.7255577 20  8.228180 11.255154
+<pre><code>##  Temp CO2  emmean    SE df lower.CL upper.CL
+##  13   400    8.23 0.726 20     6.72     9.75
+##  18   400   12.74 0.726 20    11.23    14.26
+##  13   1100   7.92 0.726 20     6.40     9.43
+##  18   1100   9.74 0.726 20     8.23    11.26
 ## 
 ## Confidence level used: 0.95</code></pre>
 </div>
@@ -1690,16 +1693,16 @@ m1.emm</code></pre></div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">m1.emm.temp &lt;-<span class="st"> </span><span class="kw">emmeans</span>(m1, <span class="dt">specs=</span><span class="kw">c</span>(<span class="st">&quot;Temp&quot;</span>))
 m1.emm.co2 &lt;-<span class="st"> </span><span class="kw">emmeans</span>(m1, <span class="dt">specs=</span><span class="kw">c</span>(<span class="st">&quot;CO2&quot;</span>))
 m1.emm.temp</code></pre></div>
-<pre><code>##  Temp  emmean        SE df  lower.CL  upper.CL
-##  13    8.0750 0.5130468 20  7.004803  9.145197
-##  18   11.2425 0.5130468 20 10.172303 12.312697
+<pre><code>##  Temp emmean    SE df lower.CL upper.CL
+##  13     8.07 0.513 20      7.0     9.15
+##  18    11.24 0.513 20     10.2    12.31
 ## 
 ## Results are averaged over the levels of: CO2 
 ## Confidence level used: 0.95</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">m1.emm.co2</code></pre></div>
-<pre><code>##  CO2     emmean        SE df lower.CL  upper.CL
-##  400  10.488333 0.5130468 20 9.418136 11.558530
-##  1100  8.829167 0.5130468 20 7.758970  9.899364
+<pre><code>##  CO2  emmean    SE df lower.CL upper.CL
+##  400   10.49 0.513 20     9.42     11.6
+##  1100   8.83 0.513 20     7.76      9.9
 ## 
 ## Results are averaged over the levels of: Temp 
 ## Confidence level used: 0.95</code></pre>
@@ -1711,13 +1714,13 @@ m1.emm.temp</code></pre></div>
 <span class="co"># add CIs</span>
 m1.contrast.ci &lt;-<span class="st"> </span><span class="kw">summary</span>(m1.contrast, <span class="dt">infer=</span><span class="kw">c</span>(<span class="ot">TRUE</span>, <span class="ot">TRUE</span>))
 m1.contrast.ci</code></pre></div>
-<pre><code>##  contrast            estimate       SE df   lower.CL   upper.CL t.ratio p.value
-##  18,400 - 13,400    4.5100000 1.026094 20  2.3696063  6.6503937   4.395  0.0003
-##  13,1100 - 13,400  -0.3166667 1.026094 20 -2.4570604  1.8237271  -0.309  0.7608
-##  13,1100 - 18,400  -4.8266667 1.026094 20 -6.9670604 -2.6862729  -4.704  0.0001
-##  18,1100 - 13,400   1.5083333 1.026094 20 -0.6320604  3.6487271   1.470  0.1571
-##  18,1100 - 18,400  -3.0016667 1.026094 20 -5.1420604 -0.8612729  -2.925  0.0084
-##  18,1100 - 13,1100  1.8250000 1.026094 20 -0.3153937  3.9653937   1.779  0.0905
+<pre><code>##  contrast          estimate   SE df lower.CL upper.CL t.ratio p.value
+##  18,400 - 13,400      4.510 1.03 20    2.370    6.650  4.395  0.0003 
+##  13,1100 - 13,400    -0.317 1.03 20   -2.457    1.824 -0.309  0.7608 
+##  13,1100 - 18,400    -4.827 1.03 20   -6.967   -2.686 -4.704  0.0001 
+##  18,1100 - 13,400     1.508 1.03 20   -0.632    3.649  1.470  0.1571 
+##  18,1100 - 18,400    -3.002 1.03 20   -5.142   -0.861 -2.925  0.0084 
+##  18,1100 - 13,1100    1.825 1.03 20   -0.315    3.965  1.779  0.0905 
 ## 
 ## Confidence level used: 0.95</code></pre>
 </div>
@@ -1731,16 +1734,11 @@ m1.contrast.ci</code></pre></div>
                  <span class="dt">combine=</span><span class="ot">TRUE</span>),
         <span class="dt">infer=</span><span class="kw">c</span>(<span class="ot">TRUE</span>,<span class="ot">TRUE</span>))
 m1.effects</code></pre></div>
-<pre><code>##  CO2  Temp contrast     estimate       SE df   lower.CL   upper.CL t.ratio
-##  400  .    18 - 13     4.5100000 1.026094 20  2.3696063  6.6503937   4.395
-##  1100 .    18 - 13     1.8250000 1.026094 20 -0.3153937  3.9653937   1.779
-##  .    13   1100 - 400 -0.3166667 1.026094 20 -2.4570604  1.8237271  -0.309
-##  .    18   1100 - 400 -3.0016667 1.026094 20 -5.1420604 -0.8612729  -2.925
-##  p.value
-##   0.0003
-##   0.0905
-##   0.7608
-##   0.0084
+<pre><code>##  CO2  Temp contrast   estimate   SE df lower.CL upper.CL t.ratio p.value
+##  400  .    18 - 13       4.510 1.03 20    2.370    6.650  4.395  0.0003 
+##  1100 .    18 - 13       1.825 1.03 20   -0.315    3.965  1.779  0.0905 
+##  .    13   1100 - 400   -0.317 1.03 20   -2.457    1.824 -0.309  0.7608 
+##  .    18   1100 - 400   -3.002 1.03 20   -5.142   -0.861 -2.925  0.0084 
 ## 
 ## Confidence level used: 0.95</code></pre>
 </div>
@@ -1754,8 +1752,8 @@ m1.effects</code></pre></div>
                  <span class="dt">adjust=</span><span class="st">&quot;none&quot;</span>),
         <span class="dt">infer=</span><span class="kw">c</span>(<span class="ot">TRUE</span>,<span class="ot">TRUE</span>))
 m1.effects.<span class="dv">1</span></code></pre></div>
-<pre><code>##  contrast estimate        SE df lower.CL upper.CL t.ratio p.value
-##  18 - 13    3.1675 0.7255577 20 1.654013 4.680987   4.366  0.0003
+<pre><code>##  contrast estimate    SE df lower.CL upper.CL t.ratio p.value
+##  18 - 13      3.17 0.726 20     1.65     4.68 4.366   0.0003 
 ## 
 ## Results are averaged over the levels of: CO2 
 ## Confidence level used: 0.95</code></pre>
@@ -1766,8 +1764,8 @@ m1.effects.<span class="dv">1</span></code></pre></div>
                  <span class="dt">adjust=</span><span class="st">&quot;none&quot;</span>),
         <span class="dt">infer=</span><span class="kw">c</span>(<span class="ot">TRUE</span>,<span class="ot">TRUE</span>))
 m1.effects.<span class="dv">2</span></code></pre></div>
-<pre><code>##  contrast    estimate        SE df  lower.CL   upper.CL t.ratio p.value
-##  1100 - 400 -1.659167 0.7255577 20 -3.172654 -0.1456798  -2.287  0.0332
+<pre><code>##  contrast   estimate    SE df lower.CL upper.CL t.ratio p.value
+##  1100 - 400    -1.66 0.726 20    -3.17   -0.146 -2.287  0.0332 
 ## 
 ## Results are averaged over the levels of: Temp 
 ## Confidence level used: 0.95</code></pre>
@@ -1947,12 +1945,12 @@ gg_effects</code></pre></div>
 <li><strong>file name</strong>: “treatments.csv”</li>
 <li><strong>source</strong>: <a href="https://datadryad.org/resource/doi:10.5061/dryad.r3s16" class="uri">https://datadryad.org/resource/doi:10.5061/dryad.r3s16</a></li>
 </ol>
-<p><img src="images/frew_fig_4b.png" width="684" /></p>
+<p><img src="images/frew_fig_4b.png" /><!-- --></p>
 <ol start="3" style="list-style-type: decimal">
 <li>Kardol et al investigated the effect of moss growth in response to rainfall and community structure. Analyze the effect of these two factors on biomass gain and generate a Harrell plot alternative to their bar plot in Fig. 3 (see below). What is striking about your plot compared to theirs?</li>
 </ol>
 <p><strong>Filename</strong> “Data file for Dryad.xlsx” <strong>sheet</strong> “Data” **Source*:** <a href="https://datadryad.org/resource/doi:10.5061/dryad.66d5f" class="uri">https://datadryad.org/resource/doi:10.5061/dryad.66d5f</a></p>
-<p><img src="images/kardol_fig_3.png" width="439" /></p>
+<p><img src="images/kardol_fig_3.png" /><!-- --></p>
 <ol start="4" style="list-style-type: decimal">
 <li>(Grad students only) Generate a fake experiment! The experiment should have two factors each with two levels. Experiment with power by varying sample size and effect size.</li>
 </ol>
@@ -1970,11 +1968,13 @@ gg_effects</code></pre></div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
 <script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
 <script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
 <script>
 gitbook.require(["gitbook"], function(gitbook) {
 gitbook.start({
@@ -1985,7 +1985,7 @@ gitbook.start({
 "google": false,
 "linkedin": false,
 "weibo": false,
-"instapper": false,
+"instapaper": false,
 "vk": false,
 "all": ["facebook", "google", "twitter", "linkedin", "weibo", "instapaper"]
 },
@@ -1997,6 +1997,10 @@ gitbook.start({
 "edit": {
 "link": "https://github.com/rstudio/bookdown-demo/edit/master/chapters/34-factorial.Rmd",
 "text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
 },
 "download": ["Walker-elementary-statistical-modeling-draft.pdf", "Walker-elementary-statistical-modeling-draft.epub"],
 "toc": {
@@ -2012,9 +2016,10 @@ gitbook.start({
     var script = document.createElement("script");
     script.type = "text/javascript";
     var src = "";
-    if (src === "" || src === "true") src = "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML";
-    if (location.protocol !== "file:" && /^https?:/.test(src))
-      src = src.replace(/^https?:/, '');
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
     script.src = src;
     document.getElementsByTagName("head")[0].appendChild(script);
   })();

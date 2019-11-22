@@ -1,15 +1,14 @@
 <!DOCTYPE html>
-<html >
-
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
 <head>
 
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Elementary Statistical Modeling for Applied Biostatistics</title>
-  <meta name="description" content="A first course in statistical modeling for biology students">
-  <meta name="generator" content="bookdown 0.7 and GitBook 2.6.7">
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Chapter 18 Generalized linear models I: Count data | Elementary Statistical Modeling for Applied Biostatistics</title>
+  <meta name="description" content="A first course in statistical modeling for biology students" />
+  <meta name="generator" content="bookdown 0.14 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Elementary Statistical Modeling for Applied Biostatistics" />
+  <meta property="og:title" content="Chapter 18 Generalized linear models I: Count data | Elementary Statistical Modeling for Applied Biostatistics" />
   <meta property="og:type" content="book" />
   
   
@@ -17,28 +16,32 @@
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Elementary Statistical Modeling for Applied Biostatistics" />
+  <meta name="twitter:title" content="Chapter 18 Generalized linear models I: Count data | Elementary Statistical Modeling for Applied Biostatistics" />
   
   <meta name="twitter:description" content="A first course in statistical modeling for biology students" />
   
 
-<meta name="author" content="Copyright 2018 Jeffrey A. Walker">
+<meta name="author" content="Copyright 2018 Jeffrey A. Walker" />
 
 
 
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="part-v-expanding-the-linear-model-generalized-linear-models-and-multilevel-linear-mixed-models.html">
-<link rel="next" href="linear-mixed-models.html">
+<link rel="prev" href="part-v-expanding-the-linear-model-generalized-linear-models-and-multilevel-linear-mixed-models.html"/>
+<link rel="next" href="linear-mixed-models.html"/>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
 
 
 
@@ -595,20 +598,20 @@ Diplo\_intensity &amp;\sim NB(\mu, k)\\
 <h4><span class="header-section-number">18.2.7.2</span> Model means and coefficients</h4>
 <p>In a Generalized Linear Model of counts using either a Poisson or negative binomial distribution, modeled means, coefficients, and contrasts can be reported either on the link or response scale. Remember, the response scale is a count, while the link scale is a log(count).</p>
 <p>The modeled means on the link scale are</p>
-<pre><code>##  Treatment     emmean         SE  df asymp.LCL asymp.UCL
-##  Control     1.821408 0.08038710 Inf  1.663852  1.978964
-##  Uninfected  1.504077 0.10930511 Inf  1.289843  1.718311
-##  Infected LG 1.624144 0.13615796 Inf  1.357279  1.891009
-##  Infected HG 2.361096 0.07141332 Inf  2.221128  2.501063
+<pre><code>##  Treatment   emmean     SE  df asymp.LCL asymp.UCL
+##  Control       1.82 0.0804 Inf      1.66      1.98
+##  Uninfected    1.50 0.1093 Inf      1.29      1.72
+##  Infected LG   1.62 0.1362 Inf      1.36      1.89
+##  Infected HG   2.36 0.0714 Inf      2.22      2.50
 ## 
 ## Results are given on the log (not the response) scale. 
 ## Confidence level used: 0.95</code></pre>
 <p>While the means on response scale are</p>
-<pre><code>##  Treatment    response        SE  df asymp.LCL asymp.UCL
-##  Control      6.180556 0.4968369 Inf  5.279611  7.235243
-##  Uninfected   4.500000 0.4918730 Inf  3.632217  5.575107
-##  Infected LG  5.074074 0.6908756 Inf  3.885608  6.626049
-##  Infected HG 10.602564 0.7571643 Inf  9.217726 12.195456
+<pre><code>##  Treatment   response    SE  df asymp.LCL asymp.UCL
+##  Control         6.18 0.497 Inf      5.28      7.24
+##  Uninfected      4.50 0.492 Inf      3.63      5.58
+##  Infected LG     5.07 0.691 Inf      3.89      6.63
+##  Infected HG    10.60 0.757 Inf      9.22     12.20
 ## 
 ## Confidence level used: 0.95 
 ## Intervals are back-transformed from the log scale</code></pre>
@@ -619,26 +622,26 @@ Diplo\_intensity &amp;\sim NB(\mu, k)\\
 <li><p>Plotting the response scale CIs is both technically correct and makes the 2*SE rule of thumb unnecessary.</p></li>
 </ol>
 <p>The model coefficients on the link scale are</p>
-<pre><code>##  contrast                estimate        SE  df  asymp.LCL  asymp.UCL z.ratio
-##  Uninfected - Control  -0.3173308 0.1356823 Inf -0.5832632 -0.0513983  -2.339
-##  Infected LG - Control -0.1972641 0.1581173 Inf -0.5071683  0.1126401  -1.248
-##  Infected HG - Control  0.5396877 0.1075265 Inf  0.3289396  0.7504358   5.019
+<pre><code>##  contrast              estimate    SE  df asymp.LCL asymp.UCL z.ratio
+##  Uninfected - Control    -0.317 0.136 Inf    -0.583   -0.0514 -2.339 
+##  Infected LG - Control   -0.197 0.158 Inf    -0.507    0.1126 -1.248 
+##  Infected HG - Control    0.540 0.108 Inf     0.329    0.7504  5.019 
 ##  p.value
-##   0.0193
-##   0.2122
-##   &lt;.0001
+##  0.0193 
+##  0.2122 
+##  &lt;.0001 
 ## 
 ## Results are given on the log (not the response) scale. 
 ## Confidence level used: 0.95</code></pre>
 <p>Backtransforming the coefficients (but not the intercept) to the response scale (using <span class="math inline">\(\mathrm{exp}{b_j}\)</span>) results in a <strong>response ratio</strong>.</p>
-<pre><code>##  contrast                  ratio         SE  df asymp.LCL asymp.UCL z.ratio
-##  Uninfected / Control  0.7280899 0.09878893 Inf 0.5580743 0.9499002  -2.339
-##  Infected LG / Control 0.8209738 0.12981015 Inf 0.6021984 1.1192290  -1.248
-##  Infected HG / Control 1.7154710 0.18445860 Inf 1.3894940 2.1179227   5.019
+<pre><code>##  contrast              ratio     SE  df asymp.LCL asymp.UCL z.ratio
+##  Uninfected / Control  0.728 0.0988 Inf     0.558      0.95 -2.339 
+##  Infected LG / Control 0.821 0.1298 Inf     0.602      1.12 -1.248 
+##  Infected HG / Control 1.715 0.1845 Inf     1.389      2.12  5.019 
 ##  p.value
-##   0.0193
-##   0.2122
-##   &lt;.0001
+##  0.0193 
+##  0.2122 
+##  &lt;.0001 
 ## 
 ## Confidence level used: 0.95 
 ## Intervals are back-transformed from the log scale 
@@ -669,8 +672,6 @@ RR_{Infected\_HG} = \frac{\overline{Infected\_HG}}{\overline{Control}}
   n_sim &lt;-<span class="st"> </span><span class="dv">250</span>
   simulationOutput &lt;-<span class="st"> </span><span class="kw">simulateResiduals</span>(<span class="dt">fittedModel =</span> fit.pois, <span class="dt">n =</span> n_sim)
   <span class="kw">plot</span>(simulationOutput, <span class="dt">asFactor =</span> F)</code></pre></div>
-<pre><code>## DHARMa::plotResiduals - low number of unique predictor values, consider setting asFactor = T
-## DHARMa::plotResiduals - low number of unique predictor values, consider setting asFactor = T</code></pre>
 <p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/glm1-working-in-r-1.png" width="576" /></p>
 <p>A plot of the dispersion statistic can be generated using the object returned by the <code>SimulateOutput</code> function but with <code>refit = TRUE</code>, which refits a model each iteration. This refitting isn’t necessary if only the quantiile residuals are needed. The Dharma package does not divide the sum of squared Pearson residuals by the residual degrees of freedom and so the expected value of the statistic is <span class="math inline">\(df\)</span>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># from the DHARMa package</span>
@@ -679,8 +680,8 @@ RR_{Infected\_HG} = \frac{\overline{Infected\_HG}}{\overline{Control}}
   <span class="kw">testDispersion</span>(simulationOutput)</code></pre></div>
 <p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/unnamed-chunk-89-1.png" width="576" /></p>
 <pre><code>## 
-##  DHARMa nonparametric dispersion test via mean deviance residual fitted
-##  vs. simulated-refitted
+##  DHARMa nonparametric dispersion test via mean deviance residual
+##  fitted vs. simulated-refitted
 ## 
 ## data:  simulationOutput
 ## dispersion = 3.3788, p-value &lt; 2.2e-16
@@ -690,43 +691,41 @@ RR_{Infected\_HG} = \frac{\overline{Infected\_HG}}{\overline{Control}}
 <span class="co"># from the DHARMa package</span>
   simulationOutput &lt;-<span class="st"> </span><span class="kw">simulateResiduals</span>(<span class="dt">fittedModel =</span> fit.nb, <span class="dt">n =</span> n_sim)
   <span class="kw">plot</span>(simulationOutput, <span class="dt">asFactor =</span> F)</code></pre></div>
-<pre><code>## DHARMa::plotResiduals - low number of unique predictor values, consider setting asFactor = T
-## DHARMa::plotResiduals - low number of unique predictor values, consider setting asFactor = T</code></pre>
 <p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/glm-working-in-r-2-1.png" width="576" /></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># link scale</span>
 emm &lt;-<span class="st"> </span><span class="kw">emmeans</span>(fit.nb, <span class="dt">specs=</span><span class="st">&quot;Treatment&quot;</span>)
 emm</code></pre></div>
-<pre><code>##  Treatment     emmean         SE  df asymp.LCL asymp.UCL
-##  Control     1.821408 0.08038710 Inf  1.663852  1.978964
-##  Uninfected  1.504077 0.10930511 Inf  1.289843  1.718311
-##  Infected LG 1.624144 0.13615796 Inf  1.357279  1.891009
-##  Infected HG 2.361096 0.07141332 Inf  2.221128  2.501063
+<pre><code>##  Treatment   emmean     SE  df asymp.LCL asymp.UCL
+##  Control       1.82 0.0804 Inf      1.66      1.98
+##  Uninfected    1.50 0.1093 Inf      1.29      1.72
+##  Infected LG   1.62 0.1362 Inf      1.36      1.89
+##  Infected HG   2.36 0.0714 Inf      2.22      2.50
 ## 
 ## Results are given on the log (not the response) scale. 
 ## Confidence level used: 0.95</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(<span class="kw">contrast</span>(emm, <span class="dt">method=</span><span class="st">&quot;trt.vs.ctrl&quot;</span>, <span class="dt">adjust=</span><span class="st">&quot;none&quot;</span>), <span class="dt">infer=</span><span class="kw">c</span>(<span class="ot">TRUE</span>, <span class="ot">TRUE</span>))</code></pre></div>
-<pre><code>##  contrast                estimate        SE  df  asymp.LCL  asymp.UCL z.ratio
-##  Uninfected - Control  -0.3173308 0.1356823 Inf -0.5832632 -0.0513983  -2.339
-##  Infected LG - Control -0.1972641 0.1581173 Inf -0.5071683  0.1126401  -1.248
-##  Infected HG - Control  0.5396877 0.1075265 Inf  0.3289396  0.7504358   5.019
+<pre><code>##  contrast              estimate    SE  df asymp.LCL asymp.UCL z.ratio
+##  Uninfected - Control    -0.317 0.136 Inf    -0.583   -0.0514 -2.339 
+##  Infected LG - Control   -0.197 0.158 Inf    -0.507    0.1126 -1.248 
+##  Infected HG - Control    0.540 0.108 Inf     0.329    0.7504  5.019 
 ##  p.value
-##   0.0193
-##   0.2122
-##   &lt;.0001
+##  0.0193 
+##  0.2122 
+##  &lt;.0001 
 ## 
 ## Results are given on the log (not the response) scale. 
 ## Confidence level used: 0.95</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># response scale</span>
 emm.response &lt;-<span class="st"> </span><span class="kw">emmeans</span>(fit.nb, <span class="dt">specs=</span><span class="st">&quot;Treatment&quot;</span>, <span class="dt">type=</span><span class="st">&quot;response&quot;</span>)
 <span class="kw">summary</span>(<span class="kw">contrast</span>(emm, <span class="dt">method=</span><span class="st">&quot;trt.vs.ctrl&quot;</span>, <span class="dt">adjust=</span><span class="st">&quot;none&quot;</span>, <span class="dt">type=</span><span class="st">&quot;response&quot;</span>), <span class="dt">infer=</span><span class="kw">c</span>(<span class="ot">TRUE</span>, <span class="ot">TRUE</span>))</code></pre></div>
-<pre><code>##  contrast                  ratio         SE  df asymp.LCL asymp.UCL z.ratio
-##  Uninfected / Control  0.7280899 0.09878893 Inf 0.5580743 0.9499002  -2.339
-##  Infected LG / Control 0.8209738 0.12981015 Inf 0.6021984 1.1192290  -1.248
-##  Infected HG / Control 1.7154710 0.18445860 Inf 1.3894940 2.1179227   5.019
+<pre><code>##  contrast              ratio     SE  df asymp.LCL asymp.UCL z.ratio
+##  Uninfected / Control  0.728 0.0988 Inf     0.558      0.95 -2.339 
+##  Infected LG / Control 0.821 0.1298 Inf     0.602      1.12 -1.248 
+##  Infected HG / Control 1.715 0.1845 Inf     1.389      2.12  5.019 
 ##  p.value
-##   0.0193
-##   0.2122
-##   &lt;.0001
+##  0.0193 
+##  0.2122 
+##  &lt;.0001 
 ## 
 ## Confidence level used: 0.95 
 ## Intervals are back-transformed from the log scale 
@@ -764,11 +763,13 @@ emm.response &lt;-<span class="st"> </span><span class="kw">emmeans</span>(fit.n
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
 <script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
 <script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
 <script>
 gitbook.require(["gitbook"], function(gitbook) {
 gitbook.start({
@@ -779,7 +780,7 @@ gitbook.start({
 "google": false,
 "linkedin": false,
 "weibo": false,
-"instapper": false,
+"instapaper": false,
 "vk": false,
 "all": ["facebook", "google", "twitter", "linkedin", "weibo", "instapaper"]
 },
@@ -791,6 +792,10 @@ gitbook.start({
 "edit": {
 "link": "https://github.com/rstudio/bookdown-demo/edit/master/chapters/52-glm01-counts.Rmd",
 "text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
 },
 "download": ["Walker-elementary-statistical-modeling-draft.pdf", "Walker-elementary-statistical-modeling-draft.epub"],
 "toc": {
@@ -806,9 +811,10 @@ gitbook.start({
     var script = document.createElement("script");
     script.type = "text/javascript";
     var src = "";
-    if (src === "" || src === "true") src = "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML";
-    if (location.protocol !== "file:" && /^https?:/.test(src))
-      src = src.replace(/^https?:/, '');
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
     script.src = src;
     document.getElementsByTagName("head")[0].appendChild(script);
   })();
