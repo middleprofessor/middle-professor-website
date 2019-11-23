@@ -582,15 +582,15 @@ m1_emm &lt;-<span class="st"> </span><span class="kw">emmeans</span>(m1, <span c
 </div>
 <div id="bootstrap-confidence-intervals" class="section level3">
 <h3><span class="header-section-number">12.6.2</span> Bootstrap Confidence Intervals</h3>
-<p>A bootstrap confidence interval is computed from the distribution of a statistic from many sets of re-sampled data. The basic algorith is</p>
+<p>A bootstrap confidence interval is computed from the distribution of a statistic from many sets of re-sampled data. The basic algorithm is</p>
 <ol style="list-style-type: decimal">
-<li>compute the parameter for the observed data, assign this to <span class="math inline">\(\theta_1\)</span></li>
+<li>compute the statistic for the observed data, assign this to <span class="math inline">\(\theta_1\)</span></li>
 <li>resample <span class="math inline">\(n\)</span> rows of the data, with replacement. “with replacement” means to sample from the entire set of data and not the set that has yet to be sampled. <span class="math inline">\(n\)</span> is the original sample size; by resampling <span class="math inline">\(n\)</span> rows with replacement, some rows will be sampled more than once, and some rows will not be sampled at all.</li>
-<li>compute the parameter for the resampled data, assign these to <span class="math inline">\(\theta_{2..m}\)</span></li>
+<li>compute the statistic for the resampled data, assign these to <span class="math inline">\(\theta_{2..m}\)</span></li>
 <li>repeat 2 and 3 <span class="math inline">\(m-1\)</span> times</li>
-<li>given the distribution of <span class="math inline">\(m\)</span> parameter estimates, compute the lower interval as the <span class="math inline">\(\frac{\alpha}{2}\)</span>th percentile and the upper interval as the <span class="math inline">\(1 - \frac{\alpha}{2}\)</span>th percentile. For 95% confidence intervals, these are the 2.5th and 97.5th percentiles.</li>
+<li>Given the distribution of <span class="math inline">\(m\)</span> estimates, compute the lower interval as the <span class="math inline">\(\frac{\alpha}{2}\)</span>th percentile and the upper interval as the <span class="math inline">\(1 - \frac{\alpha}{2}\)</span>th percentile. For 95% confidence intervals, these are the 2.5th and 97.5th percentiles.</li>
 </ol>
-<p>The focal parameter in the Fig. 4A neutrophil count data is the difference in the mean count for the sox10 and wild type groups (the coefficient for <span class="math inline">\(treatment\)</span> in the linear model). The script below, which computes the 95% confidence intervals of this difference, resamples <em>within</em> each group to preserve the original sample size within each group.</p>
+<p>Let’s apply this algorithm to the data from fig4A neutrophil count data in the coefficient table above. The focal statistic in these data is the difference in the mean count for the sox10 and wild type groups (the parameter for <span class="math inline">\(treatment\)</span> in the linear model). The script below, which computes the 95% confidence intervals of this difference, resamples within <strong>strata</strong>, that is, within each group; it does this to preserve the original sample size within each group.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">n_iter &lt;-<span class="st"> </span><span class="dv">5000</span>
 b1 &lt;-<span class="st"> </span><span class="kw">numeric</span>(<span class="dv">5000</span>)
 inc &lt;-<span class="st"> </span><span class="dv">1</span><span class="op">:</span><span class="kw">nrow</span>(fig4a) <span class="co"># the rows for the first iteration are all rows, so this is the observed effect</span>
@@ -603,7 +603,40 @@ inc &lt;-<span class="st"> </span><span class="dv">1</span><span class="op">:</s
 ci &lt;-<span class="st"> </span><span class="kw">quantile</span>(b1, <span class="kw">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>))
 <span class="kw">c</span>(<span class="dt">contrast =</span> b1[<span class="dv">1</span>], ci[<span class="dv">1</span>], ci[<span class="dv">2</span>])</code></pre></div>
 <pre><code>## contrast     2.5%    97.5% 
-## 5.163215 1.891825 8.290870</code></pre>
+## 5.163215 1.988925 8.294278</code></pre>
+<p>The intervals calculated in step 5 are <strong>percentile intervals</strong>. A histogram of the the re-sampled differences helps to visualize the bootstrap (this is a pedagogical tool, not something you would want to publish).</p>
+<div class="figure"><span id="fig:unnamed-chunk-53"></span>
+<img src="Walker-elementary-statistical-modeling-draft_files/figure-html/unnamed-chunk-53-1.png" alt="Distribution of the 5000 resampled estimates of the difference in means between the sox10 and wt treatment levels. The dashed lines are located at the 2.5th and 97.5th percentiles of the distribution." width="576" />
+<p class="caption">
+Figure 12.2: Distribution of the 5000 resampled estimates of the difference in means between the sox10 and wt treatment levels. The dashed lines are located at the 2.5th and 97.5th percentiles of the distribution.
+</p>
+</div>
+<div id="some-r-packages-for-bootstrap-confidence-intervals" class="section level4">
+<h4><span class="header-section-number">12.6.2.1</span> Some R packages for bootstrap confidence intervals</h4>
+<p>Percentile intervals are known to be biased, meaning the intervals are shifted. The <code>boot</code> package computes a bias-corrected interval in addition to a percentile interval. <code>boot</code> is a very powerful bootstrap package but requires the researcher to write functions to compute the parameter of interest. <code>simpleboot</code> provides functions for common analysis that does this for you (in R speak, we say that <code>simpleboot</code> is a “wrapper” to <code>boot</code>). The function <code>simpleboot::two.boot</code> computes a <code>boot</code>-like object that returns, among other values, the distribution of <span class="math inline">\(m\)</span> statistics. The <code>simpleboot</code> object is then be fed to <code>boot::boot.ci</code> to get bias-corrected intervals.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">bs_diff &lt;-<span class="st"> </span><span class="kw">two.boot</span>(fig4a[treatment<span class="op">==</span><span class="st">&quot;sox10&quot;</span>, count],
+                    fig4a[treatment<span class="op">==</span><span class="st">&quot;wt&quot;</span>, count],
+                    mean, 
+                    <span class="dt">R=</span><span class="dv">5000</span>)
+<span class="kw">boot.ci</span>(bs_diff, <span class="dt">type=</span><span class="st">&quot;bca&quot;</span>)</code></pre></div>
+<pre><code>## BOOTSTRAP CONFIDENCE INTERVAL CALCULATIONS
+## Based on 5000 bootstrap replicates
+## 
+## CALL : 
+## boot.ci(boot.out = bs_diff, type = &quot;bca&quot;)
+## 
+## Intervals : 
+## Level       BCa          
+## 95%   ( 1.921,  8.362 )  
+## Calculations and Intervals on Original Scale</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">lmBoot &lt;-<span class="st"> </span><span class="cf">function</span>(lm.object, R, <span class="dt">rows=</span><span class="ot">FALSE</span>){
+  m.residuals &lt;-<span class="st"> </span><span class="kw">residuals</span>(lm.object)
+  
+}
+boot_diff &lt;-<span class="st"> </span><span class="cf">function</span>(data, indices, n_resamples){
+  dt &lt;-<span class="st"> </span>data[indices]
+}</code></pre></div>
+</div>
 </div>
 <div id="permutation-test" class="section level3">
 <h3><span class="header-section-number">12.6.3</span> Permutation test</h3>
@@ -638,7 +671,7 @@ fig4a[, count_perm <span class="op">:</span><span class="er">=</span><span class
 }
 p &lt;-<span class="st"> </span><span class="kw">sum</span>(d <span class="op">&gt;=</span><span class="st"> </span>d[<span class="dv">1</span>])<span class="op">/</span>n_permutations
 p</code></pre></div>
-<pre><code>## [1] 0.0024</code></pre>
+<pre><code>## [1] 0.002</code></pre>
 <div id="some-r-packages-with-permutation-tests." class="section level4">
 <h4><span class="header-section-number">12.6.3.1</span> Some R packages with permutation tests.</h4>
 <p><code>lmPerm::lmp</code> generates permutation p-values for parameters of any kind of linear model. The test statistic is the sum of squares of the term scaled by the residual sum of squares of the model.</p>
