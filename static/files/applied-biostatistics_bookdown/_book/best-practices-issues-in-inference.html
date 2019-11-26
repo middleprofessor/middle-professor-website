@@ -494,6 +494,160 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 </tr>
 </tbody>
 </table>
+<p>If a researcher carries out thousands of tests to “discover” new facts, and uses <span class="math inline">\(p &lt; 0.05\)</span> as evidence of discovery, then what is the frequency of <strong>false discoveries</strong>?</p>
+</div>
+<div id="inflated-effects" class="section level4">
+<h4><span class="header-section-number">12.3.1.2</span> Inflated effects</h4>
+<p>If a researcher caries out many tests, and ranks the effects by magnitude or <em>p</em>-value, then the effect sizes of the largest effects will be inflated. Before explaining why, let’s simulate this using an experiment of allelopathic effects of the invasive garlic mustard (<em>Alliaria petiolata</em>) on gene expression in the native American ginseng (<em>Panax quinquefolius</em>). In the treated group, we have ten pots, each with an American ginseng plant grown in a container with a mustard plant. In the control group, we have ten pots, each with an American ginseng plant grown in a container with another American ginseng. I’ve simulated the response of 10,000 genes. The treatment has a true effect in 10% of the 10,000 genes but most effects are very small.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">set.seed</span>(<span class="dv">4</span>)
+p &lt;-<span class="st"> </span><span class="dv">10</span><span class="op">^</span><span class="dv">4</span> <span class="co"># number of genes</span>
+pt &lt;-<span class="st"> </span><span class="fl">0.1</span><span class="op">*</span>p <span class="co"># number of genes with true response to treatment</span>
+n &lt;-<span class="st"> </span><span class="dv">10</span>
+
+<span class="co"># sample the gene effects from an exponential distribution</span>
+theta &lt;-<span class="st"> </span>.<span class="dv">3</span>
+beta &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="kw">rexp</span>(pt, <span class="dt">rate=</span><span class="dv">1</span><span class="op">/</span>theta),
+          <span class="kw">rep</span>(<span class="dv">0</span>, (p<span class="op">-</span>pt))) <span class="co"># the set of 10,000 effects</span>
+
+<span class="co"># sample the variance of the expression level with a gamma, and set a minimum</span>
+sigma &lt;-<span class="st"> </span><span class="kw">rgamma</span>(p, <span class="dt">shape=</span><span class="dv">2</span>, <span class="dt">scale=</span><span class="dv">1</span><span class="op">/</span><span class="dv">4</span>) <span class="op">+</span><span class="st"> </span><span class="fl">0.58</span>
+<span class="co"># quantile(sigma, c(0.001, 0.1, 0.5, 0.9, 0.999))</span>
+
+Y1 &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">rnorm</span>(n<span class="op">*</span>p, <span class="dt">mean=</span><span class="dv">0</span>, <span class="dt">sd=</span><span class="kw">rep</span>(sigma, <span class="dt">each=</span>n)), <span class="dt">nrow=</span>n)
+Y2 &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">rnorm</span>(n<span class="op">*</span>p, <span class="dt">mean=</span><span class="kw">rep</span>(beta, <span class="dt">each=</span>n), <span class="dt">sd=</span><span class="kw">rep</span>(sigma, <span class="dt">each=</span>n)), <span class="dt">nrow=</span>n) <span class="co"># check</span>
+<span class="co"># use n &lt;- 10^4 to check</span>
+<span class="co"># apply(y2, 2, mean)[1:5]</span>
+<span class="co"># b[1:5]</span>
+x &lt;-<span class="st"> </span><span class="kw">rep</span>(<span class="kw">c</span>(<span class="st">&quot;cn&quot;</span>,<span class="st">&quot;tr&quot;</span>), <span class="dt">each=</span>n)
+bhat &lt;-<span class="st"> </span><span class="kw">numeric</span>(p)
+p.value &lt;-<span class="st"> </span><span class="kw">numeric</span>(p)
+sigma_hat &lt;-<span class="st"> </span><span class="kw">numeric</span>(p)
+<span class="cf">for</span>(j <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>p){
+  fit &lt;-<span class="st"> </span><span class="kw">lm</span>(<span class="kw">c</span>(Y1[,j], Y2[, j]) <span class="op">~</span><span class="st"> </span>x)
+  bhat[j] &lt;-<span class="st"> </span><span class="kw">coef</span>(<span class="kw">summary</span>(fit))[<span class="st">&quot;xtr&quot;</span>, <span class="st">&quot;Estimate&quot;</span>]
+  p.value[j] &lt;-<span class="st"> </span><span class="kw">coef</span>(<span class="kw">summary</span>(fit))[<span class="st">&quot;xtr&quot;</span>, <span class="st">&quot;Pr(&gt;|t|)&quot;</span>]
+  sigma_hat[j] &lt;-<span class="st"> </span><span class="kw">sqrt</span>(<span class="kw">sum</span>(fit<span class="op">$</span>residuals<span class="op">^</span><span class="dv">2</span>)<span class="op">/</span>fit<span class="op">$</span>df.residual)
+}</code></pre></div>
+<div class="figure"><span id="fig:inflation-histogram"></span>
+<img src="Walker-elementary-statistical-modeling-draft_files/figure-html/inflation-histogram-1.png" alt="A histogram of the distribution of the 10,000 effects" width="576" />
+<p class="caption">
+Figure 12.1: A histogram of the distribution of the 10,000 effects
+</p>
+</div>
+<table>
+<caption><span id="tab:unnamed-chunk-49">Table 12.2: </span>The top 10 genes ranked by p-value. Rank is the rank of the true effect, from large to small.</caption>
+<thead>
+<tr class="header">
+<th align="right">effect</th>
+<th align="right">estimate</th>
+<th align="right">sigma</th>
+<th align="right">sd</th>
+<th align="right">p.value</th>
+<th align="right">relative true effect</th>
+<th align="right">rank</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">2.23</td>
+<td align="right">2.67</td>
+<td align="right">0.81</td>
+<td align="right">0.55</td>
+<td align="right">0.0000000</td>
+<td align="right">1.00</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="right">1.59</td>
+<td align="right">1.92</td>
+<td align="right">0.62</td>
+<td align="right">0.57</td>
+<td align="right">0.0000005</td>
+<td align="right">0.71</td>
+<td align="right">7</td>
+</tr>
+<tr class="odd">
+<td align="right">1.46</td>
+<td align="right">1.86</td>
+<td align="right">0.84</td>
+<td align="right">0.71</td>
+<td align="right">0.0000159</td>
+<td align="right">0.65</td>
+<td align="right">10</td>
+</tr>
+<tr class="even">
+<td align="right">1.47</td>
+<td align="right">1.78</td>
+<td align="right">0.83</td>
+<td align="right">0.74</td>
+<td align="right">0.0000409</td>
+<td align="right">0.66</td>
+<td align="right">9</td>
+</tr>
+<tr class="odd">
+<td align="right">0.00</td>
+<td align="right">1.95</td>
+<td align="right">1.10</td>
+<td align="right">0.85</td>
+<td align="right">0.0000717</td>
+<td align="right">0.00</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="right">0.48</td>
+<td align="right">1.26</td>
+<td align="right">0.67</td>
+<td align="right">0.56</td>
+<td align="right">0.0000816</td>
+<td align="right">0.21</td>
+<td align="right">212</td>
+</tr>
+<tr class="odd">
+<td align="right">0.97</td>
+<td align="right">1.32</td>
+<td align="right">0.69</td>
+<td align="right">0.60</td>
+<td align="right">0.0001004</td>
+<td align="right">0.43</td>
+<td align="right">45</td>
+</tr>
+<tr class="even">
+<td align="right">0.54</td>
+<td align="right">1.68</td>
+<td align="right">1.06</td>
+<td align="right">0.78</td>
+<td align="right">0.0001321</td>
+<td align="right">0.24</td>
+<td align="right">173</td>
+</tr>
+<tr class="odd">
+<td align="right">0.00</td>
+<td align="right">2.05</td>
+<td align="right">1.39</td>
+<td align="right">0.96</td>
+<td align="right">0.0001488</td>
+<td align="right">0.00</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="right">0.43</td>
+<td align="right">-1.78</td>
+<td align="right">1.33</td>
+<td align="right">0.84</td>
+<td align="right">0.0001733</td>
+<td align="right">0.19</td>
+<td align="right">244</td>
+</tr>
+</tbody>
+</table>
+<p>The table above lists the top 10 genes ranked by <em>p</em>-value, using the logic that the genes with the smallest <em>p</em> values are the genes that we should pursue with further experiments to understand the system. Some points</p>
+<ol style="list-style-type: decimal">
+<li>Six of the top ten genes with biggest true effects are <em>not</em> on this list. And, in the list are three genes with true effects that have relatively low ranks (column &quot;rank&quot;) <em>and</em> two genes that have no true effect at all. Also in this list is one gene with an estimated effect (-1.78) that is <em>opposite</em> in sign of the true effect (but look at the <em>p</em>-value!)</li>
+<li>The estimate of the effect size for all top-ten genes are inflated. The average estimate for these 10 genes is 1.47 is twice the average true effect for these genes, which is 0.92 (the estimate ).</li>
+<li>The sample standard deviation (sd) for all top-ten genes is less than the true standard deviation (sigma), in some cases substantially.</li>
+</ol>
+<p>The consequence of an inflated estimate of the effect and a deflated estimate of the variance is a large <em>t</em> (not shown) and small <em>p</em>. What is going on is an individual gene’s estimated effect and standard deviation are functions of 1) the true value and 2) a random sampling component. The random component will be symmetric, some effects will be overestimated and some underestimated. When we rank the genes by the estimate of the effect or <em>t</em> or <em>p</em>, some of the genes that have “risen to the top” will be there because of a large, positive, sampling (random) component of the effect and/or a large, negative, sampling component of the variance. Thus some genes’ high rank is artificial in the sense that it is high because of a random fluke. If the experiment were re-done, these genes at the top because of a large, random component would (probably) fall back to a position closer to their expected rank (regression to the mean again).</p>
+<p>In the example here, all genes at the top have inflated estimates of the effect because of the positive, random component. This inflation effect is a function of the signal to noise ratio, which is controled by theta and sigma in the simulation. If theta is increased (try theta=1), or if sigma is decreased, the signal to noise ratio increases (try it and look at the histogram of the new distribution of effects) and both the 1) inflation and the 2) rise to the top phenomenon decrease.</p>
 </div>
 </div>
 <div id="multiple-testing-working-in-r" class="section level3">
@@ -565,10 +719,10 @@ m1.pairs.none &lt;-<span class="st"> </span><span class="kw">contrast</span>(m1.
 <div id="working-in-r-2" class="section level3">
 <h3><span class="header-section-number">12.6.1</span> Working in R</h3>
 <p>The data for demonstrating different strategies are from Fig. 4A of “Data from The enteric nervous system promotes intestinal health by constraining microbiota composition”. There is a single factor with two treatment levels. The response is neutrophil count.</p>
-<div class="figure"><span id="fig:unnamed-chunk-50"></span>
-<img src="Walker-elementary-statistical-modeling-draft_files/figure-html/unnamed-chunk-50-1.png" alt="Distribution of the counts in the wildtype (WT) and sox10 knockout (sox10-) groups. Both groups show a strong right skew, which is common with count data." width="576" />
+<div class="figure"><span id="fig:unnamed-chunk-52"></span>
+<img src="Walker-elementary-statistical-modeling-draft_files/figure-html/unnamed-chunk-52-1.png" alt="Distribution of the counts in the wildtype (WT) and sox10 knockout (sox10-) groups. Both groups show a strong right skew, which is common with count data." width="576" />
 <p class="caption">
-Figure 12.1: Distribution of the counts in the wildtype (WT) and sox10 knockout (sox10-) groups. Both groups show a strong right skew, which is common with count data.
+Figure 12.2: Distribution of the counts in the wildtype (WT) and sox10 knockout (sox10-) groups. Both groups show a strong right skew, which is common with count data.
 </p>
 </div>
 <p>A linear model to estimate the treatment effect and 95% confidence interval.</p>
@@ -603,12 +757,12 @@ inc &lt;-<span class="st"> </span><span class="dv">1</span><span class="op">:</s
 ci &lt;-<span class="st"> </span><span class="kw">quantile</span>(b1, <span class="kw">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>))
 <span class="kw">c</span>(<span class="dt">contrast =</span> b1[<span class="dv">1</span>], ci[<span class="dv">1</span>], ci[<span class="dv">2</span>])</code></pre></div>
 <pre><code>## contrast     2.5%    97.5% 
-## 5.163215 1.988925 8.294278</code></pre>
+## 5.163215 2.077892 8.264316</code></pre>
 <p>The intervals calculated in step 5 are <strong>percentile intervals</strong>. A histogram of the the re-sampled differences helps to visualize the bootstrap (this is a pedagogical tool, not something you would want to publish).</p>
-<div class="figure"><span id="fig:unnamed-chunk-53"></span>
-<img src="Walker-elementary-statistical-modeling-draft_files/figure-html/unnamed-chunk-53-1.png" alt="Distribution of the 5000 resampled estimates of the difference in means between the sox10 and wt treatment levels. The dashed lines are located at the 2.5th and 97.5th percentiles of the distribution." width="576" />
+<div class="figure"><span id="fig:unnamed-chunk-55"></span>
+<img src="Walker-elementary-statistical-modeling-draft_files/figure-html/unnamed-chunk-55-1.png" alt="Distribution of the 5000 resampled estimates of the difference in means between the sox10 and wt treatment levels. The dashed lines are located at the 2.5th and 97.5th percentiles of the distribution." width="576" />
 <p class="caption">
-Figure 12.2: Distribution of the 5000 resampled estimates of the difference in means between the sox10 and wt treatment levels. The dashed lines are located at the 2.5th and 97.5th percentiles of the distribution.
+Figure 12.3: Distribution of the 5000 resampled estimates of the difference in means between the sox10 and wt treatment levels. The dashed lines are located at the 2.5th and 97.5th percentiles of the distribution.
 </p>
 </div>
 <div id="some-r-packages-for-bootstrap-confidence-intervals" class="section level4">
@@ -627,7 +781,7 @@ Figure 12.2: Distribution of the 5000 resampled estimates of the difference in m
 ## 
 ## Intervals : 
 ## Level       BCa          
-## 95%   ( 1.921,  8.362 )  
+## 95%   ( 2.087,  8.410 )  
 ## Calculations and Intervals on Original Scale</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">lmBoot &lt;-<span class="st"> </span><span class="cf">function</span>(lm.object, R, <span class="dt">rows=</span><span class="ot">FALSE</span>){
   m.residuals &lt;-<span class="st"> </span><span class="kw">residuals</span>(lm.object)
