@@ -6906,10 +6906,6 @@ ill-fit.
 \chapter{Best Practices -- Issues in
 Inference}\label{best-practices-issues-in-inference}
 
-\section{t-tests and ANOVA}\label{t-tests-and-anova}
-
-Welch, paired
-
 \section{Power}\label{power}
 
 \subsection{\texorpdfstring{``Types'' of
@@ -7050,7 +7046,8 @@ If a researcher carries out thousands of tests to ``discover'' new
 facts, and uses \(p < 0.05\) as evidence of discovery, then what is the
 frequency of \textbf{false discoveries}?
 
-\subsubsection{Inflated effects}\label{inflated-effects}
+\subsubsection{p-value filter I -- Inflated
+effects}\label{p-value-filter-i-inflated-effects}
 
 If a researcher caries out many tests, and ranks the effects by
 magnitude or \emph{p}-value, then the effect sizes of the largest
@@ -7307,6 +7304,8 @@ sigma is decreased, the signal to noise ratio increases (try it and look
 at the histogram of the new distribution of effects) and both the 1)
 inflation and the 2) rise to the top phenomenon decrease.
 
+\subsubsection{p-hacking}\label{p-hacking}
+
 \subsection{Multiple testing -- working in
 R}\label{multiple-testing-working-in-r}
 
@@ -7384,8 +7383,6 @@ Tukey HSD:
 \end{verbatim}
 
 \subsection{False Discovery Rate}\label{false-discovery-rate-1}
-
-\section{p-hacking}\label{p-hacking}
 
 \section{difference in p is not
 different}\label{difference-in-p-is-not-different}
@@ -7466,10 +7463,10 @@ treatment levels. The response is neutrophil count.
 
 \begin{figure}
 \centering
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-52-1.pdf}
-\caption{\label{fig:unnamed-chunk-52}Distribution of the counts in the
-wildtype (WT) and sox10 knockout (sox10-) groups. Both groups show a
-strong right skew, which is common with count data.}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/best-import-non-normal-counts-1.pdf}
+\caption{\label{fig:best-import-non-normal-counts}Distribution of the counts
+in the wildtype (WT) and sox10 knockout (sox10-) groups. Both groups
+show a strong right skew, which is common with count data.}
 \end{figure}
 
 A linear model to estimate the treatment effect and 95\% confidence
@@ -7479,7 +7476,8 @@ interval.
 \begin{Highlighting}[]
 \NormalTok{m1 <-}\StringTok{ }\KeywordTok{lm}\NormalTok{(count }\OperatorTok{~}\StringTok{ }\NormalTok{treatment, }\DataTypeTok{data=}\NormalTok{fig4a)}
 \NormalTok{m1_emm <-}\StringTok{ }\KeywordTok{emmeans}\NormalTok{(m1, }\DataTypeTok{specs=}\StringTok{"treatment"}\NormalTok{)}
-\KeywordTok{summary}\NormalTok{(}\KeywordTok{contrast}\NormalTok{(m1_emm, }\DataTypeTok{method=}\StringTok{"revpairwise"}\NormalTok{), }\DataTypeTok{infer=}\KeywordTok{c}\NormalTok{(}\OtherTok{TRUE}\NormalTok{, }\OtherTok{TRUE}\NormalTok{))}
+\KeywordTok{summary}\NormalTok{(}\KeywordTok{contrast}\NormalTok{(m1_emm, }\DataTypeTok{method=}\StringTok{"revpairwise"}\NormalTok{),}
+        \DataTypeTok{infer=}\KeywordTok{c}\NormalTok{(}\OtherTok{TRUE}\NormalTok{, }\OtherTok{TRUE}\NormalTok{))}
 \end{Highlighting}
 \end{Shaded}
 
@@ -7556,11 +7554,11 @@ publish).
 
 \begin{figure}
 \centering
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-55-1.pdf}
-\caption{\label{fig:unnamed-chunk-55}Distribution of the 5000 resampled
-estimates of the difference in means between the sox10 and wt treatment
-levels. The dashed lines are located at the 2.5th and 97.5th percentiles
-of the distribution.}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/best-bootstrap-histogram-1.pdf}
+\caption{\label{fig:best-bootstrap-histogram}Distribution of the 5000
+resampled estimates of the difference in means between the sox10 and wt
+treatment levels. The dashed lines are located at the 2.5th and 97.5th
+percentiles of the distribution.}
 \end{figure}
 
 \subsubsection{Some R packages for bootstrap confidence
@@ -7600,18 +7598,6 @@ statistics. The \texttt{simpleboot} object is then be fed to
 ## 95%   ( 2.087,  8.410 )  
 ## Calculations and Intervals on Original Scale
 \end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{lmBoot <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(lm.object, R, }\DataTypeTok{rows=}\OtherTok{FALSE}\NormalTok{)\{}
-\NormalTok{  m.residuals <-}\StringTok{ }\KeywordTok{residuals}\NormalTok{(lm.object)}
-  
-\NormalTok{\}}
-\NormalTok{boot_diff <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(data, indices, n_resamples)\{}
-\NormalTok{  dt <-}\StringTok{ }\NormalTok{data[indices]}
-\NormalTok{\}}
-\end{Highlighting}
-\end{Shaded}
 
 \subsection{Permutation test}\label{permutation-test}
 
@@ -7790,16 +7776,138 @@ and the variance less dependent of the mean. At least two issues arise
   understanding of a system to be based on geometric means?
 \end{enumerate}
 
+\subsubsection{Working in R -- log
+transformations}\label{working-in-r-log-transformations}
+
+If we fit a linear model to a log-transformed response then the
+resulting coeficients and predictions are on the \textbf{log scale}. To
+make interpretation of the analysies easier, we probably want to
+\textbf{back-transform} the coefficients or the predictions to the
+original scale of the response, which is called the \textbf{response
+scale}.
+
 \begin{Shaded}
 \begin{Highlighting}[]
-\KeywordTok{coef}\NormalTok{(}\KeywordTok{summary}\NormalTok{(}\KeywordTok{lm}\NormalTok{(}\KeywordTok{log}\NormalTok{(count }\OperatorTok{+}\StringTok{ }\DecValTok{1}\NormalTok{) }\OperatorTok{~}\StringTok{ }\NormalTok{treatment, }\DataTypeTok{data=}\NormalTok{fig4a)))}
+\NormalTok{m2 <-}\StringTok{ }\KeywordTok{lm}\NormalTok{(}\KeywordTok{log}\NormalTok{(count }\OperatorTok{+}\StringTok{ }\DecValTok{1}\NormalTok{) }\OperatorTok{~}\StringTok{ }\NormalTok{treatment, }\DataTypeTok{data=}\NormalTok{fig4a)}
+\NormalTok{(m2_emm <-}\StringTok{ }\KeywordTok{emmeans}\NormalTok{(m2,}
+                  \DataTypeTok{specs=}\StringTok{"treatment"}\NormalTok{,}
+                  \DataTypeTok{type =} \StringTok{"response"}\NormalTok{))}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
-##                 Estimate Std. Error  t value     Pr(>|t|)
-## (Intercept)    2.2213501  0.1046912 21.21812 3.847185e-50
-## treatmentsox10 0.3882468  0.1252316  3.10023 2.256005e-03
+##  treatment response    SE  df lower.CL upper.CL
+##  wt            8.22 0.965 174      6.5     10.3
+##  sox10        12.59 0.934 174     10.9     14.6
+## 
+## Confidence level used: 0.95 
+## Intervals are back-transformed from the log(mu + 1) scale
+\end{verbatim}
+
+The emmeans package is amazing. Using the argument
+\texttt{type\ =\ "response"} not only backtransforms the means to the
+response scale but also substracts the 1 that was added to all values in
+the model.
+
+What about the effect of treatment on count?
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{summary}\NormalTok{(}\KeywordTok{contrast}\NormalTok{(m2_emm, }
+                 \DataTypeTok{method=}\StringTok{"revpairwise"}\NormalTok{,}
+                 \DataTypeTok{type =} \StringTok{"response"}\NormalTok{),}
+        \DataTypeTok{infer=}\KeywordTok{c}\NormalTok{(}\OtherTok{TRUE}\NormalTok{, }\OtherTok{TRUE}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##  contrast   ratio    SE  df lower.CL upper.CL t.ratio p.value
+##  sox10 / wt  1.47 0.185 174     1.15     1.89 3.100   0.0023 
+## 
+## Confidence level used: 0.95 
+## Intervals are back-transformed from the log scale 
+## Tests are performed on the log scale
+\end{verbatim}
+
+It isn't necessary to backtransform the estimated marginal means prior
+to computing the contrasts as this can be done in the contrast function
+itself. Here, the \texttt{type\ =\ "response"} argument in the contrast
+function is redundant since this was done in the computation of the
+means. But it is transparent so I want it there.
+
+\textbf{Don't skip this paragraph} Look at the value in the ``contrast''
+column -- it is ``sox10 / wt'' and not ``sox10 - wt''. The
+backtransformed effect is a ratio instead of a difference. \textbf{A
+difference on the log scale is a ratio on the response scale} because of
+this equality
+
+\begin{equation}
+\mathrm{exp}(\mu_2-\mu_1) = \frac{\mathrm{exp}(\mu_2)}{\mathrm{exp}(\mu_1)})
+\end{equation}
+
+The interpretation is: If \(b^*\) is the backtransformed effect, then,
+given a one unit increase in \(X\), the expected value of the response
+increases \(b^*\times\). For a categorical \(X\), this means the
+backtransformed effect is the ratio of backtransformed means -- its what
+you have to multiply the mean of the reference by to get the mean of the
+treated group. And, because it is the response that is log-transformed,
+these means are not arithemetic means but geometric means. Here, this is
+complicated by the model -- the response is not a simple log
+transformation but log(response + 1). It is easy enough to get the
+geometric mean of the treated group -- multiply the backtransformed
+intercept by the backtransformed coefficient and then subtract 1 -- but
+because of this subtraction of 1, the interpretation of the
+backtransformed effect is awkward at best (recall that I told you that a
+linear model of a log transformed response, and especially the log of
+the response plus one, leads to difficulty in interpreting the effects).
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# backtransformed control mean -- a geometric mean}
+\NormalTok{mu_}\DecValTok{1}\NormalTok{ <-}\StringTok{ }\KeywordTok{exp}\NormalTok{(}\KeywordTok{coef}\NormalTok{(m2)[}\DecValTok{1}\NormalTok{])}
+
+\CommentTok{# backtransformed effect}
+\NormalTok{b1_star <-}\StringTok{ }\KeywordTok{exp}\NormalTok{(}\KeywordTok{coef}\NormalTok{(m2)[}\DecValTok{2}\NormalTok{])}
+
+\CommentTok{# product minus 1}
+\NormalTok{mu_}\DecValTok{1}\OperatorTok{*}\NormalTok{b1_star }\OperatorTok{-}\DecValTok{1}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## (Intercept) 
+##    12.59357
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# geometric mean of treatment group}
+\NormalTok{n <-}\StringTok{ }\KeywordTok{length}\NormalTok{(fig4a[treatment}\OperatorTok{==}\StringTok{"sox10"}\NormalTok{, count])}
+\KeywordTok{exp}\NormalTok{(}\KeywordTok{mean}\NormalTok{(}\KeywordTok{log}\NormalTok{(fig4a[treatment}\OperatorTok{==}\StringTok{"sox10"}\NormalTok{, count}\OperatorTok{+}\DecValTok{1}\NormalTok{])))}\OperatorTok{-}\DecValTok{1}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 12.59357
+\end{verbatim}
+
+Back-transformed effect
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{m1 <-}\StringTok{ }\KeywordTok{lm}\NormalTok{(count }\OperatorTok{~}\StringTok{ }\NormalTok{treatment, }\DataTypeTok{data=}\NormalTok{fig4a)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{exp}\NormalTok{(}\KeywordTok{coef}\NormalTok{(m2)) }
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##    (Intercept) treatmentsox10 
+##       9.219770       1.474394
 \end{verbatim}
 
 \subsection{Performance of parametric tests and
@@ -8256,7 +8364,7 @@ intervals}\label{adding-bootstrap-intervals}
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-66-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-58-1.pdf}
 
 \subsection{Adding modeled error
 intervals}\label{adding-modeled-error-intervals}
@@ -8302,7 +8410,7 @@ effect}\label{modeled-error-intervals-of-the-effect}
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-68-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-60-1.pdf}
 
 \subsubsection{Modeled error intervals of the
 mean}\label{modeled-error-intervals-of-the-mean}
@@ -8324,7 +8432,7 @@ mean}\label{modeled-error-intervals-of-the-mean}
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-69-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-61-1.pdf}
 
 Note that the CIs are asymmetric about the mean (and these modeled CIs
 will never include negative values for count data).
@@ -8341,7 +8449,7 @@ The ggplots are combined using the package \texttt{cowplot}
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-70-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-62-1.pdf}
 
 \subsection{Adding p-values}\label{adding-p-values}
 
@@ -8378,7 +8486,7 @@ is returning.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-71-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-63-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -8483,7 +8591,7 @@ function from the emmeans package.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-74-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-66-1.pdf}
 
 \subsection{Interaction plot}\label{interaction-plot}
 
@@ -8503,7 +8611,7 @@ function from the emmeans package.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-75-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-67-1.pdf}
 
 \chapter*{\texorpdfstring{Part IV: More than one \(X\) -- Multivariable
 Models}{Part IV: More than one X -- Multivariable Models}}\label{part-iv-more-than-one-x-multivariable-models}
@@ -8632,7 +8740,7 @@ ldlc.r = \beta_0 + \beta_1 treatment + \varepsilon
 
 where \(ldlc.r\) is the set of residuals.
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-77-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-69-1.pdf}
 
 Now the estimate of the effect is -4.7 mg/dL blood and the SE is only
 0.88. In this two-stage analysis (stage 1: fit ldlc \textasciitilde{}
@@ -8660,11 +8768,11 @@ ldlc = \beta_0 + \beta_1 age + \beta_2 treatment + \varepsilon
 
 which results in the Harrell Plot
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-78-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-70-1.pdf}
 
 and the coefficient table
 
-\label{tab:unnamed-chunk-79}Coefficients of the model that includes the
+\label{tab:unnamed-chunk-71}Coefficients of the model that includes the
 covariate age.
 
 Estimate
@@ -10211,7 +10319,7 @@ design}\label{bar-plot-with-uniform-coloring-poorly-communicate-the-factorial-de
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-89-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-81-1.pdf}
 
 \subsubsection{Plots that communicate the factorial
 design}\label{plots-that-communicate-the-factorial-design}
@@ -10387,7 +10495,7 @@ reflect our pre-conceived scientific model.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-90-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-82-1.pdf}
 
 This effects plot shows the four simple effects, the single interaction
 (Temp18:CO21100), and their 95\% confidence intervals. In the original
@@ -10413,7 +10521,7 @@ to small) to have much confidence in the size of the interaction effect.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-91-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-83-1.pdf}
 
 The effects and interaction plot are combined into a single plot.
 
@@ -12819,7 +12927,7 @@ statistic is \(df\).
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-94-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-86-1.pdf}
 
 \begin{verbatim}
 ## 
