@@ -861,79 +861,114 @@ j
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">folder &lt;-<span class="st"> &quot;Data from When environmental factors become stressors- interactive effects of vermetid gastropods and sedimentation on corals&quot;</span>
 fn &lt;-<span class="st"> &quot;VermetidSedimentData_ZillGilOsenberg_DRYAD.xlsx&quot;</span>
 sheet_i &lt;-<span class="st"> &quot;Coral Growth Rate Data&quot;</span>
-file_path &lt;-<span class="st"> </span><span class="kw">paste</span>(data_path, folder, fn, <span class="dt">sep=</span><span class="st">&quot;/&quot;</span>)
-coral &lt;-<span class="st"> </span><span class="kw">data.table</span>(<span class="kw">read_excel</span>(file_path, <span class="dt">sheet=</span>sheet_i))
-<span class="kw">setnames</span>(coral, <span class="dt">old=</span><span class="kw">colnames</span>(coral), <span class="dt">new=</span><span class="kw">clean_label</span>(<span class="kw">colnames</span>(coral)))
-coral[, Vermetids<span class="op">:</span><span class="er">=</span><span class="kw">factor</span>(Vermetids)]
-coral[, Sediment<span class="op">:</span><span class="er">=</span><span class="kw">factor</span>(Sediment)]</code></pre></div>
-<p><code>lmer</code> adds the random component to the formula. <code>lme</code> adds the random component as a separate argument</p>
+file_path &lt;-<span class="st"> </span><span class="kw">here</span>(data_path, folder, fn)
+coral &lt;-<span class="st"> </span><span class="kw">read_excel</span>(file_path, <span class="dt">sheet=</span>sheet_i) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">clean_names</span>() <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">data.table</span>()
+coral[, vermetids<span class="op">:</span><span class="er">=</span><span class="kw">factor</span>(vermetids)]
+coral[, sediment<span class="op">:</span><span class="er">=</span><span class="kw">factor</span>(sediment)]
+
+<span class="co"># recode levels of factors since 0 and 1</span>
+coral[, vermetids <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">fct_recode</span>(vermetids,
+                                <span class="dt">absent =</span> <span class="st">&quot;0&quot;</span>,
+                                <span class="dt">present =</span> <span class="st">&quot;1&quot;</span>)]
+coral[, sediment <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">fct_recode</span>(sediment,
+                                <span class="dt">control =</span> <span class="st">&quot;0&quot;</span>,
+                                <span class="dt">addition =</span> <span class="st">&quot;1&quot;</span>)]</code></pre></div>
+<div id="fitting-models" class="section level4">
+<h4><span class="header-section-number">19.8.1.1</span> Fitting models</h4>
+<p>Two common packages for fitting linear mixed models are “nlme” and “lme4.</p>
+<ol style="list-style-type: decimal">
+<li><code>lmer</code> adds the random component to the formula <code>y ~ treatment + (1|block)</code>.</li>
+<li><code>lme</code> adds the random component as a separate argument: <code>y ~ treatment, random = ~1|block</code>.</li>
+<li><code>lmer</code> is useful for models with crossed random factors</li>
+<li><code>lme</code> is useful for models with a specified covariance structure</li>
+</ol>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># to reproduce the results</span>
 <span class="co"># observation 2 should be excluded from the analysis</span>
 inc &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">3</span><span class="op">:</span><span class="kw">nrow</span>(coral))
 
 <span class="co"># specification using lmer</span>
 <span class="co"># random intercept only</span>
-fit.lmer1 &lt;-<span class="st"> </span><span class="kw">lmer</span>(GrowthRate <span class="op">~</span><span class="st"> </span>Vermetids<span class="op">*</span>Sediment <span class="op">+</span><span class="st"> </span>(<span class="dv">1</span><span class="op">|</span>Block), <span class="dt">data=</span>coral[inc])
+m1.lmer &lt;-<span class="st"> </span><span class="kw">lmer</span>(growth_rate <span class="op">~</span><span class="st"> </span>vermetids<span class="op">*</span>sediment <span class="op">+</span><span class="st"> </span>(<span class="dv">1</span><span class="op">|</span>block), <span class="dt">data=</span>coral[inc])
 <span class="co"># random intercept and slope</span>
-fit.lmer2 &lt;-<span class="st"> </span><span class="kw">lmer</span>(GrowthRate <span class="op">~</span><span class="st"> </span>Vermetids<span class="op">*</span>Sediment <span class="op">+</span><span class="st"> </span>(Vermetids<span class="op">|</span>Block) <span class="op">+</span><span class="st"> </span>(Sediment<span class="op">|</span>Block), <span class="dt">data=</span>coral[inc])</code></pre></div>
-<pre><code>## boundary (singular) fit: see ?isSingular</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># random intercept and slope</span>
-fit.lmer3 &lt;-<span class="st"> </span><span class="kw">lmer</span>(GrowthRate <span class="op">~</span><span class="st"> </span>Vermetids<span class="op">*</span>Sediment <span class="op">+</span><span class="st"> </span>(Vermetids<span class="op">|</span>Block) <span class="op">+</span><span class="st"> </span>(Sediment<span class="op">|</span>Block), <span class="dt">data=</span>coral[inc])</code></pre></div>
-<pre><code>## boundary (singular) fit: see ?isSingular</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># to include the interaction as a random effect we&#39;d need subsampling within each factorial treatment combination</span>
+m2.lmer &lt;-<span class="st"> </span><span class="kw">lmer</span>(growth_rate <span class="op">~</span><span class="st"> </span>vermetids<span class="op">*</span>sediment <span class="op">+</span><span class="st"> </span>(vermetids<span class="op">|</span>block) <span class="op">+</span><span class="st"> </span>(sediment<span class="op">|</span>block), <span class="dt">data=</span>coral[inc])
+<span class="co"># to include the interaction as a random effect we&#39;d need subsampling within each factorial treatment combination</span>
 
 <span class="co"># specification using lme</span>
-fit.lme &lt;-<span class="st"> </span><span class="kw">lme</span>(GrowthRate <span class="op">~</span><span class="st"> </span>Vermetids<span class="op">*</span>Sediment, <span class="dt">random=</span> <span class="op">~</span><span class="dv">1</span><span class="op">|</span>Block, <span class="dt">data=</span>coral[inc])
-
-<span class="co"># results using lmer fit</span>
-<span class="kw">coefficients</span>(fit.lmer1)</code></pre></div>
-<pre><code>## $Block
-##    (Intercept)  Vermetids1 Sediment1 Vermetids1:Sediment1
-## 1     1.205018 0.004655556 0.2852023           -0.7735467
-## 2     1.336068 0.004655556 0.2852023           -0.7735467
-## 3     1.213966 0.004655556 0.2852023           -0.7735467
-## 4     1.262805 0.004655556 0.2852023           -0.7735467
-## 6     1.320787 0.004655556 0.2852023           -0.7735467
-## 7     1.201242 0.004655556 0.2852023           -0.7735467
-## 8     1.314441 0.004655556 0.2852023           -0.7735467
-## 9     1.199831 0.004655556 0.2852023           -0.7735467
-## 10    1.361541 0.004655556 0.2852023           -0.7735467
-## 
-## attr(,&quot;class&quot;)
-## [1] &quot;coef.mer&quot;</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">coefficients</span>(<span class="kw">summary</span>(fit.lmer1))</code></pre></div>
-<pre><code>##                          Estimate Std. Error       df     t value
-## (Intercept)           1.268411111  0.1541680 30.42768  8.22745788
-## Vermetids1            0.004655556  0.2091398 22.94243  0.02226049
-## Sediment1             0.285202305  0.2160126 23.53130  1.32030428
-## Vermetids1:Sediment1 -0.773546750  0.3006674 23.24638 -2.57276556
-##                          Pr(&gt;|t|)
-## (Intercept)          3.129900e-09
-## Vermetids1           9.824326e-01
-## Sediment1            1.994327e-01
-## Vermetids1:Sediment1 1.693404e-02</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fit.emm &lt;-<span class="st"> </span><span class="kw">emmeans</span>(fit.lmer1, <span class="dt">specs=</span><span class="kw">c</span>(<span class="st">&quot;Vermetids&quot;</span>, <span class="st">&quot;Sediment&quot;</span>))
-<span class="kw">summary</span>(<span class="kw">contrast</span>(fit.emm, <span class="dt">method=</span><span class="st">&quot;revpairwise&quot;</span>, <span class="dt">adjust=</span><span class="st">&quot;none&quot;</span>), <span class="dt">infer=</span><span class="kw">c</span>(<span class="ot">TRUE</span>, <span class="ot">TRUE</span>))</code></pre></div>
-<pre><code>##  contrast  estimate    SE   df lower.CL upper.CL t.ratio p.value
-##  1,0 - 0,0  0.00466 0.209 23.0   -0.428   0.4373  0.022  0.9824 
-##  0,1 - 0,0  0.28520 0.217 23.6   -0.163   0.7330  1.316  0.2009 
-##  0,1 - 1,0  0.28055 0.217 23.6   -0.167   0.7283  1.294  0.2081 
-##  1,1 - 0,0 -0.48369 0.209 23.0   -0.916  -0.0511 -2.313  0.0300 
-##  1,1 - 1,0 -0.48834 0.209 23.0   -0.921  -0.0557 -2.335  0.0286 
-##  1,1 - 0,1 -0.76889 0.217 23.6   -1.217  -0.3211 -3.547  0.0017 
+m1.lme &lt;-<span class="st"> </span><span class="kw">lme</span>(growth_rate <span class="op">~</span><span class="st"> </span>vermetids<span class="op">*</span>sediment, <span class="dt">random=</span> <span class="op">~</span><span class="dv">1</span><span class="op">|</span>block, <span class="dt">data=</span>coral[inc])</code></pre></div>
+<p>The conditional effects of m1 (fit by lmer) are</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># results using lmer fit</span>
+fit.emm &lt;-<span class="st"> </span><span class="kw">emmeans</span>(m1.lmer, <span class="dt">specs=</span><span class="kw">c</span>(<span class="st">&quot;vermetids&quot;</span>, <span class="st">&quot;sediment&quot;</span>))
+<span class="kw">summary</span>(<span class="kw">contrast</span>(fit.emm, 
+                 <span class="dt">method =</span> <span class="st">&quot;revpairwise&quot;</span>, 
+                 <span class="dt">simple =</span> <span class="st">&quot;each&quot;</span>,
+                 <span class="dt">combine =</span> <span class="ot">TRUE</span>,
+                 <span class="dt">adjust=</span><span class="st">&quot;none&quot;</span>),
+        <span class="dt">infer=</span><span class="kw">c</span>(<span class="ot">TRUE</span>, <span class="ot">TRUE</span>))</code></pre></div>
+<pre><code>##  sediment vermetids contrast           estimate    SE   df lower.CL
+##  control  .         present - absent    0.00466 0.209 23.0   -0.428
+##  addition .         present - absent   -0.76889 0.217 23.6   -1.217
+##  .        absent    addition - control  0.28520 0.217 23.6   -0.163
+##  .        present   addition - control -0.48834 0.209 23.0   -0.921
+##  upper.CL t.ratio p.value
+##    0.4373  0.022  0.9824 
+##   -0.3211 -3.547  0.0017 
+##    0.7330  1.316  0.2009 
+##   -0.0557 -2.335  0.0286 
 ## 
 ## Degrees-of-freedom method: kenward-roger 
 ## Confidence level used: 0.95</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fit.lmer1.ml &lt;-<span class="st"> </span><span class="kw">lmer</span>(GrowthRate <span class="op">~</span><span class="st"> </span>Vermetids<span class="op">*</span>Sediment <span class="op">+</span><span class="st"> </span>(<span class="dv">1</span><span class="op">|</span>Block), <span class="dt">data=</span>coral[inc], <span class="dt">REML=</span><span class="ot">FALSE</span>)
-<span class="co"># random intercept and slope</span>
-fit.lmer3.ml &lt;-<span class="st"> </span><span class="kw">lmer</span>(GrowthRate <span class="op">~</span><span class="st"> </span>Vermetids<span class="op">*</span>Sediment <span class="op">+</span><span class="st"> </span>(Vermetids<span class="op">|</span>Block) <span class="op">+</span><span class="st"> </span>(Sediment<span class="op">|</span>Block), <span class="dt">data=</span>coral[inc], <span class="dt">REML=</span><span class="ot">FALSE</span>)</code></pre></div>
-<pre><code>## boundary (singular) fit: see ?isSingular</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">AIC</span>(fit.lmer1.ml)</code></pre></div>
-<pre><code>## [1] 52.80349</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">AIC</span>(fit.lmer3.ml)</code></pre></div>
-<pre><code>## [1] 61.04197</code></pre>
-<p>The formula for <code>lmer</code></p>
+<p>There is no “correct” way to compute the degrees of freedom for inferential statistics (SE, CIs, <em>p</em>-values). Two common choices are “Kenward-Roger” and “Satterthwaite”. There is little empirical reason to vastly prefer one over the other (they each seem to perform a wee bit bitter under different conditions).</p>
+<p>In <code>emmeans</code>, the Kenward-Roger degrees of freedom are the default. For Satterthwaite, use the <code>lmer.df</code> argument:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fit.emm &lt;-<span class="st"> </span><span class="kw">emmeans</span>(m1.lmer, 
+                   <span class="dt">specs=</span><span class="kw">c</span>(<span class="st">&quot;vermetids&quot;</span>, <span class="st">&quot;sediment&quot;</span>),
+                   <span class="dt">lmer.df =</span> <span class="st">&quot;satterthwaite&quot;</span>)
+<span class="kw">summary</span>(<span class="kw">contrast</span>(fit.emm, 
+                 <span class="dt">method =</span> <span class="st">&quot;revpairwise&quot;</span>, 
+                 <span class="dt">simple =</span> <span class="st">&quot;each&quot;</span>,
+                 <span class="dt">combine =</span> <span class="ot">TRUE</span>,
+                 <span class="dt">adjust=</span><span class="st">&quot;none&quot;</span>),
+        <span class="dt">infer=</span><span class="kw">c</span>(<span class="ot">TRUE</span>, <span class="ot">TRUE</span>))</code></pre></div>
+<pre><code>##  sediment vermetids contrast           estimate    SE   df lower.CL
+##  control  .         present - absent    0.00466 0.209 22.9   -0.428
+##  addition .         present - absent   -0.76889 0.216 23.5   -1.215
+##  .        absent    addition - control  0.28520 0.216 23.5   -0.161
+##  .        present   addition - control -0.48834 0.209 22.9   -0.921
+##  upper.CL t.ratio p.value
+##    0.4374  0.022  0.9824 
+##   -0.3226 -3.559  0.0016 
+##    0.7315  1.320  0.1994 
+##   -0.0556 -2.335  0.0287 
+## 
+## Degrees-of-freedom method: satterthwaite 
+## Confidence level used: 0.95</code></pre>
+<p>If you want to compute the coefficient table or an ANOVA, lmer does not output test statistics. To get test statistics, you have to load the library “lmerTest” (which automatically loads “lme4”). With <code>lmerTest</code>, the Satterthwaite degrees of freedom are the default. For Kenward-Roger, use the <code>ddf</code> argument in either <code>summary()</code> (for the coefficients) or <code>anova()</code> (for ANOVA).</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">coef</span>(<span class="kw">summary</span>(m1.lmer)) <span class="co"># default is Satterthwaite</span></code></pre></div>
+<pre><code>##                                       Estimate Std. Error       df
+## (Intercept)                        1.268411111  0.1541680 30.42768
+## vermetidspresent                   0.004655556  0.2091398 22.94243
+## sedimentaddition                   0.285202305  0.2160126 23.53130
+## vermetidspresent:sedimentaddition -0.773546750  0.3006674 23.24638
+##                                       t value     Pr(&gt;|t|)
+## (Intercept)                        8.22745788 3.129900e-09
+## vermetidspresent                   0.02226049 9.824326e-01
+## sedimentaddition                   1.32030428 1.994327e-01
+## vermetidspresent:sedimentaddition -2.57276556 1.693404e-02</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">coef</span>(<span class="kw">summary</span>(m1.lmer, <span class="dt">ddf=</span><span class="st">&quot;Kenward-Roger&quot;</span>))</code></pre></div>
+<pre><code>##                                       Estimate Std. Error       df
+## (Intercept)                        1.268411111  0.1541680 30.43671
+## vermetidspresent                   0.004655556  0.2091398 23.03604
+## sedimentaddition                   0.285202305  0.2167687 23.62024
+## vermetidspresent:sedimentaddition -0.773546750  0.3012111 23.33762
+##                                       t value     Pr(&gt;|t|)
+## (Intercept)                        8.22745788 3.122797e-09
+## vermetidspresent                   0.02226049 9.824319e-01
+## sedimentaddition                   1.31569876 2.009032e-01
+## vermetidspresent:sedimentaddition -2.56812158 1.708128e-02</code></pre>
+<p>Compare the output from emmeans and <code>coef(summary())</code> using the different methods for computing the df.</p>
 
+</div>
 </div>
 </div>
 </div>

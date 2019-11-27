@@ -124,7 +124,7 @@
   \postauthor{\par}
       \predate{\centering\large\emph}
   \postdate{\par}
-    \date{Draft: 2019-11-26}
+    \date{Draft: 2019-11-27}
 
 \usepackage{booktabs}
 \usepackage{amsthm}
@@ -7278,7 +7278,7 @@ Some points
 \item
   The estimate of the effect size for all top-ten genes are inflated.
   The average estimate for these 10 genes is 1.47 while the average true
-  effect for these genes, which is 0.92 (the estimate ).
+  effect for these 10 genes is 0.92 (the estimate ).
 \item
   The sample standard deviation (sd) for all top-ten genes is less than
   the true standard deviation (sigma), in some cases substantially.
@@ -13657,16 +13657,43 @@ gastropods and sedimentation on corals. Biology letters, 13(3),
 \NormalTok{folder <-}\StringTok{ "Data from When environmental factors become stressors- interactive effects of vermetid gastropods and sedimentation on corals"}
 \NormalTok{fn <-}\StringTok{ "VermetidSedimentData_ZillGilOsenberg_DRYAD.xlsx"}
 \NormalTok{sheet_i <-}\StringTok{ "Coral Growth Rate Data"}
-\NormalTok{file_path <-}\StringTok{ }\KeywordTok{paste}\NormalTok{(data_path, folder, fn, }\DataTypeTok{sep=}\StringTok{"/"}\NormalTok{)}
-\NormalTok{coral <-}\StringTok{ }\KeywordTok{data.table}\NormalTok{(}\KeywordTok{read_excel}\NormalTok{(file_path, }\DataTypeTok{sheet=}\NormalTok{sheet_i))}
-\KeywordTok{setnames}\NormalTok{(coral, }\DataTypeTok{old=}\KeywordTok{colnames}\NormalTok{(coral), }\DataTypeTok{new=}\KeywordTok{clean_label}\NormalTok{(}\KeywordTok{colnames}\NormalTok{(coral)))}
-\NormalTok{coral[, Vermetids}\OperatorTok{:}\ErrorTok{=}\KeywordTok{factor}\NormalTok{(Vermetids)]}
-\NormalTok{coral[, Sediment}\OperatorTok{:}\ErrorTok{=}\KeywordTok{factor}\NormalTok{(Sediment)]}
+\NormalTok{file_path <-}\StringTok{ }\KeywordTok{here}\NormalTok{(data_path, folder, fn)}
+\NormalTok{coral <-}\StringTok{ }\KeywordTok{read_excel}\NormalTok{(file_path, }\DataTypeTok{sheet=}\NormalTok{sheet_i) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{clean_names}\NormalTok{() }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{data.table}\NormalTok{()}
+\NormalTok{coral[, vermetids}\OperatorTok{:}\ErrorTok{=}\KeywordTok{factor}\NormalTok{(vermetids)]}
+\NormalTok{coral[, sediment}\OperatorTok{:}\ErrorTok{=}\KeywordTok{factor}\NormalTok{(sediment)]}
+
+\CommentTok{# recode levels of factors since 0 and 1}
+\NormalTok{coral[, vermetids }\OperatorTok{:}\ErrorTok{=}\StringTok{ }\KeywordTok{fct_recode}\NormalTok{(vermetids,}
+                                \DataTypeTok{absent =} \StringTok{"0"}\NormalTok{,}
+                                \DataTypeTok{present =} \StringTok{"1"}\NormalTok{)]}
+\NormalTok{coral[, sediment }\OperatorTok{:}\ErrorTok{=}\StringTok{ }\KeywordTok{fct_recode}\NormalTok{(sediment,}
+                                \DataTypeTok{control =} \StringTok{"0"}\NormalTok{,}
+                                \DataTypeTok{addition =} \StringTok{"1"}\NormalTok{)]}
 \end{Highlighting}
 \end{Shaded}
 
-\texttt{lmer} adds the random component to the formula. \texttt{lme}
-adds the random component as a separate argument
+\subsubsection{Fitting models}\label{fitting-models}
+
+Two common packages for fitting linear mixed models are ``nlme'' and
+``lme4.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \texttt{lmer} adds the random component to the formula
+  \texttt{y\ \textasciitilde{}\ treatment\ +\ (1\textbar{}block)}.
+\item
+  \texttt{lme} adds the random component as a separate argument:
+  \texttt{y\ \textasciitilde{}\ treatment,\ random\ =\ \textasciitilde{}1\textbar{}block}.
+\item
+  \texttt{lmer} is useful for models with crossed random factors
+\item
+  \texttt{lme} is useful for models with a specified covariance
+  structure
+\end{enumerate}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -13676,128 +13703,134 @@ adds the random component as a separate argument
 
 \CommentTok{# specification using lmer}
 \CommentTok{# random intercept only}
-\NormalTok{fit.lmer1 <-}\StringTok{ }\KeywordTok{lmer}\NormalTok{(GrowthRate }\OperatorTok{~}\StringTok{ }\NormalTok{Vermetids}\OperatorTok{*}\NormalTok{Sediment }\OperatorTok{+}\StringTok{ }\NormalTok{(}\DecValTok{1}\OperatorTok{|}\NormalTok{Block), }\DataTypeTok{data=}\NormalTok{coral[inc])}
+\NormalTok{m1.lmer <-}\StringTok{ }\KeywordTok{lmer}\NormalTok{(growth_rate }\OperatorTok{~}\StringTok{ }\NormalTok{vermetids}\OperatorTok{*}\NormalTok{sediment }\OperatorTok{+}\StringTok{ }\NormalTok{(}\DecValTok{1}\OperatorTok{|}\NormalTok{block), }\DataTypeTok{data=}\NormalTok{coral[inc])}
 \CommentTok{# random intercept and slope}
-\NormalTok{fit.lmer2 <-}\StringTok{ }\KeywordTok{lmer}\NormalTok{(GrowthRate }\OperatorTok{~}\StringTok{ }\NormalTok{Vermetids}\OperatorTok{*}\NormalTok{Sediment }\OperatorTok{+}\StringTok{ }\NormalTok{(Vermetids}\OperatorTok{|}\NormalTok{Block) }\OperatorTok{+}\StringTok{ }\NormalTok{(Sediment}\OperatorTok{|}\NormalTok{Block), }\DataTypeTok{data=}\NormalTok{coral[inc])}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-## boundary (singular) fit: see ?isSingular
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{# random intercept and slope}
-\NormalTok{fit.lmer3 <-}\StringTok{ }\KeywordTok{lmer}\NormalTok{(GrowthRate }\OperatorTok{~}\StringTok{ }\NormalTok{Vermetids}\OperatorTok{*}\NormalTok{Sediment }\OperatorTok{+}\StringTok{ }\NormalTok{(Vermetids}\OperatorTok{|}\NormalTok{Block) }\OperatorTok{+}\StringTok{ }\NormalTok{(Sediment}\OperatorTok{|}\NormalTok{Block), }\DataTypeTok{data=}\NormalTok{coral[inc])}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-## boundary (singular) fit: see ?isSingular
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
+\NormalTok{m2.lmer <-}\StringTok{ }\KeywordTok{lmer}\NormalTok{(growth_rate }\OperatorTok{~}\StringTok{ }\NormalTok{vermetids}\OperatorTok{*}\NormalTok{sediment }\OperatorTok{+}\StringTok{ }\NormalTok{(vermetids}\OperatorTok{|}\NormalTok{block) }\OperatorTok{+}\StringTok{ }\NormalTok{(sediment}\OperatorTok{|}\NormalTok{block), }\DataTypeTok{data=}\NormalTok{coral[inc])}
 \CommentTok{# to include the interaction as a random effect we'd need subsampling within each factorial treatment combination}
 
 \CommentTok{# specification using lme}
-\NormalTok{fit.lme <-}\StringTok{ }\KeywordTok{lme}\NormalTok{(GrowthRate }\OperatorTok{~}\StringTok{ }\NormalTok{Vermetids}\OperatorTok{*}\NormalTok{Sediment, }\DataTypeTok{random=} \OperatorTok{~}\DecValTok{1}\OperatorTok{|}\NormalTok{Block, }\DataTypeTok{data=}\NormalTok{coral[inc])}
+\NormalTok{m1.lme <-}\StringTok{ }\KeywordTok{lme}\NormalTok{(growth_rate }\OperatorTok{~}\StringTok{ }\NormalTok{vermetids}\OperatorTok{*}\NormalTok{sediment, }\DataTypeTok{random=} \OperatorTok{~}\DecValTok{1}\OperatorTok{|}\NormalTok{block, }\DataTypeTok{data=}\NormalTok{coral[inc])}
+\end{Highlighting}
+\end{Shaded}
 
+The conditional effects of m1 (fit by lmer) are
+
+\begin{Shaded}
+\begin{Highlighting}[]
 \CommentTok{# results using lmer fit}
-\KeywordTok{coefficients}\NormalTok{(fit.lmer1)}
+\NormalTok{fit.emm <-}\StringTok{ }\KeywordTok{emmeans}\NormalTok{(m1.lmer, }\DataTypeTok{specs=}\KeywordTok{c}\NormalTok{(}\StringTok{"vermetids"}\NormalTok{, }\StringTok{"sediment"}\NormalTok{))}
+\KeywordTok{summary}\NormalTok{(}\KeywordTok{contrast}\NormalTok{(fit.emm, }
+                 \DataTypeTok{method =} \StringTok{"revpairwise"}\NormalTok{, }
+                 \DataTypeTok{simple =} \StringTok{"each"}\NormalTok{,}
+                 \DataTypeTok{combine =} \OtherTok{TRUE}\NormalTok{,}
+                 \DataTypeTok{adjust=}\StringTok{"none"}\NormalTok{),}
+        \DataTypeTok{infer=}\KeywordTok{c}\NormalTok{(}\OtherTok{TRUE}\NormalTok{, }\OtherTok{TRUE}\NormalTok{))}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
-## $Block
-##    (Intercept)  Vermetids1 Sediment1 Vermetids1:Sediment1
-## 1     1.205018 0.004655556 0.2852023           -0.7735467
-## 2     1.336068 0.004655556 0.2852023           -0.7735467
-## 3     1.213966 0.004655556 0.2852023           -0.7735467
-## 4     1.262805 0.004655556 0.2852023           -0.7735467
-## 6     1.320787 0.004655556 0.2852023           -0.7735467
-## 7     1.201242 0.004655556 0.2852023           -0.7735467
-## 8     1.314441 0.004655556 0.2852023           -0.7735467
-## 9     1.199831 0.004655556 0.2852023           -0.7735467
-## 10    1.361541 0.004655556 0.2852023           -0.7735467
-## 
-## attr(,"class")
-## [1] "coef.mer"
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{coefficients}\NormalTok{(}\KeywordTok{summary}\NormalTok{(fit.lmer1))}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-##                          Estimate Std. Error       df     t value
-## (Intercept)           1.268411111  0.1541680 30.42768  8.22745788
-## Vermetids1            0.004655556  0.2091398 22.94243  0.02226049
-## Sediment1             0.285202305  0.2160126 23.53130  1.32030428
-## Vermetids1:Sediment1 -0.773546750  0.3006674 23.24638 -2.57276556
-##                          Pr(>|t|)
-## (Intercept)          3.129900e-09
-## Vermetids1           9.824326e-01
-## Sediment1            1.994327e-01
-## Vermetids1:Sediment1 1.693404e-02
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{fit.emm <-}\StringTok{ }\KeywordTok{emmeans}\NormalTok{(fit.lmer1, }\DataTypeTok{specs=}\KeywordTok{c}\NormalTok{(}\StringTok{"Vermetids"}\NormalTok{, }\StringTok{"Sediment"}\NormalTok{))}
-\KeywordTok{summary}\NormalTok{(}\KeywordTok{contrast}\NormalTok{(fit.emm, }\DataTypeTok{method=}\StringTok{"revpairwise"}\NormalTok{, }\DataTypeTok{adjust=}\StringTok{"none"}\NormalTok{), }\DataTypeTok{infer=}\KeywordTok{c}\NormalTok{(}\OtherTok{TRUE}\NormalTok{, }\OtherTok{TRUE}\NormalTok{))}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-##  contrast  estimate    SE   df lower.CL upper.CL t.ratio p.value
-##  1,0 - 0,0  0.00466 0.209 23.0   -0.428   0.4373  0.022  0.9824 
-##  0,1 - 0,0  0.28520 0.217 23.6   -0.163   0.7330  1.316  0.2009 
-##  0,1 - 1,0  0.28055 0.217 23.6   -0.167   0.7283  1.294  0.2081 
-##  1,1 - 0,0 -0.48369 0.209 23.0   -0.916  -0.0511 -2.313  0.0300 
-##  1,1 - 1,0 -0.48834 0.209 23.0   -0.921  -0.0557 -2.335  0.0286 
-##  1,1 - 0,1 -0.76889 0.217 23.6   -1.217  -0.3211 -3.547  0.0017 
+##  sediment vermetids contrast           estimate    SE   df lower.CL
+##  control  .         present - absent    0.00466 0.209 23.0   -0.428
+##  addition .         present - absent   -0.76889 0.217 23.6   -1.217
+##  .        absent    addition - control  0.28520 0.217 23.6   -0.163
+##  .        present   addition - control -0.48834 0.209 23.0   -0.921
+##  upper.CL t.ratio p.value
+##    0.4373  0.022  0.9824 
+##   -0.3211 -3.547  0.0017 
+##    0.7330  1.316  0.2009 
+##   -0.0557 -2.335  0.0286 
 ## 
 ## Degrees-of-freedom method: kenward-roger 
 ## Confidence level used: 0.95
 \end{verbatim}
 
+There is no ``correct'' way to compute the degrees of freedom for
+inferential statistics (SE, CIs, \emph{p}-values). Two common choices
+are ``Kenward-Roger'' and ``Satterthwaite''. There is little empirical
+reason to vastly prefer one over the other (they each seem to perform a
+wee bit bitter under different conditions).
+
+In \texttt{emmeans}, the Kenward-Roger degrees of freedom are the
+default. For Satterthwaite, use the \texttt{lmer.df} argument:
+
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{fit.lmer1.ml <-}\StringTok{ }\KeywordTok{lmer}\NormalTok{(GrowthRate }\OperatorTok{~}\StringTok{ }\NormalTok{Vermetids}\OperatorTok{*}\NormalTok{Sediment }\OperatorTok{+}\StringTok{ }\NormalTok{(}\DecValTok{1}\OperatorTok{|}\NormalTok{Block), }\DataTypeTok{data=}\NormalTok{coral[inc], }\DataTypeTok{REML=}\OtherTok{FALSE}\NormalTok{)}
-\CommentTok{# random intercept and slope}
-\NormalTok{fit.lmer3.ml <-}\StringTok{ }\KeywordTok{lmer}\NormalTok{(GrowthRate }\OperatorTok{~}\StringTok{ }\NormalTok{Vermetids}\OperatorTok{*}\NormalTok{Sediment }\OperatorTok{+}\StringTok{ }\NormalTok{(Vermetids}\OperatorTok{|}\NormalTok{Block) }\OperatorTok{+}\StringTok{ }\NormalTok{(Sediment}\OperatorTok{|}\NormalTok{Block), }\DataTypeTok{data=}\NormalTok{coral[inc], }\DataTypeTok{REML=}\OtherTok{FALSE}\NormalTok{)}
+\NormalTok{fit.emm <-}\StringTok{ }\KeywordTok{emmeans}\NormalTok{(m1.lmer, }
+                   \DataTypeTok{specs=}\KeywordTok{c}\NormalTok{(}\StringTok{"vermetids"}\NormalTok{, }\StringTok{"sediment"}\NormalTok{),}
+                   \DataTypeTok{lmer.df =} \StringTok{"satterthwaite"}\NormalTok{)}
+\KeywordTok{summary}\NormalTok{(}\KeywordTok{contrast}\NormalTok{(fit.emm, }
+                 \DataTypeTok{method =} \StringTok{"revpairwise"}\NormalTok{, }
+                 \DataTypeTok{simple =} \StringTok{"each"}\NormalTok{,}
+                 \DataTypeTok{combine =} \OtherTok{TRUE}\NormalTok{,}
+                 \DataTypeTok{adjust=}\StringTok{"none"}\NormalTok{),}
+        \DataTypeTok{infer=}\KeywordTok{c}\NormalTok{(}\OtherTok{TRUE}\NormalTok{, }\OtherTok{TRUE}\NormalTok{))}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
-## boundary (singular) fit: see ?isSingular
+##  sediment vermetids contrast           estimate    SE   df lower.CL
+##  control  .         present - absent    0.00466 0.209 22.9   -0.428
+##  addition .         present - absent   -0.76889 0.216 23.5   -1.215
+##  .        absent    addition - control  0.28520 0.216 23.5   -0.161
+##  .        present   addition - control -0.48834 0.209 22.9   -0.921
+##  upper.CL t.ratio p.value
+##    0.4374  0.022  0.9824 
+##   -0.3226 -3.559  0.0016 
+##    0.7315  1.320  0.1994 
+##   -0.0556 -2.335  0.0287 
+## 
+## Degrees-of-freedom method: satterthwaite 
+## Confidence level used: 0.95
 \end{verbatim}
+
+If you want to compute the coefficient table or an ANOVA, lmer does not
+output test statistics. To get test statistics, you have to load the
+library ``lmerTest'' (which automatically loads ``lme4''). With
+\texttt{lmerTest}, the Satterthwaite degrees of freedom are the default.
+For Kenward-Roger, use the \texttt{ddf} argument in either
+\texttt{summary()} (for the coefficients) or \texttt{anova()} (for
+ANOVA).
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\KeywordTok{AIC}\NormalTok{(fit.lmer1.ml)}
+\KeywordTok{coef}\NormalTok{(}\KeywordTok{summary}\NormalTok{(m1.lmer)) }\CommentTok{# default is Satterthwaite}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
-## [1] 52.80349
+##                                       Estimate Std. Error       df
+## (Intercept)                        1.268411111  0.1541680 30.42768
+## vermetidspresent                   0.004655556  0.2091398 22.94243
+## sedimentaddition                   0.285202305  0.2160126 23.53130
+## vermetidspresent:sedimentaddition -0.773546750  0.3006674 23.24638
+##                                       t value     Pr(>|t|)
+## (Intercept)                        8.22745788 3.129900e-09
+## vermetidspresent                   0.02226049 9.824326e-01
+## sedimentaddition                   1.32030428 1.994327e-01
+## vermetidspresent:sedimentaddition -2.57276556 1.693404e-02
 \end{verbatim}
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\KeywordTok{AIC}\NormalTok{(fit.lmer3.ml)}
+\KeywordTok{coef}\NormalTok{(}\KeywordTok{summary}\NormalTok{(m1.lmer, }\DataTypeTok{ddf=}\StringTok{"Kenward-Roger"}\NormalTok{))}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
-## [1] 61.04197
+##                                       Estimate Std. Error       df
+## (Intercept)                        1.268411111  0.1541680 30.43671
+## vermetidspresent                   0.004655556  0.2091398 23.03604
+## sedimentaddition                   0.285202305  0.2167687 23.62024
+## vermetidspresent:sedimentaddition -0.773546750  0.3012111 23.33762
+##                                       t value     Pr(>|t|)
+## (Intercept)                        8.22745788 3.122797e-09
+## vermetidspresent                   0.02226049 9.824319e-01
+## sedimentaddition                   1.31569876 2.009032e-01
+## vermetidspresent:sedimentaddition -2.56812158 1.708128e-02
 \end{verbatim}
 
-The formula for \texttt{lmer}
+Compare the output from emmeans and \texttt{coef(summary())} using the
+different methods for computing the df.
 
 \chapter{Linear models with heterogenous
 variance}\label{linear-models-with-heterogenous-variance}
