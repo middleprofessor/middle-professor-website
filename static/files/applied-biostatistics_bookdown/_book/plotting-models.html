@@ -460,8 +460,8 @@ Figure 13.2: Mean and error plot
 <p>Fig. <a href="plotting-models.html#fig:plots-means">13.2</a> plots the <em>modeled</em> means, represented by the tops of the bars, the modeled 95% confidence intervals of each mean, represented by the error bars, and the <em>p</em>-values for all pairwise comparisons. What do I mean by <em>modeled</em> means and error intervals?</p>
 <ol style="list-style-type: decimal">
 <li>Modeled means and error intervals are estimated from the statistical model. Many published plots are of raw means and error intervals, meaning that the mean and error for each treatment level is computed only using the response measures in that treatment level.</li>
-<li>A modeled mean will often be equal to the raw mean, but this will not always be the case, for example if there are covariates in the model, or the researchers are using a <em>hierarchical model</em> (Chapter xxx).</li>
-<li>Modeled error intervals are never the same as the raw error intervals, and are commonly conspicuously different. Almost always, we should plot modeled means and error intervals, since these represent the means that are relevant to inference.</li>
+<li>A modeled mean will often be equal to the raw mean, but this will not always be the case, for example if there are covariates in the model (Chapter xxx).</li>
+<li>Modeled error intervals are never the same as the raw error intervals, and are commonly conspicuously different. Almost always, we should plot modeled means and error intervals, since these represent the statistics that are relevant to inference.</li>
 </ol>
 <p>Fig. <a href="plotting-models.html#fig:plots-means">13.2</a> also plots the raw count data as “jittered” black dots. “Showing the data” is a pretty good feature of a plot because it allows the reader to get a sense of the underlying sample size and distribution including outliers, which can be used to mentally model check the published statistical analysis. For example, the jittered dots in Fig. <a href="plotting-models.html#fig:plots-means">13.2</a> suggest a <strong>heterogeneity</strong> of variances; specifically, the treatment level with the largest mean has a conspicuously higher variance. This pattern violates the assumptions of a general linear model and should raise a red flag to a reader if the researchers used a general linear model to analyze the data.</p>
 <p>What a mean-and-error plot fails to show, at least directly, are the effects. To infer the effects from the plot, a reader must perform mental math – either compute the difference or the ratio between pairs of means. This mental math is easy enough if the comparisons are between individual treatment levels but much harder if the comparisons are between pooled sets of treatment levels, for example in a factorial experimental design. The mental math that is excessively difficult is the reconstruction of some kind of error interval of the contrasts, for example the 95% confidence intervals in Fig. <a href="#plots-effect"><strong>??</strong></a> and it is this interval that is necessary for a researcher to infer the range of biological consequences that are compatible with the experiment. The inclusion of the <em>p</em>-values for all pairwise comparisons gives the significance level of these contrasts, but of the kinds of summary results that we could present (contrasts, error intervals, <em>p</em>-values), the <em>p</em>-values are the least informative.</p>
@@ -604,7 +604,7 @@ emm.m1 &lt;-<span class="st"> </span><span class="kw">data.table</span>(<span cl
 <span class="st">  </span><span class="kw">stat_compare_means</span>(<span class="dt">method =</span> <span class="st">&quot;t.test&quot;</span>, <span class="dt">comparisons=</span>pairs_i) <span class="op">+</span>
 <span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;Neutrophil count&quot;</span>) <span class="op">+</span>
 <span class="st">  </span><span class="ot">NULL</span></code></pre></div>
-<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/unnamed-chunk-63-1.png" width="576" /></p>
+<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/plot-p-values-1.png" width="576" /></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># checks on the p-value</span>
 <span class="co"># t-tests using SE pooled over all four groups</span>
 check_it &lt;-<span class="st"> </span><span class="ot">FALSE</span>
@@ -622,6 +622,65 @@ check_it &lt;-<span class="st"> </span><span class="ot">FALSE</span>
 </div>
 <div id="adding-custom-p-values" class="section level3">
 <h3><span class="header-section-number">13.3.5</span> Adding custom p-values</h3>
+<p>What if we want the p-values in the plot above to come from a linear model, or a generalized linear model and not from the available tests in the ggpubr package? The function <code>stat_pvalue_manual</code> from ggpubr allows this.</p>
+<p>The steps used repeatedly throughout this text are</p>
+<ol style="list-style-type: decimal">
+<li>Fit the model</li>
+<li>Estimate the means and contrasts using the emmeans package</li>
+<li>Extract the p-values from the fit model into a data.table</li>
+<li>Plot the modeled means and error bars</li>
+<li>Plot the custom p-values using <code>stat_pvalue_manual</code></li>
+</ol>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># the data are count data so we fit a generalized linear model </span>
+<span class="co"># with a negative binomial distribution</span>
+m2 &lt;-<span class="st"> </span><span class="kw">glm.nb</span>(count <span class="op">~</span><span class="st"> </span>donor, <span class="dt">data=</span>exp2d)
+<span class="co"># estimate the modeled means and CIs on the response scale</span>
+m2.emm &lt;-<span class="st"> </span><span class="kw">emmeans</span>(m2, <span class="dt">specs=</span><span class="st">&quot;donor&quot;</span>, <span class="dt">type=</span><span class="st">&quot;response&quot;</span>)
+<span class="co"># estimate the p-values of the contrasts</span>
+m2.pairs &lt;-<span class="st"> </span><span class="kw">summary</span>(<span class="kw">contrast</span>(m2.emm, <span class="dt">method=</span><span class="st">&quot;revpairwise&quot;</span>))
+
+<span class="co"># make m2.emm a data.table</span>
+m2.emm &lt;-<span class="st"> </span><span class="kw">data.table</span>(<span class="kw">summary</span>(m2.emm))
+<span class="co"># the y column needs to have the same label as the plotted data</span>
+<span class="kw">setnames</span>(m2.emm, <span class="dt">old=</span><span class="st">&quot;response&quot;</span>, <span class="dt">new=</span><span class="st">&quot;count&quot;</span>)
+
+<span class="co"># make the table with the p-values a data.table</span>
+m2.pairs &lt;-<span class="st"> </span><span class="kw">data.table</span>(m2.pairs)
+<span class="co"># need to have a &quot;group1&quot; and &quot;group2&quot; column for the p-value</span>
+<span class="co"># this needs these two function</span>
+odd &lt;-<span class="st"> </span><span class="cf">function</span>(x) x<span class="op">%%</span><span class="dv">2</span> <span class="op">!=</span><span class="st"> </span><span class="dv">0</span>
+even &lt;-<span class="st"> </span><span class="cf">function</span>(x) x<span class="op">%%</span><span class="dv">2</span> <span class="op">==</span><span class="st"> </span><span class="dv">0</span>
+<span class="co"># make the groups using the odd and even functions</span>
+groups &lt;-<span class="st"> </span><span class="kw">unlist</span>(<span class="kw">str_split</span>(m2.pairs<span class="op">$</span>contrast, <span class="st">&quot; / &quot;</span>))
+m2.pairs[, group1 <span class="op">:</span><span class="er">=</span><span class="st"> </span>groups[<span class="kw">odd</span>(<span class="dv">1</span><span class="op">:</span><span class="kw">length</span>(groups))]]
+m2.pairs[, group2 <span class="op">:</span><span class="er">=</span><span class="st"> </span>groups[<span class="kw">even</span>(<span class="dv">1</span><span class="op">:</span><span class="kw">length</span>(groups))]]
+
+<span class="co"># create a column of p-values for display.</span>
+m2.pairs[, p <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">ifelse</span>(p.value <span class="op">&gt;</span><span class="st"> </span><span class="fl">0.01</span>, 
+                       <span class="kw">round</span>(p.value, <span class="dv">2</span>), 
+                       <span class="kw">round</span>(p.value, <span class="dv">4</span>))]
+m2.pairs[, p <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">ifelse</span>(p <span class="op">==</span><span class="st"> </span><span class="dv">0</span>, <span class="st">&quot;&lt;0.0001&quot;</span>, p)]
+
+gg2 &lt;-<span class="st"> </span><span class="kw">ggbarplot</span>(<span class="dt">x=</span><span class="st">&quot;donor&quot;</span>, 
+          <span class="dt">y=</span><span class="st">&quot;count&quot;</span>, 
+          <span class="dt">data=</span>m2.emm, 
+          <span class="dt">fill =</span> <span class="st">&quot;steelblue&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;Count&quot;</span>) <span class="op">+</span>
+<span class="st">  </span>
+<span class="st">  </span><span class="kw">geom_errorbar</span>(<span class="kw">aes</span>(<span class="dt">x=</span>donor, <span class="dt">ymin=</span>asymp.LCL, <span class="dt">ymax=</span>asymp.UCL),
+                <span class="dt">width=</span><span class="fl">0.15</span>) <span class="op">+</span>
+<span class="st">  </span>
+<span class="st">  </span><span class="kw">geom_jitter</span>(<span class="dt">data=</span>exp2d, <span class="kw">aes</span>(<span class="dt">x=</span>donor, <span class="dt">y=</span>count),
+             <span class="dt">color=</span><span class="st">&quot;black&quot;</span>,
+             <span class="dt">width=</span><span class="fl">0.1</span>, <span class="dt">height=</span><span class="dv">0</span>) <span class="op">+</span>
+<span class="st">  </span>
+<span class="st">  </span><span class="kw">stat_pvalue_manual</span>(m2.pairs[<span class="dv">4</span><span class="op">:</span><span class="dv">6</span>,], <span class="co"># only show sox effects</span>
+                           <span class="dt">label =</span> <span class="st">&quot;p&quot;</span>, 
+                           <span class="dt">y.position=</span><span class="kw">c</span>(<span class="dv">31</span>, <span class="dv">28</span>, <span class="dv">25</span>)) <span class="op">+</span>
+<span class="st">  </span><span class="ot">NULL</span>
+
+gg2</code></pre></div>
+<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/plots-custom-p-1.png" width="576" /></p>
 </div>
 <div id="plotting-two-factors" class="section level3">
 <h3><span class="header-section-number">13.3.6</span> Plotting two factors</h3>
@@ -668,7 +727,7 @@ pd =<span class="st"> </span><span class="kw">position_dodge</span>(<span class=
 <span class="st">  </span><span class="kw">geom_errorbar</span>(<span class="dt">data=</span>m1.emm, <span class="kw">aes</span>(<span class="dt">x=</span>treatment, <span class="dt">ymin=</span>asymp.LCL, <span class="dt">ymax=</span>asymp.UCL, <span class="dt">group=</span>strain),
                 <span class="dt">position=</span>pd, <span class="dt">width=</span><span class="fl">0.1</span>) <span class="op">+</span>
 <span class="st">  </span><span class="ot">NULL</span></code></pre></div>
-<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/unnamed-chunk-66-1.png" width="576" /></p>
+<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/unnamed-chunk-65-1.png" width="576" /></p>
 </div>
 <div id="interaction-plot" class="section level3">
 <h3><span class="header-section-number">13.3.7</span> Interaction plot</h3>
@@ -683,7 +742,7 @@ pd =<span class="st"> </span><span class="kw">position_dodge</span>(<span class=
 <span class="st">  </span><span class="kw">scale_color_jco</span>() <span class="op">+</span>
 <span class="st">  </span><span class="kw">theme_pubr</span>() <span class="op">+</span>
 <span class="st">  </span><span class="ot">NULL</span></code></pre></div>
-<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/unnamed-chunk-67-1.png" width="576" /></p>
+<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/unnamed-chunk-66-1.png" width="576" /></p>
 
 </div>
 </div>

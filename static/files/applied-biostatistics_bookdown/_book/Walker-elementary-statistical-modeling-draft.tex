@@ -124,7 +124,7 @@
   \postauthor{\par}
       \predate{\centering\large\emph}
   \postdate{\par}
-    \date{Draft: 2019-11-27}
+    \date{Draft: 2019-11-28}
 
 \usepackage{booktabs}
 \usepackage{amsthm}
@@ -7390,7 +7390,11 @@ different}\label{difference-in-p-is-not-different}
 \section{Inference when data are not
 Normal}\label{inference-when-data-are-not-normal}
 
-Inference in statistical models (standard errors, confidence intervals,
+No real data are normal, although many are pretty good approximations of
+a normal distribution.
+
+I'll come back to this point, but first, let's back up. Inference in
+statistical models (standard errors, confidence intervals,
 \emph{p}-values) are a function of the modeled distributions of the
 parameters (for linear models, this parameter is the conditional (or
 error) variance \(\sigma^2\)); if the data do not approximate the
@@ -7401,7 +7405,7 @@ are too large, confidence intervals are too wide, Type I error is less
 than nominal).
 
 Linear models assume that ``the data'' (specifically, the conditional
-values, or, equivalently, the residuals from the model) approximate a
+response, or, equivalently, the residuals from the model) approximate a
 Normal distribution. Chapter xxx showed how to qualitatively assess how
 well residuals approximate a Normal distribution using a Q-Q plot. If
 the researcher concludes that the data poorly approximate a normal
@@ -7780,7 +7784,7 @@ and the variance less dependent of the mean. At least two issues arise
 transformations}\label{working-in-r-log-transformations}
 
 If we fit a linear model to a log-transformed response then the
-resulting coeficients and predictions are on the \textbf{log scale}. To
+resulting coefficients and predictions are on the \textbf{log scale}. To
 make interpretation of the analysies easier, we probably want to
 \textbf{back-transform} the coefficients or the predictions to the
 original scale of the response, which is called the \textbf{response
@@ -8183,14 +8187,13 @@ intervals?
   only using the response measures in that treatment level.
 \item
   A modeled mean will often be equal to the raw mean, but this will not
-  always be the case, for example if there are covariates in the model,
-  or the researchers are using a \emph{hierarchical model} (Chapter
-  xxx).
+  always be the case, for example if there are covariates in the model
+  (Chapter xxx).
 \item
   Modeled error intervals are never the same as the raw error intervals,
   and are commonly conspicuously different. Almost always, we should
   plot modeled means and error intervals, since these represent the
-  means that are relevant to inference.
+  statistics that are relevant to inference.
 \end{enumerate}
 
 Fig. \ref{fig:plots-means} also plots the raw count data as ``jittered''
@@ -8486,7 +8489,7 @@ is returning.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-63-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/plot-p-values-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -8511,6 +8514,84 @@ So the p-values returned by
 independent Welch t-tests.
 
 \subsection{Adding custom p-values}\label{adding-custom-p-values}
+
+What if we want the p-values in the plot above to come from a linear
+model, or a generalized linear model and not from the available tests in
+the ggpubr package? The function \texttt{stat\_pvalue\_manual} from
+ggpubr allows this.
+
+The steps used repeatedly throughout this text are
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Fit the model
+\item
+  Estimate the means and contrasts using the emmeans package
+\item
+  Extract the p-values from the fit model into a data.table
+\item
+  Plot the modeled means and error bars
+\item
+  Plot the custom p-values using \texttt{stat\_pvalue\_manual}
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# the data are count data so we fit a generalized linear model }
+\CommentTok{# with a negative binomial distribution}
+\NormalTok{m2 <-}\StringTok{ }\KeywordTok{glm.nb}\NormalTok{(count }\OperatorTok{~}\StringTok{ }\NormalTok{donor, }\DataTypeTok{data=}\NormalTok{exp2d)}
+\CommentTok{# estimate the modeled means and CIs on the response scale}
+\NormalTok{m2.emm <-}\StringTok{ }\KeywordTok{emmeans}\NormalTok{(m2, }\DataTypeTok{specs=}\StringTok{"donor"}\NormalTok{, }\DataTypeTok{type=}\StringTok{"response"}\NormalTok{)}
+\CommentTok{# estimate the p-values of the contrasts}
+\NormalTok{m2.pairs <-}\StringTok{ }\KeywordTok{summary}\NormalTok{(}\KeywordTok{contrast}\NormalTok{(m2.emm, }\DataTypeTok{method=}\StringTok{"revpairwise"}\NormalTok{))}
+
+\CommentTok{# make m2.emm a data.table}
+\NormalTok{m2.emm <-}\StringTok{ }\KeywordTok{data.table}\NormalTok{(}\KeywordTok{summary}\NormalTok{(m2.emm))}
+\CommentTok{# the y column needs to have the same label as the plotted data}
+\KeywordTok{setnames}\NormalTok{(m2.emm, }\DataTypeTok{old=}\StringTok{"response"}\NormalTok{, }\DataTypeTok{new=}\StringTok{"count"}\NormalTok{)}
+
+\CommentTok{# make the table with the p-values a data.table}
+\NormalTok{m2.pairs <-}\StringTok{ }\KeywordTok{data.table}\NormalTok{(m2.pairs)}
+\CommentTok{# need to have a "group1" and "group2" column for the p-value}
+\CommentTok{# this needs these two function}
+\NormalTok{odd <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(x) x}\OperatorTok{%%}\DecValTok{2} \OperatorTok{!=}\StringTok{ }\DecValTok{0}
+\NormalTok{even <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(x) x}\OperatorTok{%%}\DecValTok{2} \OperatorTok{==}\StringTok{ }\DecValTok{0}
+\CommentTok{# make the groups using the odd and even functions}
+\NormalTok{groups <-}\StringTok{ }\KeywordTok{unlist}\NormalTok{(}\KeywordTok{str_split}\NormalTok{(m2.pairs}\OperatorTok{$}\NormalTok{contrast, }\StringTok{" / "}\NormalTok{))}
+\NormalTok{m2.pairs[, group1 }\OperatorTok{:}\ErrorTok{=}\StringTok{ }\NormalTok{groups[}\KeywordTok{odd}\NormalTok{(}\DecValTok{1}\OperatorTok{:}\KeywordTok{length}\NormalTok{(groups))]]}
+\NormalTok{m2.pairs[, group2 }\OperatorTok{:}\ErrorTok{=}\StringTok{ }\NormalTok{groups[}\KeywordTok{even}\NormalTok{(}\DecValTok{1}\OperatorTok{:}\KeywordTok{length}\NormalTok{(groups))]]}
+
+\CommentTok{# create a column of p-values for display.}
+\NormalTok{m2.pairs[, p }\OperatorTok{:}\ErrorTok{=}\StringTok{ }\KeywordTok{ifelse}\NormalTok{(p.value }\OperatorTok{>}\StringTok{ }\FloatTok{0.01}\NormalTok{, }
+                       \KeywordTok{round}\NormalTok{(p.value, }\DecValTok{2}\NormalTok{), }
+                       \KeywordTok{round}\NormalTok{(p.value, }\DecValTok{4}\NormalTok{))]}
+\NormalTok{m2.pairs[, p }\OperatorTok{:}\ErrorTok{=}\StringTok{ }\KeywordTok{ifelse}\NormalTok{(p }\OperatorTok{==}\StringTok{ }\DecValTok{0}\NormalTok{, }\StringTok{"<0.0001"}\NormalTok{, p)]}
+
+\NormalTok{gg2 <-}\StringTok{ }\KeywordTok{ggbarplot}\NormalTok{(}\DataTypeTok{x=}\StringTok{"donor"}\NormalTok{, }
+          \DataTypeTok{y=}\StringTok{"count"}\NormalTok{, }
+          \DataTypeTok{data=}\NormalTok{m2.emm, }
+          \DataTypeTok{fill =} \StringTok{"steelblue"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{ylab}\NormalTok{(}\StringTok{"Count"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }
+\StringTok{  }\KeywordTok{geom_errorbar}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{donor, }\DataTypeTok{ymin=}\NormalTok{asymp.LCL, }\DataTypeTok{ymax=}\NormalTok{asymp.UCL),}
+                \DataTypeTok{width=}\FloatTok{0.15}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }
+\StringTok{  }\KeywordTok{geom_jitter}\NormalTok{(}\DataTypeTok{data=}\NormalTok{exp2d, }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{donor, }\DataTypeTok{y=}\NormalTok{count),}
+             \DataTypeTok{color=}\StringTok{"black"}\NormalTok{,}
+             \DataTypeTok{width=}\FloatTok{0.1}\NormalTok{, }\DataTypeTok{height=}\DecValTok{0}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }
+\StringTok{  }\KeywordTok{stat_pvalue_manual}\NormalTok{(m2.pairs[}\DecValTok{4}\OperatorTok{:}\DecValTok{6}\NormalTok{,], }\CommentTok{# only show sox effects}
+                           \DataTypeTok{label =} \StringTok{"p"}\NormalTok{, }
+                           \DataTypeTok{y.position=}\KeywordTok{c}\NormalTok{(}\DecValTok{31}\NormalTok{, }\DecValTok{28}\NormalTok{, }\DecValTok{25}\NormalTok{)) }\OperatorTok{+}
+\StringTok{  }\OtherTok{NULL}
+
+\NormalTok{gg2}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/plots-custom-p-1.pdf}
 
 \subsection{Plotting two factors}\label{plotting-two-factors}
 
@@ -8591,7 +8672,7 @@ function from the emmeans package.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-66-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-65-1.pdf}
 
 \subsection{Interaction plot}\label{interaction-plot}
 
@@ -8611,7 +8692,7 @@ function from the emmeans package.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-67-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-66-1.pdf}
 
 \chapter*{\texorpdfstring{Part IV: More than one \(X\) -- Multivariable
 Models}{Part IV: More than one X -- Multivariable Models}}\label{part-iv-more-than-one-x-multivariable-models}
@@ -8740,7 +8821,7 @@ ldlc.r = \beta_0 + \beta_1 treatment + \varepsilon
 
 where \(ldlc.r\) is the set of residuals.
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-69-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-68-1.pdf}
 
 Now the estimate of the effect is -4.7 mg/dL blood and the SE is only
 0.88. In this two-stage analysis (stage 1: fit ldlc \textasciitilde{}
@@ -8768,11 +8849,11 @@ ldlc = \beta_0 + \beta_1 age + \beta_2 treatment + \varepsilon
 
 which results in the Harrell Plot
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-70-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-69-1.pdf}
 
 and the coefficient table
 
-\label{tab:unnamed-chunk-71}Coefficients of the model that includes the
+\label{tab:unnamed-chunk-70}Coefficients of the model that includes the
 covariate age.
 
 Estimate
@@ -10319,7 +10400,7 @@ design}\label{bar-plot-with-uniform-coloring-poorly-communicate-the-factorial-de
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-81-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-80-1.pdf}
 
 \subsubsection{Plots that communicate the factorial
 design}\label{plots-that-communicate-the-factorial-design}
@@ -10495,7 +10576,7 @@ reflect our pre-conceived scientific model.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-82-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-81-1.pdf}
 
 This effects plot shows the four simple effects, the single interaction
 (Temp18:CO21100), and their 95\% confidence intervals. In the original
@@ -10521,7 +10602,7 @@ to small) to have much confidence in the size of the interaction effect.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-83-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-82-1.pdf}
 
 The effects and interaction plot are combined into a single plot.
 
@@ -12927,7 +13008,7 @@ statistic is \(df\).
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-86-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-85-1.pdf}
 
 \begin{verbatim}
 ## 
