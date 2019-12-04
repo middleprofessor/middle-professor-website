@@ -13444,10 +13444,6 @@ block. Similarly, the random slope (treatment effect) has a fixed part
 (see table below). Again, these are collected within a pair of
 parentheses in the equation above.
 
-\begin{verbatim}
-## boundary (singular) fit: see ?isSingular
-\end{verbatim}
-
 \label{tab:lmm-table}The linear mixed model specified above estimates a
 fixed intercept and fixed slope (treatment effect) that are common to
 all observations and a random intercept and random slope for each block,
@@ -14418,25 +14414,31 @@ are too approximate for a useful \(p\)-value and, consequently, the
 researchers want a \(p\)-value and typically use the \texttt{lmerTest}
 package to get this.
 
-With the random factor in the column ``block:
+\textbf{Specifying a linear mixed model using \texttt{lme}}. The random
+factor is in the column ``block''. To conform to some packages that use
+lme4 objects, any variable used to model a random effect should be
+converted to type \texttt{factor}.
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
 \tightlist
 \item
   add a random intercept using
-  \texttt{y\ \textasciitilde{}\ treatment\ +\ (1\textbar{}block)}
+  \texttt{y\ \textasciitilde{}\ treatment\ +\ (1\textbar{}block)}. This
+  adds a random intercept for each level of treatment.
 \item
   add a random slope and intercept using
-  \texttt{y\ \textasciitilde{}\ treatment\ +\ (treatment\textbar{}block)}
+  \texttt{y\ \textasciitilde{}\ treatment\ +\ (treatment\textbar{}block)}.
+  This adds a random intercept for each level of treatment and a random
+  slope for each level of treatment.
 \end{enumerate}
 
 A message that might appear is ``boundary (singular) fit: see
 ?isSingular''. This does not mean there is a problem with the fit model.
 
 A warning that ``Model failed to converge with 1 negative eigenvalue''
-does mean there is a problem. A solution is to simply the model (remove
-a random slope if one is specified)
+does mean there is a problem. A solution is to simplify the model by,
+for example, removing a random slope.
 
 \subsection{coral data}\label{coral-data}
 
@@ -14756,6 +14758,169 @@ Modern Biology}
 
 \href{https://bookdown.org/rdpeng/artofdatascience/}{The Art of Data
 Science by Roger D. Peng and Elizabeth Matsui}
+
+\chapter*{Appendix 3: Fake Data
+Simulations}\label{appendix-3-fake-data-simulations}
+\addcontentsline{toc}{chapter}{Appendix 3: Fake Data Simulations}
+
+\section{Performance of Blocking relative to a linear
+model}\label{performance-of-blocking-relative-to-a-linear-model}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# use these to debug code}
+\NormalTok{sigma=}\DecValTok{1}
+\NormalTok{sigma_b0=}\DecValTok{1}
+\NormalTok{sigma_b1=}\DecValTok{1}
+\NormalTok{beta_}\DecValTok{0}\NormalTok{=}\DecValTok{10}
+\NormalTok{beta_}\DecValTok{1}\NormalTok{=}\DecValTok{1}
+\NormalTok{n_batch=}\DecValTok{4}
+\NormalTok{n_subsamp=}\DecValTok{2}
+\NormalTok{y_label=}\StringTok{"Y"}
+\NormalTok{trt_levels=}\KeywordTok{c}\NormalTok{(}\StringTok{"cn"}\NormalTok{,}\StringTok{"tr"}\NormalTok{)}
+\NormalTok{block_label=}\StringTok{"block"}
+
+\NormalTok{fake_lmm_data <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(}\DataTypeTok{iterations=}\DecValTok{1000}\NormalTok{, }\DataTypeTok{sigma=}\DecValTok{1}\NormalTok{, }\DataTypeTok{sigma_b0=}\DecValTok{1}\NormalTok{, }\DataTypeTok{sigma_b1=}\DecValTok{1}\NormalTok{, }\DataTypeTok{beta_0=}\DecValTok{10}\NormalTok{, }\DataTypeTok{beta_1=}\DecValTok{1}\NormalTok{, }\DataTypeTok{n_batch=}\DecValTok{6}\NormalTok{, }\DataTypeTok{n_subsamp=}\DecValTok{10}\NormalTok{, }\DataTypeTok{y_label=}\StringTok{"y"}\NormalTok{, }\DataTypeTok{trt_levels=}\KeywordTok{c}\NormalTok{(}\StringTok{"cn"}\NormalTok{,}\StringTok{"tr"}\NormalTok{), }\DataTypeTok{batch_label=}\StringTok{"block"}\NormalTok{, }\DataTypeTok{confound=}\OtherTok{FALSE}\NormalTok{)\{}
+  \CommentTok{# this function is constrained to simulate a single treatment with two levels}
+  \CommentTok{#}
+  \CommentTok{#                   arguments }
+  \CommentTok{# iterations - number of datasets to generate}
+  \CommentTok{# sigma: conditional error sd}
+  \CommentTok{# sigma_b0: sd of random intercepts}
+  \CommentTok{# sigma_b1: sd of random slope}
+  \CommentTok{# beta_0: fixed intercept (mean of reference)}
+  \CommentTok{# beta_1: fixed slope (difference tr - cn)}
+  \CommentTok{# n_batch: number of batches}
+  \CommentTok{# n_subsamp: number of observations per batch per treatment level}
+  \CommentTok{# confound: FALSE is randomized complete block, TRUE is confounded case where}
+  \CommentTok{#       there is only one treatment level per batch}
+  \CommentTok{#}
+  \CommentTok{#                    output}
+  \CommentTok{# A single matrix with each dataset stacked. The datasets are identified by}
+  \CommentTok{# the first column ("data_id")}
+  
+  \ControlFlowTok{if}\NormalTok{(sigma_b0}\OperatorTok{==}\DecValTok{0}\NormalTok{)\{sigma_b0 <-}\StringTok{ }\FloatTok{1e-10}\NormalTok{\}}
+  \ControlFlowTok{if}\NormalTok{(sigma_b1}\OperatorTok{==}\DecValTok{0}\NormalTok{)\{sigma_b1 <-}\StringTok{ }\FloatTok{1e-10}\NormalTok{\}}
+\NormalTok{  n_iter <-}\StringTok{ }\NormalTok{iterations}
+  
+\NormalTok{  levels_per_batch <-}\StringTok{ }\KeywordTok{ifelse}\NormalTok{(confound}\OperatorTok{==}\OtherTok{FALSE}\NormalTok{, }\DecValTok{2}\NormalTok{, }\DecValTok{1}\NormalTok{)}
+\NormalTok{  fake_data <-}\StringTok{ }\KeywordTok{data.table}\NormalTok{(}
+    \DataTypeTok{data_id =} \KeywordTok{rep}\NormalTok{(}\DecValTok{1}\OperatorTok{:}\NormalTok{n_iter, }\DataTypeTok{each=}\NormalTok{n_batch}\OperatorTok{*}\NormalTok{n_subsamp}\OperatorTok{*}\NormalTok{levels_per_batch),}
+    \DataTypeTok{sigma =}\NormalTok{ sigma,}
+    \DataTypeTok{sigma_b0 =}\NormalTok{ sigma_b0,}
+    \DataTypeTok{sigma_b1 =}\NormalTok{ sigma_b1,}
+    \DataTypeTok{beta_0 =}\NormalTok{ beta_}\DecValTok{0}\NormalTok{,}
+    \DataTypeTok{beta_1 =}\NormalTok{ beta_}\DecValTok{1}\NormalTok{,}
+    \DataTypeTok{treatment =} \KeywordTok{rep}\NormalTok{(}\KeywordTok{rep}\NormalTok{(trt_levels, }\DataTypeTok{each=}\NormalTok{n_subsamp), n_batch}\OperatorTok{*}\NormalTok{levels_per_batch}\OperatorTok{/}\DecValTok{2}\OperatorTok{*}\NormalTok{n_iter),}
+    \DataTypeTok{batch =} \KeywordTok{rep}\NormalTok{(}\KeywordTok{rep}\NormalTok{(}\KeywordTok{paste0}\NormalTok{(}\StringTok{"batch_"}\NormalTok{, }\DecValTok{1}\OperatorTok{:}\NormalTok{(n_batch)), }\DataTypeTok{each=}\NormalTok{n_subsamp}\OperatorTok{*}\NormalTok{levels_per_batch), n_iter),}
+    \DataTypeTok{beta_0_j =} \KeywordTok{rep}\NormalTok{(}\KeywordTok{rnorm}\NormalTok{(n_batch}\OperatorTok{*}\NormalTok{n_iter, }\DataTypeTok{mean=}\DecValTok{0}\NormalTok{, }\DataTypeTok{sd=}\NormalTok{sigma_b0), }\DataTypeTok{each=}\NormalTok{n_subsamp}\OperatorTok{*}\NormalTok{levels_per_batch),}
+    \DataTypeTok{beta_1_j =} \KeywordTok{rep}\NormalTok{(}\KeywordTok{rnorm}\NormalTok{(n_batch}\OperatorTok{*}\NormalTok{n_iter, }\DataTypeTok{mean=}\DecValTok{0}\NormalTok{, }\DataTypeTok{sd=}\NormalTok{sigma_b1), }\DataTypeTok{each=}\NormalTok{n_subsamp}\OperatorTok{*}\NormalTok{levels_per_batch),}
+    \DataTypeTok{x =} \KeywordTok{rep}\NormalTok{(}\KeywordTok{rep}\NormalTok{(}\KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{1}\NormalTok{), }\DataTypeTok{each=}\NormalTok{n_subsamp), n_batch}\OperatorTok{*}\NormalTok{levels_per_batch}\OperatorTok{/}\DecValTok{2}\OperatorTok{*}\NormalTok{n_iter),}
+    \DataTypeTok{e =} \KeywordTok{rnorm}\NormalTok{(n_subsamp}\OperatorTok{*}\NormalTok{n_batch}\OperatorTok{*}\NormalTok{levels_per_batch}\OperatorTok{*}\NormalTok{n_iter, }\DataTypeTok{mean=}\DecValTok{0}\NormalTok{, }\DataTypeTok{sd=}\NormalTok{sigma)}
+\NormalTok{  )}
+\NormalTok{  fake_data[, y}\OperatorTok{:}\ErrorTok{=}\StringTok{ }\NormalTok{(beta_}\DecValTok{0} \OperatorTok{+}\StringTok{ }\NormalTok{beta_0_j) }\OperatorTok{+}\StringTok{ }\NormalTok{(beta_}\DecValTok{1} \OperatorTok{+}\StringTok{ }\NormalTok{beta_1_j)}\OperatorTok{*}\NormalTok{x }\OperatorTok{+}\StringTok{ }\NormalTok{e]}
+  \KeywordTok{setnames}\NormalTok{(fake_data, }\DataTypeTok{old=}\KeywordTok{c}\NormalTok{(}\StringTok{"y"}\NormalTok{, }\StringTok{"batch"}\NormalTok{), }\DataTypeTok{new=}\KeywordTok{c}\NormalTok{(y_label, batch_label))}
+\NormalTok{  fake_data[, treatment }\OperatorTok{:}\ErrorTok{=}\StringTok{ }\KeywordTok{factor}\NormalTok{(treatment)]}
+  \KeywordTok{return}\NormalTok{(fake_data)}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# depending on parameterization, can get many "failed to converge"}
+\CommentTok{# and "isSingular" warnings}
+\NormalTok{write_it <-}\StringTok{ }\OtherTok{FALSE}
+
+\NormalTok{n_iter <-}\StringTok{ }\DecValTok{5000}
+\NormalTok{beta_1_i <-}\StringTok{ }\DecValTok{0}  \CommentTok{# 0 = Type I, !0 = Power.}
+\NormalTok{confound_i <-}\StringTok{ }\OtherTok{FALSE} \CommentTok{# FALSE is randomized complete block, TRUE is confounded}
+ \CommentTok{#case where there is only one treatment level per batch}
+\NormalTok{n <-}\StringTok{ }\DecValTok{3} \CommentTok{# subsamples}
+\NormalTok{k <-}\StringTok{ }\DecValTok{8} \CommentTok{# batches}
+
+\CommentTok{# model_list <- c("lm_complete", "lm_mean", "lmm_slope", "lmm_inter")}
+\NormalTok{model_list <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"lm_complete"}\NormalTok{, }\StringTok{"lm_mean"}\NormalTok{, }\StringTok{"lmm_inter"}\NormalTok{)}
+
+\NormalTok{se <-}\StringTok{ }\KeywordTok{matrix}\NormalTok{(}\OtherTok{NA}\NormalTok{, }\DataTypeTok{nrow=}\NormalTok{n_iter, }\DataTypeTok{ncol=}\KeywordTok{length}\NormalTok{(model_list))}
+\KeywordTok{colnames}\NormalTok{(se) <-}\StringTok{ }\NormalTok{model_list}
+\NormalTok{prob <-}\StringTok{ }\KeywordTok{matrix}\NormalTok{(}\OtherTok{NA}\NormalTok{, }\DataTypeTok{nrow=}\NormalTok{n_iter, }\DataTypeTok{ncol=}\KeywordTok{length}\NormalTok{(model_list))}
+\KeywordTok{colnames}\NormalTok{(prob) <-}\StringTok{ }\NormalTok{model_list}
+\NormalTok{ci <-}\StringTok{ }\KeywordTok{matrix}\NormalTok{(}\OtherTok{NA}\NormalTok{, }\DataTypeTok{nrow=}\NormalTok{n_iter, }\DataTypeTok{ncol=}\KeywordTok{length}\NormalTok{(model_list))}
+\KeywordTok{colnames}\NormalTok{(ci) <-}\StringTok{ }\NormalTok{model_list}
+
+\NormalTok{fd_set <-}\StringTok{ }\KeywordTok{fake_lmm_data}\NormalTok{(n_iter, }
+                        \DataTypeTok{sigma =} \DecValTok{1}\NormalTok{, }
+                        \DataTypeTok{sigma_b0 =} \DecValTok{1}\NormalTok{, }\CommentTok{# 1 for big, 0.1 for small}
+                        \DataTypeTok{sigma_b1 =} \FloatTok{0.1}\NormalTok{, }
+                        \DataTypeTok{beta_0 =} \DecValTok{10}\NormalTok{,}
+                        \DataTypeTok{beta_1 =}\NormalTok{ beta_1_i, }
+                        \DataTypeTok{n_batch =}\NormalTok{ k, }
+                        \DataTypeTok{n_subsamp =}\NormalTok{ n, }
+                        \DataTypeTok{confound =}\NormalTok{ confound_i)}
+
+\ControlFlowTok{for}\NormalTok{(iter }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\NormalTok{n_iter)\{}
+\NormalTok{  fd <-}\StringTok{ }\NormalTok{fd_set[data_id}\OperatorTok{==}\NormalTok{iter,]}
+  
+\NormalTok{  m1 <-}\StringTok{ }\KeywordTok{lm}\NormalTok{(y }\OperatorTok{~}\StringTok{ }\NormalTok{treatment, }\DataTypeTok{data=}\NormalTok{fd)}
+\NormalTok{  m2 <-}\StringTok{ }\KeywordTok{lm}\NormalTok{(y }\OperatorTok{~}\StringTok{ }\NormalTok{treatment, }\DataTypeTok{data=}\NormalTok{fd[, .(}\DataTypeTok{y=}\KeywordTok{mean}\NormalTok{(y)), }\DataTypeTok{by=}\NormalTok{.(treatment, block)])}
+  
+  \ControlFlowTok{if}\NormalTok{(}\StringTok{"lmm_slope"} \OperatorTok{%in%}\StringTok{ }\KeywordTok{length}\NormalTok{(model_list))\{}
+\NormalTok{    m3 <-}\StringTok{ }\KeywordTok{lmer}\NormalTok{(y }\OperatorTok{~}\StringTok{ }\NormalTok{treatment }\OperatorTok{+}\StringTok{ }\NormalTok{(treatment}\OperatorTok{|}\NormalTok{block), }\DataTypeTok{data=}\NormalTok{fd)}
+\NormalTok{    m3.pairs <-}\StringTok{ }\KeywordTok{summary}\NormalTok{(}\KeywordTok{contrast}\NormalTok{(}\KeywordTok{emmeans}\NormalTok{(m3, }\DataTypeTok{specs=}\StringTok{"treatment"}\NormalTok{), }\DataTypeTok{method=}\StringTok{"revpairwise"}\NormalTok{), }\DataTypeTok{infer=}\KeywordTok{c}\NormalTok{(}\OtherTok{TRUE}\NormalTok{, }\OtherTok{TRUE}\NormalTok{))}
+\NormalTok{  \}}
+\NormalTok{  m4 <-}\StringTok{ }\KeywordTok{lmer}\NormalTok{(y }\OperatorTok{~}\StringTok{ }\NormalTok{treatment }\OperatorTok{+}\StringTok{ }\NormalTok{(}\DecValTok{1}\OperatorTok{|}\NormalTok{block), }\DataTypeTok{data=}\NormalTok{fd)}
+\NormalTok{  m4.pairs <-}\StringTok{ }\KeywordTok{summary}\NormalTok{(}\KeywordTok{contrast}\NormalTok{(}\KeywordTok{emmeans}\NormalTok{(m4, }\DataTypeTok{specs=}\StringTok{"treatment"}\NormalTok{), }\DataTypeTok{method=}\StringTok{"revpairwise"}\NormalTok{), }\DataTypeTok{infer=}\KeywordTok{c}\NormalTok{(}\OtherTok{TRUE}\NormalTok{, }\OtherTok{TRUE}\NormalTok{))}
+
+  
+\NormalTok{  se[iter, }\StringTok{"lm_complete"}\NormalTok{] <-}\StringTok{ }\KeywordTok{coef}\NormalTok{(}\KeywordTok{summary}\NormalTok{(m1))[}\StringTok{"treatmenttr"}\NormalTok{, }\StringTok{"Std. Error"}\NormalTok{]}
+\NormalTok{  se[iter, }\StringTok{"lm_mean"}\NormalTok{] <-}\StringTok{ }\KeywordTok{coef}\NormalTok{(}\KeywordTok{summary}\NormalTok{(m2))[}\StringTok{"treatmenttr"}\NormalTok{, }\StringTok{"Std. Error"}\NormalTok{]}
+  \ControlFlowTok{if}\NormalTok{(}\StringTok{"lmm_slope"} \OperatorTok{%in%}\StringTok{ }\KeywordTok{length}\NormalTok{(model_list))\{}
+\NormalTok{    se[iter, }\StringTok{"lmm_slope"}\NormalTok{] <-}\StringTok{ }\KeywordTok{coef}\NormalTok{(}\KeywordTok{summary}\NormalTok{(m3))[}\StringTok{"treatmenttr"}\NormalTok{, }\StringTok{"Std. Error"}\NormalTok{]}
+\NormalTok{  \}}
+\NormalTok{  se[iter, }\StringTok{"lmm_inter"}\NormalTok{] <-}\StringTok{ }\KeywordTok{coef}\NormalTok{(}\KeywordTok{summary}\NormalTok{(m4))[}\StringTok{"treatmenttr"}\NormalTok{, }\StringTok{"Std. Error"}\NormalTok{]}
+  
+\NormalTok{  prob[iter, }\StringTok{"lm_complete"}\NormalTok{] <-}\StringTok{ }\KeywordTok{coef}\NormalTok{(}\KeywordTok{summary}\NormalTok{(m1))[}\StringTok{"treatmenttr"}\NormalTok{, }\StringTok{"Pr(>|t|)"}\NormalTok{]}
+\NormalTok{  prob[iter, }\StringTok{"lm_mean"}\NormalTok{] <-}\StringTok{ }\KeywordTok{coef}\NormalTok{(}\KeywordTok{summary}\NormalTok{(m2))[}\StringTok{"treatmenttr"}\NormalTok{, }\StringTok{"Pr(>|t|)"}\NormalTok{]}
+  \ControlFlowTok{if}\NormalTok{(}\StringTok{"lmm_slope"} \OperatorTok{%in%}\StringTok{ }\KeywordTok{length}\NormalTok{(model_list))\{}
+\NormalTok{    prob[iter, }\StringTok{"lmm_slope"}\NormalTok{] <-}\StringTok{ }\KeywordTok{coef}\NormalTok{(}\KeywordTok{summary}\NormalTok{(m3))[}\StringTok{"treatmenttr"}\NormalTok{, }\StringTok{"Pr(>|t|)"}\NormalTok{]}
+\NormalTok{  \}}
+\NormalTok{  prob[iter, }\StringTok{"lmm_inter"}\NormalTok{] <-}\StringTok{ }\KeywordTok{coef}\NormalTok{(}\KeywordTok{summary}\NormalTok{(m4))[}\StringTok{"treatmenttr"}\NormalTok{, }\StringTok{"Pr(>|t|)"}\NormalTok{]}
+  
+\NormalTok{  ci[iter, }\StringTok{"lm_complete"}\NormalTok{] <-}\StringTok{ }\KeywordTok{confint}\NormalTok{(m1)[}\StringTok{"treatmenttr"}\NormalTok{, }\DecValTok{2}\NormalTok{] }\OperatorTok{-}
+\StringTok{    }\KeywordTok{confint}\NormalTok{(m1)[}\StringTok{"treatmenttr"}\NormalTok{, }\DecValTok{1}\NormalTok{]}
+\NormalTok{  ci[iter, }\StringTok{"lm_mean"}\NormalTok{] <-}\StringTok{ }\KeywordTok{confint}\NormalTok{(m2)[}\StringTok{"treatmenttr"}\NormalTok{, }\DecValTok{2}\NormalTok{] }\OperatorTok{-}
+\StringTok{    }\KeywordTok{confint}\NormalTok{(m2)[}\StringTok{"treatmenttr"}\NormalTok{, }\DecValTok{1}\NormalTok{]}
+  \ControlFlowTok{if}\NormalTok{(}\StringTok{"lmm_slope"} \OperatorTok{%in%}\StringTok{ }\KeywordTok{length}\NormalTok{(model_list))\{}
+\NormalTok{    ci[iter, }\StringTok{"lmm_slope"}\NormalTok{] <-}\StringTok{ }\NormalTok{m3.pairs[,}\StringTok{"upper.CL"}\NormalTok{] }\OperatorTok{-}\StringTok{ }\NormalTok{m3.pairs[,}\StringTok{"lower.CL"}\NormalTok{]}
+\NormalTok{  \}}
+\NormalTok{  ci[iter, }\StringTok{"lmm_inter"}\NormalTok{] <-}\StringTok{ }\NormalTok{m4.pairs[,}\StringTok{"upper.CL"}\NormalTok{] }\OperatorTok{-}\StringTok{ }\NormalTok{m4.pairs[,}\StringTok{"lower.CL"}\NormalTok{]}
+  \CommentTok{# m4.pairs.LT <- difflsmeans(m4, which="treatment", ddf="Kenward-Roger")}
+  \CommentTok{# m4.pairs.LT[, "upper"] - m4.pairs.LT[, "lower"]}
+\NormalTok{\}}
+
+\ControlFlowTok{if}\NormalTok{(write_it }\OperatorTok{==}\OtherTok{TRUE}\NormalTok{)\{}
+\NormalTok{  id <-}\StringTok{ }\KeywordTok{paste}\NormalTok{(}\KeywordTok{sample}\NormalTok{(}\KeywordTok{c}\NormalTok{(letters, LETTERS), }\DecValTok{4}\NormalTok{), }\DataTypeTok{collapse=}\StringTok{""}\NormalTok{)}
+\NormalTok{  fn <-}\StringTok{ }\KeywordTok{paste0}\NormalTok{(}\StringTok{"lmm_fd_beta1="}\NormalTok{, beta_1_i,}
+               \StringTok{"_confound="}\NormalTok{,confound_i,}
+               \StringTok{"_id="}\NormalTok{, id,}
+               \StringTok{".txt"}\NormalTok{)}
+\NormalTok{  fp <-}\StringTok{ }\KeywordTok{here}\NormalTok{(}\StringTok{"output"}\NormalTok{, }\StringTok{"chapter_lmm"}\NormalTok{, fn)}
+  \KeywordTok{write.table}\NormalTok{(fd_set, fp, }\DataTypeTok{sep=}\StringTok{"}\CharTok{\textbackslash{}t}\StringTok{"}\NormalTok{, }\DataTypeTok{quote=}\OtherTok{FALSE}\NormalTok{, }\DataTypeTok{row.names=}\OtherTok{FALSE}\NormalTok{)}
+\NormalTok{  fp <-}\StringTok{ }\KeywordTok{here}\NormalTok{(}\StringTok{"output"}\NormalTok{, }\StringTok{"chapter_lmm"}\NormalTok{, }\KeywordTok{paste0}\NormalTok{(}\StringTok{"lmm_se-"}\NormalTok{,id,}\StringTok{".txt"}\NormalTok{))}
+  \KeywordTok{write.table}\NormalTok{(se, fp, }\DataTypeTok{sep=}\StringTok{"}\CharTok{\textbackslash{}t}\StringTok{"}\NormalTok{, }\DataTypeTok{quote=}\OtherTok{FALSE}\NormalTok{, }\DataTypeTok{row.names=}\OtherTok{FALSE}\NormalTok{)}
+\NormalTok{  fp <-}\StringTok{ }\KeywordTok{here}\NormalTok{(}\StringTok{"output"}\NormalTok{, }\StringTok{"chapter_lmm"}\NormalTok{, }\KeywordTok{paste0}\NormalTok{(}\StringTok{"lmm_prob-"}\NormalTok{,id,}\StringTok{".txt"}\NormalTok{))}
+  \KeywordTok{write.table}\NormalTok{(prob, fp, }\DataTypeTok{sep=}\StringTok{"}\CharTok{\textbackslash{}t}\StringTok{"}\NormalTok{, }\DataTypeTok{quote=}\OtherTok{FALSE}\NormalTok{, }\DataTypeTok{row.names=}\OtherTok{FALSE}\NormalTok{)}
+\NormalTok{  fp <-}\StringTok{ }\KeywordTok{here}\NormalTok{(}\StringTok{"output"}\NormalTok{, }\StringTok{"chapter_lmm"}\NormalTok{, }\KeywordTok{paste0}\NormalTok{(}\StringTok{"lmm_ci-"}\NormalTok{,id,}\StringTok{".txt"}\NormalTok{))}
+  \KeywordTok{write.table}\NormalTok{(ci, fp, }\DataTypeTok{sep=}\StringTok{"}\CharTok{\textbackslash{}t}\StringTok{"}\NormalTok{, }\DataTypeTok{quote=}\OtherTok{FALSE}\NormalTok{, }\DataTypeTok{row.names=}\OtherTok{FALSE}\NormalTok{)}
+\NormalTok{\}}
+
+
+\KeywordTok{apply}\NormalTok{(se, }\DecValTok{2}\NormalTok{, quantile, }\KeywordTok{c}\NormalTok{(}\FloatTok{0.1}\NormalTok{, }\FloatTok{0.5}\NormalTok{, }\FloatTok{0.9}\NormalTok{))}
+\KeywordTok{apply}\NormalTok{(prob, }\DecValTok{2}\NormalTok{, }\ControlFlowTok{function}\NormalTok{(x) }\KeywordTok{sum}\NormalTok{(x}\OperatorTok{<}\FloatTok{0.05}\NormalTok{)}\OperatorTok{/}\NormalTok{n_iter)}
+\KeywordTok{apply}\NormalTok{(ci, }\DecValTok{2}\NormalTok{, quantile, }\KeywordTok{c}\NormalTok{(}\FloatTok{0.1}\NormalTok{, }\FloatTok{0.5}\NormalTok{, }\FloatTok{0.9}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
 
 \bibliography{book.bib,packages.bib}
 

@@ -403,6 +403,9 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="20.6" data-path="appendix-1-getting-started-with-r.html"><a href="appendix-1-getting-started-with-r.html#packages-used-extensively-in-this-text"><i class="fa fa-check"></i><b>20.6</b> Packages used extensively in this text</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="appendix-2-online-resources-for-getting-started-with-statistical-modeling-in-r.html"><a href="appendix-2-online-resources-for-getting-started-with-statistical-modeling-in-r.html"><i class="fa fa-check"></i>Appendix 2: Online Resources for Getting Started with Statistical Modeling in R</a></li>
+<li class="chapter" data-level="" data-path="appendix-3-fake-data-simulations.html"><a href="appendix-3-fake-data-simulations.html"><i class="fa fa-check"></i>Appendix 3: Fake Data Simulations</a><ul>
+<li class="chapter" data-level="20.7" data-path="appendix-3-fake-data-simulations.html"><a href="appendix-3-fake-data-simulations.html#performance-of-blocking-relative-to-a-linear-model"><i class="fa fa-check"></i><b>20.7</b> Performance of Blocking relative to a linear model</a></li>
+</ul></li>
 <li class="divider"></li>
 <li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
 
@@ -450,7 +453,6 @@ y_{ij} = (\beta_{0} + \beta_{0j}) + (\beta_{1} + \beta_{1j}) x_i + \varepsilon_i
 \tag{19.1}
 \end{equation}\]</span>
 <p>where <span class="math inline">\(i\)</span> indexes the observation and <span class="math inline">\(j\)</span> indexes the block (culture, plot, mouse, etc). The intercept parameter <span class="math inline">\(\beta_{0j}\)</span> is a <strong>random intercept</strong> and the slope parameter <span class="math inline">\(\beta_{1j}\)</span> is a <strong>random slope</strong>. The intercept for observation <em>i</em> (that is, its expected value when <span class="math inline">\(X=0\)</span>) has a <strong>fixed</strong> component (<span class="math inline">\(\beta_0\)</span>) that is common to all observations and a random component (<span class="math inline">\(\beta_{0j}\)</span>) that is common within a block but differs among blocks (see table below). In the above equation, I’ve used parentheses to show how these combine into the random intercept that is unique for each block. Similarly, the random slope (treatment effect) has a fixed part (<span class="math inline">\(\beta_1\)</span>) that is common to all observations and a random component (<span class="math inline">\(\beta_{1j}\)</span>) that is common within a block but differs among blocks (see table below). Again, these are collected within a pair of parentheses in the equation above.</p>
-<pre><code>## boundary (singular) fit: see ?isSingular</code></pre>
 <table>
 <caption>
 <span id="tab:lmm-table">Table 19.1: </span>The linear mixed model specified above estimates a fixed intercept and fixed slope (treatment effect) that are common to all observations and a random intercept and random slope for each block, each of which is common among observations within a block but differ among observations in different blocks.
@@ -1395,13 +1397,13 @@ j
 <div id="working-in-r-7" class="section level2">
 <h2><span class="header-section-number">19.8</span> Working in R</h2>
 <p>The major function for working with linear mixed models is <code>lmer()</code> from the lme4 package. An older, and still sometimes used and useful function is <code>lme()</code> from the nlme package. The authors of the lme4 package argue that the df in a linear mixed model are too approximate for a useful <span class="math inline">\(p\)</span>-value and, consequently, the <code>lme</code> function does not return a <span class="math inline">\(p\)</span>-value. Many biological researchers want a <span class="math inline">\(p\)</span>-value and typically use the <code>lmerTest</code> package to get this.</p>
-<p>With the random factor in the column “block:</p>
+<p><strong>Specifying a linear mixed model using <code>lme</code></strong>. The random factor is in the column “block”. To conform to some packages that use lme4 objects, any variable used to model a random effect should be converted to type <code>factor</code>.</p>
 <ol style="list-style-type: decimal">
-<li>add a random intercept using <code>y ~ treatment + (1|block)</code></li>
-<li>add a random slope and intercept using <code>y ~ treatment + (treatment|block)</code></li>
+<li>add a random intercept using <code>y ~ treatment + (1|block)</code>. This adds a random intercept for each level of treatment.</li>
+<li>add a random slope and intercept using <code>y ~ treatment + (treatment|block)</code>. This adds a random intercept for each level of treatment and a random slope for each level of treatment.</li>
 </ol>
 <p>A message that might appear is “boundary (singular) fit: see ?isSingular”. This does not mean there is a problem with the fit model.</p>
-<p>A warning that “Model failed to converge with 1 negative eigenvalue” does mean there is a problem. A solution is to simply the model (remove a random slope if one is specified)</p>
+<p>A warning that “Model failed to converge with 1 negative eigenvalue” does mean there is a problem. A solution is to simplify the model by, for example, removing a random slope.</p>
 <div id="coral-data" class="section level3">
 <h3><span class="header-section-number">19.8.1</span> coral data</h3>
 <p><strong>Source</strong> Zill, J. A., Gil, M. A., &amp; Osenberg, C. W. (2017). When environmental factors become stressors: interactive effects of vermetid gastropods and sedimentation on corals. Biology letters, 13(3), 20160957.</p>
