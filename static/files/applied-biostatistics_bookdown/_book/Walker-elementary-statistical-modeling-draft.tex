@@ -124,7 +124,7 @@
   \postauthor{\par}
       \predate{\centering\large\emph}
   \postdate{\par}
-    \date{Draft: 2019-12-04}
+    \date{Draft: 2019-12-11}
 
 \usepackage{booktabs}
 \usepackage{amsthm}
@@ -1860,9 +1860,8 @@ wrangling}\label{miscellaneous-data-wrangling}
 
 \hypertarget{vole-data}{\subsubsection{Vole data}\label{vole-data}}
 
-This books uses data on the lifespans of voles given three different
-treatments (control, vitamin E supplementation, vitamin C
-supplmentation), from
+A interesting data set to introduce a linear model for estimating
+treatment effects in an experiment are from
 
 Selman, C., McLaren, J.S., Collins, A.R., Duthie, G.G. and Speakman,
 J.R., 2013. Deleterious consequences of antioxidant supplementation on
@@ -1897,9 +1896,9 @@ the three treatment assignment columns need to be combined into a single
 \NormalTok{folder <-}\StringTok{ "Data from Deleterious consequences of antioxidant supplementation on lifespan in a wild-derived mammal"}
 \NormalTok{filename <-}\StringTok{ "RSBL-2013-0432 vole data.xlsx"}
 \NormalTok{file_path <-}\StringTok{ }\KeywordTok{here}\NormalTok{(data_path, folder, filename)}
-\NormalTok{vole <-}\StringTok{ }\KeywordTok{data.table}\NormalTok{(}\KeywordTok{read_excel}\NormalTok{(file_path, }\DataTypeTok{sheet=}\StringTok{"COLD VOLES LIFESPAN"}\NormalTok{, }\DataTypeTok{range=}\StringTok{"a2:d98"}\NormalTok{))}
-\CommentTok{# clean column names}
-\NormalTok{vole <-}\StringTok{ }\KeywordTok{clean_names}\NormalTok{(vole)}
+\NormalTok{vole <-}\StringTok{ }\KeywordTok{read_excel}\NormalTok{(file_path, }\DataTypeTok{sheet=}\StringTok{"COLD VOLES LIFESPAN"}\NormalTok{, }\DataTypeTok{range=}\StringTok{"a2:d98"}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{clean_names}\NormalTok{() }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{data.table}\NormalTok{()}
 
 \CommentTok{# create treatment column}
 \CommentTok{# in rows where control=1, set treatment value to "control"}
@@ -2413,8 +2412,8 @@ but not non-linear models that are also non-linear in the parameters.
 \tightlist
 \item
   The draws from the probability distribution are \textbf{independent}.
-  Independence implies \textbf{uncorrelated} observations (the \(Y\)),
-  that is, for any two observations with the same value of \(X\), we
+  Independence implies \textbf{uncorrelated} \(Y\) conditional on the
+  \(X\), that is, for any two \(Y\) with the same value of \(X\), we
   cannot predict the value of one given the value of the other. For
   example, in the vole data above, uncorrelated implies that we cannot
   predict the lifespan of one vole within the Vitamin E treatment given
@@ -2424,22 +2423,23 @@ but not non-linear models that are also non-linear in the parameters.
   observations.
 \end{enumerate}
 
-There are lots of reasons that observations might be correlated. In the
-vole example, perhaps the voles were housed in batches of 5 individuals,
-and slight differences in the environment among the housing containers,
-caused all the voles in some containers to have shorter lifespans than
-expected given their treatment assigment and all voles in other
-containers to have longer lifespans than expected given their treatment
-assigment. More generally, if there are measures both within and among
-experimental units (field sites or humans or rats) then we'd expect the
-measures within the same unit to err from the model in the same
-direction. Multiple measures within experimental units (a site or
-individual) creates ``clustered'' observations. Lack of independence or
-clustered observations can be modeled using models with \textbf{random
-effects}. These models go by many names including linear mixed models
-(common in Ecology), hierarchical models, multilevel models, and random
-effects models. A linear mixed model is a variation of model
-\eqref{eq:lm}. This text introduces linear mixed models in chapter xxx.
+There are lots of reasons that conditional responses might be
+correlated. In the vole example, perhaps the voles were housed in
+batches of 5 individuals, and slight differences in the environment
+among the housing containers, caused all the voles in some containers to
+have shorter lifespans than expected given their treatment assigment and
+all voles in other containers to have longer lifespans than expected
+given their treatment assigment. More generally, if there are measures
+both within and among experimental units (field sites or humans or rats)
+then we'd expect the measures within the same unit to err from the model
+in the same direction. Multiple measures within experimental units (a
+site or individual) creates ``clustered'' observations. Lack of
+independence or clustered observations can be modeled using models with
+\textbf{random effects}. These models go by many names including linear
+mixed models (common in Ecology), hierarchical models, multilevel
+models, and random effects models. A linear mixed model is a variation
+of model \eqref{eq:lm}. This text introduces linear mixed models in
+chapter xxx.
 
 Measures that are taken from sites that are closer together or measures
 taken closer in time or measures from more closely related biological
@@ -2505,13 +2505,13 @@ the classical linear model.
 \end{enumerate}
 
 A common misconception is that inference from a linear model assumes
-that the \emph{response} (\(Y\)) is normally distributed. Both the
-``linear model'' and ``statistical model'' ways of specifying the model
-show precisely why this conception is wrong. Model \eqref{eq:lm} states
-explicitly that it is the error that has the normal distribution -- the
-distribution of \(Y\) is a mix of the distribution of \(X\) and the
-error. Model \eqref{eq:lm-spec2} states that the conditional outcome has a
-normal distribution, that is, the distribution after adjusting for
+that the \emph{unconditional response} (\(Y\)) is normally distributed.
+Both the ``linear model'' and ``statistical model'' ways of specifying
+the model show precisely why this conception is wrong. Model \eqref{eq:lm}
+states explicitly that it is the error that has the normal distribution
+-- the distribution of \(Y\) is a mix of the distribution of \(X\) and
+the error. Model \eqref{eq:lm-spec2} states that the conditional outcome
+has a normal distribution, that is, the distribution after adjusting for
 variation in \(X\).
 
 \section{\texorpdfstring{``Statistical model'' or ``regression
@@ -2587,9 +2587,9 @@ this
 
 \includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/histogram-1.pdf}
 
-The mean of this sample is 69.4 and the standard deviation is 2.8. The
-standard deviation is the square root of the variance, and so computed
-by
+The mean of this sample is 69.4µm and the standard deviation is 2.8 µm.
+The standard deviation is the square root of the variance, and so
+computed by
 
 \begin{equation}
 s_y = \sqrt{\frac{\sum_{i=1}^n{(y_i - \overline{y})^2}}{n-1}}
@@ -2609,7 +2609,8 @@ in value to the averaged deviation (or average of the absolute values of
 the deviations since the average deviation is, by definition of a mean,
 zero).
 
-Notes on the variance and standard deviation
+\subsubsection{Notes on the variance and standard
+deviation}\label{notes-on-the-variance-and-standard-deviation}
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
@@ -2637,9 +2638,10 @@ mean}\label{standard-error-of-the-mean}
 
 A standard error of a statistic is a measure of the precision of the
 statistic. The standard error of the mean is a measure of the precision
-of the estimate of the mean. The smaller the standard error, the more
-precise the estimate. The standard error of the mean (SEM) is computed
-as
+of the estimate of the mean. The standard error of a difference in means
+is a measure of the precision of the estimate of the difference in
+means. The smaller the standard error, the more precise the estimate.
+The standard error of the mean (SEM) is computed as
 
 \begin{equation}
 SEM = \frac{s_y}{\sqrt{n}}
@@ -2647,32 +2649,44 @@ SEM = \frac{s_y}{\sqrt{n}}
 \end{equation}
 
 The SEM is often denoted \(s_{\bar{y}}\) to indicate that it is a
-standard deviation of the mean (\(\bar{y}\)). In what sense is a
-standard error a measure of variability? This is kinda weird. If we
-sample 100 cells in the slide of muscle tissue and compute the mean
-diameter, how can the mean have a standard deviation? There is only one
-value! To understand how the SEM is a standard deviation, imagine 1)
-resampling 100 cells and 2) recomputing a mean from the re-sampled data,
-then repeating this resampling and recomputation an infinite number of
-times and each time, you write down the newly computed mean. The true
-standard error of the mean is the standard deviation of this infinitely
-long column of means. This means that a standard error of the mean,
-computed from a single sample using equation \eqref{eq:se} is itself a
-sample statistic.
+standard deviation of the mean (\(\bar{y}\)).
 
-Notes on standard errors
+\subsubsection{The standard error of the mean can be thought of as a
+standard deviation of an infinitely long column of re-sampled
+means}\label{the-standard-error-of-the-mean-can-be-thought-of-as-a-standard-deviation-of-an-infinitely-long-column-of-re-sampled-means}
+
+In what sense is a standard error a standard deviation? This is kinda
+weird. If we sample 100 cells in the slide of muscle tissue and compute
+the mean diameter, how can the mean have a standard deviation? There is
+only one value!
+
+To understand how the SEM is a standard deviation, imagine that we
+sample \(n\) values from \(N(\mu, \sigma^2)\) (a normal distribution
+with mean \(\mu\) and variance \(\sigma^2\). The mean of our sample is
+an estimate of \(\mu\) the standard deviation of sample is an estimate
+of \(\sigma\)) an infinite number of times and each time, we write down
+the mean of the new sample. The standard deviation of this infinitely
+long column of means is the standard error of the mean. Our observed SEM
+is an estimate of this true value because our observed standard
+deviation is an estimate of \(\sigma\).
+
+\subsubsection{A standard deviation can be computed for any statistic --
+these are all standard
+errors.}\label{a-standard-deviation-can-be-computed-for-any-statistic-these-are-all-standard-errors.}
+
+The SEM is only one kind of standard error. A standard deviation can be
+computed for any statistic -- these are all standard errors. For some
+statistics, such as the mean, the standard error can be computed
+directly using an equation, such as that for the SEM (equation
+\eqref{eq:se}). For other statistics, a computer intensive method known as
+the \textbf{bootstrap} is necessary to compute a standard error. We will
+return to the bootstrap in Section \ref{bootstrap}.
+
+\subsubsection{Notes on standard errors}\label{notes-on-standard-errors}
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
 \tightlist
-\item
-  The SEM is only one kind of standard error. A standard deviation can
-  be computed for any statistic -- these are all standard errors. For
-  some statistics, such as the mean, the standard error can be computed
-  directly using an equation, such as that for the SEM (equation
-  \eqref{eq:se}. For other statistics, a computer intensive method such as
-  the \textbf{bootstrap} is necessary to compute a standard error. We
-  will return to the bootstrap at the end of this chapter.
 \item
   The units of a standard error are the units of the measured variable.
 \item
@@ -3057,16 +3071,82 @@ Question number 4 is asking what is E(SEM), the ``expected standard
 error of the mean''. There is a very easy formula to compute this. What
 is it?
 
-\section{Bootstrapped standard
-errors}\label{bootstrapped-standard-errors}
+\section{Bootstrapped standard errors}\label{bootstrap}
 
-A standard error of the mean is the expected standard deviation of an
-infinite number of hypothetically re-sampled means. A bootstrap standard
-error of a statistic is the standard deviation of the statistic from a
-finite number of \emph{resamples} of the data.
+The bootstrap is certainly one of the most valuable tools invented in
+modern statistics. But, it's not only a useful tool for applied
+statistics, it's a useful tool for understanding statistics. Playing
+with a parametric bootstrap will almost certainly induce an ``aha, so
+that's what statisticians mean by \ldots{}'' moment.
 
-Let's download some data to explore this concept. The data are archived
-at Dryad Repository.
+To understand the bootstrap, let's review a standard error. A
+\emph{parametric} standard error of a mean is the \emph{expected}
+standard deviation of an infinite number of means. A standard error of
+any statistic is the \emph{expected} standard deviation of that
+statistic. I highlight \emph{expected} to emphasize that parametric
+standard errors assume a certain distribution (not necessarily a Normal
+distribution, although the equation for the SEM in Equation \eqref{eq:se}
+assumes a normal distribution if the standard deviation is computed as
+in Equation \eqref{eq:sd}).
+
+A bootstrapped standard error of a statistic is the \textbf{empirical}
+standard deviation of the statistic from a finite number of
+\emph{samples}. The basic algorithm for a bootstrap is (here ``the
+statistic'' is the mean of the sample)
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  sample \(n\) values from a probability distribution
+\item
+  compute the mean
+\item
+  repeat step 1 and 2 many times
+\item
+  for a bootstrapped standard error, compute the standard deviation of
+  the set of means saved from each iteration of steps 1 and 2.
+\end{enumerate}
+
+The probability distribution can come from two sources:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  A \textbf{parametric bootstrap} uses samples from a parametric
+  probability distribution, such as a Normal distribution or a poisson
+  distribution (remember, these are ``parametric'' because the
+  distribution is completely described by a set of parameters). A good
+  question is why bother? In general, one would use a parametric
+  bootstrap for a statistic for which there is no formula for the
+  standard error, but the underlying data come from a parametric
+  probability distribution.
+\item
+  A \textbf{non-parametric} bootstrap uses \emph{resamples from the
+  data}. The data are resampled \emph{with replacement}. ``Resample with
+  replacement'' means to sample \(n\) times from the full set of
+  observed values. If we were to do this manually, we would i) write
+  down each value of the original sample on its own piece of paper and
+  throw all pieces into a hat. ii) pick a paper from the hat, add its
+  value to sample \(i\), and return the paper to the hat. iii) repeat
+  step ii \(n\) times, where \(n\) is the original sample size. The new
+  sample contains some values multiple times (papers that were picked
+  out of the hat more than once) and is missing some values (papers that
+  were not picked out in any of the \(n\) picks). A good question is,
+  why bother? A non-parametric bootstrap assumes no specific
+  \emph{parametric} probability distribution but it does assume the
+  distributio of the observed sample is a good approximation of the true
+  population distribution (in which case, the probability of picking a
+  certain value is a good approximation to the true probability).
+\end{enumerate}
+
+\subsection{An example of bootstrapped standard errors using vole
+data}\label{an-example-of-bootstrapped-standard-errors-using-vole-data}
+
+Let's use the vole data to explore the bootstrap and ``resampling''. The
+data are archived at Dryad Repository. Use the script in Section
+\ref{vole-data} to wrangle the data into a usable format.
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
@@ -3087,114 +3167,174 @@ which are thought to be protective of basic cell function since they
 bind to the cell-damaging reactive oxygen species that result from cell
 metabolism.
 
-I've read in the file using read\_excel and converted to a data.table
-named \texttt{vole}. I used \texttt{setnames} to rename the columns to
-lifespan, control, vitamin\_E, and vitamin\_C. The data are in a
-\textbf{wide format} -- that is instead of a single ``treatment''
-column, there are three columns (``control'', ``vitamin C'', ``vitamin
-E'') with value = 1, if that row (or lifespan) was assigned the
-treatment of the column label and zero otherwise. In general, we want
-data.tables to be in long format.
-
-Compute the standard error of the mean of the lifespan for the control
-group using equation \eqref{eq:se}. One simple way to do this for the
-control group is to extract the subset of the data satisfying the
-condition control = 1 (the value in the column ``control'' equals 1). In
-R, these conditional querries use \texttt{==}.
+Let's compute the standard error of the mean of the control group
+lifespan using both a parametric and a nonparametric bootstrap. To
+implement the algorithm above using easy-to-understand code, I'll first
+extract the set of lifespan values for the control group and assign it
+to its own variable.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{control_voles <-}\StringTok{ }\KeywordTok{na.omit}\NormalTok{(vole[control}\OperatorTok{==}\DecValTok{1}\NormalTok{, lifespan]) }\CommentTok{# subset of data satisfying condition and}
-\CommentTok{# omitting missing data, if these exist}
-\NormalTok{n <-}\StringTok{ }\KeywordTok{length}\NormalTok{(control_voles) }\CommentTok{# the sample size}
-\NormalTok{se <-}\StringTok{ }\KeywordTok{sd}\NormalTok{(control_voles)}\OperatorTok{/}\KeywordTok{sqrt}\NormalTok{(n}\OperatorTok{-}\DecValTok{1}\NormalTok{) }\CommentTok{# standard error of the mean of the control voles}
+\NormalTok{control_voles <-}\StringTok{ }\NormalTok{vole[treatment}\OperatorTok{==}\StringTok{"control"}\NormalTok{, lifespan]}
 \end{Highlighting}
 \end{Shaded}
 
-Okay, the SEM using equation \eqref{eq:se} is 31.9. Let's compare this
-with a bootstrap estimate of the SEM. There are several R packages that
-do a bootstrap but here I've coded one using a for-loop both to practice
-with for-loops and to help communicate what a bootstrap \emph{is}.
+\texttt{{[}treatment=="control",\ {]}} indexes the rows (that is,
+returns the row numbers) that satisfy the condtion
+\texttt{treatment\ =\ "control"}. Or, put another way, it selects the
+\textbf{subset} of rows that contain the value ``control'' in the column
+``treatment''. \texttt{{[},\ lifespan{]}} indexes the column labeled
+``lifespan''. Combined, these two indices extract the values of the
+column ``lifespan'' in the subset of rows that contain the value
+``control'' in the column ``treatment''. The resulting vector of values
+is assigned to the variable ``control\_voles''.
 
-The basic algorithm for a bootstrap is
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\tightlist
-\item
-  \textbf{re-sample the data with replacement}. Here ``the data'' is the
-  set of lifespans for the Control voles. ``Resample with replacement''
-  means to sample \(n\) times from the full set of values. If we were to
-  do this manually, we would i) write down each value of Control
-  lifespan on its own piece of paper and throw all pieces into a hat.
-  ii) pick a paper from the hat, add its value to sample \(i\), and
-  return the paper to the hat. iii) repeat step ii \(n\) times, where
-  \(n\) is the original sample size. The new sample contains some values
-  multiple times (papers that were picked out of the hat more than once)
-  and is missing some values (papers that were not picked out in any of
-  the \(n\) picks).
-\item
-  Compute the statistic with the new sample.
-\item
-  Repeat steps 1 and 2 \(p\) times, which will result in a \(p\)-length
-  vector of the statistic. Typically \(p\) is somewhere between 2000 and
-  10,000.
-\item
-  For the standard error of the statistic, compute the standard
-  deviation of the re-sampled statistic.
-\end{enumerate}
-
-A for-loop automates this algorithm.
+\subsubsection{parametric bootstrap}\label{parametric-bootstrap}
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\KeywordTok{set.seed}\NormalTok{(}\DecValTok{1}\NormalTok{)}
-\NormalTok{n_iter <-}\StringTok{ }\DecValTok{2000} \CommentTok{# number of bootstrap iterations, or p}
+\CommentTok{# we'll use these as parameters for parametric bootstrap}
+\NormalTok{n <-}\StringTok{ }\KeywordTok{length}\NormalTok{(control_voles)}
+\NormalTok{mu <-}\StringTok{ }\KeywordTok{mean}\NormalTok{(control_voles)}
+\NormalTok{sigma <-}\StringTok{ }\KeywordTok{sd}\NormalTok{(control_voles)}
+
+\NormalTok{n_iter <-}\StringTok{ }\DecValTok{1000} \CommentTok{# number of bootstrap iterations, or p}
 \NormalTok{means <-}\StringTok{ }\KeywordTok{numeric}\NormalTok{(n_iter) }\CommentTok{# we will save the means each iteration to this}
-\NormalTok{inc <-}\StringTok{ }\DecValTok{1}\OperatorTok{:}\NormalTok{n }\CommentTok{# the first sample is the actual sample}
+
 \ControlFlowTok{for}\NormalTok{(iter }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\NormalTok{n_iter)\{ }\CommentTok{# this line sets up the number of iterations, p}
-\NormalTok{  means[iter] <-}\StringTok{ }\KeywordTok{mean}\NormalTok{(control_voles[inc]) }\CommentTok{# inc is the set of rows to include in the computation of the mean.}
-\NormalTok{  inc <-}\StringTok{ }\KeywordTok{sample}\NormalTok{(}\DecValTok{1}\OperatorTok{:}\NormalTok{n, }\DataTypeTok{replace=}\OtherTok{TRUE}\NormalTok{) }\CommentTok{# re-sample for the next iteration}
+\NormalTok{  fake_sample <-}\StringTok{ }\KeywordTok{rnorm}\NormalTok{(n, }\DataTypeTok{mean=}\NormalTok{mu, }\DataTypeTok{sd=}\NormalTok{sigma)}
+\NormalTok{  means[iter] <-}\StringTok{ }\KeywordTok{mean}\NormalTok{(fake_sample)}
 \NormalTok{\}}
-\NormalTok{se_boot <-}\StringTok{ }\KeywordTok{sd}\NormalTok{(means)}
-\KeywordTok{getwd}\NormalTok{()}
+\NormalTok{(se_para_boot <-}\StringTok{ }\KeywordTok{sd}\NormalTok{(means))}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
-## [1] "/Users/jwalker/Documents/Github projects/Bookdown projects/applied-biostats"
+## [1] 30.49765
 \end{verbatim}
 
-The SEM using the bootstrap is 31.43. Again, the SEM using equation
-\eqref{eq:se} is 31.9.
+\subsubsection{non-parametric bootstrap}\label{non-parametric-bootstrap}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{n_iter <-}\StringTok{ }\DecValTok{1000} \CommentTok{# number of bootstrap iterations, or p}
+\NormalTok{means <-}\StringTok{ }\KeywordTok{numeric}\NormalTok{(n_iter) }\CommentTok{# we will save the means each iteration to this}
+\NormalTok{inc <-}\StringTok{ }\DecValTok{1}\OperatorTok{:}\NormalTok{n }\CommentTok{# inc indexes the elements to sample. By setting inc to 1:n prior to the loop, the first mean that is computed is the observed mean}
+\ControlFlowTok{for}\NormalTok{(iter }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\NormalTok{n_iter)\{ }\CommentTok{# this line sets up the number of iterations, p}
+\NormalTok{  means[iter] <-}\StringTok{ }\KeywordTok{mean}\NormalTok{(control_voles[inc]) }\CommentTok{# inc is the set of rows to include in the computation of the mean.}
+\NormalTok{  inc <-}\StringTok{ }\KeywordTok{sample}\NormalTok{(}\DecValTok{1}\OperatorTok{:}\NormalTok{n, }\DataTypeTok{replace=}\OtherTok{TRUE}\NormalTok{) }\CommentTok{# re-sample for the next iteration}
+\NormalTok{\}}
+\NormalTok{(se_np_boot <-}\StringTok{ }\KeywordTok{sd}\NormalTok{(means))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 32.47356
+\end{verbatim}
+
+The parametric bootstrapped SEM is 30.5. The non-parametric bootstrapped
+SEM is 32.47. Run these several times to get a sense how much variation
+there is in the bootstrapped estimate of the SEM given the number of
+iterations. Compute the \textbf{parametric} standard error using
+equation \eqref{eq:se} and compare to the bootstrapped values.
 
 \section{Confidence Interval}\label{confidence-interval}
 
-Here I introduce a \textbf{confidence interval} (abbreviated to CI)
-using the mean of a sample but the concept is easily generalized to any
-parameter of a statistical model. The mean of the Control voles is 503.4
-and the SE of the mean is 31.9. The SE is used to construct the lower
-and upper boundary of a ``1 - \(\alpha\)'' confidence interval using
-\texttt{lower\ \textless{}-\ mean(x)\ -\ qt(alpha/2,\ df\ =\ n)*se(x)}
+Here I introduce a \textbf{confidence interval} of a sample mean but the
+concept is easily generalized to any parameter. The mean of the Control
+voles is 503.4 and the SE of the mean is 31.61. The SE is used to
+construct the lower and upper boundary of a ``1 - \(\alpha\)''
+confidence interval using
+\texttt{lower\ \textless{}-\ mean(x)\ +\ qt(alpha/2,\ df\ =\ n-1)*se(x)}
 and
-\texttt{upper\ \textless{}-\ mean(x)\ +\ qt(alpha/2,\ df\ =\ n)*se(x)}.
+\texttt{upper\ \textless{}-\ mean(x)\ +\ qt(1-(alpha/2),\ df\ =\ n-1)*se(x)}.
 
-\begin{equation}
-upper = mean + 
-\end{equation}
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{(lower <-}\StringTok{ }\KeywordTok{mean}\NormalTok{(control_voles) }\OperatorTok{+}\StringTok{ }\KeywordTok{qt}\NormalTok{(}\FloatTok{0.05}\OperatorTok{/}\DecValTok{2}\NormalTok{, }\DataTypeTok{df=}\NormalTok{(n}\OperatorTok{-}\DecValTok{1}\NormalTok{))}\OperatorTok{*}\KeywordTok{sd}\NormalTok{(control_voles)}\OperatorTok{/}\KeywordTok{sqrt}\NormalTok{(n))}
+\end{Highlighting}
+\end{Shaded}
 
-A confidence interval of the mean is a measure of the uncertainty in the
-estimate of the mean. A 95\% confidence interval has a 95\% probability
-(in the sense of long-run frequency) of containing the true mean. This
-probability is a property of the population of intervals that could be
-computed using the same sampling and measuring procedure. It is not
-correct, without further assumptions, to state that ``there is a 95\%
-probability that the true mean lies within the interval''. Perhaps a
-more useful interpretation is that the interval contains the range of
-means that are consistent with the data, in the sense that a \(t\)-test
-would not reject the null hypothesis of a difference between the
-estimate and any value within the interval (this interpretation does not
-imply anything about the true value).
+\begin{verbatim}
+## [1] 440.0464
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{(upper <-}\StringTok{ }\KeywordTok{mean}\NormalTok{(control_voles) }\OperatorTok{+}\StringTok{ }\KeywordTok{qt}\NormalTok{(}\DecValTok{1} \OperatorTok{-}\StringTok{ }\FloatTok{0.05}\OperatorTok{/}\DecValTok{2}\NormalTok{, }\DataTypeTok{df=}\NormalTok{(n}\OperatorTok{-}\DecValTok{1}\NormalTok{))}\OperatorTok{*}\KeywordTok{sd}\NormalTok{(control_voles)}\OperatorTok{/}\KeywordTok{sqrt}\NormalTok{(n))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 566.7393
+\end{verbatim}
+
+The function \texttt{qt} maps a probability to a \emph{t}-value -- this
+is the opposite of a \emph{t} test, which maps a \emph{t}-value to a
+probability. Sending \(\alpha/2\) and \(1 - \alpha/2\) to \texttt{qt}
+returns the bounds of the confidence intereval on a standardized scale.
+Multiplying these bounds by the standard error of the control vole
+lifespan pops the bounds onto the scale of the control vole lifespans.
+
+We can check our manual computation with the linear model
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{confint}\NormalTok{(}\KeywordTok{lm}\NormalTok{(control_voles }\OperatorTok{~}\StringTok{ }\DecValTok{1}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##                2.5 %   97.5 %
+## (Intercept) 440.0464 566.7393
+\end{verbatim}
+
+\subsection{Interpretation of a confidence
+interval}\label{interpretation-of-a-confidence-interval}
+
+Okay, so what \emph{is} a confidence interval? A confidence interval of
+the mean is a measure of the uncertainty in the estimate of the mean. A
+95\% confidence interval has a 95\% probability (in the sense of
+long-run frequency) of containing the true mean. It is not correct to
+state that ``there is a 95\% probability that the true mean lies within
+the interval''. These sound the same but they are two different
+probabilities. The first (correct interpretation) is a probability of a
+procedure -- if we re-do this procedure (sample data, compute the mean,
+and compute a 95\% CI), 95\% of these CIs will contain the true mean.
+The second (incorrect interpretation) is a probability that a parameter
+(\(\mu\), the true mean) lies within some range. The second (incorrect)
+interepretation of the CI is correct only if we also assume that
+\emph{any} value of the mean is equally probable (Greenland xxx), an
+assumption that is absurd for almost any data.
+
+Perhaps a more useful interpretation of a confidence interval is, a
+confidence interval contains the range of true means that are compatible
+with the data, in the sense that a \(t\)-test would not reject the null
+hypothesis of a difference between the estimate and any value within the
+interval (this interpretation does not imply anything about the true
+value) (Greenland xxx). The ``compatibility'' interpretation is very
+useful because it implies that values outside of the interval are less
+compatible with the data.
+
+Let's look at the confidence intervals of all three vole groups in light
+of the ``compatibility'' interpretation.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{vole_ci <-}\StringTok{ }\NormalTok{vole[, .(}\DataTypeTok{lifespan =} \KeywordTok{mean}\NormalTok{(lifespan),}
+                    \DataTypeTok{lo =} \KeywordTok{mean}\NormalTok{(lifespan) }\OperatorTok{+}\StringTok{ }\KeywordTok{sd}\NormalTok{(lifespan)}\OperatorTok{/}\KeywordTok{sqrt}\NormalTok{(.N)}\OperatorTok{*}\KeywordTok{qt}\NormalTok{(.}\DecValTok{025}\NormalTok{, (.N}\OperatorTok{-}\DecValTok{1}\NormalTok{)),}
+                    \DataTypeTok{up =} \KeywordTok{mean}\NormalTok{(lifespan) }\OperatorTok{+}\StringTok{ }\KeywordTok{sd}\NormalTok{(lifespan)}\OperatorTok{/}\KeywordTok{sqrt}\NormalTok{(.N)}\OperatorTok{*}\KeywordTok{qt}\NormalTok{(.}\DecValTok{975}\NormalTok{, (.N}\OperatorTok{-}\DecValTok{1}\NormalTok{)),}
+                    \DataTypeTok{N =}\NormalTok{ .N),}
+\NormalTok{                by =}\StringTok{ }\NormalTok{.(treatment)]}
+\KeywordTok{ggplot}\NormalTok{(}\DataTypeTok{data=}\NormalTok{vole_ci, }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{treatment, }\DataTypeTok{y=}\NormalTok{lifespan)) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_point}\NormalTok{() }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_errorbar}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{treatment, }\DataTypeTok{ymin=}\NormalTok{lo, }\DataTypeTok{ymax=}\NormalTok{up), }
+                \DataTypeTok{width=}\FloatTok{0.1}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\OtherTok{NULL}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-31-1.pdf}
 
 \chapter{Covariance and Correlation}\label{covariance-and-correlation}
 
@@ -4581,7 +4721,7 @@ effect from Z to both X equal to \(\sqrt(0.6)\).
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-30-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-33-1.pdf}
 
 Now create fake \(Y\) that is a function of both \(X_1\) and \(X_2\).
 Create ``standardized'' fake data, where \(\sigma_Y = 1\).
@@ -6350,7 +6490,7 @@ Here is the default plot
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-46-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-49-1.pdf}
 
 \chapter{Model Checking}\label{model-checking-1}
 
@@ -6718,7 +6858,7 @@ nests or a host with no parasites), resulting in positive deviations
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-47-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-50-1.pdf}
 
 \subsubsection{Constrained lower and upper
 bounds}\label{constrained-lower-and-upper-bounds}
@@ -7103,7 +7243,7 @@ small.
 the 10,000 effects}
 \end{figure}
 
-\label{tab:unnamed-chunk-49}The top 10 genes ranked by p-value. Rank is the
+\label{tab:unnamed-chunk-52}The top 10 genes ranked by p-value. Rank is the
 rank of the true effect, from large to small.
 
 effect
@@ -8366,7 +8506,7 @@ intervals}\label{adding-bootstrap-intervals}
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-58-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-61-1.pdf}
 
 \subsection{Adding modeled error
 intervals}\label{adding-modeled-error-intervals}
@@ -8412,7 +8552,7 @@ effect}\label{modeled-error-intervals-of-the-effect}
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-60-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-63-1.pdf}
 
 \subsubsection{Modeled error intervals of the
 mean}\label{modeled-error-intervals-of-the-mean}
@@ -8434,7 +8574,7 @@ mean}\label{modeled-error-intervals-of-the-mean}
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-61-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-64-1.pdf}
 
 Note that the CIs are asymmetric about the mean (and these modeled CIs
 will never include negative values for count data).
@@ -8451,7 +8591,7 @@ The ggplots are combined using the package \texttt{cowplot}
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-62-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-65-1.pdf}
 
 \subsection{Adding p-values}\label{adding-p-values}
 
@@ -8747,7 +8887,7 @@ function from the emmeans package.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-68-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-71-1.pdf}
 
 \subsection{Interaction plot}\label{interaction-plot}
 
@@ -8767,7 +8907,7 @@ function from the emmeans package.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-69-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-72-1.pdf}
 
 \subsection{Plot components}\label{plot-components}
 
@@ -8789,7 +8929,7 @@ stripchart or a jitter plot
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-70-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-73-1.pdf}
 
 With more points, a stripchart can be okay but with too many points the
 distribution might be obscured. Reasonable alternatives are a box plot,
@@ -8819,7 +8959,7 @@ a violin plot, and a dotplot.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-71-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-74-1.pdf}
 
 \section{}\label{section}
 
@@ -8950,7 +9090,7 @@ ldlc.r = \beta_0 + \beta_1 treatment + \varepsilon
 
 where \(ldlc.r\) is the set of residuals.
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-73-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-76-1.pdf}
 
 Now the estimate of the effect is -4.7 mg/dL blood and the SE is only
 0.88. In this two-stage analysis (stage 1: fit ldlc \textasciitilde{}
@@ -8978,11 +9118,11 @@ ldlc = \beta_0 + \beta_1 age + \beta_2 treatment + \varepsilon
 
 which results in the Harrell Plot
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-74-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-77-1.pdf}
 
 and the coefficient table
 
-\label{tab:unnamed-chunk-75}Coefficients of the model that includes the
+\label{tab:unnamed-chunk-78}Coefficients of the model that includes the
 covariate age.
 
 Estimate
@@ -10529,7 +10669,7 @@ design}\label{bar-plot-with-uniform-coloring-poorly-communicate-the-factorial-de
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-85-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-88-1.pdf}
 
 \subsubsection{Plots that communicate the factorial
 design}\label{plots-that-communicate-the-factorial-design}
@@ -10705,7 +10845,7 @@ reflect our pre-conceived scientific model.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-86-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-89-1.pdf}
 
 This effects plot shows the four simple effects, the single interaction
 (Temp18:CO21100), and their 95\% confidence intervals. In the original
@@ -10731,7 +10871,7 @@ to small) to have much confidence in the size of the interaction effect.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-87-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-90-1.pdf}
 
 The effects and interaction plot are combined into a single plot.
 
@@ -12411,842 +12551,6 @@ Models}\label{part-v-expanding-the-linear-model-generalized-linear-models-and-mu
 \addcontentsline{toc}{chapter}{Part V: Expanding the Linear Model --
 Generalized Linear Models and Multilevel (Linear Mixed) Models}
 
-\chapter{Generalized linear models I: Count
-data}\label{generalized-linear-models-i-count-data}
-
-Biologists frequently count stuff, and design experiments to estimate
-the effects of different factors on these counts. For example, the
-effects of environmental mercury on clutch size in a bird, the effects
-of warming on parasite load in a fish, or the effect of exercise on RNA
-expression.
-
-Count data differ from data with normal error in many ways, including 1)
-counts are discrete, and can be zero or positive integers only, 2)
-counts tend to bunch up on the small side of the range, creating a
-distribution with a positive skew, 3) a sample of counts can have an
-abundance of zeros, and 4) the variance of counts increases with the
-mean (see Figure \ref{fig:glm1-plot1} for some of these properties).
-Some count data can be approximated by a normal distribution and
-reasonably modeled with a linear model but more often, count data are
-modeled with \textbf{Poisson distribution} or \textbf{negative binomial
-distribution} using a \textbf{generalized linear model} (GLM). Poisson
-and negative binomial distributions are \textbf{discrete probability
-distributions} with two important properties: 1) the distribution
-contains only zero and positive integers and 2) the variance is a
-function of the mean. Back before modern computing and fast processors,
-count data were often analyzed by either \textbf{transforming} the
-response or by \textbf{non-parametric hypothesis tests}. One reason to
-prefer a statistical modeling approach with a GLM is that we can get
-interpretable parameter estimates. By contrast, both the analysis of
-transformed data and non-parametric hypothesis tests are really tools
-for computing ``correct'' \(p\)-values.
-
-\begin{figure}
-\centering
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/glm1-plot1-1.pdf}
-\caption{\label{fig:glm1-plot1}Histogram of the count of a trematode
-parasite larvae in Control vs.~Infected fish. Fish in the Infected
-treatment are infected with a tapeworm.}
-\end{figure}
-
-\section{The generalized linear
-model}\label{the-generalized-linear-model}
-
-As outlined in section {[}Assumptions for inference with statistical
-models{]} in Chapter 1, a common way that biological researchers think
-about a response variable is
-
-\begin{align}
-y_i &= \beta_0 + \beta_1 x_i + \varepsilon_i \\
-\varepsilon &\sim N(0, \sigma)
-\label{eq:spec1}
-\end{align}
-
-That is, we can think of a response as the sum of some systematic part
-and ``random errror'', which is a random draw from a normal distribution
-with mean zero and variance \(\sigma^2\). This way of thinking about the
-generation of the response is useful for linear models, and model
-checking linear models, but is not useful for generalized linear models
-or model checking generalized liner models. For example, if we want to
-model the number of parasites that have infected a fish using a Poisson
-distribution, the following is the \textbf{wrong} way to think about the
-statistical model
-
-\begin{align}
-y_i &= \beta_0 + \beta_1 x_i + \varepsilon_i\\
-\varepsilon &\sim Poisson(\lambda)
-\label{eq:spec1-poisson}
-\end{align}
-
-That is, we should not think of a count as the sum of a systematic part
-and a random draw from a Poisson distribution. Why? Because it is the
-counts (or the counts conditional on \(X\)) that are poisson
-distributed, not the residuals from the fit model.
-
-Thinking about the distribution of count data using model
-\eqref{eq:spec1-poisson} leads to absurd consequences. For example, if we
-set the mean of the Poisson ``error'' to zero (like with a normal
-distribution), then the error term for every observation would
-\emph{have to} be zero (because the only way to get a mean of zero with
-non-negative integers is if every value is zero). Or, if the study is
-modeling the effect of a treatment on the counts (that is, the \(X\) are
-dummy variables) then \(\beta_0\) is the expected mean count of the
-control (or reference) group. But if we add non-zero Poisson error to
-this, then the mean of the control group would be larger than
-\(\beta_0\). This doesn't make sense. And finally, equation
-\eqref{eq:spec1-poisson} generates a continuous response, instead of an
-integer, because \(\beta_0\) and \(\beta_1\) are continuous.
-
-A better way to think about the data generation for a linear model,
-because this naturally leads to the \emph{correct} way to think about
-data generation for a generalized linear model, is
-
-\begin{align}
-y_i &\sim N(\mu_i, \sigma)\\
-\mathrm{E}(Y|X) &= \mu\\
-\mu_i &= \beta_0 + \beta_1 x_i
-\label{eq:lm-spec2}
-\end{align}
-
-That is, a response is a random draw from a normal distribution with
-mean \(mu\) (not zero!) and variance \(\sigma^2\). Line 1 is the
-stochastic part of this specification. Line 3 is the systematic part.
-
-The specification of a generalized linear model has both stochastic and
-systematic parts but adds a third part, which is a \textbf{link
-function} connecting the stochastic and systematic parts.
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\tightlist
-\item
-  \textbf{The stochastic part}, which is a probability distribution from
-  the exponential family (this is sometimes called the ``random part'')
-
-  \begin{equation}
-  y_i \sim \mathrm{Prob}(\mu_i)
-  \end{equation}
-\item
-  \textbf{the systematic part}, which is a linear predictor (I like to
-  think about this as the deterministic part)
-
-  \begin{equation}
-  \eta=\mathbf{X}\boldsymbol{\beta}
-  \end{equation}
-\item
-  a \textbf{link function} connecting the two parts
-
-  \begin{equation}
-  \eta_i = g(\mu_i)
-  \end{equation}
-\end{enumerate}
-
-\(\mu\) (the Greek symbol mu) is the conditional mean (or expectation
-\(\mathrm{E}(Y|X)\)) of the response on the \textbf{response scale} and
-\(\eta\) (the Greek symbol eta) is the conditional mean of the response
-on the \textbf{link scale}. A GLM models the response with a
-distribution specified in the stochastic part. The probability
-distributions introduced in this chapter are the Poisson and Negative
-Binomial. The natural link function for the Poisson and Negative
-Binomial is the ``log link'', \(\eta = log(\mu)\). More generally, while
-each distribution has a natural (or, ``canonical'') link function, one
-can use alternatives. Given this definition of a generalized linear
-model, a linear model is a GLM with a normal distribution and an
-Identity link (\(\eta = \mu\)).
-
-When modeling counts using the Poisson or negative binomial
-distributions with a log link, the link scale is linear, and so the
-effects are additive on the link scale, while the response scale is
-nonlinear (it is the exponent of the link scale), and so the effects are
-multiplicative on the response scale. If this doesn't make sense now, an
-example is worked out below. The inverse of the link function
-backtransforms the parameters from the link scale back to the response
-scale. So, for example, a prediction on the response sale is
-\(\mathrm{exp}(\hat{\eta})\) and a coefficient on the response scale is
-\(\mathrm{exp}(b_j)\).
-
-\section{Count data example -- number of trematode worm larvae in eyes
-of threespine stickleback
-fish}\label{count-data-example-number-of-trematode-worm-larvae-in-eyes-of-threespine-stickleback-fish}
-
-The example is an experiment measuring the effect of the parasitic
-tapeworm \emph{Schistocephalus solidus} infection on the susceptibility
-of infection from a second parasite, the trematode \emph{Diplostomum
-pseudospathaceum}, in the threespine stickleback fish \emph{Gasterosteus
-aculeatus}\footnote{Benesh, D. P., \& Kalbe, M. (2016). Experimental
-  parasite community ecology: intraspecific variation in a large
-  tapeworm affects community assembly. Journal of Animal Ecology, 85(4),
-  1004-1013}. The treatment levels are ``Control'' (unexposed to the
-tapeworm), ``Uninfected'' " (exposed to the tapeworm but uninfected),
-``Infected LG'' (exposed and infected with the low growth population of
-the tapeworm), and ``Infected HG'' (exposed and infected with the high
-growth population of tapeworm). The response is the number of trematode
-larvae counted in the eyes (right and left combined) of the fish. A
-histogram of the counts is shown in Figure \ref{fig:glm1-plot1} for the
-control and Infected HG treatment levels.
-
-\subsection{Modeling strategy}\label{modeling-strategy-1}
-
-\textbf{NHST blues} -- Students are often encouraged by textbooks,
-colleagues, or the literature to start the analysis by first ``testing''
-assumptions with hypothesis tests -- for example using a Shaprio-Wilks
-test of normality as a decision rule to decide if to use a parametric
-test such as a \(t\)-test or ANOVA if the null hypothesis of normality
-is not rejected, or a non-parametric test such as a Mann-Whitney U test
-if the null hypothesis of normality is rejected. I advise against this,
-because 1) this pre-test filtering automatically invalidates the
-\(p\)-value of the hypothesis test as it does not adjust for the
-filtering procedure, 2) real data are only approximately normal and as
-\(n\) increses, a normality test will reject any real dataset, and 3)
-hypothesis tests are pretty robust to non-normality anyway.
-
-Instead of testing assumptions of a model using formal hypothesis tests
-\emph{before} fitting the model, a better strategy is to 1) fit a model,
-and then do 2) \textbf{model checking} using \textbf{diagnostic plots},
-diagnostic statistics, and simulation.
-
-With these data, a researcher would typically fit a GLM with a Poisson
-or negative binomial distribution and log link. Here, I start with a
-linear model to illustrate the interpretation of diagnostic plots with
-non-normal data. I use the ``linear model'' specification (equation
-\eqref{eq:spec1}) because the diganostic plots for model checking a linear
-model use the residuals of the fit model.
-
-\begin{align}
-Diplo\_intensity_i &= \beta_0 + \beta_1 Uninfected_i + \beta_2 Infected\_LG_i + \beta_3 Infected\_HG_i + \varepsilon_i \\
-\varepsilon &\sim N(0, \sigma)
-\label{eq:worm-lm}
-\end{align}
-
-\subsection{Checking the model I -- a Normal Q-Q
-plot}\label{checking-the-model-i-a-normal-q-q-plot}
-
-Figure \ref{fig:glm1-plot2}A shows a histogram of the residuals from the
-fit linear model. The plot shows that the residuals are clumped at the
-negative end of the range, which suggests that a model with a normally
-distributed conditional outcome (or normal error) is not well
-approximated.
-
-\begin{figure}
-\centering
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/glm1-plot2-1.pdf}
-\caption{\label{fig:glm1-plot2}Diagnostic plots of stickleback parasite
-data. A) Distribution of the residuals of the fit linear model. B)
-Normal Q-Q plot of the residuals of the fit linear model.}
-\end{figure}
-
-A better way to investigate this is with the \textbf{Normal Q-Q} plot in
-Figure \ref{fig:glm1-plot2}B, which plots the sample quantiles for a
-variable against their theoretical quantiles. If the conditional outcome
-approximates a normal distribution, the points should roughly follow the
-line. Instead, for the worm data, the points are above the line at both
-ends. At the left (negative) end, this means that we aren't seeing the
-most negative values that would be expected (the observed values are
-more positive than the theoretical values). Remembering that this plot
-is of residuals, if we think about this as counts, this means that our
-smallest counts are not as small as we would expect given the mean and a
-normal distribution. This shouldn't be surprising -- the counts range
-down to zero and counts cannot be below zero. At the positive end, the
-sample values are again more positive than the theoretical values.
-Thinking about this as counts, this means that are largest counts are
-larger than expected given the mean and a normal distribution. This
-pattern is exactly what we'd expect of count data, or at least count
-data that borders zero.
-
-\textbf{Intuition Pump} -- Let's construct a Normal Q-Q plot. A
-\textbf{quantile} (or percentile) of a vector of numbers is the value of
-the point at a specified percentage rank. The median is the 50\%
-quantile. The 95\% confidence intervals are at the 2.5\% and 97.5\%
-quantiles. In a Normal Q-Q plot, we want to plot the quantiles of the
-residuals against a set of theoretical quantiles.
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\tightlist
-\item
-  To get the observed quantiles, rank the residuals of the fit linear
-  model from most negative to most positive -- these are your quantiles!
-  For example, if you have \(n=145\) residuals, then the 73rd point is
-  the 50\% quantile.
-\item
-  A theoretical quantile from the normal distribution can be constructed
-  using the \texttt{qnorm} function which returns the normal quantiles
-  for a specified vector of percents. Alternatively, one could randomly
-  sample \(n\) points using \texttt{rnorm}. These of course will be
-  sampled quantiles so will only approximate the expected theoretical
-  quantiles, but I add this here because we use this method below.
-\end{enumerate}
-
-Now simply plot the observed against theoretical quantiles. Often, the
-\textbf{standardized} quantiles are plotted. A standardized variable has
-a mean of zero and a standard deviation of one and is computed by 1)
-centering the vector at zero by subtracting the mean from every value,
-and 2) dividing each value by the standard deviation of the vector.
-Recognize that because a standard deviation is a function of deviations
-from the mean, it doesn't matter which of these operations is done
-first. A standardized theoretical quantile is specified by
-\texttt{qnorm(p,\ mean\ =\ 0,\ sd\ =\ 1)}, which is the default.
-
-Below, I've plotted the standardized observed and theoretical quantiles
-against the vector of percents (from 0 to 100\%). This plot also nicely
-shows how the residuals of the worm data deviate from that expected if
-these had a normal distribution. The plot nicely shows that the most
-negative observed quintiles are not as negative as expected given a
-normal distribution, which again makes sense because this would imply
-negative counts since the mean is close to zero. And it nicely shows
-that the most positive observed quantiles are more positive than
-expected given a normal distribution, again this makes sense in right
-skewed count data. Finally, the plot nicely shows that the median is
-less positive than that expected given a normal distribution, which is
-at the mean (a right skew tends to pull the mean to the right of the
-median).
-
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/glm1-qqplot-sim-1.pdf}
-
-\subsection{Checking the model II -- scale-location plot for checking
-homoskedasticity}\label{checking-the-model-ii-scale-location-plot-for-checking-homoskedasticity}
-
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/glm1-worm-scale-location-1.pdf}
-
-A linear model also assumes the error has constant variance (that is,
-the error variance is not a function of the value of \(X\)), or
-homoskedasticity. The fit model can be checked for homoskedasticity
-using a scale-location plot, which is a scatterplot of the positive
-square-root of the standardized residuals against the fitted
-values\footnote{fitted values are the predicted values, \(\hat{Y}\)}. If
-the residuals approximate a normal distribution, then a regression line
-through the scatter should be close to horizontal. The regression line
-in the scale-location plot of the fit of the linear model to the worm
-data shows a distinct increase in the ``scale'' (the square root of the
-standardized residuals) with increased fitted value, which is expected
-of data that are lognormally, Poisson, or negative binomially
-distributed.
-
-\subsection{Two distributions for count data -- Poisson and Negative
-Binomial}\label{two-distributions-for-count-data-poisson-and-negative-binomial}
-
-The pattern in the normal Q-Q plot in Figure \ref{fig:glm1-plot2}B
-should discourage one from modeling the data with a normal distribution
-and instead model the data with an alternative distribution using a
-Generalized Linear Model. There is no unique mapping between how data
-are generated and a specific distribution, so this decision is not as
-easy as thinking about the data generation mechanism and then simply
-choosing the ``correct'' distribution. Section 4.5 in Bolker (xxx) is an
-excellent summary of how to think about the generating processes for
-different distributions in the context of ecological data. Since the
-response in the worm data are counts, we need to choose a distribution
-that generates integer values, such as the Poisson or the negative
-binomial.
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\tightlist
-\item
-  Poisson -- A Poisson distribution is the probability distribution of
-  the number of occurrences of some thing (an egg, a parasite, or a
-  specific mRNA transcript) generated by a process that generates the
-  thing at a constant rate per unit effort (duration or space). This
-  constant rate is \(\lambda\), which is the expectation, so
-  \(\mathrm{E}(Y) = \mu = \lambda\). Because the rate per effort is
-  constant, \emph{the variance of a Poisson variable equals the mean},
-  \(\sigma^2 = \mu = \lambda\). Figure \ref{fig:glm1-poisson} shows
-  three samples from a Poisson distribution with \(\lambda\) set to 1,
-  5, and 10. The plots show that, as the mean count (\(\lambda\)) moves
-  away from zero, a Poisson distribution 1) becomes less skewed and more
-  closely approximates a normal distribution and 2) has an increasingly
-  low probability of including zero (less than 1\% zeros when the mean
-  is 5).
-\end{enumerate}
-
-A Poisson distribution, then, is useful for count data in which the
-conditional variance is close to the conditional mean. Very often,
-biological count data are not well approximated by a Poisson
-distribution because the variance is either less than the mean, an
-example of \textbf{underdispersion}\footnote{the variance is less than
-  that expected by the probability model}, or greater than the mean, an
-example of \textbf{overdispersion}\footnote{the variance is greater than
-  that expected by the probability model}. A useful distribution for
-count data with overdispersion is the negative binomial.
-
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/glm1-poisson-1.pdf}
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\setcounter{enumi}{1}
-\tightlist
-\item
-  Negative Binomial -- The negative binomial distribution is a discrete
-  probability distribution of the number of successes that occur before
-  a specified number of failures \(k\) given a probability \(p\) of
-  success. This isn't a very useful way of thinking about modeling count
-  data in biology. What is useful is that the Negative Binomial
-  distribution can be used simply as way of modeling an
-  ``overdispersed'' Poisson process. The mean of a negative binomial
-  variable is \(\mu = k\frac{p}{1-p}\) and the variance is
-  \(\sigma^2 = \mu + \mu^2/k\). As a method for modeling an
-  overdispersed Poisson variable, \(k\) functions as a **dispersion
-  parameter* controlling the amount of overdispersion and can be any
-  real, positive value (not simply a positive integer), including values
-  less than 1.
-\end{enumerate}
-
-\subsection{Fitting a GLM with a Poisson distribution to the worm
-data}\label{fitting-a-glm-with-a-poisson-distribution-to-the-worm-data}
-
-Let's fit a GLM with a Poisson distribution to the worm data. The model
-is
-
-\begin{align}
-Diplo\_intensity_i &\sim Poisson(\mu_i)\\
-\mathrm{E}({Diplo\_intensity|Treatment}) &= \mu\\
-\mu_i &= \mathrm{exp}(\eta_i)\\
-\eta_i &= \beta_0 + \beta_1 Uninfected_i + \beta_2 Infected\_LG_i + \beta_3 Infected\_HG_i
-\end{align}
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\tightlist
-\item
-  The first line of the model is the stochastic part stating the
-  response is modeled as a random Poisson variable with mean and
-  variance \(\mu\) (the rate parameter \(\lambda\) of the Poisson
-  distribution).
-\item
-  The second line states the \(\mu\) is the conditional mean or
-  conditional expectation
-\item
-  The third line connects the conditional mean on the link scale
-  (\(\eta\)) with the conditional mean on the response scale (\(\mu\))
-\item
-  The fourth line is the linear predictor, and includes three dummy
-  variables.
-\end{enumerate}
-
-Remember that the conditional mean is the
-expected/predicted/fitted/modeled value when \(X=x_i\).
-
-\subsection{Model checking fits to count
-data}\label{model-checking-fits-to-count-data}
-
-we use the fit model to check 1. the overall similarity of observed and
-theoretical distributions 2. if the observed distribution is over or
-under dispersed 3. if there more zeros than expected by the theoretical
-distribution. If so, the observed distribution is \textbf{zero-inflated}
-
-\subsubsection{Model checking a GLM I -- the quantile residual Q-Q
-plot}\label{model-checking-a-glm-i-the-quantile-residual-q-q-plot}
-
-A quantile-quantile (Q-Q) plot is used to check overall similarity of
-the observed distribution with the distribution that would be expected
-under the model. An alternative to a Normal Q-Q plot for a GLM fit is a
-quantile residual Q-Q plot of observed vs.~expected \textbf{quantile
-residuals}. The basic algorithm for this is
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\tightlist
-\item
-  Use the model parameters to simulate \(p\) fake values of the response
-  for each row of the data. This will be a \(n \times p\) matrix of fake
-  data where each column is a new, random sample of a population with
-  parameters equal to that estimated for the observed data. For the
-  Poisson, the parameter for each observation will be \(\hat{\mu}_i\),
-  the modeled value of observation \(i\). For the negative binomial, the
-  parameters will be \(\hat{\mu}_i\) and the dispersion parameter \(k\),
-  which is the same for all observations.
-\item
-  For each observation (each row of the matrix of fake data), compute
-  the fraction of simulated values smaller than the observed value of
-  the response variable for that row. This fraction is the observed
-  \textbf{quantile residual}, which ranges in value from 0 to 1. If the
-  true data are distribitued as that specified by the model, then
-  quantile residuals will have a uniform distribution.
-\item
-  Sort the observed quantile residuals from smallest to largest and plot
-  against theoretical quantile residuals from a uniform distribution.
-  One could transform the quantile residuals to standard, normal
-  residuals and then plot using a traditional Normal Q-Q plot but this
-  step isn't necessary (if reported, a Normal Q-Q plot of transformed
-  quantile residuals might confuse readers who failed to read the fine
-  print).
-\end{enumerate}
-
-\textbf{Misconceivable} -- A common misconception is that if the
-distribution of the response approximates a Poisson distribution, then
-the residuals of a GLM fit with a Poisson distribution should be
-normally distributed, which could then be checked with a Normal Q-Q
-plot, and homoskedastic, which could be checked with a scale-location
-plot. Neither of these is true because a GLM does not transform the data
-and, in fact, the model definition does not specify anything about the
-distribution of an ``error'' term -- there is no \(\varepsilon\) in the
-model defintion above! This is why thinking about the definition of a
-linear model by specifying an error term with a normal distribution can
-be confusing and lead to misconceptions when learning GLMs.
-
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/glm1-worm-poisson-qr-1.pdf}
-
-The Q-Q plot using quantile residuals with a Poisson distribution
-indicates that the counts of \emph{Diplostomum} larvae in the eyes of
-the threespine stickleback are not well approximated by a Poisson
-distribution -- there are too many observed values near the ends of the
-expected tails, indicating the expected values are not spread out
-enough. This pattern emerges because the observed counts are
-overdispersed compared to a Poisson distribution.
-
-\subsubsection{Model checking a GLM II -- a dispersion
-plot}\label{model-checking-a-glm-ii-a-dispersion-plot}
-
-If observed counts are Poisson distributed, then the \textbf{Pearson
-residuals} (\(r_i\)) and the residual degrees of freedom of the fit
-model (\(df\)) can be used to compute a dispersion statistic
-
-\begin{equation}
-\frac{\sum{r_i}}{df}
-\end{equation}
-
-that has an expected value of 1. Instead of a formal hypothesis test of
-this statistic, I use a simulation approach and ask, ``if the observed
-counts are Poisson distributed, what is the expected frequency
-distribution of this dispersion statistic?'' and then use simulation to
-generate this expected distribution. The algorithm for this is
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\tightlist
-\item
-  For each observation \(i\), generate a random Poisson count using
-  \(\hat{\mu}\) as the parameter.
-\item
-  Fit the model and compute the dispersion statistic.
-\item
-  Repeat 1 and 2 \(N_{iter}\) times.
-\end{enumerate}
-
-The plot below shows a histogram of the dispersion statistic computed
-for 1000 simulations of the worm data. The observed dispersion statistic
-is 3.4. The expected value is 1.0. The mean of the simulated values is
-1.
-
-\begin{figure}
-\centering
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/glm1-worm-poisson-dispersion-plot-1.pdf}
-\caption{\label{fig:glm1-worm-poisson-dispersion-plot}Observed vs.~expected
-dispersion statistic. The observed statistic marked by the red line. The
-histogram of expected statistics are from 1000 simulations of the
-observed data.}
-\end{figure}
-
-\subsection{Fitting a GLM with a Negative Binomial distribution to the
-worm
-data}\label{fitting-a-glm-with-a-negative-binomial-distribution-to-the-worm-data}
-
-The model is
-
-\begin{align}
-Diplo\_intensity &\sim NB(\mu, k)\\
-\mathrm{E}({Diplo\_intensity|Treatment}) &= \mu\\
-\mu &= \mathrm{exp}(\eta)\\
-\eta &= \beta_0 + \beta_1 Uninfected + \beta_2 Infected\_LG + \beta_3 Infected\_HG
-\end{align}
-
-This model specifies a negative binomial distribution but otherwise is
-just like that above specifying a Poisson distribution.
-
-\subsubsection{Model checking}\label{model-checking-2}
-
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/glm1-worm-nb-1.pdf}
-
-A quantile residual Q-Q plot of the GLM model fit with negative binomial
-distribution is illustrated above. This looks pretty good.
-
-\subsubsection{Model means and
-coefficients}\label{model-means-and-coefficients}
-
-In a Generalized Linear Model of counts using either a Poisson or
-negative binomial distribution, modeled means, coefficients, and
-contrasts can be reported either on the link or response scale.
-Remember, the response scale is a count, while the link scale is a
-log(count).
-
-The modeled means on the link scale are
-
-\begin{verbatim}
-##  Treatment   emmean     SE  df asymp.LCL asymp.UCL
-##  Control       1.82 0.0804 Inf      1.66      1.98
-##  Uninfected    1.50 0.1093 Inf      1.29      1.72
-##  Infected LG   1.62 0.1362 Inf      1.36      1.89
-##  Infected HG   2.36 0.0714 Inf      2.22      2.50
-## 
-## Results are given on the log (not the response) scale. 
-## Confidence level used: 0.95
-\end{verbatim}
-
-While the means on response scale are
-
-\begin{verbatim}
-##  Treatment   response    SE  df asymp.LCL asymp.UCL
-##  Control         6.18 0.497 Inf      5.28      7.24
-##  Uninfected      4.50 0.492 Inf      3.63      5.58
-##  Infected LG     5.07 0.691 Inf      3.89      6.63
-##  Infected HG    10.60 0.757 Inf      9.22     12.20
-## 
-## Confidence level used: 0.95 
-## Intervals are back-transformed from the log scale
-\end{verbatim}
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\item
-  A mean on the response scale is simply the exponent of the mean on the
-  link scale. For example, the mean of the Control treatment level on
-  the response scale is \(\mathrm{exp}(1.821408) = 6.180555\).
-\item
-  The CIs on the link scale are symmetric around the mean but those on
-  the response scale are not. This is a feature, not a bug. Remember
-  that counts are right skewed which means a CI will have a wider right
-  than left interval. Check this!
-\item
-  If a plot includes a 1 SE error bar on the response scale, this is
-  technically correct but it encourages the practice of computing CIs
-  using the 2*SE rule of thumb. This rule breaks down for count data
-  with right skewed distributions.
-\item
-  Plotting the response scale CIs is both technically correct and makes
-  the 2*SE rule of thumb unnecessary.
-\end{enumerate}
-
-The model coefficients on the link scale are
-
-\begin{verbatim}
-##  contrast              estimate    SE  df asymp.LCL asymp.UCL z.ratio
-##  Uninfected - Control    -0.317 0.136 Inf    -0.583   -0.0514 -2.339 
-##  Infected LG - Control   -0.197 0.158 Inf    -0.507    0.1126 -1.248 
-##  Infected HG - Control    0.540 0.108 Inf     0.329    0.7504  5.019 
-##  p.value
-##  0.0193 
-##  0.2122 
-##  <.0001 
-## 
-## Results are given on the log (not the response) scale. 
-## Confidence level used: 0.95
-\end{verbatim}
-
-Backtransforming the coefficients (but not the intercept) to the
-response scale (using \(\mathrm{exp}{b_j}\)) results in a
-\textbf{response ratio}.
-
-\begin{verbatim}
-##  contrast              ratio     SE  df asymp.LCL asymp.UCL z.ratio
-##  Uninfected / Control  0.728 0.0988 Inf     0.558      0.95 -2.339 
-##  Infected LG / Control 0.821 0.1298 Inf     0.602      1.12 -1.248 
-##  Infected HG / Control 1.715 0.1845 Inf     1.389      2.12  5.019 
-##  p.value
-##  0.0193 
-##  0.2122 
-##  <.0001 
-## 
-## Confidence level used: 0.95 
-## Intervals are back-transformed from the log scale 
-## Tests are performed on the log scale
-\end{verbatim}
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\tightlist
-\item
-  Note how the emmeans package reports the name of the term as the ratio
-  of the coefficient term to the intercept term (the reference treatment
-  level). Why are the coefficients tranformed to ratios on the response
-  scale? Remember that a coefficient is a difference in conditional
-  means and that
-  \(\mathrm{exp}(B-A) = \frac{\mathrm{exp}(B)}{\mathrm{exp}(A)}\). For a
-  dummy variable as here (say ``Infected HG''), the response ratio is
-\end{enumerate}
-
-\begin{equation}
-RR_{Infected\_HG} = \frac{\overline{Infected\_HG}}{\overline{Control}}
-\end{equation}
-
-which give us the \textbf{relative effect} of Infected\_HG compared to
-the Control. Relative effects could be reported as a response ratio in a
-table, or in the text it could be reported as a percent ``Infected HG
-fish had 71.5\% (95\%CI: 38.9\% - 111.8\%) more \emph{Diplostomum}
-larvae than Control fish.'' Where do these percents come from? The
-percent effect is \(100(RR_j - 1)\) larger than the reference mean if
-the \(RR_j > 1\) or \(100(1 - RR_j)\) smaller than the reference mean if
-the \(RR_j < 1\).
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\setcounter{enumi}{1}
-\item
-  Backtransforming the intercept does not generate a ratio since the
-  intercept on the link scale is not a difference. For the worm
-  analysis, the intercept on the link scale is the mean count of the
-  control group on the link scale and the backtransformed intercept is
-  the mean count of the control group on the response scale.
-\item
-  Effects on the response scale are not additive but multiplicative! So,
-  for example, the mean of the Infected HG treatment level on the
-  response scale is \(\overline{Control}*RR_{Infected\_HG}\) (remember
-  that with a linear model the mean would be
-  \(b_{Control} + b_{Infected\_HG}\)). Check and see if this works.
-\end{enumerate}
-
-\section{Working in R}\label{working-in-r-6}
-
-Source publication: Benesh, D. P., \& Kalbe, M. (2016). Experimental
-parasite community ecology: intraspecific variation in a large tapeworm
-affects community assembly. Journal of Animal Ecology, 85(4), 1004-1013.
-
-Source data URL:
-\url{https://datadryad.org/resource/doi:10.5061/dryad.bq8j8}
-
-Source file: ``Lab\_exp.csv''
-
-Poisson fit. A quantile residual Q-Q plot can be generated using the
-package DHARMa
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{fit.pois <-}\StringTok{ }\KeywordTok{glm}\NormalTok{(Diplo_intensity }\OperatorTok{~}\StringTok{ }\NormalTok{Treatment, }\DataTypeTok{family=}\StringTok{"poisson"}\NormalTok{, }\DataTypeTok{data=}\NormalTok{worm)}
-
-\CommentTok{# from the DHARMa package}
-\NormalTok{  n_sim <-}\StringTok{ }\DecValTok{250}
-\NormalTok{  simulationOutput <-}\StringTok{ }\KeywordTok{simulateResiduals}\NormalTok{(}\DataTypeTok{fittedModel =}\NormalTok{ fit.pois, }\DataTypeTok{n =}\NormalTok{ n_sim)}
-  \KeywordTok{plot}\NormalTok{(simulationOutput, }\DataTypeTok{asFactor =}\NormalTok{ F)}
-\end{Highlighting}
-\end{Shaded}
-
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/glm1-working-in-r-1.pdf}
-
-A plot of the dispersion statistic can be generated using the object
-returned by the \texttt{SimulateOutput} function but with
-\texttt{refit\ =\ TRUE}, which refits a model each iteration. This
-refitting isn't necessary if only the quantiile residuals are needed.
-The Dharma package does not divide the sum of squared Pearson residuals
-by the residual degrees of freedom and so the expected value of the
-statistic is \(df\).
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{# from the DHARMa package}
-\NormalTok{  n_sim <-}\StringTok{ }\DecValTok{250}
-\NormalTok{  simulationOutput <-}\StringTok{ }\KeywordTok{simulateResiduals}\NormalTok{(}\DataTypeTok{fittedModel=}\NormalTok{fit.pois, }\DataTypeTok{n=}\NormalTok{n_sim, }\DataTypeTok{refit=}\OtherTok{TRUE}\NormalTok{)}
-  \KeywordTok{testDispersion}\NormalTok{(simulationOutput)}
-\end{Highlighting}
-\end{Shaded}
-
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-90-1.pdf}
-
-\begin{verbatim}
-## 
-##  DHARMa nonparametric dispersion test via mean deviance residual
-##  fitted vs. simulated-refitted
-## 
-## data:  simulationOutput
-## dispersion = 3.3788, p-value < 2.2e-16
-## alternative hypothesis: two.sided
-\end{verbatim}
-
-Negative binomial fit.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{fit.nb <-}\StringTok{ }\KeywordTok{glm.nb}\NormalTok{(Diplo_intensity }\OperatorTok{~}\StringTok{ }\NormalTok{Treatment, }\DataTypeTok{data=}\NormalTok{worm)}
-\CommentTok{# from the DHARMa package}
-\NormalTok{  simulationOutput <-}\StringTok{ }\KeywordTok{simulateResiduals}\NormalTok{(}\DataTypeTok{fittedModel =}\NormalTok{ fit.nb, }\DataTypeTok{n =}\NormalTok{ n_sim)}
-  \KeywordTok{plot}\NormalTok{(simulationOutput, }\DataTypeTok{asFactor =}\NormalTok{ F)}
-\end{Highlighting}
-\end{Shaded}
-
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/glm-working-in-r-2-1.pdf}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{# link scale}
-\NormalTok{emm <-}\StringTok{ }\KeywordTok{emmeans}\NormalTok{(fit.nb, }\DataTypeTok{specs=}\StringTok{"Treatment"}\NormalTok{)}
-\NormalTok{emm}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-##  Treatment   emmean     SE  df asymp.LCL asymp.UCL
-##  Control       1.82 0.0804 Inf      1.66      1.98
-##  Uninfected    1.50 0.1093 Inf      1.29      1.72
-##  Infected LG   1.62 0.1362 Inf      1.36      1.89
-##  Infected HG   2.36 0.0714 Inf      2.22      2.50
-## 
-## Results are given on the log (not the response) scale. 
-## Confidence level used: 0.95
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{summary}\NormalTok{(}\KeywordTok{contrast}\NormalTok{(emm, }\DataTypeTok{method=}\StringTok{"trt.vs.ctrl"}\NormalTok{, }\DataTypeTok{adjust=}\StringTok{"none"}\NormalTok{), }\DataTypeTok{infer=}\KeywordTok{c}\NormalTok{(}\OtherTok{TRUE}\NormalTok{, }\OtherTok{TRUE}\NormalTok{))}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-##  contrast              estimate    SE  df asymp.LCL asymp.UCL z.ratio
-##  Uninfected - Control    -0.317 0.136 Inf    -0.583   -0.0514 -2.339 
-##  Infected LG - Control   -0.197 0.158 Inf    -0.507    0.1126 -1.248 
-##  Infected HG - Control    0.540 0.108 Inf     0.329    0.7504  5.019 
-##  p.value
-##  0.0193 
-##  0.2122 
-##  <.0001 
-## 
-## Results are given on the log (not the response) scale. 
-## Confidence level used: 0.95
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{# response scale}
-\NormalTok{emm.response <-}\StringTok{ }\KeywordTok{emmeans}\NormalTok{(fit.nb, }\DataTypeTok{specs=}\StringTok{"Treatment"}\NormalTok{, }\DataTypeTok{type=}\StringTok{"response"}\NormalTok{)}
-\KeywordTok{summary}\NormalTok{(}\KeywordTok{contrast}\NormalTok{(emm, }\DataTypeTok{method=}\StringTok{"trt.vs.ctrl"}\NormalTok{, }\DataTypeTok{adjust=}\StringTok{"none"}\NormalTok{, }\DataTypeTok{type=}\StringTok{"response"}\NormalTok{), }\DataTypeTok{infer=}\KeywordTok{c}\NormalTok{(}\OtherTok{TRUE}\NormalTok{, }\OtherTok{TRUE}\NormalTok{))}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-##  contrast              ratio     SE  df asymp.LCL asymp.UCL z.ratio
-##  Uninfected / Control  0.728 0.0988 Inf     0.558      0.95 -2.339 
-##  Infected LG / Control 0.821 0.1298 Inf     0.602      1.12 -1.248 
-##  Infected HG / Control 1.715 0.1845 Inf     1.389      2.12  5.019 
-##  p.value
-##  0.0193 
-##  0.2122 
-##  <.0001 
-## 
-## Confidence level used: 0.95 
-## Intervals are back-transformed from the log scale 
-## Tests are performed on the log scale
-\end{verbatim}
-
-\section{Problems}\label{problems-4}
-
-Analyze the data that went into Fig 6B of Tena, A., Pekas, A., Cano, D.,
-Wäckers, F. L., \& Urbaneja, A. (2015). Sugar provisioning maximizes the
-biocontrol service of parasitoids. Journal of Applied Ecology, 52(3),
-795-804.
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\tightlist
-\item
-  Compute contrasts and CIs among all pairs of all three treatment
-  levels
-\item
-  Make a better plot like 6b including 1) use the modeled mean instead
-  of the simple group mean and 2) use the modeled CI of the mean instead
-  of the SE computed within each group independently.
-\end{enumerate}
-
-source URL: \url{https://datadryad.org/resource/doi:10.5061/dryad.bj001}
-
-source file: ``4\_Parastism\_Fig\_6.csv''
-
 \chapter{Linear mixed models}\label{linear-mixed-models}
 
 \section{Random effects}\label{random-effects}
@@ -14403,7 +13707,7 @@ Re-imagining the design as a single, linear mixed model with each gene
 modeled as a block would lead to a rank order in which the biggest
 measured effects more closely approximate the true effects.
 
-\section{Working in R}\label{working-in-r-7}
+\section{Working in R}\label{working-in-r-6}
 
 The major function for working with linear mixed models is
 \texttt{lmer()} from the lme4 package. An older, and still sometimes
@@ -14608,6 +13912,924 @@ ANOVA).
 
 Compare the output from emmeans and \texttt{coef(summary())} using the
 different methods for computing the df.
+
+\chapter{Generalized linear models I: Count
+data}\label{generalized-linear-models-i-count-data}
+
+Biologists frequently count stuff, and design experiments to estimate
+the effects of different factors on these counts. For example, the
+effects of environmental mercury on clutch size in a bird, the effects
+of warming on parasite load in a fish, or the effect of exercise on RNA
+expression.
+
+Count data differ from data with normal error in many ways, including 1)
+counts are discrete, and can be zero or positive integers only, 2)
+counts tend to bunch up on the small side of the range, creating a
+distribution with a positive skew, 3) a sample of counts can have an
+abundance of zeros, and 4) the variance of counts increases with the
+mean (see Figure \ref{fig:glm1-plot1} for some of these properties).
+Some count data can be approximated by a normal distribution and
+reasonably modeled with a linear model but more often, count data are
+modeled with \textbf{Poisson distribution} or \textbf{negative binomial
+distribution} using a \textbf{generalized linear model} (GLM). Poisson
+and negative binomial distributions are \textbf{discrete probability
+distributions} with two important properties: 1) the distribution
+contains only zero and positive integers and 2) the variance is a
+function of the mean. Back before modern computing and fast processors,
+count data were often analyzed by either \textbf{transforming} the
+response or by \textbf{non-parametric hypothesis tests}. One reason to
+prefer a statistical modeling approach with a GLM is that we can get
+interpretable parameter estimates. By contrast, both the analysis of
+transformed data and non-parametric hypothesis tests are really tools
+for computing ``correct'' \(p\)-values.
+
+\begin{figure}
+\centering
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/glm1-plot1-1.pdf}
+\caption{\label{fig:glm1-plot1}Histogram of the count of a trematode
+parasite larvae in Control vs.~Infected fish. Fish in the Infected
+treatment are infected with a tapeworm.}
+\end{figure}
+
+\section{The generalized linear
+model}\label{the-generalized-linear-model}
+
+As outlined in section {[}Assumptions for inference with statistical
+models{]} in Chapter 1, a common way that biological researchers think
+about a response variable is
+
+\begin{align}
+y_i &= \beta_0 + \beta_1 x_i + \varepsilon_i \\
+\varepsilon &\sim N(0, \sigma)
+\label{eq:spec1}
+\end{align}
+
+That is, we can think of a response as the sum of some systematic part
+and ``random errror'', which is a random draw from a normal distribution
+with mean zero and variance \(\sigma^2\). This way of thinking about the
+generation of the response is useful for linear models, and model
+checking linear models, but is not useful for generalized linear models
+or model checking generalized liner models. For example, if we want to
+model the number of parasites that have infected a fish using a Poisson
+distribution, the following is the \textbf{wrong} way to think about the
+statistical model
+
+\begin{align}
+y_i &= \beta_0 + \beta_1 x_i + \varepsilon_i\\
+\varepsilon &\sim Poisson(\lambda)
+\label{eq:spec1-poisson}
+\end{align}
+
+That is, we should not think of a count as the sum of a systematic part
+and a random draw from a Poisson distribution. Why? Because it is the
+counts (or the counts conditional on \(X\)) that are poisson
+distributed, not the residuals from the fit model.
+
+Thinking about the distribution of count data using model
+\eqref{eq:spec1-poisson} leads to absurd consequences. For example, if we
+set the mean of the Poisson ``error'' to zero (like with a normal
+distribution), then the error term for every observation would
+\emph{have to} be zero (because the only way to get a mean of zero with
+non-negative integers is if every value is zero). Or, if the study is
+modeling the effect of a treatment on the counts (that is, the \(X\) are
+dummy variables) then \(\beta_0\) is the expected mean count of the
+control (or reference) group. But if we add non-zero Poisson error to
+this, then the mean of the control group would be larger than
+\(\beta_0\). This doesn't make sense. And finally, equation
+\eqref{eq:spec1-poisson} generates a continuous response, instead of an
+integer, because \(\beta_0\) and \(\beta_1\) are continuous.
+
+A better way to think about the data generation for a linear model,
+because this naturally leads to the \emph{correct} way to think about
+data generation for a generalized linear model, is
+
+\begin{align}
+y_i &\sim N(\mu_i, \sigma)\\
+\mathrm{E}(Y|X) &= \mu\\
+\mu_i &= \beta_0 + \beta_1 x_i
+\label{eq:lm-spec2}
+\end{align}
+
+That is, a response is a random draw from a normal distribution with
+mean \(mu\) (not zero!) and variance \(\sigma^2\). Line 1 is the
+stochastic part of this specification. Line 3 is the systematic part.
+
+The specification of a generalized linear model has both stochastic and
+systematic parts but adds a third part, which is a \textbf{link
+function} connecting the stochastic and systematic parts.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{The stochastic part}, which is a probability distribution from
+  the exponential family (this is sometimes called the ``random part'')
+
+  \begin{equation}
+  y_i \sim \mathrm{Prob}(\mu_i)
+  \end{equation}
+\item
+  \textbf{the systematic part}, which is a linear predictor (I like to
+  think about this as the deterministic part)
+
+  \begin{equation}
+  \eta=\mathbf{X}\boldsymbol{\beta}
+  \end{equation}
+\item
+  a \textbf{link function} connecting the two parts
+
+  \begin{equation}
+  \eta_i = g(\mu_i)
+  \end{equation}
+\end{enumerate}
+
+\(\mu\) (the Greek symbol mu) is the conditional mean (or expectation
+\(\mathrm{E}(Y|X)\)) of the response on the \textbf{response scale} and
+\(\eta\) (the Greek symbol eta) is the conditional mean of the response
+on the \textbf{link scale}. A GLM models the response with a
+distribution specified in the stochastic part. The probability
+distributions introduced in this chapter are the Poisson and Negative
+Binomial. The natural link function for the Poisson and Negative
+Binomial is the ``log link'', \(\eta = log(\mu)\). More generally, while
+each distribution has a natural (or, ``canonical'') link function, one
+can use alternatives. Given this definition of a generalized linear
+model, a linear model is a GLM with a normal distribution and an
+Identity link (\(\eta = \mu\)).
+
+When modeling counts using the Poisson or negative binomial
+distributions with a log link, the link scale is linear, and so the
+effects are additive on the link scale, while the response scale is
+nonlinear (it is the exponent of the link scale), and so the effects are
+multiplicative on the response scale. If this doesn't make sense now, an
+example is worked out below. The inverse of the link function
+backtransforms the parameters from the link scale back to the response
+scale. So, for example, a prediction on the response sale is
+\(\mathrm{exp}(\hat{\eta})\) and a coefficient on the response scale is
+\(\mathrm{exp}(b_j)\).
+
+\section{Count data example -- number of trematode worm larvae in eyes
+of threespine stickleback
+fish}\label{count-data-example-number-of-trematode-worm-larvae-in-eyes-of-threespine-stickleback-fish}
+
+The example is an experiment measuring the effect of the parasitic
+tapeworm \emph{Schistocephalus solidus} infection on the susceptibility
+of infection from a second parasite, the trematode \emph{Diplostomum
+pseudospathaceum}, in the threespine stickleback fish \emph{Gasterosteus
+aculeatus}\footnote{Benesh, D. P., \& Kalbe, M. (2016). Experimental
+  parasite community ecology: intraspecific variation in a large
+  tapeworm affects community assembly. Journal of Animal Ecology, 85(4),
+  1004-1013}. The treatment levels are ``Control'' (unexposed to the
+tapeworm), ``Uninfected'' " (exposed to the tapeworm but uninfected),
+``Infected LG'' (exposed and infected with the low growth population of
+the tapeworm), and ``Infected HG'' (exposed and infected with the high
+growth population of tapeworm). The response is the number of trematode
+larvae counted in the eyes (right and left combined) of the fish. A
+histogram of the counts is shown in Figure \ref{fig:glm1-plot1} for the
+control and Infected HG treatment levels.
+
+\subsection{Modeling strategy}\label{modeling-strategy-1}
+
+\textbf{NHST blues} -- Students are often encouraged by textbooks,
+colleagues, or the literature to start the analysis by first ``testing''
+assumptions with hypothesis tests -- for example using a Shaprio-Wilks
+test of normality as a decision rule to decide if to use a parametric
+test such as a \(t\)-test or ANOVA if the null hypothesis of normality
+is not rejected, or a non-parametric test such as a Mann-Whitney U test
+if the null hypothesis of normality is rejected. I advise against this,
+because 1) this pre-test filtering automatically invalidates the
+\(p\)-value of the hypothesis test as it does not adjust for the
+filtering procedure, 2) real data are only approximately normal and as
+\(n\) increses, a normality test will reject any real dataset, and 3)
+hypothesis tests are pretty robust to non-normality anyway.
+
+Instead of testing assumptions of a model using formal hypothesis tests
+\emph{before} fitting the model, a better strategy is to 1) fit a model,
+and then do 2) \textbf{model checking} using \textbf{diagnostic plots},
+diagnostic statistics, and simulation.
+
+With these data, a researcher would typically fit a GLM with a Poisson
+or negative binomial distribution and log link. Here, I start with a
+linear model to illustrate the interpretation of diagnostic plots with
+non-normal data. I use the ``linear model'' specification (equation
+\eqref{eq:spec1}) because the diganostic plots for model checking a linear
+model use the residuals of the fit model.
+
+\begin{align}
+Diplo\_intensity_i &= \beta_0 + \beta_1 Uninfected_i + \beta_2 Infected\_LG_i + \beta_3 Infected\_HG_i + \varepsilon_i \\
+\varepsilon &\sim N(0, \sigma)
+\label{eq:worm-lm}
+\end{align}
+
+\subsection{Checking the model I -- a Normal Q-Q
+plot}\label{checking-the-model-i-a-normal-q-q-plot}
+
+Figure \ref{fig:glm1-plot2}A shows a histogram of the residuals from the
+fit linear model. The plot shows that the residuals are clumped at the
+negative end of the range, which suggests that a model with a normally
+distributed conditional outcome (or normal error) is not well
+approximated.
+
+\begin{figure}
+\centering
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/glm1-plot2-1.pdf}
+\caption{\label{fig:glm1-plot2}Diagnostic plots of stickleback parasite
+data. A) Distribution of the residuals of the fit linear model. B)
+Normal Q-Q plot of the residuals of the fit linear model.}
+\end{figure}
+
+A better way to investigate this is with the \textbf{Normal Q-Q} plot in
+Figure \ref{fig:glm1-plot2}B, which plots the sample quantiles for a
+variable against their theoretical quantiles. If the conditional outcome
+approximates a normal distribution, the points should roughly follow the
+line. Instead, for the worm data, the points are above the line at both
+ends. At the left (negative) end, this means that we aren't seeing the
+most negative values that would be expected (the observed values are
+more positive than the theoretical values). Remembering that this plot
+is of residuals, if we think about this as counts, this means that our
+smallest counts are not as small as we would expect given the mean and a
+normal distribution. This shouldn't be surprising -- the counts range
+down to zero and counts cannot be below zero. At the positive end, the
+sample values are again more positive than the theoretical values.
+Thinking about this as counts, this means that are largest counts are
+larger than expected given the mean and a normal distribution. This
+pattern is exactly what we'd expect of count data, or at least count
+data that borders zero.
+
+\textbf{Intuition Pump} -- Let's construct a Normal Q-Q plot. A
+\textbf{quantile} (or percentile) of a vector of numbers is the value of
+the point at a specified percentage rank. The median is the 50\%
+quantile. The 95\% confidence intervals are at the 2.5\% and 97.5\%
+quantiles. In a Normal Q-Q plot, we want to plot the quantiles of the
+residuals against a set of theoretical quantiles.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  To get the observed quantiles, rank the residuals of the fit linear
+  model from most negative to most positive -- these are your quantiles!
+  For example, if you have \(n=145\) residuals, then the 73rd point is
+  the 50\% quantile.
+\item
+  A theoretical quantile from the normal distribution can be constructed
+  using the \texttt{qnorm} function which returns the normal quantiles
+  for a specified vector of percents. Alternatively, one could randomly
+  sample \(n\) points using \texttt{rnorm}. These of course will be
+  sampled quantiles so will only approximate the expected theoretical
+  quantiles, but I add this here because we use this method below.
+\end{enumerate}
+
+Now simply plot the observed against theoretical quantiles. Often, the
+\textbf{standardized} quantiles are plotted. A standardized variable has
+a mean of zero and a standard deviation of one and is computed by 1)
+centering the vector at zero by subtracting the mean from every value,
+and 2) dividing each value by the standard deviation of the vector.
+Recognize that because a standard deviation is a function of deviations
+from the mean, it doesn't matter which of these operations is done
+first. A standardized theoretical quantile is specified by
+\texttt{qnorm(p,\ mean\ =\ 0,\ sd\ =\ 1)}, which is the default.
+
+Below, I've plotted the standardized observed and theoretical quantiles
+against the vector of percents (from 0 to 100\%). This plot also nicely
+shows how the residuals of the worm data deviate from that expected if
+these had a normal distribution. The plot nicely shows that the most
+negative observed quintiles are not as negative as expected given a
+normal distribution, which again makes sense because this would imply
+negative counts since the mean is close to zero. And it nicely shows
+that the most positive observed quantiles are more positive than
+expected given a normal distribution, again this makes sense in right
+skewed count data. Finally, the plot nicely shows that the median is
+less positive than that expected given a normal distribution, which is
+at the mean (a right skew tends to pull the mean to the right of the
+median).
+
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/glm1-qqplot-sim-1.pdf}
+
+\subsection{Checking the model II -- scale-location plot for checking
+homoskedasticity}\label{checking-the-model-ii-scale-location-plot-for-checking-homoskedasticity}
+
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/glm1-worm-scale-location-1.pdf}
+
+A linear model also assumes the error has constant variance (that is,
+the error variance is not a function of the value of \(X\)), or
+homoskedasticity. The fit model can be checked for homoskedasticity
+using a scale-location plot, which is a scatterplot of the positive
+square-root of the standardized residuals against the fitted
+values\footnote{fitted values are the predicted values, \(\hat{Y}\)}. If
+the residuals approximate a normal distribution, then a regression line
+through the scatter should be close to horizontal. The regression line
+in the scale-location plot of the fit of the linear model to the worm
+data shows a distinct increase in the ``scale'' (the square root of the
+standardized residuals) with increased fitted value, which is expected
+of data that are lognormally, Poisson, or negative binomially
+distributed.
+
+\subsection{Two distributions for count data -- Poisson and Negative
+Binomial}\label{two-distributions-for-count-data-poisson-and-negative-binomial}
+
+The pattern in the normal Q-Q plot in Figure \ref{fig:glm1-plot2}B
+should discourage one from modeling the data with a normal distribution
+and instead model the data with an alternative distribution using a
+Generalized Linear Model. There is no unique mapping between how data
+are generated and a specific distribution, so this decision is not as
+easy as thinking about the data generation mechanism and then simply
+choosing the ``correct'' distribution. Section 4.5 in Bolker (xxx) is an
+excellent summary of how to think about the generating processes for
+different distributions in the context of ecological data. Since the
+response in the worm data are counts, we need to choose a distribution
+that generates integer values, such as the Poisson or the negative
+binomial.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Poisson -- A Poisson distribution is the probability distribution of
+  the number of occurrences of some thing (an egg, a parasite, or a
+  specific mRNA transcript) generated by a process that generates the
+  thing at a constant rate per unit effort (duration or space). This
+  constant rate is \(\lambda\), which is the expectation, so
+  \(\mathrm{E}(Y) = \mu = \lambda\). Because the rate per effort is
+  constant, \emph{the variance of a Poisson variable equals the mean},
+  \(\sigma^2 = \mu = \lambda\). Figure \ref{fig:glm1-poisson} shows
+  three samples from a Poisson distribution with \(\lambda\) set to 1,
+  5, and 10. The plots show that, as the mean count (\(\lambda\)) moves
+  away from zero, a Poisson distribution 1) becomes less skewed and more
+  closely approximates a normal distribution and 2) has an increasingly
+  low probability of including zero (less than 1\% zeros when the mean
+  is 5).
+\end{enumerate}
+
+A Poisson distribution, then, is useful for count data in which the
+conditional variance is close to the conditional mean. Very often,
+biological count data are not well approximated by a Poisson
+distribution because the variance is either less than the mean, an
+example of \textbf{underdispersion}\footnote{the variance is less than
+  that expected by the probability model}, or greater than the mean, an
+example of \textbf{overdispersion}\footnote{the variance is greater than
+  that expected by the probability model}. A useful distribution for
+count data with overdispersion is the negative binomial.
+
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/glm1-poisson-1.pdf}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{1}
+\tightlist
+\item
+  Negative Binomial -- The negative binomial distribution is a discrete
+  probability distribution of the number of successes that occur before
+  a specified number of failures \(k\) given a probability \(p\) of
+  success. This isn't a very useful way of thinking about modeling count
+  data in biology. What is useful is that the Negative Binomial
+  distribution can be used simply as way of modeling an
+  ``overdispersed'' Poisson process. The mean of a negative binomial
+  variable is \(\mu = k\frac{p}{1-p}\) and the variance is
+  \(\sigma^2 = \mu + \mu^2/k\). As a method for modeling an
+  overdispersed Poisson variable, \(k\) functions as a **dispersion
+  parameter* controlling the amount of overdispersion and can be any
+  real, positive value (not simply a positive integer), including values
+  less than 1.
+\end{enumerate}
+
+\subsection{Fitting a GLM with a Poisson distribution to the worm
+data}\label{fitting-a-glm-with-a-poisson-distribution-to-the-worm-data}
+
+Let's fit a GLM with a Poisson distribution to the worm data. The model
+is
+
+\begin{align}
+Diplo\_intensity_i &\sim Poisson(\mu_i)\\
+\mathrm{E}({Diplo\_intensity|Treatment}) &= \mu\\
+\mu_i &= \mathrm{exp}(\eta_i)\\
+\eta_i &= \beta_0 + \beta_1 Uninfected_i + \beta_2 Infected\_LG_i + \beta_3 Infected\_HG_i
+\end{align}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  The first line of the model is the stochastic part stating the
+  response is modeled as a random Poisson variable with mean and
+  variance \(\mu\) (the rate parameter \(\lambda\) of the Poisson
+  distribution).
+\item
+  The second line states the \(\mu\) is the conditional mean or
+  conditional expectation
+\item
+  The third line connects the conditional mean on the link scale
+  (\(\eta\)) with the conditional mean on the response scale (\(\mu\))
+\item
+  The fourth line is the linear predictor, and includes three dummy
+  variables.
+\end{enumerate}
+
+Remember that the conditional mean is the
+expected/predicted/fitted/modeled value when \(X=x_i\).
+
+\subsection{Model checking fits to count
+data}\label{model-checking-fits-to-count-data}
+
+we use the fit model to check 1. the overall similarity of observed and
+theoretical distributions 2. if the observed distribution is over or
+under dispersed 3. if there more zeros than expected by the theoretical
+distribution. If so, the observed distribution is \textbf{zero-inflated}
+
+\subsubsection{Model checking a GLM I -- the quantile residual Q-Q
+plot}\label{model-checking-a-glm-i-the-quantile-residual-q-q-plot}
+
+A quantile-quantile (Q-Q) plot is used to check overall similarity of
+the observed distribution with the distribution that would be expected
+under the model. An alternative to a Normal Q-Q plot for a GLM fit is a
+quantile residual Q-Q plot of observed vs.~expected \textbf{quantile
+residuals}. The basic algorithm for this is
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Use the model parameters to simulate \(p\) fake values of the response
+  for each row of the data. This will be a \(n \times p\) matrix of fake
+  data where each column is a new, random sample of a population with
+  parameters equal to that estimated for the observed data. For the
+  Poisson, the parameter for each observation will be \(\hat{\mu}_i\),
+  the modeled value of observation \(i\). For the negative binomial, the
+  parameters will be \(\hat{\mu}_i\) and the dispersion parameter \(k\),
+  which is the same for all observations.
+\item
+  For each observation (each row of the matrix of fake data), compute
+  the fraction of simulated values smaller than the observed value of
+  the response variable for that row. This fraction is the observed
+  \textbf{quantile residual}, which ranges in value from 0 to 1. If the
+  true data are distribitued as that specified by the model, then
+  quantile residuals will have a uniform distribution.
+\item
+  Sort the observed quantile residuals from smallest to largest and plot
+  against theoretical quantile residuals from a uniform distribution.
+  One could transform the quantile residuals to standard, normal
+  residuals and then plot using a traditional Normal Q-Q plot but this
+  step isn't necessary (if reported, a Normal Q-Q plot of transformed
+  quantile residuals might confuse readers who failed to read the fine
+  print).
+\end{enumerate}
+
+\textbf{Misconceivable} -- A common misconception is that if the
+distribution of the response approximates a Poisson distribution, then
+the residuals of a GLM fit with a Poisson distribution should be
+normally distributed, which could then be checked with a Normal Q-Q
+plot, and homoskedastic, which could be checked with a scale-location
+plot. Neither of these is true because a GLM does not transform the data
+and, in fact, the model definition does not specify anything about the
+distribution of an ``error'' term -- there is no \(\varepsilon\) in the
+model defintion above! This is why thinking about the definition of a
+linear model by specifying an error term with a normal distribution can
+be confusing and lead to misconceptions when learning GLMs.
+
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/glm1-worm-poisson-qr-1.pdf}
+
+The Q-Q plot using quantile residuals with a Poisson distribution
+indicates that the counts of \emph{Diplostomum} larvae in the eyes of
+the threespine stickleback are not well approximated by a Poisson
+distribution -- there are too many observed values near the ends of the
+expected tails, indicating the expected values are not spread out
+enough. This pattern emerges because the observed counts are
+overdispersed compared to a Poisson distribution.
+
+\subsubsection{Model checking a GLM II -- a dispersion
+plot}\label{model-checking-a-glm-ii-a-dispersion-plot}
+
+If observed counts are Poisson distributed, then the \textbf{Pearson
+residuals} (\(r_i\)) and the residual degrees of freedom of the fit
+model (\(df\)) can be used to compute a dispersion statistic
+
+\begin{equation}
+\frac{\sum{r_i}}{df}
+\end{equation}
+
+that has an expected value of 1. Instead of a formal hypothesis test of
+this statistic, I use a simulation approach and ask, ``if the observed
+counts are Poisson distributed, what is the expected frequency
+distribution of this dispersion statistic?'' and then use simulation to
+generate this expected distribution. The algorithm for this is
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  For each observation \(i\), generate a random Poisson count using
+  \(\hat{\mu}\) as the parameter.
+\item
+  Fit the model and compute the dispersion statistic.
+\item
+  Repeat 1 and 2 \(N_{iter}\) times.
+\end{enumerate}
+
+The plot below shows a histogram of the dispersion statistic computed
+for 1000 simulations of the worm data. The observed dispersion statistic
+is 3.4. The expected value is 1.0. The mean of the simulated values is
+1.
+
+\begin{figure}
+\centering
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/glm1-worm-poisson-dispersion-plot-1.pdf}
+\caption{\label{fig:glm1-worm-poisson-dispersion-plot}Observed vs.~expected
+dispersion statistic. The observed statistic marked by the red line. The
+histogram of expected statistics are from 1000 simulations of the
+observed data.}
+\end{figure}
+
+\subsection{Fitting a GLM with a Negative Binomial distribution to the
+worm
+data}\label{fitting-a-glm-with-a-negative-binomial-distribution-to-the-worm-data}
+
+The model is
+
+\begin{align}
+Diplo\_intensity &\sim NB(\mu, k)\\
+\mathrm{E}({Diplo\_intensity|Treatment}) &= \mu\\
+\mu &= \mathrm{exp}(\eta)\\
+\eta &= \beta_0 + \beta_1 Uninfected + \beta_2 Infected\_LG + \beta_3 Infected\_HG
+\end{align}
+
+This model specifies a negative binomial distribution but otherwise is
+just like that above specifying a Poisson distribution.
+
+\subsubsection{Model checking}\label{model-checking-2}
+
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/glm1-worm-nb-1.pdf}
+
+A quantile residual Q-Q plot of the GLM model fit with negative binomial
+distribution is illustrated above. This looks pretty good.
+
+\subsubsection{Model means and
+coefficients}\label{model-means-and-coefficients}
+
+In a Generalized Linear Model of counts using either a Poisson or
+negative binomial distribution, modeled means, coefficients, and
+contrasts can be reported either on the link or response scale.
+Remember, the response scale is a count, while the link scale is a
+log(count).
+
+The modeled means on the link scale are
+
+\begin{verbatim}
+##  Treatment   emmean     SE  df asymp.LCL asymp.UCL
+##  Control       1.82 0.0804 Inf      1.66      1.98
+##  Uninfected    1.50 0.1093 Inf      1.29      1.72
+##  Infected LG   1.62 0.1362 Inf      1.36      1.89
+##  Infected HG   2.36 0.0714 Inf      2.22      2.50
+## 
+## Results are given on the log (not the response) scale. 
+## Confidence level used: 0.95
+\end{verbatim}
+
+While the means on response scale are
+
+\begin{verbatim}
+##  Treatment   response    SE  df asymp.LCL asymp.UCL
+##  Control         6.18 0.497 Inf      5.28      7.24
+##  Uninfected      4.50 0.492 Inf      3.63      5.58
+##  Infected LG     5.07 0.691 Inf      3.89      6.63
+##  Infected HG    10.60 0.757 Inf      9.22     12.20
+## 
+## Confidence level used: 0.95 
+## Intervals are back-transformed from the log scale
+\end{verbatim}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  A mean on the response scale is simply the exponent of the mean on the
+  link scale. For example, the mean of the Control treatment level on
+  the response scale is \(\mathrm{exp}(1.821408) = 6.180555\).
+\item
+  The CIs on the link scale are symmetric around the mean but those on
+  the response scale are not. This is a feature, not a bug. Remember
+  that counts are right skewed which means a CI will have a wider right
+  than left interval. Check this!
+\item
+  If a plot includes a 1 SE error bar on the response scale, this is
+  technically correct but it encourages the practice of computing CIs
+  using the 2*SE rule of thumb. This rule breaks down for count data
+  with right skewed distributions.
+\item
+  Plotting the response scale CIs is both technically correct and makes
+  the 2*SE rule of thumb unnecessary.
+\end{enumerate}
+
+The model coefficients on the link scale are
+
+\begin{verbatim}
+##  contrast              estimate    SE  df asymp.LCL asymp.UCL z.ratio
+##  Uninfected - Control    -0.317 0.136 Inf    -0.583   -0.0514 -2.339 
+##  Infected LG - Control   -0.197 0.158 Inf    -0.507    0.1126 -1.248 
+##  Infected HG - Control    0.540 0.108 Inf     0.329    0.7504  5.019 
+##  p.value
+##  0.0193 
+##  0.2122 
+##  <.0001 
+## 
+## Results are given on the log (not the response) scale. 
+## Confidence level used: 0.95
+\end{verbatim}
+
+Backtransforming the coefficients (but not the intercept) to the
+response scale (using \(\mathrm{exp}{b_j}\)) results in a
+\textbf{response ratio}.
+
+\begin{verbatim}
+##  contrast              ratio     SE  df asymp.LCL asymp.UCL z.ratio
+##  Uninfected / Control  0.728 0.0988 Inf     0.558      0.95 -2.339 
+##  Infected LG / Control 0.821 0.1298 Inf     0.602      1.12 -1.248 
+##  Infected HG / Control 1.715 0.1845 Inf     1.389      2.12  5.019 
+##  p.value
+##  0.0193 
+##  0.2122 
+##  <.0001 
+## 
+## Confidence level used: 0.95 
+## Intervals are back-transformed from the log scale 
+## Tests are performed on the log scale
+\end{verbatim}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Note how the emmeans package reports the name of the term as the ratio
+  of the coefficient term to the intercept term (the reference treatment
+  level). Why are the coefficients tranformed to ratios on the response
+  scale? Remember that a coefficient is a difference in conditional
+  means and that
+  \(\mathrm{exp}(B-A) = \frac{\mathrm{exp}(B)}{\mathrm{exp}(A)}\). For a
+  dummy variable as here (say ``Infected HG''), the response ratio is
+\end{enumerate}
+
+\begin{equation}
+RR_{Infected\_HG} = \frac{\overline{Infected\_HG}}{\overline{Control}}
+\end{equation}
+
+which give us the \textbf{relative effect} of Infected\_HG compared to
+the Control. Relative effects could be reported as a response ratio in a
+table, or in the text it could be reported as a percent ``Infected HG
+fish had 71.5\% (95\%CI: 38.9\% - 111.8\%) more \emph{Diplostomum}
+larvae than Control fish.'' Where do these percents come from? The
+percent effect is \(100(RR_j - 1)\) larger than the reference mean if
+the \(RR_j > 1\) or \(100(1 - RR_j)\) smaller than the reference mean if
+the \(RR_j < 1\).
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{1}
+\item
+  Backtransforming the intercept does not generate a ratio since the
+  intercept on the link scale is not a difference. For the worm
+  analysis, the intercept on the link scale is the mean count of the
+  control group on the link scale and the backtransformed intercept is
+  the mean count of the control group on the response scale.
+\item
+  Effects on the response scale are not additive but multiplicative! So,
+  for example, the mean of the Infected HG treatment level on the
+  response scale is \(\overline{Control}*RR_{Infected\_HG}\) (remember
+  that with a linear model the mean would be
+  \(b_{Control} + b_{Infected\_HG}\)). Check and see if this works.
+\end{enumerate}
+
+\section{Working in R}\label{working-in-r-7}
+
+\textbf{Fitting a GLM to count data}. The poisson family is specified
+with the base R \texttt{glm()} function. For negative binomial, use
+\texttt{glm.nb} from the MASS package
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# poisson - less likely to fit to real biological data well because of overdispersion}
+\NormalTok{fit <-}\StringTok{ }\KeywordTok{glm}\NormalTok{(y }\OperatorTok{~}\StringTok{ }\NormalTok{treatment, }\DataTypeTok{family =} \StringTok{"poisson"}\NormalTok{, }\DataTypeTok{data =}\NormalTok{ dt)}
+
+\CommentTok{# two alternatives to overdispersed poisson fit}
+\CommentTok{# quasipoisson}
+\NormalTok{fit <-}\StringTok{ }\KeywordTok{glm}\NormalTok{(y }\OperatorTok{~}\StringTok{ }\NormalTok{treatment, }\DataTypeTok{family =} \StringTok{"quasipoisson"}\NormalTok{, }\DataTypeTok{data=}\NormalTok{dt)}
+\CommentTok{# negative binomial - more likely to fit to real biological data well}
+\CommentTok{# note that "family" is not an argument since this function is used only to fit a negative binomial distribution!}
+\NormalTok{fit <-}\StringTok{ }\KeywordTok{glm.nb}\NormalTok{(y }\OperatorTok{~}\StringTok{ }\NormalTok{treatment, }\DataTypeTok{data =}\NormalTok{ dt)}
+\end{Highlighting}
+\end{Shaded}
+
+\textbf{Fitting a GLM to a continuous conditional response with right
+skew}. The Gamma family is specified with the base R \texttt{glm()}
+function.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{fit <-}\StringTok{ }\KeywordTok{glm}\NormalTok{(y }\OperatorTok{~}\StringTok{ }\NormalTok{treatment, }\DataTypeTok{family =} \KeywordTok{Gamma}\NormalTok{(}\DataTypeTok{link =} \StringTok{"log"}\NormalTok{), }\DataTypeTok{data =}\NormalTok{ dt)}
+\end{Highlighting}
+\end{Shaded}
+
+\textbf{Fitting a GLM to a binary (success or failure, presence or
+absence, survived or died) response}
+
+The binomial family is specified with base R \texttt{glm()} function.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# if the data includes a 0 or 1 for every observation of y}
+\NormalTok{fit <-}\StringTok{ }\KeywordTok{glm}\NormalTok{(y }\OperatorTok{~}\StringTok{ }\NormalTok{treatment, }\DataTypeTok{family =} \StringTok{"binomial"}\NormalTok{, }\DataTypeTok{data =}\NormalTok{ dt)}
+
+\CommentTok{# if the data includes the frequency of success AND there is a measure of the total n}
+\NormalTok{dt[ , failure }\OperatorTok{:}\ErrorTok{=}\StringTok{ }\NormalTok{n }\OperatorTok{-}\StringTok{ }\NormalTok{success]}
+\NormalTok{fit <-}\StringTok{ }\KeywordTok{glm}\NormalTok{(}\KeywordTok{cbind}\NormalTok{(success, failure) }\OperatorTok{~}\StringTok{ }\NormalTok{treatment, }\DataTypeTok{family =} \StringTok{"binomial"}\NormalTok{, }\DataTypeTok{data =}\NormalTok{ dt)}
+\end{Highlighting}
+\end{Shaded}
+
+\textbf{Fitting Generalized Linear Mixed Models} Generalized linear
+mixed models are fit with \texttt{glmer} from the lmer package.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# random intercept of factor "id"}
+\NormalTok{fit <-}\StringTok{ }\KeywordTok{glmer}\NormalTok{(y }\OperatorTok{~}\StringTok{ }\NormalTok{treatment }\OperatorTok{+}\StringTok{ }\NormalTok{(}\DecValTok{1}\OperatorTok{|}\NormalTok{id), }\DataTypeTok{family =} \StringTok{"poisson"}\NormalTok{, }\DataTypeTok{data =}\NormalTok{ dt)}
+
+\CommentTok{# random intercept and slope of factor "id"}
+\NormalTok{fit <-}\StringTok{ }\KeywordTok{glmer}\NormalTok{(y }\OperatorTok{~}\StringTok{ }\NormalTok{treatment }\OperatorTok{+}\StringTok{ }\NormalTok{(treatment}\OperatorTok{|}\NormalTok{id), }\DataTypeTok{family =} \KeywordTok{Gamma}\NormalTok{(}\DataTypeTok{link =} \StringTok{"log"}\NormalTok{), }\DataTypeTok{data =}\NormalTok{ dt)}
+
+\CommentTok{# Again, negative binomial uses a special function}
+\NormalTok{fit <-}\StringTok{ }\KeywordTok{glmer.nb}\NormalTok{(y }\OperatorTok{~}\StringTok{ }\NormalTok{treatment }\OperatorTok{+}\StringTok{ }\NormalTok{(treatment}\OperatorTok{|}\NormalTok{id), }\DataTypeTok{data =}\NormalTok{ dt)}
+\end{Highlighting}
+\end{Shaded}
+
+Another good package for GLMMs is \texttt{glmmTMB} from the glmmTMB
+package
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# negative binomial}
+\NormalTok{fit <-}\StringTok{ }\KeywordTok{glmmTMB}\NormalTok{(y }\OperatorTok{~}\StringTok{ }\NormalTok{treatment }\OperatorTok{+}\StringTok{ }\NormalTok{(}\DecValTok{1}\OperatorTok{|}\NormalTok{id), }\DataTypeTok{family=}\StringTok{"nbinom2"}\NormalTok{, }\DataTypeTok{data =}\NormalTok{ dt)}
+
+\CommentTok{# nbinom1, the mean variance relationship is that of quasipoisson}
+\NormalTok{fit <-}\StringTok{ }\KeywordTok{glmmTMB}\NormalTok{(y }\OperatorTok{~}\StringTok{ }\NormalTok{treatment }\OperatorTok{+}\StringTok{ }\NormalTok{(}\DecValTok{1}\OperatorTok{|}\NormalTok{id), }\DataTypeTok{family=}\StringTok{"nbinom1"}\NormalTok{, }\DataTypeTok{data =}\NormalTok{ dt)}
+\end{Highlighting}
+\end{Shaded}
+
+\subsection{Fitting a GLM to count
+data}\label{fitting-a-glm-to-count-data}
+
+Source publication: Benesh, D. P., \& Kalbe, M. (2016). Experimental
+parasite community ecology: intraspecific variation in a large tapeworm
+affects community assembly. Journal of Animal Ecology, 85(4), 1004-1013.
+
+Source data URL:
+\url{https://datadryad.org/resource/doi:10.5061/dryad.bq8j8}
+
+Source file: ``Lab\_exp.csv''
+
+Poisson fit. A quantile residual Q-Q plot can be generated using the
+package DHARMa
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{fit.pois <-}\StringTok{ }\KeywordTok{glm}\NormalTok{(Diplo_intensity }\OperatorTok{~}\StringTok{ }\NormalTok{Treatment, }\DataTypeTok{family=}\StringTok{"poisson"}\NormalTok{, }\DataTypeTok{data=}\NormalTok{worm)}
+
+\CommentTok{# from the DHARMa package}
+\NormalTok{  n_sim <-}\StringTok{ }\DecValTok{250}
+\NormalTok{  simulationOutput <-}\StringTok{ }\KeywordTok{simulateResiduals}\NormalTok{(}\DataTypeTok{fittedModel =}\NormalTok{ fit.pois, }\DataTypeTok{n =}\NormalTok{ n_sim)}
+  \KeywordTok{plot}\NormalTok{(simulationOutput, }\DataTypeTok{asFactor =}\NormalTok{ F)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/glm1-working-in-r-1.pdf}
+
+A plot of the dispersion statistic can be generated using the object
+returned by the \texttt{SimulateOutput} function but with
+\texttt{refit\ =\ TRUE}, which refits a model each iteration. This
+refitting isn't necessary if only the quantiile residuals are needed.
+The Dharma package does not divide the sum of squared Pearson residuals
+by the residual degrees of freedom and so the expected value of the
+statistic is \(df\).
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# from the DHARMa package}
+\NormalTok{  n_sim <-}\StringTok{ }\DecValTok{250}
+\NormalTok{  simulationOutput <-}\StringTok{ }\KeywordTok{simulateResiduals}\NormalTok{(}\DataTypeTok{fittedModel=}\NormalTok{fit.pois, }\DataTypeTok{n=}\NormalTok{n_sim, }\DataTypeTok{refit=}\OtherTok{TRUE}\NormalTok{)}
+  \KeywordTok{testDispersion}\NormalTok{(simulationOutput)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-112-1.pdf}
+
+\begin{verbatim}
+## 
+##  DHARMa nonparametric dispersion test via mean deviance residual
+##  fitted vs. simulated-refitted
+## 
+## data:  simulationOutput
+## dispersion = 3.3788, p-value < 2.2e-16
+## alternative hypothesis: two.sided
+\end{verbatim}
+
+Negative binomial fit.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{fit.nb <-}\StringTok{ }\KeywordTok{glm.nb}\NormalTok{(Diplo_intensity }\OperatorTok{~}\StringTok{ }\NormalTok{Treatment, }\DataTypeTok{data=}\NormalTok{worm)}
+\CommentTok{# from the DHARMa package}
+\NormalTok{  simulationOutput <-}\StringTok{ }\KeywordTok{simulateResiduals}\NormalTok{(}\DataTypeTok{fittedModel =}\NormalTok{ fit.nb, }\DataTypeTok{n =}\NormalTok{ n_sim)}
+  \KeywordTok{plot}\NormalTok{(simulationOutput, }\DataTypeTok{asFactor =}\NormalTok{ F)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/glm-working-in-r-2-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# link scale}
+\NormalTok{emm <-}\StringTok{ }\KeywordTok{emmeans}\NormalTok{(fit.nb, }\DataTypeTok{specs=}\StringTok{"Treatment"}\NormalTok{)}
+\NormalTok{emm}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##  Treatment   emmean     SE  df asymp.LCL asymp.UCL
+##  Control       1.82 0.0804 Inf      1.66      1.98
+##  Uninfected    1.50 0.1093 Inf      1.29      1.72
+##  Infected LG   1.62 0.1362 Inf      1.36      1.89
+##  Infected HG   2.36 0.0714 Inf      2.22      2.50
+## 
+## Results are given on the log (not the response) scale. 
+## Confidence level used: 0.95
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{summary}\NormalTok{(}\KeywordTok{contrast}\NormalTok{(emm, }\DataTypeTok{method=}\StringTok{"trt.vs.ctrl"}\NormalTok{, }\DataTypeTok{adjust=}\StringTok{"none"}\NormalTok{), }\DataTypeTok{infer=}\KeywordTok{c}\NormalTok{(}\OtherTok{TRUE}\NormalTok{, }\OtherTok{TRUE}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##  contrast              estimate    SE  df asymp.LCL asymp.UCL z.ratio
+##  Uninfected - Control    -0.317 0.136 Inf    -0.583   -0.0514 -2.339 
+##  Infected LG - Control   -0.197 0.158 Inf    -0.507    0.1126 -1.248 
+##  Infected HG - Control    0.540 0.108 Inf     0.329    0.7504  5.019 
+##  p.value
+##  0.0193 
+##  0.2122 
+##  <.0001 
+## 
+## Results are given on the log (not the response) scale. 
+## Confidence level used: 0.95
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# response scale}
+\NormalTok{emm.response <-}\StringTok{ }\KeywordTok{emmeans}\NormalTok{(fit.nb, }\DataTypeTok{specs=}\StringTok{"Treatment"}\NormalTok{, }\DataTypeTok{type=}\StringTok{"response"}\NormalTok{)}
+\KeywordTok{summary}\NormalTok{(}\KeywordTok{contrast}\NormalTok{(emm, }\DataTypeTok{method=}\StringTok{"trt.vs.ctrl"}\NormalTok{, }\DataTypeTok{adjust=}\StringTok{"none"}\NormalTok{, }\DataTypeTok{type=}\StringTok{"response"}\NormalTok{), }\DataTypeTok{infer=}\KeywordTok{c}\NormalTok{(}\OtherTok{TRUE}\NormalTok{, }\OtherTok{TRUE}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##  contrast              ratio     SE  df asymp.LCL asymp.UCL z.ratio
+##  Uninfected / Control  0.728 0.0988 Inf     0.558      0.95 -2.339 
+##  Infected LG / Control 0.821 0.1298 Inf     0.602      1.12 -1.248 
+##  Infected HG / Control 1.715 0.1845 Inf     1.389      2.12  5.019 
+##  p.value
+##  0.0193 
+##  0.2122 
+##  <.0001 
+## 
+## Confidence level used: 0.95 
+## Intervals are back-transformed from the log scale 
+## Tests are performed on the log scale
+\end{verbatim}
+
+\subsection{Fitting a generalized linear mixed model (GLMM) to count
+data}\label{fitting-a-generalized-linear-mixed-model-glmm-to-count-data}
+
+\subsection{Fitting a generalized linear model to continouus
+data}\label{fitting-a-generalized-linear-model-to-continouus-data}
+
+\section{Problems}\label{problems-4}
+
+Analyze the data that went into Fig 6B of Tena, A., Pekas, A., Cano, D.,
+Wäckers, F. L., \& Urbaneja, A. (2015). Sugar provisioning maximizes the
+biocontrol service of parasitoids. Journal of Applied Ecology, 52(3),
+795-804.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Compute contrasts and CIs among all pairs of all three treatment
+  levels
+\item
+  Make a better plot like 6b including 1) use the modeled mean instead
+  of the simple group mean and 2) use the modeled CI of the mean instead
+  of the SE computed within each group independently.
+\end{enumerate}
+
+source URL: \url{https://datadryad.org/resource/doi:10.5061/dryad.bj001}
+
+source file: ``4\_Parastism\_Fig\_6.csv''
 
 \chapter{Linear models with heterogenous
 variance}\label{linear-models-with-heterogenous-variance}
