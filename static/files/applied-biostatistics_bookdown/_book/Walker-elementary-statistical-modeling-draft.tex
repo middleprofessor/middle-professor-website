@@ -124,7 +124,7 @@
   \postauthor{\par}
       \predate{\centering\large\emph}
   \postdate{\par}
-    \date{Draft: 2019-12-11}
+    \date{Draft: 2019-12-14}
 
 \usepackage{booktabs}
 \usepackage{amsthm}
@@ -1058,6 +1058,88 @@ and analysis to later chapters.
 
 \section{Data wrangling}\label{data-wrangling}
 
+\subsection{Converting a single column with all combinations of a 2 x 2
+factorial experiment into two columns, each containing the two levels of
+a
+factor}\label{converting-a-single-column-with-all-combinations-of-a-2-x-2-factorial-experiment-into-two-columns-each-containing-the-two-levels-of-a-factor}
+
+\textbf{Article source}: Tauriello, D., Palomo-Ponce, S., Stork, D. et
+al. TGFβ drives immune evasion in genetically reconstituted colon cancer
+metastasis. Nature 554, 538--543 (2018) \url{doi:10.1038/nature25492}
+
+\textbf{Data source}:
+\url{https://www.nature.com/articles/nature25492\#Sec23}
+
+filename: ``41586\_2018\_BFnature25492\_MOESM10\_ESM.xlsx''
+
+sheet: ``Fig. 4h-tumours''
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{folder <-}\StringTok{ "TGF-beta drives immune evasion in genetically reconstituted colon cancer metastasis"}
+\NormalTok{fn <-}\StringTok{ "41586_2018_BFnature25492_MOESM10_ESM.xlsx"}
+\NormalTok{file_path <-}\StringTok{ }\KeywordTok{here}\NormalTok{(}\StringTok{'data'}\NormalTok{, folder, fn)}
+\NormalTok{tumor <-}\StringTok{ }\KeywordTok{read_excel}\NormalTok{(file_path, }\DataTypeTok{sheet=}\StringTok{"Fig. 4h-tumours"}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{clean_names}\NormalTok{()  }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{data.table}\NormalTok{()}
+\NormalTok{tumor[, name }\OperatorTok{:}\ErrorTok{=}\StringTok{ }\KeywordTok{factor}\NormalTok{(name)]}
+\end{Highlighting}
+\end{Shaded}
+
+The analysis of the data in Fig. 4h specifies a single \(X\) variable
+``Treatment'' with four levels: ``Con'', ``Gal'', ``aPD-L1'', and
+``Gal+aPD-L1''. These levels indicate that the design is actually
+\textbf{factorial} with two factors, each with two levels. The first
+factor has levels ``no Gal'' and ``Gal''. The second factor has levels
+``no aPD-L1'', ``aPD-L1''. The single column Treatment ``flattens'' the
+2 X 2 factorial design to a 4 x 1 design. In general, we would want to
+analyze an experiment like this as factorial model, because this allows
+us to make inferences about the \emph{interaction effect} between the
+two factors. For these inferences, we need a standard error, or a
+confidence interval, or a \emph{p}-value of the estimate. In order to
+analyze the data with a factorial model, we need to create two new
+columns -- one column is the factor variable containing the two levels
+of Gal and one column is the factor variable containing the two levels
+of aPD-L1.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{gal_levels <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"no Gal"}\NormalTok{, }\StringTok{"Gal"}\NormalTok{)}
+\NormalTok{tumor[, gal }\OperatorTok{:}\ErrorTok{=}\StringTok{ }\KeywordTok{ifelse}\NormalTok{(treatment }\OperatorTok{==}\StringTok{ "Gal"} \OperatorTok{|}\StringTok{ }\NormalTok{treatment }\OperatorTok{==}\StringTok{ "Gal+aPD-L1"}\NormalTok{,}
+\NormalTok{                      gal_levels[}\DecValTok{2}\NormalTok{],}
+\NormalTok{                      gal_levels[}\DecValTok{1}\NormalTok{])]}
+
+\NormalTok{apd_levels <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"no aPD-L1"}\NormalTok{, }\StringTok{"aPD-L1"}\NormalTok{)}
+\NormalTok{tumor[, apdl1 }\OperatorTok{:}\ErrorTok{=}\StringTok{ }\KeywordTok{ifelse}\NormalTok{(treatment }\OperatorTok{==}\StringTok{ "aPD-L1"} \OperatorTok{|}\StringTok{ }\NormalTok{treatment }\OperatorTok{==}\StringTok{ "Gal+aPD-L1"}\NormalTok{,}
+\NormalTok{                      apd_levels[}\DecValTok{2}\NormalTok{],}
+\NormalTok{                      apd_levels[}\DecValTok{1}\NormalTok{])]}
+
+\CommentTok{# re-order factor levels}
+\NormalTok{tumor[, gal}\OperatorTok{:}\ErrorTok{=}\KeywordTok{factor}\NormalTok{(gal, gal_levels)]}
+\NormalTok{tumor[, apdl1}\OperatorTok{:}\ErrorTok{=}\KeywordTok{factor}\NormalTok{(apdl1, apd_levels)]}
+\end{Highlighting}
+\end{Shaded}
+
+A way to check the results to make sure that our conversion is correct
+is to compute the sampel size for the 2 x 2 combinations, but include
+the original treatment column in the \texttt{by} list.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{tumor[}\OperatorTok{!}\KeywordTok{is.na}\NormalTok{(num_positive_per_mm), .(}\DataTypeTok{N=}\NormalTok{.N), by=.(treatment, gal, apdl1)]}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##     treatment    gal     apdl1   N
+## 1:        Con no Gal no aPD-L1 124
+## 2:        Gal    Gal no aPD-L1  89
+## 3:     aPD-L1 no Gal    aPD-L1 101
+## 4: Gal+aPD-L1    Gal    aPD-L1  58
+\end{verbatim}
+
+That looks good.
+
 \subsection{Combining data}\label{combining-data}
 
 \textbf{Source article} Bak, A.M., Vendelbo, M.H., Christensen, B.,
@@ -1084,16 +1166,16 @@ A difficulty for the analyst is that the response data are in the
 ``Table 2'' sheet but the variable containing the assignment to ``lean''
 or ``obese'' group is in the ``Table 1'' sheet. To analyze these
 response, the two datasets need to be combined into a single data frame.
-The important consideration when combining data is that like is matched
-with like. For the fasting dataset, ``like'' is the subject id, and we
-have some data for each subject id in Table 1 and other data for the
-same subject ids in Table 2. This means that we essentially want to glue
-the columns of table 2 to the columns of table 1 in a way that insures
-that the correct data for each subject id is on the same row. This is a
-bit more complicated for these data because Table 1 contains 18 data
-rows, one for each subject id and Table 2 contains 36 data rows, 2 for
-each subject id, because each subject has data measured at 12 hours and
-at 72 hours.
+The important consideration when combining data is that \emph{like is
+matched with like}. For the fasting dataset, ``like'' is the subject id,
+and we have some data for each subject id in Table 1 and other data for
+the same subject ids in Table 2. This means that we essentially want to
+glue the columns of table 2 to the columns of table 1 in a way that
+insures that the correct data for each subject id is on the same row.
+This is a bit more complicated for these data because Table 1 contains
+18 data rows, one for each subject id and Table 2 contains 36 data rows,
+2 for each subject id, because each subject has data measured at 12
+hours and at 72 hours.
 
 \subsection{Subsetting data}\label{subsetting-data}
 
@@ -1107,9 +1189,9 @@ There are many ways to subset data in R. Experienced users tend to
 divide up into those using base R, those using the tidyverse packages,
 or those using data.table. Learn one well. This book uses data.table.
 
-In these examples, dt is the name of a data frame (that has been
-converted to a data table), not a function. Remember that all functions
-are followed by parentheses.
+In these examples, dt is the name of a data table (a data frame that has
+been converted to a data table), not a function. Remember that all
+functions are followed by parentheses.
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
@@ -1332,7 +1414,7 @@ Consider data from a simple experiment with a response variable and a
 treatment variable with three levels. A common way to organize these
 data in Microsoft Excel is in \textbf{wide format}.
 
-\label{tab:unnamed-chunk-12}Root mass for three treatment levels in wide
+\label{tab:unnamed-chunk-15}Root mass for three treatment levels in wide
 format
 
 control
@@ -1379,7 +1461,7 @@ should be in a single column with a second column identifying the
 treatment level associated with each measure. This is called
 \textbf{long format}.
 
-\label{tab:unnamed-chunk-13}Root mass for three treatment levels in long
+\label{tab:unnamed-chunk-16}Root mass for three treatment levels in long
 format
 
 treatment
@@ -1971,39 +2053,6 @@ be! We used \texttt{write.table()} to create a tab-delimited text file
 using \texttt{sep="\textbackslash{}t"} to specify tabs to separate the
 row elements. ``\t'' is the standard character string for a tab. Check
 in your output folder and open the file in a text editor.
-
-\section{Problems}\label{problems}
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\item
-  Download the dataset ``data-Lodjak.et.al-2016-FuncEcol.xlsx'' from the
-  Dryad repository at
-  \url{https://datadryad.org/resource/doi:10.5061/dryad.rd01s}. The
-  .xlsx file presents the data cleanly but the trade-off is that the 1)
-  multiple header rows, and 2) spaces in the header labels, 3)
-  parentheses in the header labels make it more complex to import in a
-  usable way. Import the data and plot Body Mass against Age (that is
-  make Body Mass the ``Y'' variable and Age the ``X'' variable) using
-  the qplot function. You should recode the column labels to remove
-  spaces and parentheses using the setnames function.
-\item
-  Download the dataset ``Results2015.txt'' from the Dryad repository at
-  \url{https://datadryad.org//resource/doi:10.5061/dryad.65vk4}. Try to
-  reproduce Fig. 1. It's not easy. I've inserted the figure below but
-  also download the paper and look at Fig. 1.
-\end{enumerate}
-
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/problem2-1.pdf}
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\setcounter{enumi}{2}
-\tightlist
-\item
-  (grad students only) Download and plot data from a Dryad Repository
-  dataset of your choice.
-\end{enumerate}
 
 \chapter*{Part II: Some Fundamentals of Statistical
 Modeling}\label{part-ii-some-fundamentals-of-statistical-modeling}
@@ -2937,7 +2986,7 @@ means
 ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 \end{verbatim}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-23-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-26-1.pdf}
 
 Compute the mean of the means
 
@@ -3334,7 +3383,7 @@ of the ``compatibility'' interpretation.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-31-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-34-1.pdf}
 
 \chapter{Covariance and Correlation}\label{covariance-and-correlation}
 
@@ -4462,7 +4511,7 @@ useful tool, but is only relevant compared to a decision rule with
 well-reasoned values of \(\alpha\) and \(\beta\) -- exact values of
 \(p\) are not very meaningful.
 
-\section{Problems}\label{problems-1}
+\section{Problems}\label{problems}
 
 Problem 1 -- simulate the distribution of \(p\) under the null. There
 are many ways to do this but a straightforard approach is to
@@ -4721,7 +4770,7 @@ effect from Z to both X equal to \(\sqrt(0.6)\).
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-33-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-36-1.pdf}
 
 Now create fake \(Y\) that is a function of both \(X_1\) and \(X_2\).
 Create ``standardized'' fake data, where \(\sigma_Y = 1\).
@@ -5674,7 +5723,7 @@ You can use qplot to make a plot similar to the first plot of
 
 \includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/fit-fitted-1.pdf}
 
-\section{Problems}\label{problems-2}
+\section{Problems}\label{problems-1}
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
@@ -6490,7 +6539,7 @@ Here is the default plot
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-49-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-52-1.pdf}
 
 \chapter{Model Checking}\label{model-checking-1}
 
@@ -6858,7 +6907,7 @@ nests or a host with no parasites), resulting in positive deviations
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-50-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-53-1.pdf}
 
 \subsubsection{Constrained lower and upper
 bounds}\label{constrained-lower-and-upper-bounds}
@@ -7243,7 +7292,7 @@ small.
 the 10,000 effects}
 \end{figure}
 
-\label{tab:unnamed-chunk-52}The top 10 genes ranked by p-value. Rank is the
+\label{tab:unnamed-chunk-55}The top 10 genes ranked by p-value. Rank is the
 rank of the true effect, from large to small.
 
 effect
@@ -8451,10 +8500,9 @@ functions under the hood) and provides many canned functions for
 producing the kinds of ggplots that are published in biological
 journals. With one line of script, a researcher can generate a
 publishable plot that is as good or better than many published plot.
-That said, the means and error intervals used in \texttt{ggpubr} plots
-are the raw and not modeled values, and, consequently, \texttt{ggpubr}
-is not sufficient to generate pretty good plots. It is easy enough to
-add custom error bars to a ggpubr plot.
+
+\textbf{Here I show how to add custom (ggplot2) features to a ggpubr
+plot}
 
 \subsection{Unpooled SE bars and confidence
 intervals}\label{unpooled-se-bars-and-confidence-intervals}
@@ -8464,18 +8512,16 @@ intervals}\label{unpooled-se-bars-and-confidence-intervals}
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{gg1 <-}\StringTok{ }\KeywordTok{ggbarplot}\NormalTok{(}\DataTypeTok{x=}\StringTok{"donor"}\NormalTok{, }
-                 \DataTypeTok{y=}\StringTok{"count"}\NormalTok{, }
-                 \DataTypeTok{data=}\NormalTok{exp2d,}
-                 \DataTypeTok{add=}\KeywordTok{c}\NormalTok{(}\StringTok{"mean_se"}\NormalTok{),}
-                 \DataTypeTok{color =} \StringTok{"black"}\NormalTok{,}
+\NormalTok{gg1 <-}\StringTok{ }\KeywordTok{ggbarplot}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ exp2d,}
+                 \DataTypeTok{x =} \StringTok{"donor"}\NormalTok{, }
+                 \DataTypeTok{y =} \StringTok{"count"}\NormalTok{, }
+                 \DataTypeTok{add =} \KeywordTok{c}\NormalTok{(}\StringTok{"mean_se"}\NormalTok{),}
                  \DataTypeTok{fill =} \StringTok{"steelblue"}
 \NormalTok{)}
-\NormalTok{gg2 <-}\StringTok{ }\KeywordTok{ggbarplot}\NormalTok{(}\DataTypeTok{x=}\StringTok{"donor"}\NormalTok{, }
-                 \DataTypeTok{y=}\StringTok{"count"}\NormalTok{, }
-                 \DataTypeTok{data=}\NormalTok{exp2d,}
-                 \DataTypeTok{add=}\KeywordTok{c}\NormalTok{(}\StringTok{"mean_ci"}\NormalTok{),}
-                 \DataTypeTok{color =} \StringTok{"black"}\NormalTok{,}
+\NormalTok{gg2 <-}\StringTok{ }\KeywordTok{ggbarplot}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ exp2d,}
+                 \DataTypeTok{x =} \StringTok{"donor"}\NormalTok{, }
+                 \DataTypeTok{y =} \StringTok{"count"}\NormalTok{, }
+                 \DataTypeTok{add =} \KeywordTok{c}\NormalTok{(}\StringTok{"mean_ci"}\NormalTok{),}
                  \DataTypeTok{fill =} \StringTok{"steelblue"}
 \NormalTok{)}
 \KeywordTok{plot_grid}\NormalTok{(gg1, gg2, }\DataTypeTok{ncol=}\DecValTok{2}\NormalTok{, }\DataTypeTok{labels=}\StringTok{"AUTO"}\NormalTok{)}
@@ -8492,21 +8538,33 @@ intervals}\label{unpooled-se-bars-and-confidence-intervals}
 \subsection{Adding bootstrap
 intervals}\label{adding-bootstrap-intervals}
 
+A better CI than an unpooled CI, especially for non-normal data such as
+counts, is a bootstrap CI. ggplot2 automates this. A stripchart shows
+the data, which are ``de-emphasized'' -- in order to emphasize the mean
+and CI -- by using a lighter shade for the individual points. In order
+to not \emph{also} de-emphasize the plotted mean, a ggplot2 line plots
+the mean instead of ggpubr.
+
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{gg <-}\StringTok{ }\KeywordTok{ggbarplot}\NormalTok{(}\DataTypeTok{x=}\StringTok{"donor"}\NormalTok{, }
-                \DataTypeTok{y=}\StringTok{"count"}\NormalTok{, }
-                \DataTypeTok{data=}\NormalTok{exp2d,}
-                \DataTypeTok{add=}\KeywordTok{c}\NormalTok{(}\StringTok{"mean"}\NormalTok{),}
-                \DataTypeTok{color =} \StringTok{"black"}\NormalTok{,}
-                \DataTypeTok{fill =} \StringTok{"steelblue"}
+\NormalTok{gg <-}\StringTok{ }\KeywordTok{ggstripchart}\NormalTok{(}\DataTypeTok{data=}\NormalTok{exp2d,}
+                   \DataTypeTok{x=}\StringTok{"donor"}\NormalTok{, }
+                   \DataTypeTok{y=}\StringTok{"count"}\NormalTok{, }
+                   \DataTypeTok{alpha =} \FloatTok{0.3}
 \NormalTok{) }\OperatorTok{+}\StringTok{ }
-\StringTok{  }\KeywordTok{stat_summary}\NormalTok{(}\DataTypeTok{fun.data =} \StringTok{"mean_cl_boot"}\NormalTok{, }\DataTypeTok{geom =} \StringTok{"errorbar"}\NormalTok{, }\DataTypeTok{width=}\FloatTok{0.1}\NormalTok{)}
+\StringTok{  }\KeywordTok{stat_summary}\NormalTok{(}\DataTypeTok{fun.data =} \StringTok{"mean_cl_boot"}\NormalTok{, }
+               \DataTypeTok{geom =} \StringTok{"errorbar"}\NormalTok{, }
+               \DataTypeTok{width =} \FloatTok{0.1}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{stat_summary}\NormalTok{(}\DataTypeTok{fun.y =} \StringTok{"mean"}\NormalTok{, }
+               \DataTypeTok{geom =} \StringTok{"point"}\NormalTok{, }
+               \DataTypeTok{size =} \DecValTok{2}\NormalTok{)}
+
+
 \NormalTok{gg}
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-61-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-64-1.pdf}
 
 \subsection{Adding modeled error
 intervals}\label{adding-modeled-error-intervals}
@@ -8552,7 +8610,7 @@ effect}\label{modeled-error-intervals-of-the-effect}
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-63-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-66-1.pdf}
 
 \subsubsection{Modeled error intervals of the
 mean}\label{modeled-error-intervals-of-the-mean}
@@ -8574,7 +8632,7 @@ mean}\label{modeled-error-intervals-of-the-mean}
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-64-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-67-1.pdf}
 
 Note that the CIs are asymmetric about the mean (and these modeled CIs
 will never include negative values for count data).
@@ -8591,7 +8649,7 @@ The ggplots are combined using the package \texttt{cowplot}
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-65-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-68-1.pdf}
 
 \subsection{Adding p-values}\label{adding-p-values}
 
@@ -8887,7 +8945,7 @@ function from the emmeans package.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-71-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-74-1.pdf}
 
 \subsection{Interaction plot}\label{interaction-plot}
 
@@ -8907,7 +8965,7 @@ function from the emmeans package.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-72-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-75-1.pdf}
 
 \subsection{Plot components}\label{plot-components}
 
@@ -8929,7 +8987,7 @@ stripchart or a jitter plot
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-73-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-76-1.pdf}
 
 With more points, a stripchart can be okay but with too many points the
 distribution might be obscured. Reasonable alternatives are a box plot,
@@ -8959,7 +9017,7 @@ a violin plot, and a dotplot.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-74-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-77-1.pdf}
 
 \section{}\label{section}
 
@@ -9090,7 +9148,7 @@ ldlc.r = \beta_0 + \beta_1 treatment + \varepsilon
 
 where \(ldlc.r\) is the set of residuals.
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-76-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-79-1.pdf}
 
 Now the estimate of the effect is -4.7 mg/dL blood and the SE is only
 0.88. In this two-stage analysis (stage 1: fit ldlc \textasciitilde{}
@@ -9118,11 +9176,11 @@ ldlc = \beta_0 + \beta_1 age + \beta_2 treatment + \varepsilon
 
 which results in the Harrell Plot
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-77-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-80-1.pdf}
 
 and the coefficient table
 
-\label{tab:unnamed-chunk-78}Coefficients of the model that includes the
+\label{tab:unnamed-chunk-81}Coefficients of the model that includes the
 covariate age.
 
 Estimate
@@ -10669,7 +10727,7 @@ design}\label{bar-plot-with-uniform-coloring-poorly-communicate-the-factorial-de
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-88-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-91-1.pdf}
 
 \subsubsection{Plots that communicate the factorial
 design}\label{plots-that-communicate-the-factorial-design}
@@ -10845,7 +10903,7 @@ reflect our pre-conceived scientific model.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-89-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-92-1.pdf}
 
 This effects plot shows the four simple effects, the single interaction
 (Temp18:CO21100), and their 95\% confidence intervals. In the original
@@ -10871,11 +10929,11 @@ to small) to have much confidence in the size of the interaction effect.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-90-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-93-1.pdf}
 
 The effects and interaction plot are combined into a single plot.
 
-\section{Problems}\label{problems-3}
+\section{Problems}\label{problems-2}
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
@@ -14715,7 +14773,7 @@ statistic is \(df\).
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-112-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-115-1.pdf}
 
 \begin{verbatim}
 ## 
@@ -14808,7 +14866,7 @@ data}\label{fitting-a-generalized-linear-mixed-model-glmm-to-count-data}
 \subsection{Fitting a generalized linear model to continouus
 data}\label{fitting-a-generalized-linear-model-to-continouus-data}
 
-\section{Problems}\label{problems-4}
+\section{Problems}\label{problems-3}
 
 Analyze the data that went into Fig 6B of Tena, A., Pekas, A., Cano, D.,
 Wäckers, F. L., \& Urbaneja, A. (2015). Sugar provisioning maximizes the
