@@ -8663,6 +8663,14 @@ estimate the modeled means.
   the ``type'' argument to specify that we want the means to be
   backtransformed to the \textbf{response scale}, which is the scale of
   the measurement (number of cells)
+\item
+  It can be useful to convert the emmeans table m1.emm to a data.table
+  (or data.frame or tibble) using
+  \texttt{m1.emm\ \textless{}-\ data.table(m1.emm)}. \textbf{Bug alert}
+  If you do this, the object cannot be passed to the next step, the
+  \texttt{contrast} function. So if you want the emmeans table as a
+  data.table, assign it to a different name, for example
+  \texttt{m1.emm\_dt\ \textless{}-\ data.table(m1.emm)}.
 \end{itemize}
 
 \textbf{Step 3: Compute the contrasts, with p-values and confidence
@@ -8715,6 +8723,11 @@ function.
   that is done here as part of the uninterrupted work flow that this
   book advocates and 2) we do use the \emph{p}-values and CIs from this
   table (m1.pairs) in the final plot below.
+\item
+  \textbf{Bug alert} again, the emmeans table m1.emm must be passed to
+  \texttt{contrast} as an emmeans object. If you have converted this
+  object to a data.table, you will get an error. See the last note in
+  Step 2.
 \end{itemize}
 
 \textbf{Step 4: Plot the modeled means and 95\% error intervals}.
@@ -8757,13 +8770,13 @@ Some notes on the plot code
   but a column name passed to a \texttt{ggplot2} function cannot be in
   quotes
 \item
-  \textbf{This is very important}. The data passed to ggplot2 must be a
-  data.frame. In order for the ggplot2 functions to use the m1.emm
-  object, the object has to be passed as \texttt{summary(m1.emm)}.
+  \textbf{Bug alert}. The data passed to ggplot2 must be a data.frame.
+  In order for the ggplot2 functions to use the m1.emm object, the
+  object has to be passed as \texttt{summary(m1.emm)}.
 \item
-  \textbf{This is very important}. The name of the y-axis variable in
-  the \texttt{ggstripchart} function is ``count'', because the function
-  is using a column from the data.table exp2d. The name of the y-axis
+  \textbf{Bug alert}. The name of the y-axis variable in the
+  \texttt{ggstripchart} function is ``count'', because the function is
+  using a column from the data.table exp2d. The name of the y-axis
   variable in the \texttt{geom\_errorbar} and \texttt{geom\_point}
   functions is ``response'' which is the name given to the expected
   value of the response (which is \(count\)) in the m1.emm object. This
@@ -8913,7 +8926,7 @@ package. This script also uses \texttt{str\_split} from the package
 \end{Highlighting}
 \end{Shaded}
 
-\textbf{Important} notes on the script to build the p-value table, if
+\textbf{Bug alert} notes on the script to build the p-value table, if
 you don't want your code to fail.
 
 \begin{itemize}
@@ -9174,8 +9187,6 @@ a violin plot, and a dotplot.
 \end{Shaded}
 
 \includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-73-1.pdf}
-
-\section{}\label{section}
 
 \chapter*{\texorpdfstring{Part IV: More than one \(X\) -- Multivariable
 Models}{Part IV: More than one X -- Multivariable Models}}\label{part-iv-more-than-one-x-multivariable-models}

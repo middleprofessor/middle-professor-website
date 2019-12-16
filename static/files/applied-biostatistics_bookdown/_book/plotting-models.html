@@ -288,7 +288,6 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="13.3.7" data-path="plotting-models.html"><a href="plotting-models.html#interaction-plot"><i class="fa fa-check"></i><b>13.3.7</b> Interaction plot</a></li>
 <li class="chapter" data-level="13.3.8" data-path="plotting-models.html"><a href="plotting-models.html#plot-components"><i class="fa fa-check"></i><b>13.3.8</b> Plot components</a></li>
 </ul></li>
-<li class="chapter" data-level="13.4" data-path="plotting-models.html"><a href="plotting-models.html#section"><i class="fa fa-check"></i><b>13.4</b> </a></li>
 </ul></li>
 <li><a href="part-iv-more-than-one-x-multivariable-models.html#part-iv-more-than-one-x-multivariable-models">Part IV: More than one <span class="math inline">\(X\)</span> – Multivariable Models</a></li>
 <li class="chapter" data-level="14" data-path="adding-covariates-to-a-linear-model.html"><a href="adding-covariates-to-a-linear-model.html"><i class="fa fa-check"></i><b>14</b> Adding covariates to a linear model</a><ul>
@@ -599,6 +598,7 @@ m1.emm</code></pre></div>
 <ul>
 <li>We specify the means that we want to estimate with “specs =”. Here, we want to estimate the means of the levels of <span class="math inline">\(donor\)</span>.</li>
 <li>Because the linear predictor of the model is on the log scale, we use the “type” argument to specify that we want the means to be backtransformed to the <strong>response scale</strong>, which is the scale of the measurement (number of cells)</li>
+<li>It can be useful to convert the emmeans table m1.emm to a data.table (or data.frame or tibble) using <code>m1.emm &lt;- data.table(m1.emm)</code>. <strong>Bug alert</strong> If you do this, the object cannot be passed to the next step, the <code>contrast</code> function. So if you want the emmeans table as a data.table, assign it to a different name, for example <code>m1.emm_dt &lt;- data.table(m1.emm)</code>.</li>
 </ul>
 <p><strong>Step 3: Compute the contrasts, with p-values and confidence levels</strong>. Contrasts among levels, or combinations of levels, are computed by passing the emmeans object (m1.emm) to the <code>contrast</code> function.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">m1.pairs &lt;-<span class="st"> </span><span class="kw">contrast</span>(m1.emm, <span class="dt">method=</span><span class="st">&quot;revpairwise&quot;</span>, <span class="dt">adjust=</span><span class="st">&quot;none&quot;</span>) <span class="op">%&gt;%</span>
@@ -620,6 +620,7 @@ m1.pairs</code></pre></div>
 <li>I use the “adjust” argument to specify no <em>p</em>-value adjustment for multiple tests.</li>
 <li>the contrast object is then piped (%&gt;%) to the summary function, where I pass to the argument “infer”, that I want both the confidence intervals (the first TRUE) and <em>p</em>-values (the second TRUE)</li>
 <li>this step isn’t necessary if we were plotting only modeled means and CIs but 1) we almost always want contrasts with a fit model and so that is done here as part of the uninterrupted work flow that this book advocates and 2) we do use the <em>p</em>-values and CIs from this table (m1.pairs) in the final plot below.</li>
+<li><strong>Bug alert</strong> again, the emmeans table m1.emm must be passed to <code>contrast</code> as an emmeans object. If you have converted this object to a data.table, you will get an error. See the last note in Step 2.</li>
 </ul>
 <p><strong>Step 4: Plot the modeled means and 95% error intervals</strong>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">set.seed</span>(<span class="dv">1</span>)
@@ -648,8 +649,8 @@ Figure 13.7: Modeled means and 95% confidence interval computed from a negative 
 <p>Some notes on the plot code</p>
 <ul>
 <li>A column name passed to a <code>ggpubr</code> function must be in quotes but a column name passed to a <code>ggplot2</code> function cannot be in quotes</li>
-<li><strong>This is very important</strong>. The data passed to ggplot2 must be a data.frame. In order for the ggplot2 functions to use the m1.emm object, the object has to be passed as <code>summary(m1.emm)</code>.</li>
-<li><strong>This is very important</strong>. The name of the y-axis variable in the <code>ggstripchart</code> function is “count”, because the function is using a column from the data.table exp2d. The name of the y-axis variable in the <code>geom_errorbar</code> and <code>geom_point</code> functions is “response” which is the name given to the expected value of the response (which is <span class="math inline">\(count\)</span>) in the m1.emm object. This column takes different names depending on the fit object sent to the <code>emmeans</code> function. Importantly, because the y-axis in the <code>geom_errorbar</code> and <code>geom_point</code> functions has a different name then the name of the y-axis variable used to create the basic plot, the name of the y-axis column has to be specified.</li>
+<li><strong>Bug alert</strong>. The data passed to ggplot2 must be a data.frame. In order for the ggplot2 functions to use the m1.emm object, the object has to be passed as <code>summary(m1.emm)</code>.</li>
+<li><strong>Bug alert</strong>. The name of the y-axis variable in the <code>ggstripchart</code> function is “count”, because the function is using a column from the data.table exp2d. The name of the y-axis variable in the <code>geom_errorbar</code> and <code>geom_point</code> functions is “response” which is the name given to the expected value of the response (which is <span class="math inline">\(count\)</span>) in the m1.emm object. This column takes different names depending on the fit object sent to the <code>emmeans</code> function. Importantly, because the y-axis in the <code>geom_errorbar</code> and <code>geom_point</code> functions has a different name then the name of the y-axis variable used to create the basic plot, the name of the y-axis column has to be specified.</li>
 </ul>
 </div>
 <div id="adding-p-values" class="section level3">
@@ -715,7 +716,7 @@ m1.pvalues[, group2 <span class="op">:</span><span class="er">=</span><span clas
 
 <span class="co"># create a column of nicely formatted p-values for display.</span>
 m1.pvalues[, p <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">pvalString</span>(p.value)]</code></pre></div>
-<p><strong>Important</strong> notes on the script to build the p-value table, if you don’t want your code to fail.</p>
+<p><strong>Bug alert</strong> notes on the script to build the p-value table, if you don’t want your code to fail.</p>
 <ul>
 <li>The script to extract the pair of group labels <code>str_split(m1.pvalues$contrast, &quot; / &quot;))</code> has to be written so that the characters within the quotes matches the characters separating the groups in the “contrast” column of the contrast table (here, m1.pairs). This will typically be either a space-minus-space or a space-slash-space. If the model fit is <code>lm</code> and the response is not transformed, then the correct code is <code>str_split(m1.pvalues$contrast, &quot; - &quot;))</code>. Regardless, look at the table to check.</li>
 <li>In step 3 above, we took the contrast table object and passed it to the function <code>summary</code>, which converts the contrast table object to a data.frame. If we had skipped this step, <code>data.table(m1.pairs)</code> would fail. Instead, we’d have to use <code>data.table(summary(m1.pairs))</code>.</li>
@@ -867,12 +868,9 @@ gg4 &lt;-<span class="st"> </span><span class="kw">ggdotplot</span>(<span class=
           <span class="dt">data =</span> exp2d)
 <span class="kw">plot_grid</span>(gg1, gg2, gg3, gg4, <span class="dt">nrow=</span><span class="dv">2</span>)</code></pre></div>
 <p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/unnamed-chunk-73-1.png" width="576" /></p>
-</div>
-</div>
-</div>
-<div id="section" class="section level2">
-<h2><span class="header-section-number">13.4</span> </h2>
 
+</div>
+</div>
 </div>
 </div>
 <div class="footnotes">
