@@ -1,0 +1,1308 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Chapter 2 Data – Reading, Wrangling, and Writing | Elementary Statistical Modeling for Applied Biostatistics</title>
+  <meta name="description" content="A first course in statistical modeling for biology students" />
+  <meta name="generator" content="bookdown 0.14 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Chapter 2 Data – Reading, Wrangling, and Writing | Elementary Statistical Modeling for Applied Biostatistics" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="A first course in statistical modeling for biology students" />
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapter 2 Data – Reading, Wrangling, and Writing | Elementary Statistical Modeling for Applied Biostatistics" />
+  
+  <meta name="twitter:description" content="A first course in statistical modeling for biology students" />
+  
+
+<meta name="author" content="Copyright 2018 Jeffrey A. Walker" />
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="organization-r-projects-and-r-notebooks.html"/>
+<link rel="next" href="part-ii-some-fundamentals-of-statistical-modeling.html"/>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+
+
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Elements of Applied Biostatistics</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Preface</a><ul>
+<li class="chapter" data-level="0.1" data-path="index.html"><a href="index.html#math"><i class="fa fa-check"></i><b>0.1</b> Math</a></li>
+<li class="chapter" data-level="0.2" data-path="index.html"><a href="index.html#r-and-programming"><i class="fa fa-check"></i><b>0.2</b> R and programming</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="part-i-r-fundamentals.html"><a href="part-i-r-fundamentals.html"><i class="fa fa-check"></i>Part I: R fundamentals</a></li>
+<li class="chapter" data-level="1" data-path="organization-r-projects-and-r-notebooks.html"><a href="organization-r-projects-and-r-notebooks.html"><i class="fa fa-check"></i><b>1</b> Organization – R Projects and R Notebooks</a><ul>
+<li class="chapter" data-level="1.1" data-path="organization-r-projects-and-r-notebooks.html"><a href="organization-r-projects-and-r-notebooks.html#importing-packages"><i class="fa fa-check"></i><b>1.1</b> Importing Packages</a></li>
+<li class="chapter" data-level="1.2" data-path="organization-r-projects-and-r-notebooks.html"><a href="organization-r-projects-and-r-notebooks.html#create-an-r-studio-project-for-this-class"><i class="fa fa-check"></i><b>1.2</b> Create an R Studio Project for this Class</a></li>
+<li class="chapter" data-level="1.3" data-path="organization-r-projects-and-r-notebooks.html"><a href="organization-r-projects-and-r-notebooks.html#r-notebooks"><i class="fa fa-check"></i><b>1.3</b> R Notebooks</a><ul>
+<li class="chapter" data-level="1.3.1" data-path="organization-r-projects-and-r-notebooks.html"><a href="organization-r-projects-and-r-notebooks.html#create-an-r-notebook-for-this-chapter"><i class="fa fa-check"></i><b>1.3.1</b> Create an R Notebook for this Chapter</a></li>
+<li class="chapter" data-level="1.3.2" data-path="organization-r-projects-and-r-notebooks.html"><a href="organization-r-projects-and-r-notebooks.html#create-a-load-packages-chunk"><i class="fa fa-check"></i><b>1.3.2</b> Create a “load-packages” chunk</a></li>
+<li class="chapter" data-level="1.3.3" data-path="organization-r-projects-and-r-notebooks.html"><a href="organization-r-projects-and-r-notebooks.html#create-a-simple-plot-chunk"><i class="fa fa-check"></i><b>1.3.3</b> Create a “simple plot” chunk</a></li>
+<li class="chapter" data-level="1.3.4" data-path="organization-r-projects-and-r-notebooks.html"><a href="organization-r-projects-and-r-notebooks.html#create-more-r-chunks-and-explore-options-and-play-with-r-code"><i class="fa fa-check"></i><b>1.3.4</b> Create more R chunks and explore options and play with R code</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="data-reading-wrangling-and-writing.html"><a href="data-reading-wrangling-and-writing.html"><i class="fa fa-check"></i><b>2</b> Data – Reading, Wrangling, and Writing</a><ul>
+<li class="chapter" data-level="2.1" data-path="data-reading-wrangling-and-writing.html"><a href="data-reading-wrangling-and-writing.html#create-new-notebook-for-this-chapter"><i class="fa fa-check"></i><b>2.1</b> Create new notebook for this chapter</a></li>
+<li class="chapter" data-level="2.2" data-path="data-reading-wrangling-and-writing.html"><a href="data-reading-wrangling-and-writing.html#importing-data"><i class="fa fa-check"></i><b>2.2</b> Importing data</a><ul>
+<li class="chapter" data-level="2.2.1" data-path="data-reading-wrangling-and-writing.html"><a href="data-reading-wrangling-and-writing.html#excel-file"><i class="fa fa-check"></i><b>2.2.1</b> Excel file</a></li>
+<li class="chapter" data-level="2.2.2" data-path="data-reading-wrangling-and-writing.html"><a href="data-reading-wrangling-and-writing.html#text-file"><i class="fa fa-check"></i><b>2.2.2</b> Text file</a></li>
+</ul></li>
+<li class="chapter" data-level="2.3" data-path="data-reading-wrangling-and-writing.html"><a href="data-reading-wrangling-and-writing.html#troubleshooting-file-import"><i class="fa fa-check"></i><b>2.3</b> Troubleshooting file import</a><ul>
+<li class="chapter" data-level="2.3.1" data-path="data-reading-wrangling-and-writing.html"><a href="data-reading-wrangling-and-writing.html#rule-number-one-in-r-scripting-rule1"><i class="fa fa-check"></i><b>2.3.1</b> Rule number one in R scripting {# rule1}</a></li>
+</ul></li>
+<li class="chapter" data-level="2.4" data-path="data-reading-wrangling-and-writing.html"><a href="data-reading-wrangling-and-writing.html#data-wrangling"><i class="fa fa-check"></i><b>2.4</b> Data wrangling</a><ul>
+<li class="chapter" data-level="2.4.1" data-path="data-reading-wrangling-and-writing.html"><a href="data-reading-wrangling-and-writing.html#converting-a-single-column-with-all-combinations-of-a-2-x-2-factorial-experiment-into-two-columns-each-containing-the-two-levels-of-a-factor"><i class="fa fa-check"></i><b>2.4.1</b> Converting a single column with all combinations of a 2 x 2 factorial experiment into two columns, each containing the two levels of a factor</a></li>
+<li class="chapter" data-level="2.4.2" data-path="data-reading-wrangling-and-writing.html"><a href="data-reading-wrangling-and-writing.html#combining-data"><i class="fa fa-check"></i><b>2.4.2</b> Combining data</a></li>
+<li class="chapter" data-level="2.4.3" data-path="data-reading-wrangling-and-writing.html"><a href="data-reading-wrangling-and-writing.html#subsetting-data"><i class="fa fa-check"></i><b>2.4.3</b> Subsetting data</a></li>
+<li class="chapter" data-level="2.4.4" data-path="data-reading-wrangling-and-writing.html"><a href="data-reading-wrangling-and-writing.html#missing-data"><i class="fa fa-check"></i><b>2.4.4</b> missing data</a></li>
+<li class="chapter" data-level="2.4.5" data-path="data-reading-wrangling-and-writing.html"><a href="data-reading-wrangling-and-writing.html#reshaping-data"><i class="fa fa-check"></i><b>2.4.5</b> Reshaping data</a></li>
+<li class="chapter" data-level="2.4.6" data-path="data-reading-wrangling-and-writing.html"><a href="data-reading-wrangling-and-writing.html#miscellaneous-data-wrangling"><i class="fa fa-check"></i><b>2.4.6</b> Miscellaneous data wrangling</a></li>
+</ul></li>
+<li class="chapter" data-level="2.5" data-path="data-reading-wrangling-and-writing.html"><a href="data-reading-wrangling-and-writing.html#saving-data"><i class="fa fa-check"></i><b>2.5</b> Saving data</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="part-ii-some-fundamentals-of-statistical-modeling.html"><a href="part-ii-some-fundamentals-of-statistical-modeling.html"><i class="fa fa-check"></i>Part II: Some Fundamentals of Statistical Modeling</a></li>
+<li class="chapter" data-level="3" data-path="an-introduction-to-statistical-modeling.html"><a href="an-introduction-to-statistical-modeling.html"><i class="fa fa-check"></i><b>3</b> An Introduction to Statistical Modeling</a><ul>
+<li class="chapter" data-level="3.1" data-path="an-introduction-to-statistical-modeling.html"><a href="an-introduction-to-statistical-modeling.html#two-specifications-of-a-linear-model"><i class="fa fa-check"></i><b>3.1</b> Two specifications of a linear model</a><ul>
+<li class="chapter" data-level="3.1.1" data-path="an-introduction-to-statistical-modeling.html"><a href="an-introduction-to-statistical-modeling.html#the-error-draw-specification"><i class="fa fa-check"></i><b>3.1.1</b> The “error draw” specification</a></li>
+<li class="chapter" data-level="3.1.2" data-path="an-introduction-to-statistical-modeling.html"><a href="an-introduction-to-statistical-modeling.html#the-conditional-draw-specification"><i class="fa fa-check"></i><b>3.1.2</b> The “conditional draw” specification</a></li>
+<li class="chapter" data-level="3.1.3" data-path="an-introduction-to-statistical-modeling.html"><a href="an-introduction-to-statistical-modeling.html#comparing-the-two-ways-of-specifying-the-linear-model"><i class="fa fa-check"></i><b>3.1.3</b> Comparing the two ways of specifying the linear model</a></li>
+</ul></li>
+<li class="chapter" data-level="3.2" data-path="an-introduction-to-statistical-modeling.html"><a href="an-introduction-to-statistical-modeling.html#what-do-we-call-the-x-and-y-variables"><i class="fa fa-check"></i><b>3.2</b> What do we call the <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> variables?</a></li>
+<li class="chapter" data-level="3.3" data-path="an-introduction-to-statistical-modeling.html"><a href="an-introduction-to-statistical-modeling.html#statistical-models-are-used-for-prediction-explanation-and-description"><i class="fa fa-check"></i><b>3.3</b> Statistical models are used for prediction, explanation, and description</a></li>
+<li class="chapter" data-level="3.4" data-path="an-introduction-to-statistical-modeling.html"><a href="an-introduction-to-statistical-modeling.html#modeling-strategy"><i class="fa fa-check"></i><b>3.4</b> Modeling strategy</a></li>
+<li class="chapter" data-level="3.5" data-path="an-introduction-to-statistical-modeling.html"><a href="an-introduction-to-statistical-modeling.html#a-mean-is-the-simplest-model"><i class="fa fa-check"></i><b>3.5</b> A mean is the simplest model</a></li>
+<li class="chapter" data-level="3.6" data-path="an-introduction-to-statistical-modeling.html"><a href="an-introduction-to-statistical-modeling.html#assumptions-for-inference-with-a-statistical-model"><i class="fa fa-check"></i><b>3.6</b> Assumptions for inference with a statistical model</a></li>
+<li class="chapter" data-level="3.7" data-path="an-introduction-to-statistical-modeling.html"><a href="an-introduction-to-statistical-modeling.html#specific-assumptions-for-inference-with-a-linear-model"><i class="fa fa-check"></i><b>3.7</b> Specific assumptions for inference with a linear model</a></li>
+<li class="chapter" data-level="3.8" data-path="an-introduction-to-statistical-modeling.html"><a href="an-introduction-to-statistical-modeling.html#statistical-model-or-regression-model"><i class="fa fa-check"></i><b>3.8</b> “Statistical model” or “regression model”?</a></li>
+<li class="chapter" data-level="3.9" data-path="an-introduction-to-statistical-modeling.html"><a href="an-introduction-to-statistical-modeling.html#glm-vs.glm-vs.gls"><i class="fa fa-check"></i><b>3.9</b> GLM vs. GLM vs. GLS</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals.html"><a href="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals.html"><i class="fa fa-check"></i><b>4</b> Variability and Uncertainty (Standard Deviations, Standard Errors, Confidence Intervals)</a><ul>
+<li class="chapter" data-level="4.1" data-path="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals.html"><a href="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals.html#the-sample-standard-deviation-vs.the-standard-error-of-the-mean"><i class="fa fa-check"></i><b>4.1</b> The sample standard deviation vs. the standard error of the mean</a><ul>
+<li class="chapter" data-level="4.1.1" data-path="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals.html"><a href="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals.html#sample-standard-deviation"><i class="fa fa-check"></i><b>4.1.1</b> Sample standard deviation</a></li>
+<li class="chapter" data-level="4.1.2" data-path="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals.html"><a href="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals.html#standard-error-of-the-mean"><i class="fa fa-check"></i><b>4.1.2</b> Standard error of the mean</a></li>
+</ul></li>
+<li class="chapter" data-level="4.2" data-path="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals.html"><a href="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals.html#using-google-sheets-to-generate-fake-data-to-explore-the-standard-error"><i class="fa fa-check"></i><b>4.2</b> Using Google Sheets to generate fake data to explore the standard error</a><ul>
+<li class="chapter" data-level="4.2.1" data-path="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals.html"><a href="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals.html#steps"><i class="fa fa-check"></i><b>4.2.1</b> Steps</a></li>
+</ul></li>
+<li class="chapter" data-level="4.3" data-path="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals.html"><a href="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals.html#using-r-to-generate-fake-data-to-explore-the-standard-error"><i class="fa fa-check"></i><b>4.3</b> Using R to generate fake data to explore the standard error</a><ul>
+<li class="chapter" data-level="4.3.1" data-path="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals.html"><a href="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals.html#part-i"><i class="fa fa-check"></i><b>4.3.1</b> part I</a></li>
+<li class="chapter" data-level="4.3.2" data-path="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals.html"><a href="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals.html#part-ii---means"><i class="fa fa-check"></i><b>4.3.2</b> part II - means</a></li>
+<li class="chapter" data-level="4.3.3" data-path="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals.html"><a href="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals.html#part-iii---how-do-sd-and-se-change-as-sample-size-n-increases"><i class="fa fa-check"></i><b>4.3.3</b> part III - how do SD and SE change as sample size (n) increases?</a></li>
+<li class="chapter" data-level="4.3.4" data-path="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals.html"><a href="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals.html#part-iv-generating-fake-data-with-for-loops"><i class="fa fa-check"></i><b>4.3.4</b> Part IV – Generating fake data with for-loops</a></li>
+</ul></li>
+<li class="chapter" data-level="4.4" data-path="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals.html"><a href="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals.html#bootstrap"><i class="fa fa-check"></i><b>4.4</b> Bootstrapped standard errors</a><ul>
+<li class="chapter" data-level="4.4.1" data-path="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals.html"><a href="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals.html#an-example-of-bootstrapped-standard-errors-using-vole-data"><i class="fa fa-check"></i><b>4.4.1</b> An example of bootstrapped standard errors using vole data</a></li>
+</ul></li>
+<li class="chapter" data-level="4.5" data-path="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals.html"><a href="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals.html#confidence-interval"><i class="fa fa-check"></i><b>4.5</b> Confidence Interval</a><ul>
+<li class="chapter" data-level="4.5.1" data-path="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals.html"><a href="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals.html#interpretation-of-a-confidence-interval"><i class="fa fa-check"></i><b>4.5.1</b> Interpretation of a confidence interval</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="covariance-and-correlation.html"><a href="covariance-and-correlation.html"><i class="fa fa-check"></i><b>5</b> Covariance and Correlation</a></li>
+<li class="chapter" data-level="6" data-path="p-values.html"><a href="p-values.html"><i class="fa fa-check"></i><b>6</b> P-values</a><ul>
+<li class="chapter" data-level="6.1" data-path="p-values.html"><a href="p-values.html#p-values-1"><i class="fa fa-check"></i><b>6.1</b> <span class="math inline">\(p\)</span>-values</a></li>
+<li class="chapter" data-level="6.2" data-path="p-values.html"><a href="p-values.html#creating-a-null-distribution."><i class="fa fa-check"></i><b>6.2</b> Creating a null distribution.</a><ul>
+<li class="chapter" data-level="6.2.1" data-path="p-values.html"><a href="p-values.html#the-null-distribution"><i class="fa fa-check"></i><b>6.2.1</b> the Null Distribution</a></li>
+<li class="chapter" data-level="6.2.2" data-path="p-values.html"><a href="p-values.html#t-tests"><i class="fa fa-check"></i><b>6.2.2</b> t-tests</a></li>
+<li class="chapter" data-level="6.2.3" data-path="p-values.html"><a href="p-values.html#p-values-from-the-perspective-of-permutation"><i class="fa fa-check"></i><b>6.2.3</b> P-values from the perspective of permutation</a></li>
+</ul></li>
+<li class="chapter" data-level="6.3" data-path="p-values.html"><a href="p-values.html#statistical-modeling-instead-of-hypothesis-testing"><i class="fa fa-check"></i><b>6.3</b> Statistical modeling instead of hypothesis testing</a></li>
+<li class="chapter" data-level="6.4" data-path="p-values.html"><a href="p-values.html#frequentist-probability-and-the-interpretation-of-p-values"><i class="fa fa-check"></i><b>6.4</b> frequentist probability and the interpretation of p-values</a><ul>
+<li class="chapter" data-level="6.4.1" data-path="p-values.html"><a href="p-values.html#background"><i class="fa fa-check"></i><b>6.4.1</b> Background</a></li>
+<li class="chapter" data-level="6.4.2" data-path="p-values.html"><a href="p-values.html#this-book-covers-frequentist-approaches-to-statistical-modeling-and-when-a-probability-arises-such-as-the-p-value-of-a-test-statistic-this-will-be-a-frequentist-probability."><i class="fa fa-check"></i><b>6.4.2</b> This book covers frequentist approaches to statistical modeling and when a probability arises, such as the <em>p</em>-value of a test statistic, this will be a frequentist probability.</a></li>
+<li class="chapter" data-level="6.4.3" data-path="p-values.html"><a href="p-values.html#two-interpretations-of-the-p-value"><i class="fa fa-check"></i><b>6.4.3</b> Two interpretations of the <em>p</em>-value</a></li>
+<li class="chapter" data-level="6.4.4" data-path="p-values.html"><a href="p-values.html#nhst"><i class="fa fa-check"></i><b>6.4.4</b> NHST</a></li>
+<li class="chapter" data-level="6.4.5" data-path="p-values.html"><a href="p-values.html#some-major-misconceptions-of-the-p-value"><i class="fa fa-check"></i><b>6.4.5</b> Some major misconceptions of the <span class="math inline">\(p\)</span>-value</a></li>
+<li class="chapter" data-level="6.4.6" data-path="p-values.html"><a href="p-values.html#recommendations"><i class="fa fa-check"></i><b>6.4.6</b> Recommendations</a></li>
+</ul></li>
+<li class="chapter" data-level="6.5" data-path="p-values.html"><a href="p-values.html#problems"><i class="fa fa-check"></i><b>6.5</b> Problems</a></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="creating-fake-data.html"><a href="creating-fake-data.html"><i class="fa fa-check"></i><b>7</b> Creating Fake Data</a><ul>
+<li class="chapter" data-level="7.0.1" data-path="creating-fake-data.html"><a href="creating-fake-data.html#continuous-x-fake-observational-data"><i class="fa fa-check"></i><b>7.0.1</b> Continuous X (fake observational data)</a></li>
+<li class="chapter" data-level="7.0.2" data-path="creating-fake-data.html"><a href="creating-fake-data.html#categorical-x-fake-experimental-data"><i class="fa fa-check"></i><b>7.0.2</b> Categorical X (fake experimental data)</a></li>
+<li class="chapter" data-level="7.0.3" data-path="creating-fake-data.html"><a href="creating-fake-data.html#correlated-x-fake-observational-data"><i class="fa fa-check"></i><b>7.0.3</b> Correlated X (fake observational data)</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="part-iii-introduction-to-linear-models.html"><a href="part-iii-introduction-to-linear-models.html"><i class="fa fa-check"></i>Part III: Introduction to Linear Models</a></li>
+<li class="chapter" data-level="8" data-path="a-linear-model-with-a-single-continuous-x.html"><a href="a-linear-model-with-a-single-continuous-x.html"><i class="fa fa-check"></i><b>8</b> A linear model with a single, continuous <em>X</em></a><ul>
+<li class="chapter" data-level="8.1" data-path="a-linear-model-with-a-single-continuous-x.html"><a href="a-linear-model-with-a-single-continuous-x.html#a-linear-model-with-a-single-continuous-x-is-classical-regression"><i class="fa fa-check"></i><b>8.1</b> A linear model with a single, continuous <em>X</em> is classical “regression”</a><ul>
+<li class="chapter" data-level="8.1.1" data-path="a-linear-model-with-a-single-continuous-x.html"><a href="a-linear-model-with-a-single-continuous-x.html#using-a-linear-model-to-estimate-explanatory-effects"><i class="fa fa-check"></i><b>8.1.1</b> Using a linear model to estimate explanatory effects</a></li>
+<li class="chapter" data-level="8.1.2" data-path="a-linear-model-with-a-single-continuous-x.html"><a href="a-linear-model-with-a-single-continuous-x.html#using-a-linear-model-for-prediction"><i class="fa fa-check"></i><b>8.1.2</b> Using a linear model for prediction</a></li>
+<li class="chapter" data-level="8.1.3" data-path="a-linear-model-with-a-single-continuous-x.html"><a href="a-linear-model-with-a-single-continuous-x.html#reporting-results"><i class="fa fa-check"></i><b>8.1.3</b> Reporting results</a></li>
+</ul></li>
+<li class="chapter" data-level="8.2" data-path="a-linear-model-with-a-single-continuous-x.html"><a href="a-linear-model-with-a-single-continuous-x.html#working-in-r"><i class="fa fa-check"></i><b>8.2</b> Working in R</a><ul>
+<li class="chapter" data-level="8.2.1" data-path="a-linear-model-with-a-single-continuous-x.html"><a href="a-linear-model-with-a-single-continuous-x.html#exploring-the-bivariate-relationship-between-y-and-x"><i class="fa fa-check"></i><b>8.2.1</b> Exploring the bivariate relationship between <em>Y</em> and <em>X</em></a></li>
+<li class="chapter" data-level="8.2.2" data-path="a-linear-model-with-a-single-continuous-x.html"><a href="a-linear-model-with-a-single-continuous-x.html#fitting-the-linear-model"><i class="fa fa-check"></i><b>8.2.2</b> Fitting the linear model</a></li>
+<li class="chapter" data-level="8.2.3" data-path="a-linear-model-with-a-single-continuous-x.html"><a href="a-linear-model-with-a-single-continuous-x.html#getting-to-know-the-linear-model-the-summary-function"><i class="fa fa-check"></i><b>8.2.3</b> Getting to know the linear model: the <code>summary</code> function</a></li>
+<li class="chapter" data-level="8.2.4" data-path="a-linear-model-with-a-single-continuous-x.html"><a href="a-linear-model-with-a-single-continuous-x.html#display-an-alternative-to-summary"><i class="fa fa-check"></i><b>8.2.4</b> display: An alternative to summary</a></li>
+<li class="chapter" data-level="8.2.5" data-path="a-linear-model-with-a-single-continuous-x.html"><a href="a-linear-model-with-a-single-continuous-x.html#confidence-intervals"><i class="fa fa-check"></i><b>8.2.5</b> Confidence intervals</a></li>
+<li class="chapter" data-level="8.2.6" data-path="a-linear-model-with-a-single-continuous-x.html"><a href="a-linear-model-with-a-single-continuous-x.html#how-good-is-our-model"><i class="fa fa-check"></i><b>8.2.6</b> How good is our model?</a></li>
+<li class="chapter" data-level="8.2.7" data-path="a-linear-model-with-a-single-continuous-x.html"><a href="a-linear-model-with-a-single-continuous-x.html#exploring-a-lm-object"><i class="fa fa-check"></i><b>8.2.7</b> exploring a lm object</a></li>
+</ul></li>
+<li class="chapter" data-level="8.3" data-path="a-linear-model-with-a-single-continuous-x.html"><a href="a-linear-model-with-a-single-continuous-x.html#problems-1"><i class="fa fa-check"></i><b>8.3</b> Problems</a></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="a-linear-model-with-a-single-categorical-x.html"><a href="a-linear-model-with-a-single-categorical-x.html"><i class="fa fa-check"></i><b>9</b> A linear model with a single, categorical <em>X</em></a><ul>
+<li class="chapter" data-level="9.1" data-path="a-linear-model-with-a-single-categorical-x.html"><a href="a-linear-model-with-a-single-categorical-x.html#a-linear-model-with-a-single-categorical-x-estimates-the-effects-of-x-on-the-response."><i class="fa fa-check"></i><b>9.1</b> A linear model with a single, categorical <em>X</em> estimates the effects of <em>X</em> on the response.</a><ul>
+<li class="chapter" data-level="9.1.1" data-path="a-linear-model-with-a-single-categorical-x.html"><a href="a-linear-model-with-a-single-categorical-x.html#table-of-model-coefficients"><i class="fa fa-check"></i><b>9.1.1</b> Table of model coefficients</a></li>
+<li class="chapter" data-level="9.1.2" data-path="a-linear-model-with-a-single-categorical-x.html"><a href="a-linear-model-with-a-single-categorical-x.html#the-linear-model"><i class="fa fa-check"></i><b>9.1.2</b> The linear model</a></li>
+<li class="chapter" data-level="9.1.3" data-path="a-linear-model-with-a-single-categorical-x.html"><a href="a-linear-model-with-a-single-categorical-x.html#reporting-results-1"><i class="fa fa-check"></i><b>9.1.3</b> Reporting results</a></li>
+</ul></li>
+<li class="chapter" data-level="9.2" data-path="a-linear-model-with-a-single-categorical-x.html"><a href="a-linear-model-with-a-single-categorical-x.html#comparing-the-results-of-a-linear-model-to-classical-hypothesis-tests"><i class="fa fa-check"></i><b>9.2</b> Comparing the results of a linear model to classical hypothesis tests</a><ul>
+<li class="chapter" data-level="9.2.1" data-path="a-linear-model-with-a-single-categorical-x.html"><a href="a-linear-model-with-a-single-categorical-x.html#t-tests-are-special-cases-of-a-linear-model"><i class="fa fa-check"></i><b>9.2.1</b> t-tests are special cases of a linear model</a></li>
+<li class="chapter" data-level="9.2.2" data-path="a-linear-model-with-a-single-categorical-x.html"><a href="a-linear-model-with-a-single-categorical-x.html#anova-is-a-special-case-of-a-linear-model"><i class="fa fa-check"></i><b>9.2.2</b> ANOVA is a special case of a linear model</a></li>
+</ul></li>
+<li class="chapter" data-level="9.3" data-path="a-linear-model-with-a-single-categorical-x.html"><a href="a-linear-model-with-a-single-categorical-x.html#working-in-r-1"><i class="fa fa-check"></i><b>9.3</b> Working in R</a><ul>
+<li class="chapter" data-level="9.3.1" data-path="a-linear-model-with-a-single-categorical-x.html"><a href="a-linear-model-with-a-single-categorical-x.html#fitting-the-model"><i class="fa fa-check"></i><b>9.3.1</b> Fitting the model</a></li>
+<li class="chapter" data-level="9.3.2" data-path="a-linear-model-with-a-single-categorical-x.html"><a href="a-linear-model-with-a-single-categorical-x.html#changing-the-reference-level"><i class="fa fa-check"></i><b>9.3.2</b> Changing the reference level</a></li>
+<li class="chapter" data-level="9.3.3" data-path="a-linear-model-with-a-single-categorical-x.html"><a href="a-linear-model-with-a-single-categorical-x.html#an-introduction-to-contrasts"><i class="fa fa-check"></i><b>9.3.3</b> An introduction to contrasts</a></li>
+<li class="chapter" data-level="9.3.4" data-path="a-linear-model-with-a-single-categorical-x.html"><a href="a-linear-model-with-a-single-categorical-x.html#harrell-plot"><i class="fa fa-check"></i><b>9.3.4</b> Harrell plot</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="model-checking-1.html"><a href="model-checking-1.html"><i class="fa fa-check"></i><b>10</b> Model Checking</a><ul>
+<li class="chapter" data-level="10.1" data-path="model-checking-1.html"><a href="model-checking-1.html#do-coefficients-make-numeric-sense"><i class="fa fa-check"></i><b>10.1</b> Do coefficients make numeric sense?</a></li>
+<li class="chapter" data-level="10.2" data-path="model-checking-1.html"><a href="model-checking-1.html#all-statistical-analyses-should-be-followed-by-model-checking"><i class="fa fa-check"></i><b>10.2</b> All statistical analyses should be followed by model checking</a></li>
+<li class="chapter" data-level="10.3" data-path="model-checking-1.html"><a href="model-checking-1.html#linear-model-assumptions"><i class="fa fa-check"></i><b>10.3</b> Linear model assumptions</a></li>
+<li class="chapter" data-level="10.4" data-path="model-checking-1.html"><a href="model-checking-1.html#diagnostic-plots-use-the-residuals-from-the-model-fit"><i class="fa fa-check"></i><b>10.4</b> Diagnostic plots use the residuals from the model fit</a><ul>
+<li class="chapter" data-level="10.4.1" data-path="model-checking-1.html"><a href="model-checking-1.html#residuals"><i class="fa fa-check"></i><b>10.4.1</b> Residuals</a></li>
+<li class="chapter" data-level="10.4.2" data-path="model-checking-1.html"><a href="model-checking-1.html#a-normal-q-q-plot-is-used-to-check-normality"><i class="fa fa-check"></i><b>10.4.2</b> A Normal Q-Q plot is used to check normality</a></li>
+<li class="chapter" data-level="10.4.3" data-path="model-checking-1.html"><a href="model-checking-1.html#outliers---an-outlier-is-a-point-that-is-highly-unexpected-given-the-modeled-distribution."><i class="fa fa-check"></i><b>10.4.3</b> Outliers - an outlier is a point that is highly unexpected given the modeled distribution.</a></li>
+</ul></li>
+<li class="chapter" data-level="10.5" data-path="model-checking-1.html"><a href="model-checking-1.html#model-checking-homoskedasticity"><i class="fa fa-check"></i><b>10.5</b> Model checking homoskedasticity</a></li>
+<li class="chapter" data-level="10.6" data-path="model-checking-1.html"><a href="model-checking-1.html#model-checking-independence---hapiness-adverse-example."><i class="fa fa-check"></i><b>10.6</b> Model checking independence - hapiness adverse example.</a></li>
+<li class="chapter" data-level="10.7" data-path="model-checking-1.html"><a href="model-checking-1.html#using-r"><i class="fa fa-check"></i><b>10.7</b> Using R</a></li>
+</ul></li>
+<li class="chapter" data-level="11" data-path="model-fitting-and-model-fit-ols.html"><a href="model-fitting-and-model-fit-ols.html"><i class="fa fa-check"></i><b>11</b> Model Fitting and Model Fit (OLS)</a><ul>
+<li class="chapter" data-level="11.1" data-path="model-fitting-and-model-fit-ols.html"><a href="model-fitting-and-model-fit-ols.html#least-squares-estimation-and-the-decomposition-of-variance"><i class="fa fa-check"></i><b>11.1</b> Least Squares Estimation and the Decomposition of Variance</a></li>
+<li class="chapter" data-level="11.2" data-path="model-fitting-and-model-fit-ols.html"><a href="model-fitting-and-model-fit-ols.html#ols-regression"><i class="fa fa-check"></i><b>11.2</b> OLS regression</a></li>
+<li class="chapter" data-level="11.3" data-path="model-fitting-and-model-fit-ols.html"><a href="model-fitting-and-model-fit-ols.html#how-well-does-the-model-fit-the-data-r2-and-variance-explained"><i class="fa fa-check"></i><b>11.3</b> How well does the model fit the data? <span class="math inline">\(R^2\)</span> and “variance explained”</a></li>
+</ul></li>
+<li class="chapter" data-level="12" data-path="best-practices-issues-in-inference.html"><a href="best-practices-issues-in-inference.html"><i class="fa fa-check"></i><b>12</b> Best Practices – Issues in Inference</a><ul>
+<li class="chapter" data-level="12.1" data-path="best-practices-issues-in-inference.html"><a href="best-practices-issues-in-inference.html#power"><i class="fa fa-check"></i><b>12.1</b> Power</a><ul>
+<li class="chapter" data-level="12.1.1" data-path="best-practices-issues-in-inference.html"><a href="best-practices-issues-in-inference.html#types-of-error"><i class="fa fa-check"></i><b>12.1.1</b> “Types” of Error</a></li>
+</ul></li>
+<li class="chapter" data-level="12.2" data-path="best-practices-issues-in-inference.html"><a href="best-practices-issues-in-inference.html#multiple-testing"><i class="fa fa-check"></i><b>12.2</b> multiple testing</a><ul>
+<li class="chapter" data-level="12.2.1" data-path="best-practices-issues-in-inference.html"><a href="best-practices-issues-in-inference.html#some-background"><i class="fa fa-check"></i><b>12.2.1</b> Some background</a></li>
+<li class="chapter" data-level="12.2.2" data-path="best-practices-issues-in-inference.html"><a href="best-practices-issues-in-inference.html#multiple-testing-working-in-r"><i class="fa fa-check"></i><b>12.2.2</b> Multiple testing – working in R</a></li>
+<li class="chapter" data-level="12.2.3" data-path="best-practices-issues-in-inference.html"><a href="best-practices-issues-in-inference.html#false-discovery-rate"><i class="fa fa-check"></i><b>12.2.3</b> False Discovery Rate</a></li>
+</ul></li>
+<li class="chapter" data-level="12.3" data-path="best-practices-issues-in-inference.html"><a href="best-practices-issues-in-inference.html#difference-in-p-is-not-different"><i class="fa fa-check"></i><b>12.3</b> difference in p is not different</a></li>
+<li class="chapter" data-level="12.4" data-path="best-practices-issues-in-inference.html"><a href="best-practices-issues-in-inference.html#inference-when-data-are-not-normal"><i class="fa fa-check"></i><b>12.4</b> Inference when data are not Normal</a><ul>
+<li class="chapter" data-level="12.4.1" data-path="best-practices-issues-in-inference.html"><a href="best-practices-issues-in-inference.html#working-in-r-2"><i class="fa fa-check"></i><b>12.4.1</b> Working in R</a></li>
+<li class="chapter" data-level="12.4.2" data-path="best-practices-issues-in-inference.html"><a href="best-practices-issues-in-inference.html#bootstrap-confidence-intervals"><i class="fa fa-check"></i><b>12.4.2</b> Bootstrap Confidence Intervals</a></li>
+<li class="chapter" data-level="12.4.3" data-path="best-practices-issues-in-inference.html"><a href="best-practices-issues-in-inference.html#permutation-test"><i class="fa fa-check"></i><b>12.4.3</b> Permutation test</a></li>
+<li class="chapter" data-level="12.4.4" data-path="best-practices-issues-in-inference.html"><a href="best-practices-issues-in-inference.html#non-parametric-tests"><i class="fa fa-check"></i><b>12.4.4</b> Non-parametric tests</a></li>
+<li class="chapter" data-level="12.4.5" data-path="best-practices-issues-in-inference.html"><a href="best-practices-issues-in-inference.html#log-transformations"><i class="fa fa-check"></i><b>12.4.5</b> Log transformations</a></li>
+<li class="chapter" data-level="12.4.6" data-path="best-practices-issues-in-inference.html"><a href="best-practices-issues-in-inference.html#performance-of-parametric-tests-and-alternatives"><i class="fa fa-check"></i><b>12.4.6</b> Performance of parametric tests and alternatives</a></li>
+</ul></li>
+<li class="chapter" data-level="12.5" data-path="best-practices-issues-in-inference.html"><a href="best-practices-issues-in-inference.html#max-vs.mean"><i class="fa fa-check"></i><b>12.5</b> max vs. mean</a></li>
+<li class="chapter" data-level="12.6" data-path="best-practices-issues-in-inference.html"><a href="best-practices-issues-in-inference.html#pre-post-normalization"><i class="fa fa-check"></i><b>12.6</b> pre-post, normalization</a></li>
+</ul></li>
+<li class="chapter" data-level="13" data-path="plotting-models.html"><a href="plotting-models.html"><i class="fa fa-check"></i><b>13</b> Plotting Models</a><ul>
+<li class="chapter" data-level="13.1" data-path="plotting-models.html"><a href="plotting-models.html#pretty-good-plots-show-the-model-and-the-data"><i class="fa fa-check"></i><b>13.1</b> Pretty good plots show the model and the data</a><ul>
+<li class="chapter" data-level="13.1.1" data-path="plotting-models.html"><a href="plotting-models.html#pretty-good-plot-component-1-modeled-effects-plot"><i class="fa fa-check"></i><b>13.1.1</b> Pretty good plot component 1: Modeled effects plot</a></li>
+<li class="chapter" data-level="13.1.2" data-path="plotting-models.html"><a href="plotting-models.html#pretty-good-plot-component-2-modeled-mean-and-ci-plot"><i class="fa fa-check"></i><b>13.1.2</b> Pretty good plot component 2: Modeled mean and CI plot</a></li>
+<li class="chapter" data-level="13.1.3" data-path="plotting-models.html"><a href="plotting-models.html#combining-effects-and-modeled-mean-and-ci-plots-an-effects-and-response-plot."><i class="fa fa-check"></i><b>13.1.3</b> Combining Effects and Modeled mean and CI plots – an Effects and response plot.</a></li>
+</ul></li>
+<li class="chapter" data-level="13.2" data-path="plotting-models.html"><a href="plotting-models.html#some-comments-on-plot-components"><i class="fa fa-check"></i><b>13.2</b> Some comments on plot components</a></li>
+<li class="chapter" data-level="13.3" data-path="plotting-models.html"><a href="plotting-models.html#working-in-r-3"><i class="fa fa-check"></i><b>13.3</b> Working in R</a><ul>
+<li class="chapter" data-level="13.3.1" data-path="plotting-models.html"><a href="plotting-models.html#unpooled-se-bars-and-confidence-intervals"><i class="fa fa-check"></i><b>13.3.1</b> Unpooled SE bars and confidence intervals</a></li>
+<li class="chapter" data-level="13.3.2" data-path="plotting-models.html"><a href="plotting-models.html#adding-bootstrap-intervals"><i class="fa fa-check"></i><b>13.3.2</b> Adding bootstrap intervals</a></li>
+<li class="chapter" data-level="13.3.3" data-path="plotting-models.html"><a href="plotting-models.html#adding-modeled-means-and-error-intervals"><i class="fa fa-check"></i><b>13.3.3</b> Adding modeled means and error intervals</a></li>
+<li class="chapter" data-level="13.3.4" data-path="plotting-models.html"><a href="plotting-models.html#adding-p-values"><i class="fa fa-check"></i><b>13.3.4</b> Adding p-values</a></li>
+<li class="chapter" data-level="13.3.5" data-path="plotting-models.html"><a href="plotting-models.html#adding-custom-p-values"><i class="fa fa-check"></i><b>13.3.5</b> Adding custom p-values</a></li>
+<li class="chapter" data-level="13.3.6" data-path="plotting-models.html"><a href="plotting-models.html#plotting-two-factors"><i class="fa fa-check"></i><b>13.3.6</b> Plotting two factors</a></li>
+<li class="chapter" data-level="13.3.7" data-path="plotting-models.html"><a href="plotting-models.html#interaction-plot"><i class="fa fa-check"></i><b>13.3.7</b> Interaction plot</a></li>
+<li class="chapter" data-level="13.3.8" data-path="plotting-models.html"><a href="plotting-models.html#plot-components"><i class="fa fa-check"></i><b>13.3.8</b> Plot components</a></li>
+</ul></li>
+</ul></li>
+<li><a href="part-iv-more-than-one-x-multivariable-models.html#part-iv-more-than-one-x-multivariable-models">Part IV: More than one <span class="math inline">\(X\)</span> – Multivariable Models</a></li>
+<li class="chapter" data-level="14" data-path="adding-covariates-to-a-linear-model.html"><a href="adding-covariates-to-a-linear-model.html"><i class="fa fa-check"></i><b>14</b> Adding covariates to a linear model</a><ul>
+<li class="chapter" data-level="14.1" data-path="adding-covariates-to-a-linear-model.html"><a href="adding-covariates-to-a-linear-model.html#adding-covariates-can-increases-the-precision-of-the-effect-of-interest"><i class="fa fa-check"></i><b>14.1</b> Adding covariates can increases the precision of the effect of interest</a></li>
+<li class="chapter" data-level="14.2" data-path="adding-covariates-to-a-linear-model.html"><a href="adding-covariates-to-a-linear-model.html#adding-covariates-can-decrease-prediction-error-in-predictive-models"><i class="fa fa-check"></i><b>14.2</b> Adding covariates can decrease prediction error in predictive models</a></li>
+<li class="chapter" data-level="14.3" data-path="adding-covariates-to-a-linear-model.html"><a href="adding-covariates-to-a-linear-model.html#adding-covariates-can-reduce-bias-due-to-confounding-in-explanatory-models"><i class="fa fa-check"></i><b>14.3</b> Adding covariates can reduce bias due to confounding in explanatory models</a></li>
+<li class="chapter" data-level="14.4" data-path="adding-covariates-to-a-linear-model.html"><a href="adding-covariates-to-a-linear-model.html#best-practices-1-a-pre-treatment-measure-of-the-response-should-be-a-covariate-and-not-subtracted-from-the-post-treatment-measure-regression-to-the-mean"><i class="fa fa-check"></i><b>14.4</b> Best practices 1: A pre-treatment measure of the response should be a covariate and not subtracted from the post-treatment measure (regression to the mean)</a><ul>
+<li class="chapter" data-level="14.4.1" data-path="adding-covariates-to-a-linear-model.html"><a href="adding-covariates-to-a-linear-model.html#regression-to-the-mean-in-words"><i class="fa fa-check"></i><b>14.4.1</b> Regression to the mean in words</a></li>
+<li class="chapter" data-level="14.4.2" data-path="adding-covariates-to-a-linear-model.html"><a href="adding-covariates-to-a-linear-model.html#regression-to-the-mean-in-pictures"><i class="fa fa-check"></i><b>14.4.2</b> Regression to the mean in pictures</a></li>
+<li class="chapter" data-level="14.4.3" data-path="adding-covariates-to-a-linear-model.html"><a href="adding-covariates-to-a-linear-model.html#do-not-use-percent-change-believing-that-percents-account-for-effects-of-initial-weights"><i class="fa fa-check"></i><b>14.4.3</b> Do not use percent change, believing that percents account for effects of initial weights</a></li>
+<li class="chapter" data-level="14.4.4" data-path="adding-covariates-to-a-linear-model.html"><a href="adding-covariates-to-a-linear-model.html#do-not-test-for-balance-of-baseline-measures"><i class="fa fa-check"></i><b>14.4.4</b> Do not “test for balance” of baseline measures</a></li>
+</ul></li>
+<li class="chapter" data-level="14.5" data-path="adding-covariates-to-a-linear-model.html"><a href="adding-covariates-to-a-linear-model.html#best-practices-2-use-a-covariate-instead-of-normalizing-a-response"><i class="fa fa-check"></i><b>14.5</b> Best practices 2: Use a covariate instead of normalizing a response</a></li>
+</ul></li>
+<li class="chapter" data-level="15" data-path="two-or-more-categorical-x-factorial-designs.html"><a href="two-or-more-categorical-x-factorial-designs.html"><i class="fa fa-check"></i><b>15</b> Two (or more) Categorical <span class="math inline">\(X\)</span> – Factorial designs</a><ul>
+<li class="chapter" data-level="15.1" data-path="two-or-more-categorical-x-factorial-designs.html"><a href="two-or-more-categorical-x-factorial-designs.html#factorial-experiments"><i class="fa fa-check"></i><b>15.1</b> Factorial experiments</a><ul>
+<li class="chapter" data-level="15.1.1" data-path="two-or-more-categorical-x-factorial-designs.html"><a href="two-or-more-categorical-x-factorial-designs.html#model-coefficients-an-interaction-effect-is-what-is-leftover-after-adding-the-treatment-effects-to-the-control"><i class="fa fa-check"></i><b>15.1.1</b> Model coefficients: an interaction effect is what is leftover after adding the treatment effects to the control</a></li>
+<li class="chapter" data-level="15.1.2" data-path="two-or-more-categorical-x-factorial-designs.html"><a href="two-or-more-categorical-x-factorial-designs.html#what-is-the-biological-meaning-of-an-interaction-effect"><i class="fa fa-check"></i><b>15.1.2</b> What is the biological meaning of an interaction effect?</a></li>
+<li class="chapter" data-level="15.1.3" data-path="two-or-more-categorical-x-factorial-designs.html"><a href="two-or-more-categorical-x-factorial-designs.html#the-interpretation-of-the-coefficients-in-a-factorial-model-is-entirely-dependent-on-the-reference"><i class="fa fa-check"></i><b>15.1.3</b> The interpretation of the coefficients in a factorial model is entirely dependent on the reference…</a></li>
+<li class="chapter" data-level="15.1.4" data-path="two-or-more-categorical-x-factorial-designs.html"><a href="two-or-more-categorical-x-factorial-designs.html#estimated-marginal-means"><i class="fa fa-check"></i><b>15.1.4</b> Estimated marginal means</a></li>
+<li class="chapter" data-level="15.1.5" data-path="two-or-more-categorical-x-factorial-designs.html"><a href="two-or-more-categorical-x-factorial-designs.html#in-a-factorial-model-there-are-multiple-effects-of-each-factor-simple-effects"><i class="fa fa-check"></i><b>15.1.5</b> In a factorial model, there are multiple effects of each factor (simple effects)</a></li>
+<li class="chapter" data-level="15.1.6" data-path="two-or-more-categorical-x-factorial-designs.html"><a href="two-or-more-categorical-x-factorial-designs.html#marginal-effects"><i class="fa fa-check"></i><b>15.1.6</b> Marginal effects</a></li>
+<li class="chapter" data-level="15.1.7" data-path="two-or-more-categorical-x-factorial-designs.html"><a href="two-or-more-categorical-x-factorial-designs.html#the-additive-model"><i class="fa fa-check"></i><b>15.1.7</b> The additive model</a></li>
+<li class="chapter" data-level="15.1.8" data-path="two-or-more-categorical-x-factorial-designs.html"><a href="two-or-more-categorical-x-factorial-designs.html#reduce-models-for-the-right-reason"><i class="fa fa-check"></i><b>15.1.8</b> Reduce models for the right reason</a></li>
+<li class="chapter" data-level="15.1.9" data-path="two-or-more-categorical-x-factorial-designs.html"><a href="two-or-more-categorical-x-factorial-designs.html#what-about-models-with-more-than-two-factors"><i class="fa fa-check"></i><b>15.1.9</b> What about models with more than two factors?</a></li>
+</ul></li>
+<li class="chapter" data-level="15.2" data-path="two-or-more-categorical-x-factorial-designs.html"><a href="two-or-more-categorical-x-factorial-designs.html#reporting-results-2"><i class="fa fa-check"></i><b>15.2</b> Reporting results</a><ul>
+<li class="chapter" data-level="15.2.1" data-path="two-or-more-categorical-x-factorial-designs.html"><a href="two-or-more-categorical-x-factorial-designs.html#text-results"><i class="fa fa-check"></i><b>15.2.1</b> Text results</a></li>
+</ul></li>
+<li class="chapter" data-level="15.3" data-path="two-or-more-categorical-x-factorial-designs.html"><a href="two-or-more-categorical-x-factorial-designs.html#working-in-r-4"><i class="fa fa-check"></i><b>15.3</b> Working in R</a><ul>
+<li class="chapter" data-level="15.3.1" data-path="two-or-more-categorical-x-factorial-designs.html"><a href="two-or-more-categorical-x-factorial-designs.html#model-formula"><i class="fa fa-check"></i><b>15.3.1</b> Model formula</a></li>
+<li class="chapter" data-level="15.3.2" data-path="two-or-more-categorical-x-factorial-designs.html"><a href="two-or-more-categorical-x-factorial-designs.html#modeled-means"><i class="fa fa-check"></i><b>15.3.2</b> Modeled means</a></li>
+<li class="chapter" data-level="15.3.3" data-path="two-or-more-categorical-x-factorial-designs.html"><a href="two-or-more-categorical-x-factorial-designs.html#marginal-means"><i class="fa fa-check"></i><b>15.3.3</b> Marginal means</a></li>
+<li class="chapter" data-level="15.3.4" data-path="two-or-more-categorical-x-factorial-designs.html"><a href="two-or-more-categorical-x-factorial-designs.html#contrasts"><i class="fa fa-check"></i><b>15.3.4</b> Contrasts</a></li>
+<li class="chapter" data-level="15.3.5" data-path="two-or-more-categorical-x-factorial-designs.html"><a href="two-or-more-categorical-x-factorial-designs.html#simple-effects"><i class="fa fa-check"></i><b>15.3.5</b> Simple effects</a></li>
+<li class="chapter" data-level="15.3.6" data-path="two-or-more-categorical-x-factorial-designs.html"><a href="two-or-more-categorical-x-factorial-designs.html#marginal-effects-1"><i class="fa fa-check"></i><b>15.3.6</b> Marginal effects</a></li>
+<li class="chapter" data-level="15.3.7" data-path="two-or-more-categorical-x-factorial-designs.html"><a href="two-or-more-categorical-x-factorial-designs.html#plotting-results"><i class="fa fa-check"></i><b>15.3.7</b> Plotting results</a></li>
+</ul></li>
+<li class="chapter" data-level="15.4" data-path="two-or-more-categorical-x-factorial-designs.html"><a href="two-or-more-categorical-x-factorial-designs.html#problems-2"><i class="fa fa-check"></i><b>15.4</b> Problems</a></li>
+</ul></li>
+<li class="chapter" data-level="16" data-path="anova-tables.html"><a href="anova-tables.html"><i class="fa fa-check"></i><b>16</b> ANOVA Tables</a><ul>
+<li class="chapter" data-level="16.1" data-path="anova-tables.html"><a href="anova-tables.html#summary-of-usage"><i class="fa fa-check"></i><b>16.1</b> Summary of usage</a></li>
+<li class="chapter" data-level="16.2" data-path="anova-tables.html"><a href="anova-tables.html#example-a-one-way-anova-using-the-vole-data"><i class="fa fa-check"></i><b>16.2</b> Example: a one-way ANOVA using the vole data</a></li>
+<li class="chapter" data-level="16.3" data-path="anova-tables.html"><a href="anova-tables.html#example-a-two-way-anova-using-the-urchin-data"><i class="fa fa-check"></i><b>16.3</b> Example: a two-way ANOVA using the urchin data</a><ul>
+<li class="chapter" data-level="16.3.1" data-path="anova-tables.html"><a href="anova-tables.html#how-to-read-an-anova-table"><i class="fa fa-check"></i><b>16.3.1</b> How to read an ANOVA table</a></li>
+<li class="chapter" data-level="16.3.2" data-path="anova-tables.html"><a href="anova-tables.html#how-to-read-anova-results-reported-in-the-text"><i class="fa fa-check"></i><b>16.3.2</b> How to read ANOVA results reported in the text</a></li>
+<li class="chapter" data-level="16.3.3" data-path="anova-tables.html"><a href="anova-tables.html#better-practice-estimates-and-their-uncertainty"><i class="fa fa-check"></i><b>16.3.3</b> Better practice – estimates and their uncertainty</a></li>
+</ul></li>
+<li class="chapter" data-level="16.4" data-path="anova-tables.html"><a href="anova-tables.html#unbalanced-designs"><i class="fa fa-check"></i><b>16.4</b> Unbalanced designs</a><ul>
+<li class="chapter" data-level="16.4.1" data-path="anova-tables.html"><a href="anova-tables.html#what-is-going-on-in-unbalanced-anova-type-i-ii-iii-sum-of-squares"><i class="fa fa-check"></i><b>16.4.1</b> What is going on in unbalanced ANOVA? – Type I, II, III sum of squares</a></li>
+<li class="chapter" data-level="16.4.2" data-path="anova-tables.html"><a href="anova-tables.html#back-to-interpretation-of-main-effects"><i class="fa fa-check"></i><b>16.4.2</b> Back to interpretation of main effects</a></li>
+<li class="chapter" data-level="16.4.3" data-path="anova-tables.html"><a href="anova-tables.html#the-anova-tables-for-type-i-ii-and-iii-sum-of-squares-are-the-same-if-the-design-is-balanced."><i class="fa fa-check"></i><b>16.4.3</b> The anova tables for Type I, II, and III sum of squares are the same if the design is balanced.</a></li>
+</ul></li>
+<li class="chapter" data-level="16.5" data-path="anova-tables.html"><a href="anova-tables.html#working-in-r-5"><i class="fa fa-check"></i><b>16.5</b> Working in R</a><ul>
+<li class="chapter" data-level="16.5.1" data-path="anova-tables.html"><a href="anova-tables.html#type-i-sum-of-squares-in-r"><i class="fa fa-check"></i><b>16.5.1</b> Type I sum of squares in R</a></li>
+<li class="chapter" data-level="16.5.2" data-path="anova-tables.html"><a href="anova-tables.html#type-ii-and-iii-sum-of-squares"><i class="fa fa-check"></i><b>16.5.2</b> Type II and III Sum of Squares</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="17" data-path="predictive-models.html"><a href="predictive-models.html"><i class="fa fa-check"></i><b>17</b> Predictive Models</a><ul>
+<li class="chapter" data-level="17.1" data-path="predictive-models.html"><a href="predictive-models.html#overfitting"><i class="fa fa-check"></i><b>17.1</b> Overfitting</a></li>
+<li class="chapter" data-level="17.2" data-path="predictive-models.html"><a href="predictive-models.html#model-building-vs.variable-selection-vs.model-selection"><i class="fa fa-check"></i><b>17.2</b> Model building vs. Variable selection vs. Model selection</a><ul>
+<li class="chapter" data-level="17.2.1" data-path="predictive-models.html"><a href="predictive-models.html#stepwise-regression"><i class="fa fa-check"></i><b>17.2.1</b> Stepwise regression</a></li>
+<li class="chapter" data-level="17.2.2" data-path="predictive-models.html"><a href="predictive-models.html#cross-validation"><i class="fa fa-check"></i><b>17.2.2</b> Cross-validation</a></li>
+<li class="chapter" data-level="17.2.3" data-path="predictive-models.html"><a href="predictive-models.html#penalization"><i class="fa fa-check"></i><b>17.2.3</b> Penalization</a></li>
+</ul></li>
+<li class="chapter" data-level="17.3" data-path="predictive-models.html"><a href="predictive-models.html#shrinkage"><i class="fa fa-check"></i><b>17.3</b> Shrinkage</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="part-v-expanding-the-linear-model-generalized-linear-models-and-multilevel-linear-mixed-models.html"><a href="part-v-expanding-the-linear-model-generalized-linear-models-and-multilevel-linear-mixed-models.html"><i class="fa fa-check"></i>Part V: Expanding the Linear Model – Generalized Linear Models and Multilevel (Linear Mixed) Models</a></li>
+<li class="chapter" data-level="18" data-path="linear-mixed-models.html"><a href="linear-mixed-models.html"><i class="fa fa-check"></i><b>18</b> Linear mixed models</a><ul>
+<li class="chapter" data-level="18.1" data-path="linear-mixed-models.html"><a href="linear-mixed-models.html#random-effects"><i class="fa fa-check"></i><b>18.1</b> Random effects</a></li>
+<li class="chapter" data-level="18.2" data-path="linear-mixed-models.html"><a href="linear-mixed-models.html#random-effects-in-statistical-models"><i class="fa fa-check"></i><b>18.2</b> Random effects in statistical models</a></li>
+<li class="chapter" data-level="18.3" data-path="linear-mixed-models.html"><a href="linear-mixed-models.html#linear-mixed-models-are-flexible"><i class="fa fa-check"></i><b>18.3</b> Linear mixed models are flexible</a></li>
+<li class="chapter" data-level="18.4" data-path="linear-mixed-models.html"><a href="linear-mixed-models.html#blocking"><i class="fa fa-check"></i><b>18.4</b> Blocking</a><ul>
+<li class="chapter" data-level="18.4.1" data-path="linear-mixed-models.html"><a href="linear-mixed-models.html#visualing-variation-due-to-blocks"><i class="fa fa-check"></i><b>18.4.1</b> Visualing variation due to blocks</a></li>
+<li class="chapter" data-level="18.4.2" data-path="linear-mixed-models.html"><a href="linear-mixed-models.html#blocking-increases-precision-of-point-estimates"><i class="fa fa-check"></i><b>18.4.2</b> Blocking increases precision of point estimates</a></li>
+</ul></li>
+<li class="chapter" data-level="18.5" data-path="linear-mixed-models.html"><a href="linear-mixed-models.html#pseudoreplication"><i class="fa fa-check"></i><b>18.5</b> Pseudoreplication</a><ul>
+<li class="chapter" data-level="18.5.1" data-path="linear-mixed-models.html"><a href="linear-mixed-models.html#visualizing-pseduoreplication"><i class="fa fa-check"></i><b>18.5.1</b> Visualizing pseduoreplication</a></li>
+</ul></li>
+<li class="chapter" data-level="18.6" data-path="linear-mixed-models.html"><a href="linear-mixed-models.html#mapping-nhst-to-estimation-a-paired-t-test-is-a-special-case-of-a-linear-mixed-model"><i class="fa fa-check"></i><b>18.6</b> Mapping NHST to estimation: A paired t-test is a special case of a linear mixed model</a></li>
+<li class="chapter" data-level="18.7" data-path="linear-mixed-models.html"><a href="linear-mixed-models.html#advanced-topic-linear-mixed-models-shrink-coefficients-by-partial-pooling"><i class="fa fa-check"></i><b>18.7</b> Advanced topic – Linear mixed models shrink coefficients by partial pooling</a></li>
+<li class="chapter" data-level="18.8" data-path="linear-mixed-models.html"><a href="linear-mixed-models.html#working-in-r-6"><i class="fa fa-check"></i><b>18.8</b> Working in R</a><ul>
+<li class="chapter" data-level="18.8.1" data-path="linear-mixed-models.html"><a href="linear-mixed-models.html#coral-data"><i class="fa fa-check"></i><b>18.8.1</b> coral data</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="19" data-path="generalized-linear-models-i-count-data.html"><a href="generalized-linear-models-i-count-data.html"><i class="fa fa-check"></i><b>19</b> Generalized linear models I: Count data</a><ul>
+<li class="chapter" data-level="19.1" data-path="generalized-linear-models-i-count-data.html"><a href="generalized-linear-models-i-count-data.html#the-generalized-linear-model"><i class="fa fa-check"></i><b>19.1</b> The generalized linear model</a></li>
+<li class="chapter" data-level="19.2" data-path="generalized-linear-models-i-count-data.html"><a href="generalized-linear-models-i-count-data.html#count-data-example-number-of-trematode-worm-larvae-in-eyes-of-threespine-stickleback-fish"><i class="fa fa-check"></i><b>19.2</b> Count data example – number of trematode worm larvae in eyes of threespine stickleback fish</a><ul>
+<li class="chapter" data-level="19.2.1" data-path="generalized-linear-models-i-count-data.html"><a href="generalized-linear-models-i-count-data.html#modeling-strategy-1"><i class="fa fa-check"></i><b>19.2.1</b> Modeling strategy</a></li>
+<li class="chapter" data-level="19.2.2" data-path="generalized-linear-models-i-count-data.html"><a href="generalized-linear-models-i-count-data.html#checking-the-model-i-a-normal-q-q-plot"><i class="fa fa-check"></i><b>19.2.2</b> Checking the model I – a Normal Q-Q plot</a></li>
+<li class="chapter" data-level="19.2.3" data-path="generalized-linear-models-i-count-data.html"><a href="generalized-linear-models-i-count-data.html#checking-the-model-ii-scale-location-plot-for-checking-homoskedasticity"><i class="fa fa-check"></i><b>19.2.3</b> Checking the model II – scale-location plot for checking homoskedasticity</a></li>
+<li class="chapter" data-level="19.2.4" data-path="generalized-linear-models-i-count-data.html"><a href="generalized-linear-models-i-count-data.html#two-distributions-for-count-data-poisson-and-negative-binomial"><i class="fa fa-check"></i><b>19.2.4</b> Two distributions for count data – Poisson and Negative Binomial</a></li>
+<li class="chapter" data-level="19.2.5" data-path="generalized-linear-models-i-count-data.html"><a href="generalized-linear-models-i-count-data.html#fitting-a-glm-with-a-poisson-distribution-to-the-worm-data"><i class="fa fa-check"></i><b>19.2.5</b> Fitting a GLM with a Poisson distribution to the worm data</a></li>
+<li class="chapter" data-level="19.2.6" data-path="generalized-linear-models-i-count-data.html"><a href="generalized-linear-models-i-count-data.html#model-checking-fits-to-count-data"><i class="fa fa-check"></i><b>19.2.6</b> Model checking fits to count data</a></li>
+<li class="chapter" data-level="19.2.7" data-path="generalized-linear-models-i-count-data.html"><a href="generalized-linear-models-i-count-data.html#fitting-a-glm-with-a-negative-binomial-distribution-to-the-worm-data"><i class="fa fa-check"></i><b>19.2.7</b> Fitting a GLM with a Negative Binomial distribution to the worm data</a></li>
+</ul></li>
+<li class="chapter" data-level="19.3" data-path="generalized-linear-models-i-count-data.html"><a href="generalized-linear-models-i-count-data.html#working-in-r-7"><i class="fa fa-check"></i><b>19.3</b> Working in R</a><ul>
+<li class="chapter" data-level="19.3.1" data-path="generalized-linear-models-i-count-data.html"><a href="generalized-linear-models-i-count-data.html#fitting-a-glm-to-count-data"><i class="fa fa-check"></i><b>19.3.1</b> Fitting a GLM to count data</a></li>
+<li class="chapter" data-level="19.3.2" data-path="generalized-linear-models-i-count-data.html"><a href="generalized-linear-models-i-count-data.html#fitting-a-generalized-linear-mixed-model-glmm-to-count-data"><i class="fa fa-check"></i><b>19.3.2</b> Fitting a generalized linear mixed model (GLMM) to count data</a></li>
+<li class="chapter" data-level="19.3.3" data-path="generalized-linear-models-i-count-data.html"><a href="generalized-linear-models-i-count-data.html#fitting-a-generalized-linear-model-to-continouus-data"><i class="fa fa-check"></i><b>19.3.3</b> Fitting a generalized linear model to continouus data</a></li>
+</ul></li>
+<li class="chapter" data-level="19.4" data-path="generalized-linear-models-i-count-data.html"><a href="generalized-linear-models-i-count-data.html#problems-3"><i class="fa fa-check"></i><b>19.4</b> Problems</a></li>
+</ul></li>
+<li class="chapter" data-level="20" data-path="linear-models-with-heterogenous-variance.html"><a href="linear-models-with-heterogenous-variance.html"><i class="fa fa-check"></i><b>20</b> Linear models with heterogenous variance</a><ul>
+<li class="chapter" data-level="20.1" data-path="linear-models-with-heterogenous-variance.html"><a href="linear-models-with-heterogenous-variance.html#gls"><i class="fa fa-check"></i><b>20.1</b> gls</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="appendix-1-getting-started-with-r.html"><a href="appendix-1-getting-started-with-r.html"><i class="fa fa-check"></i>Appendix 1: Getting Started with R</a><ul>
+<li class="chapter" data-level="20.2" data-path="appendix-1-getting-started-with-r.html"><a href="appendix-1-getting-started-with-r.html#get-your-computer-ready"><i class="fa fa-check"></i><b>20.2</b> Get your computer ready</a><ul>
+<li class="chapter" data-level="20.2.1" data-path="appendix-1-getting-started-with-r.html"><a href="appendix-1-getting-started-with-r.html#install-r"><i class="fa fa-check"></i><b>20.2.1</b> Install R</a></li>
+<li class="chapter" data-level="20.2.2" data-path="appendix-1-getting-started-with-r.html"><a href="appendix-1-getting-started-with-r.html#install-r-studio"><i class="fa fa-check"></i><b>20.2.2</b> Install R Studio</a></li>
+<li class="chapter" data-level="20.2.3" data-path="appendix-1-getting-started-with-r.html"><a href="appendix-1-getting-started-with-r.html#resources-for-installing-r-and-r-studio"><i class="fa fa-check"></i><b>20.2.3</b> Resources for installing R and R Studio</a></li>
+<li class="chapter" data-level="20.2.4" data-path="appendix-1-getting-started-with-r.html"><a href="appendix-1-getting-started-with-r.html#install-latex"><i class="fa fa-check"></i><b>20.2.4</b> Install LaTeX</a></li>
+</ul></li>
+<li class="chapter" data-level="20.3" data-path="appendix-1-getting-started-with-r.html"><a href="appendix-1-getting-started-with-r.html#start-learning"><i class="fa fa-check"></i><b>20.3</b> Start learning</a><ul>
+<li class="chapter" data-level="20.3.1" data-path="appendix-1-getting-started-with-r.html"><a href="appendix-1-getting-started-with-r.html#start-with-data-camp-introduction-to-r"><i class="fa fa-check"></i><b>20.3.1</b> Start with Data Camp Introduction to R</a></li>
+<li class="chapter" data-level="20.3.2" data-path="appendix-1-getting-started-with-r.html"><a href="appendix-1-getting-started-with-r.html#then-move-to-introduction-to-r-studio"><i class="fa fa-check"></i><b>20.3.2</b> Then Move to Introduction to R Studio</a></li>
+<li class="chapter" data-level="20.3.3" data-path="appendix-1-getting-started-with-r.html"><a href="appendix-1-getting-started-with-r.html#develop-your-project-with-an-r-studio-notebook"><i class="fa fa-check"></i><b>20.3.3</b> Develop your project with an R Studio Notebook</a></li>
+</ul></li>
+<li class="chapter" data-level="20.4" data-path="appendix-1-getting-started-with-r.html"><a href="appendix-1-getting-started-with-r.html#getting-data-into-r"><i class="fa fa-check"></i><b>20.4</b> Getting Data into R</a></li>
+<li class="chapter" data-level="20.5" data-path="appendix-1-getting-started-with-r.html"><a href="appendix-1-getting-started-with-r.html#additional-r-learning-resources"><i class="fa fa-check"></i><b>20.5</b> Additional R learning resources</a></li>
+<li class="chapter" data-level="20.6" data-path="appendix-1-getting-started-with-r.html"><a href="appendix-1-getting-started-with-r.html#packages-used-extensively-in-this-text"><i class="fa fa-check"></i><b>20.6</b> Packages used extensively in this text</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="appendix-2-online-resources-for-getting-started-with-statistical-modeling-in-r.html"><a href="appendix-2-online-resources-for-getting-started-with-statistical-modeling-in-r.html"><i class="fa fa-check"></i>Appendix 2: Online Resources for Getting Started with Statistical Modeling in R</a></li>
+<li class="chapter" data-level="" data-path="appendix-3-fake-data-simulations.html"><a href="appendix-3-fake-data-simulations.html"><i class="fa fa-check"></i>Appendix 3: Fake Data Simulations</a><ul>
+<li class="chapter" data-level="20.7" data-path="appendix-3-fake-data-simulations.html"><a href="appendix-3-fake-data-simulations.html#performance-of-blocking-relative-to-a-linear-model"><i class="fa fa-check"></i><b>20.7</b> Performance of Blocking relative to a linear model</a></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Elementary Statistical Modeling for Applied Biostatistics</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="data-reading-wrangling-and-writing" class="section level1">
+<h1><span class="header-section-number">Chapter 2</span> Data – Reading, Wrangling, and Writing</h1>
+<p>Importing data into R can be a struggle for new R users and, unfortunately, most online sources give easy but superficial methods that don’t follow best practices for increasing reproducibility or do not allow flexible organization of files within a project. Some examples:</p>
+<p>(tl;dr – go to next section if you just want to import a file and don’t want to understand this important background information!)</p>
+<ol style="list-style-type: decimal">
+<li><code>df &lt;- read.table(file=&quot;clipboard&quot;)</code> imports data copied to the clipboard, from an Excel/Sheets file or from an open text file. For this to be semi-reproducible, a comment specifying the filename, worksheet and range that was copied is necessary. More problematic (catastrophically so for reproducibility), is, how does a researcher know that they highlighted and copied the correct range in the Excel sheet?</li>
+<li><code>df &lt;- read.csv(file.choose())</code> opens the familiar “open file” dialog box, which lets the user navigate to the file of choice. For this to be semi-reproducible, a comment specifying the filename to import is necessary. The catastrophic problem (for reproducibility) is, how does a researcher know which file was actually opened during an R session? The researcher might think they opened “walker_maine_bee_data_clean_androscoggin.csv” but mistakenly opened “walker_maine_bee_data_clean_aroostook.csv”.</li>
+<li><code>df &lt;- read.table(file=&quot;my_data.txt&quot;)</code> and <code>df &lt;- read_excel(file=&quot;my_data.xlsx&quot;)</code> are reproducible because the filename is explicitly specified. But, this method requires that “my_data” is physically located in the same folder as the file containing the R script (the notebook .Rmd file in our case) and this violates the best practice of clean project organization with different folders for the different kinds of files (data, R scripts, images, manuscript text, etc.).</li>
+<li>R Studio has an elegant import tool in the environment pane that opens a custom dialog box that allows the researcher to navigate to the file, and to specify what part of the file to import, such as the specific sheet and range for an Excel file. This has the same reproducibility issues as #1 and #2 but R Studio includes the equivalent script, which adds all relevant information for reproducility. One then simply copies and pastes this script into a code chunk and voila! The next time the script is run, the data can be imported from the script without using menus and dialog boxes. Except that..the script does not seem to take into account that the <strong>working directory</strong> of an R Markdown file is not the project folder but the folder containing the R Markdown file and so this two-step method fails. More personally, I’d prefer to run a chunk that quickly opens the data file instead of re-navigating through my file system and re-specifying the sheet and range every time I re-start the project in a new R session.</li>
+</ol>
+<p>There are at least three solutions to the issues raised above, all requiring some understanding of <strong>file paths</strong> and directory structure in an operating system. A file such as “my_data.xlsx” has an <strong>absolute</strong> file path, which is the full address of the file (the filename is something like your house street number). The absolute file path of “my_data.xlsx” might be “/Users/jwalker/Documents/applied-biostatistics/data/my_data.xlsx”. A <strong>relative</strong> file path is the file path from the <strong>working directory</strong>. In an R Studio project, the working directory is the project directory, which is the directory containing the .Rproj file. This will be the working directory of the console. <em>Importantly</em>, the working directory of an R Markdown code chunk is the folder containing the saved R Markdown file. An R Studio Notebook is an R Markdown file so the working directory of a notebook code chunk is the folder containing the saved notebook file. If a notebook file is located within the notebooks folder, which is located within the project folder, then the relative file path to “my_file.xlsx” is “../data/my_file.xlsx”. The “..” tells the file OS to move “up” into the parent directory (which is the project folder) and the “data” tells the file OS to move “down” into the data folder. These are put together into a single address using “/”. The beauty of relative paths is that they remain the same – and so do not break one’s script – if the project folder, and all of its contents including the data folder and the notebooks folder, is moved to another location on the hard drive (say into a new “Research” folder). By contrast, the absolute file path changes, which breaks any old script.</p>
+<p>The three solutions are</p>
+<ol style="list-style-type: decimal">
+<li>Create a <strong>relative path</strong> to the file using something like <code>file_path &lt;- &quot;../data/my_data.xlsx&quot;</code>. This should <em>always</em> work but it fails on some computers. For example, if the project folder is on a Windows OS (but not Mac OS) desktop, the assigned relative address doesn’t seem to look in the folder containing the file.</li>
+<li>Create a setup chunk that reroutes the working directory to the project folder using the script</li>
+</ol>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># use this in a chuck called &quot;setup&quot; to force the working directory to be</span>
+<span class="co"># at the level of the project file.</span>
+knitr<span class="op">::</span>opts_knit<span class="op">$</span><span class="kw">set</span>(<span class="dt">root.dir =</span> rprojroot<span class="op">::</span><span class="kw">find_rstudio_root_file</span>())</code></pre></div>
+<p>For this to work, the chunk has to be named “setup”, that is, the text inside the curly brackets at the top of the chunk should be “r setup”. Then, with this chunk, the relative file path is <code>file_path &lt;- &quot;../data/my_data.xlsx&quot;</code> if “my_data.xlsx” is immediately inside the data folder which is imediately inside the project folder. This should work on any machine, and should work even if a project folder is moved. However, it does not work when writing a book with Bookdown a Bookdown project has multiple .Rmd files and the chunk names cannot be repeated across files. There can only be one chunk called “setup”.</p>
+<ol start="3" style="list-style-type: decimal">
+<li>Use the function here(). The most robust solution seems to be using the function here() from the here package. The function works something like this</li>
+</ol>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">data_path &lt;-<span class="st"> &quot;data&quot;</span> <span class="co"># path to data that are imported</span>
+file_name &lt;-<span class="st"> &quot;my_data.xlsx&quot;</span>
+file_path &lt;-<span class="st"> </span><span class="kw">here</span>(data_path, file_name) <span class="co"># paste together parts of the address</span>
+<span class="kw">read_excel</span>(<span class="dt">file=</span>file_path)</code></pre></div>
+<p><code>here()</code> creates an absolute path, but one that is created on the fly, and will change (or should change) correctly if the project folder is moved on the same machine or to another machine. And no chunk named setup is required so this also works in every R markdown file when using Bookdown.</p>
+<div id="create-new-notebook-for-this-chapter" class="section level2">
+<h2><span class="header-section-number">2.1</span> Create new notebook for this chapter</h2>
+<p>Create a new notebook and save it to the “notebooks” folder of your BIO_413 project. <strong>Important:</strong> In an R Studio project, the working directory is the project directory (the location of the .Rproj file) – this will be the working directory of the console. The working directory of an R Markdown code chunk is the folder containing the saved R Markdown file. An R Studio Notebook is an R Markdown file so the working directory of an notebook code chunk is the folder containing the saved notebook file. Importantly, the working directory of the code chunk isn’t “moved” to the folder containing the saved file <em>until the file is saved</em> so import/export scripts will no work properly until the file is saved!</p>
+<p>Annotate your notebook with notes! Update it as you learn more! We will use data.table for importing text files in tab-delimited or comma-separated formats and the readxl package for importing excel files.</p>
+<p>Start each notebook with a chunk named “setup” that loads packages and sets the address for reading and writing files (note that since this book is advocating the use of here() to set the file path, naming the setup chunk “setup” is not imperative).</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(here) <span class="co"># here() creates the absolute path to the file</span>
+<span class="kw">library</span>(janitor) <span class="co"># clean_names to clean col labels of imported data</span>
+<span class="kw">library</span>(readxl) <span class="co"># import excel</span>
+<span class="kw">library</span>(data.table) <span class="co"># make data.frames data.tables</span>
+<span class="kw">library</span>(ggplot2) <span class="co"># ggplot environment</span>
+<span class="kw">library</span>(ggpubr) <span class="co"># publication ready plots</span>
+<span class="kw">library</span>(emmeans) <span class="co"># get estimated marginal means and CIs, used for plot</span>
+
+here &lt;-<span class="st"> </span>here<span class="op">::</span>here <span class="co"># plyr also defines a here function</span>
+
+<span class="co"># relative paths to project folders</span>
+data_path &lt;-<span class="st"> &quot;data&quot;</span> <span class="co"># path to data that are imported</span>
+output_path &lt;-<span class="st"> &quot;output&quot;</span> <span class="co"># path to data that are saved</span>
+image_path &lt;-<span class="st"> &quot;images&quot;</span> <span class="co"># path to image folder</span></code></pre></div>
+<p>Note on the script above 1. Be kind to the future you by loading only the packages necessary for the code in the R Markdown file that you are working on. If your default is to load everything, the future you will be confused why something was installed. 2. Be kind to the future you by commenting on why a package is loaded; usually this is a specific function from the package 3. <code>here &lt;- here::here</code> is my favorite script ever. What is it doing? One can read this as “assign the function here from the here package to the object here” (this is reading the script right to left). Why do this? It turns out the multiple packages define a function called “here”. If any of these packages are loaded after the here package, then <code>here</code> from here won’t work – it will be replaced by <code>here</code> from the more recently loaded package. To make sure that <code>here</code> uses the function from the here package, I simply reassign <code>here</code> from the here package to the objeect “here” <em>after</em> loading in all packages.</p>
+</div>
+<div id="importing-data" class="section level2">
+<h2><span class="header-section-number">2.2</span> Importing data</h2>
+<p>Throughout this book, we will download data from the <a href="https://datadryad.org" target="_blank">Dryad Digital Repository</a>, which is a major resource for increasing reproducibility in science. My own view is that <em>all data</em> should be archived on some public server (exceptions include data that are proprietary or contain sensitive information – such as human health measures).</p>
+<div id="excel-file" class="section level3">
+<h3><span class="header-section-number">2.2.1</span> Excel file</h3>
+<p>The Excel dataset is from an experiment on the growth response of zebra finch chicks to an incubation call that presumably signals “hot environment” to the embryos (<a href="http://science.sciencemag.org/content/353/6301/812" target="_blank">Mariette, M.M. and Buchanan, K.L., 2016. Prenatal acoustic communication programs offspring for high posthatching temperatures in a songbird. Science, 353(6301), pp.812-814</a>). The source file is from the Dryad Repository here:</p>
+<p><strong>file name</strong>: “allDatasetsMarietteBuchanan2016.xls”</p>
+<p><strong>source</strong>: <a href="https://datadryad.org//handle/10255/dryad.122315" class="uri">https://datadryad.org//handle/10255/dryad.122315</a></p>
+<p>Steps</p>
+<ol style="list-style-type: decimal">
+<li>Copy the title of the Dryad page, which is “Data from: Prenatal acoustic communication programs offspring for high post-hatching temperatures in a songbird”</li>
+<li>Create a new folder within “data” and paste in the copied title as the folder name</li>
+<li>Remove the colon from the name, so the folder name is “Data from Prenatal acoustic communication programs offspring for high post-hatching temperatures in a songbird”</li>
+<li>Download the .xls file into this folder</li>
+</ol>
+<p>A .xls file is an old (pre 2007) Microsoft Excel file type. It is a binary file and can only be opened into a readable format with specialized software. The more modern Excel file type is .xlsx, which contains within it multiple xml components. An xml file is a text file, and so contains readable content, but the content is xml code to display something. In general, I am a big advocate of archiving stuff as text files (manuscripts, data, scripts, blog posts) because these will <em>always</em> be readable by future software. Microsoft Excel is not likely to die anytime soon and software that can read .xls and especially .xlsx files (again, .xlsx files are text files) is even less likely to disappear but we can feel even more confident if data are archived as text files. That said, a single microsoft excel file with multiple sheets is an efficient method for distributing data and the readxl package provides excellent tools for reading different sheets of a single .xls or .xlsx file.</p>
+<p>The code below uses the function <code>read_excel()</code> from the package readxl. More about the amazing power of this package is the <a href="https://readxl.tidyverse.org" target="_blank">tidyverse page</a> and <a href="http://r4ds.had.co.nz/data-import.html" target="_blank">chapter 11</a> in the <em>R for Data Science</em> book.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">folder &lt;-<span class="st"> &quot;Data from Prenatal acoustic communication programs offspring for high post-hatching temperatures in a songbird&quot;</span>
+fn &lt;-<span class="st"> &quot;allDatasetsMarietteBuchanan2016.xls&quot;</span>
+file_path &lt;-<span class="st"> </span><span class="kw">here</span>(data_path, folder, fn)
+<span class="co">#file_path &lt;- paste(data_path, folder, fn, sep=&quot;/&quot;)</span>
+chick &lt;-<span class="st"> </span><span class="kw">read_excel</span>(file_path, <span class="dt">sheet=</span><span class="st">&quot;nestlingMass&quot;</span>) <span class="co"># read the excel file</span>
+chick &lt;-<span class="st"> </span><span class="kw">data.table</span>(chick) <span class="co"># convert to data.table</span></code></pre></div>
+<p>In this book, we will consistently uses this protocol for storing and retrieving downloaded files. The first three lines in the script above creates the directory path to the file. This path includes</p>
+<ol style="list-style-type: decimal">
+<li>data_path – the relative path into the folder “data” (relative to the location of the project file)</li>
+<li>folder – the name of the folder within “data” containing the file</li>
+<li>filename – the name of the file to read</li>
+</ol>
+<p>These are all put together into the absolute path using the function <code>here()</code> from the here package. Take a look at the value of file_path to confirm. The <code>read_excel(file_path, sheet=&quot;nestlingMass&quot;)</code> reads the nestlingMass sheet only. The next line:<code>chick &lt;- data.table(chick)</code> converts the data.frame into a data.table.</p>
+<div id="peak-at-the-imported-data.table-to-check-that-the-file-was-imported-correctly-and-to-learn-about-the-contents." class="section level4">
+<h4><span class="header-section-number">2.2.1.1</span> Peak at the imported data.table to check that the file was imported correctly and to learn about the contents.</h4>
+<p>Insert the following after your import script and run:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">View</span>(chick) <span class="co"># check -- are there headers? are there the correct number of columns?</span></code></pre></div>
+<p>The line <code>View(chick)</code> script opens a new tab containing a spreadsheet-like display of the data frame <code>chick</code>. This is one way to check that the data were imported correctly, to examine the column labels to ensure they conform to best practices, and to simply get to know the contents of the imported file. From the view of chick, it may not be immediately apparent that the column names contain spaces. This can be seen more easily using</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">colnames</span>(chick)</code></pre></div>
+<pre><code>##  [1] &quot;chick ID&quot;                       &quot;brood ID&quot;                      
+##  [3] &quot;brood composition&quot;              &quot;sex&quot;                           
+##  [5] &quot;rank in nest&quot;                   &quot;playback treatment&quot;            
+##  [7] &quot;nest temperature above ambient&quot; &quot;max daily temp hatch day&quot;      
+##  [9] &quot;mean max temp hatch to day2&quot;    &quot;mean max temp hatch to day10&quot;  
+## [11] &quot;mean max temp hatch to day13&quot;   &quot;hatching mass&quot;                 
+## [13] &quot;day1 mass&quot;                      &quot;day2 mass&quot;                     
+## [15] &quot;day10 mass&quot;                     &quot;day13 mass&quot;                    
+## [17] &quot;day13 tarsus&quot;</code></pre>
+<p>In general, it is bad practice to include spaces, parentheses, and special characters such as $ or ^, in the column names of a data frame because these increase handling costs later on. The best practice is to replace a blank with an underscore, for example <code>brood_id</code>. Some coders separate words with a period (<code>brood.id</code>). Others mash words together into a single word like this <code>broodid</code> but this should generally be avoided because the result can be hard to read. Finally, some coders use Caps to designate new words like this <code>BroodId</code>. This is easier to read than simple concatenation but the underscore is the easiest to read.</p>
+<p>The <code>janitor</code> package has a nice function to clean the column names of a data frame including replacing spaces with an underscore and stripping parentheses. The default clean includes changing any uppercase letter to lower case. Many coders like to work with all lowercase variable names to avoid having to hit the shift key.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">chick &lt;-<span class="st"> </span><span class="kw">clean_names</span>(chick)</code></pre></div>
+<p>Importantly, <strong>resist the temptation to change the column names in the data file</strong>, which reduces reproducibility. Leave original data files original. Always increase reproducibility!</p>
+</div>
+<div id="best-practices-for-creating-data-files" class="section level4">
+<h4><span class="header-section-number">2.2.1.2</span> Best practices for creating data files</h4>
+<ol style="list-style-type: decimal">
+<li><p><a href="https://www.youtube.com/watch?time_continue=309&amp;v=Ry2xjTBtNFE" class="uri">https://www.youtube.com/watch?time_continue=309&amp;v=Ry2xjTBtNFE</a> – An excellent video introduction to best practices for organizing data in a spreadsheet that will subsequently be analyzed by statistics software.</p></li>
+<li><p>Broman, K. W., &amp; Woo, K. H. (2017). Data organization in spreadsheets (No. e3183v1). <a href="https://doi.org/10.7287/peerj.preprints.3183v1" class="uri">https://doi.org/10.7287/peerj.preprints.3183v1</a> – An excelllent review of best practices for organizing data in a spreadsheet.</p></li>
+</ol>
+</div>
+<div id="explore-with-plots" class="section level4">
+<h4><span class="header-section-number">2.2.1.3</span> Explore with plots</h4>
+<p>Just for fun, let’s plot the data and reproduce Fig. 2A and B. We are using the <code>qplot</code> function, which is from the ggplot2 package. Two plots are made and only a subset of the rows are plotted in each (in A, the subset in which playback_treatment==“treat” and, in B, the subset in which playback_treatment==“cont”). This book uses the ggplot2 package extensively.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">qplot</span>(<span class="dt">x=</span>nest_temperature_above_ambient, <span class="dt">y=</span>day13_mass, <span class="dt">data=</span>chick[playback_treatment<span class="op">==</span><span class="st">&quot;treat&quot;</span>]) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_smooth</span>(<span class="dt">method=</span><span class="st">&quot;lm&quot;</span>)</code></pre></div>
+<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/data-plotchickdata-1.png" width="576" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">qplot</span>(<span class="dt">x=</span>nest_temperature_above_ambient, <span class="dt">y=</span>day13_mass, <span class="dt">data=</span>chick[playback_treatment<span class="op">==</span><span class="st">&quot;cont&quot;</span>]) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_smooth</span>(<span class="dt">method=</span><span class="st">&quot;lm&quot;</span>)</code></pre></div>
+<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/data-plotchickdata-2.png" width="576" /></p>
+</div>
+</div>
+<div id="text-file" class="section level3">
+<h3><span class="header-section-number">2.2.2</span> Text file</h3>
+<p>The example dataset comes from an experiment on the effect of <a href="http://science.sciencemag.org/content/early/2012/03/28/science.1215025" target="_blank">neonicotinoid pesticides on bumble bee colony growth</a>.</p>
+<p><strong>file name</strong>: “Whitehorn, O’Connor, Wackers, Goulson (2012) Data from ‘Neonicotinoid pesticide reduces bumblebee colony growth and queen production’.csv.csv”</p>
+<p><strong>source</strong>: <a href="https://datadryad.org//resource/doi:10.5061/dryad.1805c973" class="uri">https://datadryad.org//resource/doi:10.5061/dryad.1805c973</a></p>
+<p>Steps</p>
+<ol style="list-style-type: decimal">
+<li>Copy the title of the Dryad page, which is “Data from: Neonicotinoid pesticide reduces bumblebee colony growth and queen production”</li>
+<li>Create a new folder within “data” and paste in the copied title as the folder name</li>
+<li>Remove the colon from the name, so the folder name is “Data from Neonicotinoid pesticide reduces bumblebee colony growth and queen production”</li>
+<li>Download the .csv file into this folder</li>
+</ol>
+<p>A .csv file is a text file that is comma-delimted, which means that the entries of a row are separated by commas. A text file is readable by any text editor software and most other kinds of software. Datasets that are stored as text files are typically saved as either .csv (where the entries of a row are separated by commas) or .txt (where the entries are separated by tabs). The base R way to read a .csv file is using <code>read.csv</code>. The <code>read.table</code> function is more versatile, as the delimiter can be specified. The function <code>fread()</code> from the data.table package is fast, smart, and flexible. It is smart in the sense that it guesses what the delimter is. Unfortunately, because of spaces in the column labels for this file, fread guesses incorrectly (another reason why spaces in column labels should be avoided). To overcome this, the statement below specifies that the file contains a “header” (a line containing column labels)</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">folder &lt;-<span class="st"> &quot;Data from Neonicotinoid pesticide reduces bumblebee colony growth and queen production&quot;</span>
+filename &lt;-<span class="st"> &quot;Whitehorn, O&#39;Connor, Wackers, Goulson (2012) Data from &#39;Neonicotinoid pesticide reduces bumblebee colony growth and queen production&#39;.csv.csv&quot;</span>
+file_path &lt;-<span class="st"> </span><span class="kw">here</span>(data_path, folder, filename)
+bee &lt;-<span class="st"> </span><span class="kw">fread</span>(file_path, <span class="dt">header=</span><span class="ot">TRUE</span>)</code></pre></div>
+<p>Here, as with the import of the Excel file, the first three lines create the directory path to the file. Peek at the file in the console. Again, there are spaces in the column names. <strong>Here I’ll leave it to you to change this</strong></p>
+<p>Here is a reproduction of Fig 2 from the journal article.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">bee[, treatment<span class="op">:</span><span class="er">=</span><span class="kw">factor</span>(treatment, <span class="kw">c</span>(<span class="st">&quot;Control&quot;</span>, <span class="st">&quot;Low&quot;</span>, <span class="st">&quot;High&quot;</span>))] <span class="co"># reorder factor levels</span>
+<span class="kw">ggbarplot</span>(<span class="dt">data=</span>bee, <span class="dt">x=</span><span class="st">&quot;treatment&quot;</span>, <span class="dt">y=</span><span class="st">&quot;new_queens&quot;</span>, <span class="dt">add =</span> <span class="st">&quot;mean_se&quot;</span>)</code></pre></div>
+<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/data-plot-bee-fig-2-1.png" width="576" /></p>
+<p>The plot suggests immediately some problems with the plot itself and the associated analysis. First, the y-axis is counts, which means that negative values are impossible. But the standard error bars look like they use standard errors computed from a model that allows infinetly large negative values, and the illustrated standard error bars imply that negative values exist. So these error bars are misleading. Second, it is good practice, especially if sample sizes are modest or small, to “show the data”, which means, show the individual data points and not just a summary of the distribution.</p>
+<p>Here are three alternative plots for exploratory purposes. The first simply “shows the data” but still uses the misleading standard error bars. The second uses a box plot. The last plots the means and 95% confidence intervals modeled with a GLM (generalized linear model) to account for the count data (the model used could be improved). Notice that the bar length above the mean is longer than the bar length below the mean (that is the interval is asymmetric about the mean). In order to stay focussed on importing data, I leave explanation of these plots and analysis to later chapters.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggbarplot</span>(<span class="dt">data=</span>bee, <span class="dt">x=</span><span class="st">&quot;treatment&quot;</span>, <span class="dt">y=</span><span class="st">&quot;new_queens&quot;</span>, <span class="dt">add =</span> <span class="kw">c</span>(<span class="st">&quot;mean_se&quot;</span>, <span class="st">&quot;point&quot;</span>))</code></pre></div>
+<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/data-alternative-plots-1.png" width="576" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggboxplot</span>(<span class="dt">data=</span>bee, <span class="dt">x=</span><span class="st">&quot;treatment&quot;</span>, <span class="dt">y=</span><span class="st">&quot;new_queens&quot;</span>)</code></pre></div>
+<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/data-alternative-plots-2.png" width="576" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fit.glm &lt;-<span class="st"> </span><span class="kw">glm</span>(new_queens <span class="op">~</span><span class="st"> </span>treatment, <span class="dt">data=</span>bee, <span class="dt">family=</span><span class="kw">poisson</span>())
+means.glm &lt;-<span class="st"> </span><span class="kw">emmeans</span>(fit.glm, <span class="dt">specs=</span><span class="st">&quot;treatment&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;response&quot;</span>)
+gg &lt;-<span class="st"> </span><span class="kw">ggplot</span>(<span class="dt">data=</span><span class="kw">data.frame</span>(means.glm), <span class="kw">aes</span>(<span class="dt">x=</span>treatment, <span class="dt">y=</span>rate)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_col</span>(<span class="dt">fill=</span><span class="st">&quot;gray&quot;</span>) <span class="op">+</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">geom_errorbar</span>(<span class="kw">aes</span>(<span class="dt">x=</span>treatment, <span class="dt">ymin=</span>asymp.LCL, <span class="dt">ymax=</span>asymp.UCL), <span class="dt">width=</span><span class="fl">0.3</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;New queens&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="ot">NULL</span>
+gg</code></pre></div>
+<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/data-alternative-plots-3.png" width="576" /></p>
+</div>
+</div>
+<div id="troubleshooting-file-import" class="section level2">
+<h2><span class="header-section-number">2.3</span> Troubleshooting file import</h2>
+<p>If you get an error that starts with “Error: <code>path</code> does not exist:” then R is not “seeing” your specified file given the path you’ve given it.</p>
+<ol style="list-style-type: decimal">
+<li>Make sure you loaded the package <code>here</code> in a “load-libraries” chunk and that you have run the chunk</li>
+<li>Make sure you have assigned <code>data_path &lt;- &quot;data&quot;</code> in the setup chunk and have run the chunk.</li>
+<li>Make sure your “data” folder is <em>one level</em> inside your project folder. “one level” means it is not buried deeper inside other folders within the project folder.</li>
+<li>Make sure your “Data from …” folder is one level inside your “data” folder</li>
+<li>Make sure your data file is one level inside the correct “Data from” folder.</li>
+<li><strong>Bug alert</strong> Make sure you have the name of the “Data from …” folder correct in your script. Do not type the name of the folder. Instead, go to the finder and highlight the folder containing the data file, copy the name, return to the R markdown script, type <code>folder &lt;- &quot;&quot;</code> and then paste the clipboard (the name of the folder) in between the quote marks.</li>
+<li><strong>Bug alert</strong> Make sure the file name is correct in the script. As with the folder name, I go to the finder and copy the file name and paste it in place. In Windows use ctrl-a instead of ctrl-c to copy the full filename including the extension.</li>
+</ol>
+<p>More generally, Humans are very good at understanding misspelled and OdDLy capitalized words but the R language (or any computer language) is very literal. R is <strong>case sensitive</strong> (some programming languages are not). “Prenatal acoustic communication”, “Prenatal Acoustic Communication”, and “prenatal acoustic communication” are all different values. Spelling AND capitalization have to be perfect, not simply close. Spelling includes <em>spaces</em>. A frequent bug is a file name typed as “Prenatal acoustic communication” when the actual name is “Prenatal acoustic communication”. Can you spot the bug? The original (what we need to copy) has two spaces between “acoustic” and “communication” while the incorrect copy has only one.</p>
+<p>Spelling bugs are avoided by simply copy and pasting names of folders, names of files, column names of data frames, and level names of factors, which leads to a general rule of R scripting…</p>
+<div id="rule-number-one-in-r-scripting-rule1" class="section level3">
+<h3><span class="header-section-number">2.3.1</span> Rule number one in R scripting {# rule1}</h3>
+<p><strong>Always copy and paste any text that will be inserted into quotes</strong></p>
+<p>Do not try to type it out. You have been warned.</p>
+</div>
+</div>
+<div id="data-wrangling" class="section level2">
+<h2><span class="header-section-number">2.4</span> Data wrangling</h2>
+<div id="converting-a-single-column-with-all-combinations-of-a-2-x-2-factorial-experiment-into-two-columns-each-containing-the-two-levels-of-a-factor" class="section level3">
+<h3><span class="header-section-number">2.4.1</span> Converting a single column with all combinations of a 2 x 2 factorial experiment into two columns, each containing the two levels of a factor</h3>
+<p><strong>Article source</strong>: Tauriello, D., Palomo-Ponce, S., Stork, D. et al. TGFβ drives immune evasion in genetically reconstituted colon cancer metastasis. Nature 554, 538–543 (2018) <a href="doi:10.1038/nature25492" class="uri">doi:10.1038/nature25492</a></p>
+<p><strong>Data source</strong>: <a href="https://www.nature.com/articles/nature25492#Sec23" class="uri">https://www.nature.com/articles/nature25492#Sec23</a></p>
+<p>filename: “41586_2018_BFnature25492_MOESM10_ESM.xlsx”</p>
+<p>sheet: “Fig. 4h-tumours”</p>
+<p>The analysis of the data in Fig. 4h specifies a single <span class="math inline">\(X\)</span> variable “Treatment” with four levels (or groups): “Con”, “Gal”, “aPD-L1”, and “Gal+aPD-L1”. These levels indicate that the design is actually <strong>factorial</strong> with two factors, each with two levels. The first factor has levels “no Gal” and “Gal”. The second factor has levels “no aPD-L1”, “aPD-L1”. The single column Treatment “flattens” the 2 X 2 factorial design to a 4 x 1 design. In general, we would want to analyze an experiment like this as factorial model, because this allows us to make inferences about the <em>interaction effect</em> between the two factors. For these inferences, we need a standard error, or a confidence interval, or a <em>p</em>-value of the estimate, which we can easily get from the factorial model. In order to analyze the data with a factorial model, we need to create two new columns – one column is the factor variable containing the two levels of Gal and one column is the factor variable containing the two levels of aPD-L1.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">gal_levels &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;no Gal&quot;</span>, <span class="st">&quot;Gal&quot;</span>)
+tumor[, gal <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">ifelse</span>(treatment <span class="op">==</span><span class="st"> &quot;Gal&quot;</span> <span class="op">|</span><span class="st"> </span>treatment <span class="op">==</span><span class="st"> &quot;Gal+aPD-L1&quot;</span>,
+                      gal_levels[<span class="dv">2</span>],
+                      gal_levels[<span class="dv">1</span>])]
+
+apd_levels &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;no aPD-L1&quot;</span>, <span class="st">&quot;aPD-L1&quot;</span>)
+tumor[, apdl1 <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">ifelse</span>(treatment <span class="op">==</span><span class="st"> &quot;aPD-L1&quot;</span> <span class="op">|</span><span class="st"> </span>treatment <span class="op">==</span><span class="st"> &quot;Gal+aPD-L1&quot;</span>,
+                      apd_levels[<span class="dv">2</span>],
+                      apd_levels[<span class="dv">1</span>])]
+
+<span class="co"># re-order factor levels</span>
+tumor[, gal<span class="op">:</span><span class="er">=</span><span class="kw">factor</span>(gal, gal_levels)]
+tumor[, apdl1<span class="op">:</span><span class="er">=</span><span class="kw">factor</span>(apdl1, apd_levels)]</code></pre></div>
+<p>A way to check the results to make sure that our conversion is correct is to compute the sampel size for the 2 x 2 combinations, but include the original treatment column in the <code>by</code> list.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">tumor[<span class="op">!</span><span class="kw">is.na</span>(num_positive_per_mm), .(<span class="dt">N=</span>.N), by=.(treatment, gal, apdl1)]</code></pre></div>
+<pre><code>##     treatment    gal     apdl1   N
+## 1:        Con no Gal no aPD-L1 124
+## 2:        Gal    Gal no aPD-L1  89
+## 3:     aPD-L1 no Gal    aPD-L1 101
+## 4: Gal+aPD-L1    Gal    aPD-L1  58</code></pre>
+<p>That looks good.</p>
+<p><strong>Bug alert</strong> If you break Rule #1, and type in the treatment level “Gal+aPD-L1” as “Gal + aPD-L1”, then you will get new columns containing junk.</p>
+<pre><code>##     treatment    gal     apdl1   N
+## 1:        Con no Gal no aPD-L1 124
+## 2:        Gal    Gal no aPD-L1  89
+## 3:     aPD-L1 no Gal    aPD-L1 101
+## 4: Gal+aPD-L1 no Gal no aPD-L1  58</code></pre>
+<p>Remember Rule #1. Always copy and paste any text that will be inserted into quotes. This is easily done here by typing <code>unique(tumor$treatment)</code> into the console. This function returns the unique values of the column “treatment” of the data.table “tumor”.</p>
+<blockquote>
+<p>unique(tumor$treatment) [1] “Con” “Gal” “aPD-L1” “Gal+aPD-L1”</p>
+</blockquote>
+<p>Now, copy the name of a level and paste into your code. Repeat until done.</p>
+</div>
+<div id="combining-data" class="section level3">
+<h3><span class="header-section-number">2.4.2</span> Combining data</h3>
+<p><strong>Source article</strong> Bak, A.M., Vendelbo, M.H., Christensen, B., Viggers, R., Bibby, B.M., Rungby, J., Jørgensen, J.O.L., Møller, N. and Jessen, N., 2018. Prolonged fasting-induced metabolic signatures in human skeletal muscle of lean and obese men. PloS one, 13(9), p.e0200817.</p>
+<p><strong>Data source</strong> <a href="https://datadryad.org/stash/dataset/doi:10.5061/dryad.6121hj7" class="uri">https://datadryad.org/stash/dataset/doi:10.5061/dryad.6121hj7</a></p>
+<p><strong>file name</strong>: datafiles.xlsx</p>
+<p>The data are from a randomized <strong>crossover</strong> design where 18 men (9 lean and 9 obese) were measured for multiple metabolic markers at two times: 1) in a post-absorptive state after 12 hours overnight fast, and 2) in a prolonged fasting state after 72 hours of fasting. In addition, at each time point, metabolic markers were measured prior to and after an insulin infusion. Here, we want to reproduce values in Table 2, which are measures of mean blood insulin and metabolite levels after 12 hours and 72 hours fasting in both the lean and obese groups.</p>
+<p>A difficulty for the analyst is that the response data are in the “Table 2” sheet but the variable containing the assignment to “lean” or “obese” group is in the “Table 1” sheet. To analyze these response, the two datasets need to be combined into a single data frame. The important consideration when combining data is that <em>like is matched with like</em>. For the fasting dataset, “like” is the subject id, and we have some data for each subject id in Table 1 and other data for the same subject ids in Table 2. This means that we essentially want to glue the columns of table 2 to the columns of table 1 in a way that insures that the correct data for each subject id is on the same row. This is a bit more complicated for these data because Table 1 contains 18 data rows, one for each subject id and Table 2 contains 36 data rows, 2 for each subject id, because each subject has data measured at 12 hours and at 72 hours.</p>
+</div>
+<div id="subsetting-data" class="section level3">
+<h3><span class="header-section-number">2.4.3</span> Subsetting data</h3>
+<p>It is common to see researchers create multiple subsets of data for further processing. This practice should be be discouraged because the same variables will be in multiple data frames and it can be hard to keep track of any processing of variables in the different datasets. Instead, subset the data at the level of analysis.</p>
+<p>There are many ways to subset data in R. Experienced users tend to divide up into those using base R, those using the tidyverse packages, or those using data.table. Learn one well. This book uses data.table.</p>
+<p>In these examples, dt is the name of a data table (a data frame that has been converted to a data table), not a function. Remember that all functions are followed by parentheses.</p>
+<ol style="list-style-type: decimal">
+<li><code>dt[sex==&quot;female&quot;,]</code> includes all rows in which the column <em>sex</em> contains the value “female”</li>
+<li><code>dt[sex==&quot;female&quot; &amp; age &gt; 18, ]</code> includes all rows in which the column <code>sex</code> contains the value “female” AND the column <em>age</em> contains values greater than 18</li>
+<li><code>dt[site==&quot;wells marsh&quot; | site==&quot;scarborough marsh&quot;, ]</code> contains the rows in which the column “site” contains either the value “wells marsh” OR “scarborough marsh”</li>
+<li><code>dt[(site==&quot;wells marsh&quot; | site==&quot;scarborough marsh&quot;) &amp; sex == &quot;female&quot;, ]</code> contains the rows in which the column “site” contains either the value “wells marsh” OR “scarborough marsh” AND the column <em>sex</em> contains the value “female”.</li>
+</ol>
+<p>Here I fit a linear model of glucose ~ group to the “12 hour fast” subset of the fasting data that was just imported (<em>group</em> is the column containing either “lean” or “obese”).</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">m1 &lt;-<span class="st"> </span><span class="kw">lm</span>(glucose_t_240_min_m_m <span class="op">~</span><span class="st"> </span>group, <span class="dt">data=</span>fasting[intervention<span class="op">==</span><span class="st">&quot;12 h fast&quot;</span>, ])
+<span class="kw">coef</span>(<span class="kw">summary</span>(m1))</code></pre></div>
+<pre><code>##             Estimate Std. Error    t value     Pr(&gt;|t|)
+## (Intercept)   4.8375  0.1201747 40.2538890 7.115319e-16
+## groupobese    0.0250  0.1699527  0.1470997 8.851507e-01</code></pre>
+</div>
+<div id="missing-data" class="section level3">
+<h3><span class="header-section-number">2.4.4</span> missing data</h3>
+<p>The function <code>na.omit</code> omits all rows with at least one missing value. In general, be vary careful if using <code>na.omit</code> because you may delete values that you should be analyzing. For example, here is a fake data set, call it “plant”, with two response variables, one of which has a missing value.</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">treatment</th>
+<th align="right">root_mass</th>
+<th align="right">shoot_mass</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">cn</td>
+<td align="right">100.2</td>
+<td align="right">239.9</td>
+</tr>
+<tr class="even">
+<td align="left">cn</td>
+<td align="right">NA</td>
+<td align="right">205.4</td>
+</tr>
+<tr class="odd">
+<td align="left">cn</td>
+<td align="right">95.6</td>
+<td align="right">244.6</td>
+</tr>
+<tr class="even">
+<td align="left">cn</td>
+<td align="right">149.1</td>
+<td align="right">252.1</td>
+</tr>
+<tr class="odd">
+<td align="left">tr</td>
+<td align="right">100.2</td>
+<td align="right">239.9</td>
+</tr>
+<tr class="even">
+<td align="left">tr</td>
+<td align="right">118.0</td>
+<td align="right">205.4</td>
+</tr>
+<tr class="odd">
+<td align="left">tr</td>
+<td align="right">95.6</td>
+<td align="right">244.6</td>
+</tr>
+<tr class="even">
+<td align="left">tr</td>
+<td align="right">149.1</td>
+<td align="right">252.1</td>
+</tr>
+</tbody>
+</table>
+<p>This code “cleans” the data.table <em>plant</em> by omitting rows with any missing value</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">plant &lt;-<span class="st"> </span><span class="kw">na.omit</span>(plant)</code></pre></div>
+<p>The problem is, any analysis of <span class="math inline">\(shoot\_mass\)</span> will not contain the value 244.6 because it was deleted from the data frame along with the rest of the row containing the missing value.</p>
+<p>Instead of deleting the entire row, retain all data but handle missing values at the level of the analysis. This can be done using the subset mechanism. The function <code>is.na</code> returns a boolean (a variable with values TRUE or FALSE) for each element in a list. Consequently, the function <code>!is.na</code> can be used to obtain the rows in which the value of <span class="math inline">\(root_mass\)</span> is “not na”.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">summary_table &lt;-<span class="st"> </span>plant[<span class="op">!</span><span class="kw">is.na</span>(root_mass),
+                       .(<span class="dt">mean=</span><span class="kw">mean</span>(root_mass),
+                         <span class="dt">sd=</span><span class="kw">sd</span>(root_mass),
+                         <span class="dt">se=</span><span class="kw">sd</span>(root_mass)<span class="op">/</span><span class="kw">sqrt</span>(.N),
+                         <span class="dt">N=</span>.N), 
+                       by=.(treatment)]
+knitr<span class="op">::</span><span class="kw">kable</span>(summary_table, <span class="dt">digits=</span><span class="dv">1</span>)</code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">treatment</th>
+<th align="right">mean</th>
+<th align="right">sd</th>
+<th align="right">se</th>
+<th align="right">N</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">cn</td>
+<td align="right">115.0</td>
+<td align="right">29.6</td>
+<td align="right">17.1</td>
+<td align="right">3</td>
+</tr>
+<tr class="even">
+<td align="left">tr</td>
+<td align="right">115.7</td>
+<td align="right">24.2</td>
+<td align="right">12.1</td>
+<td align="right">4</td>
+</tr>
+</tbody>
+</table>
+<p>Many R functions automatically handle missing values. For example, the <code>mean</code> and <code>sd</code> functions have NA handling methods. These are used in the script below and generate the correct mean and sd. But the computation of the standard error fails to compute the correct answer because it uses the wrong N. Compare the results to the script using <code>!is.na</code>. Without using <code>!is.na</code>, the sample size for the control, <em>for the variable root_mass</em>, is incorrect–it is simply the number of rows where <span class="math inline">\(Treatment\)</span> is “cn”.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">summary_table &lt;-<span class="st"> </span>plant[,
+                       .(<span class="dt">mean=</span><span class="kw">mean</span>(root_mass, <span class="dt">na.rm=</span><span class="ot">TRUE</span>),
+                         <span class="dt">sd=</span><span class="kw">sd</span>(root_mass, <span class="dt">na.rm=</span><span class="ot">TRUE</span>),
+                         <span class="dt">se=</span><span class="kw">sd</span>(root_mass, <span class="dt">na.rm=</span><span class="ot">TRUE</span>)<span class="op">/</span><span class="kw">sqrt</span>(.N),
+                         <span class="dt">N=</span>.N), 
+                       by=.(treatment)]
+knitr<span class="op">::</span><span class="kw">kable</span>(summary_table, <span class="dt">digits=</span><span class="dv">1</span>)</code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">treatment</th>
+<th align="right">mean</th>
+<th align="right">sd</th>
+<th align="right">se</th>
+<th align="right">N</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">cn</td>
+<td align="right">115.0</td>
+<td align="right">29.6</td>
+<td align="right">17.1</td>
+<td align="right">3</td>
+</tr>
+<tr class="even">
+<td align="left">tr</td>
+<td align="right">115.7</td>
+<td align="right">24.2</td>
+<td align="right">12.1</td>
+<td align="right">4</td>
+</tr>
+</tbody>
+</table>
+<p>Familiarize yourself with these and with the NA handling methods of other functions, especially <code>lm</code> and <code>predict</code>.</p>
+</div>
+<div id="reshaping-data" class="section level3">
+<h3><span class="header-section-number">2.4.5</span> Reshaping data</h3>
+<p>In general, your data should be in long format. What is long format? Consider data from a simple experiment with a response variable and a treatment variable with three levels. A common way to organize these data in Microsoft Excel is in <strong>wide format</strong>.</p>
+<table>
+<caption><span id="tab:unnamed-chunk-16">Table 2.1: </span>Root mass for three treatment levels in wide format</caption>
+<thead>
+<tr class="header">
+<th align="right">control</th>
+<th align="right">extract</th>
+<th align="right">charcoal</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">10.18</td>
+<td align="right">4.34</td>
+<td align="right">9.57</td>
+</tr>
+<tr class="even">
+<td align="right">10.40</td>
+<td align="right">3.74</td>
+<td align="right">8.59</td>
+</tr>
+<tr class="odd">
+<td align="right">8.61</td>
+<td align="right">4.58</td>
+<td align="right">9.69</td>
+</tr>
+<tr class="even">
+<td align="right">11.04</td>
+<td align="right">4.12</td>
+<td align="right">8.07</td>
+</tr>
+<tr class="odd">
+<td align="right">9.24</td>
+<td align="right">2.44</td>
+<td align="right">7.63</td>
+</tr>
+</tbody>
+</table>
+<p>Wide format is efficient for computations in a spreadsheet, such as computing means and standard deviations of columns, and for plotting. For most statistical analyses in R (and most statistics software), all measures of a variable (such as root biomass in the example above) should be in a single column with a second column identifying the treatment level associated with each measure. This is called <strong>long format</strong>.</p>
+<table>
+<caption><span id="tab:unnamed-chunk-17">Table 2.2: </span>Root mass for three treatment levels in long format</caption>
+<thead>
+<tr class="header">
+<th align="left">treatment</th>
+<th align="right">root_mass</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">control</td>
+<td align="right">10.18</td>
+</tr>
+<tr class="even">
+<td align="left">control</td>
+<td align="right">10.40</td>
+</tr>
+<tr class="odd">
+<td align="left">control</td>
+<td align="right">8.61</td>
+</tr>
+<tr class="even">
+<td align="left">control</td>
+<td align="right">11.04</td>
+</tr>
+<tr class="odd">
+<td align="left">control</td>
+<td align="right">9.24</td>
+</tr>
+<tr class="even">
+<td align="left">extract</td>
+<td align="right">4.34</td>
+</tr>
+<tr class="odd">
+<td align="left">extract</td>
+<td align="right">3.74</td>
+</tr>
+<tr class="even">
+<td align="left">extract</td>
+<td align="right">4.58</td>
+</tr>
+<tr class="odd">
+<td align="left">extract</td>
+<td align="right">4.12</td>
+</tr>
+<tr class="even">
+<td align="left">extract</td>
+<td align="right">2.44</td>
+</tr>
+<tr class="odd">
+<td align="left">charcoal</td>
+<td align="right">9.57</td>
+</tr>
+<tr class="even">
+<td align="left">charcoal</td>
+<td align="right">8.59</td>
+</tr>
+<tr class="odd">
+<td align="left">charcoal</td>
+<td align="right">9.69</td>
+</tr>
+<tr class="even">
+<td align="left">charcoal</td>
+<td align="right">8.07</td>
+</tr>
+<tr class="odd">
+<td align="left">charcoal</td>
+<td align="right">7.63</td>
+</tr>
+</tbody>
+</table>
+<div id="wide-to-long" class="section level4">
+<h4><span class="header-section-number">2.4.5.1</span> Wide to long</h4>
+<p>There are many functions to tidy data from wide to long. <code>melt()</code> from the data.table package is especially useful. It is data.table’s version of melt from the reshape2 package.</p>
+<p>The major arguments of data.table::melt are</p>
+<p><code>melt(data, id.vars, measure.vars, variable.name, value.name)</code></p>
+<p>melt takes the data in the columns listed in <code>measure.vars</code> and stacks these into a single column named <code>value.name</code>. The names of the columns in <code>measure.vars</code> are the values of the elements in a new column named <code>variable.name</code>. The elements of any column in <code>id.vars</code> are repeated <em>p</em> times, where <em>p</em> is the number of columns that were stacked.</p>
+<p>Article: Rolig, A. S., Mittge, E. K., Ganz, J., Troll, J. V., Melancon, E., Wiles, T. J., … Guillemin, K. (2017). The enteric nervous system promotes intestinal health by constraining microbiota composition. PLOS Biology, 15(2), e2000689. <a href="https://doi.org/10.1371/journal.pbio.2000689" class="uri">https://doi.org/10.1371/journal.pbio.2000689</a></p>
+<p><strong>Data source</strong> <a href="https://doi.org/10.1371/journal.pbio.2000689.s008" class="uri">https://doi.org/10.1371/journal.pbio.2000689.s008</a></p>
+<p><strong>file name</strong>: “journal.pbio.2000689.s008.xlsx”</p>
+<p>Let’s import and tidy the data for figure 2d. Look at the excel file and the data in Fig. 2d. There is a single treament with four levels, but the authors have organized the data in each level in separate columns and used the column header as the level name.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">folder &lt;-<span class="st"> &quot;Data from The enteric nervous system promotes intestinal health by constraining microbiota composition&quot;</span>
+filename &lt;-<span class="st"> &quot;journal.pbio.2000689.s008.xlsx&quot;</span>
+
+<span class="co"># figure 2D data</span>
+sheet_i &lt;-<span class="st"> &quot;Figure 2&quot;</span>
+range_i &lt;-<span class="st"> &quot;F2:I24&quot;</span>
+file_path &lt;-<span class="st"> </span><span class="kw">here</span>(data_path, folder, filename)
+<span class="co">#file_path &lt;- paste(data_path, folder, fn, sep=&quot;/&quot;)</span>
+dt_wide &lt;-<span class="st"> </span><span class="kw">data.table</span>(<span class="kw">read_excel</span>(file_path, <span class="dt">sheet=</span>sheet_i, <span class="dt">range=</span>range_i))
+<span class="co"># clean names</span>
+dt_wide &lt;-<span class="st"> </span><span class="kw">clean_names</span>(dt_wide)
+<span class="co"># get rid of &quot;_donor&quot;</span>
+new_colnames &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;gf&quot;</span>, <span class="st">&quot;wt&quot;</span>, <span class="st">&quot;sox10&quot;</span>, <span class="st">&quot;iap_mo&quot;</span>)
+<span class="kw">setnames</span>(dt_wide, <span class="dt">old=</span><span class="kw">colnames</span>(dt_wide), <span class="dt">new=</span>new_colnames)
+
+<span class="co"># wide to long</span>
+exp2d &lt;-<span class="st"> </span><span class="kw">melt</span>(dt_wide, 
+              <span class="dt">measure.vars=</span><span class="kw">colnames</span>(dt_wide), 
+              <span class="dt">variable.name=</span><span class="st">&quot;donor&quot;</span>, 
+              <span class="dt">value.name=</span><span class="st">&quot;count&quot;</span>)</code></pre></div>
+<p>Look at the wide and long data frames using View. For these data, the number of measures within the different treatments differs, and as a consequence, there are multiple cells with <code>NA</code> which indicates a missing value. To delete the rows with the missing values, use</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># delete rows with no data</span>
+exp2d &lt;-<span class="st"> </span><span class="kw">na.omit</span>(exp2d)</code></pre></div>
+<p>For both analysis and plots, we want to compare values to the control level, which is named “wt” for the exp2d data. That is, we want “wt” to be the <em>reference</em> level. To achieve this, the levels of the factor <em>donor</em> need to be re-ordered.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">exp2d[, donor<span class="op">:</span><span class="er">=</span><span class="kw">factor</span>(donor, <span class="kw">c</span>(<span class="st">&quot;wt&quot;</span>, <span class="st">&quot;gf&quot;</span>, <span class="st">&quot;sox10&quot;</span>, <span class="st">&quot;iap_mo&quot;</span>))]</code></pre></div>
+<p>The example above is pretty easy, because the all columns in the original data frame are melted (stacked). Here is an example in which only a subset of columns are stacked. In addition, only a subset of the remaining columns are retained in the long format data frame. The data are from Panel A of supplement Fig. 8 (<a href="https://journals.plos.org/plosbiology/article/file?type=supplementary&amp;id=info:doi/10.1371/journal.pbio.2003467.s019" class="uri">https://journals.plos.org/plosbiology/article/file?type=supplementary&amp;id=info:doi/10.1371/journal.pbio.2003467.s019</a>) from</p>
+<p>Kešnerová, L., Mars, R.A., Ellegaard, K.M., Troilo, M., Sauer, U. and Engel, P., 2017. Disentangling metabolic functions of bacteria in the honey bee gut. PLoS biology, 15(12), p.e2003467.</p>
+<p>**data source*:** <a href="https://doi.org/10.1371/journal.pbio.2003467.s001" class="uri">https://doi.org/10.1371/journal.pbio.2003467.s001</a></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">folder &lt;-<span class="st"> &quot;Data from Disentangling metabolic functions of bacteria in the honey bee gut&quot;</span>
+filename &lt;-<span class="st"> &quot;journal.pbio.2003467.s001.xlsx&quot;</span>
+
+<span class="co"># figure 2D data</span>
+sheet_i &lt;-<span class="st"> &quot;S8 Fig&quot;</span>
+range_i &lt;-<span class="st"> &quot;A2:H12&quot;</span>
+file_path &lt;-<span class="st"> </span><span class="kw">here</span>(data_path, folder, filename)
+<span class="co">#file_path &lt;- paste(data_path, folder, fn, sep=&quot;/&quot;)</span>
+dt_wide &lt;-<span class="st"> </span><span class="kw">data.table</span>(<span class="kw">read_excel</span>(file_path, <span class="dt">sheet=</span>sheet_i, <span class="dt">range=</span>range_i))
+<span class="co"># clean names</span>
+dt_wide &lt;-<span class="st"> </span><span class="kw">clean_names</span>(dt_wide)
+
+<span class="co"># wide to long</span>
+stack_cols &lt;-<span class="st"> </span><span class="kw">paste0</span>(<span class="st">&quot;replicate&quot;</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">5</span>)
+exp_s8a &lt;-<span class="st"> </span><span class="kw">melt</span>(dt_wide,
+              <span class="dt">id.vars=</span><span class="kw">c</span>(<span class="st">&quot;media&quot;</span>, <span class="st">&quot;time_h&quot;</span>), <span class="co"># strain col not adding any information</span>
+              <span class="dt">measure.vars=</span>stack_cols, 
+              <span class="dt">variable.name=</span><span class="st">&quot;Replicate&quot;</span>, 
+              <span class="dt">value.name=</span><span class="st">&quot;OD600&quot;</span>) <span class="co"># measure of absorbance at 600nm</span></code></pre></div>
+</div>
+<div id="stacking-multiple-sets-of-columns" class="section level4">
+<h4><span class="header-section-number">2.4.5.2</span> Stacking multiple sets of columns</h4>
+<p>This example comes from my lab, where a student measured sprint speed in each fish three times prior to treatment and three times following treatment. The wide format data looked something like this</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">set.seed</span>(<span class="dv">1</span>)
+fd_wide &lt;-<span class="st"> </span><span class="kw">data.table</span>(<span class="dt">fish_ID=</span><span class="kw">paste0</span>(<span class="st">&quot;fish&quot;</span>,<span class="dv">1</span><span class="op">:</span><span class="dv">4</span>),
+                      <span class="dt">treatment=</span><span class="kw">rep</span>(<span class="kw">c</span>(<span class="st">&quot;cn&quot;</span>, <span class="st">&quot;tr&quot;</span>), <span class="dt">each=</span><span class="dv">2</span>),
+                      <span class="dt">length=</span><span class="kw">rnorm</span>(<span class="dv">4</span>, <span class="dv">12</span>, <span class="dv">2</span>),
+                      <span class="dt">pre_1=</span><span class="kw">rnorm</span>(<span class="dv">4</span>, <span class="dv">50</span>, <span class="dv">5</span>),
+                      <span class="dt">pre_2=</span><span class="kw">rnorm</span>(<span class="dv">4</span>, <span class="dv">50</span>, <span class="dv">5</span>),
+                      <span class="dt">pre_3=</span><span class="kw">rnorm</span>(<span class="dv">4</span>, <span class="dv">50</span>, <span class="dv">5</span>),
+                      <span class="dt">post_1=</span><span class="kw">rnorm</span>(<span class="dv">4</span>, <span class="dv">50</span>, <span class="dv">5</span>),
+                      <span class="dt">post_2=</span><span class="kw">rnorm</span>(<span class="dv">4</span>, <span class="dv">50</span>, <span class="dv">5</span>),
+                      <span class="dt">post_3=</span><span class="kw">rnorm</span>(<span class="dv">4</span>, <span class="dv">50</span>, <span class="dv">5</span>)
+                      )
+knitr<span class="op">::</span><span class="kw">kable</span>(fd_wide, <span class="dt">digits=</span><span class="dv">1</span>)</code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">fish_ID</th>
+<th align="left">treatment</th>
+<th align="right">length</th>
+<th align="right">pre_1</th>
+<th align="right">pre_2</th>
+<th align="right">pre_3</th>
+<th align="right">post_1</th>
+<th align="right">post_2</th>
+<th align="right">post_3</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">fish1</td>
+<td align="left">cn</td>
+<td align="right">10.7</td>
+<td align="right">51.6</td>
+<td align="right">52.9</td>
+<td align="right">46.9</td>
+<td align="right">49.9</td>
+<td align="right">54.6</td>
+<td align="right">53.1</td>
+</tr>
+<tr class="even">
+<td align="left">fish2</td>
+<td align="left">cn</td>
+<td align="right">12.4</td>
+<td align="right">45.9</td>
+<td align="right">48.5</td>
+<td align="right">38.9</td>
+<td align="right">54.7</td>
+<td align="right">53.9</td>
+<td align="right">49.7</td>
+</tr>
+<tr class="odd">
+<td align="left">fish3</td>
+<td align="left">tr</td>
+<td align="right">10.3</td>
+<td align="right">52.4</td>
+<td align="right">57.6</td>
+<td align="right">55.6</td>
+<td align="right">54.1</td>
+<td align="right">50.4</td>
+<td align="right">49.2</td>
+</tr>
+<tr class="even">
+<td align="left">fish4</td>
+<td align="left">tr</td>
+<td align="right">15.2</td>
+<td align="right">53.7</td>
+<td align="right">51.9</td>
+<td align="right">49.8</td>
+<td align="right">53.0</td>
+<td align="right">40.1</td>
+<td align="right">42.6</td>
+</tr>
+</tbody>
+</table>
+<p>To analyze the response (post-treatment sprint) adjusted for pre-treatment sprint, the three pre-treatment sprint measures need to be stacked into a single column and the three post-treatment measures need to be stacked into a single column. This is easy using <code>data.table::melt</code>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">pre_cols &lt;-<span class="st"> </span><span class="kw">paste</span>(<span class="st">&quot;pre&quot;</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">3</span>, <span class="dt">sep=</span><span class="st">&quot;_&quot;</span>)
+post_cols &lt;-<span class="st"> </span><span class="kw">paste</span>(<span class="st">&quot;post&quot;</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">3</span>, <span class="dt">sep=</span><span class="st">&quot;_&quot;</span>)
+fd &lt;-<span class="st"> </span><span class="kw">melt</span>(fd_wide,
+           <span class="dt">id.vars=</span><span class="kw">c</span>(<span class="st">&quot;fish_ID&quot;</span>, <span class="st">&quot;treatment&quot;</span>, <span class="st">&quot;length&quot;</span>),
+           <span class="dt">measure.vars=</span><span class="kw">list</span>(pre_cols, post_cols),
+           <span class="dt">variable.name=</span><span class="st">&quot;Order&quot;</span>,
+           <span class="dt">value.name=</span><span class="kw">c</span>(<span class="st">&quot;sprint_pre&quot;</span>, <span class="st">&quot;sprint_post&quot;</span>))
+knitr<span class="op">::</span><span class="kw">kable</span>(fd, <span class="dt">digits=</span><span class="dv">1</span>)</code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">fish_ID</th>
+<th align="left">treatment</th>
+<th align="right">length</th>
+<th align="left">Order</th>
+<th align="right">sprint_pre</th>
+<th align="right">sprint_post</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">fish1</td>
+<td align="left">cn</td>
+<td align="right">10.7</td>
+<td align="left">1</td>
+<td align="right">51.6</td>
+<td align="right">49.9</td>
+</tr>
+<tr class="even">
+<td align="left">fish2</td>
+<td align="left">cn</td>
+<td align="right">12.4</td>
+<td align="left">1</td>
+<td align="right">45.9</td>
+<td align="right">54.7</td>
+</tr>
+<tr class="odd">
+<td align="left">fish3</td>
+<td align="left">tr</td>
+<td align="right">10.3</td>
+<td align="left">1</td>
+<td align="right">52.4</td>
+<td align="right">54.1</td>
+</tr>
+<tr class="even">
+<td align="left">fish4</td>
+<td align="left">tr</td>
+<td align="right">15.2</td>
+<td align="left">1</td>
+<td align="right">53.7</td>
+<td align="right">53.0</td>
+</tr>
+<tr class="odd">
+<td align="left">fish1</td>
+<td align="left">cn</td>
+<td align="right">10.7</td>
+<td align="left">2</td>
+<td align="right">52.9</td>
+<td align="right">54.6</td>
+</tr>
+<tr class="even">
+<td align="left">fish2</td>
+<td align="left">cn</td>
+<td align="right">12.4</td>
+<td align="left">2</td>
+<td align="right">48.5</td>
+<td align="right">53.9</td>
+</tr>
+<tr class="odd">
+<td align="left">fish3</td>
+<td align="left">tr</td>
+<td align="right">10.3</td>
+<td align="left">2</td>
+<td align="right">57.6</td>
+<td align="right">50.4</td>
+</tr>
+<tr class="even">
+<td align="left">fish4</td>
+<td align="left">tr</td>
+<td align="right">15.2</td>
+<td align="left">2</td>
+<td align="right">51.9</td>
+<td align="right">40.1</td>
+</tr>
+<tr class="odd">
+<td align="left">fish1</td>
+<td align="left">cn</td>
+<td align="right">10.7</td>
+<td align="left">3</td>
+<td align="right">46.9</td>
+<td align="right">53.1</td>
+</tr>
+<tr class="even">
+<td align="left">fish2</td>
+<td align="left">cn</td>
+<td align="right">12.4</td>
+<td align="left">3</td>
+<td align="right">38.9</td>
+<td align="right">49.7</td>
+</tr>
+<tr class="odd">
+<td align="left">fish3</td>
+<td align="left">tr</td>
+<td align="right">10.3</td>
+<td align="left">3</td>
+<td align="right">55.6</td>
+<td align="right">49.2</td>
+</tr>
+<tr class="even">
+<td align="left">fish4</td>
+<td align="left">tr</td>
+<td align="right">15.2</td>
+<td align="left">3</td>
+<td align="right">49.8</td>
+<td align="right">42.6</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="miscellaneous-data-wrangling" class="section level3">
+<h3><span class="header-section-number">2.4.6</span> Miscellaneous data wrangling</h3>
+<div id="vole-data" class="section level4">
+<h4><span class="header-section-number">2.4.6.1</span> Vole data</h4>
+<p>A interesting data set to introduce a linear model for estimating treatment effects in an experiment are from</p>
+<p>Selman, C., McLaren, J.S., Collins, A.R., Duthie, G.G. and Speakman, J.R., 2013. Deleterious consequences of antioxidant supplementation on lifespan in a wild-derived mammal. Biology letters, 9(4), p.20130432.</p>
+<ol style="list-style-type: decimal">
+<li>Source: Dryad Digital Repository. <a href="https://doi.org/10.5061/dryad.31cc4/1" class="uri">https://doi.org/10.5061/dryad.31cc4/1</a></li>
+<li>File: “RSBL-2013-0432 vole data.xlsx”</li>
+<li>Sheet: “COLD VOLES LIFESPAN”</li>
+</ol>
+<p>The vole data were archived in a format that requires some wrangling before it can be analyzed. The “lifespan (days)” column contains the lifespan for all three treatment levels, that is, the lifespan values are “stacked” or in “long” format. What is unusual is that there is no “treatment” column specifying the three treatment levels (control, vitamin E, vitamin C). Instead there are control, vitamin E, and vitamin C columns that contain a 1, if the lifespan value belongs to that treatment, and a NULL value if not. On import, the NULL value is replaced with NA, to indicate “missing”. In order to analyze the data, the three treatment assignment columns need to be combined into a single “treatment” column.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">folder &lt;-<span class="st"> &quot;Data from Deleterious consequences of antioxidant supplementation on lifespan in a wild-derived mammal&quot;</span>
+filename &lt;-<span class="st"> &quot;RSBL-2013-0432 vole data.xlsx&quot;</span>
+file_path &lt;-<span class="st"> </span><span class="kw">here</span>(data_path, folder, filename)
+vole &lt;-<span class="st"> </span><span class="kw">read_excel</span>(file_path, <span class="dt">sheet=</span><span class="st">&quot;COLD VOLES LIFESPAN&quot;</span>, <span class="dt">range=</span><span class="st">&quot;a2:d98&quot;</span>) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">clean_names</span>() <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">data.table</span>()
+
+<span class="co"># create treatment column</span>
+<span class="co"># in rows where control=1, set treatment value to &quot;control&quot;</span>
+vole[control<span class="op">==</span><span class="dv">1</span>, treatment<span class="op">:</span><span class="er">=</span><span class="st">&quot;control&quot;</span>]
+<span class="co"># in rows where vitamin_e=1, set treatment value to &quot;vitamin_e&quot;</span>
+vole[vitamin_e<span class="op">==</span><span class="dv">1</span>, treatment<span class="op">:</span><span class="er">=</span><span class="st">&quot;vitamin_E&quot;</span>]
+<span class="co"># in rows where vitamin_c=1, set treatment value to &quot;vitamin_c&quot;</span>
+vole[vitamin_c<span class="op">==</span><span class="dv">1</span>, treatment<span class="op">:</span><span class="er">=</span><span class="st">&quot;vitamin_C&quot;</span>]
+
+<span class="co"># change column &quot;lifespan_days&quot; to &quot;lifespan&quot;</span>
+<span class="kw">setnames</span>(vole, <span class="dt">old=</span><span class="st">&quot;lifespan_days&quot;</span>, <span class="st">&quot;lifespan&quot;</span>)</code></pre></div>
+<p>Plot the data with a stripchart (often called a dot plot) to view the lifespan as a function of treatment level</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggstripchart</span>(<span class="dt">x=</span><span class="st">&quot;treatment&quot;</span>, <span class="dt">y=</span><span class="st">&quot;lifespan&quot;</span>, <span class="dt">data=</span>vole,
+             <span class="dt">add =</span> <span class="kw">c</span>(<span class="st">&quot;mean_ci&quot;</span>))</code></pre></div>
+<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/data-vole-plot-1.png" width="576" /></p>
+</div>
+</div>
+</div>
+<div id="saving-data" class="section level2">
+<h2><span class="header-section-number">2.5</span> Saving data</h2>
+<p>For many projects, it is uncommon to save data. I might save simulated data if it takes a long time (tens of minutes to hours or even days) to generate these and I simply want to work with the simulated data in the future and not have to regenerate it. Or I might save processed data if it takes a long time import and process and I want to analyze the processed data in the future and not have to re-import and process it.</p>
+<p>If the data will only be used in this or future R projects, the data can be saved as an R object using <code>saveRDS()</code></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">save_file_path &lt;-<span class="st"> </span><span class="kw">here</span>(output_path, <span class="st">&quot;vole.Rds&quot;</span>)
+<span class="kw">saveRDS</span>(<span class="dt">object =</span> vole, <span class="dt">file =</span> save_file_path)
+
+<span class="co"># to read this use</span>
+vole &lt;-<span class="st"> </span><span class="kw">readRDS</span>(save_file_path)</code></pre></div>
+<p>Reading a large .Rds file is very fast compared to reading the same data stored as a text file. However, if the data need to be imported into some other software, such as a spreadsheet, then save the data as a text file.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># save the data to output folder</span>
+
+<span class="co"># tab delimited</span>
+save_file_path &lt;-<span class="st"> </span><span class="kw">here</span>(output_path, <span class="st">&quot;vole.txt&quot;</span>)
+<span class="kw">write.table</span>(vole, save_file_path, <span class="dt">sep=</span><span class="st">&quot;</span><span class="ch">\t</span><span class="st">&quot;</span>, <span class="dt">quote=</span><span class="ot">FALSE</span>)
+
+<span class="co"># comma delimited</span>
+save_file_path &lt;-<span class="st"> </span><span class="kw">here</span>(output_path, <span class="st">&quot;vole.csv&quot;</span>)
+<span class="kw">write.table</span>(vole, save_file_path, <span class="dt">sep=</span><span class="st">&quot;,&quot;</span>, <span class="dt">quote=</span><span class="ot">FALSE</span>)</code></pre></div>
+<p>Look at your project directory to make sure the file is where it should be! We used <code>write.table()</code> to create a tab-delimited text file using <code>sep=&quot;\t&quot;</code> to specify tabs to separate the row elements. “” is the standard character string for a tab. Check in your output folder and open the file in a text editor.</p>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="organization-r-projects-and-r-notebooks.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="part-ii-some-fundamentals-of-statistical-modeling.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/rstudio/bookdown-demo/edit/master/chapters/06-data-reading_writing.Rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"download": ["Walker-elementary-statistical-modeling-draft.pdf", "Walker-elementary-statistical-modeling-draft.epub"],
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

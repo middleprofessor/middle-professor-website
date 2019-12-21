@@ -124,7 +124,7 @@
   \postauthor{\par}
       \predate{\centering\large\emph}
   \postdate{\par}
-    \date{Draft: 2019-12-16}
+    \date{Draft: 2019-12-21}
 
 \usepackage{booktabs}
 \usepackage{amsthm}
@@ -479,8 +479,8 @@ chunk}{Create a simple plot chunk}}\label{create-a-simple-plot-chunk}
 \subsection{Create more R chunks and explore options and play with R
 code}\label{create-more-r-chunks-and-explore-options-and-play-with-r-code}
 
-\chapter{Data -- Reading, Writing, and
-Wrangling}\label{data-reading-writing-and-wrangling}
+\chapter{Data -- Reading, Wrangling, and
+Writing}\label{data-reading-wrangling-and-writing}
 
 Importing data into R can be a struggle for new R users and,
 unfortunately, most online sources give easy but superficial methods
@@ -671,6 +671,23 @@ setup chunk ``setup'' is not imperative).
 \end{Highlighting}
 \end{Shaded}
 
+Note on the script above 1. Be kind to the future you by loading only
+the packages necessary for the code in the R Markdown file that you are
+working on. If your default is to load everything, the future you will
+be confused why something was installed. 2. Be kind to the future you by
+commenting on why a package is loaded; usually this is a specific
+function from the package 3. \texttt{here\ \textless{}-\ here::here} is
+my favorite script ever. What is it doing? One can read this as ``assign
+the function here from the here package to the object here'' (this is
+reading the script right to left). Why do this? It turns out the
+multiple packages define a function called ``here''. If any of these
+packages are loaded after the here package, then \texttt{here} from here
+won't work -- it will be replaced by \texttt{here} from the more
+recently loaded package. To make sure that \texttt{here} uses the
+function from the here package, I simply reassign \texttt{here} from the
+here package to the objeect ``here'' \emph{after} loading in all
+packages.
+
 \section{Importing data}\label{importing-data}
 
 Throughout this book, we will download data from the
@@ -739,10 +756,10 @@ for Data Science} book.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{data_folder <-}\StringTok{ "Data from Prenatal acoustic communication programs offspring for high post-hatching temperatures in a songbird"}
+\NormalTok{folder <-}\StringTok{ "Data from Prenatal acoustic communication programs offspring for high post-hatching temperatures in a songbird"}
 \NormalTok{fn <-}\StringTok{ "allDatasetsMarietteBuchanan2016.xls"}
-\NormalTok{file_path <-}\StringTok{ }\KeywordTok{here}\NormalTok{(data_path, data_folder, fn)}
-\CommentTok{#file_path <- paste(data_path, data_folder, fn, sep="/")}
+\NormalTok{file_path <-}\StringTok{ }\KeywordTok{here}\NormalTok{(data_path, folder, fn)}
+\CommentTok{#file_path <- paste(data_path, folder, fn, sep="/")}
 \NormalTok{chick <-}\StringTok{ }\KeywordTok{read_excel}\NormalTok{(file_path, }\DataTypeTok{sheet=}\StringTok{"nestlingMass"}\NormalTok{) }\CommentTok{# read the excel file}
 \NormalTok{chick <-}\StringTok{ }\KeywordTok{data.table}\NormalTok{(chick) }\CommentTok{# convert to data.table}
 \end{Highlighting}
@@ -759,8 +776,7 @@ creates the directory path to the file. This path includes
   data\_path -- the relative path into the folder ``data'' (relative to
   the location of the project file)
 \item
-  data\_folder -- the name of the folder within ``data'' containing the
-  file
+  folder -- the name of the folder within ``data'' containing the file
 \item
   filename -- the name of the file to read
 \end{enumerate}
@@ -772,57 +788,6 @@ file\_path to confirm. The
 nestlingMass sheet only. The next
 line:\texttt{chick\ \textless{}-\ data.table(chick)} converts the
 data.frame into a data.table.
-
-\subsubsection{Troubleshooting file
-import}\label{troubleshooting-file-import}
-
-If you get an error that starts with ``Error: \texttt{path} does not
-exist:'' then R is not ``seeing'' your specified file given the path
-you've given it.
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\tightlist
-\item
-  Make sure you loaded the package \texttt{here} in a ``load-libraries''
-  chunk and that you have run the chunk
-\item
-  Make sure you have assigned \texttt{data\_path\ \textless{}-\ "data"}
-  in the setup chunk and have run the chunk.
-\item
-  Make sure your ``data'' folder is \emph{one level} inside your project
-  folder. ``one level'' means it is not buried deeper inside other
-  folders within the project folder.
-\item
-  Make sure your ``Data from \ldots{}'' folder is one level inside your
-  ``data'' folder
-\item
-  Make sure you have the name of the ``Data from \ldots{}'' folder
-  correct in your script. To do this, I do not type the name but instead
-  go to the finder (on Mac OS) and highlight the ``Data from \ldots{}''
-  folder and copy the name -- the whole name -- and then paste in
-  between the quote mark in the line
-  \texttt{data\_folder\ \textless{}-\ ""}
-\item
-  Make sure your data file is one level inside the correct ``Data from''
-  folder.
-\item
-  Make sure the file name is correct in the script. As with the folder
-  name, I go to the finder and copy the file name and paste it in place.
-  In Windows use ctrl-a instead of ctrl-c to copy the full filename
-  including the extension.
-\end{enumerate}
-
-More generally, R is \emph{very literal} when it comes to: Spelling.
-Humans are very good at understanding misspelled words but the R
-language (or any computer language) is very literal. ``Data from
-Quantifying the effects of'' and ``Data from Quantifying the efects of''
-are different values. Capitalization. R is \textbf{case sensitive} (some
-programming languages are not). ``Data from Quantifying'', ``Data from
-quantifying'', and ``data from quantifying'' are all different values.
-Spelling AND capitalization have to be perfect, not simply close. Humans
-are very good at understanding misspelled and OdDLy capitalized words
-but the R language (or any computer language) is very literal.
 
 \subsubsection{Peak at the imported data.table to check that the file
 was imported correctly and to learn about the
@@ -982,9 +947,9 @@ overcome this, the statement below specifies that the file contains a
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{data_folder <-}\StringTok{ "Data from Neonicotinoid pesticide reduces bumblebee colony growth and queen production"}
+\NormalTok{folder <-}\StringTok{ "Data from Neonicotinoid pesticide reduces bumblebee colony growth and queen production"}
 \NormalTok{filename <-}\StringTok{ "Whitehorn, O'Connor, Wackers, Goulson (2012) Data from 'Neonicotinoid pesticide reduces bumblebee colony growth and queen production'.csv.csv"}
-\NormalTok{file_path <-}\StringTok{ }\KeywordTok{here}\NormalTok{(data_path, data_folder, filename)}
+\NormalTok{file_path <-}\StringTok{ }\KeywordTok{here}\NormalTok{(data_path, folder, filename)}
 \NormalTok{bee <-}\StringTok{ }\KeywordTok{fread}\NormalTok{(file_path, }\DataTypeTok{header=}\OtherTok{TRUE}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
@@ -1056,6 +1021,69 @@ and analysis to later chapters.
 
 \includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/data-alternative-plots-3.pdf}
 
+\section{Troubleshooting file import}\label{troubleshooting-file-import}
+
+If you get an error that starts with ``Error: \texttt{path} does not
+exist:'' then R is not ``seeing'' your specified file given the path
+you've given it.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Make sure you loaded the package \texttt{here} in a ``load-libraries''
+  chunk and that you have run the chunk
+\item
+  Make sure you have assigned \texttt{data\_path\ \textless{}-\ "data"}
+  in the setup chunk and have run the chunk.
+\item
+  Make sure your ``data'' folder is \emph{one level} inside your project
+  folder. ``one level'' means it is not buried deeper inside other
+  folders within the project folder.
+\item
+  Make sure your ``Data from \ldots{}'' folder is one level inside your
+  ``data'' folder
+\item
+  Make sure your data file is one level inside the correct ``Data from''
+  folder.
+\item
+  \textbf{Bug alert} Make sure you have the name of the ``Data from
+  \ldots{}'' folder correct in your script. Do not type the name of the
+  folder. Instead, go to the finder and highlight the folder containing
+  the data file, copy the name, return to the R markdown script, type
+  \texttt{folder\ \textless{}-\ ""} and then paste the clipboard (the
+  name of the folder) in between the quote marks.
+\item
+  \textbf{Bug alert} Make sure the file name is correct in the script.
+  As with the folder name, I go to the finder and copy the file name and
+  paste it in place. In Windows use ctrl-a instead of ctrl-c to copy the
+  full filename including the extension.
+\end{enumerate}
+
+More generally, Humans are very good at understanding misspelled and
+OdDLy capitalized words but the R language (or any computer language) is
+very literal. R is \textbf{case sensitive} (some programming languages
+are not). ``Prenatal acoustic communication'', ``Prenatal Acoustic
+Communication'', and ``prenatal acoustic communication'' are all
+different values. Spelling AND capitalization have to be perfect, not
+simply close. Spelling includes \emph{spaces}. A frequent bug is a file
+name typed as ``Prenatal acoustic communication'' when the actual name
+is ``Prenatal acoustic communication''. Can you spot the bug? The
+original (what we need to copy) has two spaces between ``acoustic'' and
+``communication'' while the incorrect copy has only one.
+
+Spelling bugs are avoided by simply copy and pasting names of folders,
+names of files, column names of data frames, and level names of factors,
+which leads to a general rule of R scripting\ldots{}
+
+\subsection{Rule number one in R scripting \{\#
+rule1\}}\label{rule-number-one-in-r-scripting-rule1}
+
+\textbf{Always copy and paste any text that will be inserted into
+quotes}
+
+Do not try to type it out. You have been warned.
+
 \section{Data wrangling}\label{data-wrangling}
 
 \subsection{Converting a single column with all combinations of a 2 x 2
@@ -1074,33 +1102,22 @@ filename: ``41586\_2018\_BFnature25492\_MOESM10\_ESM.xlsx''
 
 sheet: ``Fig. 4h-tumours''
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{folder <-}\StringTok{ "TGF-beta drives immune evasion in genetically reconstituted colon cancer metastasis"}
-\NormalTok{fn <-}\StringTok{ "41586_2018_BFnature25492_MOESM10_ESM.xlsx"}
-\NormalTok{file_path <-}\StringTok{ }\KeywordTok{here}\NormalTok{(}\StringTok{'data'}\NormalTok{, folder, fn)}
-\NormalTok{tumor <-}\StringTok{ }\KeywordTok{read_excel}\NormalTok{(file_path, }\DataTypeTok{sheet=}\StringTok{"Fig. 4h-tumours"}\NormalTok{) }\OperatorTok{%>%}
-\StringTok{  }\KeywordTok{clean_names}\NormalTok{()  }\OperatorTok{%>%}
-\StringTok{  }\KeywordTok{data.table}\NormalTok{()}
-\NormalTok{tumor[, name }\OperatorTok{:}\ErrorTok{=}\StringTok{ }\KeywordTok{factor}\NormalTok{(name)]}
-\end{Highlighting}
-\end{Shaded}
-
 The analysis of the data in Fig. 4h specifies a single \(X\) variable
-``Treatment'' with four levels: ``Con'', ``Gal'', ``aPD-L1'', and
-``Gal+aPD-L1''. These levels indicate that the design is actually
-\textbf{factorial} with two factors, each with two levels. The first
-factor has levels ``no Gal'' and ``Gal''. The second factor has levels
-``no aPD-L1'', ``aPD-L1''. The single column Treatment ``flattens'' the
-2 X 2 factorial design to a 4 x 1 design. In general, we would want to
-analyze an experiment like this as factorial model, because this allows
-us to make inferences about the \emph{interaction effect} between the
-two factors. For these inferences, we need a standard error, or a
-confidence interval, or a \emph{p}-value of the estimate, which we can
-easily get from the factorial model. In order to analyze the data with a
-factorial model, we need to create two new columns -- one column is the
-factor variable containing the two levels of Gal and one column is the
-factor variable containing the two levels of aPD-L1.
+``Treatment'' with four levels (or groups): ``Con'', ``Gal'',
+``aPD-L1'', and ``Gal+aPD-L1''. These levels indicate that the design is
+actually \textbf{factorial} with two factors, each with two levels. The
+first factor has levels ``no Gal'' and ``Gal''. The second factor has
+levels ``no aPD-L1'', ``aPD-L1''. The single column Treatment
+``flattens'' the 2 X 2 factorial design to a 4 x 1 design. In general,
+we would want to analyze an experiment like this as factorial model,
+because this allows us to make inferences about the \emph{interaction
+effect} between the two factors. For these inferences, we need a
+standard error, or a confidence interval, or a \emph{p}-value of the
+estimate, which we can easily get from the factorial model. In order to
+analyze the data with a factorial model, we need to create two new
+columns -- one column is the factor variable containing the two levels
+of Gal and one column is the factor variable containing the two levels
+of aPD-L1.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -1139,6 +1156,32 @@ the original treatment column in the \texttt{by} list.
 \end{verbatim}
 
 That looks good.
+
+\textbf{Bug alert} If you break Rule \#1, and type in the treatment
+level ``Gal+aPD-L1'' as ``Gal + aPD-L1'', then you will get new columns
+containing junk.
+
+\begin{verbatim}
+##     treatment    gal     apdl1   N
+## 1:        Con no Gal no aPD-L1 124
+## 2:        Gal    Gal no aPD-L1  89
+## 3:     aPD-L1 no Gal    aPD-L1 101
+## 4: Gal+aPD-L1 no Gal no aPD-L1  58
+\end{verbatim}
+
+Remember Rule \#1. Always copy and paste any text that will be inserted
+into quotes. This is easily done here by typing
+\texttt{unique(tumor\$treatment)} into the console. This function
+returns the unique values of the column ``treatment'' of the data.table
+``tumor''.
+
+\begin{quote}
+unique(tumor\$treatment) {[}1{]} ``Con'' ``Gal'' ``aPD-L1''
+``Gal+aPD-L1''
+\end{quote}
+
+Now, copy the name of a level and paste into your code. Repeat until
+done.
 
 \subsection{Combining data}\label{combining-data}
 
@@ -1414,7 +1457,7 @@ Consider data from a simple experiment with a response variable and a
 treatment variable with three levels. A common way to organize these
 data in Microsoft Excel is in \textbf{wide format}.
 
-\label{tab:unnamed-chunk-15}Root mass for three treatment levels in wide
+\label{tab:unnamed-chunk-16}Root mass for three treatment levels in wide
 format
 
 control
@@ -1461,7 +1504,7 @@ should be in a single column with a second column identifying the
 treatment level associated with each measure. This is called
 \textbf{long format}.
 
-\label{tab:unnamed-chunk-16}Root mass for three treatment levels in long
+\label{tab:unnamed-chunk-17}Root mass for three treatment levels in long
 format
 
 treatment
@@ -2986,7 +3029,7 @@ means
 ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 \end{verbatim}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-26-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-27-1.pdf}
 
 Compute the mean of the means
 
@@ -3383,7 +3426,7 @@ of the ``compatibility'' interpretation.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-34-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-35-1.pdf}
 
 \chapter{Covariance and Correlation}\label{covariance-and-correlation}
 
@@ -4770,7 +4813,7 @@ effect from Z to both X equal to \(\sqrt(0.6)\).
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-36-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-37-1.pdf}
 
 Now create fake \(Y\) that is a function of both \(X_1\) and \(X_2\).
 Create ``standardized'' fake data, where \(\sigma_Y = 1\).
@@ -6539,7 +6582,7 @@ Here is the default plot
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-52-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-53-1.pdf}
 
 \chapter{Model Checking}\label{model-checking-1}
 
@@ -6907,7 +6950,7 @@ nests or a host with no parasites), resulting in positive deviations
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-53-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-54-1.pdf}
 
 \subsubsection{Constrained lower and upper
 bounds}\label{constrained-lower-and-upper-bounds}
@@ -7292,7 +7335,7 @@ small.
 the 10,000 effects}
 \end{figure}
 
-\label{tab:unnamed-chunk-55}The top 10 genes ranked by p-value. Rank is the
+\label{tab:unnamed-chunk-56}The top 10 genes ranked by p-value. Rank is the
 rank of the true effect, from large to small.
 
 effect
@@ -8732,6 +8775,17 @@ function.
 
 \textbf{Step 4: Plot the modeled means and 95\% error intervals}.
 
+The code below first creates the stripchart using the ggpubr function
+and then adds the confidence intervals using \texttt{geom\_errorbar} and
+means using \texttt{geom\_point}. The stripchart uses the data in the
+exp2d data.table. The errorbar and mean use the values in m1.emm object
+created by the \texttt{emmeans} function. The \texttt{geom\_errorbar}
+and \texttt{geom\_point} functions require an ``aesthetic'' to tell
+ggplot which column contains the y values of the points to plot (the
+``x'' values are still in the column ``donor'', which is a column in
+both the exp2d data.table and m1.emm). The name of the column containing
+the ``y'' values in m1.emm is ``response''.
+
 \begin{Shaded}
 \begin{Highlighting}[]
 \KeywordTok{set.seed}\NormalTok{(}\DecValTok{1}\NormalTok{)}
@@ -8774,17 +8828,14 @@ Some notes on the plot code
   In order for the ggplot2 functions to use the m1.emm object, the
   object has to be passed as \texttt{summary(m1.emm)}.
 \item
-  \textbf{Bug alert}. The name of the y-axis variable in the
-  \texttt{ggstripchart} function is ``count'', because the function is
-  using a column from the data.table exp2d. The name of the y-axis
-  variable in the \texttt{geom\_errorbar} and \texttt{geom\_point}
-  functions is ``response'' which is the name given to the expected
-  value of the response (which is \(count\)) in the m1.emm object. This
-  column takes different names depending on the fit object sent to the
-  \texttt{emmeans} function. Importantly, because the y-axis in the
-  \texttt{geom\_errorbar} and \texttt{geom\_point} functions has a
-  different name then the name of the y-axis variable used to create the
-  basic plot, the name of the y-axis column has to be specified.
+  \textbf{Bug alert}. Because the m1.emm table does not have a column
+  named ``count'', which is the ``y'' column specified in
+  \texttt{ggstripchart}, you must supply a new ``y'' column name to the
+  \texttt{aes} function of \texttt{geom\_errorbar} and
+  \texttt{geom\_point}. This is the name of the column in the emmeans
+  table containing the modeled means. In m1.emm, this name is
+  ``response'' but it can take different names in different emmeans
+  tables, depending on the fit model.
 \end{itemize}
 
 \subsection{Adding p-values}\label{adding-p-values}
@@ -9018,7 +9069,7 @@ For the plot of effects, we use table of contrasts m1.pairs as the data.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-66-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-67-1.pdf}
 
 \subsubsection{Combining effects and response
 plots}\label{combining-effects-and-response-plots}
@@ -9033,7 +9084,7 @@ The ggplots are combined using \texttt{plot\_grid} from the package
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-67-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-68-1.pdf}
 
 \subsection{Plotting two factors}\label{plotting-two-factors}
 
@@ -9114,7 +9165,7 @@ function from the emmeans package.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-70-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-71-1.pdf}
 
 \subsection{Interaction plot}\label{interaction-plot}
 
@@ -9134,7 +9185,7 @@ function from the emmeans package.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-71-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-72-1.pdf}
 
 \subsection{Plot components}\label{plot-components}
 
@@ -9156,7 +9207,7 @@ stripchart or a jitter plot
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-72-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-73-1.pdf}
 
 With more points, a stripchart can be okay but with too many points the
 distribution might be obscured. Reasonable alternatives are a box plot,
@@ -9186,7 +9237,7 @@ a violin plot, and a dotplot.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-73-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-74-1.pdf}
 
 \chapter*{\texorpdfstring{Part IV: More than one \(X\) -- Multivariable
 Models}{Part IV: More than one X -- Multivariable Models}}\label{part-iv-more-than-one-x-multivariable-models}
@@ -9315,7 +9366,7 @@ ldlc.r = \beta_0 + \beta_1 treatment + \varepsilon
 
 where \(ldlc.r\) is the set of residuals.
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-75-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-76-1.pdf}
 
 Now the estimate of the effect is -4.7 mg/dL blood and the SE is only
 0.88. In this two-stage analysis (stage 1: fit ldlc \textasciitilde{}
@@ -9343,11 +9394,11 @@ ldlc = \beta_0 + \beta_1 age + \beta_2 treatment + \varepsilon
 
 which results in the Harrell Plot
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-76-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-77-1.pdf}
 
 and the coefficient table
 
-\label{tab:unnamed-chunk-77}Coefficients of the model that includes the
+\label{tab:unnamed-chunk-78}Coefficients of the model that includes the
 covariate age.
 
 Estimate
@@ -10894,7 +10945,7 @@ design}\label{bar-plot-with-uniform-coloring-poorly-communicate-the-factorial-de
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-87-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-88-1.pdf}
 
 \subsubsection{Plots that communicate the factorial
 design}\label{plots-that-communicate-the-factorial-design}
@@ -11070,7 +11121,7 @@ reflect our pre-conceived scientific model.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-88-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-89-1.pdf}
 
 This effects plot shows the four simple effects, the single interaction
 (Temp18:CO21100), and their 95\% confidence intervals. In the original
@@ -11096,7 +11147,7 @@ to small) to have much confidence in the size of the interaction effect.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-89-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-90-1.pdf}
 
 The effects and interaction plot are combined into a single plot.
 
@@ -14940,7 +14991,7 @@ statistic is \(df\).
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-111-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-112-1.pdf}
 
 \begin{verbatim}
 ## 
