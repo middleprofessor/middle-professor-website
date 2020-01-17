@@ -124,7 +124,7 @@
   \postauthor{\par}
       \predate{\centering\large\emph}
   \postdate{\par}
-    \date{Draft: 2019-12-21}
+    \date{Draft: 2020-01-17}
 
 \usepackage{booktabs}
 \usepackage{amsthm}
@@ -1606,7 +1606,7 @@ and used the column header as the level name.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{folder <-}\StringTok{ "Data from The enteric nervous system promotes intestinal health by constraining microbiota composition"}
+\NormalTok{folder <-}\StringTok{ "The enteric nervous system promotes intestinal health by constraining microbiota composition"}
 \NormalTok{filename <-}\StringTok{ "journal.pbio.2000689.s008.xlsx"}
 
 \CommentTok{# figure 2D data}
@@ -2018,7 +2018,7 @@ the three treatment assignment columns need to be combined into a single
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{folder <-}\StringTok{ "Data from Deleterious consequences of antioxidant supplementation on lifespan in a wild-derived mammal"}
+\NormalTok{folder <-}\StringTok{ "Deleterious consequences of antioxidant supplementation on lifespan in a wild-derived mammal"}
 \NormalTok{filename <-}\StringTok{ "RSBL-2013-0432 vole data.xlsx"}
 \NormalTok{file_path <-}\StringTok{ }\KeywordTok{here}\NormalTok{(data_path, folder, filename)}
 \NormalTok{vole <-}\StringTok{ }\KeywordTok{read_excel}\NormalTok{(file_path, }\DataTypeTok{sheet=}\StringTok{"COLD VOLES LIFESPAN"}\NormalTok{, }\DataTypeTok{range=}\StringTok{"a2:d98"}\NormalTok{) }\OperatorTok{%>%}
@@ -5967,21 +5967,21 @@ Model \eqref{eq:model-cat-x} is a regression model. A regression model
 requires that the \(X\) variables be numeric, so how can this model be a
 regression model? What are the numeric values of \(vitamin\_C\) and
 \(vitamin\_E\)? The answer is very clever: \(vitamin\_C\) and
-\(vitamin\_C\) are \textbf{dummy variables} that contain a one, if
-response \(i\) is from that treatment level, and zero otherwise. This is
-called dummy coding or treatment coding. The \texttt{lm} function
-creates these dummy variables under the table, in something called the
-\textbf{model matrix}, which we'll cover in another chapter. You won't
-see these columns in your data. But if you did, it would look something
-like this
+\(vitamin\_E\) are recoded into \textbf{dummy variables} that contain a
+one, if response \(i\) is from that treatment level, and zero otherwise.
+This is called dummy coding or treatment coding. The \texttt{lm}
+function creates these dummy variables under the table, in something
+called the \textbf{model matrix}, which we'll cover in another chapter.
+You won't see these columns in your data. But if you did, they would
+look like this
 
 lifespan
 
 treatment
 
-vitamin\_E
+treatmentvitamin\_E
 
-vitamin\_C
+treatmentvitamin\_C
 
 621
 
@@ -6031,6 +6031,20 @@ vitamin\_C
 
 1
 
+R names the dummy variables by combining the names of the factor and the
+name of the level within the factor. So the \(X\) variables that R
+creates in the model matrix for the fit linear model in model
+\eqref{eq:model-cat-x} are \(treatmentvitamin\_C\) and
+\(treatmentvitamin\_E\). You can see these names as terms in the
+coefficient table of the fit model. Using these dummy variable names, a
+better way of writing out the fit model than the notation in model
+\eqref{eq:model-cat-x} is
+
+\begin{equation}
+lifespan_i = b_0 + b_1 treatvitamin\_C_i + b_2 treatvitamin\_E_i + e_i
+\label{eq:model-cat-x-better}
+\end{equation}
+
 There are alternative coding methods. Dummy coding is the default in R
 and it makes since when thinking about experimental data. Note that the
 method of coding can make a difference in an ANOVA table, and many
@@ -6039,50 +6053,92 @@ ANOVA table outputs. This is both getting ahead of ourselves and
 somewhat moot, because I don't advocate publishing ANOVA tables.
 
 \subsubsection{\texorpdfstring{Some math to convince you that the
-intercept of a linear model with a categorical \(X\) is the mean of the
-reference group \emph{and} the intercept of a line. And some math to
-convince you that the coefficient of a dummy variable in a linear model
-with a categorial \(X\) is a difference in means \emph{and} a
-slope.}{Some math to convince you that the intercept of a linear model with a categorical X is the mean of the reference group and the intercept of a line. And some math to convince you that the coefficient of a dummy variable in a linear model with a categorial X is a difference in means and a slope.}}\label{some-math-to-convince-you-that-the-intercept-of-a-linear-model-with-a-categorical-x-is-the-mean-of-the-reference-group-and-the-intercept-of-a-line.-and-some-math-to-convince-you-that-the-coefficient-of-a-dummy-variable-in-a-linear-model-with-a-categorial-x-is-a-difference-in-means-and-a-slope.}
+``intercept'' of a linear model with a categorical \(X\) is the mean of
+the reference group \emph{and} the intercept of a
+line}{Some math to convince you that the intercept of a linear model with a categorical X is the mean of the reference group and the intercept of a line}}\label{some-math-to-convince-you-that-the-intercept-of-a-linear-model-with-a-categorical-x-is-the-mean-of-the-reference-group-and-the-intercept-of-a-line}
 
-The interecept of a model is the value of the model when all
-\(X\)-variables are set to zero. The \(X\) variables in the model
-(Equation \eqref{eq:model-cat-x}) are the dummy variables \(vitamin\_E\)
-and \(vitamin\_C\). If we set vitamin\_E\$ and \(vitamin\_C\) in
-Equation \eqref{eq:model-cat-x} to zero, the modeled (or expected) value
-reduces to
+The mean lifespan given a specific value of \(treatmentvitamin\_C\) and
+\(treatmentvitamin\_E\) is
 
 \begin{equation}
-\mathrm{E}(lifespan|X_1=0, X_2=0) = b_0
+\mathrm{E}[lifespan] = b_0 + b_1 treatvitamin\_C + b_2 treatvitamin\_E
+\label{eq:model-cat-x-better-parametric}
 \end{equation}
 
-\% Since both dummy variables are set to zero, we have modeled the
-expected value or mean of the control group.
-
-The slope of a model is the difference in the modeled value given a one
-unit increase in \(X\). If we increase the dummy variable \(vitamin\_E\)
-from zero to one (that is, if we are modeling the expected value of the
-vitamin E group), we get
+Recall from your ``Y = mX + b'' days that the intercept of a line is the
+value of Y when X is set to zero. This is the same for a regression
+model: the intercept of a regression model is the expected value when
+all \(X\)-variables are set to zero. Setting the two dummy variables to
+zero, model \eqref{eq:model-cat-x-better-parametric} reduces to
 
 \begin{equation}
-\mathrm{E}(lifespan|X_1=1, X_2=0) = b_0 + b_1
+\mathrm{E}[lifespan|treatmentvitamin\_C=0, treatmentvitamin\_E=0] = b_0
 \end{equation}
 
-which can be re-arranged to
+which can be read as ``the mean lifespan when treatmentvitamin\_C and
+treatmentvitaminE are both set to zero is equal to the intercept''.
+Since the rows in which both \(treatmentvitamin\_C\) and
+\(treatmentvitamin\_E\) are zero are the rows for the control group, the
+intercept of the model is the mean of the control group. Consequently,
 
 \begin{equation}
-b_1 = \mathrm{E}(lifespan|X_1=1, X_2=0) - b_0
+b_0 = \overline{lifespan}_{control}
 \end{equation}
 
-and since \(\mathrm{E}(lifespan|X_1=0, X_2=0) = b_0\) then
+\subsubsection{\texorpdfstring{Some math to convince you that the
+coefficient of a dummy variable in a linear model with a categorial
+\(X\) is a difference in means \emph{and} the slope of a
+line.}{Some math to convince you that the coefficient of a dummy variable in a linear model with a categorial X is a difference in means and the slope of a line.}}\label{some-math-to-convince-you-that-the-coefficient-of-a-dummy-variable-in-a-linear-model-with-a-categorial-x-is-a-difference-in-means-and-the-slope-of-a-line.}
+
+The slope of a line is the difference in \(Y\) given a one unit increase
+in \(X\). In model \eqref{eq:model-cat-x-better-parametric} we have two
+slopes, one for \(treatmentvitamin\_C\) and one for
+\(treatmentvitamin\_E\). If we increase \(treatmentvitamin\_C\) from
+zero to one, but keep \(treatmentvitamin\_E = 0\), model
+\eqref{eq:model-cat-x-better-parametric} reduces to
 
 \begin{equation}
-b_1 = \mathrm{E}(lifespan|X_1=1, X_2=0) - \mathrm{E}(lifespan|X_1=0, X_2=0)
+\mathrm{E}[lifespan|treatmentvitamin\_C=1, treatmentvitamin\_E=0] = b_0 + b_1
 \end{equation}
 
-or, the coefficient of vitamin C is the difference in means between the
-vitamin C and control groups, which is also a slope since this is the
-expected difference given a one unit increase in \(vitamin\_C\).
+Since the rows in which \(treatmentvitamin\_C = 1\) and
+\(treatmentvitamin\_E = 0\) are the rows for the vitamin C group,
+\(b_0 + b_1\) is the mean of the vitamin C group, or
+
+\begin{equation}
+b_0 + b_1 = \overline{lifespan}_{vitamin\_C}
+\end{equation}
+
+Solving for \(b_1\)
+
+\begin{equation}
+b_1 = \overline{lifespan}_{vitamin\_C} - b_0
+\end{equation}
+
+and since \(b_0 = \overline{lifespan}_{control}\),
+
+\begin{equation}
+b_1 = \overline{lifespan}_{vitamin\_C} - \overline{lifespan}_{control}
+\end{equation}
+
+The coefficient of \(treatmentvitamin\_C\) is a difference in means but
+a slope is a ratio of differences, \(\frac{Y_2 - Y_1}{X_2 - X_1}\). How
+can \(b_1\) be a difference \emph{and} a ratio? A more satisfactory way
+to think about \(b_1\) is to remember that we set the \(X\) variable
+\(treatmentvitamin\_C\) to one to calculate
+\(\overline{lifespan}_{vitamin\_C}\) and to zero to calculate
+\(\overline{lifespan}_{control}\), so
+
+\begin{equation}
+b_1 = \frac{\overline{lifespan}_{vitamin\_C} - \overline{lifespan}_{control}}{1-0}
+\end{equation}
+
+One more potential confusion to clarify: \(b_1\) is a difference in mean
+lifespand and has the units of \(Lifespan\), which is days. But the
+units of a regression coefficient are the units of \(Y\) divided by the
+units of \(X\). In a regression model with a categorical \(X\), the
+constructed dummy variable is \emph{unitless} and the coefficient simply
+has the units of \(Y\).
 
 \subsection{Reporting results}\label{reporting-results-1}
 

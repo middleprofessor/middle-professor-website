@@ -515,14 +515,14 @@ lifespan_i = b_0 + b_1 vitamin\_C_i + b_2 vitamin\_E_i + e_i
 <p>Given the interpretation of the estimates above, <span class="math inline">\(b_0\)</span> is the mean of the control group, <span class="math inline">\(b_1\)</span> is the difference in means between the vitamin C and control groups, and <span class="math inline">\(b_2\)</span> is the difference in means between the vitamin E and control groups. These estimates and their meaning are illustrated in Figure <a href="a-linear-model-with-a-single-categorical-x.html#fig:vole-mean-plot">9.1</a>. Take a while to memorize the bold-faced sentence above equation <a href="a-linear-model-with-a-single-categorical-x.html#eq:model-cat-x">(9.1)</a> and to understand this plot. Be able to “visualize” the meaning of the coefficients of a linear model in this way.</p>
 <div id="a-linear-model-with-a-categorical-x-is-a-regression-model-with-the-treatment-levels-re-coded-as-numbers" class="section level4">
 <h4><span class="header-section-number">9.1.2.1</span> A linear model with a categorical X is a regression model with the treatment levels re-coded as numbers</h4>
-<p>Model <a href="a-linear-model-with-a-single-categorical-x.html#eq:model-cat-x">(9.1)</a> is a regression model. A regression model requires that the <span class="math inline">\(X\)</span> variables be numeric, so how can this model be a regression model? What are the numeric values of <span class="math inline">\(vitamin\_C\)</span> and <span class="math inline">\(vitamin\_E\)</span>? The answer is very clever: <span class="math inline">\(vitamin\_C\)</span> and <span class="math inline">\(vitamin\_C\)</span> are <strong>dummy variables</strong> that contain a one, if response <span class="math inline">\(i\)</span> is from that treatment level, and zero otherwise. This is called dummy coding or treatment coding. The <code>lm</code> function creates these dummy variables under the table, in something called the <strong>model matrix</strong>, which we’ll cover in another chapter. You won’t see these columns in your data. But if you did, it would look something like this</p>
+<p>Model <a href="a-linear-model-with-a-single-categorical-x.html#eq:model-cat-x">(9.1)</a> is a regression model. A regression model requires that the <span class="math inline">\(X\)</span> variables be numeric, so how can this model be a regression model? What are the numeric values of <span class="math inline">\(vitamin\_C\)</span> and <span class="math inline">\(vitamin\_E\)</span>? The answer is very clever: <span class="math inline">\(vitamin\_C\)</span> and <span class="math inline">\(vitamin\_E\)</span> are recoded into <strong>dummy variables</strong> that contain a one, if response <span class="math inline">\(i\)</span> is from that treatment level, and zero otherwise. This is called dummy coding or treatment coding. The <code>lm</code> function creates these dummy variables under the table, in something called the <strong>model matrix</strong>, which we’ll cover in another chapter. You won’t see these columns in your data. But if you did, they would look like this</p>
 <table>
 <thead>
 <tr class="header">
 <th align="right">lifespan</th>
 <th align="left">treatment</th>
-<th align="right">vitamin_E</th>
-<th align="right">vitamin_C</th>
+<th align="right">treatmentvitamin_E</th>
+<th align="right">treatmentvitamin_C</th>
 </tr>
 </thead>
 <tbody>
@@ -564,28 +564,52 @@ lifespan_i = b_0 + b_1 vitamin\_C_i + b_2 vitamin\_E_i + e_i
 </tr>
 </tbody>
 </table>
+<p>R names the dummy variables by combining the names of the factor and the name of the level within the factor. So the <span class="math inline">\(X\)</span> variables that R creates in the model matrix for the fit linear model in model <a href="a-linear-model-with-a-single-categorical-x.html#eq:model-cat-x">(9.1)</a> are <span class="math inline">\(treatmentvitamin\_C\)</span> and <span class="math inline">\(treatmentvitamin\_E\)</span>. You can see these names as terms in the coefficient table of the fit model. Using these dummy variable names, a better way of writing out the fit model than the notation in model <a href="a-linear-model-with-a-single-categorical-x.html#eq:model-cat-x">(9.1)</a> is</p>
+<span class="math display" id="eq:model-cat-x-better">\[\begin{equation}
+lifespan_i = b_0 + b_1 treatvitamin\_C_i + b_2 treatvitamin\_E_i + e_i
+\tag{9.2}
+\end{equation}\]</span>
 <p>There are alternative coding methods. Dummy coding is the default in R and it makes since when thinking about experimental data. Note that the method of coding can make a difference in an ANOVA table, and many published papers using R have published incorrect interpretations of ANOVA table outputs. This is both getting ahead of ourselves and somewhat moot, because I don’t advocate publishing ANOVA tables.</p>
 </div>
-<div id="some-math-to-convince-you-that-the-intercept-of-a-linear-model-with-a-categorical-x-is-the-mean-of-the-reference-group-and-the-intercept-of-a-line.-and-some-math-to-convince-you-that-the-coefficient-of-a-dummy-variable-in-a-linear-model-with-a-categorial-x-is-a-difference-in-means-and-a-slope." class="section level4">
-<h4><span class="header-section-number">9.1.2.2</span> Some math to convince you that the intercept of a linear model with a categorical <span class="math inline">\(X\)</span> is the mean of the reference group <em>and</em> the intercept of a line. And some math to convince you that the coefficient of a dummy variable in a linear model with a categorial <span class="math inline">\(X\)</span> is a difference in means <em>and</em> a slope.</h4>
-<p>The interecept of a model is the value of the model when all <span class="math inline">\(X\)</span>-variables are set to zero. The <span class="math inline">\(X\)</span> variables in the model (Equation <a href="a-linear-model-with-a-single-categorical-x.html#eq:model-cat-x">(9.1)</a>) are the dummy variables <span class="math inline">\(vitamin\_E\)</span> and <span class="math inline">\(vitamin\_C\)</span>. If we set vitamin_E$ and <span class="math inline">\(vitamin\_C\)</span> in Equation <a href="a-linear-model-with-a-single-categorical-x.html#eq:model-cat-x">(9.1)</a> to zero, the modeled (or expected) value reduces to</p>
-<span class="math display">\[\begin{equation}
-\mathrm{E}(lifespan|X_1=0, X_2=0) = b_0
+<div id="some-math-to-convince-you-that-the-intercept-of-a-linear-model-with-a-categorical-x-is-the-mean-of-the-reference-group-and-the-intercept-of-a-line" class="section level4">
+<h4><span class="header-section-number">9.1.2.2</span> Some math to convince you that the “intercept” of a linear model with a categorical <span class="math inline">\(X\)</span> is the mean of the reference group <em>and</em> the intercept of a line</h4>
+<p>The mean lifespan given a specific value of <span class="math inline">\(treatmentvitamin\_C\)</span> and <span class="math inline">\(treatmentvitamin\_E\)</span> is</p>
+<span class="math display" id="eq:model-cat-x-better-parametric">\[\begin{equation}
+\mathrm{E}[lifespan] = b_0 + b_1 treatvitamin\_C + b_2 treatvitamin\_E
+\tag{9.3}
 \end{equation}\]</span>
-<p>% Since both dummy variables are set to zero, we have modeled the expected value or mean of the control group.</p>
-<p>The slope of a model is the difference in the modeled value given a one unit increase in <span class="math inline">\(X\)</span>. If we increase the dummy variable <span class="math inline">\(vitamin\_E\)</span> from zero to one (that is, if we are modeling the expected value of the vitamin E group), we get</p>
+<p>Recall from your “Y = mX + b” days that the intercept of a line is the value of Y when X is set to zero. This is the same for a regression model: the intercept of a regression model is the expected value when all <span class="math inline">\(X\)</span>-variables are set to zero. Setting the two dummy variables to zero, model <a href="a-linear-model-with-a-single-categorical-x.html#eq:model-cat-x-better-parametric">(9.3)</a> reduces to</p>
 <span class="math display">\[\begin{equation}
-\mathrm{E}(lifespan|X_1=1, X_2=0) = b_0 + b_1
+\mathrm{E}[lifespan|treatmentvitamin\_C=0, treatmentvitamin\_E=0] = b_0
 \end{equation}\]</span>
-<p>which can be re-arranged to</p>
+<p>which can be read as “the mean lifespan when treatmentvitamin_C and treatmentvitaminE are both set to zero is equal to the intercept”. Since the rows in which both <span class="math inline">\(treatmentvitamin\_C\)</span> and <span class="math inline">\(treatmentvitamin\_E\)</span> are zero are the rows for the control group, the intercept of the model is the mean of the control group. Consequently,</p>
 <span class="math display">\[\begin{equation}
-b_1 = \mathrm{E}(lifespan|X_1=1, X_2=0) - b_0
+b_0 = \overline{lifespan}_{control}
 \end{equation}\]</span>
-<p>and since <span class="math inline">\(\mathrm{E}(lifespan|X_1=0, X_2=0) = b_0\)</span> then</p>
+</div>
+<div id="some-math-to-convince-you-that-the-coefficient-of-a-dummy-variable-in-a-linear-model-with-a-categorial-x-is-a-difference-in-means-and-the-slope-of-a-line." class="section level4">
+<h4><span class="header-section-number">9.1.2.3</span> Some math to convince you that the coefficient of a dummy variable in a linear model with a categorial <span class="math inline">\(X\)</span> is a difference in means <em>and</em> the slope of a line.</h4>
+<p>The slope of a line is the difference in <span class="math inline">\(Y\)</span> given a one unit increase in <span class="math inline">\(X\)</span>. In model <a href="a-linear-model-with-a-single-categorical-x.html#eq:model-cat-x-better-parametric">(9.3)</a> we have two slopes, one for <span class="math inline">\(treatmentvitamin\_C\)</span> and one for <span class="math inline">\(treatmentvitamin\_E\)</span>. If we increase <span class="math inline">\(treatmentvitamin\_C\)</span> from zero to one, but keep <span class="math inline">\(treatmentvitamin\_E = 0\)</span>, model <a href="a-linear-model-with-a-single-categorical-x.html#eq:model-cat-x-better-parametric">(9.3)</a> reduces to</p>
 <span class="math display">\[\begin{equation}
-b_1 = \mathrm{E}(lifespan|X_1=1, X_2=0) - \mathrm{E}(lifespan|X_1=0, X_2=0)
+\mathrm{E}[lifespan|treatmentvitamin\_C=1, treatmentvitamin\_E=0] = b_0 + b_1
 \end{equation}\]</span>
-<p>or, the coefficient of vitamin C is the difference in means between the vitamin C and control groups, which is also a slope since this is the expected difference given a one unit increase in <span class="math inline">\(vitamin\_C\)</span>.</p>
+<p>Since the rows in which <span class="math inline">\(treatmentvitamin\_C = 1\)</span> and <span class="math inline">\(treatmentvitamin\_E = 0\)</span> are the rows for the vitamin C group, <span class="math inline">\(b_0 + b_1\)</span> is the mean of the vitamin C group, or</p>
+<span class="math display">\[\begin{equation}
+b_0 + b_1 = \overline{lifespan}_{vitamin\_C}
+\end{equation}\]</span>
+<p>Solving for <span class="math inline">\(b_1\)</span></p>
+<span class="math display">\[\begin{equation}
+b_1 = \overline{lifespan}_{vitamin\_C} - b_0
+\end{equation}\]</span>
+<p>and since <span class="math inline">\(b_0 = \overline{lifespan}_{control}\)</span>,</p>
+<span class="math display">\[\begin{equation}
+b_1 = \overline{lifespan}_{vitamin\_C} - \overline{lifespan}_{control}
+\end{equation}\]</span>
+<p>The coefficient of <span class="math inline">\(treatmentvitamin\_C\)</span> is a difference in means but a slope is a ratio of differences, <span class="math inline">\(\frac{Y_2 - Y_1}{X_2 - X_1}\)</span>. How can <span class="math inline">\(b_1\)</span> be a difference <em>and</em> a ratio? A more satisfactory way to think about <span class="math inline">\(b_1\)</span> is to remember that we set the <span class="math inline">\(X\)</span> variable <span class="math inline">\(treatmentvitamin\_C\)</span> to one to calculate <span class="math inline">\(\overline{lifespan}_{vitamin\_C}\)</span> and to zero to calculate <span class="math inline">\(\overline{lifespan}_{control}\)</span>, so</p>
+<span class="math display">\[\begin{equation}
+b_1 = \frac{\overline{lifespan}_{vitamin\_C} - \overline{lifespan}_{control}}{1-0}
+\end{equation}\]</span>
+<p>One more potential confusion to clarify: <span class="math inline">\(b_1\)</span> is a difference in mean lifespand and has the units of <span class="math inline">\(Lifespan\)</span>, which is days. But the units of a regression coefficient are the units of <span class="math inline">\(Y\)</span> divided by the units of <span class="math inline">\(X\)</span>. In a regression model with a categorical <span class="math inline">\(X\)</span>, the constructed dummy variable is <em>unitless</em> and the coefficient simply has the units of <span class="math inline">\(Y\)</span>.</p>
 </div>
 </div>
 <div id="reporting-results-1" class="section level3">
@@ -630,9 +654,9 @@ Figure 9.2: HarrellPlot of the raw data, distribution, and effects of the vole l
 <p>First, let’s review <em>t</em>-values, which were introduced in Chapter 5 on <em>p</em>-values. A reminder, a <em>t</em>-value is a ratio of signal to noise, where the signal is an estimate of some parameter and the noise is the standard error of the estimate. The parameter of interest here is the difference in means between treatment and control, so <em>t</em> is</p>
 <span class="math display" id="eq:lm-t-value">\[\begin{equation}
 t = \frac{\bar{y}_t - \bar{y}_c}{s_{\bar{y}_t - \bar{y}_c}}
-\tag{9.2}
+\tag{9.4}
 \end{equation}\]</span>
-<p>Note that the numerator and denominator in equation <a href="a-linear-model-with-a-single-categorical-x.html#eq:lm-t-value">(9.2)</a> are in the coefficient table of a linear model with categorical <span class="math inline">\(X\)</span> – the numerator is the estimate of the effect of a treatment and the denominator is the standard error of this estimate.</p>
+<p>Note that the numerator and denominator in equation <a href="a-linear-model-with-a-single-categorical-x.html#eq:lm-t-value">(9.4)</a> are in the coefficient table of a linear model with categorical <span class="math inline">\(X\)</span> – the numerator is the estimate of the effect of a treatment and the denominator is the standard error of this estimate.</p>
 <p>To explore these equalities, let’s use data from</p>
 <p><strong>article</strong> Bak, A.M., Vendelbo, M.H., Christensen, B., Viggers, R., Bibby, B.M., Rungby, J., Jørgensen, J.O.L., Møller, N. and Jessen, N., 2018. Prolonged fasting-induced metabolic signatures in human skeletal muscle of lean and obese men. PloS one, 13(9), p.e0200817.</p>
 <p><strong>data source</strong> <a href="https://datadryad.org/stash/dataset/doi:10.5061/dryad.6121hj7" class="uri">https://datadryad.org/stash/dataset/doi:10.5061/dryad.6121hj7</a></p>
