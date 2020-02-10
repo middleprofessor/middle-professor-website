@@ -4,21 +4,21 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Chapter 18 Linear mixed models | Elementary Statistical Modeling for Applied Biostatistics</title>
-  <meta name="description" content="A first course in statistical modeling for biology students" />
+  <title>Chapter 18 Linear mixed models | Elements of Statistical Modeling for Experimental Biology</title>
+  <meta name="description" content="A first course in statistical modeling for experimental biology researchers" />
   <meta name="generator" content="bookdown 0.14 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Chapter 18 Linear mixed models | Elementary Statistical Modeling for Applied Biostatistics" />
+  <meta property="og:title" content="Chapter 18 Linear mixed models | Elements of Statistical Modeling for Experimental Biology" />
   <meta property="og:type" content="book" />
   
   
-  <meta property="og:description" content="A first course in statistical modeling for biology students" />
+  <meta property="og:description" content="A first course in statistical modeling for experimental biology researchers" />
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Chapter 18 Linear mixed models | Elementary Statistical Modeling for Applied Biostatistics" />
+  <meta name="twitter:title" content="Chapter 18 Linear mixed models | Elements of Statistical Modeling for Experimental Biology" />
   
-  <meta name="twitter:description" content="A first course in statistical modeling for biology students" />
+  <meta name="twitter:description" content="A first course in statistical modeling for experimental biology researchers" />
   
 
 <meta name="author" content="Copyright 2018 Jeffrey A. Walker" />
@@ -429,7 +429,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
       <div class="body-inner">
         <div class="book-header" role="navigation">
           <h1>
-            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Elementary Statistical Modeling for Applied Biostatistics</a>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Elements of Statistical Modeling for Experimental Biology</a>
           </h1>
         </div>
 
@@ -443,12 +443,12 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <h2><span class="header-section-number">18.1</span> Random effects</h2>
 <p>Researchers often collect data in batches, for example</p>
 <ol style="list-style-type: decimal">
-<li>An ecologist interested in the effects of insectivorous birds on tree seedling performance in a forest stake out ten 1 m<span class="math inline">\(^2\)</span> plots and use a wire-mesh cage to cover half of each plot.<a href="#fn4" class="footnoteRef" id="fnref4"><sup>4</sup></a> The cage allows insect herbivores into the seedlings inside but excludes insectivorous birds that eat the insects from the seedlings. In every plot, five seedlings are planted within the exclosure and five outside of the exclosure. At the end of the experiment, the total leaf mass is measured on each seedling. Small, uncontrolled, environmental factors (including soil factors and density of insectivorous birds) will differ between plots but will be common to all seedlings within a plot and we would expect a common response to this uncontrolled variation on top of the differential response to each treatment. As a consequence, the ten measures of leaf mass within a plot are not independent.</li>
+<li>An ecologist interested in the effects of insectivorous birds on tree seedling performance in a forest stake out ten 1 m<span class="math inline">\(^2\)</span> plots and use a wire-mesh cage to cover half of each plot.<a href="#fn5" class="footnoteRef" id="fnref5"><sup>5</sup></a> The cage allows insect herbivores into the seedlings inside but excludes insectivorous birds that eat the insects from the seedlings. In every plot, five seedlings are planted within the exclosure and five outside of the exclosure. At the end of the experiment, the total leaf mass is measured on each seedling. Small, uncontrolled, environmental factors (including soil factors and density of insectivorous birds) will differ between plots but will be common to all seedlings within a plot and we would expect a common response to this uncontrolled variation on top of the differential response to each treatment. As a consequence, the ten measures of leaf mass within a plot are not independent.</li>
 <li>A nutrition researcher wants to compare the effect of glucose vs. fructose on glucose metabolism in humans. Ten individuals are recruited. Each individual has blood insulin measured 60 minutes after a noon meal over six successive days. The meal alternates between high glucose and high fructose on each day. Each individual has three measures under high glucose treatment and three measures under high fructose treatment. Small, uncontrolled, environmental factors (including metabolic variation, other meals, activity levels) will differ between the individuals but be common within an individual and we would expect a common response to this uncontrolled variation on top of the differential response to each treatment. As a consequence, the six measures of insulin within an individual are not independent.</li>
 <li>An ecologist wants to measure the effect of an invasive plant on the reproduction of a native plant. They stake-out ten, 2 m<span class="math inline">\(^2\)</span> plots in a forest and divide each plot into four quadrants, with each quadrant assigned a different treatment: control, activated carbon (a procedural control), extract from the invasive plant’s leaves, and both activated carbon and extract from the invasive plant’s leaves. The response is seedling count. Small, uncontrolled, environmental factors (including soil, drainage, and light) will differ between plots but will be common to all four quadrants within a plot and we would expect a common response to this uncontrolled variation on top of the differential response to each treatment. As a consequence, the four sets of counts within a plot are not independent.</li>
 <li>A physiologist has skeletal muscle cells growing in 5 control cultures, and 5 treated cultures. The <span class="math inline">\(Y\)</span> variable is cell diameter, which is measured in 10 cells per culture. Small, uncontrolled, environmental factors (including chemical) will differ between cultures but will be common to all cells within a culture and we would expect a common response to this uncontrolled variation on top of the differential response to each treatment. As a consequence, the ten measures of diameter within a culture are not independent.</li>
 <li>A behavioral biologist wants to measure the effect of a predator fish on the preferred feeding location (open water or vegetation) of a prey fish. Ten tanks are set up with equal amounts of vegetated and unvegetated area. One-third of each tank is screened off to house a predator fish, which are added to five of the tanks. Ten prey fish are added to each tank. The response is minutes spent foraging in the open water as a fraction of total time foraging, which is measured in each fish in each tank. Small, uncontrolled, environmental factors (including temperature, water chemistry, light, and fish behavior) will differ between the tanks but be common within tanks and we would expect a common response to this uncontrolled variation on top of the differential response to each treatment. As a consequence, the ten measures of foraging of each fish within a tank are not independent.</li>
-<li>A microbiologist wants to measure the effect of the microbiome on autism-spectrum-disorder(ASD)-like behavior in mice<a href="#fn5" class="footnoteRef" id="fnref5"><sup>5</sup></a>. Intestinal microbobial communities from five humans with ASD and five humans without ASD are transferred to germ-free mice via fecal transplant. Each human donor is used to colonize three mice. The response is time socializing in a direct social interaction. Uncontrolled features of each microbial community (species composition and proportions) will differ among human donors but will be the same within human donors and we would expect a common response to this uncontrolled variation in addition to any differential response to ASD-associated microbiota. As a consequence, the measures of behavior in the three mice within a donor group are not independent.</li>
+<li>A microbiologist wants to measure the effect of the microbiome on autism-spectrum-disorder(ASD)-like behavior in mice<a href="#fn6" class="footnoteRef" id="fnref6"><sup>6</sup></a>. Intestinal microbobial communities from five humans with ASD and five humans without ASD are transferred to germ-free mice via fecal transplant. Each human donor is used to colonize three mice. The response is time socializing in a direct social interaction. Uncontrolled features of each microbial community (species composition and proportions) will differ among human donors but will be the same within human donors and we would expect a common response to this uncontrolled variation in addition to any differential response to ASD-associated microbiota. As a consequence, the measures of behavior in the three mice within a donor group are not independent.</li>
 </ol>
 <p>The batches – plots in experiment 1, individuals in experiment 2, plots in experiment 3, cultures in experiment 4, tanks in experiment 5, and mice in experiment 6 – are the experimental units, meaning that it is at this level that the experimenter is controlling the conditions. In each of these studies, there is systematic variation at two levels: among treatments due to treatment effects and among batches due to <strong>batch effects</strong>. This among-batch variation is the <strong>random effect</strong>. An assumption of modeling random effects is that the batches (plots/individuals/cultures/tanks/donor) are a random sample of the batches that could have been sampled. This is often not strictly true as batches are often <strong>convenience samples</strong>.</p>
 <p>The multiple measures within a batch are <strong>subsamples</strong> but are often called <strong>repeated measures</strong> if the batch is an individual (experiment 2 is an example). If multiple measures within a treatment level within a batch (that is, within a <span class="math inline">\(batch \times treatment\)</span> combination) are taken over time, the data are <strong>longitudinal</strong>. Not infrequently, subsamples within a treatment within a batch are called “replicates”, but this can be confusing because the treatments are replicated at the level of the batch and not at the level of the subsamples within a treatment by batch combination. The batches are the independent experimental units. The subsamples within a batch are not replicates.</p>
@@ -819,7 +819,7 @@ TreatmentTr
 <ol style="list-style-type: decimal">
 <li>a linear model fit to all data, ignoring blocks (violating the independence assumption)</li>
 <li>a linear model fit to the treatment means of the blocks (valid, but throwing out data)</li>
-<li>a linear mixed model that models the random intercept<a href="#fn6" class="footnoteRef" id="fnref6"><sup>6</sup></a>.</li>
+<li>a linear mixed model that models the random intercept<a href="#fn7" class="footnoteRef" id="fnref7"><sup>7</sup></a>.</li>
 </ol>
 <p>From each fit, I saved the 95% confidence interval of the treatment effect and the <em>p</em>-value. The median width of the confidence interval and the power, which is the relative frequency of <em>p</em>-values less than 0.05. The simulation was re-run using the same parameters except setting the treatment effect (<span class="math inline">\(\beta_1\)</span>) to 0. In this new simulation, the relative frequency of <em>p</em>-values less than 0.05 is the Type I error.</p>
 <table>
@@ -1525,10 +1525,10 @@ fit.emm &lt;-<span class="st"> </span><span class="kw">emmeans</span>(m1, <span 
 </div>
 <div class="footnotes">
 <hr />
-<ol start="4">
-<li id="fn4"><p>Giffard, B., Corcket, E., Barbaro, L., &amp; Jactel, H. (2012). Bird predation enhances tree seedling resistance to insect herbivores in contrasting forest habitats. Oecologia, 168(2), 415-424<a href="linear-mixed-models.html#fnref4">↩</a></p></li>
-<li id="fn5"><p>Sharon, G., Cruz, N.J., Kang, D.W., Gandal, M.J., Wang, B., Kim, Y.M., Zink, E.M., Casey, C.P., Taylor, B.C., Lane, C.J. and Bramer, L.M., 2019. Human Gut Microbiota from Autism Spectrum Disorder Promote Behavioral Symptoms in Mice. Cell, 177(6), pp.1600-1618.<a href="linear-mixed-models.html#fnref5">↩</a></p></li>
-<li id="fn6"><p>a random slope is not modeled because many of the models specifying a random slope fail to converge, which is expected given the relatively small variance of the random slope<a href="linear-mixed-models.html#fnref6">↩</a></p></li>
+<ol start="5">
+<li id="fn5"><p>Giffard, B., Corcket, E., Barbaro, L., &amp; Jactel, H. (2012). Bird predation enhances tree seedling resistance to insect herbivores in contrasting forest habitats. Oecologia, 168(2), 415-424<a href="linear-mixed-models.html#fnref5">↩</a></p></li>
+<li id="fn6"><p>Sharon, G., Cruz, N.J., Kang, D.W., Gandal, M.J., Wang, B., Kim, Y.M., Zink, E.M., Casey, C.P., Taylor, B.C., Lane, C.J. and Bramer, L.M., 2019. Human Gut Microbiota from Autism Spectrum Disorder Promote Behavioral Symptoms in Mice. Cell, 177(6), pp.1600-1618.<a href="linear-mixed-models.html#fnref6">↩</a></p></li>
+<li id="fn7"><p>a random slope is not modeled because many of the models specifying a random slope fail to converge, which is expected given the relatively small variance of the random slope<a href="linear-mixed-models.html#fnref7">↩</a></p></li>
 </ol>
 </div>
             </section>
