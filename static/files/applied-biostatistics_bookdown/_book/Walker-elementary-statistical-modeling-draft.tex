@@ -5415,13 +5415,13 @@ R Studio Notebooks have advantages and disadvantages. If I use R Markdown to ana
 
 If I create my report using an R Studio Notebook and knit to a .nb.html file, then the colleague can see both with a single file! If they only want to read the text and see the pretty images and tables, they can just open the .nb.html file in a browser. But if they want to see the code that did everything, they can open the file in R Studio. Awesome!
 
-An R Studio Notebook is the preferred tool for a student in a class. The student can send the professor the .nb.html file and the professor can recover the full R Markdown document if needed.
+An R Studio Notebook is the good tool for a student in a class. The student can send the professor the .nb.html file and the professor can recover the full R Markdown document if needed.
 
 When would I not use R Studio Notebooks? One example is teaching. If I create an assignment where students have to import data, wrangle the data, analyze the data, and create a plot and table, I might give them an .html file with the target image and table\ldots can they reproduce this? I'd create the assignment as an R Markdown document and include code chunks that do everything -- import, wrangle, analyze, plot, table. For the output html, I'd hide the chunks that do all this. If compiled from a R Markdown document, a student could not recover the hidden code. But if compiled from a R Studio notebook document, the student could simply open the .nb.html file in R Studio and recover the original R Markdown document! Don't do this!
 
 Some other differences between R Markdown and R Notebook
 
-The preview (.nb.html) file for a R Notebook is made and updated in real time and includes whatever has been run in the R Notebook document. If a chunk that creates a plot has not been run, the preview file will not show the plot. If a chunk returns messages or warnings, the html preview will show these messages or warnings. This can create a very messy html document to give to a colleague or professor. To hide the messages and warnings, the chunk options ``message=FALSE'' or ``warning=FALSE'' have to be added to each chunk with a message or warning and then the chunk has to be re-run. Now the preview file is clean.
+The preview (.nb.html) file for a R Notebook is made and updated when the notebook file is saves and includes whatever has been run in the R Notebook document. If a chunk that creates a plot has not been run, the preview file will not show the plot. If a chunk returns messages or warnings, the html preview will show these messages or warnings. This can create a very messy html document to give to a colleague or professor. To hide the messages and warnings, the chunk options ``message=FALSE'' or ``warning=FALSE'' have to be added to each chunk with a message or warning and then the chunk has to be re-run. Now the preview file is clean.
 
 This behavior is very different from knitting a R Markdown file. When knit, all chunks are run so if a chunk creating a plot was not manually run, the chunk will be run during the knit and the plot will show in the output. Since knitting runs all chunks, a user can create global behavior such as inserting \texttt{knitr::opts\_chunk\$set(message\ =\ FALSE)} into the setup chunk. Now a chunk that returns a message when run interactively will not show the message in the knit output. But if I insert this into the setup chunk of an R Notebook document, it will have no effect on the preview because the preview is not a knit file from a clean run of all chunks but a knit file of what the user has done. I sometimes want to see messages and especially warnings when I interact with my chunks but I almost never want these messages in my output. This is easier to do with R Markdown instead of R Notebook because of this ability to set global options.
 
@@ -5516,9 +5516,9 @@ Once these are installed, you don't need to do this again. You simply need to us
   \def\labelenumii{\arabic{enumii}.}
   \tightlist
   \item
-    ``notebooks'' -- this is where your R notebooks are stored
+    ``Rmd'' -- this is where your R markdown files are stored
   \item
-    ``R'' -- this is where additional R scripts are stored
+    ``R'' -- this is where additional R script files are stored
   \item
     ``data'' -- this is where data that we download from public archives are stored
   \item
@@ -5536,46 +5536,58 @@ Once these are installed, you don't need to do this again. You simply need to us
   Check that a ``.Rproj'' file is in your project folder
 \end{enumerate}
 
-\hypertarget{create-an-r-notebook-for-this-chapter}{%
-\subsection{Create an R Notebook for this Chapter}\label{create-an-r-notebook-for-this-chapter}}
+\hypertarget{create-an-r-markdown-file-for-this-chapter}{%
+\subsection{Create an R Markdown file for this Chapter}\label{create-an-r-markdown-file-for-this-chapter}}
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
 \tightlist
 \item
-  The top-left icon in R Studio is a little plus sign within a green circle. Click this and choose ``R Notebook'' from the pull-down menu.
+  The top-left icon in R Studio is a little plus sign within a green circle. Click this and choose ``R Markdown'' from the pull-down menu.
 \item
-  Change the title of the notebook to something meaningful like ``Chapter 1 -- Organization''
+  Give the file a meaningful title like ``Chapter 1 -- Organization''
 \item
-  Delete the default R Markdown text starting with ``This is an {[}R Markdown{]}\ldots{}''
+  Delete all text below the first code chunk, starting with the header ``\#\# R Markdown''
 \end{enumerate}
 
-Now write some text documenting which packages you installed.
+\hypertarget{modify-the-yaml-header}{%
+\subsubsection{Modify the yaml header}\label{modify-the-yaml-header}}
 
-\hypertarget{create-a-setup-chunk}{%
-\subsubsection{Create a ``setup'' chunk}\label{create-a-setup-chunk}}
+Replace ``output: html\_document'' in the yaml header with the following
 
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\tightlist
-\item
-  Click on the ``Insert'' menu on the right hand side of the script (R Markdown) pane and choose ``R''. This will insert an R code chunk into your R markdown document.
-\item
-  The first R chunk of a notebook should be a setup chunk. Name the chunk ``setup''
-\item
-  load the packages ggplot2 and data.table and click the chunk's run button (the green triangle to the right of the chunk)
-\end{enumerate}
+\begin{verbatim}
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    code_folding: hide
+\end{verbatim}
+
+\hypertarget{modify-the-setup-chunk}{%
+\subsubsection{Modify the ``setup'' chunk}\label{modify-the-setup-chunk}}
+
+The setup chunk should look something like this
 
 \begin{Shaded}
 \begin{Highlighting}[]
+\NormalTok{knitr}\OperatorTok{::}\NormalTok{opts_chunk}\OperatorTok{$}\KeywordTok{set}\NormalTok{(}\DataTypeTok{echo =} \OtherTok{TRUE}\NormalTok{)}
+
+\CommentTok{# wrangling packages}
+\KeywordTok{library}\NormalTok{(here)}
+\KeywordTok{library}\NormalTok{(janitor)}
+\KeywordTok{library}\NormalTok{(readxl)}
 \KeywordTok{library}\NormalTok{(data.table)}
-\KeywordTok{library}\NormalTok{(ggplot2)}
+
+\CommentTok{# graphing packages}
+\KeywordTok{library}\NormalTok{(ggsci)}
 \KeywordTok{library}\NormalTok{(ggpubr)}
+\KeywordTok{library}\NormalTok{(ggforce)}
 \KeywordTok{library}\NormalTok{(cowplot)}
+
+\NormalTok{here <-}\StringTok{ }\NormalTok{here}\OperatorTok{::}\KeywordTok{here}\NormalTok{()}
+\NormalTok{data_path <-}\StringTok{ "data"}
 \end{Highlighting}
 \end{Shaded}
-
-Everything in between the initial ``\texttt{"\ and\ second\ "}'' is a \textbf{code chunk}.
 
 \hypertarget{create-a-fake-data-chunk}{%
 \subsection{Create a ``fake-data'' chunk}\label{create-a-fake-data-chunk}}

@@ -198,7 +198,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="2.2" data-path="organization-r-projects-and-r-notebooks.html"><a href="organization-r-projects-and-r-notebooks.html#r-notebook-vs.-r-markdown"><i class="fa fa-check"></i><b>2.2</b> R Notebook vs. R Markdown</a></li>
 <li class="chapter" data-level="2.3" data-path="organization-r-projects-and-r-notebooks.html"><a href="organization-r-projects-and-r-notebooks.html#importing-packages"><i class="fa fa-check"></i><b>2.3</b> Importing Packages</a></li>
 <li class="chapter" data-level="2.4" data-path="organization-r-projects-and-r-notebooks.html"><a href="organization-r-projects-and-r-notebooks.html#create-an-r-studio-project-for-this-textbook"><i class="fa fa-check"></i><b>2.4</b> Create an R Studio Project for this textbook</a><ul>
-<li class="chapter" data-level="2.4.1" data-path="organization-r-projects-and-r-notebooks.html"><a href="organization-r-projects-and-r-notebooks.html#create-an-r-notebook-for-this-chapter"><i class="fa fa-check"></i><b>2.4.1</b> Create an R Notebook for this Chapter</a></li>
+<li class="chapter" data-level="2.4.1" data-path="organization-r-projects-and-r-notebooks.html"><a href="organization-r-projects-and-r-notebooks.html#create-an-r-markdown-file-for-this-chapter"><i class="fa fa-check"></i><b>2.4.1</b> Create an R Markdown file for this Chapter</a></li>
 <li class="chapter" data-level="2.4.2" data-path="organization-r-projects-and-r-notebooks.html"><a href="organization-r-projects-and-r-notebooks.html#create-a-fake-data-chunk"><i class="fa fa-check"></i><b>2.4.2</b> Create a “fake-data” chunk</a></li>
 <li class="chapter" data-level="2.4.3" data-path="organization-r-projects-and-r-notebooks.html"><a href="organization-r-projects-and-r-notebooks.html#create-a-plot-chunk"><i class="fa fa-check"></i><b>2.4.3</b> Create a “plot” chunk</a></li>
 <li class="chapter" data-level="2.4.4" data-path="organization-r-projects-and-r-notebooks.html"><a href="organization-r-projects-and-r-notebooks.html#knit"><i class="fa fa-check"></i><b>2.4.4</b> Knit</a></li>
@@ -543,25 +543,25 @@ y_i &amp;\sim N(\mu_i, \sigma^2)\\
 <h3><span class="header-section-number">6.1.3</span> Comparing the two ways of specifying the linear model</h3>
 <p>These two ways of specifying the model encourage slightly different ways of thinking about how the data (the response varible <span class="math inline">\(Y\)</span>) were generated. The error-draw specification “generates” data by 1) constructing what <span class="math inline">\(y_i\)</span> “should be” given <span class="math inline">\(x_i\)</span> (this is the conditional expection), then 2) adding some error <span class="math inline">\(e_i\)</span> drawn from a normal distribution with mean zero and some specified variance. The conditional-draw specification “generates” data by 1) constructing what <span class="math inline">\(y_i\)</span> “should be” given <span class="math inline">\(x_i\)</span>, then 2) drawing a random variable from some specified distribution <em>whose mean is this expectation</em>. This random draw is not “error” but the measured value <span class="math inline">\(y_i\)</span>. For the error draw generation, we need only one hat of random numbers, but for the conditional draw generation, we need a hat for each value of <span class="math inline">\(x_i\)</span>.</p>
 <p>Here is a short script that generates data by implementing both the error-draw and condition-draw specifications.</p>
-<div class="sourceCode" id="cb210"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb210-1"><a href="an-introduction-to-statistical-modeling.html#cb210-1"></a>n &lt;-<span class="st"> </span><span class="dv">5</span></span>
-<span id="cb210-2"><a href="an-introduction-to-statistical-modeling.html#cb210-2"></a>b_<span class="dv">0</span> &lt;-<span class="st"> </span><span class="fl">10.0</span></span>
-<span id="cb210-3"><a href="an-introduction-to-statistical-modeling.html#cb210-3"></a>b_<span class="dv">1</span> &lt;-<span class="st"> </span><span class="fl">1.2</span></span>
-<span id="cb210-4"><a href="an-introduction-to-statistical-modeling.html#cb210-4"></a>sigma &lt;-<span class="st"> </span><span class="fl">0.4</span></span>
-<span id="cb210-5"><a href="an-introduction-to-statistical-modeling.html#cb210-5"></a>x &lt;-<span class="st"> </span><span class="dv">1</span><span class="op">:</span>n</span>
-<span id="cb210-6"><a href="an-introduction-to-statistical-modeling.html#cb210-6"></a>y_expected &lt;-<span class="st"> </span>b_<span class="dv">0</span> <span class="op">+</span><span class="st"> </span>b_<span class="dv">1</span><span class="op">*</span>x</span>
-<span id="cb210-7"><a href="an-introduction-to-statistical-modeling.html#cb210-7"></a></span>
-<span id="cb210-8"><a href="an-introduction-to-statistical-modeling.html#cb210-8"></a><span class="co"># error-draw. Note that the n draws are all from the same distribution</span></span>
-<span id="cb210-9"><a href="an-introduction-to-statistical-modeling.html#cb210-9"></a><span class="kw">set.seed</span>(<span class="dv">1</span>)</span>
-<span id="cb210-10"><a href="an-introduction-to-statistical-modeling.html#cb210-10"></a>y_error_draw &lt;-<span class="st"> </span>y_expected <span class="op">+</span><span class="st"> </span><span class="kw">rnorm</span>(n, <span class="dt">mean =</span> <span class="dv">0</span>, <span class="dt">sd =</span> sigma)</span>
-<span id="cb210-11"><a href="an-introduction-to-statistical-modeling.html#cb210-11"></a></span>
-<span id="cb210-12"><a href="an-introduction-to-statistical-modeling.html#cb210-12"></a><span class="co"># conditional-draw. Note that the n draws are each from a different</span></span>
-<span id="cb210-13"><a href="an-introduction-to-statistical-modeling.html#cb210-13"></a><span class="co"># distribution because each has a different mean.</span></span>
-<span id="cb210-14"><a href="an-introduction-to-statistical-modeling.html#cb210-14"></a><span class="kw">set.seed</span>(<span class="dv">1</span>)</span>
-<span id="cb210-15"><a href="an-introduction-to-statistical-modeling.html#cb210-15"></a>y_conditional_draw &lt;-<span class="st"> </span><span class="kw">rnorm</span>(n, <span class="dt">mean =</span> y_expected, <span class="dt">sd =</span> sigma)</span>
-<span id="cb210-16"><a href="an-introduction-to-statistical-modeling.html#cb210-16"></a></span>
-<span id="cb210-17"><a href="an-introduction-to-statistical-modeling.html#cb210-17"></a><span class="kw">data.table</span>(<span class="dt">X =</span> x,</span>
-<span id="cb210-18"><a href="an-introduction-to-statistical-modeling.html#cb210-18"></a>           <span class="st">&quot;Y (error draw)&quot;</span> =<span class="st"> </span>y_error_draw,</span>
-<span id="cb210-19"><a href="an-introduction-to-statistical-modeling.html#cb210-19"></a>           <span class="st">&quot;Y (conditional draw)&quot;</span> =<span class="st"> </span>y_conditional_draw)</span></code></pre></div>
+<div class="sourceCode" id="cb211"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb211-1"><a href="an-introduction-to-statistical-modeling.html#cb211-1"></a>n &lt;-<span class="st"> </span><span class="dv">5</span></span>
+<span id="cb211-2"><a href="an-introduction-to-statistical-modeling.html#cb211-2"></a>b_<span class="dv">0</span> &lt;-<span class="st"> </span><span class="fl">10.0</span></span>
+<span id="cb211-3"><a href="an-introduction-to-statistical-modeling.html#cb211-3"></a>b_<span class="dv">1</span> &lt;-<span class="st"> </span><span class="fl">1.2</span></span>
+<span id="cb211-4"><a href="an-introduction-to-statistical-modeling.html#cb211-4"></a>sigma &lt;-<span class="st"> </span><span class="fl">0.4</span></span>
+<span id="cb211-5"><a href="an-introduction-to-statistical-modeling.html#cb211-5"></a>x &lt;-<span class="st"> </span><span class="dv">1</span><span class="op">:</span>n</span>
+<span id="cb211-6"><a href="an-introduction-to-statistical-modeling.html#cb211-6"></a>y_expected &lt;-<span class="st"> </span>b_<span class="dv">0</span> <span class="op">+</span><span class="st"> </span>b_<span class="dv">1</span><span class="op">*</span>x</span>
+<span id="cb211-7"><a href="an-introduction-to-statistical-modeling.html#cb211-7"></a></span>
+<span id="cb211-8"><a href="an-introduction-to-statistical-modeling.html#cb211-8"></a><span class="co"># error-draw. Note that the n draws are all from the same distribution</span></span>
+<span id="cb211-9"><a href="an-introduction-to-statistical-modeling.html#cb211-9"></a><span class="kw">set.seed</span>(<span class="dv">1</span>)</span>
+<span id="cb211-10"><a href="an-introduction-to-statistical-modeling.html#cb211-10"></a>y_error_draw &lt;-<span class="st"> </span>y_expected <span class="op">+</span><span class="st"> </span><span class="kw">rnorm</span>(n, <span class="dt">mean =</span> <span class="dv">0</span>, <span class="dt">sd =</span> sigma)</span>
+<span id="cb211-11"><a href="an-introduction-to-statistical-modeling.html#cb211-11"></a></span>
+<span id="cb211-12"><a href="an-introduction-to-statistical-modeling.html#cb211-12"></a><span class="co"># conditional-draw. Note that the n draws are each from a different</span></span>
+<span id="cb211-13"><a href="an-introduction-to-statistical-modeling.html#cb211-13"></a><span class="co"># distribution because each has a different mean.</span></span>
+<span id="cb211-14"><a href="an-introduction-to-statistical-modeling.html#cb211-14"></a><span class="kw">set.seed</span>(<span class="dv">1</span>)</span>
+<span id="cb211-15"><a href="an-introduction-to-statistical-modeling.html#cb211-15"></a>y_conditional_draw &lt;-<span class="st"> </span><span class="kw">rnorm</span>(n, <span class="dt">mean =</span> y_expected, <span class="dt">sd =</span> sigma)</span>
+<span id="cb211-16"><a href="an-introduction-to-statistical-modeling.html#cb211-16"></a></span>
+<span id="cb211-17"><a href="an-introduction-to-statistical-modeling.html#cb211-17"></a><span class="kw">data.table</span>(<span class="dt">X =</span> x,</span>
+<span id="cb211-18"><a href="an-introduction-to-statistical-modeling.html#cb211-18"></a>           <span class="st">&quot;Y (error draw)&quot;</span> =<span class="st"> </span>y_error_draw,</span>
+<span id="cb211-19"><a href="an-introduction-to-statistical-modeling.html#cb211-19"></a>           <span class="st">&quot;Y (conditional draw)&quot;</span> =<span class="st"> </span>y_conditional_draw)</span></code></pre></div>
 <pre><code>##    X Y (error draw) Y (conditional draw)
 ## 1: 1       10.94942             10.94942
 ## 2: 2       12.47346             12.47346
