@@ -124,7 +124,7 @@
   \postauthor{\par}
       \predate{\centering\large\emph}
   \postdate{\par}
-    \date{Draft: 2020-09-02}
+    \date{Draft: 2020-09-04}
 
 \usepackage{booktabs}
 \usepackage{amsthm}
@@ -5675,9 +5675,9 @@ Add the code option \texttt{echo\ =\ FALSE} to each chunk and re-knit to html, p
 \hypertarget{data-reading-wrangling-and-writing}{%
 \chapter{Data -- Reading, Wrangling, and Writing}\label{data-reading-wrangling-and-writing}}
 
-Importing data into R can be a struggle for new R users and, unfortunately, most online ``how to import'' sources give easy but superficial methods that don't follow best practices for increasing reproducibility or do not allow flexible organization of files within a project. Go straight to (Working in R){[}data-working-in-r{]} if you just want to learn the method used to import files in this text and don't care about important background information.
+Importing data into R can be a struggle for new R users and, unfortunately, most online ``how to import'' sources give easy but superficial methods that don't follow best practices for increasing reproducibility or do not allow flexible organization of files within a project.
 
-Some examples:
+(TL;DR -- use \texttt{here()} from the here package)
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
@@ -5720,7 +5720,7 @@ For this to work, the chunk has to be named ``setup'', that is, the text inside 
 \setcounter{enumi}{2}
 \tightlist
 \item
-  Use the function here(). The most robust solution seems to be using the function here() from the here package. The function works something like this
+  Use the function \texttt{here()}. The most robust solution seems to be using the function \texttt{here()} from the here package. The function works something like this
 \end{enumerate}
 
 \begin{Shaded}
@@ -5737,19 +5737,25 @@ For this to work, the chunk has to be named ``setup'', that is, the text inside 
 \hypertarget{learning-from-this-chapter}{%
 \section{Learning from this chapter}\label{learning-from-this-chapter}}
 
-It will be easiest to learn from this chapter by starting with a clean notebook for the chapter. Create a new notebook and save it to the ``notebooks'' folder of your ``applied biostats'' project. \textbf{Important:} import/export scripts will not work properly until the file is saved! Get in the habit of creating the file, saving it immediately, and saving it often.
+It will be easiest to learn from this chapter by starting with a clean R Markdown file for the chapter. Create a new R Markdown file and save it to the ``Rmd'' folder of your ``applied biostats'' project.
+
+\textbf{Important:} import/export scripts will not work properly until the file is saved! Get in the habit of creating the file, saving it immediately, and saving it often.
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
 \tightlist
 \item
-  Delete everything after the YAML header (this is the section at the top bounded by the ``---''.
+  Keep the first chunk that includes the script \texttt{knitr::opts\_chunk\$set(echo\ =\ TRUE)}
 \item
-  Create a setup chunk that loads packages and creates variables for the locations of reading, writing, and image folders.
+  Delete all text below this chunk, starting with the header ``\#\# R Markdown''
+\item
+  Copy and paste this chunk into your setup chunk
 \end{enumerate}
 
 \begin{Shaded}
 \begin{Highlighting}[]
+\NormalTok{knitr}\OperatorTok{::}\NormalTok{opts_chunk}\OperatorTok{$}\KeywordTok{set}\NormalTok{(}\DataTypeTok{echo =} \OtherTok{TRUE}\NormalTok{)}
+
 \CommentTok{# import and wrangling packages}
 \KeywordTok{library}\NormalTok{(here) }\CommentTok{# here() creates the absolute path to the file}
 \KeywordTok{library}\NormalTok{(janitor) }\CommentTok{# clean_names to clean col labels of imported data}
@@ -5763,7 +5769,7 @@ It will be easiest to learn from this chapter by starting with a clean notebook 
 \KeywordTok{library}\NormalTok{(ggplot2) }\CommentTok{# ggplot environment}
 \KeywordTok{library}\NormalTok{(ggpubr) }\CommentTok{# publication ready plots}
 
-\NormalTok{here <-}\StringTok{ }\NormalTok{here}\OperatorTok{::}\NormalTok{here }\CommentTok{# make sure ``here` uses `here::here`}
+\NormalTok{here <-}\StringTok{ }\NormalTok{here}\OperatorTok{::}\KeywordTok{here}\NormalTok{() }\CommentTok{# make sure ``here` uses `here::here`}
 
 \CommentTok{# relative paths to project folders}
 \NormalTok{data_folder <-}\StringTok{ "data"} \CommentTok{# path to data that are imported}
@@ -5790,7 +5796,7 @@ The Excel dataset is from an experiment on the growth response of zebra finch ch
 
 \textbf{file name}: ``allDatasetsMarietteBuchanan2016.xls''
 
-\textbf{source}: \url{https://datadryad.org//handle/10255/dryad.122315}
+\textbf{source}: \url{https://datadryad.org/stash/dataset/doi:10.5061/dryad.v8969}
 
 Steps
 
@@ -5814,14 +5820,19 @@ The code below uses the function \texttt{read\_excel()} from the package readxl.
 \NormalTok{folder <-}\StringTok{ "Prenatal acoustic communication programs offspring for high post-hatching temperatures in a songbird"}
 \NormalTok{fn <-}\StringTok{ "allDatasetsMarietteBuchanan2016.xls"}
 \NormalTok{file_path <-}\StringTok{ }\KeywordTok{here}\NormalTok{(data_folder, folder, fn)}
+
 \NormalTok{chick <-}\StringTok{ }\KeywordTok{read_excel}\NormalTok{(file_path, }
-                    \DataTypeTok{sheet =} \StringTok{"nestlingMass"}\NormalTok{) }\OperatorTok{%>%}\StringTok{ }\CommentTok{# import}
-\StringTok{  }\KeywordTok{clean_names}\NormalTok{() }\OperatorTok{%>%}\StringTok{ }\CommentTok{# clean the column names}
-\StringTok{  }\KeywordTok{data.table}\NormalTok{() }\CommentTok{# convert to data.table}
+                    \DataTypeTok{sheet =} \StringTok{"nestlingMass"}\NormalTok{)}
+\NormalTok{chick <-}\StringTok{ }\KeywordTok{clean_names}\NormalTok{(chick) }\CommentTok{# clean column names}
+\NormalTok{chick <-}\StringTok{ }\KeywordTok{data.table}\NormalTok{(chick) }\CommentTok{# convert to data.table}
+
+\CommentTok{# View(chick)}
 \end{Highlighting}
 \end{Shaded}
 
-This text will consistently uses this protocol for storing and retrieving downloaded files. The first three lines in the script above creates the directory path to the file. This path includes three variables
+This text will consistently uses this protocol for storing and retrieving downloaded files. The final line of the chunk is commented out. I do this so that it does not run when the R Markdown sheet is knitted. But I can highlight ``View(chick'') with the cursor and ``Run selected line(s)'' from the ``Run'' menu and get a new tab with a spreadsheet like view of the imported data.
+
+The first three lines in the script above creates the directory path to the file. This path includes three variables
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
@@ -5836,22 +5847,20 @@ This text will consistently uses this protocol for storing and retrieving downlo
 
 These are all put together into the absolute path using the function \texttt{here()} from the here package. Take a look at the value of file\_path to confirm.
 
-The last four lines (starting with \texttt{chick\ \textless{}-}) contains three functions that are \textbf{piped} together using the pipe operator \texttt{\%\textgreater{}\%}. These functions
+The next three lines (starting with \texttt{chick\ \textless{}-})
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
 \tightlist
 \item
-  read the specified data from the specified file and assign this to \texttt{chick}
+  \texttt{read\_excel} imports the data and assign this to a data.frame named \texttt{chick}
 \item
-  clean the column names of the data.frame
+  \texttt{clean\_names} cleans the column names of \texttt{chick}
 \item
-  convert the data.frame to a data.table.
+  \texttt{data.table} converts \texttt{chick} to a data.table. A data.table is a data.frame with magical properties.
 \end{enumerate}
 
-There are multiple ways to do this exactly this, including
-
-A copy of the code above, which uses pipes
+In steps 2 and 3, the functions take the data.frame and process it in some way and then assigned the processed data.frame to an object that has the same name (\texttt{chick}). This script can be made slightly more ``elegant'' using the ``pipe'' operator \texttt{\%\textgreater{}\%}.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -5862,18 +5871,20 @@ A copy of the code above, which uses pipes
 \end{Highlighting}
 \end{Shaded}
 
-Very similar to the code above but without pipes. This requires complete assignment statements (\texttt{meh\ \textless{}-\ blah}). This is easy to read but the pipes (above) use slightly less type and indent the post-import-processing steps and so the pipes make the script a wee bit more organized.
+This is a single line of code containing three separate operations all piped together. A way to think about this is
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{chick <-}\StringTok{ }\KeywordTok{read_excel}\NormalTok{(file_path, }
-                    \DataTypeTok{sheet =} \StringTok{"nestlingMass"}\NormalTok{)}\CommentTok{# import}
-\NormalTok{chick <-}\StringTok{ }\KeywordTok{clean_names}\NormalTok{(chick) }\CommentTok{# clean the column names}
-\NormalTok{chick <-}\StringTok{ }\KeywordTok{data.table}\NormalTok{(chick) }\CommentTok{# convert to data.table}
-\end{Highlighting}
-\end{Shaded}
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  The \texttt{read\_excel} function imports the data from the file located at file\_path and assigns this data to \texttt{chick}. The pipe operator then sends this to
+\item
+  the \texttt{clean\_names} function, which cleans the column names of ``chick''. The pipe operator then sends this to
+\item
+  the \texttt{data.table} function, which convert the data.frame to a data.table.
+\end{enumerate}
 
-The script above that simply embeds each function. To read this, you have to start deep and then move out. This is easy enough for this statement if you are used to reading this kinda stuff. But nests of embedded functions can quickly become hard to read and the future you will be happy if you don't do this. I sometimes will nest a single function in another but I'm trying to switch my default to pipes.
+A 3rd way to do this is with nested functions.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -5881,6 +5892,46 @@ The script above that simply embeds each function. To read this, you have to sta
                     \DataTypeTok{sheet =} \StringTok{"nestlingMass"}\NormalTok{))) }\CommentTok{# convert to data.table}
 \end{Highlighting}
 \end{Shaded}
+
+Some R users think the piped code is more readable then the three separate functions. Maybe. I think we all agree that the nested functions are the least readable. I use pipes, but I think its worth using the three separate functions to learn what each is doing.
+
+Let's back up to understand these steps, and especially the \texttt{clean\_names} step. In your chunk with three separate lines of code, click on the first line, the one containing \texttt{read\_excel}, so that the cursor is somewhere on this line. Then click on the ``run'' menu in the top right of the R Studio panel and choose the first item ``Run selected line(s)''. The file will be re-imported.
+
+Look at the column names (or column headers in Excel lingo) of the imported data using \texttt{names} or \texttt{colnames} (yes, there are elebenty million ways to do anything in R) (\texttt{names} is very general in that it can be used to return the names of the parts of any list, while \texttt{colnames} is specific to matrix-like objects). Type this into the console, not into your R Markdown chunk:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{names}\NormalTok{(chick)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##  [1] "chick_id"                       "brood_id"                      
+##  [3] "brood_composition"              "sex"                           
+##  [5] "rank_in_nest"                   "playback_treatment"            
+##  [7] "nest_temperature_above_ambient" "max_daily_temp_hatch_day"      
+##  [9] "mean_max_temp_hatch_to_day2"    "mean_max_temp_hatch_to_day10"  
+## [11] "mean_max_temp_hatch_to_day13"   "hatching_mass"                 
+## [13] "day1_mass"                      "day2_mass"                     
+## [15] "day10_mass"                     "day13_mass"                    
+## [17] "day13_tarsus"
+\end{verbatim}
+
+In general, it is bad practice to include spaces, parentheses, and special characters such as -, \$ or \^{}, in the column names of a data frame because these increase handling costs later on. The best practice is to replace a blank with an underscore, for example \texttt{rank\_in\_nest}. Some coders separate words with a period (\texttt{rank.in.nest}). Others mash words together into a single word like this \texttt{rankinnest} but this should generally be avoided because the result can be hard to read. Finally, some coders use Caps to separate words like this \texttt{RankInNest}. This is easier to read than simple concatenation but the underscore is the easiest to read.
+
+The \texttt{clean\_names} from the janitor package is a beautiful function to clean the column names of a data frame including replacing spaces with an underscore and stripping parentheses. The default clean includes changing any uppercase letter to lower case. Many coders like to work with all lowercase variable names to avoid having to hit the shift key. I am one of these.
+
+\textbf{Worst Practices} -- resist the temptation to change the column names in the data file, which reduces reproducibility. Leave original data files original. Always increase reproducibility!
+
+\textbf{colleague blues} -- Most researchers live in an Excel world and save data in a way that is efficient for computing stuff in Excel but not efficient for statistical analysis using R or other statistical computing software packages (with the exception of Graphpad Prism). Analyzing data will be much less frustrating if the data are saved in a format that facilitates analysis. Best practices for creating data files
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  \url{https://www.youtube.com/watch?time_continue=309\&v=Ry2xjTBtNFE} -- An excellent video introduction to best practices for organizing data in a spreadsheet that will subsequently be analyzed by statistics software.
+\item
+  Broman, K. W., \& Woo, K. H. (2017). Data organization in spreadsheets (No.~e3183v1). \url{https://doi.org/10.7287/peerj.preprints.3183v1} -- An excelllent review of best practices for organizing data in a spreadsheet.
+\end{enumerate}
 
 \hypertarget{the-read_excel-function}{%
 \paragraph{The read\_excel function}\label{the-read_excel-function}}
@@ -5907,76 +5958,10 @@ without specifying the sheet, \texttt{read\_excel} defaults to reading the first
 \end{Highlighting}
 \end{Shaded}
 
-This isn't necessary for these data because the ``nestlingMass'' sheet contains only a matrix of data and not extraneous information and the \texttt{read\_excel} function is smart enough to figure this out. For many of the data sets in wet bench experimental biology, the range argument will be crucial.
-
-\hypertarget{view-the-imported-data.table-to-check-that-the-file-was-imported-correctly-and-to-learn-about-the-contents.}{%
-\paragraph{View the imported data.table to check that the file was imported correctly and to learn about the contents.}\label{view-the-imported-data.table-to-check-that-the-file-was-imported-correctly-and-to-learn-about-the-contents.}}
-
-Insert the following after your import script and run:
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{View}\NormalTok{(chick) }\CommentTok{# check}
-\end{Highlighting}
-\end{Shaded}
-
-The line \texttt{View(chick)} script opens a new tab containing a spreadsheet-like display of the data.table \texttt{chick}.
-
-Okay, let's back up to understand why we post-process with \texttt{clean\_names}. Re-import the data but without this function. I've done this by simply commenting out the line. The pipe above then skips over this and goes to \texttt{data.table()}.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{chick <-}\StringTok{ }\KeywordTok{read_excel}\NormalTok{(file_path, }
-                    \DataTypeTok{sheet=}\StringTok{"nestlingMass"}\NormalTok{) }\OperatorTok{%>%}\StringTok{ }\CommentTok{# import}
-\CommentTok{#  clean_names() %>% # clean the column names}
-\StringTok{  }\KeywordTok{data.table}\NormalTok{() }\CommentTok{# convert to data.table}
-\end{Highlighting}
-\end{Shaded}
-
-You can see the column names of \texttt{chick} using View but I find it easier to look at these names using \texttt{names} or \texttt{colnames} (yes, there are elebenty million ways to do anything in R) (\texttt{names} is very general in that it can be used to return the names of the parts of any list, while \texttt{colnames} is specific to matrix-like objects)
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{names}\NormalTok{(chick)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-##  [1] "chick ID"                       "brood ID"                      
-##  [3] "brood composition"              "sex"                           
-##  [5] "rank in nest"                   "playback treatment"            
-##  [7] "nest temperature above ambient" "max daily temp hatch day"      
-##  [9] "mean max temp hatch to day2"    "mean max temp hatch to day10"  
-## [11] "mean max temp hatch to day13"   "hatching mass"                 
-## [13] "day1 mass"                      "day2 mass"                     
-## [15] "day10 mass"                     "day13 mass"                    
-## [17] "day13 tarsus"
-\end{verbatim}
-
-In general, it is bad practice to include spaces, parentheses, and special characters such as -, \$ or \^{}, in the column names of a data frame because these increase handling costs later on. The best practice is to replace a blank with an underscore, for example \texttt{rank\_in\_nest}. Some coders separate words with a period (\texttt{rank.in.nest}). Others mash words together into a single word like this \texttt{rankinnest} but this should generally be avoided because the result can be hard to read. Finally, some coders use Caps to separate words like this \texttt{RankInNest}. This is easier to read than simple concatenation but the underscore is the easiest to read.
-
-The \texttt{clean\_names} from the janitor package is a beautiful function to clean the column names of a data frame including replacing spaces with an underscore and stripping parentheses. The default clean includes changing any uppercase letter to lower case. Many coders like to work with all lowercase variable names to avoid having to hit the shift key. I am one of these.
-
-\textbf{Worst Practices} -- resist the temptation to change the column names in the data file, which reduces reproducibility. Leave original data files original. Always increase reproducibility!
-
-\textbf{colleague blues} -- Most researchers live in an Excel world and save data in a way that is efficient for computing stuff in Excel but not efficient for statistical analysis using R or other statistical computing software packages (with the exception of Graphpad Prism). Analyzing data will be much less frustrating if the data are saved in a format that facilitates analysis. Best practices for creating data files
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\item
-  \url{https://www.youtube.com/watch?time_continue=309\&v=Ry2xjTBtNFE} -- An excellent video introduction to best practices for organizing data in a spreadsheet that will subsequently be analyzed by statistics software.
-\item
-  Broman, K. W., \& Woo, K. H. (2017). Data organization in spreadsheets (No.~e3183v1). \url{https://doi.org/10.7287/peerj.preprints.3183v1} -- An excelllent review of best practices for organizing data in a spreadsheet.
-\end{enumerate}
-
-\textbf{beginner blues} -- after running the code with the clean\_names commented out, type this into the console \texttt{chick\ \textless{}-\ clean\_names(chick)}. Now if you look at the column names with \texttt{names(chick)}, you see the names have been cleaned. But, if you quit R Studio, then re-open the notebook and run the chunks, your column names will not be clean because your command to clean the names was not in the saved script but simply entered into the console. The memory of this change was lost when you quit R Studio. This is a very common beginner mistake -- make changes with scripts in the console that aren't preserved in the saved chunks in the notbook. I'm not advising against changing the values of objects in the console -- I do this frequently when debugging or to experiment -- but to simply be aware that if you want specific operations to be reproducible, they need to be in the saved chunks in your notebook file.
-
-Delete the comment and re-run the chunk so that \texttt{chick} has clean names. Save the file!
+This isn't necessary for these data because the ``nestlingMass'' sheet contains only a matrix of data and not extraneous information and the \texttt{read\_excel} function is smart enough to figure this out. For many of the data sets in wet bench experimental biology, the range argument will be crucial because multiple datasets are archived on a single sheet.
 
 \hypertarget{explore-with-plots}{%
 \paragraph{Explore with plots}\label{explore-with-plots}}
-
-Did I mention to delete the comment in front of \texttt{clean\_names} and re-run the chunk so that \texttt{chick} has clean names?
 
 Just for fun, let's plot the data and reproduce something close to Fig. 2A and B. We are using the \texttt{qplot} function, which is from the ggplot2 package. qplots are quick plots -- something you want to do to quickly look at data but don't want to turn into a publication quality plot.
 
@@ -6050,6 +6035,8 @@ The example dataset comes from an experiment on the effect of \href{http://scien
 
 \textbf{file name}: ``Whitehorn, O'Connor, Wackers, Goulson (2012) Data from `Neonicotinoid pesticide reduces bumblebee colony growth and queen production'.csv.csv''
 
+Yes the name of the file has both single quotes in the file name and ``.csv'' as part of the file name so that, including the extension, the end of the name is ``.csv.csv''. This is not a good file name
+
 \textbf{source}: \url{https://datadryad.org//resource/doi:10.5061/dryad.1805c973}
 
 Steps
@@ -6079,12 +6066,16 @@ A .csv file is a text file that is comma-delimted, which means that the entries 
 
 Here, as with the import of the Excel file, the first three lines create the directory path to the file. There is no need to pipe \texttt{bee} to \texttt{data.table()} because \texttt{fread} automatically importants the data as a data.table. It does not need to be converted.
 
-Here is a reproduction of Fig 2 from the journal article.
+Here is a reproduction of Fig 2 from the journal article using the \texttt{ggbarplot} function from the \texttt{ggpubr} package.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{bee[, treatment}\OperatorTok{:}\ErrorTok{=}\KeywordTok{factor}\NormalTok{(treatment, }\KeywordTok{c}\NormalTok{(}\StringTok{"Control"}\NormalTok{, }\StringTok{"Low"}\NormalTok{, }\StringTok{"High"}\NormalTok{))] }\CommentTok{# reorder factor levels}
-\KeywordTok{ggbarplot}\NormalTok{(}\DataTypeTok{data=}\NormalTok{bee, }\DataTypeTok{x=}\StringTok{"treatment"}\NormalTok{, }\DataTypeTok{y=}\StringTok{"new_queens"}\NormalTok{, }\DataTypeTok{add =} \StringTok{"mean_se"}\NormalTok{)}
+\NormalTok{bee[, treatment }\OperatorTok{:}\ErrorTok{=}\StringTok{ }\KeywordTok{factor}\NormalTok{(treatment, }\KeywordTok{c}\NormalTok{(}\StringTok{"Control"}\NormalTok{, }\StringTok{"Low"}\NormalTok{, }\StringTok{"High"}\NormalTok{))] }\CommentTok{# reorder factor levels}
+
+\KeywordTok{ggbarplot}\NormalTok{(}\DataTypeTok{data=}\NormalTok{bee,}
+          \DataTypeTok{x=}\StringTok{"treatment"}\NormalTok{, }
+          \DataTypeTok{y=}\StringTok{"new_queens"}\NormalTok{, }
+          \DataTypeTok{add =} \StringTok{"mean_se"}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
@@ -6138,15 +6129,19 @@ Data archived in Excel spreadsheets, at least in wet-bench experimental biology 
 
 Source: \href{https://www.nature.com/articles/s41591-019-0610-4}{Adipsin preserves beta cells in diabetic mice and associates with protection from type 2 diabetes in humans}
 
-\includegraphics[width=0.6\linewidth]{/Users/jwalker/Documents/Github projects/Bookdown projects/applied-biostats/images/adipsin_fig1h_data}
+\href{https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7256970/}{Public source} -- the Adipsin paper is behind a paywall. A public source of the paper from NIH is available.
 
-Fig. 1h of the Adipsin paper presents three bar plots, each comparing a response variable between the control (GFP) and treated (Adipsin) groups. A screenshot of the Excel-archived data is shown above. The data are in \textbf{wide format}. In wide-format, the values of a variable are in separate columns for each treatment level (group). This is seen in the screenshot of the data. In the data for the first panel of Fig. 1h (Total C3), the values for the GFP group are in Column A and the values for the Adipsin group are in Column B. Wide format is efficient for computations in a spreadsheet, such as computing means and standard deviations of columns of data, and for plotting.
+\href{https://www.nature.com/articles/s41591-019-0610-4\#Sec39}{Link to source data}
 
-For most statistical analyses of experimental data in R (and most statistics software), all values of a single variable should be in a single column. This is called \textbf{long format}. I've rearranged the data from the archived spread sheet into long format by stacking each group's values into a single column, shown in the screen capture below. All values of total C3 are in a single column, as are the values for the other variables. In long format, there needs to be a way to identify which values belong to which group and this is achieved with column ``treatment''. In adition to the treatment column, I created a column containing the mouse identification number (I made these up as they were not given in the Excel-archived data).
+\includegraphics[width=0.6\linewidth]{/Users/jwalker/Documents/Github projects/Bookdown projects/applied-biostats/images/adipsin_1k_wide}
 
-\includegraphics[width=0.6\linewidth]{/Users/jwalker/Documents/Github projects/Bookdown projects/applied-biostats/images/adipsin_fig1h_long}
+Fig. 1k of the Adipsin paper presents a bar plot of the glucose uptake in response to control (GFP) or \href{https://en.wikipedia.org/wiki/Factor_D}{adipsin} treatment. A screenshot of the Excel-archived data is shown above. The data are in \textbf{wide format}. In wide-format, the values of a single variable (here, this is glucose uptake level) are given in separate columns for each treatment level (group). The values for the GFP group are in Column A and the values for the Adipsin group are in Column B. Wide format is efficient for computations in a spreadsheet, such as computing means and standard deviations of columns of data, and for plotting.
 
-The difference between wide and long also reflects how we think about statistical analysis. When we do a \emph{t}-test to compare the means of total C3 between GFP and Adipsin groups, we might think we have two things: the set of C3 values for the GFP group and the set of C3 values for the Adipsin group. When we fit a linear model, we also have two things, the variable \emph{treatment} containing treatment level assignment and the variable \emph{c3} containing the C3 values. In wide format, there is nothing to suggest that \emph{treatment} is a variable.
+For most statistical analyses of experimental data in R (and most statistics software), all values of a single variable should be in a single column. This is called \textbf{long format}. I've manually rearranged the data from the archived spread sheet into long format by stacking each group's values into a single column, shown in the screen capture below. All values of glucose uptake are in a single column. In long format, there needs to be a way to identify which values belong to which group and this is achieved here with column ``treatment''. In adition to the treatment column.
+
+\includegraphics[width=0.6\linewidth]{/Users/jwalker/Documents/Github projects/Bookdown projects/applied-biostats/images/adipsin_1k_long}
+
+The difference between wide and long also reflects how we think about statistical analysis. When we do a \emph{t}-test to compare the means of glucose uptake between GFP and Adipsin groups, we might think we have two things: the set of glucose uptake values for the GFP group and the set of values for the Adipsin group. When we fit a linear model, we also have two things, the variable \emph{treatment} containing treatment level assignment and the variable \emph{glucose\_uptake} containing the glucose uptake values. In wide format, there is nothing to suggest that \emph{treatment} is a variable.
 
 There are many functions to tidy data from wide to long. \texttt{melt} from the data.table package is especially useful. It is data.table's version of melt from the reshape2 package.
 
@@ -6164,70 +6159,54 @@ Let's melt the three different response variables of the adipsin data and \textt
 \NormalTok{fn <-}\StringTok{ "41591_2019_610_MOESM3_ESM.xlsx"}
 \NormalTok{file_path <-}\StringTok{ }\KeywordTok{here}\NormalTok{(data_folder, file_folder, fn)}
 
-\NormalTok{treatment_levels <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"GFP"}\NormalTok{,    }\StringTok{"Adipsin"}\NormalTok{)}
+\NormalTok{treatment_levels <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"db/db-GFP"}\NormalTok{, }\StringTok{"db/db-Adipsin"}\NormalTok{)}
 
-\CommentTok{# separately read each treatment}
-\NormalTok{fig1h_total <-}\StringTok{ }\KeywordTok{read_excel}\NormalTok{(file_path,}
-                    \DataTypeTok{sheet =} \StringTok{"Figure 1h"}\NormalTok{,}
-                    \DataTypeTok{range =} \StringTok{"A3:B7"}\NormalTok{) }\OperatorTok{%>%}
+\CommentTok{# as separate line}
+\NormalTok{fig_1k_wide <-}\StringTok{ }\KeywordTok{read_excel}\NormalTok{(file_path,}
+                    \DataTypeTok{sheet =} \StringTok{"Figure 1k"}\NormalTok{,}
+                    \DataTypeTok{range =} \StringTok{"A3:B9"}\NormalTok{)}
+\NormalTok{fig_1k_wide <-}\StringTok{ }\KeywordTok{data.table}\NormalTok{(fig_1k_wide)}
+\NormalTok{fig_1k <-}\StringTok{ }\KeywordTok{melt}\NormalTok{(fig_1k_wide,}
+               \DataTypeTok{measure.vars =}\NormalTok{ treatment_levels,}
+               \DataTypeTok{variable.name =} \StringTok{"treatment"}\NormalTok{,}
+               \DataTypeTok{value.name =} \StringTok{"glucose_uptake"}\NormalTok{)}
+
+\CommentTok{# or piped -- which do you prefer?}
+\NormalTok{fig_1k <-}\StringTok{ }\KeywordTok{read_excel}\NormalTok{(file_path,}
+                    \DataTypeTok{sheet =} \StringTok{"Figure 1k"}\NormalTok{,}
+                    \DataTypeTok{range =} \StringTok{"A3:B9"}\NormalTok{) }\OperatorTok{%>%}
 \StringTok{  }\KeywordTok{data.table}\NormalTok{() }\OperatorTok{%>%}
 \StringTok{  }\KeywordTok{melt}\NormalTok{(}\DataTypeTok{measure.vars =}\NormalTok{ treatment_levels,}
        \DataTypeTok{variable.name =} \StringTok{"treatment"}\NormalTok{,}
-       \DataTypeTok{value.name =} \StringTok{"total_c3"}\NormalTok{)}
-\CommentTok{# give each mouse a unique ID}
-\NormalTok{fig1h_total[, mouse_id }\OperatorTok{:}\ErrorTok{=}\StringTok{ }\DecValTok{1}\OperatorTok{:}\NormalTok{.N]  }
-  
-\NormalTok{fig1h_ratio <-}\StringTok{ }\KeywordTok{read_excel}\NormalTok{(file_path,}
-                    \DataTypeTok{sheet =} \StringTok{"Figure 1h"}\NormalTok{,}
-                    \DataTypeTok{range =} \StringTok{"A11:B15"}\NormalTok{) }\OperatorTok{%>%}
-\StringTok{  }\KeywordTok{data.table}\NormalTok{() }\OperatorTok{%>%}
-\StringTok{  }\KeywordTok{melt}\NormalTok{(}\DataTypeTok{measure.vars =}\NormalTok{ treatment_levels,}
-       \DataTypeTok{variable.name =} \StringTok{"treatment"}\NormalTok{,}
-       \DataTypeTok{value.name =} \StringTok{"ratio"}\NormalTok{)}
-\CommentTok{# give each mouse a unique ID}
-\NormalTok{fig1h_ratio[, mouse_id }\OperatorTok{:}\ErrorTok{=}\StringTok{ }\DecValTok{1}\OperatorTok{:}\NormalTok{.N]  }
+       \DataTypeTok{value.name =} \StringTok{"glucose_uptake"}\NormalTok{)}
 
-\NormalTok{fig1h_c3a <-}\StringTok{ }\KeywordTok{read_excel}\NormalTok{(file_path,}
-                    \DataTypeTok{sheet =} \StringTok{"Figure 1h"}\NormalTok{,}
-                    \DataTypeTok{range =} \StringTok{"A18:B22"}\NormalTok{) }\OperatorTok{%>%}
-\StringTok{  }\KeywordTok{data.table}\NormalTok{() }\OperatorTok{%>%}
-\StringTok{  }\KeywordTok{melt}\NormalTok{(}\DataTypeTok{measure.vars =}\NormalTok{ treatment_levels,}
-       \DataTypeTok{variable.name =} \StringTok{"treatment"}\NormalTok{,}
-       \DataTypeTok{value.name =} \StringTok{"c3a"}\NormalTok{)}
-\CommentTok{# give each mouse a unique ID}
-\NormalTok{fig1h_c3a[, mouse_id }\OperatorTok{:}\ErrorTok{=}\StringTok{ }\DecValTok{1}\OperatorTok{:}\NormalTok{.N] }
-
-\NormalTok{fig1h <-}\StringTok{ }\KeywordTok{merge}\NormalTok{(fig1h_total, fig1h_c3a,}
-               \DataTypeTok{by =} \KeywordTok{c}\NormalTok{(}\StringTok{"treatment"}\NormalTok{, }\StringTok{"mouse_id"}\NormalTok{))}
-\NormalTok{fig1h <-}\StringTok{ }\KeywordTok{merge}\NormalTok{(fig1h, fig1h_ratio,}
-               \DataTypeTok{by =} \KeywordTok{c}\NormalTok{(}\StringTok{"treatment"}\NormalTok{, }\StringTok{"mouse_id"}\NormalTok{))}
-\NormalTok{fig1h[, check_ratio }\OperatorTok{:}\ErrorTok{=}\StringTok{ }\NormalTok{c3a}\OperatorTok{/}\NormalTok{total_c3]}
-
-\CommentTok{# View(fig1h) # uncomment to view}
-\NormalTok{fig1h}
+\CommentTok{# View(fig_1k) # highlight without the comment sign and "run selected lines()" to view}
 \end{Highlighting}
 \end{Shaded}
 
-\begin{verbatim}
-##    treatment mouse_id total_c3     c3a     ratio check_ratio
-## 1:       GFP        1  26809.1  8076.1 0.3012458   0.3012447
-## 2:       GFP        2  27645.0 14821.0 0.5361205   0.5361186
-## 3:       GFP        3  17050.6  9302.7 0.5455894   0.5455937
-## 4:       GFP        4  15827.5  3920.5 0.2477042   0.2477018
-## 5:   Adipsin        5  27877.0 17607.4 0.6316098   0.6316103
-## 6:   Adipsin        6  17894.6 13917.8 0.7777626   0.7777654
-## 7:   Adipsin        7  19933.5 17454.4 0.8756279   0.8756315
-## 8:   Adipsin        8  20238.4 13409.8 0.6625924   0.6625919
-\end{verbatim}
+A pretty-good-plot using the \texttt{ggpubr} package
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# put warning=FALSE into the chunk header to supress the warning}
+
+\NormalTok{gg <-}\StringTok{ }\KeywordTok{ggstripchart}\NormalTok{(}\DataTypeTok{x =} \StringTok{"treatment"}\NormalTok{,}
+                   \DataTypeTok{y =} \StringTok{"glucose_uptake"}\NormalTok{,}
+                   \DataTypeTok{add =} \StringTok{"mean_se"}\NormalTok{,}
+                   \DataTypeTok{data =}\NormalTok{ fig_1k)}
+
+\NormalTok{gg}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-51-1.pdf}
 
 \hypertarget{wide-to-long-enteric-nervous-system-data}{%
 \subsubsection{Wide to long -- Enteric nervous system data}\label{wide-to-long-enteric-nervous-system-data}}
 
-Article: Rolig, A. S., Mittge, E. K., Ganz, J., Troll, J. V., Melancon, E., Wiles, T. J., \ldots{} Guillemin, K. (2017). The enteric nervous system promotes intestinal health by constraining microbiota composition. PLOS Biology, 15(2), e2000689. \url{https://doi.org/10.1371/journal.pbio.2000689}
+Source: \href{https://doi.org/10.1371/journal.pbio.2000689}{Rolig, A. S., Mittge, E. K., Ganz, J., Troll, J. V., Melancon, E., Wiles, T. J., \ldots{} Guillemin, K. (2017). The enteric nervous system promotes intestinal health by constraining microbiota composition. PLOS Biology, 15(2), e2000689.}
 
-\textbf{Data source} \url{https://doi.org/10.1371/journal.pbio.2000689.s008}
-
-\textbf{file name}: ``journal.pbio.2000689.s008.xlsx''
+\href{https://doi.org/10.1371/journal.pbio.2000689.s008}{Source data}
 
 Let's import and reshape the data for figure 2d. Look at the excel file and the data in Fig. 2d. There is a single treament with four levels, but the authors have organized the data in each level in separate columns and used the column header as the level name.
 
@@ -6287,9 +6266,9 @@ To learn (instead of just copy and modify), it's best to do this in steps and no
 
 The example above is pretty easy, because the all columns in the original data frame are melted (stacked). Here is an example in which only a subset of columns are stacked. In addition, only a subset of the remaining columns are retained in the long format data frame. The data are from Panel A of supplement Fig. 8 (\url{https://journals.plos.org/plosbiology/article/file?type=supplementary\&id=info:doi/10.1371/journal.pbio.2003467.s019}) from
 
-Kešnerová, L., Mars, R.A., Ellegaard, K.M., Troilo, M., Sauer, U. and Engel, P., 2017. Disentangling metabolic functions of bacteria in the honey bee gut. PLoS biology, 15(12), p.e2003467.
+Source: \href{https://journals.plos.org/plosbiology/article?id=10.1371/journal.pbio.2003467}{Kešnerová, L., Mars, R.A., Ellegaard, K.M., Troilo, M., Sauer, U. and Engel, P., 2017. Disentangling metabolic functions of bacteria in the honey bee gut. PLoS biology, 15(12), p.e2003467.}
 
-**data source*:** \url{https://doi.org/10.1371/journal.pbio.2003467.s001}
+\href{https://doi.org/10.1371/journal.pbio.2003467.s001}{Source data}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -6607,6 +6586,8 @@ tr
 
 Source: \href{https://www.nature.com/articles/s41586-018-0343-4}{Suppression of insulin feedback enhances the efficacy of PI3K inhibitors}
 
+\href{https://www.nature.com/articles/s41586-018-0343-4\#Sec15}{Source data}
+
 Figure 3A of this publication is a plot of blood glucose level taken on the same individual mice from four treatment groups over six time periods. Data on a single variable such as blood glucose, taken on the same individual at multiple time points, are known as \textbf{longitudial data} but are often mistakenly called \textbf{repeated measures data}. There are mulitple ways to analyze longitudinal data, some goood, some less good. There are two reasonable ways to archive longitudinal data for analysis in R. The Excel-archived data for Figure 3A is neither. A screen capture of two of the four treatment groups is shown below.
 
 \includegraphics[width=0.6\linewidth]{/Users/jwalker/Documents/Github projects/Bookdown projects/applied-biostats/images/pi3k-inhibitors}
@@ -6691,16 +6672,14 @@ Let's do a quick plot to examine the data
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-61-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-59-1.pdf}
 
 \hypertarget{combining-data}{%
 \subsection{Combining data}\label{combining-data}}
 
-\textbf{Source article} Bak, A.M., Vendelbo, M.H., Christensen, B., Viggers, R., Bibby, B.M., Rungby, J., Jørgensen, J.O.L., Møller, N. and Jessen, N., 2018. Prolonged fasting-induced metabolic signatures in human skeletal muscle of lean and obese men. PloS one, 13(9), p.e0200817.
+Source \href{https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0200817}{Bak, A.M., Vendelbo, M.H., Christensen, B., Viggers, R., Bibby, B.M., Rungby, J., Jørgensen, J.O.L., Møller, N. and Jessen, N., 2018. Prolonged fasting-induced metabolic signatures in human skeletal muscle of lean and obese men. PloS one, 13(9), p.e0200817.}
 
-\textbf{Data source} \url{https://datadryad.org/stash/dataset/doi:10.5061/dryad.6121hj7}
-
-\textbf{file name}: datafiles.xlsx
+\href{https://datadryad.org/stash/dataset/doi:10.5061/dryad.6121hj7}{Source data}
 
 The data are from a randomized \textbf{crossover} design where 18 men (9 lean and 9 obese) were measured for multiple metabolic markers at two times: 1) in a post-absorptive state after 12 hours overnight fast, and 2) in a prolonged fasting state after 72 hours of fasting. In addition, at each time point, metabolic markers were measured prior to and after an insulin infusion. Here, we want to reproduce values in Table 2, which are measures of mean blood insulin and metabolite levels after 12 hours and 72 hours fasting in both the lean and obese groups.
 
@@ -6744,7 +6723,7 @@ Let's use the pi3k\_long data from above to explore this. First, the plot of pla
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-62-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-60-1.pdf}
 
 \texttt{pi3k\_long{[}treatment\ ==\ "Chow",{]})} is the subset of rows in which entries in the column ``treatment'' take the value ``Chow'' using the ``is equal'' (``=='') operator
 
@@ -6758,7 +6737,7 @@ Let's use the pi3k\_long data from above to explore this. First, the plot of pla
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-63-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-61-1.pdf}
 
 And the subset of rows in which entries in the column ``treatment'' take any value but ``Chow'' using the ``not equal'' operator (``!='').
 
@@ -6772,7 +6751,7 @@ And the subset of rows in which entries in the column ``treatment'' take any val
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-64-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-62-1.pdf}
 
 The subset of rows in which entries in the column ``treatment'' take either the value ``Chow'' or the value ``SGLT2i'' by combining two ``is equal'' (``=='') operators using the OR (``\textbar{}'') boolean operator
 
@@ -6786,7 +6765,7 @@ The subset of rows in which entries in the column ``treatment'' take either the 
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-65-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-63-1.pdf}
 
 The subset of rows in which entries in the column ``time'' take either the value ``30'' or the value ``60'' using the ``in a list'' operator (\%in\%). The values in the ``time'' column look like integers but are actually treatment levels (which act like string or character variables).
 
@@ -6800,7 +6779,7 @@ The subset of rows in which entries in the column ``time'' take either the value
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-66-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-64-1.pdf}
 
 The subset of rows in which entries in the column ``time\_c'' are less than or equal to 60 using the ``less than or equal to'' operator AND the value in the treatment column is in the list (``Chow'', ``SGLT2i''). The two comparisons are combined with the AND (``\&'') Boolean operator.
 
@@ -6815,7 +6794,7 @@ The subset of rows in which entries in the column ``time\_c'' are less than or e
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-67-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-65-1.pdf}
 
 The same result as above but using different operators. I would describe this as, the subset of rows in which entries in the column ``time\_c'' are less than or equal to 60 using the ``less than or equal to'' operator AND the value in the treatment column is either ``Chow'' OR ``SGLT2i''. The two comparisons are combined with the AND (``\&'') Boolean operator. The order of operations is determined by the parentheses, as with all algebra.
 
@@ -6830,7 +6809,7 @@ The same result as above but using different operators. I would describe this as
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-68-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-66-1.pdf}
 
 \hypertarget{wrangling-columns}{%
 \subsection{Wrangling columns}\label{wrangling-columns}}
@@ -6844,9 +6823,9 @@ The same result as above but using different operators. I would describe this as
 \hypertarget{converting-a-single-column-with-all-combinations-of-a-2-x-2-factorial-experiment-into-two-columns-each-containing-the-two-levels-of-a-factor}{%
 \subsubsection{Converting a single column with all combinations of a 2 x 2 factorial experiment into two columns, each containing the two levels of a factor}\label{converting-a-single-column-with-all-combinations-of-a-2-x-2-factorial-experiment-into-two-columns-each-containing-the-two-levels-of-a-factor}}
 
-\textbf{Article source}: Tauriello, D., Palomo-Ponce, S., Stork, D. et al.~TGFβ drives immune evasion in genetically reconstituted colon cancer metastasis. Nature 554, 538--543 (2018) \url{doi:10.1038/nature25492}
+Source: \href{2018}{Tauriello, D., Palomo-Ponce, S., Stork, D. et al.~TGFβ drives immune evasion in genetically reconstituted colon cancer metastasis. Nature 554, 538--543} \url{doi:10.1038/nature25492}
 
-\textbf{Data source}: \url{https://www.nature.com/articles/nature25492\#Sec23}
+\href{https://www.nature.com/articles/nature25492\#Sec23}{Source data}
 
 filename: ``41586\_2018\_BFnature25492\_MOESM10\_ESM.xlsx''
 
@@ -6912,7 +6891,9 @@ Now, copy the name of a level and paste into your code. Repeat until done.
 \hypertarget{missing-data}{%
 \subsection{Missing data}\label{missing-data}}
 
-Source: \href{https://journals.plos.org/plosgenetics/article?id=10.1371/journal.pgen.1008002\&rev=1}{Deletion of Cdkn1b in ACI rats leads to increased proliferation and pregnancy-associated changes in the mammary gland due to perturbed systemic endocrine environment}
+Source: \href{https://journals.plos.org/plosgenetics/article?id=10.1371/journal.pgen.1008002}{Deletion of Cdkn1b in ACI rats leads to increased proliferation and pregnancy-associated changes in the mammary gland due to perturbed systemic endocrine environment}
+
+\href{https://doi.org/10.1371/journal.pgen.1008002.s008}{Source data}
 
 Supplement Figure 1F of this paper shows weight as a function of age class and genotype for the whole body and 8 organs. There are some missing weights in the Excel-archived data. These missing data are designated with a minus ``-'' sign. To import these data in correctly, use the \texttt{na\ =} argument in the \texttt{read\_excel} function.
 
@@ -7106,7 +7087,7 @@ with a useful warning.
 ## Warning: Removed 13 rows containing missing values (geom_point).
 \end{verbatim}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-78-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-76-1.pdf}
 
 \hypertarget{regression-model-functions-lm-glm-gls-etc.-handle-missing-values-by-default}{%
 \paragraph{Regression model functions (lm, glm, gls, etc.) handle missing values by default}\label{regression-model-functions-lm-glm-gls-etc.-handle-missing-values-by-default}}
@@ -7242,6 +7223,57 @@ Reading a large .Rds file is very fast compared to reading the same data stored 
 \end{Shaded}
 
 Look at your project directory to make sure the file is where it should be! We used \texttt{write.table()} to create a tab-delimited text file using \texttt{sep="\textbackslash{}t"} to specify tabs to separate the row elements. "\t" is the standard character string for a tab. Check in your output folder and open the file in a text editor.
+
+\hypertarget{exercises-1}{%
+\section{Exercises}\label{exercises-1}}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Import and pretty-good-plot the data for Figure 2i of the Adipsin paper. You will need to download and archive the Excel file for ``Figure 2''. Store this within the ``Adipsin preserves beta cells\ldots{}'' folder.
+\end{enumerate}
+
+\begin{itemize}
+\tightlist
+\item
+  The data are the percent of cells staining for \href{https://en.wikipedia.org/wiki/NKX6-1}{NKX6.1}, which is a transcription factor protein that regulates beta cell development in the pancreas. Beta cells sense glucose levels in the blood and secrete insulin. Disruption of the insulin signaling system results in Diabetes mellitus.
+\item
+  The data are in wide format, with each treatment group in a separate column. The data need to be melted into long format with a new column called ``treatment''.
+\item
+  This will give you a pretty good plot of the data (if the data object is named ``adipsin\_fig2i'')
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{ggstripchart}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ adipsin_fig2i,}
+             \DataTypeTok{x =} \StringTok{"treatment"}\NormalTok{,}
+             \DataTypeTok{y =} \StringTok{"nkx6_1"}\NormalTok{,}
+             \DataTypeTok{add =} \StringTok{"mean_se"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-82-1.pdf}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{1}
+\tightlist
+\item
+  Import and quick pretty-good-plot the data for Figure 3b of the PI3K paper. You will need to download and archive the Excel file for ``Figure 3''. Store this within the ``Suppression of insulin feedback enhances\ldots{}'' folder.
+\end{enumerate}
+
+\begin{itemize}
+\tightlist
+\item
+  The data are \href{https://en.wikipedia.org/wiki/C-peptide}{c-peptide} levels in response to the treatments. C-peptide is cleaved from the pro-insulin polypeptide and circulates in the blood and is a marker of how much insulin is being produced by the beta cells of the pancreas.
+\item
+  The data are in wide format, with each treatment group in a separate column. The data need to be melted into long format with a new column called ``treatment''.
+\item
+  Modify the code from exercise 1 to pretty-good-plot the data as in exercise 1.
+\end{itemize}
+
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-84-1.pdf}
 
 \hypertarget{plotting-models}{%
 \chapter{Plotting Models}\label{plotting-models}}
@@ -7764,7 +7796,7 @@ For the plot of effects, we use table of contrasts m1.pairs as the data.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-85-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-87-1.pdf}
 
 \hypertarget{combining-effects-and-response-plots}{%
 \subsubsection{Combining effects and response plots}\label{combining-effects-and-response-plots}}
@@ -7778,7 +7810,7 @@ The ggplots are combined using \texttt{plot\_grid} from the package \href{https:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-86-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-88-1.pdf}
 
 \hypertarget{plotting-two-factors}{%
 \subsection{Plotting two factors}\label{plotting-two-factors}}
@@ -7854,7 +7886,7 @@ Modeled means, standard errors, and confidence limits are conveniently computed 
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-89-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-91-1.pdf}
 
 \hypertarget{interaction-plot}{%
 \subsection{Interaction plot}\label{interaction-plot}}
@@ -7875,7 +7907,7 @@ Modeled means, standard errors, and confidence limits are conveniently computed 
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-90-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-92-1.pdf}
 
 \hypertarget{plot-components}{%
 \subsection{Plot components}\label{plot-components}}
@@ -7909,7 +7941,7 @@ If there are only a few cases per group, there is little reason to summarize the
 ## Warning: `fun.ymax` is deprecated. Use `fun.max` instead.
 \end{verbatim}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-91-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-93-1.pdf}
 
 With more points, a stripchart can be okay but with too many points the distribution might be obscured. Reasonable alternatives are a box plot, a violin plot, and a dotplot.
 
@@ -7937,7 +7969,7 @@ With more points, a stripchart can be okay but with too many points the distribu
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-92-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-94-1.pdf}
 
 \hypertarget{part-ii-some-fundamentals-of-statistical-modeling}{%
 \chapter*{Part II: Some Fundamentals of Statistical Modeling}\label{part-ii-some-fundamentals-of-statistical-modeling}}
@@ -8156,7 +8188,7 @@ This is a visualization of the spread, or variability, of the sampled means
 ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 \end{verbatim}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-96-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-98-1.pdf}
 
 Compute the mean of the means
 
@@ -8454,7 +8486,7 @@ Let's look at the confidence intervals of all three vole groups in light of the 
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-104-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-106-1.pdf}
 
 \hypertarget{part-iii-introduction-to-linear-models}{%
 \chapter*{Part III: Introduction to Linear Models}\label{part-iii-introduction-to-linear-models}}
@@ -8821,7 +8853,7 @@ The question pursued is in this study is, what is the causal effect of warming o
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-106-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-108-1.pdf}
 
 No plot shows any obvious outlier that might be due to measurement blunders or curation error. The linear regression in the left-most plot clearly shows that a linear response is sufficient to capture the effect of temperature on day of green-down.
 
@@ -8857,7 +8889,7 @@ No plot shows any obvious outlier that might be due to measurement blunders or c
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-108-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-110-1.pdf}
 
 The Q-Q plot indicates the distribution of residuals is well within that expected for a normal sample and there is no cause for concern with inference.
 
@@ -8868,7 +8900,7 @@ The Q-Q plot indicates the distribution of residuals is well within that expecte
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-109-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-111-1.pdf}
 
 \begin{verbatim}
 ## 
@@ -9359,7 +9391,7 @@ Inference from model \eqref{eq:continuous-x-m1} assumes the data were sampled fr
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-123-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-125-1.pdf}
 
 Approximately normal residuals will track the solid line and stay largely within the boundaries marked by the dashed lines. The residuals from m1 fit to the green-down data track the solid line and remain within the dashed lines, indicating adequate model fit.
 
@@ -9373,7 +9405,7 @@ Inference from model \eqref{eq:continuous-x-m1} assumes homogeneity of the respo
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-124-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-126-1.pdf}
 
 \begin{verbatim}
 ## 
@@ -9943,7 +9975,7 @@ Here is the default plot
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-133-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-135-1.pdf}
 
 \hypertarget{model-checking}{%
 \chapter{Model Checking}\label{model-checking}}
@@ -10109,7 +10141,7 @@ Count data often have an excess of zeroes (for example a lake with no nests or a
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-134-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-136-1.pdf}
 
 \hypertarget{constrained-lower-and-upper-bounds}{%
 \subsubsection{Constrained lower and upper bounds}\label{constrained-lower-and-upper-bounds}}
@@ -10373,7 +10405,7 @@ If a researcher caries out many tests, and ranks the effects by magnitude or \em
 \caption{\label{fig:inflation-histogram}A histogram of the distribution of the 10,000 effects}
 \end{figure}
 
-\label{tab:unnamed-chunk-136}The top 10 genes ranked by p-value. Rank is the rank of the true effect, from large to small.
+\label{tab:unnamed-chunk-138}The top 10 genes ranked by p-value. Rank is the rank of the true effect, from large to small.
 
 effect
 
@@ -11173,7 +11205,7 @@ ldlc.r = \beta_0 + \beta_1 treatment + \varepsilon
 
 where \(ldlc.r\) is the set of residuals.
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-146-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-148-1.pdf}
 
 Now the estimate of the effect is -4.7 mg/dL blood and the SE is only 0.88. In this two-stage analysis (stage 1: fit ldlc \textasciitilde{} age to get residuals, stage 2: fit residuals \textasciitilde{} treatment), we have \emph{eliminated the effect of age} on the variance of the response and, as a consequence, the estimate of the effect of the drug is much more precise -- the effect of \(treatment\) has a smaller standard error.
 
@@ -11192,11 +11224,11 @@ ldlc = \beta_0 + \beta_1 age + \beta_2 treatment + \varepsilon
 
 which results in the Harrell Plot
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-147-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-149-1.pdf}
 
 and the coefficient table
 
-\label{tab:unnamed-chunk-148}Coefficients of the model that includes the covariate age.
+\label{tab:unnamed-chunk-150}Coefficients of the model that includes the covariate age.
 
 Estimate
 
@@ -12391,7 +12423,7 @@ These can be combined into a single table using \texttt{rbind}
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-158-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-160-1.pdf}
 
 \hypertarget{plots-that-communicate-the-factorial-design}{%
 \subsubsection{Plots that communicate the factorial design}\label{plots-that-communicate-the-factorial-design}}
@@ -12538,7 +12570,7 @@ An interaction plot is an okay plot. It doesn't show the data, only a minimal, d
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-159-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-161-1.pdf}
 
 This effects plot shows the four simple effects, the single interaction (Temp18:CO21100), and their 95\% confidence intervals. In the original paper, the researchers were testing a scientific (not statistical!) model that predicted no interaction between CO2 and Temp, and the researchers argued that these data supported this model because of the ``not statistically significant'' \emph{p}-value for the interaction effect. The data are consistent with this model (one end of the 95\% CI for the interaction includes zero) but also support a model of a large, negative interaction (the other end of the 95\% CI includes large negative values). The data are too course (or the signal:noise ratio is to small) to have much confidence in the size of the interaction effect.
 
@@ -12555,7 +12587,7 @@ This effects plot shows the four simple effects, the single interaction (Temp18:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-160-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-162-1.pdf}
 
 The effects and interaction plot are combined into a single plot.
 
@@ -15224,7 +15256,7 @@ A plot of the dispersion statistic can be generated using the object returned by
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-182-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-184-1.pdf}
 
 \begin{verbatim}
 ## 

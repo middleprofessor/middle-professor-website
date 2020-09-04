@@ -218,6 +218,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="3.3.6" data-path="data-reading-wrangling-and-writing.html"><a href="data-reading-wrangling-and-writing.html#missing-data"><i class="fa fa-check"></i><b>3.3.6</b> Missing data</a></li>
 </ul></li>
 <li class="chapter" data-level="3.4" data-path="data-reading-wrangling-and-writing.html"><a href="data-reading-wrangling-and-writing.html#saving-data"><i class="fa fa-check"></i><b>3.4</b> Saving data</a></li>
+<li class="chapter" data-level="3.5" data-path="data-reading-wrangling-and-writing.html"><a href="data-reading-wrangling-and-writing.html#exercises-1"><i class="fa fa-check"></i><b>3.5</b> Exercises</a></li>
 </ul></li>
 <li class="chapter" data-level="4" data-path="plotting-models.html"><a href="plotting-models.html"><i class="fa fa-check"></i><b>4</b> Plotting Models</a><ul>
 <li class="chapter" data-level="4.1" data-path="plotting-models.html"><a href="plotting-models.html#pretty-good-plots-show-the-model-and-the-data"><i class="fa fa-check"></i><b>4.1</b> Pretty good plots show the model and the data</a><ul>
@@ -543,25 +544,25 @@ y_i &amp;\sim N(\mu_i, \sigma^2)\\
 <h3><span class="header-section-number">6.1.3</span> Comparing the two ways of specifying the linear model</h3>
 <p>These two ways of specifying the model encourage slightly different ways of thinking about how the data (the response varible <span class="math inline">\(Y\)</span>) were generated. The error-draw specification “generates” data by 1) constructing what <span class="math inline">\(y_i\)</span> “should be” given <span class="math inline">\(x_i\)</span> (this is the conditional expection), then 2) adding some error <span class="math inline">\(e_i\)</span> drawn from a normal distribution with mean zero and some specified variance. The conditional-draw specification “generates” data by 1) constructing what <span class="math inline">\(y_i\)</span> “should be” given <span class="math inline">\(x_i\)</span>, then 2) drawing a random variable from some specified distribution <em>whose mean is this expectation</em>. This random draw is not “error” but the measured value <span class="math inline">\(y_i\)</span>. For the error draw generation, we need only one hat of random numbers, but for the conditional draw generation, we need a hat for each value of <span class="math inline">\(x_i\)</span>.</p>
 <p>Here is a short script that generates data by implementing both the error-draw and condition-draw specifications.</p>
-<div class="sourceCode" id="cb211"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb211-1"><a href="an-introduction-to-statistical-modeling.html#cb211-1"></a>n &lt;-<span class="st"> </span><span class="dv">5</span></span>
-<span id="cb211-2"><a href="an-introduction-to-statistical-modeling.html#cb211-2"></a>b_<span class="dv">0</span> &lt;-<span class="st"> </span><span class="fl">10.0</span></span>
-<span id="cb211-3"><a href="an-introduction-to-statistical-modeling.html#cb211-3"></a>b_<span class="dv">1</span> &lt;-<span class="st"> </span><span class="fl">1.2</span></span>
-<span id="cb211-4"><a href="an-introduction-to-statistical-modeling.html#cb211-4"></a>sigma &lt;-<span class="st"> </span><span class="fl">0.4</span></span>
-<span id="cb211-5"><a href="an-introduction-to-statistical-modeling.html#cb211-5"></a>x &lt;-<span class="st"> </span><span class="dv">1</span><span class="op">:</span>n</span>
-<span id="cb211-6"><a href="an-introduction-to-statistical-modeling.html#cb211-6"></a>y_expected &lt;-<span class="st"> </span>b_<span class="dv">0</span> <span class="op">+</span><span class="st"> </span>b_<span class="dv">1</span><span class="op">*</span>x</span>
-<span id="cb211-7"><a href="an-introduction-to-statistical-modeling.html#cb211-7"></a></span>
-<span id="cb211-8"><a href="an-introduction-to-statistical-modeling.html#cb211-8"></a><span class="co"># error-draw. Note that the n draws are all from the same distribution</span></span>
-<span id="cb211-9"><a href="an-introduction-to-statistical-modeling.html#cb211-9"></a><span class="kw">set.seed</span>(<span class="dv">1</span>)</span>
-<span id="cb211-10"><a href="an-introduction-to-statistical-modeling.html#cb211-10"></a>y_error_draw &lt;-<span class="st"> </span>y_expected <span class="op">+</span><span class="st"> </span><span class="kw">rnorm</span>(n, <span class="dt">mean =</span> <span class="dv">0</span>, <span class="dt">sd =</span> sigma)</span>
-<span id="cb211-11"><a href="an-introduction-to-statistical-modeling.html#cb211-11"></a></span>
-<span id="cb211-12"><a href="an-introduction-to-statistical-modeling.html#cb211-12"></a><span class="co"># conditional-draw. Note that the n draws are each from a different</span></span>
-<span id="cb211-13"><a href="an-introduction-to-statistical-modeling.html#cb211-13"></a><span class="co"># distribution because each has a different mean.</span></span>
-<span id="cb211-14"><a href="an-introduction-to-statistical-modeling.html#cb211-14"></a><span class="kw">set.seed</span>(<span class="dv">1</span>)</span>
-<span id="cb211-15"><a href="an-introduction-to-statistical-modeling.html#cb211-15"></a>y_conditional_draw &lt;-<span class="st"> </span><span class="kw">rnorm</span>(n, <span class="dt">mean =</span> y_expected, <span class="dt">sd =</span> sigma)</span>
-<span id="cb211-16"><a href="an-introduction-to-statistical-modeling.html#cb211-16"></a></span>
-<span id="cb211-17"><a href="an-introduction-to-statistical-modeling.html#cb211-17"></a><span class="kw">data.table</span>(<span class="dt">X =</span> x,</span>
-<span id="cb211-18"><a href="an-introduction-to-statistical-modeling.html#cb211-18"></a>           <span class="st">&quot;Y (error draw)&quot;</span> =<span class="st"> </span>y_error_draw,</span>
-<span id="cb211-19"><a href="an-introduction-to-statistical-modeling.html#cb211-19"></a>           <span class="st">&quot;Y (conditional draw)&quot;</span> =<span class="st"> </span>y_conditional_draw)</span></code></pre></div>
+<div class="sourceCode" id="cb209"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb209-1"><a href="an-introduction-to-statistical-modeling.html#cb209-1"></a>n &lt;-<span class="st"> </span><span class="dv">5</span></span>
+<span id="cb209-2"><a href="an-introduction-to-statistical-modeling.html#cb209-2"></a>b_<span class="dv">0</span> &lt;-<span class="st"> </span><span class="fl">10.0</span></span>
+<span id="cb209-3"><a href="an-introduction-to-statistical-modeling.html#cb209-3"></a>b_<span class="dv">1</span> &lt;-<span class="st"> </span><span class="fl">1.2</span></span>
+<span id="cb209-4"><a href="an-introduction-to-statistical-modeling.html#cb209-4"></a>sigma &lt;-<span class="st"> </span><span class="fl">0.4</span></span>
+<span id="cb209-5"><a href="an-introduction-to-statistical-modeling.html#cb209-5"></a>x &lt;-<span class="st"> </span><span class="dv">1</span><span class="op">:</span>n</span>
+<span id="cb209-6"><a href="an-introduction-to-statistical-modeling.html#cb209-6"></a>y_expected &lt;-<span class="st"> </span>b_<span class="dv">0</span> <span class="op">+</span><span class="st"> </span>b_<span class="dv">1</span><span class="op">*</span>x</span>
+<span id="cb209-7"><a href="an-introduction-to-statistical-modeling.html#cb209-7"></a></span>
+<span id="cb209-8"><a href="an-introduction-to-statistical-modeling.html#cb209-8"></a><span class="co"># error-draw. Note that the n draws are all from the same distribution</span></span>
+<span id="cb209-9"><a href="an-introduction-to-statistical-modeling.html#cb209-9"></a><span class="kw">set.seed</span>(<span class="dv">1</span>)</span>
+<span id="cb209-10"><a href="an-introduction-to-statistical-modeling.html#cb209-10"></a>y_error_draw &lt;-<span class="st"> </span>y_expected <span class="op">+</span><span class="st"> </span><span class="kw">rnorm</span>(n, <span class="dt">mean =</span> <span class="dv">0</span>, <span class="dt">sd =</span> sigma)</span>
+<span id="cb209-11"><a href="an-introduction-to-statistical-modeling.html#cb209-11"></a></span>
+<span id="cb209-12"><a href="an-introduction-to-statistical-modeling.html#cb209-12"></a><span class="co"># conditional-draw. Note that the n draws are each from a different</span></span>
+<span id="cb209-13"><a href="an-introduction-to-statistical-modeling.html#cb209-13"></a><span class="co"># distribution because each has a different mean.</span></span>
+<span id="cb209-14"><a href="an-introduction-to-statistical-modeling.html#cb209-14"></a><span class="kw">set.seed</span>(<span class="dv">1</span>)</span>
+<span id="cb209-15"><a href="an-introduction-to-statistical-modeling.html#cb209-15"></a>y_conditional_draw &lt;-<span class="st"> </span><span class="kw">rnorm</span>(n, <span class="dt">mean =</span> y_expected, <span class="dt">sd =</span> sigma)</span>
+<span id="cb209-16"><a href="an-introduction-to-statistical-modeling.html#cb209-16"></a></span>
+<span id="cb209-17"><a href="an-introduction-to-statistical-modeling.html#cb209-17"></a><span class="kw">data.table</span>(<span class="dt">X =</span> x,</span>
+<span id="cb209-18"><a href="an-introduction-to-statistical-modeling.html#cb209-18"></a>           <span class="st">&quot;Y (error draw)&quot;</span> =<span class="st"> </span>y_error_draw,</span>
+<span id="cb209-19"><a href="an-introduction-to-statistical-modeling.html#cb209-19"></a>           <span class="st">&quot;Y (conditional draw)&quot;</span> =<span class="st"> </span>y_conditional_draw)</span></code></pre></div>
 <pre><code>##    X Y (error draw) Y (conditional draw)
 ## 1: 1       10.94942             10.94942
 ## 2: 2       12.47346             12.47346

@@ -218,6 +218,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="3.3.6" data-path="data-reading-wrangling-and-writing.html"><a href="data-reading-wrangling-and-writing.html#missing-data"><i class="fa fa-check"></i><b>3.3.6</b> Missing data</a></li>
 </ul></li>
 <li class="chapter" data-level="3.4" data-path="data-reading-wrangling-and-writing.html"><a href="data-reading-wrangling-and-writing.html#saving-data"><i class="fa fa-check"></i><b>3.4</b> Saving data</a></li>
+<li class="chapter" data-level="3.5" data-path="data-reading-wrangling-and-writing.html"><a href="data-reading-wrangling-and-writing.html#exercises-1"><i class="fa fa-check"></i><b>3.5</b> Exercises</a></li>
 </ul></li>
 <li class="chapter" data-level="4" data-path="plotting-models.html"><a href="plotting-models.html"><i class="fa fa-check"></i><b>4</b> Plotting Models</a><ul>
 <li class="chapter" data-level="4.1" data-path="plotting-models.html"><a href="plotting-models.html#pretty-good-plots-show-the-model-and-the-data"><i class="fa fa-check"></i><b>4.1</b> Pretty good plots show the model and the data</a><ul>
@@ -498,16 +499,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
             <section class="normal" id="section-">
 <div id="model-checking" class="section level1">
 <h1><span class="header-section-number">Chapter 9</span> Model Checking</h1>
-<div class="sourceCode" id="cb258"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb258-1"><a href="model-checking.html#cb258-1"></a><span class="co"># a function to transform a vector into quantiles</span></span>
-<span id="cb258-2"><a href="model-checking.html#cb258-2"></a><span class="co"># not if the data are 1:n then the output is &quot;rankits&quot;</span></span>
-<span id="cb258-3"><a href="model-checking.html#cb258-3"></a>quantilize_<span class="dv">1</span> &lt;-<span class="st"> </span><span class="cf">function</span>(x){</span>
-<span id="cb258-4"><a href="model-checking.html#cb258-4"></a>  <span class="co"># this is the ppoints(x) function</span></span>
-<span id="cb258-5"><a href="model-checking.html#cb258-5"></a>  m &lt;-<span class="st"> </span><span class="kw">length</span>(x)</span>
-<span id="cb258-6"><a href="model-checking.html#cb258-6"></a>  s &lt;-<span class="st"> </span><span class="kw">trunc</span>(<span class="kw">rank</span>(x))</span>
-<span id="cb258-7"><a href="model-checking.html#cb258-7"></a>  a &lt;-<span class="st"> </span><span class="kw">ifelse</span>(m <span class="op">&lt;=</span><span class="st"> </span><span class="dv">10</span>, <span class="dv">3</span><span class="op">/</span><span class="dv">8</span>, <span class="dv">1</span><span class="op">/</span><span class="dv">2</span>)</span>
-<span id="cb258-8"><a href="model-checking.html#cb258-8"></a>  q &lt;-<span class="st"> </span>(s<span class="op">-</span>a)<span class="op">/</span>(m <span class="op">+</span><span class="st"> </span>(<span class="dv">1</span><span class="op">-</span>a) <span class="op">-</span><span class="st"> </span>a)</span>
-<span id="cb258-9"><a href="model-checking.html#cb258-9"></a>  <span class="kw">return</span>(q)</span>
-<span id="cb258-10"><a href="model-checking.html#cb258-10"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb256"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb256-1"><a href="model-checking.html#cb256-1"></a><span class="co"># a function to transform a vector into quantiles</span></span>
+<span id="cb256-2"><a href="model-checking.html#cb256-2"></a><span class="co"># not if the data are 1:n then the output is &quot;rankits&quot;</span></span>
+<span id="cb256-3"><a href="model-checking.html#cb256-3"></a>quantilize_<span class="dv">1</span> &lt;-<span class="st"> </span><span class="cf">function</span>(x){</span>
+<span id="cb256-4"><a href="model-checking.html#cb256-4"></a>  <span class="co"># this is the ppoints(x) function</span></span>
+<span id="cb256-5"><a href="model-checking.html#cb256-5"></a>  m &lt;-<span class="st"> </span><span class="kw">length</span>(x)</span>
+<span id="cb256-6"><a href="model-checking.html#cb256-6"></a>  s &lt;-<span class="st"> </span><span class="kw">trunc</span>(<span class="kw">rank</span>(x))</span>
+<span id="cb256-7"><a href="model-checking.html#cb256-7"></a>  a &lt;-<span class="st"> </span><span class="kw">ifelse</span>(m <span class="op">&lt;=</span><span class="st"> </span><span class="dv">10</span>, <span class="dv">3</span><span class="op">/</span><span class="dv">8</span>, <span class="dv">1</span><span class="op">/</span><span class="dv">2</span>)</span>
+<span id="cb256-8"><a href="model-checking.html#cb256-8"></a>  q &lt;-<span class="st"> </span>(s<span class="op">-</span>a)<span class="op">/</span>(m <span class="op">+</span><span class="st"> </span>(<span class="dv">1</span><span class="op">-</span>a) <span class="op">-</span><span class="st"> </span>a)</span>
+<span id="cb256-9"><a href="model-checking.html#cb256-9"></a>  <span class="kw">return</span>(q)</span>
+<span id="cb256-10"><a href="model-checking.html#cb256-10"></a>}</span></code></pre></div>
 <div id="do-coefficients-make-numeric-sense" class="section level2">
 <h2><span class="header-section-number">9.1</span> Do coefficients make numeric sense?</h2>
 </div>
@@ -595,28 +596,28 @@ y_i &amp;\sim N(\mu_i, \sigma)\\
 <div id="excess-zeroes" class="section level4">
 <h4><span class="header-section-number">9.4.2.2</span> Excess zeroes</h4>
 <p>Count data often have an excess of zeroes (for example a lake with no nests or a host with no parasites), resulting in positive deviations (closer to zero) at the lower end of the quantile range.</p>
-<div class="sourceCode" id="cb259"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb259-1"><a href="model-checking.html#cb259-1"></a><span class="co"># zero inflated</span></span>
-<span id="cb259-2"><a href="model-checking.html#cb259-2"></a>mu_pois &lt;-<span class="st"> </span><span class="fl">2.7</span></span>
-<span id="cb259-3"><a href="model-checking.html#cb259-3"></a>beta_pois &lt;-<span class="st"> </span><span class="dv">2</span></span>
-<span id="cb259-4"><a href="model-checking.html#cb259-4"></a>p_zero &lt;-<span class="st"> </span><span class="fl">0.3</span></span>
-<span id="cb259-5"><a href="model-checking.html#cb259-5"></a></span>
-<span id="cb259-6"><a href="model-checking.html#cb259-6"></a>fd.zipois &lt;-<span class="st"> </span><span class="kw">data.table</span>(</span>
-<span id="cb259-7"><a href="model-checking.html#cb259-7"></a>  <span class="dt">Treatment=</span><span class="kw">rep</span>(<span class="kw">c</span>(<span class="st">&quot;Cn&quot;</span>, <span class="st">&quot;Tr&quot;</span>), <span class="dt">each=</span>n),</span>
-<span id="cb259-8"><a href="model-checking.html#cb259-8"></a>  <span class="dt">Response=</span><span class="kw">c</span>(SpiecEasi<span class="op">::</span><span class="kw">rzipois</span>(n, <span class="dt">lambda =</span> mu_pois, <span class="dt">pstr0 =</span> p_zero), SpiecEasi<span class="op">::</span><span class="kw">rzipois</span>(n, <span class="dt">lambda =</span> (mu_pois<span class="op">+</span>beta_pois), <span class="dt">pstr0 =</span> p_zero))</span>
-<span id="cb259-9"><a href="model-checking.html#cb259-9"></a>)</span>
-<span id="cb259-10"><a href="model-checking.html#cb259-10"></a>m1 &lt;-<span class="st"> </span><span class="kw">lm</span>(Response <span class="op">~</span><span class="st"> </span>Treatment, <span class="dt">data=</span>fd.zipois)</span>
-<span id="cb259-11"><a href="model-checking.html#cb259-11"></a>fd.zipois[, Residual<span class="op">:</span><span class="er">=</span><span class="kw">residuals</span>(m1)]</span>
-<span id="cb259-12"><a href="model-checking.html#cb259-12"></a>gg1.zipois &lt;-<span class="st"> </span><span class="kw">gghistogram</span>(<span class="dt">data=</span>fd.zipois, <span class="dt">x =</span> <span class="st">&quot;Response&quot;</span>,</span>
-<span id="cb259-13"><a href="model-checking.html#cb259-13"></a>                          <span class="dt">color=</span><span class="st">&quot;Treatment&quot;</span>, <span class="dt">fill=</span><span class="st">&quot;Treatment&quot;</span>,</span>
-<span id="cb259-14"><a href="model-checking.html#cb259-14"></a>                          <span class="dt">add =</span> <span class="st">&quot;mean&quot;</span>, <span class="dt">rug =</span> <span class="ot">FALSE</span>,</span>
-<span id="cb259-15"><a href="model-checking.html#cb259-15"></a>                          <span class="dt">bins=</span><span class="dv">9</span>,</span>
-<span id="cb259-16"><a href="model-checking.html#cb259-16"></a>                          <span class="dt">palette =</span> <span class="kw">c</span>(<span class="st">&quot;#00AFBB&quot;</span>, <span class="st">&quot;#E7B800&quot;</span>)</span>
-<span id="cb259-17"><a href="model-checking.html#cb259-17"></a>)</span>
-<span id="cb259-18"><a href="model-checking.html#cb259-18"></a></span>
-<span id="cb259-19"><a href="model-checking.html#cb259-19"></a>gg3.zipois &lt;-<span class="st"> </span><span class="kw">ggqqplot</span>(<span class="dt">data=</span>fd.zipois, <span class="dt">x =</span> <span class="st">&quot;Residual&quot;</span>, <span class="dt">title=</span><span class="st">&quot;zero-inflated poisson&quot;</span>)</span>
-<span id="cb259-20"><a href="model-checking.html#cb259-20"></a></span>
-<span id="cb259-21"><a href="model-checking.html#cb259-21"></a>gg3.zipois</span></code></pre></div>
-<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/unnamed-chunk-134-1.png" width="576" /></p>
+<div class="sourceCode" id="cb257"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb257-1"><a href="model-checking.html#cb257-1"></a><span class="co"># zero inflated</span></span>
+<span id="cb257-2"><a href="model-checking.html#cb257-2"></a>mu_pois &lt;-<span class="st"> </span><span class="fl">2.7</span></span>
+<span id="cb257-3"><a href="model-checking.html#cb257-3"></a>beta_pois &lt;-<span class="st"> </span><span class="dv">2</span></span>
+<span id="cb257-4"><a href="model-checking.html#cb257-4"></a>p_zero &lt;-<span class="st"> </span><span class="fl">0.3</span></span>
+<span id="cb257-5"><a href="model-checking.html#cb257-5"></a></span>
+<span id="cb257-6"><a href="model-checking.html#cb257-6"></a>fd.zipois &lt;-<span class="st"> </span><span class="kw">data.table</span>(</span>
+<span id="cb257-7"><a href="model-checking.html#cb257-7"></a>  <span class="dt">Treatment=</span><span class="kw">rep</span>(<span class="kw">c</span>(<span class="st">&quot;Cn&quot;</span>, <span class="st">&quot;Tr&quot;</span>), <span class="dt">each=</span>n),</span>
+<span id="cb257-8"><a href="model-checking.html#cb257-8"></a>  <span class="dt">Response=</span><span class="kw">c</span>(SpiecEasi<span class="op">::</span><span class="kw">rzipois</span>(n, <span class="dt">lambda =</span> mu_pois, <span class="dt">pstr0 =</span> p_zero), SpiecEasi<span class="op">::</span><span class="kw">rzipois</span>(n, <span class="dt">lambda =</span> (mu_pois<span class="op">+</span>beta_pois), <span class="dt">pstr0 =</span> p_zero))</span>
+<span id="cb257-9"><a href="model-checking.html#cb257-9"></a>)</span>
+<span id="cb257-10"><a href="model-checking.html#cb257-10"></a>m1 &lt;-<span class="st"> </span><span class="kw">lm</span>(Response <span class="op">~</span><span class="st"> </span>Treatment, <span class="dt">data=</span>fd.zipois)</span>
+<span id="cb257-11"><a href="model-checking.html#cb257-11"></a>fd.zipois[, Residual<span class="op">:</span><span class="er">=</span><span class="kw">residuals</span>(m1)]</span>
+<span id="cb257-12"><a href="model-checking.html#cb257-12"></a>gg1.zipois &lt;-<span class="st"> </span><span class="kw">gghistogram</span>(<span class="dt">data=</span>fd.zipois, <span class="dt">x =</span> <span class="st">&quot;Response&quot;</span>,</span>
+<span id="cb257-13"><a href="model-checking.html#cb257-13"></a>                          <span class="dt">color=</span><span class="st">&quot;Treatment&quot;</span>, <span class="dt">fill=</span><span class="st">&quot;Treatment&quot;</span>,</span>
+<span id="cb257-14"><a href="model-checking.html#cb257-14"></a>                          <span class="dt">add =</span> <span class="st">&quot;mean&quot;</span>, <span class="dt">rug =</span> <span class="ot">FALSE</span>,</span>
+<span id="cb257-15"><a href="model-checking.html#cb257-15"></a>                          <span class="dt">bins=</span><span class="dv">9</span>,</span>
+<span id="cb257-16"><a href="model-checking.html#cb257-16"></a>                          <span class="dt">palette =</span> <span class="kw">c</span>(<span class="st">&quot;#00AFBB&quot;</span>, <span class="st">&quot;#E7B800&quot;</span>)</span>
+<span id="cb257-17"><a href="model-checking.html#cb257-17"></a>)</span>
+<span id="cb257-18"><a href="model-checking.html#cb257-18"></a></span>
+<span id="cb257-19"><a href="model-checking.html#cb257-19"></a>gg3.zipois &lt;-<span class="st"> </span><span class="kw">ggqqplot</span>(<span class="dt">data=</span>fd.zipois, <span class="dt">x =</span> <span class="st">&quot;Residual&quot;</span>, <span class="dt">title=</span><span class="st">&quot;zero-inflated poisson&quot;</span>)</span>
+<span id="cb257-20"><a href="model-checking.html#cb257-20"></a></span>
+<span id="cb257-21"><a href="model-checking.html#cb257-21"></a>gg3.zipois</span></code></pre></div>
+<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/unnamed-chunk-136-1.png" width="576" /></p>
 </div>
 <div id="constrained-lower-and-upper-bounds" class="section level4">
 <h4><span class="header-section-number">9.4.2.3</span> Constrained lower and upper bounds</h4>
