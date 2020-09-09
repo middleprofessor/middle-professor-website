@@ -737,7 +737,7 @@ For the experiments in Figure 2, the researchers created mice in which the ASK1 
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{knitr}\OperatorTok{::}\NormalTok{opts_chunk}\OperatorTok{$}\KeywordTok{set}\NormalTok{(}\DataTypeTok{echo =} \OtherTok{TRUE}\NormalTok{)}
+\NormalTok{knitr}\OperatorTok{::}\NormalTok{opts_chunk}\OperatorTok{$}\KeywordTok{set}\NormalTok{(}\DataTypeTok{echo =} \OtherTok{TRUE}\NormalTok{, }\DataTypeTok{warning=}\OtherTok{FALSE}\NormalTok{, }\DataTypeTok{message=}\OtherTok{FALSE}\NormalTok{)}
 
 \CommentTok{# wrangling packages}
 \KeywordTok{library}\NormalTok{(here)}
@@ -774,7 +774,7 @@ This chunk assigns the path to the Excel data file for all panels of Figure 2. T
 \begin{Highlighting}[]
 \NormalTok{data_folder <-}\StringTok{ "ASK1 inhibits browning of white adipose tissue in obesity"}
 \NormalTok{file_name <-}\StringTok{ "41467_2020_15483_MOESM4_ESM.xlsx"}
-\NormalTok{file_path <-}\StringTok{ }\NormalTok{here}\OperatorTok{::}\KeywordTok{here}\NormalTok{(data_path, data_folder, file_name)}
+\NormalTok{file_path <-}\StringTok{ }\KeywordTok{here}\NormalTok{(data_path, data_folder, file_name)}
   
 \NormalTok{fig_}\DecValTok{2}\NormalTok{_sheet <-}\StringTok{ "Source Date_Figure 2"}
 \end{Highlighting}
@@ -4682,64 +4682,8 @@ Let's look at the confidence intervals of all three vole groups in light of the 
 \chapter*{Part V: Introduction to Linear Models}\label{part-v-introduction-to-linear-models}}
 \addcontentsline{toc}{chapter}{Part V: Introduction to Linear Models}
 
-\hypertarget{an-introduction-to-statistical-modeling}{%
-\chapter{An Introduction to Statistical Modeling}\label{an-introduction-to-statistical-modeling}}
-
-\hypertarget{this-text-is-about-the-estimation-of-treatment-effects-and-the-uncertainty-in-our-estimates.-this-raises-the-question-what-is-an-effect-1}{%
-\section{This text is about the estimation of treatment effects and the uncertainty in our estimates. This, raises the question, what is ``an effect''?}\label{this-text-is-about-the-estimation-of-treatment-effects-and-the-uncertainty-in-our-estimates.-this-raises-the-question-what-is-an-effect-1}}
-
-Chapter 1 introduced a completed R Markdown document for a set of experiments on the consequences of deletion of the ASK1 signaling protein on diet-induced obesity and glucose and fat metabolism in mice. Let's think about the goal of the statistical analyses of these data, using the experiment in Figure 2e as our focus.
-
-\begin{figure}
-\centering
-\includegraphics{/Users/jwalker/Documents/Github projects/Bookdown projects/applied-biostats/images/ask1_fig2d,e.png}
-\caption{\label{fig:statistical-model-gtt}A. Blood glucose levels at each time point in each mouse. B. Average post-baseline blood glucose adjusted for baseline value. Unadjusted p-values are from the model mean\_glucose \textasciitilde{} baseline + ask1 + diet + ask1:diet.}
-\end{figure}
-
-After a meal rich in glucose, blood glucose levels rise from their fasting level to a peak as glucose is transported from the intestine into the blood. The hormone insulin signals muscle and adipose cells to take up this glucose. The consequence of this transport is, over a period of about two hours, blood glucose levels return to fasting levels. In the experiment for Figure 2e, instead of introducing glucose through the mouth, the researchers injected glucose into the peritoneal cavity, which surrounds the organs of the abdomen. From the peritoneal cavity, glucose diffused into the blood. Blood glucose levels were measured immediately prior to the peritoneal injection, and 15, 30, 45, 60, 90, and 120 minutes after injection. The initial, pre-injection measure is the \textbf{baseline measure}. My version of the glucose level at these time points is shown above in Figure \ref{fig:statistical-model-gtt}A.
-
-The researchers used this experiment to explore the consequence of ASK1 knockout on glucose tolerance -- a high initial maximum and a slow decline are indicators of glucose intolerance. A researcher could compare many features of the glucose curves in Figure \ref{fig:statistical-model-gtt}A, including the magnitude of the initial maximum or the rate of decline. The researchers used the area under the curve(AUC) for each mouse as a summary measure of glucose processing. A better measure would be the AUC of only the post-baseline time points, because (1) only the post-baseline values reflect the differential response to blood glucose and (2) comparing post-baseline values avoids a phenomenon called \textbf{regression to the mean}, which is covered in the chapter on ``Adding covariates to a linear model''. And, because AUC is in units (mmol/L minutes) that aren't especially meaningful, a better measure is the average glucose level over the post-baseline time period, which is computed as the post-baseline AUC divided by the post-baseline duration (115 minutes).
-
-Some questions a researcher might be interested in with this experiment are
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\item
-  When on a high fat diet, does knocking out ASK1 improve glucose tolerance relative to functional ASK1? If there really is an improvement in glucose tolerance in the ASK1 knockout, then we expect the mean post-baseline level of the ASK1 mice to be smaller than the mean post-baseline level of the control mice. That is, we expect a difference in means. A difference in the response of a variable to a treatment is called an \textbf{effect}. At this level of inquiry, a researcher is asking only does an effect exist, and what is the sign (does ASK1 knockout improve or decrease glucose tolerance?) and not the magnitude of the effect (does ASK1 knock improve glucose tolerance greatly, moderately or trivially?). For this kind of question, we can use a \textbf{signficiance test}, which generates a \textbf{test-statistic} and a \textbf{p-value}. This kind of query is the minimal level of knowledge for understanding a system. It can be used to identifying the agents in a system but not much about the dynamics of the system.
-\item
-  When on a high fat diet, how much does the knockout of ASK1 improve glucose tolerance, relative to mice with functional ASK1? For this kind of question, we want to \textbf{estimate the true effect} (that is, estimate its magnitude and sign) and we want a measure of our uncertainty in this estimate. A \textbf{standard error of the difference in means} is a measure of the precision of our estimate and can be used to compute a \textbf{confidence interval of the difference in means}, which is a measure of uncertainty. With an estimate of the magnitude of the true effect, a researcher can begin to compare the importance of different agents in a system, to know which might be the targets of intervention, for example. In a heavily competitive grant environment, demonstrating that the focus of the research (ASK1) not only has an effect, but has a large effect (relative to other potential agents), should be an important consideration for any funding decision.
-\item
-  When on a high fat diet, what is the dose-response relationship between ASK1 activity level (how much is active?) and the rate of glucose clearance? In a real system, the level of a signaling molecule like ASK1 in a cell is not ``all or none'' but is continuous, from something low to something high. To understand the dynamics of ASK1 within the larger signaling system controlling browning of white adipose tissue cells, researchers need to know the expected blood glucose \textbf{conditional on} the concentration of ASK1. For this kind of query, a researcher fits a curve (potentially non-linear) and the slope of the curve at any level of ASK1 is the effect. The effect is the difference in mean glucose per unit difference in ASK1. Reserchers can use these effect estimates as \textbf{parameters} in quantitative models of a system in order to predict how a system behaves given different kinds of interventions.
-\end{enumerate}
-
-Inquiry level 3 requires a specific kind of experimental design (what is called a \textbf{regression design}), so needs to be planned in advance. Inquiry level 2 is strongly advocated in this text and elsewhere because it addresses why we should \emph{care} about a result -- is this difference important in the system and worth the time and money in this lab, or is it trivial and should be discarded in favor of pursuing more important agents in this system? Almost all research in experimental biology communicates results at inquiry level 1 only, but a researcher can always add estimates of treatment effects and the uncertainty in these estimates. For some experiments, estimates of the magnitude of an effect are not very meaningful or useful because the response variable is measured with a tool that doesn't have very meaningful units (for example ``intensity'' of a scanned gel). Ideally, these non-meaningful units can be turned into something meaningful (amount of protein). If they cannot (or are not), then inquiry level 1 is an appropriate level for communication of the result.
-
-A summary of this:
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\tightlist
-\item
-  Inquiry level 1: Is there an effect? If so, what is the direction? -- this is the classic hypothesis testing strategy
-\item
-  Inquiry level 2: How big is the effect? Is it big enough to want to study it? -- this requires additional analysis than level 1, the estimation of effects and of the uncertainty in the effect.
-\item
-  Inquiry level 3: How does the response change with incremental change in the treatment? -- this is analyzed as in level 2 but also requires a regression design.
-\end{enumerate}
-
-This book is about the estimation of effects of experimental treatments using linear models. It may seem strange to have to use a linear model to estimate an effect -- if an effect is a difference in means, why not just compute the means and the difference in means using elementary school math and call it a day. My answer has two parts
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\tightlist
-\item
-  With simple experimental designs, a researcher can estimate the effect by simply computing the difference between two means. But there's not much a researcher can do with this number. In order to move forward with any kind of \textbf{inference}, such as estimating the standard errors of the means, or of computing \emph{p}-values, a researcher needs a statistical model.
-\item
-  In anything other than the simple experimental designs, an effect computed from the raw means between treatment groups can give a less precise or even a misleading estimate of the estimate. Instead of raw means, what we need are \textbf{conditional means} estimated from a statistical model. An example is the means of the groups in Figure \ref{fig:statistical-model-gtt}B, which are \textbf{adjusted} for the baseline glucose values.
-\end{enumerate}
-
 \hypertarget{an-introduction-to-linear-models}{%
-\section{An introduction to linear models}\label{an-introduction-to-linear-models}}
+\chapter{An Introduction to Linear Models}\label{an-introduction-to-linear-models}}
 
 This chapter introduces statistical modeling using the \textbf{linear model}. All students are familiar with the idea of a linear model from learning the equation of a line, which is
 
