@@ -124,7 +124,7 @@
   \postauthor{\par}
       \predate{\centering\large\emph}
   \postdate{\par}
-    \date{Draft: 2020-09-14}
+    \date{Draft: 2020-09-24}
 
 \usepackage{booktabs}
 \usepackage{amsthm}
@@ -2109,40 +2109,40 @@ A linear model is a function, like that in equation \eqref{eq:line}, that is fit
 \hypertarget{the-error-draw-specification}{%
 \subsection{The ``error draw'' specification}\label{the-error-draw-specification}}
 
-A linear model is commonly specified using
+A linear model is commonly specified using an ``measurement error model''.
 
 \begin{align}
 Y &= \beta_0 + \beta_1 X + \varepsilon\\
 \varepsilon &\sim N(0, \sigma^2)
-\label{eq:lm}
+\label{eq:error-spec}
 \end{align}
 
 The first line of this specification has two components: the \textbf{linear predictor} \(Y = \beta_0 + \beta_1 X\) and the \textbf{error} \(\varepsilon\). The linear predictor component looks like the equation for a line except that 1) \(\beta_0\) is used for the intercept and \(\beta_1\) for the slope and 2) the intercept term precedes the slope term. This re-labeling and re-arrangement make the notation for a linear model more flexible for more complicated linear models. For example \(Y = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \varepsilon\) is a model where \(Y\) is a function of two \(X\) variables.
 
 The linear predictor is deterministic or \textbf{systematic}. As with the equation for a line, the linear predictor component of a linear model is a function that maps a specific value of \(X\) to a value of \(Y\). This mapped value is the \textbf{expected value}, or expectation, given a specific input value of \(X\). This is often written as \(\mathrm{E}[Y|X]\), which is read as ``the expected value of \(Y\) given \(X\)'', where ``given X'' means a specific value of X. This text will often use the word \textbf{conditional} in place of ``given''. For example, I would read \(\mathrm{E}[Y|X]\) as ``the expected value of \(Y\) conditional on \(X\)''. It is important to recognize that \(\mathrm{E}[Y|X]\) is a \textbf{conditional mean} -- it is the mean value of \(Y\) when we observe that \(X\) has some specific value \(x\) (that is \(X = x\)).
 
-The second line of the specification \eqref{eq:lm} is read as ``epsilon is distributed as Normal with mean zero and variance sigma squared''. This line explicitly specifies the distribution of the error component of line 1. The error component of a linear model is a random ``draw'' from a normal distribution with mean zero and variance \(\sigma^2\). The second line shows that the error component of the first line is \textbf{stochastic}. Using the error-draw specification, we can think of any measurement of \(Y\) as an expected value plus some random value sampled from a specific distribution.
+The second line of the specification \eqref{eq:error-spec} is read as ``epsilon is distributed as Normal with mean zero and variance sigma squared''. This line explicitly specifies the distribution of the error component of line 1. The error component of a linear model is a random ``draw'' from a normal distribution with mean zero and variance \(\sigma^2\). The second line shows that the error component of the first line is \textbf{stochastic}. Using the error-model specification, we can think of any measurement of \(Y\) as an expected value plus some random value sampled from a normal distribution with a specified variance. Because the stochastic part of this specification draws an ``error'' from a population, I refer to this as the \textbf{error-draw} specification of the linear model.
 
 \hypertarget{the-conditional-draw-specification}{%
 \subsection{The ``conditional draw'' specification}\label{the-conditional-draw-specification}}
 
-A second way of specifying a linear model is
+A second way of specifying a linear model is using a ``sampling model''.
 
 \begin{align}
 y_i &\sim N(\mu_i, \sigma^2)\\
 \mathrm{E}(Y|X) &= \mu\\
 \mu_i &= \beta_0 + \beta_1 x_i
-\label{eq:lm-spec2}
+\label{eq:draw-spec}
 \end{align}
 
-The first line states that the response variable \(Y\) is a random variable independently drawn from a normal distribution with mean \(\mu\) and variance \(\sigma^2\). This first line is the \textbf{stochastic} part of the statistical model. The second line simply states that \(\mu\) (the greek letter ``mu'') from the first line is the conditional mean or conditional expectation. The third line states how \(\mu_i\) is generated given that \(X=x_i\). This is the linear predictor, which is the \textbf{systematic} (or deterministic) part of the statistical model. It is systematic because the same value of \(x_i\) will always generate the same \(\mu_i\).
+The first line states that the response variable \(Y\) is a random variable independently drawn from a normal distribution with mean \(\mu\) and variance \(\sigma^2\). This first line is the \textbf{stochastic} part of the statistical model. The second line simply states that \(\mu\) (the greek letter ``mu'') from the first line is the conditional mean (or expectation). The third line states how \(\mu_i\) is generated given that \(X=x_i\). This is the linear predictor, which is the \textbf{systematic} (or deterministic) part of the statistical model. It is systematic because the same value of \(x_i\) will always generate the same \(\mu_i\). Using the sampling-draw specification, we can think of any measurement of \(Y\) as a random drom from a specified distribution. Because it is \(Y\) and not some ``error'' that is drawn from a specified distribution, I refer to this as the \textbf{conditional-draw} specification of the linear model.
 
 \hypertarget{comparing-the-two-ways-of-specifying-the-linear-model}{%
 \subsection{Comparing the two ways of specifying the linear model}\label{comparing-the-two-ways-of-specifying-the-linear-model}}
 
 These two ways of specifying the model encourage slightly different ways of thinking about how the data (the response varible \(Y\)) were generated. The error-draw specification ``generates'' data by 1) constructing what \(y_i\) ``should be'' given \(x_i\) (this is the conditional expection), then 2) adding some error \(e_i\) drawn from a normal distribution with mean zero and some specified variance. The conditional-draw specification ``generates'' data by 1) constructing what \(y_i\) ``should be'' given \(x_i\), then 2) drawing a random variable from some specified distribution \emph{whose mean is this expectation}. This random draw is not ``error'' but the measured value \(y_i\). For the error draw generation, we need only one hat of random numbers, but for the conditional draw generation, we need a hat for each value of \(x_i\).
 
-Here is a short script that generates data by implementing both the error-draw and condition-draw specifications.
+Here is a short script that generates data by implementing both the error-draw and conditional-draw specifications. See if you can follow the logic of the code and match it to the meaning of these two ways of specifying a linear model.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -2177,9 +2177,44 @@ Here is a short script that generates data by implementing both the error-draw a
 ## 5: 5       16.13180             16.13180
 \end{verbatim}
 
-The error-draw specification is not useful for thinking about data generation for data analyzed by generalized linear models, which are models that allow one to specify distribution families other than Normal (such as the binomial, Poisson, and Gamma families). In fact, thinking about a model as a predictor plus error can lead to the misconception that in a generalized linear model, the error (or residuals from the fit) has a distribution from the non-Normal distribution modeled. This cannot be true because the distributions modeled using generalized linear models (other than the Normal) do not have negative values (some residuals must have negative values since the mean of the residuals is zero). Introductory biostatistics textbooks typically only introduce the error-draw specification because introductory textbooks recommend data transformation or non-parametric tests if the data are not approximately normal. This is unfortunate because generalized linear models are extremely useful for real biological data.
+The error-draw specification is not very useful for thinking about data generation for data analyzed by generalized linear models, which are models that allow one to specify distribution families other than Normal (such as the binomial, Poisson, and Gamma families). In fact, thinking about a model as a predictor plus error can lead to the misconception that in a generalized linear model, the error (or residuals from the fit) has a distribution from the non-Normal distribution modeled. This cannot be true because the distributions modeled using generalized linear models (other than the Normal) do not have negative values (some residuals must have negative values since the mean of the residuals is zero). Introductory biostatistics textbooks typically only introduce the error-draw specification because introductory textbooks recommend data transformation or non-parametric tests if the data are not approximately normal. This is unfortunate because generalized linear models are extremely useful for real biological data.
 
 Although a linear model (or statistical model more generally) is a model of a data-generating process, linear models are not typically used to actually generate any data. Instead, when we use a linear model to understand something about a real dataset, we think of our data as one realization of a process that generates data like ours. A linear model is a model of that process. That said, it is incredibly useful to use linear models to create fake datasets for at least two reasons: to probe our understanding of statistical modeling generally and, more specifically, to check that a model actually creates data like that in the real dataset that we are analyzing.
+
+\hypertarget{a-linear-model-can-be-fit-to-data-with-continuous-discrete-or-categorical-x-variables}{%
+\section{\texorpdfstring{A linear model can be fit to data with continuous, discrete, or categorical \(X\) variables}{A linear model can be fit to data with continuous, discrete, or categorical X variables}}\label{a-linear-model-can-be-fit-to-data-with-continuous-discrete-or-categorical-x-variables}}
+
+In the linear model fit to the data in Figure \ref{fig:line}B, the \(X\) variable is \textbf{continuous}, which can take any real number between the minimum \(X\) and maximum \(X\) in the data. For biological data, most variables that are continuous are positive, real numbers (a zero is not physically possible but could be recorded in the data if the true value is less than the minimum measurable amount). One exception is a \textbf{composition} (the fraction of a total), which can be zero. Negative values can occur with variables in which negative represent a direction (work, electrical potential) or a rate. \textbf{Discrete} variables are numeric but limited to certain real numbers. Most biological variables that are discrete are counts, and can be zero, but not negative. \textbf{Categorical variables} are non-numeric descriptions of a measure. Many of the categorical variables in this text will be the experimentally controlled treatment variable of interest (the variable \(treatment\) containing the values ``wild type'' and ``knockout'') but some are measured covariates (the variable \(sex\) containing the values ``female'' and ``male'').
+
+\hypertarget{fitting-linear-models-to-experimental-data-in-which-the-x-variable-is-continuous-or-discrete}{%
+\subsection{\texorpdfstring{Fitting linear models to experimental data in which the \(X\) variable is continuous or discrete}{Fitting linear models to experimental data in which the X variable is continuous or discrete}}\label{fitting-linear-models-to-experimental-data-in-which-the-x-variable-is-continuous-or-discrete}}
+
+A linear model fit to data with a numeric (continous or discrete) \(X\) is classical \textbf{regression} and the result is typically communicated by a regression line. The experiment introduced in Chapter \ref{linear-models-with-a-single-continuous-x} \protect\hyperlink{linear-models-with-a-single-continuous-x}{Linear models with a single, continuous \emph{X}} is a good example. In this experiment, the researchers designed an experiment to measure the effect of warming on the timing of photosynthetic activity. Temperature was experimentally controlled at one of five settings (0, 2.25, 4.5, 6.75, or 9 °C above ambient temperature) within twelve, large enclosures. The response variable in the illustrated example is Autumn ``green-down'', which is the day of year (DOY) of the transition to loss of photosynthesis. The intercept and slope parameters of the regression line (Figure \ref{fig:intro-linear-models-cont-slope}) are the coefficients of the linear model. The slope (4.98 days per 1 °C added warmth) estimates the \textbf{effect} of warming on green-down DOY. What is not often appreciated at the introductory biostatistics level is that \textbf{the slope is a difference in conditional means}. Any point on a regression line is the expected value of \(Y\) at a specified value of \(X\), that is, the conditional mean \(\mathrm{E}(Y|X)\). \textbf{The slope is the difference in expected values for a pair of points that differ in \(X\) by one unit}.
+
+\begin{equation}
+b_1 = \mathrm{E}(Y|X=x+1) - \mathrm{E}(Y|X=x+1)
+\end{equation}
+
+I show this in Figure \ref{fig:intro-linear-models-cont-slope} using the points on the regression line at \(x = 5\) and \(x = 6\). Thinking about a regression coefficient as a difference in conditional means is especially useful for understanding the coefficients of a categorical \(X\) variable, as described below.
+
+\begin{figure}
+\centering
+\includegraphics{/Users/jwalker/Documents/Github projects/Bookdown projects/applied-biostats/output/fig_2c_explainer.png}
+\caption{\label{fig:intro-linear-models-cont-slope}Illustration of the slope in a linear model with a numeric X. The slope (the coefficient of X) is the difference in expected value for any two X that are one unit apart. This is illustrated for the points on the line at x = 5 and x = 6.}
+\end{figure}
+
+\hypertarget{fitting-linear-models-to-experimental-data-in-which-the-x-variable-is-categorical}{%
+\subsection{\texorpdfstring{Fitting linear models to experimental data in which the \(X\) variable is categorical}{Fitting linear models to experimental data in which the X variable is categorical}}\label{fitting-linear-models-to-experimental-data-in-which-the-x-variable-is-categorical}}
+
+Linear models can be fit to experimental data in which the \(X\) variable is categorical -- this is the focus of this text! For the model fit to the data in Figure \ref{fig:line}B, the coefficient of \(X\) is the slope of the line. Perhaps surprisingly, 1) we can fit a model like equation \eqref{eq:error-spec} to data in which the \(X\) variable is categorical and 2) the coefficient of \(X\) \emph{is} a slope. How is this possible? The slope of a line is \(\frac{y_2 - y_1}{x_2 - x_1}\) where \((x_1, y_1)\) and \((x_2, y_2)\) are the graph coordinates of any two points on the line. What is the denominator of the slope function \((x_2 - x_1)\) when \(X\) is categorical?
+
+The solution to using a linear model with categorical \(X\) is to recode the factor levels into numbers. An example of this was outlined in Chapter \ref{analyzing-experimental-data-with-a-linear-model} (\protect\hyperlink{analyzing-experimental-data-with-a-linear-model}{Analyzing experimental data with a linear model}). The value of \(X\) for individual mouse \emph{i} is a number that indicates the treatment assignment -- a value of 0 is given to mice with a functional ASK1 gene and a value of 1 is given to mice with a knocked out gene. The regression line goes through the two group means (Figure \ref{fig:intro-linear-models-cat-slope}). With the (0, 1) coding, \(\overline{x}_{ASK1Δadipo} - \overline{x}_{ASK1F/F} = 1\), so the denominator of the slope is equal to one and the slope is simply equal to the numerator \(\overline{y}_{ASK1Δadipo} - \overline{y}_{ASK1F/F}\). The coefficient (which is a slope!) \emph{is} the difference in conditional means.
+
+\begin{figure}
+\centering
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/intro-linear-models-cat-slope-1.pdf}
+\caption{\label{fig:intro-linear-models-cat-slope}Illustration of the slope in a linear model with categorical X. The slope (the coefficient of X) is the difference in conditional means.}
+\end{figure}
 
 \hypertarget{statistical-models-are-used-for-prediction-explanation-and-description}{%
 \section{Statistical models are used for prediction, explanation, and description}\label{statistical-models-are-used-for-prediction-explanation-and-description}}
@@ -2246,11 +2281,13 @@ These terms have a causal connotation in everyday english. These terms are often
 \hypertarget{modeling-strategy}{%
 \section{Modeling strategy}\label{modeling-strategy}}
 
+A ``best practice'' sequence of steps used throughout this text to analyze experimental data is
+
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
 \tightlist
 \item
-  \textbf{exploratory plots} is \emph{not} data mining, or exploring the data for patterns to test. Instead, initial plots are used to
+  \textbf{exploratory plots} to
 \end{enumerate}
 
 \begin{itemize}
@@ -2258,7 +2295,7 @@ These terms have a causal connotation in everyday english. These terms are often
 \item
   examine individual points and identify outliers that are likely due to data transcription errors or measurement blunders (not simply odd, but biologically plausible measures).
 \item
-  provide useful information for initial model filtering (narrowing the list of potential models that are relevant to the question and data). Statistical modeling includes a diverse array of models, yet almost all methods used by researchers in biology, and all models in this book, are generalizations of the linear model specified in \eqref{eq:lm-spec2}. For some experiments, there may be multiple models that are relevant to the question and data. Model checking (step 3) can help decide which model to ultimately use.
+  provide useful information for initial model filtering (narrowing the list of potential models that are relevant to the question and data). Statistical modeling includes a diverse array of models, yet almost all methods used by researchers in biology, and all models in this book, are generalizations of the linear model specified in \eqref{eq:draw-spec}. For some experiments, there may be multiple models that are relevant to the question and data. Model checking (step 3) can help decide which model to ultimately use.
 \end{itemize}
 
 \begin{enumerate}
@@ -2268,64 +2305,53 @@ These terms have a causal connotation in everyday english. These terms are often
 \item
   \textbf{fit the model}, in order to estimate the model parameters and the uncertainty in these estimates.
 \item
-  \textbf{check the model}, which means to use a series of diagnostic plots and computations of model output to check that the fit model reasonably approximates the data.
+  \textbf{check the model}, which means to use a series of diagnostic plots and computations of model output to check that the fit model reasonably approximates the data. If the diagnostic plots suggest a poor approximation, then choose a different model and go back to step 2.
 \item
   \textbf{inference from the model}, which means to use the fit parameters to learn, with uncertainty, about the system, or to predict future observations, with uncertainty.
 \item
   \textbf{plot the model}, which means to plot the data, which may be adjusted, and the estimated parameters (or other results dervived from the estimates) with their uncertainty.
 \end{enumerate}
 
-\hypertarget{fitting-the-model}{%
-\section{Fitting the model}\label{fitting-the-model}}
+Note that step 1 (exploratory plots) is \emph{not} data mining, or exploring the data for patterns to test.
 
-If we fit the model
+\hypertarget{predictions-from-the-model}{%
+\section{Predictions from the model}\label{predictions-from-the-model}}
 
-\begin{align}
-Y &= \beta_0 + \beta_1 X + \varepsilon\\
-\varepsilon &\sim N(0, \sigma^2)
-\end{align}
-
-we get coefficients that estimate the \(\beta\) parameters, residuals that estimate \(\varepsilon\), and model error that estimates \(\sigma\). The coefficients and residuals can be used to recover the data
+For the linear model specified in Model \eqref{eq:error-spec}, the fit model is
 
 \begin{equation}
 y_i = b_0 + b_1 x_i + e_i
+\label{eq:y-i}
 \end{equation}
 
-The coefficients without the residuals are used to calculate the expected values. For experiments where the focus is on the effect of a treatment on some resopnse, these expected values are the same for all the members of a treatment group and this value is the \textbf{estimated marginal mean} of the group. For a prediction model, these expected values are the \textbf{predicted values} or simply, \textbf{prediction}, which is often denoted \(\hat{y}\).
+where \(b_0\) and \(b_1\) are the coefficients of the fit model and the \(e_i\) are the residuals of the fit model. We can use the coefficients and residuals to recover the \(y_i\), although this would rarely be done. More commonly, we could use the coefficients to calculate conditional means (the mean conditional on a specified value of \(X\)).
 
 \begin{equation}
 \hat{y}_i = b_0 + b_1 x_i
+\label{eq:yhat}
 \end{equation}
 
-where \(i\) stands for (or ``indexes'') the \emph{i}th case or individual.
+The conditional means are typically called \textbf{fitted values}, if the \(X\) are the \(X\) used to fit the model, or \textbf{predicted values}, if the \(X\) are new. ``Predicted values'' is often shortened to ``the prediction''.
 
-If our goal is inference -- to infer something about the ``population'' from the sample using the fit model, then \(\hat{y}_i\) is the \textbf{point estimate} of the parameter \(\mu_i\) (the true mean conditional on \(X\)), the coefficients \(b_0\) and \(b_1\) are point estimates of the parameters \(\beta_0\) and \(\beta_1\), and the standard deviation of the \(e_i\) is an estimate of \(\sigma\). ``Population'' is in quotes because it is a very abstract concept. Throughout this book, Greek letters refer to a theoretical parameter and Roman letters refer to point estimates.
+\hypertarget{inference-from-the-model}{%
+\section{Inference from the model}\label{inference-from-the-model}}
+
+If our goal is inference, we want to use the fit parameters to learn, with uncertainty, about the system. Using equation \eqref{eq:y-i}, the coefficients \(b_0\) and \(b_1\) are \textbf{point estimates} of the true, generating parameters \(\beta_0\) and \(\beta_1\), the \(e_i\) are estimates of \(\varepsilon_i\) (the true, biological ``noise''), and \(\frac{\sum{e_i^2}}{N-2}\) is an estimate of the true, population variance \(\sigma^2\) (this will be covered more in chapter xxx but you may recognize that \(\frac{\sum{e_i^2}}{N-2}\) is the formula for a variance). And, using equation \eqref{eq:yhat}, \(\hat{y}_i\) is the point estimate of the parameter \(\mu_i\) (the true mean conditional on \(X=x_i\)). Throughout this text, Greek letters refer to a theoretical parameter and Roman letters refer to point estimates.
+
+Our uncertainty in the estimates of the parameters due to sampling is the standard error of the estimate. It is routine to report standard errors of means and coefficients of the model. While a standard error of the estimate of \(\sigma\) is available, this is effectively never reported, at least in the experimental biology literature, presumably because the variance is thought of as a nuisance parameter (noise) and not something worthy of study. This is a pity. Certainly treatments can effect the variance in addition to the mean.
 
 Throughout this text, I recommend reporting and interpreting \textbf{interval estimates} of the point estimate. A \textbf{confidence interval} is a type of interval estimate. A confidence interval of a parameter is a measure of the uncertainty in the estimate. A 95\% confidence interval has a 95\% probability (in the sense of long-run frequency) of containing the parameter. This probability is a property of the population of intervals that could be computed using the same sampling and measuring procedure. It is not correct, without further assumptions, to state that there is a 95\% probability that the parameter lies within the interval. Perhaps a more useful interpretation is that the interval is a \textbf{compatability interval} in that it contains the range of estimates that are compatible with the data, in the sense that a \(t\)-test would not reject the null hypothesis of a difference between the estimate and any value within the interval (this interpretation does not imply anything about the true value).
-
-\hypertarget{fitting-linear-models-to-experimental-data-in-which-the-x-variable-is-categorical}{%
-\section{\texorpdfstring{Fitting linear models to experimental data in which the \(X\) variable is categorical}{Fitting linear models to experimental data in which the X variable is categorical}}\label{fitting-linear-models-to-experimental-data-in-which-the-x-variable-is-categorical}}
-
-Linear models can be fit to experimental data in which the \(X\) variable is categorical -- this is the focus of this text! For the model fit to the data in Figure \ref{fig:line}B, the coefficient of \(X\) is the slope of the line. Perhaps surprisingly, 1) we can fit a model like equation \eqref{eq:lm} to data in which the \(X\) variable is categorical and 2) the coefficient of \(X\) \emph{is} a slope? How is this possible? The slope of a line is \(\frac{y_2 - y_1}{x_2 - x_1}\) where \((x_1, y_1)\) and \((x_2, y_2)\) are the graph coordinates of any two points on the line. What is the denominator of the slope function \((x_2 - x_1)\) when \(X\) is categorical?
-
-The solution to using a linear model with categorical \(X\) is to recode the factor levels into numbers. An example of this was outlined in Chapter \ref{analyzing-experimental-data-with-a-linear-model} (\protect\hyperlink{analyzing-experimental-data-with-a-linear-model}{Analyzing experimental data with a linear model}). The value of \(X\) for individual mouse \emph{i} is a number that indicates the treatment assignment -- a value of 0 is given to mice with a functional ASK1 gene and a value of 1 is given to mice with a knocked out gene. The regression line goes through the two group means (Figure \ref{fig:intro-linear-models-slope}). With the (0, 1) coding, \(\overline{x}_{ASK1Δadipo} - \overline{x}_{ASK1F/F} = 1\), so the denominator of the slope is equal to one and the slope is simply equal to the numerator \(\overline{y}_{ASK1Δadipo} - \overline{y}_{ASK1F/F}\). The coefficient (which is a slope!) \emph{is} the difference in conditional means.
-
-\begin{figure}
-\centering
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/intro-linear-models-slope-1.pdf}
-\caption{\label{fig:intro-linear-models-slope}Illustration of the slope in a linear model with categorical X. The slope (the coefficient of X) is the difference in conditional means.}
-\end{figure}
 
 \hypertarget{assumptions-for-inference-with-a-statistical-model}{%
 \section{Assumptions for inference with a statistical model}\label{assumptions-for-inference-with-a-statistical-model}}
 
-\textbf{Inference} refers to using the fit model to generalize from the sample to the population, which assumes that the response is drawn from some specified probability distribution (Normal, or Poisson, or Bernouli, etc.). Throughout this text, I emphasize reporting and interpreting point estimates and confidence intervals. Another kind of inference is a \textbf{significance test}, which is the computation of the probability of ``seeing the data'' or something more extreme than the data, given a specified null hypothesis. A significance test results in a \textbf{p-value}, which can be reported with the point estimate and confidence interval. Somewhat related to a significance test is a hypothesis test, or a \textbf{Null-Hypothesis Signficance Test} (NHST), in which the \(p\)-value from a significance test is compared to a pre-specified error rate called \(\alpha\). Hypothesis testing was developed as a formal means of decision making but this is rarely the use of NHST in experimental biology. For almost all applications of \emph{p}-values that I see in the literature that I read in ecology, evolution, physiology, and wet-bench biology, comparing a \(p\)-value to \(\alpha\) adds no value to the communication of the results.
+\textbf{Inference} refers to using the fit model to generalize from the sample to the mechanism generating a ``population''. \textbf{Parametric} inference assumes that the response is drawn from some probability distribution (Normal, or Poisson, or Bernouli, etc.). Throughout this text, I emphasize reporting and interpreting point estimates and confidence intervals. Another kind of inference is a \textbf{significance test}, which is the computation of the probability of ``seeing the data'' or something more extreme than the data, given a specified null hypothesis. A significance test results in a \textbf{p-value}, which can be reported with the point estimate and confidence interval. Somewhat related to a significance test is a hypothesis test, or a \textbf{Null-Hypothesis Signficance Test} (NHST), in which the \(p\)-value from a significance test is compared to a pre-specified error rate called \(\alpha\). Hypothesis testing was developed as a formal means of decision making but this is rarely the use of NHST in experimental biology. For almost all applications of \emph{p}-values that I see in the literature that I read in ecology, evolution, physiology, and wet-bench biology, comparing a \(p\)-value to \(\alpha\) adds no value to the communication of the results.
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
 \tightlist
 \item
-  The data were generated by a process that is ``linear in the parameters'', which means that the different components of the model are added together. This additive part of the model containing the parameters is the linear predictor in specifications \eqref{eq:lm} and \eqref{eq:lm-spec2} above. For example, a cubic polynomial model
+  The data were generated by a process that is ``linear in the parameters'', which means that the different components of the model are added together. This additive part of the model containing the parameters is the linear predictor in specifications \eqref{eq:error-spec} and \eqref{eq:draw-spec} above. For example, a cubic polynomial model
 \end{enumerate}
 
 \begin{equation}
@@ -2359,12 +2385,12 @@ that is non-linear in the parameters because the parts are not added together. T
 \setcounter{enumi}{1}
 \tightlist
 \item
-  The draws from the probability distribution are \textbf{independent}. Independence implies \textbf{uncorrelated} \(Y\) conditional on the \(X\), that is, for any two \(Y\) with the same value of \(X\), we cannot predict the value of one given the value of the other. For example, in the ASK1 data above, ``uncorrelated'' implies that we cannot predict the glucose level of one mouse within a specific treatment combination given the glucose level of another mouse in that combination. For linear models, this assumption is often stated as ``independent errors'' (the \(\varepsilon\) in model \eqref{eq:lm}) instead of independent observations.
+  The draws from the probability distribution are \textbf{independent}. Independence implies \textbf{uncorrelated} \(Y\) conditional on the \(X\), that is, for any two \(Y\) with the same value of \(X\), we cannot predict the value of one given the value of the other. For example, in the ASK1 data above, ``uncorrelated'' implies that we cannot predict the glucose level of one mouse within a specific treatment combination given the glucose level of another mouse in that combination. For linear models, this assumption is often stated as ``independent errors'' (the \(\varepsilon\) in model \eqref{eq:error-spec}) instead of independent observations.
 \end{enumerate}
 
-There are lots of reasons that conditional responses might be correlated. In the mouse example, correlation within treatment group could arise if subsets of mice in a treatment group are siblings or are housed in the same cage. More generally, if there are measures both within and among experimental units (field sites or humans or rats) then we'd expect the measures within the same unit to err from the model in the same direction. Multiple measures within experimental units (a site or individual) creates ``clustered'' observations. Lack of independence or clustered observations can be modeled using models with \textbf{random effects}. These models go by many names including linear mixed models (common in Ecology), hierarchical models, multilevel models, and random effects models. A linear mixed model is a variation of model \eqref{eq:lm}. This text introduces linear mixed models in chapter xxx.
+There are lots of reasons that conditional responses might be correlated. In the mouse example, correlation within treatment group could arise if subsets of mice in a treatment group are siblings or are housed in the same cage. More generally, if there are measures both within and among experimental units (field sites or humans or rats) then we'd expect the measures within the same unit to err from the model in the same direction. Multiple measures within experimental units (a site or individual) creates ``clustered'' observations. Lack of independence or clustered observations can be modeled using models with \textbf{random effects}. These models go by many names including linear mixed models (common in Ecology), hierarchical models, multilevel models, and random effects models. A linear mixed model is a variation of model \eqref{eq:error-spec}. This text introduces linear mixed models in chapter xxx.
 
-Measures that are taken from sites that are closer together or measures taken closer in time or measures from more closely related biological species will tend to have more similar values than measures taken from sites that are further apart or from times that are further apart or from species that are less closely related. Space and time and phylogeny create \textbf{spatial and temporal and phylogenetic autocorrelation}. Correlated error due to space or time or phylogeny can be modeled with \textbf{Generalized Least Squares} (GLS) models. A GLS model is a variation of model \eqref{eq:lm}.
+Measures that are taken from sites that are closer together or measures taken closer in time or measures from more closely related biological species will tend to have more similar values than measures taken from sites that are further apart or from times that are further apart or from species that are less closely related. Space and time and phylogeny create \textbf{spatial and temporal and phylogenetic autocorrelation}. Correlated error due to space or time or phylogeny can be modeled with \textbf{Generalized Least Squares} (GLS) models. A GLS model is a variation of model \eqref{eq:error-spec}.
 
 \hypertarget{specific-assumptions-for-inference-with-a-linear-model}{%
 \section{Specific assumptions for inference with a linear model}\label{specific-assumptions-for-inference-with-a-linear-model}}
@@ -2373,7 +2399,7 @@ Measures that are taken from sites that are closer together or measures taken cl
 \def\labelenumi{\arabic{enumi}.}
 \tightlist
 \item
-  \textbf{Constant variance} or \textbf{homoskedasticity}. The most common way of thinking about this is the error term \(\varepsilon\) has constant variance, which is a short way of saying that random draws of \(\varepsilon\) in model \eqref{eq:lm} are all from the same (or \textbf{identical}) distribution. This is explicitly stated in the second line of model specification \eqref{eq:lm}. If we were to think about this using model specification \eqref{eq:lm-spec2}, then homoskedasticity means that \(\sigma\) in \(N(\mu, \sigma)\) is constant for all observations (or that the \emph{conditional} probability distributions are identical, where \emph{conditional} would mean adjusted for \(\mu\))
+  \textbf{Constant variance} or \textbf{homoskedasticity}. The most common way of thinking about this is the error term \(\varepsilon\) has constant variance, which is a short way of saying that random draws of \(\varepsilon\) in model \eqref{eq:error-spec} are all from the same (or \textbf{identical}) distribution. This is explicitly stated in the second line of model specification \eqref{eq:error-spec}. If we were to think about this using model specification \eqref{eq:draw-spec}, then homoskedasticity means that \(\sigma\) in \(N(\mu, \sigma)\) is constant for all observations (or that the \emph{conditional} probability distributions are identical, where \emph{conditional} would mean adjusted for \(\mu\))
 \end{enumerate}
 
 Many biological processes generate data in which the error is a function of the mean. For example, measures of biological variables that grow, such as lengths of body parts or population size, have variances that ``grow'' with the mean. Or, measures of counts, such as the number of cells damaged by toxin, the number of eggs in a nest, or the number of mRNA transcripts per cell have variances that are a function of the mean. Heteroskedastic error can be modeled with \textbf{Generalized Least Squares}, a generalization of the linear model, and with \textbf{Generalized Linear Models} (GLM), which are ``extensions'' of the classical linear model.
@@ -2383,10 +2409,10 @@ Many biological processes generate data in which the error is a function of the 
 \setcounter{enumi}{1}
 \tightlist
 \item
-  Normal or \textbf{Gaussian} probability distribution. As above, the most common way of thinking about this is the error term \(\varepsilon\) is Normal. Using model specification \eqref{eq:lm-spec2}, we'd say the conditional probablity distribution of the response is normal. A normal probability distribution implies that 1) the response is continuous and 2) the conditional probability is symmetric around \(mu_i\). If the conditional probability distribution has a long left or right tail it is \textbf{skewed} left or right. Counts (number of cells, number of eggs, number of mRNA transcripts) and binary responses (sucessful escape or sucessful infestation of host) are not continuous and often often have asymmetric probablity distributions that are skewed to the right and while sometimes both can be reasonably modeled using a linear model they are more often modeled using generalized linear models, which, again, is an extension of the linear model in equation \eqref{eq:lm-spec2}. A classical linear model is a specific case of a GLM.
+  Normal or \textbf{Gaussian} probability distribution. As above, the most common way of thinking about this is the error term \(\varepsilon\) is Normal. Using model specification \eqref{eq:draw-spec}, we'd say the conditional probablity distribution of the response is normal. A normal probability distribution implies that 1) the response is continuous and 2) the conditional probability is symmetric around \(mu_i\). If the conditional probability distribution has a long left or right tail it is \textbf{skewed} left or right. Counts (number of cells, number of eggs, number of mRNA transcripts) and binary responses (sucessful escape or sucessful infestation of host) are not continuous and often often have asymmetric probablity distributions that are skewed to the right and while sometimes both can be reasonably modeled using a linear model they are more often modeled using generalized linear models, which, again, is an extension of the linear model in equation \eqref{eq:draw-spec}. A classical linear model is a specific case of a GLM.
 \end{enumerate}
 
-A common misconception is that inference from a linear model assumes that the \emph{unconditional response} (this is just the response variable) is normally distributed. Both the error-draw and conditional-draw specifications of a linear model show precisely why this conception is wrong. Model \eqref{eq:lm} states explicitly that it is the error that has the normal distribution -- the distribution of \(Y\) is a mix of the distribution of \(X\) and the error. Model \eqref{eq:lm-spec2} states that the conditional outcome has a normal distribution, that is, the distribution after adjusting for variation in \(X\).
+A common misconception is that inference from a linear model assumes that the raw response variable is normally distributed. Both the error-draw and conditional-draw specifications of a linear model show precisely why this conception is wrong. Model \eqref{eq:lm} states explicitly that it is the error that has the normal distribution -- the distribution of \(Y\) is a mix of the distribution of \(X\) and the error. Model \eqref{eq:draw-spec} states that the conditional outcome has a normal distribution, that is, the distribution after adjusting for variation in \(X\).
 
 \hypertarget{linear-modelregression-model-orstatistical-model}{%
 \section{``linear model,''regression model``, or''statistical model"?}\label{linear-modelregression-model-orstatistical-model}}
@@ -2418,12 +2444,12 @@ Importing data into R can be a struggle for new R users and, unfortunately, most
 \item
   \texttt{df\ \textless{}-\ read.csv(file.choose())} opens the familiar ``open file'' dialog box, which lets the user navigate to the file of choice. For this to be semi-reproducible, a comment specifying the filename to import is necessary. The catastrophic problem (for reproducibility) is, how does a researcher know which file was actually opened during an R session? The researcher might think they opened ``walker\_maine\_bee\_data\_clean\_androscoggin.csv'' but mistakenly opened ``walker\_maine\_bee\_data\_clean\_aroostook.csv''.
 \item
-  \texttt{df\ \textless{}-\ read.table(file="my\_data.txt")} and \texttt{df\ \textless{}-\ read\_excel(file="my\_data.xlsx")} are reproducible because the filename is explicitly specified. But, this method requires that ``my\_data'' is physically located in the same folder as the file containing the R script (the notebook .Rmd file in our case) and this violates the best practice of clean project organization with different folders for the different kinds of files (data, R scripts, images, manuscript text, etc.).
+  \texttt{df\ \textless{}-\ read.table(file="my\_data.txt")} and \texttt{df\ \textless{}-\ read\_excel(file="my\_data.xlsx")} are reproducible because the filename is explicitly specified. But, this method requires that ``my\_data'' is physically located in the same folder as the file containing the R script (the .Rmd file in our case) and this violates the best practice of clean project organization with different folders for the different kinds of files (data, R scripts, images, manuscript text, etc.).
 \item
   R Studio has an elegant import tool in the environment pane that opens a custom dialog box that allows the researcher to navigate to the file, and to specify what part of the file to import, such as the specific sheet and range for an Excel file. This has the same reproducibility issues as \#1 and \#2 but R Studio includes the equivalent script, which adds all relevant information for reproducility. One then simply copies and pastes this script into a code chunk and voila! The next time the script is run, the data can be imported from the script without using menus and dialog boxes. Except that..the script does not seem to take into account that the \textbf{working directory} of an R Markdown file is not the project folder but the folder containing the R Markdown file and so this two-step method fails. More personally, I'd prefer to run a chunk that quickly opens the data file instead of re-navigating through my file system and re-specifying the sheet and range every time I re-start the project in a new R session.
 \end{enumerate}
 
-There are at least three solutions to the issues raised above, all requiring some understanding of \textbf{file paths} and directory structure in an operating system. A file such as ``my\_data.xlsx'' has an \textbf{absolute} file path, which is the full address of the file (the filename is something like your house street number). The absolute file path of ``my\_data.xlsx'' might be ``/Users/jwalker/Documents/applied-biostatistics/data/my\_data.xlsx''. A \textbf{relative} file path is the file path from the \textbf{working directory}. In an R Studio project, the working directory is the project directory, which is the directory containing the .Rproj file. This will be the working directory of the console. \emph{Importantly}, the working directory of an R Markdown code chunk is the folder containing the saved R Markdown file. An R Studio Notebook is an R Markdown file so the working directory of a notebook code chunk is the folder containing the saved notebook file. If a notebook file is located within the notebooks folder, which is located within the project folder, then the relative file path to ``my\_file.xlsx'' is ``../data/my\_file.xlsx''. The ``..'' tells the file OS to move ``up'' into the parent directory (which is the project folder) and the ``data'' tells the file OS to move ``down'' into the data folder. These are put together into a single address using ``/''. The beauty of relative paths is that they remain the same -- and so do not break one's script -- if the project folder, and all of its contents including the data folder and the notebooks folder, is moved to another location on the hard drive (say into a new ``Research'' folder). By contrast, the absolute file path changes, which breaks any old script.
+There are at least three solutions to the issues raised above, all requiring some understanding of \textbf{file paths} and directory structure in an operating system. A file such as ``my\_data.xlsx'' has an \textbf{absolute} file path, which is the full address of the file (the filename is something like your house street number). The absolute file path of ``my\_data.xlsx'' might be ``/Users/jwalker/Documents/applied-biostatistics/data/my\_data.xlsx''. A \textbf{relative} file path is the file path from the \textbf{working directory}. In an R Studio project, the working directory is the project directory, which is the directory containing the .Rproj file. This will be the working directory of the console. \emph{Importantly}, the working directory of an R Markdown code chunk is the folder containing the saved R Markdown file. An R Studio Notebook is an R Markdown file so the working directory of a notebook code chunk is the folder containing the saved notebook file. If an R Markdown file is located within the \emph{rmd} folder, which is located within the project folder, then the relative file path to ``my\_file.xlsx'' is ``../data/my\_file.xlsx''. The ``..'' tells the file OS to move ``up'' into the parent directory (which is the project folder) and the ``data'' tells the file OS to move ``down'' into the data folder. These are put together into a single address using ``/''. The beauty of relative paths is that they remain the same -- and so do not break one's script -- if the project folder, and all of its contents including the \emph{data} folder and the \emph{rmd} folder, is moved to another location on the hard drive (say into a new ``Research'' folder). By contrast, the absolute file path changes, which breaks any old script.
 
 The three solutions are
 
@@ -2463,7 +2489,7 @@ For this to work, the chunk has to be named ``setup'', that is, the text inside 
 \end{Highlighting}
 \end{Shaded}
 
-\texttt{here()} creates an absolute path, but one that is created on the fly, and will change (or should change) correctly if the project folder is moved on the same machine or to another machine.
+\texttt{here()} creates an absolute path, but one that is created on the fly, and will change (or should change) correctly if the project folder is moved on the same machine, to a cloud drive, or to another machine altogether.
 
 \hypertarget{learning-from-this-chapter}{%
 \section{Learning from this chapter}\label{learning-from-this-chapter}}
@@ -5155,9 +5181,7 @@ Let's look at the confidence intervals of all three vole groups in light of the 
 \hypertarget{p-values}{%
 \chapter{P-values}\label{p-values}}
 
-(A general perception of a ``replication crisis'' may thus reflect failure to recognize that statistical tests not only test hypotheses, but countless assumptions and the entire environment in which research takes place. Because of all the uncertain and unknown assumptions that underpin statistical inferences, we should treat inferential statistics as highly unstable local descriptions of relations between assumptions and data, rather than as providing generalizable inferences about hypotheses or models. And that means we should treat statistical results as being much more incomplete and uncertain than is currently the norm.)\footnote{Amrhein, V., Trafimow, D. and Greenland, S., 2019. Inferential statistics as descriptive statistics: There is no replication crisis if we don't expect replication. The American Statistician, 73(sup1), pp.262-270.}
-
-or ``A valid P-value is nothing more (or less) than the chance a particular test statistic would be as or more extreme as observed under all assumptions used to compute it'' -- Sander Greenland, Twitter
+\emph{A general perception of a ``replication crisis'' may thus reflect failure to recognize that statistical tests not only test hypotheses, but countless assumptions and the entire environment in which research takes place. Because of all the uncertain and unknown assumptions that underpin statistical inferences, we should treat inferential statistics as highly unstable local descriptions of relations between assumptions and data, rather than as providing generalizable inferences about hypotheses or models. And that means we should treat statistical results as being much more incomplete and uncertain than is currently the norm.}\footnote{Amrhein, V., Trafimow, D. and Greenland, S., 2019. Inferential statistics as descriptive statistics: There is no replication crisis if we don't expect replication. The American Statistician, 73(sup1), pp.262-270.}
 
 A \emph{p}-value \emph{is a measure of the compatibility between observed data and the null model}. Here, ``compatibility'' is a probability, specifically, the probability of sampling a test-statistic as or more extreme than the observed test statistic, if all the assumptions used to compute the \emph{p}-value are true.
 
@@ -5165,22 +5189,15 @@ To deconstruct what this means, and the implications of the meaning, let's use t
 
 Data source: \href{https://www.nature.com/articles/s41467-020-15483-7}{ASK1 inhibits browning of white adipose tissue in obesity}
 
-A linear model with \texttt{liver\_tg} as the response variable and \texttt{treatment} as the single \(X\)-varaiable was fit to the data. Figure \ref{fig:p-value-fig-1} is the plot of the modeled means, 95\% confidence intervals of the mean, and \emph{p}-value of the significance test of the effect of treatment on liver triacylglycerol.
+A linear model with \texttt{liver\_tg} as the response variable and \texttt{treatment} as the single \(X\)-varaiable was fit to the data. Figure \ref{p-value-fig2i-fig} is the plot of the modeled means, 95\% confidence intervals of the mean, and \emph{p}-value of the significance test of the effect of treatment on liver triacylglycerol.
 
 \begin{figure}
 \centering
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/p-value-gg-1.pdf}
-\caption{\label{fig:p-value-gg}UCP1 expression, relative to the mean level in the control group. Mean (circle) and 95\% confidence interval (line) are shown. Unadjusted p-values are from linear model with sh-RNA treatment and LPS treatment fully crossed.}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/p-value-fig2i-fig-1.pdf}
+\caption{\label{fig:p-value-fig2i-fig}UCP1 expression, relative to the mean level in the control group. Mean (circle) and 95\% confidence interval (line) are shown. Unadjusted p-values are from linear model with sh-RNA treatment and LPS treatment fully crossed.}
 \end{figure}
 
-The coefficients of the model, and the standard error, 95\% confidence interval, test-statistic, and \emph{p}-value of each coefficient are shown in Table xxx. Recall from Chapter \ref{analyzing-experimental-data-with-a-linear-model} that, with this model, the coefficient for the intercept term is the mean \texttt{liver\_tg} for the control group, which is the estimate of the true mean for a mice with functional ASK1 protein. And the coefficient for the treatmentASK1Δadipo term is the difference in means between the knockout and control group, which is the estimate for the true effect of knocking out ASK1 in the adipose tissue. The \emph{p} value for this ``effect'' term is 0.012. How do we interpret this number?
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{#colnames(fig_2i_m1_coef) <- c("Estimate", "SE", "t", "p", "2.5 %", "97.5 %")}
-\NormalTok{knitr}\OperatorTok{::}\KeywordTok{kable}\NormalTok{(fig_2i_m1_coef, }\DataTypeTok{digits =} \KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{2}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{3}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{1}\NormalTok{))}
-\end{Highlighting}
-\end{Shaded}
+The coefficients of the model, and the standard error, 95\% confidence interval, test-statistic, and \emph{p}-value of each coefficient are shown in Table \ref{tab:pvalue-coef-table} Recall from Chapter \ref{analyzing-experimental-data-with-a-linear-model} that, with this model, the coefficient for the intercept term is the mean \texttt{liver\_tg} for the control group, which is the estimate of the true mean for a mice with functional ASK1 protein. And the coefficient for the treatmentASK1Δadipo term is the difference in means between the knockout and control group, which is the estimate for the true effect of knocking out ASK1 in the adipose tissue. The \emph{p}-value for this ``effect'' term is 0.012. How do we interpret this number?
 
 Estimate
 
@@ -5311,7 +5328,7 @@ The distribution of the differences is a null distribution. Notice that the mode
 ## [1] 0.00519
 \end{verbatim}
 
-In the 100,000 runs, only 519 generated data with an \emph{absolute} difference as large or larger than 21.6 (and absolute difference is the absoute value of the difference). The frequency of differences as large or larger than our observed difference is 0.00519. This frequency is the \emph{probability} of sampling a difference as or more extreme than the observed difference ``under the null''. It is a \emph{p}-value, but it is not the \emph{p}-value in the coefficient table. This is because the \emph{p}-value in the coefficient table is computed from a distribution of \emph{t}-values, not raw differences. This raises the question, what is a \emph{t}-distribution, and a \emph{t}-value, more generally?
+In the 100,000 runs, only 519 generated data with an absolute difference as large or larger than 21.6 (an ``absolute difference'' is the absoute value of the difference). The frequency of differences as large or larger than our observed difference is 0.00519. This frequency is the \emph{probability} of sampling a difference as or more extreme than the observed difference ``under the null''. It is a \emph{p}-value, but it is not the \emph{p}-value in the coefficient table. This is because the \emph{p}-value in the coefficient table is computed from a distribution of \emph{t}-values, not raw differences. This raises the question, what is a \emph{t}-distribution, and a \emph{t}-value, more generally?
 
 \hypertarget{a-null-distribution-of-t-values-the-t-distribution}{%
 \section{\texorpdfstring{A null distribution of \emph{t}-values -- the \emph{t} distribution}{A null distribution of t-values -- the t distribution}}\label{a-null-distribution-of-t-values-the-t-distribution}}
@@ -5469,7 +5486,7 @@ From this distribution of distances generated by random permuation of the respon
 \hypertarget{parametric-vs.-non-parametric-statistics}{%
 \section{Parametric vs.~non-parametric statistics}\label{parametric-vs.-non-parametric-statistics}}
 
-A statistic such as the difference in mean liver TG between ASK1Δadipo and ASK1F/F groups does not have ``a'' \emph{p}-value. A \emph{p}-value is the probability of observing an event given a model of how the event was generated. For the \emph{p}-value in the coefficient table above, the event is sampling a \emph{t}-value from a modeled \emph{t} distribution that is as or more extreme than the observed \emph{t}-value. The model generating the null distribution of \emph{t}-values includes random sampling from a distribution that is defined by specific parameters (in this case, a mean and a variance), these parameters define the location and shape of the distribution of values that could be sampled. A \emph{p}-value computed from a distribution that is defined by a set of parameters is a \textbf{parametric} \emph{p}-value.
+A statistic such as the difference in mean liver TG between ASK1Δadipo and ASK1F/F groups does not have ``a'' \emph{p}-value. A \emph{p}-value is the probability of observing an event \emph{given a model of how the event was generated}. For the \emph{p}-value in the coefficient table above, the event is sampling a \emph{t}-value from a modeled \emph{t} distribution that is as or more extreme than the observed \emph{t}-value. The model generating the null distribution of \emph{t}-values includes random sampling from a distribution that is defined by specific parameters (in this case, a mean and a variance), these parameters define the location and shape of the distribution of values that could be sampled. A \emph{p}-value computed from a distribution that is defined by a set of parameters is a \textbf{parametric} \emph{p}-value.
 
 For the \emph{p}-value computed using the permutation test, the event is the probability of of computing a difference of means \emph{from a randomly permuted set of \(Y\)} as or more extreme than the observed difference of means. The distribution of differences from the permutated \(Y\) data sets was not generated by any of the known distributions (normal, Poisson, binomial, etc.) given a specific value of parameters. Consequently, the permutation \emph{p}-value is \textbf{non-parametric}.
 
@@ -5517,24 +5534,41 @@ Fisher was working in the context of an agricultural field station, the goal of 
 \hypertarget{neyman-pearson-interpretation}{%
 \subsubsection{Neyman-Pearson interpretation}\label{neyman-pearson-interpretation}}
 
-Neyman-Pearson thought of \emph{p} as the necessary and sufficient information to make a decision between accepting the null (or at least not rejecting the null) or rejecting the null and accepting an alternative hypothesis. This decision balances two sorts of errors: Type I (false positives), which they called \(\alpha\), and Type II (false negatives), which they called \(\beta\). A false positive means the null was rejected but there really is no effect. A false negative means that the null was not rejected but there actually is an effect. \(\alpha\) is set by the experimenter and is the long-term frequency (or ``rate'') of false positives \textbf{when the null is true} that the experimenters are willing to accept. This is easily understood in the context of manufacturing. I've just made a batch of beer that I now need to ship. I sample 10 cans and test the quality against a norm. If \(p < \alpha\), we reject the null in favor of the alternative -- something may be wrong with the batch, it differs from the norm. We throw the beer away. If \(p > \alpha\), we do not reject the null, nor the beer! We ship it.
+Neyman-Pearson thought of \emph{p} as the necessary and sufficient information \emph{to make a decision} between accepting the null (or at least not rejecting the null) or rejecting the null and accepting an alternative hypothesis. This decision balances two sorts of errors: Type I (false positives), which they called \(\alpha\), and Type II (false negatives), which they called \(\beta\). A false positive means the null was rejected but there really is no effect. A false negative means that the null was not rejected but there actually is an effect. \(\alpha\) is set by the experimenter and is the long-term frequency (or ``rate'') of false positives \textbf{when the null is true} that the experimenters are willing to accept. This is easily understood in the context of manufacturing. I've just made a batch of beer that I now need to ship. I sample 10 cans and test the quality against a norm. If \(p < \alpha\), we reject the null in favor of the alternative -- something may be wrong with the batch, it differs from the norm. We throw the beer away. If \(p > \alpha\), we do not reject the null, nor the beer! We ship it.
 
-After setting \(\alpha\), the experimenter designs the experiment to achieve an acceptable rate of \(\beta\). Since \(\beta\) is the false negative rate then \(1-\beta\) is the rate of not making a false negative error, that is, the rate of rejecting the null when there really is an effect. This is called the \textbf{power} of the experiment. An experiment with high power will have a low probability of a Type II error. An experiment with low power will have a high probability of a Type II error. Power is partly determined by sample size, the bigger the sample the smaller the \emph{p}-value, all other things equal (think about why in the context of the formula for the \emph{t}-value). Power is also a function of \(\alpha\). If we set a low \(\alpha\) (say, \(\alpha=0.01\)), the test is conservative. We are more likely to fail to reject the null even if the null is false. This is the balance. We want to make sure that we test our batch of beer using enough cans to find a bad batch if it exists, but we don't want to test too many cans because this is a waste of money. An experimenter sets \(\alpha\), computes the sample size needed to achieve a certain level of power (\(1-\beta\)), and then does the experiment.
+After setting \(\alpha\), the experimenter designs the experiment to achieve an acceptable rate of \(\beta\). Since \(\beta\) is the false negative rate then \(1-\beta\) is the rate of not making a false negative error, that is, the rate of rejecting the null when there really is an effect. This is called the \textbf{power} of the experiment. An experiment with high power will have a low probability of a Type II error. An experiment with low power will have a high probability of a Type II error. Power is partly determined by sample size, the bigger the sample the smaller the \emph{p}-value, all other things equal (think about why in the context of the formula for the \emph{t}-value). Power is a function of error variance, both the natural variance and the component added because of measurement error (think about why in the context of the formula for the \emph{t}-value). Power is also a function of \(\alpha\). If we set a low \(\alpha\) (say, \(\alpha=0.01\)), the test is conservative. We are more likely to fail to reject the null even if the null is false. A researcher can increase power by increasing sample size, using clever strategies to reduce measurement error, or increasing alpha.
 
-In Fisher's interpretation, there is no \(\alpha\), no \(\beta\), no alternative hypothesis, and no sharp decision rule. Instead, in Fisher, \emph{p} is a continuous measure of evidence against the null and its value is interpreted subjectively by an informed and knowledgeable expert using additional information to make decisions. Neyman-Pearson rejected Fisher's conception of \emph{p} as evidence against the null and used \emph{p} as a tool to make a decision that maintains long-term type I error rates at alpha given a certain power. In Neyman-Pearson, \emph{p} is compared to a threshold, \(\alpha\) and this alone makes the decision. In Neyman-Pearson, \emph{p} is not treated as continuous information. \(p=0.00000001\) is no more evidence to use to reject the null than \(p=0.049\).
+An experimenter sets \(\alpha\), computes the sample size needed to achieve a certain level of power (\(1-\beta\)), and then does the experiment. A thoughtful researcher will set \(\alpha\) after considering and weighing the pros and cons of different levels of \(\alpha\). If false positives have costly consequences (expense, time, deleterious side-effects), then set \(\alpha\) to a low value, such as 0.01 or 0.001. For example, if an initial screen has identified a previously unknown candidate that potentially functions in the focal system of the researcher, then a researcher might decide to set a low \(\alpha\) (0.001) in the initial tests of this candidate to avoid devoting time, personel, and expense to chasing a phantom (a false-positive candidate). If false positives have trivial consequences, then set \(\alpha\) to a high value, such as 0.05, or 0.1, or even 0.2. For example, if the initial tests of a candidate in a functional system are cheap and fast to construct, then a researcher might choose to set a high \(\alpha\) for the screen that identifies candidates. False positive candidates don't cost the lab much effort to identify them as false, but missing positive candidates because of a small \(\alpha\) (which results in low power) at the screen stage costs the researcher the discovery of a potentially exciting coponent of the functional system.
+
+In Fisher's interpretation, there is no \(\alpha\), no \(\beta\), no alternative hypothesis, and no sharp decision rule. Instead, in Fisher, \emph{p} is a continuous measure of evidence against the null and its value is interpreted subjectively by an informed and knowledgeable expert using additional information to make decisions. Neyman-Pearson rejected Fisher's conception of \emph{p} as evidence against the null arguing that a single experimental \emph{p}-value is too noisy without embedding it into a more formal system of of decision making that maintains long-term type I error rates at \(\alpha\), given a certain power. In Neyman-Pearson, \emph{p} is compared to a threshold, \(\alpha\) and this alone makes the decision. In Neyman-Pearson, \emph{p} \textbf{is not treated as continuous information}. \(p=0.00000001\) is no more evidence to use to reject the null than \(p=0.049\).
 
 \hypertarget{nhst}{%
 \subsection{NHST}\label{nhst}}
 
-Modern researchers interpret \emph{p} using a combination of Fisher and Neyman-Pearson concepts in what has become known as Null Hypothesis Significance Testing (NHST). Similar to Neyman-Pearson, a \emph{p}-value is compared to \(\alpha\) but similar to Fisher, many researchers, and many textbooks and statistics software (including base R) trichtomize a statistically significant \emph{p} into ``significance levels'' (three asterisks for \(p < 0.001\), two asterisks for \(0.001 < p < 0.01\), and one asterisk for \(0.01 < p < 0.05\)) but many researchers also casuallly partition non-significant \emph{p}-values into ``marginally signifiant'' (or similar) and ``not significant''.
+Most biology researchers today interpret \emph{p} using a combination of Fisher and Neyman-Pearson concepts in what has become known as Null Hypothesis Significance Testing (NHST).
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Nearly all papers in biology either explicitly state something like ``P values \textless{} 0.05 were considered to be statistically significant'' or implicitly use 0.05 as the ``level of significance'' (\(\alpha\)). Comparing a \emph{p}-value to a pre-defined \(\alpha\) is Neyman-Pearson.
+\item
+  Unlike Neyman-Pearson, there is no evidence that researchers are thoughtfully considering the level of \(\alpha\) for each experiment. Instead, researchers mindlessly choose \(\alpha=0.05\) because this is what everyone else uses.
+\item
+  Unlike Neyman-Pearson, but somewhat in the spirit of Fisher, researchers, journals, and textbooks, advocate trichotomizing a statistically significant \emph{p} into ``significance bins'' -- three asterisks for \(p < 0.001\), two asterisks for \(0.001 < p < 0.01\), and one asterisk for \(0.01 < p < 0.05\)). This is not Neyman-Pearson. Again, Neyman-Pearson developed a system to control the long-run frequency of Type I error, which is controled by a strict use of \(\alpha\). If an observed \emph{p}-value is in the *** bin or the * bin is meaningless in a system using Neyman-Pearson. There is only ``accept'' (\(p >= \alpha\)) or ``reject'' (\(p < \alpha\)).
+\item
+  Many researchers report exact \emph{p}-values when \(p < 0.05\) but ``n.s.'' (not significant) when \(p > 0.05\). Reporting exact \emph{p}-values is Fisher. Reporting n.s. is Neyman-Pearson.
+\item
+  Many researchers further polychomotomize the \emph{p}-value space just above 0.05 by using language such as ``marginally significant''. If Neyman-Pearson and Fisher got together and spawned a love-child, this would be it.
+\end{enumerate}
 
 \hypertarget{some-major-misconceptions-of-the-p-value}{%
-\subsection{\texorpdfstring{Some major misconceptions of the \emph{p}-value}{Some major misconceptions of the p-value}}\label{some-major-misconceptions-of-the-p-value}}
+\section{\texorpdfstring{Some major misconceptions of the \emph{p}-value}{Some major misconceptions of the p-value}}\label{some-major-misconceptions-of-the-p-value}}
 
 Setting the type I error rate \(\alpha\) to 0.05 is so pervasive that I'm going to simply use ``0.05'' instead of ``alpha'' in discussing misconceptions.
 
 \hypertarget{misconception-p-is-the-probability-that-the-null-is-true-and-1-p-is-probability-that-the-alternative-is-true}{%
-\subsubsection{\texorpdfstring{Misconception: \emph{p} is the probability that the null is true \emph{and} \(1-p\) is probability that the alternative is true}{Misconception: p is the probability that the null is true and 1-p is probability that the alternative is true}}\label{misconception-p-is-the-probability-that-the-null-is-true-and-1-p-is-probability-that-the-alternative-is-true}}
+\subsection{\texorpdfstring{Misconception: \emph{p} is the probability that the null is true \emph{and} \(1-p\) is probability that the alternative is true}{Misconception: p is the probability that the null is true and 1-p is probability that the alternative is true}}\label{misconception-p-is-the-probability-that-the-null-is-true-and-1-p-is-probability-that-the-alternative-is-true}}
 
 Many researchers believe that if \(p > 0.05\) then ``there is no effect.'' A frequentist hypothesis test cannot show that an effect doesn't exist, only that the null has a low probablity of producing a test statistic as extreme or more extreme than the observed effect.
 
@@ -5563,15 +5597,19 @@ The two errors above are gross misconceptions that are pervasive in the biology 
 Importantly, no single experiment confirms an explanatory hypothesis. Instead, alternative explanations require multiple experiments with different controls to ``rigrously probe'' the preferred hypothesis.
 
 \hypertarget{misconception-a-p-value-is-repeatable}{%
-\subsubsection{\texorpdfstring{Misconception: a \emph{p}-value is repeatable}{Misconception: a p-value is repeatable}}\label{misconception-a-p-value-is-repeatable}}
+\subsection{\texorpdfstring{Misconception: a \emph{p}-value is repeatable}{Misconception: a p-value is repeatable}}\label{misconception-a-p-value-is-repeatable}}
 
 Many researchers believe that a \emph{p}-value is a precise measure -- that if the experiment were replicated, a similar \emph{p} would result. This belief requires at least two misconceptions. First, if the null were true, then \emph{any} \emph{p}-value is equally likely. \(p=0.00137\) is just as likely as \(p=0.492\). In other words, if the null were true, the \emph{p}-value is not replicable at all! Second, the \emph{p}-value is highly dependent on the sample, and can be highly variable among replications, but there is no true \emph{p}-value, so there can be no estimate or standard error. Let's explore these.
 
-\textbf{What is the distribution of \emph{p}-values under the null?} I often ask students, ``if the null were true, what is the most likely \emph{p}-value?'' or ``if the null were true, what kind of \emph{p}-values would we expect, that is what is the expected distribution''. A common answer is \(p=0.5\) is the most likely value and something like a normal curve, except the tails abruptly stop at 0 and 1, is the expected distribution.
+\hypertarget{what-is-the-distribution-of-p-values-under-the-null}{%
+\subsubsection{\texorpdfstring{What is the distribution of \emph{p}-values under the null?}{What is the distribution of p-values under the null?}}\label{what-is-the-distribution-of-p-values-under-the-null}}
+
+I often ask students, ``if the null were true, what is the most likely \emph{p}-value?'' or ``if the null were true, what kind of \emph{p}-values would we expect, that is what is the expected distribution''. A common answer is \(p=0.5\) is the most likely value and something like a normal curve, except the tails abruptly stop at 0 and 1, is the expected distribution.
 
 \includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/uniform-1.pdf}
 
-\textbf{The incredible inconsistency of the \emph{p}-value}
+\hypertarget{the-incredible-inconsistency-of-the-p-value}{%
+\subsubsection{\texorpdfstring{The incredible inconsistency of the \emph{p}-value}{The incredible inconsistency of the p-value}}\label{the-incredible-inconsistency-of-the-p-value}}
 
 How replicable is the conclusion of an experiment if the \emph{p}-value for a \emph{t}-test is 0.03? If our conclusion is based on \(p < 0.05\), then the conclusion is not very replicable. The simulation below shows the results of 15 replicates of an experiment with true power of 40\%. There are five ``significant'' results (one less than expected) but several replicates have very high \emph{p}-values.
 
@@ -5582,7 +5620,7 @@ How replicable is the conclusion of an experiment if the \emph{p}-value for a \e
 \end{figure}
 
 \hypertarget{misconception-0.05-is-the-lifetime-rate-of-false-discoveries}{%
-\subsubsection{Misconception: 0.05 is the lifetime rate of false discoveries}\label{misconception-0.05-is-the-lifetime-rate-of-false-discoveries}}
+\subsection{Misconception: 0.05 is the lifetime rate of false discoveries}\label{misconception-0.05-is-the-lifetime-rate-of-false-discoveries}}
 
 An important and widespread misconception is that if a researcher consistently uses \(\alpha=0.05\), then the frequency of incorrectly concluding an effect exists, or ``discovering'' an effect, over the lifetime of the researcher, will be 5\%. This is incorrect. \(\alpha\) is the rate of false positive if the null hypothesis is true, so our lifetime ``false discovery'' rate could only be 5\% if everything we ever tested has no true effect! More generally, the \textbf{false discovery rate} is the frequency of false positives divided by the frequency of positives (the sum of false and true positives). This differs from the the Type I error rate, which is the frequency of false positives divided by the frequency of tests \emph{in which the null is true}.
 
@@ -5608,7 +5646,7 @@ Imagine we test
 Think about this. If the null is never true, you cannot have a false discovery--every \(p \le 0.05\) is a true discovery (the false discovery rate is 0\%). And if the null is always true, every \(p < 0.05\) is a false discovery (the false discovery rate is 100\%).
 
 \hypertarget{misconception-a-low-p-value-indicates-an-important-effect}{%
-\subsubsection{\texorpdfstring{Misconception: a low \emph{p}-value indicates an important effect}{Misconception: a low p-value indicates an important effect}}\label{misconception-a-low-p-value-indicates-an-important-effect}}
+\subsection{\texorpdfstring{Misconception: a low \emph{p}-value indicates an important effect}{Misconception: a low p-value indicates an important effect}}\label{misconception-a-low-p-value-indicates-an-important-effect}}
 
 Many researchers write results as if they believe that a small \emph{p}-value means the effect is big or important. This may misconception may arise because of the ubiquitous use of ``significant'' to indicate a small p-value and ``very'' or ``extremely'' or ``wicked'' significant to indicate a really small p-value. Regardless, this is a misconception. A small p-value will usually result when there is high power (but can occur even if power is low) and power is a function of effect size, variability (the standard deviation), and sample size. A small \emph{p} could result from a large effect size but can also result with a small effect size if the sample size is big enough.
 
@@ -5639,9 +5677,9 @@ This is easy to simulate (see script below). Let's model the effect of the genot
 \end{verbatim}
 
 \hypertarget{misconception-a-low-p-value-indicates-high-model-fit-or-high-predictive-capacity}{%
-\subsubsection{\texorpdfstring{Misconception: a low \emph{p}-value indicates high model fit or high predictive capacity}{Misconception: a low p-value indicates high model fit or high predictive capacity}}\label{misconception-a-low-p-value-indicates-high-model-fit-or-high-predictive-capacity}}
+\subsection{\texorpdfstring{Misconception: a low \emph{p}-value indicates high model fit or high predictive capacity}{Misconception: a low p-value indicates high model fit or high predictive capacity}}\label{misconception-a-low-p-value-indicates-high-model-fit-or-high-predictive-capacity}}
 
-On page 606, of Lock et al ``Statistics: Unlocking the Power of Data'', the authors state in item D ``The p-value from the ANOVA table is 0.000 so the model as a whole is effective at predicting grade point averages.'' This is incorrect. A p-value is not a measure of the predictive capacity of a model because the p-value is a function of the signal, noise (unmodeled error), and \emph{sample size} while predictive capacity is a function of just the signal:noise ratio. If the signal:noise ratio is tiny, the predictive capacity is small but the p-value can be tiny if the sample size is large. This is easy to simulate (see script below). The whole-model p-value is exceptionally small (0.00001002) but the relative predictive ability, measured by the \(R^2\), is near zero (0.002).
+On page 606, of Lock et al ``Statistics: Unlocking the Power of Data'', the authors state in item D ``The p-value from the ANOVA table is 0.000 so the model as a whole is effective at predicting grade point averages.'' This is incorrect. A p-value is not a measure of the predictive capability of a model because the p-value is a function of the signal, noise (unmodeled error), and \emph{sample size} while predictive ability is a function of just the signal:noise ratio. If the signal:noise ratio is tiny, the predictive ability is small but the p-value can be tiny if the sample size is large. This is easy to simulate (see script below). The whole-model p-value is exceptionally small (0.00001002) but the relative predictive ability, measured by the \(R^2\), is near zero (0.002).
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -5682,7 +5720,7 @@ On page 606, of Lock et al ``Statistics: Unlocking the Power of Data'', the auth
 \end{verbatim}
 
 \hypertarget{what-the-p-value-does-not-mean}{%
-\paragraph{\texorpdfstring{What the \emph{p}-value does not mean}{What the p-value does not mean}}\label{what-the-p-value-does-not-mean}}
+\section{\texorpdfstring{What the \emph{p}-value does not mean}{What the p-value does not mean}}\label{what-the-p-value-does-not-mean}}
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
@@ -5702,11 +5740,69 @@ On page 606, of Lock et al ``Statistics: Unlocking the Power of Data'', the auth
 \end{enumerate}
 
 \hypertarget{recommendations}{%
-\subsection{Recommendations}\label{recommendations}}
+\section{Recommendations}\label{recommendations}}
 
-\textbf{If you are working on basic science research} simply report the exact \emph{p}-value, along with a CI. If \(p < 0.05\) (or some other \(\alpha\)) do not report this as ``significant'' -- in fact, avoid the word ``significant''. In the english language, ``significant'' implies big or important. Small \emph{p}-values can result even with trivially small effects if \(n\) is big or sample variation is small. If \emph{p} is smaller than say 0.001, then this is pretty good evidence that the data is not a fluke of sampling. But if \emph{p} is closer to 0.01 or 0.05, this is only weak evidence of a fluke because of the sampling variability of \emph{p}.
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Simply report the exact \emph{p}-value, along with a CI of the estimate.
+\end{enumerate}
 
-\textbf{If a decision needs to be made} then a \emph{p}-value is a useful tool, but is only relevant compared to a decision rule with well-reasoned values of \(\alpha\) and \(\beta\) -- exact values of \emph{p} are not very meaningful.
+\begin{itemize}
+\tightlist
+\item
+  \emph{P}-values are noisy, there is little reason to report more than two significant digits (report ``\(p = 0.011\)'' not ``\(p = 0.0108\)'') although some journals recommend more than two significant digits.
+\item
+  For high \emph{p}-values, report ``\(p = 0.23\)'' not ``\(p = n.s.\)''.
+\item
+  For small \emph{p}-values, there is little reason to report more than one significant digit (report ``\(p = 0.0002\)'' not ``\(p = 0.00018\)'').
+\item
+  For really small p-values, there is little reason to report the exact \emph{p}-value (report ``\(p < 0.0001\)'' and not ``\(p = 2.365E-11\)''). Recognize that ``really small'' is entirely arbitrary -- I think it's okay to report ``\(p = 1E-11\)'' if \(p = 2.365E-11\).
+\end{itemize}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{1}
+\tightlist
+\item
+  If \(p < 0.05\) (or some other \(\alpha\)) do not report this as ``significant'' -- in fact, avoid the word ``significant''. In the english language, ``significant'' implies big or important. Small \emph{p}-values can result even with trivially small effects if \(n\) is big or sample variation is small. The phrase ``ASK1 knockout had a significant effect on reducing liver TG (\(p = 0.011\))'' is
+\end{enumerate}
+
+\begin{itemize}
+\tightlist
+\item
+  potentially misleading, if we interpret ``significant'' to mean ``having a large effect on the regulation of liver TG'',
+\item
+  wrong, if we interpret ``significant'' to mean ``there is an ASK1 knockout effect''.
+  A low \emph{p}-value is evidence that the effect of ASK1 knockout is not zero, but I would wager that knocking out any gene expressed in white adipose cells will have \emph{some} effect (however small) on liver TG.
+\end{itemize}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{2}
+\tightlist
+\item
+  If a decision needs to be made (``do we devote time, expense, and personel to pursue this further?''), then a \emph{p}-value is a useful tool. If \emph{p} is smaller than say 0.001, this is pretty good evidence that the data is not a fluke of sampling, \textbf{as long as we are justifiably confident in all the assumptions that went into computing this \emph{p}-value}. A replicate experiment with a small \emph{p}-value is better evidence. If \emph{p} is closer to 0.01 or 0.05, this is only weak evidence of a fluke because of the sampling variability of \emph{p}. A replicate experiment with a small \emph{p}-value is \emph{much} better evidence.
+\end{enumerate}
+
+\hypertarget{primary-sources-for-recommendations}{%
+\subsection{Primary sources for recommendations}\label{primary-sources-for-recommendations}}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  "". \href{https://link.springer.com/article/10.1007/s10654-016-0149-3}{Statistical tests, P values, confidence intervals, and power: a guide to misinterpretations}.
+\item
+  ``Q: Why do so many colleges and grad schools teach p = 0.05? A: Because that's still what the scientific community and journal editors use. Q: Why do so many people still use p = 0.05? A: Because that's what they were taught in college or grad school.'' -- \href{https://amstat.tandfonline.com/doi/full/10.1080/00031305.2016.1154108}{ASA Statement on Statistical Significance and P-Values}
+\item
+  ``We then discuss our own proposal, which is to abandon statistical significance. We recommend dropping the NHST paradigm---and the p-value thresholds intrinsic to it---as the default statistical paradigm for research, publication, and discovery in the biomedical and social sciences.'' -- \href{https://www.tandfonline.com/doi/abs/10.1080/00031305.2018.1527253}{Abandon Statistical Significance}
+\item
+  " We conclude, based on our review of the articles in this special issue and the broader literature, that it is time to stop using the term ``statistically significant'' entirely. Nor should variants such as ``significantly different,'' ``p \textless{} 0.05,'' and ``nonsignificant'' survive, whether expressed in words, by asterisks in a table, or in some other way." -- \href{https://www.tandfonline.com/doi/full/10.1080/00031305.2019.1583913}{Moving to a World Beyond ``p \textless{} 0.05''}
+\item
+  ``We agree, and call for the entire concept of statistical significance to be abandoned.''--\href{https://www.nature.com/articles/d41586-019-00857-9}{Scientists rise up against statistical significance}
+\end{enumerate}
 
 \hypertarget{problems}{%
 \section{Problems}\label{problems}}
@@ -5735,12 +5831,326 @@ b. should the same effect be added to each individual? Yes! It is the random com
 4. Compute the power, the relative frequency \(p \le 0.05\).
 5. Repeat with different values of \(n\), effect size, and sd, but only vary one at a time. How does power vary with these three parameters?
 
+\hypertarget{types-of-inference-error}{%
+\chapter{Types of inference error}\label{types-of-inference-error}}
+
+\hypertarget{classic-nhst-error}{%
+\section{Classic NHST error}\label{classic-nhst-error}}
+
+\hypertarget{type-i-error}{%
+\subsection{Type I error}\label{type-i-error}}
+
+In classical Neyman-Pearson hypothesis testing, an important property of a hypothesis test is the \textbf{size of a test}, which may include an entire procedure that culminates in a hypothesis test. ``Size'' is a weird name for the probability of rejecting the null when the null is true. Size is not \(\alpha\). \(\alpha\) is what a researcher ``wants''. Size is what a researcher gets. It would probably come as a surpise to most researches to learn that the size of some common tests used is not 0.05. A test that has a size that is less than \(\alpha\) is ``conservative'' (fewer nulls are rejected than we think, so the \emph{status quo} is more often maintained). A test that has a size that is greater than \(\alpha\) is ``liberal'' (more nulls are rejected than we think, so the \emph{status quo} is less often maintained). More conservative tests reduce power. More liberal tests \emph{artificially} increase power and increase our rate of ``false discovery''.
+
+This text uses simulation to compare the size of different tests
+
+\hypertarget{example-1-the-size-of-a-t-test-vs.-a-permutation-test-when-the-data-meet-the-assumptions}{%
+\subsubsection{\texorpdfstring{Example 1: the size of a \emph{t}-test vs.~a permutation test, when the data meet the assumptions}{Example 1: the size of a t-test vs.~a permutation test, when the data meet the assumptions}}\label{example-1-the-size-of-a-t-test-vs.-a-permutation-test-when-the-data-meet-the-assumptions}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{set.seed}\NormalTok{(}\DecValTok{1}\NormalTok{)}
+\NormalTok{n <-}\StringTok{ }\DecValTok{10}
+\NormalTok{n_iter <-}\StringTok{ }\DecValTok{10000}
+\NormalTok{p_t <-}\StringTok{ }\KeywordTok{numeric}\NormalTok{(n_iter)}
+\NormalTok{p_perm <-}\StringTok{ }\KeywordTok{numeric}\NormalTok{(n_iter)}
+
+\NormalTok{treatment <-}\StringTok{ }\KeywordTok{rep}\NormalTok{(}\KeywordTok{c}\NormalTok{(}\StringTok{"cn"}\NormalTok{, }\StringTok{"tr"}\NormalTok{), }\DataTypeTok{each =}\NormalTok{ n)}
+\ControlFlowTok{for}\NormalTok{(iter }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\NormalTok{n_iter)\{}
+\NormalTok{  sample_}\DecValTok{1}\NormalTok{ <-}\StringTok{ }\KeywordTok{rnorm}\NormalTok{(n, }\DataTypeTok{mean =} \DecValTok{10}\NormalTok{, }\DataTypeTok{sd =} \DecValTok{1}\NormalTok{)}
+\NormalTok{  sample_}\DecValTok{2}\NormalTok{ <-}\StringTok{ }\KeywordTok{rnorm}\NormalTok{(n, }\DataTypeTok{mean =} \DecValTok{10}\NormalTok{, }\DataTypeTok{sd =} \DecValTok{1}\NormalTok{)}
+\NormalTok{  y <-}\StringTok{ }\KeywordTok{c}\NormalTok{(sample_}\DecValTok{1}\NormalTok{, sample_}\DecValTok{2}\NormalTok{)}
+\NormalTok{  m1 <-}\StringTok{ }\KeywordTok{lm}\NormalTok{(y }\OperatorTok{~}\StringTok{ }\NormalTok{treatment) }\CommentTok{# no data statement necessary because both variables in workspace}
+\NormalTok{  p_t[iter] <-}\StringTok{ }\KeywordTok{coef}\NormalTok{(}\KeywordTok{summary}\NormalTok{(m1))[}\StringTok{"treatmenttr"}\NormalTok{, }\StringTok{"Pr(>|t|)"}\NormalTok{]}
+  
+\NormalTok{  m2 <-}\StringTok{ }\KeywordTok{lmp}\NormalTok{(y }\OperatorTok{~}\StringTok{ }\NormalTok{treatment,}
+            \DataTypeTok{perm =} \StringTok{"Prob"}\NormalTok{,}
+            \DataTypeTok{settings =} \OtherTok{FALSE}\NormalTok{)}
+\NormalTok{  p_perm[iter] <-}\StringTok{ }\KeywordTok{coef}\NormalTok{(}\KeywordTok{summary}\NormalTok{(m2))[}\StringTok{"treatment1"}\NormalTok{, }\StringTok{"Pr(Prob)"}\NormalTok{]}
+\NormalTok{\}}
+\NormalTok{size_t <-}\StringTok{ }\KeywordTok{sum}\NormalTok{(p_t }\OperatorTok{<}\StringTok{ }\FloatTok{0.05}\NormalTok{)}\OperatorTok{/}\NormalTok{n_iter}
+\NormalTok{size_perm <-}\StringTok{ }\KeywordTok{sum}\NormalTok{(p_perm }\OperatorTok{<}\StringTok{ }\FloatTok{0.05}\NormalTok{)}\OperatorTok{/}\NormalTok{n_iter}
+\NormalTok{size_table <-}\StringTok{ }\KeywordTok{data.table}\NormalTok{(}\DataTypeTok{Method =} \KeywordTok{c}\NormalTok{(}\StringTok{"lm"}\NormalTok{, }\StringTok{"perm"}\NormalTok{),}
+                         \DataTypeTok{Size =} \KeywordTok{c}\NormalTok{(size_t, size_perm))}
+\NormalTok{knitr}\OperatorTok{::}\KeywordTok{kable}\NormalTok{(size_table, }\DataTypeTok{digits =} \DecValTok{4}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+Method
+
+Size
+
+lm
+
+0.0489
+
+perm
+
+0.0488
+
+\hypertarget{example-2-the-size-of-a-t-test-vs.-a-permutation-test-when-the-data-have-a-right-skewed-distribution}{%
+\subsubsection{\texorpdfstring{Example 2: the size of a \emph{t}-test vs.~a permutation test, when the data have a right skewed distribution}{Example 2: the size of a t-test vs.~a permutation test, when the data have a right skewed distribution}}\label{example-2-the-size-of-a-t-test-vs.-a-permutation-test-when-the-data-have-a-right-skewed-distribution}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{set.seed}\NormalTok{(}\DecValTok{1}\NormalTok{)}
+\NormalTok{n <-}\StringTok{ }\DecValTok{10}
+\NormalTok{n_iter <-}\StringTok{ }\DecValTok{10000}
+\NormalTok{p_t <-}\StringTok{ }\KeywordTok{numeric}\NormalTok{(n_iter)}
+\NormalTok{p_perm <-}\StringTok{ }\KeywordTok{numeric}\NormalTok{(n_iter)}
+
+\NormalTok{treatment <-}\StringTok{ }\KeywordTok{rep}\NormalTok{(}\KeywordTok{c}\NormalTok{(}\StringTok{"cn"}\NormalTok{, }\StringTok{"tr"}\NormalTok{), }\DataTypeTok{each =}\NormalTok{ n)}
+\ControlFlowTok{for}\NormalTok{(iter }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\NormalTok{n_iter)\{}
+  \CommentTok{#  qplot(rnegbin(n = 10^4, mu = 100, theta = 1))}
+\NormalTok{  sample_}\DecValTok{1}\NormalTok{ <-}\StringTok{ }\KeywordTok{rnegbin}\NormalTok{(n, }\DataTypeTok{mu =} \DecValTok{100}\NormalTok{, }\DataTypeTok{theta =} \DecValTok{1}\NormalTok{)}
+\NormalTok{  sample_}\DecValTok{2}\NormalTok{ <-}\StringTok{ }\KeywordTok{rnegbin}\NormalTok{(n, }\DataTypeTok{mu =} \DecValTok{100}\NormalTok{, }\DataTypeTok{theta =} \DecValTok{1}\NormalTok{)}
+\NormalTok{  y <-}\StringTok{ }\KeywordTok{c}\NormalTok{(sample_}\DecValTok{1}\NormalTok{, sample_}\DecValTok{2}\NormalTok{)}
+  \CommentTok{# qplot(x=treatment, y = y)}
+\NormalTok{  m1 <-}\StringTok{ }\KeywordTok{lm}\NormalTok{(y }\OperatorTok{~}\StringTok{ }\NormalTok{treatment) }\CommentTok{# no data statement necessary because both variables in workspace}
+\NormalTok{  p_t[iter] <-}\StringTok{ }\KeywordTok{coef}\NormalTok{(}\KeywordTok{summary}\NormalTok{(m1))[}\StringTok{"treatmenttr"}\NormalTok{, }\StringTok{"Pr(>|t|)"}\NormalTok{]}
+  
+\NormalTok{  m2 <-}\StringTok{ }\KeywordTok{lmp}\NormalTok{(y }\OperatorTok{~}\StringTok{ }\NormalTok{treatment,}
+            \DataTypeTok{perm =} \StringTok{"Prob"}\NormalTok{,}
+            \DataTypeTok{settings =} \OtherTok{FALSE}\NormalTok{)}
+\NormalTok{  p_perm[iter] <-}\StringTok{ }\KeywordTok{coef}\NormalTok{(}\KeywordTok{summary}\NormalTok{(m2))[}\StringTok{"treatment1"}\NormalTok{, }\StringTok{"Pr(Prob)"}\NormalTok{]}
+\NormalTok{\}}
+\NormalTok{size_t <-}\StringTok{ }\KeywordTok{sum}\NormalTok{(p_t }\OperatorTok{<}\StringTok{ }\FloatTok{0.05}\NormalTok{)}\OperatorTok{/}\NormalTok{n_iter}
+\NormalTok{size_perm <-}\StringTok{ }\KeywordTok{sum}\NormalTok{(p_perm }\OperatorTok{<}\StringTok{ }\FloatTok{0.05}\NormalTok{)}\OperatorTok{/}\NormalTok{n_iter}
+\NormalTok{size_table <-}\StringTok{ }\KeywordTok{data.table}\NormalTok{(}\DataTypeTok{Method =} \KeywordTok{c}\NormalTok{(}\StringTok{"lm"}\NormalTok{, }\StringTok{"perm"}\NormalTok{),}
+                         \DataTypeTok{Size =} \KeywordTok{c}\NormalTok{(size_t, size_perm))}
+\NormalTok{knitr}\OperatorTok{::}\KeywordTok{kable}\NormalTok{(size_table, }\DataTypeTok{digits =} \DecValTok{4}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+Method
+
+Size
+
+lm
+
+0.0438
+
+perm
+
+0.0504
+
+\hypertarget{example-3-the-size-of-a-t-test-vs.-a-permutation-test-when-the-data-have-heterogenous-variance-and-the-sample-size-is-unequal}{%
+\subsubsection{\texorpdfstring{Example 3: the size of a \emph{t}-test vs.~a permutation test, when the data have heterogenous variance and the sample size is unequal}{Example 3: the size of a t-test vs.~a permutation test, when the data have heterogenous variance and the sample size is unequal}}\label{example-3-the-size-of-a-t-test-vs.-a-permutation-test-when-the-data-have-heterogenous-variance-and-the-sample-size-is-unequal}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{set.seed}\NormalTok{(}\DecValTok{1}\NormalTok{)}
+\NormalTok{n1 <-}\StringTok{ }\DecValTok{10}
+\NormalTok{n2 <-}\StringTok{ }\NormalTok{n1}\OperatorTok{/}\DecValTok{2}
+\NormalTok{n_iter <-}\StringTok{ }\DecValTok{10000}
+\NormalTok{p_t <-}\StringTok{ }\KeywordTok{numeric}\NormalTok{(n_iter)}
+\NormalTok{p_perm <-}\StringTok{ }\KeywordTok{numeric}\NormalTok{(n_iter)}
+
+\NormalTok{treatment <-}\StringTok{ }\KeywordTok{rep}\NormalTok{(}\KeywordTok{c}\NormalTok{(}\StringTok{"cn"}\NormalTok{, }\StringTok{"tr"}\NormalTok{), }\DataTypeTok{times =} \KeywordTok{c}\NormalTok{(n1, n2))}
+\ControlFlowTok{for}\NormalTok{(iter }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\NormalTok{n_iter)\{}
+  \CommentTok{#  qplot(rnegbin(n = 10^4, mu = 100, theta = 1))}
+\NormalTok{  sample_}\DecValTok{1}\NormalTok{ <-}\StringTok{ }\KeywordTok{rnorm}\NormalTok{(n1, }\DataTypeTok{mean =} \DecValTok{10}\NormalTok{, }\DataTypeTok{sd =} \FloatTok{0.5}\NormalTok{)}
+\NormalTok{  sample_}\DecValTok{2}\NormalTok{ <-}\StringTok{ }\KeywordTok{rnorm}\NormalTok{(n2, }\DataTypeTok{mean =} \DecValTok{10}\NormalTok{, }\DataTypeTok{sd =} \DecValTok{1}\NormalTok{)}
+\NormalTok{  y <-}\StringTok{ }\KeywordTok{c}\NormalTok{(sample_}\DecValTok{1}\NormalTok{, sample_}\DecValTok{2}\NormalTok{)}
+  \CommentTok{# qplot(x=treatment, y = y)}
+\NormalTok{  m1 <-}\StringTok{ }\KeywordTok{lm}\NormalTok{(y }\OperatorTok{~}\StringTok{ }\NormalTok{treatment) }\CommentTok{# no data statement necessary because both variables in workspace}
+\NormalTok{  p_t[iter] <-}\StringTok{ }\KeywordTok{coef}\NormalTok{(}\KeywordTok{summary}\NormalTok{(m1))[}\StringTok{"treatmenttr"}\NormalTok{, }\StringTok{"Pr(>|t|)"}\NormalTok{]}
+  
+\NormalTok{  m2 <-}\StringTok{ }\KeywordTok{lmp}\NormalTok{(y }\OperatorTok{~}\StringTok{ }\NormalTok{treatment,}
+            \DataTypeTok{perm =} \StringTok{"Prob"}\NormalTok{,}
+            \DataTypeTok{settings =} \OtherTok{FALSE}\NormalTok{)}
+\NormalTok{  p_perm[iter] <-}\StringTok{ }\KeywordTok{coef}\NormalTok{(}\KeywordTok{summary}\NormalTok{(m2))[}\StringTok{"treatment1"}\NormalTok{, }\StringTok{"Pr(Prob)"}\NormalTok{]}
+\NormalTok{\}}
+\NormalTok{size_t <-}\StringTok{ }\KeywordTok{sum}\NormalTok{(p_t }\OperatorTok{<}\StringTok{ }\FloatTok{0.05}\NormalTok{)}\OperatorTok{/}\NormalTok{n_iter}
+\NormalTok{size_perm <-}\StringTok{ }\KeywordTok{sum}\NormalTok{(p_perm }\OperatorTok{<}\StringTok{ }\FloatTok{0.05}\NormalTok{)}\OperatorTok{/}\NormalTok{n_iter}
+\NormalTok{size_table <-}\StringTok{ }\KeywordTok{data.table}\NormalTok{(}\DataTypeTok{Method =} \KeywordTok{c}\NormalTok{(}\StringTok{"lm"}\NormalTok{, }\StringTok{"perm"}\NormalTok{),}
+                         \DataTypeTok{Size =} \KeywordTok{c}\NormalTok{(size_t, size_perm))}
+\NormalTok{knitr}\OperatorTok{::}\KeywordTok{kable}\NormalTok{(size_table, }\DataTypeTok{digits =} \DecValTok{4}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+Method
+
+Size
+
+lm
+
+0.1150
+
+perm
+
+0.1211
+
+\hypertarget{power}{%
+\subsection{Power}\label{power}}
+
+In classical Neyman-Pearson hypothesis testing, an important property of a hypothesis test is the \textbf{power of a test}. ``Power'' is a great name for the probability of rejecting the null when the null is false. A less formal way to think about power is, power is a test's ability to ``detect'' an effect if it exists.
+
+\hypertarget{example-1-the-power-of-a-t-test-vs.-a-permutation-test-when-the-data-meet-the-assumptions}{%
+\subsubsection{\texorpdfstring{Example 1: the power of a \emph{t}-test vs.~a permutation test, when the data meet the assumptions}{Example 1: the power of a t-test vs.~a permutation test, when the data meet the assumptions}}\label{example-1-the-power-of-a-t-test-vs.-a-permutation-test-when-the-data-meet-the-assumptions}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{set.seed}\NormalTok{(}\DecValTok{1}\NormalTok{)}
+\NormalTok{n <-}\StringTok{ }\DecValTok{10}
+\NormalTok{n_iter <-}\StringTok{ }\DecValTok{10000}
+\NormalTok{p_t <-}\StringTok{ }\KeywordTok{numeric}\NormalTok{(n_iter)}
+\NormalTok{p_perm <-}\StringTok{ }\KeywordTok{numeric}\NormalTok{(n_iter)}
+
+\NormalTok{treatment <-}\StringTok{ }\KeywordTok{rep}\NormalTok{(}\KeywordTok{c}\NormalTok{(}\StringTok{"cn"}\NormalTok{, }\StringTok{"tr"}\NormalTok{), }\DataTypeTok{each =}\NormalTok{ n)}
+\ControlFlowTok{for}\NormalTok{(iter }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\NormalTok{n_iter)\{}
+\NormalTok{  sample_}\DecValTok{1}\NormalTok{ <-}\StringTok{ }\KeywordTok{rnorm}\NormalTok{(n, }\DataTypeTok{mean =} \DecValTok{10}\NormalTok{, }\DataTypeTok{sd =} \DecValTok{1}\NormalTok{)}
+\NormalTok{  sample_}\DecValTok{2}\NormalTok{ <-}\StringTok{ }\KeywordTok{rnorm}\NormalTok{(n, }\DataTypeTok{mean =} \DecValTok{11}\NormalTok{, }\DataTypeTok{sd =} \DecValTok{1}\NormalTok{)}
+\NormalTok{  y <-}\StringTok{ }\KeywordTok{c}\NormalTok{(sample_}\DecValTok{1}\NormalTok{, sample_}\DecValTok{2}\NormalTok{)}
+\NormalTok{  m1 <-}\StringTok{ }\KeywordTok{lm}\NormalTok{(y }\OperatorTok{~}\StringTok{ }\NormalTok{treatment) }\CommentTok{# no data statement necessary because both variables in workspace}
+\NormalTok{  p_t[iter] <-}\StringTok{ }\KeywordTok{coef}\NormalTok{(}\KeywordTok{summary}\NormalTok{(m1))[}\StringTok{"treatmenttr"}\NormalTok{, }\StringTok{"Pr(>|t|)"}\NormalTok{]}
+  
+\NormalTok{  m2 <-}\StringTok{ }\KeywordTok{lmp}\NormalTok{(y }\OperatorTok{~}\StringTok{ }\NormalTok{treatment,}
+            \DataTypeTok{perm =} \StringTok{"Prob"}\NormalTok{,}
+            \DataTypeTok{settings =} \OtherTok{FALSE}\NormalTok{)}
+\NormalTok{  p_perm[iter] <-}\StringTok{ }\KeywordTok{coef}\NormalTok{(}\KeywordTok{summary}\NormalTok{(m2))[}\StringTok{"treatment1"}\NormalTok{, }\StringTok{"Pr(Prob)"}\NormalTok{]}
+\NormalTok{\}}
+\NormalTok{power_t <-}\StringTok{ }\KeywordTok{sum}\NormalTok{(p_t }\OperatorTok{<}\StringTok{ }\FloatTok{0.05}\NormalTok{)}\OperatorTok{/}\NormalTok{n_iter}
+\NormalTok{power_perm <-}\StringTok{ }\KeywordTok{sum}\NormalTok{(p_perm }\OperatorTok{<}\StringTok{ }\FloatTok{0.05}\NormalTok{)}\OperatorTok{/}\NormalTok{n_iter}
+\NormalTok{power_table_normal <-}\StringTok{ }\KeywordTok{data.table}\NormalTok{(}\DataTypeTok{Method =} \KeywordTok{c}\NormalTok{(}\StringTok{"lm"}\NormalTok{, }\StringTok{"perm"}\NormalTok{),}
+                         \DataTypeTok{Power =} \KeywordTok{c}\NormalTok{(power_t, power_perm))}
+\NormalTok{knitr}\OperatorTok{::}\KeywordTok{kable}\NormalTok{(power_table_normal, }\DataTypeTok{digits =} \DecValTok{3}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+Method
+
+Power
+
+lm
+
+0.554
+
+perm
+
+0.554
+
+\hypertarget{example-2-the-power-of-a-t-test-vs.-a-permutation-test-when-the-data-look-like-typical-count-data}{%
+\subsubsection{\texorpdfstring{Example 2: the power of a \emph{t}-test vs.~a permutation test, when the data look like typical count data}{Example 2: the power of a t-test vs.~a permutation test, when the data look like typical count data}}\label{example-2-the-power-of-a-t-test-vs.-a-permutation-test-when-the-data-look-like-typical-count-data}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{set.seed}\NormalTok{(}\DecValTok{1}\NormalTok{)}
+\NormalTok{n <-}\StringTok{ }\DecValTok{10}
+\NormalTok{n_iter <-}\StringTok{ }\DecValTok{10000}
+\NormalTok{p_t <-}\StringTok{ }\KeywordTok{numeric}\NormalTok{(n_iter)}
+\NormalTok{p_perm <-}\StringTok{ }\KeywordTok{numeric}\NormalTok{(n_iter)}
+
+\NormalTok{treatment <-}\StringTok{ }\KeywordTok{rep}\NormalTok{(}\KeywordTok{c}\NormalTok{(}\StringTok{"cn"}\NormalTok{, }\StringTok{"tr"}\NormalTok{), }\DataTypeTok{each =}\NormalTok{ n)}
+
+\ControlFlowTok{for}\NormalTok{(iter }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\NormalTok{n_iter)\{}
+  \CommentTok{#  qplot(rnegbin(n = 10^4, mu = 100, theta = 1))}
+\NormalTok{  sample_}\DecValTok{1}\NormalTok{ <-}\StringTok{ }\KeywordTok{rnegbin}\NormalTok{(n, }\DataTypeTok{mu =} \DecValTok{100}\NormalTok{, }\DataTypeTok{theta =} \DecValTok{1}\NormalTok{)}
+\NormalTok{  sample_}\DecValTok{2}\NormalTok{ <-}\StringTok{ }\KeywordTok{rnegbin}\NormalTok{(n, }\DataTypeTok{mu =} \DecValTok{300}\NormalTok{, }\DataTypeTok{theta =} \DecValTok{1}\NormalTok{)}
+\NormalTok{  y <-}\StringTok{ }\KeywordTok{c}\NormalTok{(sample_}\DecValTok{1}\NormalTok{, sample_}\DecValTok{2}\NormalTok{)}
+  \CommentTok{# qplot(x=treatment, y = y)}
+\NormalTok{  m1 <-}\StringTok{ }\KeywordTok{lm}\NormalTok{(y }\OperatorTok{~}\StringTok{ }\NormalTok{treatment) }\CommentTok{# no data statement necessary because both variables in workspace}
+\NormalTok{  p_t[iter] <-}\StringTok{ }\KeywordTok{coef}\NormalTok{(}\KeywordTok{summary}\NormalTok{(m1))[}\StringTok{"treatmenttr"}\NormalTok{, }\StringTok{"Pr(>|t|)"}\NormalTok{]}
+  
+\NormalTok{  m2 <-}\StringTok{ }\KeywordTok{lmp}\NormalTok{(y }\OperatorTok{~}\StringTok{ }\NormalTok{treatment,}
+            \DataTypeTok{perm =} \StringTok{"Prob"}\NormalTok{,}
+            \DataTypeTok{settings =} \OtherTok{FALSE}\NormalTok{)}
+\NormalTok{  p_perm[iter] <-}\StringTok{ }\KeywordTok{coef}\NormalTok{(}\KeywordTok{summary}\NormalTok{(m2))[}\StringTok{"treatment1"}\NormalTok{, }\StringTok{"Pr(Prob)"}\NormalTok{]}
+\NormalTok{\}}
+\NormalTok{power_t <-}\StringTok{ }\KeywordTok{sum}\NormalTok{(p_t }\OperatorTok{<}\StringTok{ }\FloatTok{0.05}\NormalTok{)}\OperatorTok{/}\NormalTok{n_iter}
+\NormalTok{power_perm <-}\StringTok{ }\KeywordTok{sum}\NormalTok{(p_perm }\OperatorTok{<}\StringTok{ }\FloatTok{0.05}\NormalTok{)}\OperatorTok{/}\NormalTok{n_iter}
+\NormalTok{power_table_count <-}\StringTok{ }\KeywordTok{data.table}\NormalTok{(}\DataTypeTok{Method =} \KeywordTok{c}\NormalTok{(}\StringTok{"lm"}\NormalTok{, }\StringTok{"perm"}\NormalTok{),}
+                         \DataTypeTok{Power =} \KeywordTok{c}\NormalTok{(power_t, power_perm))}
+\NormalTok{knitr}\OperatorTok{::}\KeywordTok{kable}\NormalTok{(power_table_count, }\DataTypeTok{digits =} \DecValTok{3}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+Method
+
+Power
+
+lm
+
+0.512
+
+perm
+
+0.584
+
+\hypertarget{a-non-neyman-pearson-concept-of-power}{%
+\section{A non-Neyman-Pearson concept of power}\label{a-non-neyman-pearson-concept-of-power}}
+
+Size and power are concepts specific to the Neyman-Pearson hypothesis testing framework. Size and power also have limited (or no) use in a research program in which the null hypothesis is never (or rarely) strictly true. That said, the concept of size and power are useful. For example, instead of framing the ``size'' concept as the rate of Type I error, what if we framed this as the rate that an estimate is in the correct direction (meaning, the sign of an effect is the same as the true value). And, what if we framed power as the distribution of \emph{p}-values instead of the frequency of \emph{p}-values less than \(\alpha\).
+
+One way to follow through on this revised concept of power is by
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{quantile_list <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\FloatTok{0.1}\NormalTok{, }\FloatTok{0.25}\NormalTok{, }\FloatTok{0.5}\NormalTok{, }\FloatTok{0.75}\NormalTok{, }\FloatTok{0.9}\NormalTok{)}
+\NormalTok{percentiles_t <-}\StringTok{ }\KeywordTok{quantile}\NormalTok{(p_t, quantile_list)}
+\NormalTok{percentiles_perm <-}\StringTok{ }\KeywordTok{quantile}\NormalTok{(p_perm, quantile_list)}
+
+\NormalTok{alt_power_table <-}\StringTok{ }\KeywordTok{data.table}\NormalTok{(}\DataTypeTok{method =} \KeywordTok{c}\NormalTok{(}\StringTok{"t-test"}\NormalTok{, }\StringTok{"permutation"}\NormalTok{),}
+\NormalTok{                              (}\KeywordTok{rbind}\NormalTok{(percentiles_t,}
+\NormalTok{                                     percentiles_perm)))}
+\NormalTok{knitr}\OperatorTok{::}\KeywordTok{kable}\NormalTok{(alt_power_table, }\DataTypeTok{digits =} \KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{4}\NormalTok{, }\DecValTok{3}\NormalTok{, }\DecValTok{3}\NormalTok{, }\DecValTok{2}\NormalTok{, }\DecValTok{2}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+method
+
+10\%
+
+25\%
+
+50\%
+
+75\%
+
+90\%
+
+t-test
+
+0.0045
+
+0.016
+
+0.047
+
+0.13
+
+0.28
+
+permutation
+
+0.0012
+
+0.007
+
+0.032
+
+0.12
+
+0.32
+
+\hypertarget{estimation-error}{%
+\subsection{Estimation error}\label{estimation-error}}
+
+\hypertarget{coverage}{%
+\subsection{Coverage}\label{coverage}}
+
+\hypertarget{type-s-error}{%
+\subsection{Type S error}\label{type-s-error}}
+
+\hypertarget{type-m-errord}{%
+\subsection{Type M errord}\label{type-m-errord}}
+
 \hypertarget{part-v-introduction-to-linear-models}{%
 \chapter*{Part V: Introduction to Linear Models}\label{part-v-introduction-to-linear-models}}
 \addcontentsline{toc}{chapter}{Part V: Introduction to Linear Models}
 
-\hypertarget{models-with-a-single-continuous-x}{%
-\chapter{\texorpdfstring{Models with a single, continuous \emph{X}}{Models with a single, continuous X}}\label{models-with-a-single-continuous-x}}
+\hypertarget{linear-models-with-a-single-continuous-x}{%
+\chapter{\texorpdfstring{Linear models with a single, continuous \emph{X}}{Linear models with a single, continuous X}}\label{linear-models-with-a-single-continuous-x}}
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
@@ -5763,7 +6173,7 @@ To introduce some principles of modeling with a single continuous \(X\) variable
 
 The data are from a \href{https://mnspruce.ornl.gov}{long-term experiment on the effects of warming and CO2 on a high-carbon northern temperate peatland} and is the focal dataset of the study. The experiment involves 10 large, temperature and CO2 controlled enclosures. CO2 is set to 400 ppm in five enclosures and 900 ppm in five enclosures. Temperature of the five enclosures within each CO2 level is set to 0, 2.25, 4.5, 6.75, or 9 °C above ambient temperature. The multiple temperature levels is a \textbf{regression design}, which allows a researcher to measure non-linear effects. Read more about the experimental design and the \href{https://mnspruce.ornl.gov/design}{beautiful implementation}.
 
-The question pursued is in this study is, what is the causal effect of warming on the timing (or phenology) of the transition into photosynthesetic activity (``green-up'') in the spring and of the transition out of photosynthetin ic activity (``green-down'') in the fall? The researchers measured these transition dates, or Day of Year (DOY), using foliage color. Here, we focus on the transition out of photosynthesis or ``green-down'' DOY.
+The question pursued is in this study is, what is the causal effect of warming on the timing (or phenology) of the transition into photosynthetic activity (``green-up'') in the spring and of the transition out of photosynthetic activity (``green-down'') in the fall? The researchers measured these transition dates, or Day of Year (DOY), using foliage color. Here, we focus on the transition out of photosynthesis or ``green-down'' DOY.
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
@@ -5790,7 +6200,7 @@ The question pursued is in this study is, what is the causal effect of warming o
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-122-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-129-1.pdf}
 
 No plot shows any obvious outlier that might be due to measurement blunders or curation error. The linear regression in the left-most plot clearly shows that a linear response is sufficient to capture the effect of temperature on day of green-down.
 
@@ -5826,7 +6236,7 @@ No plot shows any obvious outlier that might be due to measurement blunders or c
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-124-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-131-1.pdf}
 
 The Q-Q plot indicates the distribution of residuals is well within that expected for a normal sample and there is no cause for concern with inference.
 
@@ -5837,7 +6247,7 @@ The Q-Q plot indicates the distribution of residuals is well within that expecte
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-125-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-132-1.pdf}
 
 \begin{verbatim}
 ## 
@@ -5886,7 +6296,7 @@ The effect of added temperature on the day of green-down is 4.98 d per 1 °C (95
 \begin{figure}
 \centering
 \includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/continuous-x-plot-1.pdf}
-\caption{\label{fig:continuous-x-plot}Re-plot of Figure 2c showing the experimental effect of warming on the date of autumn green-down (the transition to fall foliage color) in a mixed shrub community. The plot type is a scatterplot. The regression line shows the expected value of Y (transition day of year) given a value of X (added temperature). The slope of the regression line is the effect.}
+\caption{\label{fig:continuous-x-plot}Modification of the published Figure 2c showing the experimental effect of warming on the date of autumn green-down (the transition to fall foliage color) in a mixed shrub community. The bottom panel is a scatterplot. The regression line shows the expected value of Y (transition day of year) given a value of X (added temperature). The slope of the regression line is the effect. The estimate and 95\% confidence interval of the estimate are given in the top panel.}
 \end{figure}
 
 \hypertarget{learning-from-the-green-down-example}{%
@@ -5945,13 +6355,13 @@ The difference between probabilistic and causal interpretations of \(\beta_1\) d
 \hypertarget{causal-interpretation-conditional-on-doing-x-x}{%
 \subsubsection{Causal interpretation -- conditional on ``doing'' X = x}\label{causal-interpretation-conditional-on-doing-x-x}}
 
-In the causal interpretation of regression, \(\textrm{E}[day|temperature]\) is conditioned on ``doing'' a real or hypothetical intervention in the system where we set the value of \(temperature\) to a specific value \(x\) ("\(temperature=x\)), while keeping everything else about the system the same. This can be stated explicitly as \(\textrm{E}[day|\;do\;temperature = x]\). Using the do-operator, we can interpret \(\beta_1\) as an \textbf{effect coefficient}
+In the causal interpretation of regression, \(\textrm{E}[day|temperature]\) is conditioned on ``doing'' a real or hypothetical intervention in the system where we set the value of \(temperature\) to a specific value \(x\) ("\(temperature=x\)), while keeping everything else about the system the same. This can be stated explicitly as \(\textrm{E}[day|\;do\;temperature = x]\). Using the do-operator, we can interpret \(\beta_1\) as an \textbf{effect coefficient}.
 
 \begin{equation}
 \beta_1 = \textrm{E}[day|\;do\;temperature = x+1] - \textrm{E}[day|\;do\;temperature = x]
 \end{equation}
 
-In words, ``beta-one is the expected value of day of green-down were we to set the temperature to x + 1 minus the expected value of day of green-down were we to set the temperature to x.''
+In words, ``beta-one is the expected value of day of green-down were we to set the temperature to x + 1, minus the expected value of day of green-down were we to set the temperature to x.''
 
 tl;dr. In the green-down experiment, the researchers didn't set the temperature in the intervened enclosures to the ambient temperature + 1 but to ambient + 2.25, ambient + 4.5, ambient + 6.75, and ambient + 9.0. Again (see tl;dr above), the + 1 is mere convenience in the definition.
 
@@ -5981,15 +6391,22 @@ What is the consequence of interpreting a regression coefficient causally instea
 \caption{\label{fig:continuous-x-dag}a Directed Acyclic (or causal) Graph of a hypothetical world where the day of green-down is caused by two, correlated environmental variables, temperature and moisture, and to a noise factor (U) that represents an unspecified set of additional variables that are not correlated to either temperature or moisture.}
 \end{figure}
 
-Let's expand the thought experiment where we have an observational data set of green down dates. In this thought experiment, only two variables systematically affect green-down DOY. The first is the temperature that the plants experience; the effect of \(temperature\) is \(\beta\). The second is the soil moisture that the plants experience; the effect of \(moisture\) is \(\alpha\). \(temperature\) and \(moisture\) are correlated with a value \(\rho\). This causal model is graphically represented by the causal graph above.
+Let's expand the thought experiment where we have an observational data set of green down dates. In this thought experiment, only two variables systematically affect green-down DOY. The first is the temperature that the plants experience; the effect of \(temperature\) is \(\beta_1\). The second is the soil moisture that the plants experience; the effect of \(moisture\) is \(\beta_2\). \(temperature\) and \(moisture\) are correlated with a value \(\rho\). This causal model is graphically represented by the \textbf{causal graph} above.
 
-Lets call \(\mathcal{M}_1\) the linear model including both \(temperature\) and \(moisture\) as \(X\) variables and \(\mathcal{M}_2\) the linear model including only \(temperature\) as an \(X\) variable. With \(\mathcal{M}_1\), the regression coefficient for \(temperature\) is \textbf{unbiased}, which means the expected value of the coefficient for \(temperature\) is equal the true effect \(\beta\). But, with \(\mathcal{M}_2\), regression coefficient for \(temperature\) is \textbf{biased}, which means the expected value of this coefficient does not equal the true effect \(\beta\) but the true effect plus some bias term
+Lets fit two linear models.
+
+\begin{align}
+(\mathcal{M}_1)\; day &= b_0 + b_1 \; temperature + b_2 \; moisture + \varepsilon\\
+(\mathcal{M}_2)\; day &= b_0 + b_1 \; temperature + \varepsilon
+\end{align}
+
+\(\mathcal{M}_1\) the linear model including both \(temperature\) and \(moisture\) as \(X\) variables and \(\mathcal{M}_2\) the linear model including only \(temperature\) as an \(X\) variable. Given the true causal model above, \(b_1\) is an \textbf{unbiased} estimate of the true causal effect of temperature \(\beta_1\) in \(\mathcal{M}_1\) because the expected value of \(b_1\) is \(\beta_1\). By contrast, \(b_1\) is a \textbf{biased} estimate of the true causal effect of temperature \(\beta_1\) in \(\mathcal{M}_2\). The expected value of \(b_1\) in \(\mathcal{M}_2\) is the true, causal effect plus a bias term.
 
 \begin{equation}
 \mathrm{E}(b_1|\mathcal{M}_1) = \beta + \rho \alpha \frac{\sigma_{moisture}}{\sigma_{temperature}}
 \end{equation}
 
-This bias (\(\rho \alpha \frac{\sigma_{moisture}}{\sigma_{temperature}}\)) is \textbf{omitted variable bias}. The omitted variable \(moisture\) is an unmeasured, \textbf{confounding variable}. If confounding variables are omitted from a statistical model, then, as we sample more and more data, our estimate of the effect doesn't converge on the truth but the truth plus some bias.
+This bias (\(\rho \alpha \frac{\sigma_{moisture}}{\sigma_{temperature}}\)) is \textbf{omitted variable bias}. The omitted variable \(moisture\) is an unmeasured, \textbf{confounding variable}. A variable \(X_2\) is a confounder for variable \(X_1\) if \(X_2\) has both a correlation with \(X_1\) and a path to the response \(Y\) that is not through \(X_1\). With ommitted variable bias, as we sample more and more data, our estimate of the effect doesn't converge on the truth but the truth plus some bias.
 
 \hypertarget{using-the-linear-model-for-prediction-prediction-models}{%
 \subsection{Using the linear model for prediction -- prediction models}\label{using-the-linear-model-for-prediction-prediction-models}}
@@ -6328,7 +6745,7 @@ Inference from model \eqref{eq:continuous-x-m1} assumes the data were sampled fr
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-139-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-149-1.pdf}
 
 Approximately normal residuals will track the solid line and stay largely within the boundaries marked by the dashed lines. The residuals from m1 fit to the green-down data track the solid line and remain within the dashed lines, indicating adequate model fit.
 
@@ -6342,7 +6759,7 @@ Inference from model \eqref{eq:continuous-x-m1} assumes homogeneity of the respo
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-140-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-150-1.pdf}
 
 \begin{verbatim}
 ## 
@@ -6354,565 +6771,439 @@ The dashed blue line shows linear trends while the magenta line shows non-linear
 \hypertarget{a-linear-model-with-a-single-categorical-x}{%
 \chapter{\texorpdfstring{A linear model with a single, categorical \emph{X}}{A linear model with a single, categorical X}}\label{a-linear-model-with-a-single-categorical-x}}
 
-\hypertarget{a-linear-model-with-a-single-categorical-x-estimates-the-effects-of-x-on-the-response.}{%
-\section{\texorpdfstring{A linear model with a single, categorical \emph{X} estimates the effects of \emph{X} on the response.}{A linear model with a single, categorical X estimates the effects of X on the response.}}\label{a-linear-model-with-a-single-categorical-x-estimates-the-effects-of-x-on-the-response.}}
+\hypertarget{a-linear-model-with-a-single-categorical-x-variable-estimates-the-effect-of-x-on-the-response.}{%
+\section{\texorpdfstring{A linear model with a single, categorical \emph{X} variable estimates the effect of \emph{X} on the response.}{A linear model with a single, categorical X variable estimates the effect of X on the response.}}\label{a-linear-model-with-a-single-categorical-x-variable-estimates-the-effect-of-x-on-the-response.}}
 
-To introduce modeling with a single, categorical \(X\) variable, I'll use the {[}Vole data{]} from Chapter 2. Normal cellular metabolism creates reactive oxygen species (ROS) that can disrupt cell function and potentially cause cell damage. Anti-oxidants are molecules that bind ROS, inhibiting their ability to disrupt cell activity. A working hypothesis for many years is that supplemental anti-oxidants should improve cell function and, scaling up, whole-animal function (such as lifespan). The vole data explores this with supplemental Vitamins C and E, which are anti-oxidants, in the diet of the short-tailed field vole (\emph{Microtus agrestis}).
+To introduce a linear model with a single, categorical \(X\) variable, I'll use data from a set of experiments designed to measure the effect of 12,13-diHOME on brown adipose tissue (BAT) thermoregulation and the mechanism of this effect.
 
-The goal of the study is to measure the effect of anti-oxidants on lifespan. The researchers randomly assigned the voles to one of thre treatment levels: ``control'', ``vitamin E'', and ``vitamin C''. The variable \(treatment\), is a single, categorical \(X\) variable. Categorical variables are often called \textbf{factors} and the treatment levels are often called \textbf{factor levels}. ``Levels'' is a strange usage of this word; a less formal name for levels is ``groups''. There are no units to a categorical \(X\) variable (even though a certain amount of each anti-oxidant was supplemented). The response (\(Y\)) is \(lifespan\) measured in days.
+\href{https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5699924/pdf/nihms916046.pdf}{Article source}
 
-The linear model with a categorical \(X\) variable with three levels is not immediately obvious, and so I don't present the model until after showing the table of model coefficients. The verbal model is
+\href{https://www.nature.com/articles/nm.4297\#Sec14}{Data source}
 
-\begin{equation}
-lifespan \sim treatment
-\end{equation}
+Download the source data files and move to a new folder named ``The cold-induced lipokine 12,13-diHOME promotes fatty acid transport into brown adipose tissue''.
 
-which can be read as ``lifespan as a function of treatment''.
+Cold temperature and the neurotransmitter/hormone norepinephrine are known to stimulate increased thermogenesis in BAT cells. In this project, the researchers probed the question ``what is the pathway that mediates the effect of cold-exposure on BAT thermogenesis?''. In the ``discovery'' component of this project, the researchers measured plasma levels of 88 lipids with known signaling properties in humans exposed to one hour of both normal (20 °C) and cold temperature (14 °C) temperature. Of the 88 lipids, 12,13-diHOME had the largest response to the cold treatment. The researchers followed this up with experiments on mice.
 
-\hypertarget{table-of-model-coefficients}{%
-\subsection{Table of model coefficients}\label{table-of-model-coefficients}}
+\hypertarget{example-1-two-treatment-levels-groups}{%
+\subsection{Example 1 -- two treatment levels (``groups'')}\label{example-1-two-treatment-levels-groups}}
 
-The \emph{table of coefficients} from a linear model fit to some data is critically important for understanding a linear model and interpreting results. Read this section carefully. The coefficient table for a linear model fit to the vole data is
+Let's start with the experiment in Figure 3d, which was designed to measure the effect of 12,13-diHOME on plasma triglyceride level. If 12,13-diHOME stimulates BAT activity, then levels in the 12,13-diHOME mice should be less than levels in the control mice.
 
-\label{tab:vole-table}Coefficient table of fit linear model of vole data.
+\textbf{response variable}: \emph{serum\_tg}, a continuous variable.
 
-Estimate
+\textbf{treatment variable}: \emph{treatment}, with levels: ``Vehicle'', ``12,13-diHOME'' (the control or ``Vehicle'' mice were injected with saline). Coded as a factor.
 
-Std. Error
+\textbf{design}: single, categorical \emph{X}
 
-t value
+\hypertarget{the-report}{%
+\subsubsection{The Report}\label{the-report}}
 
-Pr(\textgreater\textbar t\textbar)
+\hypertarget{figure-3d-import}{%
+\paragraph{Figure 3d -- import}\label{figure-3d-import}}
 
-(Intercept)
+The first step in any analysis is to open the data and, if necessary, wrangle into an analyzable format.
 
-503.4
+\hypertarget{figure-3d-exploratory-plots}{%
+\paragraph{Figure 3d -- exploratory plots}\label{figure-3d-exploratory-plots}}
 
-27.4
+The second step is to explore the data to 1) check for biological implausible outliers that suggest measurement failure, or transcription error (from a notebook, not in a cell) and 2) assess reasonable distributions and models for analysis.
 
-18.4
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-153-1.pdf}
 
-0.000
+There are no obviously implausible data points. A normal distribution is a good, reasonable start. This can be checked more thoroughly after fitting the model.
 
-treatmentvitamin\_C
+\hypertarget{figure-3d-fit-the-model}{%
+\paragraph{Figure 3d -- fit the model}\label{figure-3d-fit-the-model}}
 
--115.1
+\hypertarget{figure-3d-check-the-model}{%
+\paragraph{Figure 3d -- check the model}\label{figure-3d-check-the-model}}
 
-54.5
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-155-1.pdf}
 
--2.1
+The Q-Q plot indicates the distribution of residuals is well within that expected for a normal sample and there is no cause for concern with inference.
 
-0.037
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-156-1.pdf}
 
-treatmentvitamin\_E
+\begin{verbatim}
+## 
+## Suggested power transformation:  0.8167264
+\end{verbatim}
 
--89.9
+The spread-location plot shows no conspicuous trend in how the spread changes with the conditonal mean. There is no cause for concern with inference.
 
-52.5
+\hypertarget{figure-3d-inference}{%
+\paragraph{Figure 3d -- inference}\label{figure-3d-inference}}
 
--1.7
+\hypertarget{coefficient-table}{%
+\subparagraph{coefficient table}\label{coefficient-table}}
 
-0.090
+\begin{verbatim}
+##                        Estimate Std. Error   t value     Pr(>|t|)
+## (Intercept)           42.620042   1.667226 25.563447 1.926081e-10
+## treatment12,13-diHOME -7.167711   2.357813 -3.039982 1.246296e-02
+##                           2.5 %    97.5 %
+## (Intercept)            38.90523 46.334853
+## treatment12,13-diHOME -12.42125 -1.914175
+\end{verbatim}
 
-The table has three values in the column ``Estimate''. The first estimate, that for ``(intercept)'' is the mean response in the reference level. Here, the reference level is the ``control'' group. The second estimate, that for ``treatmentvitamin\_C'' is the difference between the mean of the vitamin C group and the the mean of the reference (control) group. The \emph{direction} of this difference is important; it is \(\bar{Y}_{vitamin\_c} - \bar{Y}_{control}\), that is the non-reference level minus the reference level. The third estimate, that for ``treatmentvitamin\_E'' is just like the second estimate, except for the vitamin E group. That is, it is \(\bar{Y}_{vitamin\_e} - \bar{Y}_{control}\). The 2nd and 3rd values in the ``Estimate'' columns are the ``effects'' in the model. These effects are ``what happens'' when we add a treatment, such as vitamin E supplementation. When we add the vitamin E supplement, we find the lifespan changes by -89.9 days, relative to the control.
+\hypertarget{marginal-means-table}{%
+\subparagraph{Marginal means table}\label{marginal-means-table}}
 
-So typically with categorical \(X\), when we speak of an \emph{effect} we mean a difference in means, or a \textbf{contrast}.
+\begin{verbatim}
+##  treatment    emmean   SE df lower.CL upper.CL
+##  Vehicle        42.6 1.67 10     38.9     46.3
+##  12,13-diHOME   35.5 1.67 10     31.7     39.2
+## 
+## Confidence level used: 0.95
+\end{verbatim}
 
-\begin{figure}
-\centering
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/vole-mean-plot-1.pdf}
-\caption{\label{fig:vole-mean-plot}What the coefficients of a linear model with a single categorical X mean. The means of the three treatment levels for the vole data are shown with the filled circles. The length of the double-headed arrows are differences in means. The intercept (\(b_0\)) is the mean of the reference treatment level. The coefficients (\(b_1\) and \(b_2\)) are the differences between the treatment level's mean and the reference mean. As with a linear model with a continuous X, the coefficients are effects.}
-\end{figure}
+\hypertarget{contrasts-table}{%
+\subparagraph{Contrasts table}\label{contrasts-table}}
 
-\hypertarget{the-linear-model}{%
-\subsection{The linear model}\label{the-linear-model}}
+\begin{verbatim}
+##  contrast               estimate   SE df lower.CL upper.CL t.ratio p.value
+##  12,13-diHOME - Vehicle    -7.17 2.36 10    -12.4    -1.91 -3.040  0.0125 
+## 
+## Confidence level used: 0.95
+\end{verbatim}
 
-We can see an immediate difference between the coefficient table for a linear model fit to a single, categorical \(X\) and that for a single, continuous \(X\). For the latter, there is a single coefficient for \(X\). For the former, there is a coefficient for each level of the categorical \(X\) \emph{except} the ``reference'' level.
+\hypertarget{figure-3d-plot-the-model}{%
+\paragraph{Figure 3d -- plot the model}\label{figure-3d-plot-the-model}}
 
-The linear model for a single, categorical \(X\) with three factor levels is
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-163-1.pdf}
 
-\begin{equation}
-Y = \beta_0 + \beta_1 X_{group2} + \beta_2 X_{group3} + \varepsilon
-\end{equation}
+\hypertarget{figure-3d-report-the-model-results}{%
+\paragraph{Figure 3d -- report the model results}\label{figure-3d-report-the-model-results}}
 
-where \(group2\) and \(group3\) refer to the two non-reference groups.
+Mean serum TG in mice with 12,13-diHOME (35.5 µg/dL, 95\% CI: 31.7, 39.2) was 7.17 µg/dL less (95\% CI: -12.4, -1.9, \(p = 0.012\)) than mean serum TG in control mice (42.6 µg/dL, 95\% CI: 38.9, 46.3).
 
-For the vole data, ``control'' is the reference, so the model is
+\hypertarget{understanding-the-analysis}{%
+\subsubsection{Understanding the Analysis}\label{understanding-the-analysis}}
 
-\begin{equation}
-lifespan = \beta_0 + \beta_1 vitamin\_C + \beta_2 vitamin\_E + \varepsilon
-\end{equation}
+The variable \(treatment\) in the Figure 3d mouse experiment, is a single, categorical \(X\) variable. In a linear model, categorical variables are called \textbf{factors}. \(treatment\) can take two different values, ``Vehicle'' and ``12,13-diHOME''. The different values in a factor are the \textbf{factor levels} (or just ``levels''). ``Levels'' is a strange usage of this word; a less formal name for levels is ``groups''. In a \textbf{Nominal} categorical factor, the levels have no units and are unordered, even if the variable is based on a numeric measurement. For example, I might design an experiment in which mice are randomly assigned to one of three treatments: one hour at 14 °C, one hour at 18 °C, or one hour at 26 °C. If I model this treatment as a nominal categorical factor, then I simply have three levels. While I would certainly choose to arrange these levels in a meaningful way in a plot, for the analysis itself, these levels have no units and there is no order. \textbf{Ordinal} categorical factors have levels that are ordered but there is no information on relative distance. The treatment at 18 °C is not more similar to 14 °C than to 26 °C. Nominal categorical factors is the default in R and how all factors are analyzed in this text.
 
-\textbf{The ``estimates'' in the coefficient table are the estimates of the parameters in this linear model. These estimates are the coefficients of the fit model,}
+\hypertarget{linear-models-are-regression-models}{%
+\paragraph{Linear models are regression models}\label{linear-models-are-regression-models}}
 
-\begin{equation}
-lifespan_i = b_0 + b_1 vitamin\_C_i + b_2 vitamin\_E_i + e_i
+The linear model fit to the serum TG data is
+
+\begin{align}
+serum\_tg &= treatment + \varepsilon
+\varepsilon ~ N(0, sigma^2)
+\label{eq:lm-serum-tg}
+\end{align}
+
+This specification is potentially confusing because the variable \(treatment\) is a factor containing the words ``Vehicle'' and ``12,13-diHOME'' and not numbers. A linear model with a single factor containing two levels can be specified using notation for a regression model.
+
+\begin{align}
+Y &= \beta_0 + \beta_1 X_1 + \varepsilon//
+\varepsilon &\sim N(0, \sigma^2)
 \label{eq:model-cat-x}
-\end{equation}
+\end{align}
 
-Given the interpretation of the estimates above, \(b_0\) is the mean of the control group, \(b_1\) is the difference in means between the vitamin C and control groups, and \(b_2\) is the difference in means between the vitamin E and control groups. These estimates and their meaning are illustrated in Figure \ref{fig:vole-mean-plot}. Take a while to memorize the bold-faced sentence above equation \eqref{eq:model-cat-x} and to understand this plot. Be able to ``visualize'' the meaning of the coefficients of a linear model in this way.
+Model \eqref{eq:model-cat-x} is a regression model where \(X_1\) is not the variable \(treatment\), containing the words ``Vehicle'' or ``12,13-diHOME'' but a numeric variable that indicates group membership, containing the number 1 if the element belongs to the first non-reference level (if there are only two levels, then there is only a single, non-reference level) and the number 0 if the element doesn't belong to the first non-reference level.
 
-\hypertarget{a-linear-model-with-a-categorical-x-is-a-regression-model-with-the-treatment-levels-re-coded-as-numbers}{%
-\subsubsection{A linear model with a categorical X is a regression model with the treatment levels re-coded as numbers}\label{a-linear-model-with-a-categorical-x-is-a-regression-model-with-the-treatment-levels-re-coded-as-numbers}}
+For the serum TG data, ``Vehicle'' is the reference, so we can write the linear model fit to the serum TG data using regression model notation.
 
-Model \eqref{eq:model-cat-x} is a regression model. A regression model requires that the \(X\) variables be numeric, so how can this model be a regression model? What are the numeric values of \(vitamin\_C\) and \(vitamin\_E\)? The answer is very clever: \(vitamin\_C\) and \(vitamin\_E\) are recoded into \textbf{dummy variables} that contain a one, if response \(i\) is from that treatment level, and zero otherwise. This is called dummy coding or treatment coding. The \texttt{lm} function creates these dummy variables under the table, in something called the \textbf{model matrix}, which we'll cover in another chapter. You won't see these columns in your data. But if you did, they would look like this
+\begin{align}
+serum\_tg &= \beta_0 + \beta_1 treatment_{12,13-diHOME} + \varepsilon//
+\varepsilon &\sim N(0, \sigma^2)
+\label{eq:model-cat-serum-tg}
+\end{align}
 
-lifespan
+Model \eqref{eq:model-cat-serum-tg} is a regression model where \(treatment_{12,13-diHOME}\) is not the variable \(treatment\), containing the words ``Vehicle'' or ``12,13-diHOME'' but a numeric variable that indicates membership in the level ``12,13-diHOME''. This variable contains the number 1 if the element belongs to ``12,13-diHOME'' and the number 0 if the element doesn't belong to ``12,13-diHOME''. More generally, model \eqref{eq:model-cat-x} is a regression model where \(X_1\) contains the number 1 if the element belongs to the first non-reference level (if there are only two levels, then there is only a single, non-reference level) and the number 0 if the element doesn't belong to the first non-reference level. If there were a third level within \(treatment\) (say, a 12,13-diHOME inhibitor), there would be a second \(X\) variable added to the model (\(X_2\)), which would contain the number 1 if the element belongs to the second non-reference level (12,13-diHOME inhibitor) and the number 0, otherwise.
+
+The \(X\) variables in the regression model notation that indicate group membership are called \textbf{indicator variables}. There are several ways of coding indicator variables and the way described here is called \textbf{dummy} or treatment coding. This text will typically call dummy-coded indicator variables \textbf{dummy variables}. The \texttt{lm} function creates these dummy variables under the table, in something called the \textbf{model matrix}. You won't see these columns in your data but if you did, they would look like this
 
 treatment
 
-treatmentvitamin\_E
+serum\_tg
 
-treatmentvitamin\_C
+treatment12,13-diHOME
 
-621
+Vehicle
 
-control
-
-0
+42.35908
 
 0
 
-865
+Vehicle
 
-control
-
-0
+43.82046
 
 0
 
-583
+Vehicle
 
-vitamin\_E
+39.01879
+
+0
+
+Vehicle
+
+48.72651
+
+0
+
+Vehicle
+
+45.17745
+
+0
+
+Vehicle
+
+36.61795
+
+0
+
+12,13-diHOME
+
+36.09603
 
 1
 
-0
+12,13-diHOME
 
-561
-
-vitamin\_E
+32.12944
 
 1
 
-0
+12,13-diHOME
 
-315
-
-vitamin\_C
-
-0
+33.38205
 
 1
 
-157
+12,13-diHOME
 
-vitamin\_C
-
-0
+41.52401
 
 1
 
-R names the dummy variables by combining the names of the factor and the name of the level within the factor. So the \(X\) variables that R creates in the model matrix for the fit linear model in model \eqref{eq:model-cat-x} are \(treatmentvitamin\_C\) and \(treatmentvitamin\_E\). You can see these names as terms in the coefficient table of the fit model. Using these dummy variable names, a better way of writing out the fit model than the notation in model \eqref{eq:model-cat-x} is
+12,13-diHOME
+
+31.71190
+
+1
+
+12,13-diHOME
+
+37.87056
+
+1
+
+R names dummy variables by combining the names of the factor and the name of the level within the factor. So the \(X\) variable that R creates in the model matrix for the fit linear model in model \eqref{eq:model-cat-x} is \(treatment12,13-diHOME\). You can see these names as terms in the coefficient table of the fit model.
+
+Analysis fail. There are alternatives to dummy coding for creating indicator variables. Dummy coding is the default in R and it makes sense when thinking about experimental data with an obvious control level. I also like the interpretation of a ``interaction effect'' using Dummy coding. The classical coding for ANOVA is deviation effect coding, which creates coefficients that are deviations from the grand mean. In contrast to R, Deviation coding is the default in many statistical software packages including SAS, SPSS, and JMP. The method of coding can make a difference in an ANOVA table. Watch out for this -- I've come across numerous published papers where the researchers used the default dummy coding but interpreted the ANOVA table as if they had used deviation coding. This is both getting ahead of ourselves and somewhat moot, because I don't advocate publishing ANOVA tables.
+
+\hypertarget{the-estimates-in-the-coefficient-table-are-estimates-of-the-parameters-of-the-linear-model-fit-to-the-data.}{%
+\paragraph{The ``Estimates'' in the coefficient table are estimates of the parameters of the linear model fit to the data.}\label{the-estimates-in-the-coefficient-table-are-estimates-of-the-parameters-of-the-linear-model-fit-to-the-data.}}
+
+\begin{verbatim}
+##                        Estimate Std. Error   t value     Pr(>|t|)
+## (Intercept)           42.620042   1.667226 25.563447 1.926081e-10
+## treatment12,13-diHOME -7.167711   2.357813 -3.039982 1.246296e-02
+##                           2.5 %    97.5 %
+## (Intercept)            38.90523 46.334853
+## treatment12,13-diHOME -12.42125 -1.914175
+\end{verbatim}
+
+The linear model \eqref{eq:model-cat-serum-tg} fit to the serum TG data has three parameters, including two in the regression equation. The ``estimates'' in the coefficient table are the estimates of the regression parameters \(\beta_0\) and \(\beta_1\). These estimates are the coefficients of the fit model
 
 \begin{equation}
-lifespan_i = b_0 + b_1 treatvitamin\_C_i + b_2 treatvitamin\_E_i + e_i
-\label{eq:model-cat-x-better}
+serum\_tg = b_0 + b_1 \beta_1 treatment_{12,13-diHOME} + e
+\label{eq:fit-serum-tg}
 \end{equation}
 
-There are alternative coding methods. Dummy coding is the default in R and it makes since when thinking about experimental data. Note that the method of coding can make a difference in an ANOVA table, and many published papers using R have published incorrect interpretations of ANOVA table outputs. This is both getting ahead of ourselves and somewhat moot, because I don't advocate publishing ANOVA tables.
+The coefficients \(b_0\) and \(b_1\) are the two values in the column ``Estimate'' of the table of model coefficients (or ``coefficient table''). In addition to the estimates, the table inlcludes the standard error, 95\% confidence interval, and \emph{t} and \emph{p}-values of each estimate.
 
-\hypertarget{some-math-to-convince-you-that-the-intercept-of-a-linear-model-with-a-categorical-x-is-the-mean-of-the-reference-group-and-the-intercept-of-a-line}{%
-\subsubsection{\texorpdfstring{Some math to convince you that the ``intercept'' of a linear model with a categorical \(X\) is the mean of the reference group \emph{and} the intercept of a line}{Some math to convince you that the ``intercept'' of a linear model with a categorical X is the mean of the reference group and the intercept of a line}}\label{some-math-to-convince-you-that-the-intercept-of-a-linear-model-with-a-categorical-x-is-the-mean-of-the-reference-group-and-the-intercept-of-a-line}}
+\hypertarget{the-parameters-of-a-linear-model-using-dummy-coding-have-an-impoortant-interpretation}{%
+\paragraph{The parameters of a linear model using dummy coding have an impoortant interpretation}\label{the-parameters-of-a-linear-model-using-dummy-coding-have-an-impoortant-interpretation}}
 
-The mean lifespan given a specific value of \(treatmentvitamin\_C\) and \(treatmentvitamin\_E\) is
+It is important to understand the interpretation of the coefficients of the fit linear model @\ref(eq:fit-serum-tg). The ``coefficient'' \(b_0\) is the first value in the ``Estimate'' column of the coefficient table (in the row ``(intercept)''). This is the conditional mean of the response for the reference level, which is ``Vehicle''. Remember that a conditional mean is the mean of a group that all have the same value for one or more \(X\) variables. The coefficient \(b_1\) is the second value in the ``Estimate'' column (in the row ``treatment12,13-diHOME''). \(b_1\) is the difference between the conditional means of the 12,13-diHOME level and the reference (Vehicle) level. The \emph{direction} of this difference is important; it is \(\bar{Y}_{12,13-diHOME} - \bar{Y}_{Vehicle}\), that is, the non-reference level minus the reference level. The estimate for treatment12,13-diHOME is the \textbf{effect} that we are interested in. Specifically, it is the effect of 12,13-diHOME on serum TG. When we inject 12,13-diHOME, we find the mean serum TG decreases by -7.2 µg/dL relative to the mean serum TG in the mice that were injected with saline. Importantly, the reference level is not a property of an experiment but is set by whomever is analyzing the data. Since the non-reference estimates are differences in means, it often makes sense to set the ``control'' treatment level as the reference level.
 
-\begin{equation}
-\mathrm{E}[lifespan] = b_0 + b_1 treatvitamin\_C + b_2 treatvitamin\_E
-\label{eq:model-cat-x-better-parametric}
-\end{equation}
+The intercept estimates the true, mean serum TG in a hypothetical population of mice that have been given saline but not 12,13-diHOME. The treatment12,13-diHOME value estimates the true, difference in means between a hypothetical population of mice that have been given 12,13-diHOME and a population that has been given only saline.
 
-Recall from your ``Y = mX + b'' days that the intercept of a line is the value of Y when X is set to zero. This is the same for a regression model: the intercept of a regression model is the expected value when all \(X\)-variables are set to zero. Setting the two dummy variables to zero, model \eqref{eq:model-cat-x-better-parametric} reduces to
-
-\begin{equation}
-\mathrm{E}[lifespan|treatmentvitamin\_C=0, treatmentvitamin\_E=0] = b_0
-\end{equation}
-
-which can be read as ``the mean lifespan when treatmentvitamin\_C and treatmentvitaminE are both set to zero is equal to the intercept''. Since the rows in which both \(treatmentvitamin\_C\) and \(treatmentvitamin\_E\) are zero are the rows for the control group, the intercept of the model is the mean of the control group. Consequently,
-
-\begin{equation}
-b_0 = \overline{lifespan}_{control}
-\end{equation}
-
-\hypertarget{some-math-to-convince-you-that-the-coefficient-of-a-dummy-variable-in-a-linear-model-with-a-categorial-x-is-a-difference-in-means-and-the-slope-of-a-line.}{%
-\subsubsection{\texorpdfstring{Some math to convince you that the coefficient of a dummy variable in a linear model with a categorial \(X\) is a difference in means \emph{and} the slope of a line.}{Some math to convince you that the coefficient of a dummy variable in a linear model with a categorial X is a difference in means and the slope of a line.}}\label{some-math-to-convince-you-that-the-coefficient-of-a-dummy-variable-in-a-linear-model-with-a-categorial-x-is-a-difference-in-means-and-the-slope-of-a-line.}}
-
-The slope of a line is the difference in \(Y\) given a one unit increase in \(X\). In model \eqref{eq:model-cat-x-better-parametric} we have two slopes, one for \(treatmentvitamin\_C\) and one for \(treatmentvitamin\_E\). If we increase \(treatmentvitamin\_C\) from zero to one, but keep \(treatmentvitamin\_E = 0\), model \eqref{eq:model-cat-x-better-parametric} reduces to
-
-\begin{equation}
-\mathrm{E}[lifespan|treatmentvitamin\_C=1, treatmentvitamin\_E=0] = b_0 + b_1
-\end{equation}
-
-Since the rows in which \(treatmentvitamin\_C = 1\) and \(treatmentvitamin\_E = 0\) are the rows for the vitamin C group, \(b_0 + b_1\) is the mean of the vitamin C group, or
-
-\begin{equation}
-b_0 + b_1 = \overline{lifespan}_{vitamin\_C}
-\end{equation}
-
-Solving for \(b_1\)
-
-\begin{equation}
-b_1 = \overline{lifespan}_{vitamin\_C} - b_0
-\end{equation}
-
-and since \(b_0 = \overline{lifespan}_{control}\),
-
-\begin{equation}
-b_1 = \overline{lifespan}_{vitamin\_C} - \overline{lifespan}_{control}
-\end{equation}
-
-The coefficient of \(treatmentvitamin\_C\) is a difference in means but a slope is a ratio of differences, \(\frac{Y_2 - Y_1}{X_2 - X_1}\). How can \(b_1\) be a difference \emph{and} a ratio? A more satisfactory way to think about \(b_1\) is to remember that we set the \(X\) variable \(treatmentvitamin\_C\) to one to calculate \(\overline{lifespan}_{vitamin\_C}\) and to zero to calculate \(\overline{lifespan}_{control}\), so
-
-\begin{equation}
-b_1 = \frac{\overline{lifespan}_{vitamin\_C} - \overline{lifespan}_{control}}{1-0}
-\end{equation}
-
-One more potential confusion to clarify: \(b_1\) is a difference in mean lifespand and has the units of \(Lifespan\), which is days. But the units of a regression coefficient are the units of \(Y\) divided by the units of \(X\). In a regression model with a categorical \(X\), the constructed dummy variable is \emph{unitless} and the coefficient simply has the units of \(Y\).
-
-\hypertarget{reporting-results}{%
-\subsection{Reporting results}\label{reporting-results}}
-
-What should be reported for the analyis of effects of anti-oxidant supplements on vole lifespan? Best practice includes reporting the raw data with a summary distribution and treatment effects with CIs. ``Raw data'' means the individual lifespans as a function of treatment level.
-
-\hypertarget{harrell-plot-of-the-data}{%
-\subsubsection{Harrell Plot of the data}\label{harrell-plot-of-the-data}}
+tl;dr. What is a population? In the experimental biology examples in this text, we might consider the population as a very idealized, infinitely large set of mice, or fish, or fruit flies, or communities from which our sample is a reasonably representative subset. For the experiments in the 12,13-diHOME study, the population might be conceived of as the hypothetical, infinitely large set of 12-week-old, male, C57BL/6J mice, raised in the mouse facility at Joslin Diabetes Center. An even more abstract way to way to think about what the population could be is the infinitely large set of values that could generated by the linear model.
 
 \begin{figure}
 \centering
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/harrellplot-1.pdf}
-\caption{\label{fig:harrellplot}HarrellPlot of the raw data, distribution, and effects of the vole lifespan data.}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-166-1.pdf}
+\caption{\label{fig:unnamed-chunk-166}What the coefficients of a linear model with a single categorical X mean. The means of the two treatment levels for the serum TG data are shown with the filled circles. The intercept (\(b_0\)) is the mean of the reference treatment level. The coefficient \(b_1\) is the difference between the treatment level's mean and the reference mean. As with a linear model with a continuous X, the coefficients are effects.}
 \end{figure}
 
-The raw data, the distributions within treatment level, and the effects (difference in means) of treatment can be combined into a single plot that I call a Harrell plot (Figure \ref{fig:voles}). Notice that the \emph{x}-axis and \emph{y} axes are flipped so that \(lifespan\) is on the \emph{x}-axis. It is still the ``response'' or ``Y'' variable! The Harrell plot contains two parts
+Let's put this all together. \(b_0\) is the conditional mean of the reference level (``Vehicle'') and is an estimate of \(\beta_0\), the true, conditional mean of the population. \(b_1\) is the difference in the conditional means of the first non-reference level (``12,13-diHOME'') and the reference level (``Vehicle'') and is an estimate of \(\beta_1\), the true difference in the conditional means of the population with and without the treatment 12,13-diHOME.
 
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\tightlist
-\item
-  The bottom contains a \textbf{strip chart} (often called a ``dot plot'') of the raw response measures grouped by factor level. Superimposed over the strip chart is a \textbf{box plot} summarizing the distribution of each factor level. The line in the center of a box is the median \(lifespan\) for that group, the left and right edges of the box are the 25\% and 75\% quantiles of \(lifespan\) for that grop, and the lines extending to the left and right of the box are the ``whiskers'', which are the smallest and largest value within \(1.5 IQR\) (inter-quartile range, which is the interval bounded by box).
-\item
-  The top is a \textbf{forest plot} of the effects and the 95\% CI of the effects. For categorical \(X\), the effects could be model coefficients or treatment \textbf{contrasts}, which are differences in means between treatment levels. Model coefficients are a subset of possible treatment contrasts.
-\end{enumerate}
+\hypertarget{the-table-of-marginal-means-is-a-table-of-modeled-means-and-inferential-statistics-not-a-table-of-raw-means-and-inferential-statistics}{%
+\paragraph{The table of marginal means is a table of modeled means and inferential statistics, not a table of raw means and inferential statistics}\label{the-table-of-marginal-means-is-a-table-of-modeled-means-and-inferential-statistics-not-a-table-of-raw-means-and-inferential-statistics}}
 
-The Harrell plot above shows the effects as model coefficients, which (again!) are differences between the mean of the response in a specific treatment level and the mean of the response in a reference level. Here the reference level is the control group.
+The table of marginal means for the model fit to the Figure 3d serum TG data is (shown to five decimal places for a later comparison)
 
-\hypertarget{in-text-reporting}{%
-\subsubsection{In-text reporting}\label{in-text-reporting}}
+treatment
 
-"The mean lifespan of cold-reared voles supplemented with vitamin E was 89.9 days shorter than the mean lifespan for the control group (95\% CI: -194.1, 14.3). The mean lifespan of cold-reared voles supplmented with vitamin C was 115.1 days shorter than the mean lifespan for the control group (95\% CI: -223.2, -6.9).
+emmean
 
-\hypertarget{correct-interpretation-of-the-confidence-interval-is-key}{%
-\subsubsection{Correct interpretation of the Confidence Interval is key}\label{correct-interpretation-of-the-confidence-interval-is-key}}
+SE
 
-Remember, that the CI contains the range of parameter values that are consistent with the data (in the sense that a t-test wouldn't reject the hypothesis test). This means that a true value at the low end or the high end of the CI is consistent with the data. Your technical report/manuscript should discuss the consequences of this. For example, A small, increase in lifespan is consistant with the Vitamin E but not Vitamin C supplementation, if we use the 95\% CI as a pretty good range for inferring ``consistent with''. Both a 223 day and a 7 day decrease in lifespan are consistant with the Vitamin C effect. 223 days seems like a huge effect, especially for a short lived vole. 7 days is certainly a much smaller effect, but this doesn't mean that it doesn't have important ecological, behavioral, or fitness consequences.
+df
 
-\hypertarget{comparing-the-results-of-a-linear-model-to-classical-hypothesis-tests}{%
-\section{Comparing the results of a linear model to classical hypothesis tests}\label{comparing-the-results-of-a-linear-model-to-classical-hypothesis-tests}}
+lower.CL
 
-\hypertarget{t-tests-are-special-cases-of-a-linear-model}{%
-\subsection{t-tests are special cases of a linear model}\label{t-tests-are-special-cases-of-a-linear-model}}
+upper.CL
 
-There isn't ``a'' \emph{t}-test but several flavors of \emph{t}-test including
+Vehicle
 
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\tightlist
-\item
-  Student's \emph{t}-test. The classical ``two-sample'' test for comparing the means between two groups
-\item
-  Welch's \emph{t}-test. A modification of Student's test, which relaxes the assumption of equal variance between the groups.
-\item
-  paired \emph{t}-test. A version of the test when values in the two groups are ``paired'', for example, measuring weight in ten mice before treatment (at ``baseline''), measuring weight in the same ten mice after treatment, then comparing the mean post-treatment to mean pre-treatment weight.
-\end{enumerate}
+42.62004
 
-All of these are special cases of the linear model. Welch's and paired t-test are swept within a linear model in later chapters. Here, I focus on Student's \emph{t}-test.
+1.66723
 
-First, let's review \emph{t}-values, which were introduced in Chapter 5 on \emph{p}-values. A reminder, a \emph{t}-value is a ratio of signal to noise, where the signal is an estimate of some parameter and the noise is the standard error of the estimate. The parameter of interest here is the difference in means between treatment and control, so \emph{t} is
+10
 
-\begin{equation}
-t = \frac{\bar{y}_t - \bar{y}_c}{s_{\bar{y}_t - \bar{y}_c}}
-\label{eq:lm-t-value}
-\end{equation}
+38.90523
 
-Note that the numerator and denominator in equation \eqref{eq:lm-t-value} are in the coefficient table of a linear model with categorical \(X\) -- the numerator is the estimate of the effect of a treatment and the denominator is the standard error of this estimate.
+46.33485
 
-To explore these equalities, let's use data from
+12,13-diHOME
 
-\textbf{article} Bak, A.M., Vendelbo, M.H., Christensen, B., Viggers, R., Bibby, B.M., Rungby, J., Jørgensen, J.O.L., Møller, N. and Jessen, N., 2018. Prolonged fasting-induced metabolic signatures in human skeletal muscle of lean and obese men. PloS one, 13(9), p.e0200817.
+35.45233
 
-\textbf{data source} \url{https://datadryad.org/stash/dataset/doi:10.5061/dryad.6121hj7}
+1.66723
 
-The data are from a randomized \textbf{crossover} design where 18 men (9 lean and 9 obese) were measured for multiple metabolic markers at two times: 1) in a post-absorptive state after 12 hours overnight fast, and 2) in a prolonged fasting state after 72 hours of fasting. In addition, at each time point, metabolic markers were measured prior to and after an insulin infusion.
+10
 
-\hypertarget{a-student-t-test-is-equivalant-to-the-t-value-and-p-value-in-a-coefficient-table-of-a-linear-model-if-there-are-only-two-levels-in-the-treatment-factor}{%
-\subsubsection{\texorpdfstring{A student t-test is equivalant to the t-value and p-value in a coefficient table of a linear model \emph{if} there are only two levels in the treatment factor}{A student t-test is equivalant to the t-value and p-value in a coefficient table of a linear model if there are only two levels in the treatment factor}}\label{a-student-t-test-is-equivalant-to-the-t-value-and-p-value-in-a-coefficient-table-of-a-linear-model-if-there-are-only-two-levels-in-the-treatment-factor}}
+31.73752
 
-Here I compare pre-insulin infusion blood levels of free fatty acids (ffa) between obese and lean subjects at 12h. The data are in Table 2 and the response is the column ``ffa\_t\_210\_min\_m\_m''. The assigment of lean or obese is in Table 1, which needs to be merged with Table 2 in order to subset the lean subjects.
+39.16714
 
-Coefficient table from the linear model
+A \textbf{marginal mean} is the mean of a set of conditional means and is, consequently, a \textbf{modeled mean} (it comes from a model). The table of marginal means (``marginal means table) outputs the specified marginal means and the standard error and 95\% confidence interval of each mean. There is no test-statistic with a \emph{p}-value because there is no significance test. The specified marginal means table of the Figure 3d data is not too exciting because it simply contains the conditional means -- the values are not marginalized over any \(X\). In several sections of this text, the marginal means table will contain values that average conditional means over one or more factors. The marginal means table also computes these means as the expected value (mean) at the average value of a continuous covariate, if any covariates are in the linear model. Because the marginal means table contains different sorts of means (conditional, marginal, adjusted), this text will generally refer to the means in this table as''modeled means".
+
+If the design is \textbf{balanced}, meaning the sample size for each conditional mean is the same, then a marginal mean will simply equal the average of the individual values. But, this is not the case for unbalanced designs. For example, if we unbalance the Figure 3d data by throwing out the first row of and refit the model, the raw mean of \(serum\_tg\) is 38.734 and the marginal mean, marginalized over \(treatment\), is 39.062.
+
+Like the modeled means, the standard errors in the marginal means table are modeled and not raw values. Recall that the standard error of a mean is \(\frac{s}{\sqrt{n}}\), where \(s\) is the sample standard deviation. In the marginal means table, \(s\) is not the raw standard deviation of the group but the estimate of \(\sigma\), the square root of the true variance. As with the raw standard error of the mean, the denominator is the sample size \(n\) for the group. Since the numerator of the modeled SE is the same for all groups, the modeled SE will be the same in all groups that have the same sample size, as seen in the marginal means table for the model fit to the Figure 3d data. This may seem odd. It is not. Remember that an assumption of the linear model is homogeneity of variances -- that the \(e_i\) for each group are drawn from \(N(0, \sigma^2)\) regardless of group. \(s^2\), which is computed as a variance of the model residuals, is an estimate this true variance (\(\sigma^2\)). It is also useful to think of the raw variances computed separately for each group (level of \(treatment\)) as estimates of \(\sigma^2\). The separately computed estimates are averaged to create a single estimate, which is equal to \(s^2\) computed from the model residuals.
 
 \begin{verbatim}
-##             Estimate Std. Error  t value     Pr(>|t|)
-## (Intercept) 0.417625 0.04433893 9.418923 1.950636e-07
-## groupobese  0.105625 0.06270472 1.684482 1.142414e-01
+## [1] 4.083853
 \end{verbatim}
 
-The \emph{t}-value and \emph{p}-value of the effect of obesity on free-fatty acids \emph{is} a t-test. The numerator of \emph{t} is the difference in free-fatty acids between obese and lean subjects (the ``Estimate'' in the coefficient table). The denominator of \emph{t} if the standard error of this estimate (The ``Std. Error'' in the coefficient table).
+\begin{verbatim}
+## [1] 3.893801
+\end{verbatim}
 
-To confirm that that the the \emph{t}and \emph{p}-values of the effect of obesity on free-fatty acids \emph{is} a t-test, let's compare the coefficient table to the output of a t-test.
+\begin{verbatim}
+## [1] 4.083853
+\end{verbatim}
+
+\begin{verbatim}
+## [1] 1.667226
+\end{verbatim}
+
+\begin{verbatim}
+## [1] 4.083853
+\end{verbatim}
+
+\begin{verbatim}
+## [1] 4.083853
+\end{verbatim}
+
+\begin{verbatim}
+## [1] 4.303704
+\end{verbatim}
+
+\begin{verbatim}
+## [1] 4.303704
+\end{verbatim}
+
+\begin{verbatim}
+## [1] 1.75698
+\end{verbatim}
+
+\begin{verbatim}
+## [1] 1.924675
+\end{verbatim}
+
+treatment
+
+emmean
+
+SE
+
+df
+
+lower.CL
+
+upper.CL
+
+Vehicle
+
+42.67223
+
+1.924675
+
+9
+
+38.31832
+
+47.02615
+
+12,13-diHOME
+
+35.45233
+
+1.756980
+
+9
+
+31.47777
+
+39.42690
+
+\begin{verbatim}
+## [1] 4.303704
+\end{verbatim}
+
+\begin{verbatim}
+## [1] 4.361875
+\end{verbatim}
 
 \begin{verbatim}
 ## 
-##  Two Sample t-test
+##  Welch Two Sample t-test
 ## 
-## data:  ffa_t_210_min_m_m by group
-## t = -1.6845, df = 14, p-value = 0.1142
+## data:  serum_tg by treatment
+## t = 3.04, df = 9.8307, p-value = 0.0127
 ## alternative hypothesis: true difference in means is not equal to 0
 ## 95 percent confidence interval:
-##  -0.24011325  0.02886325
+##   1.901885 12.433536
 ## sample estimates:
-##  mean in group lean mean in group obese 
-##            0.417625            0.523250
+##      mean in group Vehicle mean in group 12,13-diHOME 
+##                   42.62004                   35.45233
 \end{verbatim}
 
-The \emph{t}-value in the t.test output is the same as the \emph{t}-value of the effect of obesity (``groupobese'') in the coefficient table of the linear model, except it has the opposite sign. This sign is arbitrary and simply reflects which mean is subtracted from which. The \emph{p}-value for both is the same.
+But, unlike the modeled means, the modeled standard error and confidence interval will, effectively, never equal the raw values.
 
-\hypertarget{a-student-t-test-is-not-equivalant-to-the-t-value-and-p-value-in-a-coefficient-table-of-a-linear-model-if-there-are-more-than-two-levels-in-the-treatment-factor.-this-is-a-feture-of-a-linear-model-not-a-bug.}{%
-\subsubsection{\texorpdfstring{A student t-test is \emph{not} equivalant to the t-value and p-value in a coefficient table of a linear model \emph{if} there are more than two levels in the treatment factor. This is a feture of a linear model, not a bug.}{A student t-test is not equivalant to the t-value and p-value in a coefficient table of a linear model if there are more than two levels in the treatment factor. This is a feture of a linear model, not a bug.}}\label{a-student-t-test-is-not-equivalant-to-the-t-value-and-p-value-in-a-coefficient-table-of-a-linear-model-if-there-are-more-than-two-levels-in-the-treatment-factor.-this-is-a-feture-of-a-linear-model-not-a-bug.}}
+\hypertarget{report-the-modeled-means-and-inferential-statistics-from-the-marginal-means-table-not-the-raw-means-and-inferential-statistics}{%
+\paragraph{Report the modeled means and inferential statistics from the marginal means table, not the raw means and inferential statistics}\label{report-the-modeled-means-and-inferential-statistics-from-the-marginal-means-table-not-the-raw-means-and-inferential-statistics}}
 
-Let's return to the vole data. The \emph{t} and \emph{p} values of the effects of vitamin C and vitamin E in the coefficient table of the linear model of \(lifespan \sim treatment\) are
+This text advocates the best practice of reporting, including plotting, the modeled means and inferential statistics (SEM or confidence interval) and not the raw means and summary statistics, because only the modeled means and statistics are consistent with the modeled statistical analysis. Raw means and summary statistics can both mask the effects that we want to communicate and give misleading interpretation of the statistics, including the conditional distribution of the data.
 
-Level
-
-t
-
-p
-
-vitamin\_C
-
--2.113
-
-0.037
-
-vitamin\_E
-
--1.713
-
-0.090
-
-while the \emph{t}-tests between the two supplement levels and the control are
-
-Level
-
-t
-
-p
-
-vitamin\_C
-
--1.981
-
-0.051
-
-vitamin\_E
-
--1.628
-
-0.108
-
-The \emph{t}-test statistics differ from those of the linear model because the two use \emph{different} standard errors in the denominator of \emph{t}. Both denominators are computed from a \textbf{pooled variance}, which estimates the population variance using a weighted average of the variances of each of the groups in the model. The linear model contains all three levels (groups) of \(treatment\) and, consequently, the pooled variance is computed from the variances of all three groups. The \emph{t}-test uses the pooled variance averaged over only the two levels compared.
-
-If the linear model uses a pooled variance over all three levels, this raises the question of why the standard error of the vitamin C and vitamin E effects differs (see the full table above). The reason is the vitamin C and vitamin E groups have different sample sizes, so while the standard errors in the table are computed using a common variance, they are computed using different \(n\).
-
-\hypertarget{feature-not-a-bug}{%
-\subsubsection{Feature not a bug}\label{feature-not-a-bug}}
-
-\hypertarget{use-the-linear-model-not-a-t-test.}{%
-\subsubsection{Use the linear model, not a t-test.}\label{use-the-linear-model-not-a-t-test.}}
-
-\hypertarget{anova-is-a-special-case-of-a-linear-model}{%
-\subsection{ANOVA is a special case of a linear model}\label{anova-is-a-special-case-of-a-linear-model}}
-
-\hypertarget{working-in-r-2}{%
-\section{Working in R}\label{working-in-r-2}}
-
-Import the vole data from the Dryad repository using the information above and in Chapter 2 section {[}Vole data{]}.
-
-\hypertarget{fitting-the-model-1}{%
-\subsection{Fitting the model}\label{fitting-the-model-1}}
-
-As with a single, continuous \(X\), we fit the model using the \texttt{lm} function and with the model formula of the form \texttt{y\ \textasciitilde{}\ x}. Note that the R formula can use the single categorical variable \(treatment\). The code underneath lm will note that \(treatment\) is a factor with three levels and will automatically create the two dummy variables noted above in the linear model.
+The raw, group means and standard errors of each mean of the Figure 3d serum TG are
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{fit <-}\StringTok{ }\KeywordTok{lm}\NormalTok{(lifespan }\OperatorTok{~}\StringTok{ }\NormalTok{treatment, }\DataTypeTok{data=}\NormalTok{vole)}
-\end{Highlighting}
-\end{Shaded}
-
-All of the same scripts to access the information in \texttt{fit} that we used with the continuous \(X\) analysis are the same. For example, the base R \texttt{summary} function gives the same information as in the continuous \(X\) example. Other useful functions on the lm object (``fit'') are
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\tightlist
-\item
-  \texttt{coefficients(fit)} and \texttt{coefficients(summary(fit))}. Note the difference between these. The first is useful if we just want to extract the coefficient. The second if we want the addtional information. These can both be shortened using \texttt{coef} in place of \texttt{coefficients}.
-\end{enumerate}
-
-Let's look at the coefficient table
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{coef}\NormalTok{(}\KeywordTok{summary}\NormalTok{(fit))}
+\NormalTok{fig_3d[, .(}\DataTypeTok{mean =} \KeywordTok{mean}\NormalTok{(serum_tg),}
+           \DataTypeTok{SE =} \KeywordTok{sd}\NormalTok{(serum_tg)}\OperatorTok{/}\KeywordTok{sqrt}\NormalTok{(.N)),}
+\NormalTok{       by =}\StringTok{ }\NormalTok{treatment]}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
-##                      Estimate Std. Error   t value     Pr(>|t|)
-## (Intercept)         503.39286   27.40978 18.365445 1.078296e-32
-## treatmentvitamin_C -115.07707   54.45772 -2.113145 3.726632e-02
-## treatmentvitamin_E  -89.91667   52.48574 -1.713164 9.001428e-02
+##       treatment     mean       SE
+## 1:      Vehicle 42.62004 1.773251
+## 2: 12,13-diHOME 35.45233 1.553984
 \end{verbatim}
 
-The reference level is ``control'' -- we know this because there are estimates of the effects for the other two levels.
-
-\hypertarget{changing-the-reference-level}{%
-\subsection{Changing the reference level}\label{changing-the-reference-level}}
-
-R assigns the order of the levels of a factor alphabetically, so the order of the levels of treatment are ``control'', ``vitamin\_C'', ``vitamin\_E''. The first of these is the reference level. Remember the intercept is the mean of the reference group and the remaining estimates are the differences in means from this reference. If we want to make some other level the reference, we can change the order of the factor levels using
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{vole[, treatment}\OperatorTok{:}\ErrorTok{=}\KeywordTok{factor}\NormalTok{(treatment, }
-                         \DataTypeTok{levels=}\KeywordTok{c}\NormalTok{(}\StringTok{"vitamin_C"}\NormalTok{, }\StringTok{"vitamin_E"}\NormalTok{, }\StringTok{"control"}\NormalTok{))]}
-\end{Highlighting}
-\end{Shaded}
-
-The order of the levels in the levels argument sets the new order for any further analysis. Refit the model to see how this re-ordering changes the coefficients
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{fit2 <-}\StringTok{ }\KeywordTok{lm}\NormalTok{(lifespan }\OperatorTok{~}\StringTok{ }\NormalTok{treatment, }\DataTypeTok{data=}\NormalTok{vole)}
-\KeywordTok{coef}\NormalTok{(}\KeywordTok{summary}\NormalTok{(fit2))}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-##                    Estimate Std. Error   t value     Pr(>|t|)
-## (Intercept)        388.3158   47.05685 8.2520573 1.005619e-12
-## treatmentvitamin_E  25.1604   64.94462 0.3874132 6.993356e-01
-## treatmentcontrol   115.0771   54.45772 2.1131453 3.726632e-02
-\end{verbatim}
-
-Understand why the values of these coefficients differ from those in the coefficient table above.
-
-Here, I'm returning the factors back to the original order.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{# put factors back to original}
-\NormalTok{vole[, treatment}\OperatorTok{:}\ErrorTok{=}\KeywordTok{factor}\NormalTok{(treatment, }
-                         \DataTypeTok{levels=}\KeywordTok{c}\NormalTok{(}\StringTok{"control"}\NormalTok{, }\StringTok{"vitamin_C"}\NormalTok{, }\StringTok{"vitamin_E"}\NormalTok{))]}
-\end{Highlighting}
-\end{Shaded}
-
-\hypertarget{an-introduction-to-contrasts}{%
-\subsection{An introduction to contrasts}\label{an-introduction-to-contrasts}}
-
-We often want to compare more than just the non-reference levels to the reference level. For example, we might want to compare the effects of the vitamin E supplementation to vitamin C supplementation. Or, we might want to combine (or ``pool'') vitamin C and vitamin E levels effects into a single ``anti-oxidant'' level and compare to the control. These comparisons of means are called linear \textbf{contrasts}. The emmeans package is a good package for obtaining contrasts for both simple linear models computed with \texttt{lm} and for more complicated statistical models. If you haven't already, download the emmeans package.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{fit.em <-}\StringTok{ }\KeywordTok{emmeans}\NormalTok{(fit, }\DataTypeTok{specs=}\StringTok{"treatment"}\NormalTok{)}
-\NormalTok{fit.em}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-##  treatment emmean   SE df lower.CL upper.CL
-##  control      503 27.4 93      449      558
-##  vitamin_C    388 47.1 93      295      482
-##  vitamin_E    413 44.8 93      325      502
-## 
-## Confidence level used: 0.95
-\end{verbatim}
-
-The \texttt{emmeans()} function returns various estimated means, depending on what is specified with the \texttt{spec=} parameter. Here the grouping variable ``treatment'' is specified, so the means returned are estimates of \(\mathrm{E}(lifespan | treatment)\), the modeled means for each level of treatment. For this simple analysis, the modeled means are simply the group means. Note that the default value returned is a table with the standard error and 95\% confidence limits of the estimates.
-
-Let's use the emmeans object to get the contrasts for all combinations of treatment levels.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{summary}\NormalTok{(}\KeywordTok{contrast}\NormalTok{(fit.em, }\DataTypeTok{method=}\StringTok{"revpairwise"}\NormalTok{, }\DataTypeTok{adjust=}\StringTok{"none"}\NormalTok{), }\DataTypeTok{infer=}\KeywordTok{c}\NormalTok{(}\OtherTok{TRUE}\NormalTok{, }\OtherTok{TRUE}\NormalTok{))}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-##  contrast              estimate   SE df lower.CL upper.CL t.ratio p.value
-##  vitamin_C - control     -115.1 54.5 93     -223    -6.93 -2.113  0.0373 
-##  vitamin_E - control      -89.9 52.5 93     -194    14.31 -1.713  0.0900 
-##  vitamin_E - vitamin_C     25.2 64.9 93     -104   154.13  0.387  0.6993 
-## 
-## Confidence level used: 0.95
-\end{verbatim}
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\tightlist
-\item
-  method=``revpairwise''. \texttt{contrast} can create different combinations of differences between means. Here I've specified all pairwise differences (the ``rev'' reverses the order of the subtraction). Notice that the statistics (estimate, SE, etc) are equal to the same statistics for \(b_1\) and \(b_2\) of the linear model. I said earlier that these coefficients are contrasts!
-\item
-  adjust=``none''. In classical frequentist hypothesis testing, the p-value of a contrast in what are called ``post-hoc tests'' is adjusted to reflect ``multiple testing'' (more than one p-value is being computed). This adjustment is almost standard in biology, but the practice is hugely controversial. The concept of multiple testing is important, and we will return to this in a future chapter, but here I have chosen to show the unadjusted p-value. The reason is that I want the unadjusted confidence interval and the adjustment would adjust these as well. If deleted \texttt{adjust="none"} from the script, the contrast function would default to the \textbf{Tukey HSD} (Honestly Significant Difference) test. There are literally dozens and dozens of post-hoc tests, which largely reflects the misplaced emphasis on ``better'' \(p\)-values rather than parameter estimates and their uncertainty.
-\item
-  infer=c(TRUE, TRUE). This parameter controls what kind of inference to put in the table. The first value specifies the inclusion of the CI (emmeans uses ``CL'' for confidence limit), the second value specifies the inclusion of \(t\) and \(p\)-values.
-\end{enumerate}
-
-\hypertarget{harrell-plot}{%
-\subsection{Harrell plot}\label{harrell-plot}}
-
-\hypertarget{installing-the-harrellplot-package}{%
-\subsubsection{Installing the harrellplot package}\label{installing-the-harrellplot-package}}
-
-The harrellplot package is available on github but not a cran repository and, therefore, takes a little more work to install. To install a package from a github repository,
-1. load library(devtools) -- this may need to be installed first using the R Studio Tools \textgreater{} Install Packages\ldots{} tool
-2. install harrellplot from github. In the console, type
-
-\texttt{install\_github("middleprofessor/harrellplot")}
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\setcounter{enumi}{2}
-\tightlist
-\item
-  load the harrellplot package
-\item
-  harrellplot requires other packages including broom, Hmisc, car, lme4, and lmerTest. If you haven't installed these do. load these with the library() function at the start of your notebook.
-\end{enumerate}
-
-\hypertarget{using-harrellplot-to-make-a-nice-publishable-plot-of-treatment-effects}{%
-\subsubsection{Using harrellplot to make a nice, publishable plot of treatment effects}\label{using-harrellplot-to-make-a-nice-publishable-plot-of-treatment-effects}}
-
-In the console type \texttt{?harrellplot} to see the many parameters. Unlike ggplot2, variable names need to be specified with quotes in the harrellplot function. The harrellplot function is a list with several elements.
-
-Here is the default plot
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{vole.harrellplot <-}\StringTok{ }\KeywordTok{harrellplot}\NormalTok{(}\DataTypeTok{x=}\StringTok{"treatment"}\NormalTok{, }\DataTypeTok{y=}\StringTok{"lifespan"}\NormalTok{, }\DataTypeTok{data=}\NormalTok{vole)}
-\NormalTok{vole.harrellplot}\OperatorTok{$}\NormalTok{gg }\CommentTok{# gg is the plot object}
-\end{Highlighting}
-\end{Shaded}
-
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-149-1.pdf}
+The raw means are equal to the modeled means but the SE differs.
 
 \hypertarget{model-checking}{%
 \chapter{Model Checking}\label{model-checking}}
@@ -7078,7 +7369,7 @@ Count data often have an excess of zeroes (for example a lake with no nests or a
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-150-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-170-1.pdf}
 
 \hypertarget{constrained-lower-and-upper-bounds}{%
 \subsubsection{Constrained lower and upper bounds}\label{constrained-lower-and-upper-bounds}}
@@ -7201,8 +7492,8 @@ which is an obvious alternative given the decomposition. I prefer the former equ
 \hypertarget{best-practices-issues-in-inference}{%
 \chapter{Best Practices -- Issues in Inference}\label{best-practices-issues-in-inference}}
 
-\hypertarget{power}{%
-\section{Power}\label{power}}
+\hypertarget{power-1}{%
+\section{Power}\label{power-1}}
 
 \hypertarget{types-of-error}{%
 \subsection{``Types'' of Error}\label{types-of-error}}
@@ -7337,7 +7628,7 @@ If a researcher caries out many tests, and ranks the effects by magnitude or \em
 \caption{\label{fig:inflation-histogram}A histogram of the distribution of the 10,000 effects}
 \end{figure}
 
-\label{tab:unnamed-chunk-152}The top 10 genes ranked by p-value. Rank is the rank of the true effect, from large to small.
+\label{tab:unnamed-chunk-172}The top 10 genes ranked by p-value. Rank is the rank of the true effect, from large to small.
 
 effect
 
@@ -7614,8 +7905,8 @@ This list is roughly in the order of how I would advise researchers, although th
 
 On this last point, do not use the \emph{p}-value from a ``test for normality'' (such as a Shapiro-Wilk test) to decide between using the linear model (or t-test or ANOVA) and an alternative such as a generalized linear model (or transformation or non-parametric test). No real data is normal. Tests of normality will tend to ``not reject'' normality (p \textgreater{} 0.05) when the sample size is small and ``reject'' normality (p \textless{} 0.05) when the sample size is very large. But again, a ``not rejected'' hypothesis test does not mean the null (in this case, the data are normal) is true. More importantly, where the test for normality tends to fail to reject (encouraging a researcher to use parametric statistics) is where parametric inference performs the worst (because of small \emph{n}) and where the test for normality tends to reject (encouraging a researcher to use non-parametric statistics) is where the parametric inference performs the best (because of large sample size) (Lumley xxx).
 
-\hypertarget{working-in-r-3}{%
-\subsection{Working in R}\label{working-in-r-3}}
+\hypertarget{working-in-r-2}{%
+\subsection{Working in R}\label{working-in-r-2}}
 
 The data for demonstrating different strategies are from Fig. 4A of ``Data from The enteric nervous system promotes intestinal health by constraining microbiota composition''. There is a single factor with two treatment levels. The response is neutrophil count.
 
@@ -7964,8 +8255,8 @@ Back-transformed effect
 \hypertarget{performance-of-parametric-tests-and-alternatives}{%
 \subsection{Performance of parametric tests and alternatives}\label{performance-of-parametric-tests-and-alternatives}}
 
-\hypertarget{type-i-error}{%
-\subsubsection{Type I error}\label{type-i-error}}
+\hypertarget{type-i-error-1}{%
+\subsubsection{Type I error}\label{type-i-error-1}}
 
 If we are going to compute a \(p\)-value, we want it to be uniformly distributed ``under the null''. A simple way to check this is to compute Type I error. If we set \(\alpha = 0.05\), then we'd expect 5\% of tests of an experiment with no effect to have \(p < 0.05\).
 
@@ -8007,8 +8298,8 @@ If we are going to compute a \(p\)-value, we want it to be uniformly distributed
 
 Type I error is computed for the linear model, the linear model with a log transformed responpse, Mann-Whitney-Wilcoxon, and permutation tests. All four tests are slightly conservative for data that look like that modeled. The computed Type I error of the permutation test is closest to the nominal value of 0.05.
 
-\hypertarget{power-1}{%
-\subsubsection{Power}\label{power-1}}
+\hypertarget{power-2}{%
+\subsubsection{Power}\label{power-2}}
 
 Power is the probability of a test to reject the null hypothesis if the null hypothesis is false (that is, if an effect exists)
 
@@ -8137,7 +8428,7 @@ ldlc.r = \beta_0 + \beta_1 treatment + \varepsilon
 
 where \(ldlc.r\) is the set of residuals.
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-162-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-182-1.pdf}
 
 Now the estimate of the effect is -4.7 mg/dL blood and the SE is only 0.88. In this two-stage analysis (stage 1: fit ldlc \textasciitilde{} age to get residuals, stage 2: fit residuals \textasciitilde{} treatment), we have \emph{eliminated the effect of age} on the variance of the response and, as a consequence, the estimate of the effect of the drug is much more precise -- the effect of \(treatment\) has a smaller standard error.
 
@@ -8156,11 +8447,11 @@ ldlc = \beta_0 + \beta_1 age + \beta_2 treatment + \varepsilon
 
 which results in the Harrell Plot
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-163-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-183-1.pdf}
 
 and the coefficient table
 
-\label{tab:unnamed-chunk-164}Coefficients of the model that includes the covariate age.
+\label{tab:unnamed-chunk-184}Coefficients of the model that includes the covariate age.
 
 Estimate
 
@@ -9095,8 +9386,8 @@ It is easy enough to get an ANOVA table with \(p\)-values for this model but I d
   Interaction effects in 2-factor models are hard enough to interpret. A 3-way interaction is very, very tough to interpret. If all we did was table up \(F\)-ratios and \(p\)-values, this wouldn't matter. But it does matter.
 \end{enumerate}
 
-\hypertarget{reporting-results-1}{%
-\section{Reporting results}\label{reporting-results-1}}
+\hypertarget{reporting-results}{%
+\section{Reporting results}\label{reporting-results}}
 
 \hypertarget{text-results}{%
 \subsection{Text results}\label{text-results}}
@@ -9105,8 +9396,8 @@ The effect of the increased temperature at the control CO2 level was 4.5 pmol O2
 
 The CI on the interaction includes both large negative values and trivially small values, including zero, and, consequently, our data is compatible with both scientific models (that is, we can neither support nor reject the predictions of the scientific model using these results).
 
-\hypertarget{working-in-r-4}{%
-\section{Working in R}\label{working-in-r-4}}
+\hypertarget{working-in-r-3}{%
+\section{Working in R}\label{working-in-r-3}}
 
 \hypertarget{model-formula}{%
 \subsection{Model formula}\label{model-formula}}
@@ -9337,7 +9628,7 @@ These can be combined into a single table using \texttt{rbind}
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-174-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-194-1.pdf}
 
 \hypertarget{plots-that-communicate-the-factorial-design}{%
 \subsubsection{Plots that communicate the factorial design}\label{plots-that-communicate-the-factorial-design}}
@@ -9484,7 +9775,7 @@ An interaction plot is an okay plot. It doesn't show the data, only a minimal, d
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-175-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-195-1.pdf}
 
 This effects plot shows the four simple effects, the single interaction (Temp18:CO21100), and their 95\% confidence intervals. In the original paper, the researchers were testing a scientific (not statistical!) model that predicted no interaction between CO2 and Temp, and the researchers argued that these data supported this model because of the ``not statistically significant'' \emph{p}-value for the interaction effect. The data are consistent with this model (one end of the 95\% CI for the interaction includes zero) but also support a model of a large, negative interaction (the other end of the 95\% CI includes large negative values). The data are too course (or the signal:noise ratio is to small) to have much confidence in the size of the interaction effect.
 
@@ -9501,7 +9792,7 @@ This effects plot shows the four simple effects, the single interaction (Temp18:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-176-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-196-1.pdf}
 
 The effects and interaction plot are combined into a single plot.
 
@@ -10637,8 +10928,8 @@ The hypothesis tested by each row in the ANOVA table using Type III sum of squar
 \hypertarget{the-anova-tables-for-type-i-ii-and-iii-sum-of-squares-are-the-same-if-the-design-is-balanced.}{%
 \subsection{The anova tables for Type I, II, and III sum of squares are the same if the design is balanced.}\label{the-anova-tables-for-type-i-ii-and-iii-sum-of-squares-are-the-same-if-the-design-is-balanced.}}
 
-\hypertarget{working-in-r-5}{%
-\section{Working in R}\label{working-in-r-5}}
+\hypertarget{working-in-r-4}{%
+\section{Working in R}\label{working-in-r-4}}
 
 \hypertarget{type-i-sum-of-squares-in-r}{%
 \subsection{Type I sum of squares in R}\label{type-i-sum-of-squares-in-r}}
@@ -11526,8 +11817,8 @@ To understand this, rank order the treatment effects for each strain. An individ
 
 \textbf{Not more than you want to know} -- Shrinkage estimators are not only useful when we are interested in block-specific effects but are also useful for estimating effects when there are \textbf{multiple responses}. For example, consider a researcher interested in measuring the effects of some exercise treatment on gene expression in adipose cells. The researcher measures expression levels in 10,000 genes. Given the typical content in undergraduate biostatics courses, a researcher would probably model these responses using 10,000 \emph{t}-tests, or equivalently, 10,000 separate linear models. If the tests were ranked by \(p\)-value or absolute effect size, many of the genes with largest absolute effect would be there because of a large error component and many of the largest effects would be massively overinflated. Re-imagining the design as a single, linear mixed model with each gene modeled as a block would lead to a rank order in which the biggest measured effects more closely approximate the true effects.
 
-\hypertarget{working-in-r-6}{%
-\section{Working in R}\label{working-in-r-6}}
+\hypertarget{working-in-r-5}{%
+\section{Working in R}\label{working-in-r-5}}
 
 The major function for working with linear mixed models is \texttt{lmer()} from the lme4 package. An older, and still sometimes used and useful function is \texttt{lme()} from the nlme package. The authors of the lme4 package argue that the df in a linear mixed model are too approximate for a useful \(p\)-value and, consequently, the \texttt{lme} function does not return a \(p\)-value. Many biological researchers want a \(p\)-value and typically use the \texttt{lmerTest} package to get this.
 
@@ -12061,8 +12352,8 @@ which give us the \textbf{relative effect} of Infected\_HG compared to the Contr
   Effects on the response scale are not additive but multiplicative! So, for example, the mean of the Infected HG treatment level on the response scale is \(\overline{Control}*RR_{Infected\_HG}\) (remember that with a linear model the mean would be \(b_{Control} + b_{Infected\_HG}\)). Check and see if this works.
 \end{enumerate}
 
-\hypertarget{working-in-r-7}{%
-\section{Working in R}\label{working-in-r-7}}
+\hypertarget{working-in-r-6}{%
+\section{Working in R}\label{working-in-r-6}}
 
 \textbf{Fitting a GLM to count data}. The poisson family is specified with the base R \texttt{glm()} function. For negative binomial, use \texttt{glm.nb} from the MASS package
 
@@ -12166,7 +12457,7 @@ A plot of the dispersion statistic can be generated using the object returned by
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-198-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-218-1.pdf}
 
 \begin{verbatim}
 ## 
