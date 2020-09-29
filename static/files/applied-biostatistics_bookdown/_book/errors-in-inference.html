@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Chapter 2 Analyzing experimental data with a linear model | Elements of Statistical Modeling for Experimental Biology</title>
+  <title>Chapter 8 Errors in inference | Elements of Statistical Modeling for Experimental Biology</title>
   <meta name="description" content="A first course in statistical modeling for experimental biology researchers" />
   <meta name="generator" content="bookdown 0.14 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Chapter 2 Analyzing experimental data with a linear model | Elements of Statistical Modeling for Experimental Biology" />
+  <meta property="og:title" content="Chapter 8 Errors in inference | Elements of Statistical Modeling for Experimental Biology" />
   <meta property="og:type" content="book" />
   
   
@@ -16,7 +16,7 @@
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Chapter 2 Analyzing experimental data with a linear model | Elements of Statistical Modeling for Experimental Biology" />
+  <meta name="twitter:title" content="Chapter 8 Errors in inference | Elements of Statistical Modeling for Experimental Biology" />
   
   <meta name="twitter:description" content="A first course in statistical modeling for experimental biology researchers" />
   
@@ -30,8 +30,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="part-ii-an-introduction-to-the-analysis-of-experimental-data-with-a-linear-model.html"/>
-<link rel="next" href="background-physiology-to-the-experiments-in-figure-2-of-ask1-inhibits-browning-of-white-adipose-tissue-in-obesity.html"/>
+<link rel="prev" href="p-values.html"/>
+<link rel="next" href="part-v-introduction-to-linear-models.html"/>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -539,130 +539,312 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="analyzing-experimental-data-with-a-linear-model" class="section level1">
-<h1><span class="header-section-number">Chapter 2</span> Analyzing experimental data with a linear model</h1>
-<div id="this-text-is-about-the-estimation-of-treatment-effects-and-the-uncertainty-in-our-estimates-using-linear-models.-this-raises-the-question-what-is-an-effect" class="section level2">
-<h2><span class="header-section-number">2.1</span> This text is about the estimation of treatment effects and the uncertainty in our estimates using linear models. This, raises the question, what is “an effect”?</h2>
-<p>Following this chapter, I include a completed R Markdown document for a set of experiments exploring the consequences of adispose-tissue specific deletion of the ASK1 signaling protein on multiple, adverse effects of a high-fat diet in mice, including weight gain, glucose intolerance, and increased liver triacylglycerol levels. Think of this as a template for organizing your own R Markdown documents. This document is a re-analysis of the experiments in Figure 2 in the article <a href="https://www.nature.com/articles/s41467-020-15483-7" target="_blank">ASK1 inhibits browning of white adipose tissue in obesity</a>, including generation of the publication-ready plots. I chose the data in Figure 2 of this paper because of the diversity of analyses and plot types. My analyses and plots differ slightly from those of the researchers because I implemented better practices – the stuff of this text.</p>
-<p>The goal of the experiments is to measure the <strong>effect</strong> of the adipose-specific ASK1 deletion. To understand what I mean by “an effect”, and to understand how we can estimate an effect by <strong>fiting a linear model</strong> to data, let’s look more closely at the analysis for Figure 2i.</p>
-<p>For Figure 2i, the researchers want to know if “knocking out” the ASK1 gene in the adipose tissue cells lowers the liver triglyceride (TG) level in mice fed a high-fat diet. That is, is <span class="math inline">\(\overline{y}_{ASK1Δadipo} &lt; \overline{y}_{ASK1F/F}\)</span>, where <span class="math inline">\(\overline{y}_{ASK1Δadipo}\)</span> is the mean liver TG level of the knockout (Δ is the del operator and refers to a deletion in genetics) mice and <span class="math inline">\(\overline{y}_{ASK1F/F}\)</span> is the mean liver TG level of the control mice. The difference in the means, <span class="math inline">\(\overline{y}_{ASK1Δadipo} - \overline{y}_{ASK1F/F}\)</span>, is <strong>the effect</strong> (of ASK1 deletion on liver TG levels).</p>
-<p>The measured means in each group are computed from a random <strong>sample</strong> of mice. If we only cared about the six mice in each group in this experiment, then we would not need to fit a linear model to the data to estimate the effect, we could simply compute each group mean and subtract the control mean from the knockout mean. But we care more about these dozen mice because we are trying to discover something general about ASK1 regulation of TG levels in mice, generally (and even in mammals, and especially humans, generally). To make this leap of <strong>inference</strong>, we use a model to claim that each sample mean is an <strong>estimate</strong> of the respective <strong>population</strong> mean. Given this model, we can compute the <strong>standard error</strong> of each mean and the <strong>standard error of the difference in means</strong>. A standard error is a measure of the <strong>sampling variance of a statistic</strong> and, therefore, a measure of the precision of the estimate. The standard error, then, is a measure of <strong>uncertainty</strong> in the estimate. Here is how to think about precision and uncertainty: if we were to repeat this experiment many, many times, we would generate a long list of mean TG levels for the control mice and a long list of mean TG levels for the knockout mice. The less variable the means in each list, the more precise. By using a model, we do not need to repeat this experiment many times to get a standard error.</p>
-<p>The model we are going to fit to the Figure 2i data is</p>
-<p><span class="math display">\[\begin{align}
-y_i &amp;= \beta_0 + \beta_1 x_i + \varepsilon_i\\
-\varepsilon_i &amp;\sim N(0, \sigma^2)
-\end{align}\]</span></p>
-<p>This is a model of how the Figure 2i data were generated. In this model, <span class="math inline">\(y_i\)</span> is the liver TG level for some fictional (generated!) mouse (the <em>i</em> stands for the <em>i</em>th fictional mouse generated) and <span class="math inline">\(x_i\)</span> is a variable that indicates the condition of the ask1 gene in ficitional mouse <em>i</em>. For <span class="math inline">\(x_i\)</span>, a value of 0 is given to mice with a functional ASK1 gene and a value of 1 is given to mice with a knocked out gene.</p>
-<p><span class="math inline">\(\beta_0\)</span> is the “true” mean of the TG level in mice fed a high-fat diet and with a functional ASK1 gene. By “true”, I mean the mean that would be computed if we were to measure TG on an infinite number of these mice. The observed mean of the ASK1F/F group is an estimate of <span class="math inline">\(\beta_0\)</span>. The sum <span class="math inline">\(\beta_0\)</span> + <span class="math inline">\(\beta_1\)</span> is the true mean of the TG level in mice fed a high-fat diet but with a knocked out ASK1 gene. This means that <span class="math inline">\(\beta_1\)</span> is the true difference in the means, or the <strong>true effect</strong>. The observed difference in means between the ASK1Δadipo and ASK1F/F groups is an estimate of <span class="math inline">\(\beta_1\)</span>. This difference is the estimated effect.</p>
-<p>Notice that the sum <span class="math inline">\(\beta_0 + \beta_1 x_i\)</span> equals the true mean of the infinite set of normal mice if <span class="math inline">\(x_i = 0\)</span> and equals the true mean of the infinite set of ASK1 knockout mice if <span class="math inline">\(x_i = 1\)</span>. <span class="math inline">\(\varepsilon_i\)</span> is the <strong>error</strong> for mouse <em>i</em>, which is the difference between the TG level for mouse <em>i</em> and the <strong>expected</strong> TG value for mouse <em>i</em>. The expected value for a mouse with a normal ASK1 gene is <span class="math inline">\(\beta_0\)</span>. The expected value for a mouse with a knocked out ASK1 gene is <span class="math inline">\(\beta_0 + \beta_1\)</span>. The second line of the model simply states that <span class="math inline">\(\varepsilon_i\)</span> is modeled as a random sample from a normal distribution with a mean of zero and a variance of <span class="math inline">\(\sigma^2\)</span>.</p>
-<p>By <strong>fitting a model to the data</strong> we estimate the parameters <span class="math inline">\(\beta_0\)</span>, <span class="math inline">\(\beta_1\)</span> and <span class="math inline">\(\sigma\)</span>. It is the estimation of <span class="math inline">\(\sigma\)</span> that allows us to compute a measure of our uncertainty (a standard error) of our estimates of the means (<span class="math inline">\(\beta_0\)</span> and <span class="math inline">\(\beta_0 + \beta_1\)</span>) and of the difference in the means (<span class="math inline">\(\beta_1\)</span>).</p>
-<p>Let’s fit this model to the Figure 2i data using R</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="analyzing-experimental-data-with-a-linear-model.html#cb5-1"></a>fig_2i_m1 &lt;-<span class="st"> </span><span class="kw">lm</span>(liver_tg <span class="op">~</span><span class="st"> </span>treatment, <span class="dt">data =</span> fig_2i)</span></code></pre></div>
-<p>Robust inference from the model (generalizing from sample to population, including measures of the uncertainty of our estimates) requires that our data approximates the kind of data we’d expect from the data generating model specified above. All rigorous analysis should use specific <strong>model checks</strong> to evaluate this. First, the “normality check” – we use a <strong>quantile-quantile (QQ) plot</strong> to see if our data approximate what we’d see if we sampled from a normal distribution. This looks okay, in the sense that the observed data points (open circles) fall within the boundaries set by the dashed line. Inference is pretty robust to moderate departure from normal.</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="analyzing-experimental-data-with-a-linear-model.html#cb6-1"></a><span class="kw">set.seed</span>(<span class="dv">1</span>)</span>
-<span id="cb6-2"><a href="analyzing-experimental-data-with-a-linear-model.html#cb6-2"></a><span class="kw">qqPlot</span>(fig_2i_m1, <span class="dt">id=</span><span class="ot">FALSE</span>)</span></code></pre></div>
-<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
-<p>Second, the “homogeneity check” – we use a <strong>spread level plot</strong> to see if there is some pattern to the variance, for example if the spread of residuals is noticeably bigger in one group than another, or if the spread increases with the fitted value.
-This looks pretty good. Given these checks, lets move on and look at the table of model coefficients</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="analyzing-experimental-data-with-a-linear-model.html#cb7-1"></a><span class="kw">spreadLevelPlot</span>(fig_2i_m1, <span class="dt">id=</span><span class="ot">FALSE</span>)</span></code></pre></div>
-<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
-<pre><code>## 
-## Suggested power transformation:  1.294553</code></pre>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="analyzing-experimental-data-with-a-linear-model.html#cb9-1"></a>fig_2i_m1 &lt;-<span class="st"> </span><span class="kw">lm</span>(liver_tg <span class="op">~</span><span class="st"> </span>treatment, <span class="dt">data =</span> fig_2i)</span>
-<span id="cb9-2"><a href="analyzing-experimental-data-with-a-linear-model.html#cb9-2"></a>fig_2i_m1_coef &lt;-<span class="st"> </span><span class="kw">cbind</span>(<span class="kw">coef</span>(<span class="kw">summary</span>(fig_2i_m1)),</span>
-<span id="cb9-3"><a href="analyzing-experimental-data-with-a-linear-model.html#cb9-3"></a>                        <span class="kw">confint</span>(fig_2i_m1))</span>
-<span id="cb9-4"><a href="analyzing-experimental-data-with-a-linear-model.html#cb9-4"></a>knitr<span class="op">::</span><span class="kw">kable</span>(fig_2i_m1_coef, <span class="dt">digits =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">1</span>, <span class="dv">1</span>))</span></code></pre></div>
+<div id="errors-in-inference" class="section level1">
+<h1><span class="header-section-number">Chapter 8</span> Errors in inference</h1>
+<div id="classical-nhst-concepts-of-wrong" class="section level2">
+<h2><span class="header-section-number">8.1</span> Classical NHST concepts of wrong</h2>
+<p>As described in chapter (p-values), two types of error occur in classical Neyman-Pearson hypothesis testing, and in the NHST version that dominates modern practice. <strong>Type I</strong> error occurs when the null hypothesis is true but the <em>p</em>-value of the test is less than <span class="math inline">\(\alpha\)</span>. This is a <em>false positive</em>, where a <em>positive</em> is a test that rejects the null. <strong>Type II</strong> error occurs when the null hypothesis is false but the <em>p</em>-value of the test is greater than <span class="math inline">\(\alpha\)</span>. This is a <em>false negative</em>, where a <em>negative</em> is a test that accepts (or fails to reject) the null. <strong>Power</strong> is not an error but the frequency of true, positive tests (or the frequency of avoiding Type II error). <span class="math inline">\(\alpha\)</span> is not an error but the rate of Type I error that a researcher is willing to accept. Ideally, a researcher sets <span class="math inline">\(\alpha\)</span> based on an evaluation of the pros and cons of Type I and Type II error for the specific experiment. In practice, researchers follow the completely arbitary practice of setting <span class="math inline">\(\alpha = 0.05\)</span>.</p>
+<p>Why should a researcher care about <span class="math inline">\(\alpha\)</span> and power? Typically, most researchers don’t give <span class="math inline">\(\alpha\)</span> much thought. And power is considered only in the context of calculating a sample size for an experiment for a grant proposal. But researchers should care about rates of Type I error and power because these (and similar concepts) can help guide decisions about which model to fit to a specific dataset.</p>
+<div id="type-i-error" class="section level3">
+<h3><span class="header-section-number">8.1.1</span> Type I error</h3>
+<p>In classical Neyman-Pearson hypothesis testing, an important property of a hypothesis test is the <strong>size of a test</strong>, which may include an entire procedure that culminates in a hypothesis test. “Size” is a weird name for the probability of rejecting the null when the null is true. Size is not <span class="math inline">\(\alpha\)</span>. <span class="math inline">\(\alpha\)</span> is the <em>nominal value</em> – it’s what a researcher wants. Size is the <em>actual value</em> – it’s what a researcher gets.</p>
+<p>It would probably come as a surpise to most researches to learn that the size of some common tests used with data that look like the researcher’s data is not 0.05. “used with data that look like the researcher’s data” is important here – a <em>t</em>-test doesn’t have one size. With data that conform to the assumptions (independence, homogeneity, normality), the size of a <em>t</em>-test is <span class="math inline">\(\alpha\)</span>. But with any violation, especially when the sample size differs between groups, the size of the <em>t</em>-test can move away from <span class="math inline">\(\alpha\)</span>. A test that has a size that is less than <span class="math inline">\(\alpha\)</span> is “conservative” (fewer nulls are rejected than we think, so the <em>status quo</em> is more often maintained). A test that has a size that is greater than <span class="math inline">\(\alpha\)</span> is “liberal” (more nulls are rejected than we think, so the <em>status quo</em> is less often maintained). More conservative tests reduce power. More liberal tests <em>artificially</em> increase power and increase our rate of false rejection, which can mean “false discovery” if <em>p</em>-values are used as the arbiter of discovery.</p>
+<div id="size-example-1-the-size-of-a-t-test-vs.-a-permutation-test-when-the-data-meet-the-assumptions" class="section level4">
+<h4><span class="header-section-number">8.1.1.1</span> Size example 1: the size of a <em>t</em>-test vs. a permutation test, when the data meet the assumptions</h4>
+<div class="sourceCode" id="cb211"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb211-1"><a href="errors-in-inference.html#cb211-1"></a><span class="kw">set.seed</span>(<span class="dv">1</span>)</span>
+<span id="cb211-2"><a href="errors-in-inference.html#cb211-2"></a>n &lt;-<span class="st"> </span><span class="dv">10</span></span>
+<span id="cb211-3"><a href="errors-in-inference.html#cb211-3"></a>n_iter &lt;-<span class="st"> </span><span class="dv">10000</span></span>
+<span id="cb211-4"><a href="errors-in-inference.html#cb211-4"></a>p_t &lt;-<span class="st"> </span><span class="kw">numeric</span>(n_iter)</span>
+<span id="cb211-5"><a href="errors-in-inference.html#cb211-5"></a>p_perm &lt;-<span class="st"> </span><span class="kw">numeric</span>(n_iter)</span>
+<span id="cb211-6"><a href="errors-in-inference.html#cb211-6"></a></span>
+<span id="cb211-7"><a href="errors-in-inference.html#cb211-7"></a>treatment &lt;-<span class="st"> </span><span class="kw">rep</span>(<span class="kw">c</span>(<span class="st">&quot;cn&quot;</span>, <span class="st">&quot;tr&quot;</span>), <span class="dt">each =</span> n)</span>
+<span id="cb211-8"><a href="errors-in-inference.html#cb211-8"></a><span class="cf">for</span>(iter <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>n_iter){</span>
+<span id="cb211-9"><a href="errors-in-inference.html#cb211-9"></a>  sample_<span class="dv">1</span> &lt;-<span class="st"> </span><span class="kw">rnorm</span>(n, <span class="dt">mean =</span> <span class="dv">10</span>, <span class="dt">sd =</span> <span class="dv">1</span>)</span>
+<span id="cb211-10"><a href="errors-in-inference.html#cb211-10"></a>  sample_<span class="dv">2</span> &lt;-<span class="st"> </span><span class="kw">rnorm</span>(n, <span class="dt">mean =</span> <span class="dv">10</span>, <span class="dt">sd =</span> <span class="dv">1</span>)</span>
+<span id="cb211-11"><a href="errors-in-inference.html#cb211-11"></a>  y &lt;-<span class="st"> </span><span class="kw">c</span>(sample_<span class="dv">1</span>, sample_<span class="dv">2</span>)</span>
+<span id="cb211-12"><a href="errors-in-inference.html#cb211-12"></a>  m1 &lt;-<span class="st"> </span><span class="kw">lm</span>(y <span class="op">~</span><span class="st"> </span>treatment) <span class="co"># no data statement necessary because both variables in workspace</span></span>
+<span id="cb211-13"><a href="errors-in-inference.html#cb211-13"></a>  p_t[iter] &lt;-<span class="st"> </span><span class="kw">coef</span>(<span class="kw">summary</span>(m1))[<span class="st">&quot;treatmenttr&quot;</span>, <span class="st">&quot;Pr(&gt;|t|)&quot;</span>]</span>
+<span id="cb211-14"><a href="errors-in-inference.html#cb211-14"></a>  </span>
+<span id="cb211-15"><a href="errors-in-inference.html#cb211-15"></a>  m2 &lt;-<span class="st"> </span><span class="kw">lmp</span>(y <span class="op">~</span><span class="st"> </span>treatment,</span>
+<span id="cb211-16"><a href="errors-in-inference.html#cb211-16"></a>            <span class="dt">perm =</span> <span class="st">&quot;Prob&quot;</span>,</span>
+<span id="cb211-17"><a href="errors-in-inference.html#cb211-17"></a>            <span class="dt">settings =</span> <span class="ot">FALSE</span>)</span>
+<span id="cb211-18"><a href="errors-in-inference.html#cb211-18"></a>  p_perm[iter] &lt;-<span class="st"> </span><span class="kw">coef</span>(<span class="kw">summary</span>(m2))[<span class="st">&quot;treatment1&quot;</span>, <span class="st">&quot;Pr(Prob)&quot;</span>]</span>
+<span id="cb211-19"><a href="errors-in-inference.html#cb211-19"></a>}</span>
+<span id="cb211-20"><a href="errors-in-inference.html#cb211-20"></a>size_t &lt;-<span class="st"> </span><span class="kw">sum</span>(p_t <span class="op">&lt;</span><span class="st"> </span><span class="fl">0.05</span>)<span class="op">/</span>n_iter</span>
+<span id="cb211-21"><a href="errors-in-inference.html#cb211-21"></a>size_perm &lt;-<span class="st"> </span><span class="kw">sum</span>(p_perm <span class="op">&lt;</span><span class="st"> </span><span class="fl">0.05</span>)<span class="op">/</span>n_iter</span>
+<span id="cb211-22"><a href="errors-in-inference.html#cb211-22"></a>size_table &lt;-<span class="st"> </span><span class="kw">data.table</span>(<span class="dt">Method =</span> <span class="kw">c</span>(<span class="st">&quot;lm&quot;</span>, <span class="st">&quot;perm&quot;</span>),</span>
+<span id="cb211-23"><a href="errors-in-inference.html#cb211-23"></a>                         <span class="dt">Size =</span> <span class="kw">c</span>(size_t, size_perm))</span>
+<span id="cb211-24"><a href="errors-in-inference.html#cb211-24"></a>knitr<span class="op">::</span><span class="kw">kable</span>(size_table, <span class="dt">digits =</span> <span class="dv">4</span>)</span></code></pre></div>
 <table>
 <thead>
 <tr class="header">
-<th></th>
-<th align="right">Estimate</th>
-<th align="right">Std. Error</th>
-<th align="right">t value</th>
-<th align="right">Pr(&gt;|t|)</th>
-<th align="right">2.5 %</th>
-<th align="right">97.5 %</th>
+<th align="left">Method</th>
+<th align="right">Size</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>(Intercept)</td>
-<td align="right">61.5</td>
-<td align="right">4.98</td>
-<td align="right">12.3</td>
-<td align="right">0.000</td>
-<td align="right">50.4</td>
-<td align="right">72.6</td>
+<td align="left">lm</td>
+<td align="right">0.0489</td>
 </tr>
 <tr class="even">
-<td>treatmentASK1Δadipo</td>
-<td align="right">-21.6</td>
-<td align="right">7.05</td>
-<td align="right">-3.1</td>
-<td align="right">0.012</td>
-<td align="right">-37.3</td>
-<td align="right">-5.9</td>
+<td align="left">perm</td>
+<td align="right">0.0488</td>
 </tr>
 </tbody>
 </table>
-<p>The two values in the column “Estimate” are the estimates of <span class="math inline">\(\beta_0\)</span> and <span class="math inline">\(\beta_1\)</span>. The top value (61.5) is the mean of the control mice (the units are µmol/g). The mean of the knockout mice is the sum of the two values (39.9 µmol/g). And the effect of ASK1 deletion on TG levels is simply the second value (-21.6 µmol/g). The standard error of the effect is 7.05 µmol/g. We can use the standard error to compute a <em>t</em>-value (-3.1, in the column “t value”). A t-value is a <strong>test statistic</strong>. The probability (“p value”) of the significance test is 0.012. This if the probability of sampling a <em>t</em>-value as large or larger than the observed <em>t</em>-value, if we were to sample from a null distribution of <em>t</em>-values (a distribution of sampled t values if the true value of <span class="math inline">\(\beta_1\)</span> was 0). We can also use the standard error to compute a <strong>95% confidence interval of the effect</strong>. The lower bound of this interval is -37.3 µmol/g and the upper bound is -5.9 µmol/g. A confidence interval is another way of communicating uncertainty, and the way advocated in this text. In a 95% confidence interval, 95% of similarly constructed intervals (from hypothetical sampling of six mice from the ASK1 normal population and six mice from the ASK1 knockout population) will contain the true mean. Another way to think about a confidence interval is, it is the range of true differences that are compatible with the data, where compatible means “not rejected” by a <em>t</em>-test (a <em>t</em>-test between the estimated effect and any number inside the interval would return a <em>p</em>-value greater than 0.05).</p>
-<p>Here is how we might report this result in a paper:</p>
-<p>Mean TG level in ASK1Δadipo mice on a high-fat diet was 21.6 µmol/g less than that in ASK1F/F mice on a high-fat diet (95% CI: -37.3, -5.9, <span class="math inline">\(p = 0.012\)</span>).</p>
-<p>An a plot for the paper:</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="analyzing-experimental-data-with-a-linear-model.html#cb10-1"></a>fig_2i_m1_emm &lt;-<span class="st"> </span><span class="kw">emmeans</span>(fig_2i_m1, <span class="dt">specs =</span> <span class="st">&quot;treatment&quot;</span>)</span>
-<span id="cb10-2"><a href="analyzing-experimental-data-with-a-linear-model.html#cb10-2"></a>fig_2i_m1_pairs &lt;-<span class="st"> </span><span class="kw">contrast</span>(fig_2i_m1_emm,</span>
-<span id="cb10-3"><a href="analyzing-experimental-data-with-a-linear-model.html#cb10-3"></a>                            <span class="dt">method =</span> <span class="st">&quot;revpairwise&quot;</span>) <span class="op">%&gt;%</span></span>
-<span id="cb10-4"><a href="analyzing-experimental-data-with-a-linear-model.html#cb10-4"></a><span class="st">  </span><span class="kw">summary</span>(<span class="dt">infer =</span> <span class="ot">TRUE</span>)</span>
-<span id="cb10-5"><a href="analyzing-experimental-data-with-a-linear-model.html#cb10-5"></a>fig_2i_m1_emm_dt &lt;-<span class="st"> </span><span class="kw">summary</span>(fig_2i_m1_emm) <span class="op">%&gt;%</span></span>
-<span id="cb10-6"><a href="analyzing-experimental-data-with-a-linear-model.html#cb10-6"></a><span class="st">  </span>data.table</span>
-<span id="cb10-7"><a href="analyzing-experimental-data-with-a-linear-model.html#cb10-7"></a>fig_2i_m1_pairs_dt &lt;-<span class="st"> </span><span class="kw">data.table</span>(fig_2i_m1_pairs)</span>
-<span id="cb10-8"><a href="analyzing-experimental-data-with-a-linear-model.html#cb10-8"></a>fig_2i_m1_pairs_dt[ , p_pretty <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">pvalString</span>(p.value)]</span>
-<span id="cb10-9"><a href="analyzing-experimental-data-with-a-linear-model.html#cb10-9"></a>fig_2i_m1_pairs_dt[, group1 <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="dv">1</span>]</span>
-<span id="cb10-10"><a href="analyzing-experimental-data-with-a-linear-model.html#cb10-10"></a>fig_2i_m1_pairs_dt[, group2 <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="dv">2</span>]</span>
-<span id="cb10-11"><a href="analyzing-experimental-data-with-a-linear-model.html#cb10-11"></a></span>
-<span id="cb10-12"><a href="analyzing-experimental-data-with-a-linear-model.html#cb10-12"></a></span>
-<span id="cb10-13"><a href="analyzing-experimental-data-with-a-linear-model.html#cb10-13"></a>fig_2i_gg &lt;-<span class="st"> </span><span class="kw">ggplot</span>(<span class="dt">data =</span> fig_2i,</span>
-<span id="cb10-14"><a href="analyzing-experimental-data-with-a-linear-model.html#cb10-14"></a>                    <span class="kw">aes</span>(<span class="dt">x =</span> treatment,</span>
-<span id="cb10-15"><a href="analyzing-experimental-data-with-a-linear-model.html#cb10-15"></a>                        <span class="dt">y =</span> liver_tg,</span>
-<span id="cb10-16"><a href="analyzing-experimental-data-with-a-linear-model.html#cb10-16"></a>                        <span class="dt">color =</span> treatment)) <span class="op">+</span></span>
-<span id="cb10-17"><a href="analyzing-experimental-data-with-a-linear-model.html#cb10-17"></a><span class="st">  </span></span>
-<span id="cb10-18"><a href="analyzing-experimental-data-with-a-linear-model.html#cb10-18"></a><span class="st">  </span><span class="co"># points</span></span>
-<span id="cb10-19"><a href="analyzing-experimental-data-with-a-linear-model.html#cb10-19"></a><span class="st">  </span><span class="kw">geom_sina</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span></span>
-<span id="cb10-20"><a href="analyzing-experimental-data-with-a-linear-model.html#cb10-20"></a><span class="st">  </span></span>
-<span id="cb10-21"><a href="analyzing-experimental-data-with-a-linear-model.html#cb10-21"></a><span class="st">  </span><span class="co"># plot means and CI</span></span>
-<span id="cb10-22"><a href="analyzing-experimental-data-with-a-linear-model.html#cb10-22"></a><span class="st">  </span><span class="kw">geom_errorbar</span>(<span class="dt">data =</span> fig_2i_m1_emm_dt,</span>
-<span id="cb10-23"><a href="analyzing-experimental-data-with-a-linear-model.html#cb10-23"></a>                <span class="kw">aes</span>(<span class="dt">y =</span> emmean,</span>
-<span id="cb10-24"><a href="analyzing-experimental-data-with-a-linear-model.html#cb10-24"></a>                    <span class="dt">ymin =</span> lower.CL,</span>
-<span id="cb10-25"><a href="analyzing-experimental-data-with-a-linear-model.html#cb10-25"></a>                    <span class="dt">ymax =</span> upper.CL,</span>
-<span id="cb10-26"><a href="analyzing-experimental-data-with-a-linear-model.html#cb10-26"></a>                    <span class="dt">color =</span> treatment),</span>
-<span id="cb10-27"><a href="analyzing-experimental-data-with-a-linear-model.html#cb10-27"></a>                <span class="dt">width =</span> <span class="dv">0</span></span>
-<span id="cb10-28"><a href="analyzing-experimental-data-with-a-linear-model.html#cb10-28"></a>  ) <span class="op">+</span></span>
-<span id="cb10-29"><a href="analyzing-experimental-data-with-a-linear-model.html#cb10-29"></a><span class="st">  </span></span>
-<span id="cb10-30"><a href="analyzing-experimental-data-with-a-linear-model.html#cb10-30"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">data =</span> fig_2i_m1_emm_dt,</span>
-<span id="cb10-31"><a href="analyzing-experimental-data-with-a-linear-model.html#cb10-31"></a>             <span class="kw">aes</span>(<span class="dt">y =</span> emmean,</span>
-<span id="cb10-32"><a href="analyzing-experimental-data-with-a-linear-model.html#cb10-32"></a>                 <span class="dt">color =</span> treatment),</span>
-<span id="cb10-33"><a href="analyzing-experimental-data-with-a-linear-model.html#cb10-33"></a>             <span class="dt">size =</span> <span class="dv">3</span></span>
-<span id="cb10-34"><a href="analyzing-experimental-data-with-a-linear-model.html#cb10-34"></a>  ) <span class="op">+</span></span>
-<span id="cb10-35"><a href="analyzing-experimental-data-with-a-linear-model.html#cb10-35"></a><span class="st">  </span></span>
-<span id="cb10-36"><a href="analyzing-experimental-data-with-a-linear-model.html#cb10-36"></a><span class="st"> </span><span class="co"># plot p-values (y positions are adjusted by eye)</span></span>
-<span id="cb10-37"><a href="analyzing-experimental-data-with-a-linear-model.html#cb10-37"></a><span class="st">  </span><span class="kw">stat_pvalue_manual</span>(fig_2i_m1_pairs_dt,</span>
-<span id="cb10-38"><a href="analyzing-experimental-data-with-a-linear-model.html#cb10-38"></a>                     <span class="dt">label =</span> <span class="st">&quot;p_pretty&quot;</span>,</span>
-<span id="cb10-39"><a href="analyzing-experimental-data-with-a-linear-model.html#cb10-39"></a>                     <span class="dt">y.position=</span><span class="kw">c</span>(<span class="dv">95</span>),</span>
-<span id="cb10-40"><a href="analyzing-experimental-data-with-a-linear-model.html#cb10-40"></a>                     <span class="dt">tip.length =</span> <span class="fl">0.01</span>) <span class="op">+</span></span>
-<span id="cb10-41"><a href="analyzing-experimental-data-with-a-linear-model.html#cb10-41"></a><span class="st">  </span></span>
-<span id="cb10-42"><a href="analyzing-experimental-data-with-a-linear-model.html#cb10-42"></a><span class="st">  </span><span class="co"># aesthetics</span></span>
-<span id="cb10-43"><a href="analyzing-experimental-data-with-a-linear-model.html#cb10-43"></a><span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;Liver TG (µmol per g liver)&quot;</span>) <span class="op">+</span></span>
-<span id="cb10-44"><a href="analyzing-experimental-data-with-a-linear-model.html#cb10-44"></a><span class="st">  </span><span class="kw">scale_color_manual</span>(<span class="dt">values=</span>pal_okabe_ito[<span class="dv">5</span><span class="op">:</span><span class="dv">6</span>],</span>
-<span id="cb10-45"><a href="analyzing-experimental-data-with-a-linear-model.html#cb10-45"></a>                     <span class="dt">name =</span> <span class="ot">NULL</span>) <span class="op">+</span></span>
-<span id="cb10-46"><a href="analyzing-experimental-data-with-a-linear-model.html#cb10-46"></a><span class="st">  </span><span class="kw">theme_pubr</span>() <span class="op">+</span></span>
-<span id="cb10-47"><a href="analyzing-experimental-data-with-a-linear-model.html#cb10-47"></a><span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position=</span><span class="st">&quot;none&quot;</span>) <span class="op">+</span></span>
-<span id="cb10-48"><a href="analyzing-experimental-data-with-a-linear-model.html#cb10-48"></a><span class="st">  </span><span class="kw">theme</span>(<span class="dt">axis.title.x=</span><span class="kw">element_blank</span>()) <span class="op">+</span></span>
-<span id="cb10-49"><a href="analyzing-experimental-data-with-a-linear-model.html#cb10-49"></a><span class="st">  </span></span>
-<span id="cb10-50"><a href="analyzing-experimental-data-with-a-linear-model.html#cb10-50"></a><span class="st">  </span><span class="ot">NULL</span></span>
-<span id="cb10-51"><a href="analyzing-experimental-data-with-a-linear-model.html#cb10-51"></a></span>
-<span id="cb10-52"><a href="analyzing-experimental-data-with-a-linear-model.html#cb10-52"></a>fig_2i_gg</span></code></pre></div>
-<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+</div>
+<div id="size-example-2-the-size-of-a-t-test-vs.-a-permutation-test-when-the-data-have-a-right-skewed-distribution" class="section level4">
+<h4><span class="header-section-number">8.1.1.2</span> Size example 2: the size of a <em>t</em>-test vs. a permutation test, when the data have a right skewed distribution</h4>
+<div class="sourceCode" id="cb212"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb212-1"><a href="errors-in-inference.html#cb212-1"></a><span class="kw">set.seed</span>(<span class="dv">1</span>)</span>
+<span id="cb212-2"><a href="errors-in-inference.html#cb212-2"></a>n &lt;-<span class="st"> </span><span class="dv">10</span></span>
+<span id="cb212-3"><a href="errors-in-inference.html#cb212-3"></a>n_iter &lt;-<span class="st"> </span><span class="dv">10000</span></span>
+<span id="cb212-4"><a href="errors-in-inference.html#cb212-4"></a>p_t &lt;-<span class="st"> </span><span class="kw">numeric</span>(n_iter)</span>
+<span id="cb212-5"><a href="errors-in-inference.html#cb212-5"></a>p_perm &lt;-<span class="st"> </span><span class="kw">numeric</span>(n_iter)</span>
+<span id="cb212-6"><a href="errors-in-inference.html#cb212-6"></a></span>
+<span id="cb212-7"><a href="errors-in-inference.html#cb212-7"></a>treatment &lt;-<span class="st"> </span><span class="kw">rep</span>(<span class="kw">c</span>(<span class="st">&quot;cn&quot;</span>, <span class="st">&quot;tr&quot;</span>), <span class="dt">each =</span> n)</span>
+<span id="cb212-8"><a href="errors-in-inference.html#cb212-8"></a><span class="cf">for</span>(iter <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>n_iter){</span>
+<span id="cb212-9"><a href="errors-in-inference.html#cb212-9"></a>  <span class="co">#  qplot(rnegbin(n = 10^4, mu = 100, theta = 1))</span></span>
+<span id="cb212-10"><a href="errors-in-inference.html#cb212-10"></a>  sample_<span class="dv">1</span> &lt;-<span class="st"> </span><span class="kw">rnegbin</span>(n, <span class="dt">mu =</span> <span class="dv">100</span>, <span class="dt">theta =</span> <span class="dv">1</span>)</span>
+<span id="cb212-11"><a href="errors-in-inference.html#cb212-11"></a>  sample_<span class="dv">2</span> &lt;-<span class="st"> </span><span class="kw">rnegbin</span>(n, <span class="dt">mu =</span> <span class="dv">100</span>, <span class="dt">theta =</span> <span class="dv">1</span>)</span>
+<span id="cb212-12"><a href="errors-in-inference.html#cb212-12"></a>  y &lt;-<span class="st"> </span><span class="kw">c</span>(sample_<span class="dv">1</span>, sample_<span class="dv">2</span>)</span>
+<span id="cb212-13"><a href="errors-in-inference.html#cb212-13"></a>  <span class="co"># qplot(x=treatment, y = y)</span></span>
+<span id="cb212-14"><a href="errors-in-inference.html#cb212-14"></a>  m1 &lt;-<span class="st"> </span><span class="kw">lm</span>(y <span class="op">~</span><span class="st"> </span>treatment) <span class="co"># no data statement necessary because both variables in workspace</span></span>
+<span id="cb212-15"><a href="errors-in-inference.html#cb212-15"></a>  p_t[iter] &lt;-<span class="st"> </span><span class="kw">coef</span>(<span class="kw">summary</span>(m1))[<span class="st">&quot;treatmenttr&quot;</span>, <span class="st">&quot;Pr(&gt;|t|)&quot;</span>]</span>
+<span id="cb212-16"><a href="errors-in-inference.html#cb212-16"></a>  </span>
+<span id="cb212-17"><a href="errors-in-inference.html#cb212-17"></a>  m2 &lt;-<span class="st"> </span><span class="kw">lmp</span>(y <span class="op">~</span><span class="st"> </span>treatment,</span>
+<span id="cb212-18"><a href="errors-in-inference.html#cb212-18"></a>            <span class="dt">perm =</span> <span class="st">&quot;Prob&quot;</span>,</span>
+<span id="cb212-19"><a href="errors-in-inference.html#cb212-19"></a>            <span class="dt">settings =</span> <span class="ot">FALSE</span>)</span>
+<span id="cb212-20"><a href="errors-in-inference.html#cb212-20"></a>  p_perm[iter] &lt;-<span class="st"> </span><span class="kw">coef</span>(<span class="kw">summary</span>(m2))[<span class="st">&quot;treatment1&quot;</span>, <span class="st">&quot;Pr(Prob)&quot;</span>]</span>
+<span id="cb212-21"><a href="errors-in-inference.html#cb212-21"></a>}</span>
+<span id="cb212-22"><a href="errors-in-inference.html#cb212-22"></a>size_t &lt;-<span class="st"> </span><span class="kw">sum</span>(p_t <span class="op">&lt;</span><span class="st"> </span><span class="fl">0.05</span>)<span class="op">/</span>n_iter</span>
+<span id="cb212-23"><a href="errors-in-inference.html#cb212-23"></a>size_perm &lt;-<span class="st"> </span><span class="kw">sum</span>(p_perm <span class="op">&lt;</span><span class="st"> </span><span class="fl">0.05</span>)<span class="op">/</span>n_iter</span>
+<span id="cb212-24"><a href="errors-in-inference.html#cb212-24"></a>size_table &lt;-<span class="st"> </span><span class="kw">data.table</span>(<span class="dt">Method =</span> <span class="kw">c</span>(<span class="st">&quot;lm&quot;</span>, <span class="st">&quot;perm&quot;</span>),</span>
+<span id="cb212-25"><a href="errors-in-inference.html#cb212-25"></a>                         <span class="dt">Size =</span> <span class="kw">c</span>(size_t, size_perm))</span>
+<span id="cb212-26"><a href="errors-in-inference.html#cb212-26"></a>knitr<span class="op">::</span><span class="kw">kable</span>(size_table, <span class="dt">digits =</span> <span class="dv">4</span>)</span></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Method</th>
+<th align="right">Size</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">lm</td>
+<td align="right">0.0438</td>
+</tr>
+<tr class="even">
+<td align="left">perm</td>
+<td align="right">0.0504</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="size-example-3-the-size-of-a-t-test-vs.-a-permutation-test-when-the-data-have-heterogenous-variance-and-the-sample-size-is-unequal" class="section level4">
+<h4><span class="header-section-number">8.1.1.3</span> Size example 3: the size of a <em>t</em>-test vs. a permutation test, when the data have heterogenous variance and the sample size is unequal</h4>
+<div class="sourceCode" id="cb213"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb213-1"><a href="errors-in-inference.html#cb213-1"></a><span class="kw">set.seed</span>(<span class="dv">1</span>)</span>
+<span id="cb213-2"><a href="errors-in-inference.html#cb213-2"></a>n1 &lt;-<span class="st"> </span><span class="dv">10</span></span>
+<span id="cb213-3"><a href="errors-in-inference.html#cb213-3"></a>n2 &lt;-<span class="st"> </span>n1<span class="op">/</span><span class="dv">2</span></span>
+<span id="cb213-4"><a href="errors-in-inference.html#cb213-4"></a>n_iter &lt;-<span class="st"> </span><span class="dv">10000</span></span>
+<span id="cb213-5"><a href="errors-in-inference.html#cb213-5"></a>p_t &lt;-<span class="st"> </span><span class="kw">numeric</span>(n_iter)</span>
+<span id="cb213-6"><a href="errors-in-inference.html#cb213-6"></a>p_perm &lt;-<span class="st"> </span><span class="kw">numeric</span>(n_iter)</span>
+<span id="cb213-7"><a href="errors-in-inference.html#cb213-7"></a></span>
+<span id="cb213-8"><a href="errors-in-inference.html#cb213-8"></a>treatment &lt;-<span class="st"> </span><span class="kw">rep</span>(<span class="kw">c</span>(<span class="st">&quot;cn&quot;</span>, <span class="st">&quot;tr&quot;</span>), <span class="dt">times =</span> <span class="kw">c</span>(n1, n2))</span>
+<span id="cb213-9"><a href="errors-in-inference.html#cb213-9"></a><span class="cf">for</span>(iter <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>n_iter){</span>
+<span id="cb213-10"><a href="errors-in-inference.html#cb213-10"></a>  <span class="co">#  qplot(rnegbin(n = 10^4, mu = 100, theta = 1))</span></span>
+<span id="cb213-11"><a href="errors-in-inference.html#cb213-11"></a>  sample_<span class="dv">1</span> &lt;-<span class="st"> </span><span class="kw">rnorm</span>(n1, <span class="dt">mean =</span> <span class="dv">10</span>, <span class="dt">sd =</span> <span class="fl">0.5</span>)</span>
+<span id="cb213-12"><a href="errors-in-inference.html#cb213-12"></a>  sample_<span class="dv">2</span> &lt;-<span class="st"> </span><span class="kw">rnorm</span>(n2, <span class="dt">mean =</span> <span class="dv">10</span>, <span class="dt">sd =</span> <span class="dv">1</span>)</span>
+<span id="cb213-13"><a href="errors-in-inference.html#cb213-13"></a>  y &lt;-<span class="st"> </span><span class="kw">c</span>(sample_<span class="dv">1</span>, sample_<span class="dv">2</span>)</span>
+<span id="cb213-14"><a href="errors-in-inference.html#cb213-14"></a>  <span class="co"># qplot(x=treatment, y = y)</span></span>
+<span id="cb213-15"><a href="errors-in-inference.html#cb213-15"></a>  m1 &lt;-<span class="st"> </span><span class="kw">lm</span>(y <span class="op">~</span><span class="st"> </span>treatment) <span class="co"># no data statement necessary because both variables in workspace</span></span>
+<span id="cb213-16"><a href="errors-in-inference.html#cb213-16"></a>  p_t[iter] &lt;-<span class="st"> </span><span class="kw">coef</span>(<span class="kw">summary</span>(m1))[<span class="st">&quot;treatmenttr&quot;</span>, <span class="st">&quot;Pr(&gt;|t|)&quot;</span>]</span>
+<span id="cb213-17"><a href="errors-in-inference.html#cb213-17"></a>  </span>
+<span id="cb213-18"><a href="errors-in-inference.html#cb213-18"></a>  m2 &lt;-<span class="st"> </span><span class="kw">lmp</span>(y <span class="op">~</span><span class="st"> </span>treatment,</span>
+<span id="cb213-19"><a href="errors-in-inference.html#cb213-19"></a>            <span class="dt">perm =</span> <span class="st">&quot;Prob&quot;</span>,</span>
+<span id="cb213-20"><a href="errors-in-inference.html#cb213-20"></a>            <span class="dt">settings =</span> <span class="ot">FALSE</span>)</span>
+<span id="cb213-21"><a href="errors-in-inference.html#cb213-21"></a>  p_perm[iter] &lt;-<span class="st"> </span><span class="kw">coef</span>(<span class="kw">summary</span>(m2))[<span class="st">&quot;treatment1&quot;</span>, <span class="st">&quot;Pr(Prob)&quot;</span>]</span>
+<span id="cb213-22"><a href="errors-in-inference.html#cb213-22"></a>}</span>
+<span id="cb213-23"><a href="errors-in-inference.html#cb213-23"></a>size_t &lt;-<span class="st"> </span><span class="kw">sum</span>(p_t <span class="op">&lt;</span><span class="st"> </span><span class="fl">0.05</span>)<span class="op">/</span>n_iter</span>
+<span id="cb213-24"><a href="errors-in-inference.html#cb213-24"></a>size_perm &lt;-<span class="st"> </span><span class="kw">sum</span>(p_perm <span class="op">&lt;</span><span class="st"> </span><span class="fl">0.05</span>)<span class="op">/</span>n_iter</span>
+<span id="cb213-25"><a href="errors-in-inference.html#cb213-25"></a>size_table &lt;-<span class="st"> </span><span class="kw">data.table</span>(<span class="dt">Method =</span> <span class="kw">c</span>(<span class="st">&quot;lm&quot;</span>, <span class="st">&quot;perm&quot;</span>),</span>
+<span id="cb213-26"><a href="errors-in-inference.html#cb213-26"></a>                         <span class="dt">Size =</span> <span class="kw">c</span>(size_t, size_perm))</span>
+<span id="cb213-27"><a href="errors-in-inference.html#cb213-27"></a>knitr<span class="op">::</span><span class="kw">kable</span>(size_table, <span class="dt">digits =</span> <span class="dv">4</span>)</span></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Method</th>
+<th align="right">Size</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">lm</td>
+<td align="right">0.1150</td>
+</tr>
+<tr class="even">
+<td align="left">perm</td>
+<td align="right">0.1211</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="power" class="section level3">
+<h3><span class="header-section-number">8.1.2</span> Power</h3>
+<p>In classical Neyman-Pearson hypothesis testing, an important property of a hypothesis test is the <strong>power of a test</strong>. “Power” is the probability of rejecting the null when the null is false. A common way to think about power is, power is a test’s ability to “detect” an effect if it exists. This makes sense using Neyman-Pearson but not Fisher (Using Fisher, a <em>p</em>-value is not a detector of an effect – a reasoning brain is). Using Fisher, we could say that power is the sensitivity of a test (it takes less sample to provide the same signal).</p>
+<div id="power-example-1-the-power-of-a-t-test-vs.-a-permutation-test-when-the-data-meet-the-assumptions" class="section level4">
+<h4><span class="header-section-number">8.1.2.1</span> Power example 1: the power of a <em>t</em>-test vs. a permutation test, when the data meet the assumptions</h4>
+<div class="sourceCode" id="cb214"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb214-1"><a href="errors-in-inference.html#cb214-1"></a><span class="kw">set.seed</span>(<span class="dv">1</span>)</span>
+<span id="cb214-2"><a href="errors-in-inference.html#cb214-2"></a>n &lt;-<span class="st"> </span><span class="dv">10</span></span>
+<span id="cb214-3"><a href="errors-in-inference.html#cb214-3"></a>n_iter &lt;-<span class="st"> </span><span class="dv">10000</span></span>
+<span id="cb214-4"><a href="errors-in-inference.html#cb214-4"></a>p_t &lt;-<span class="st"> </span><span class="kw">numeric</span>(n_iter)</span>
+<span id="cb214-5"><a href="errors-in-inference.html#cb214-5"></a>p_perm &lt;-<span class="st"> </span><span class="kw">numeric</span>(n_iter)</span>
+<span id="cb214-6"><a href="errors-in-inference.html#cb214-6"></a></span>
+<span id="cb214-7"><a href="errors-in-inference.html#cb214-7"></a>treatment &lt;-<span class="st"> </span><span class="kw">rep</span>(<span class="kw">c</span>(<span class="st">&quot;cn&quot;</span>, <span class="st">&quot;tr&quot;</span>), <span class="dt">each =</span> n)</span>
+<span id="cb214-8"><a href="errors-in-inference.html#cb214-8"></a><span class="cf">for</span>(iter <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>n_iter){</span>
+<span id="cb214-9"><a href="errors-in-inference.html#cb214-9"></a>  sample_<span class="dv">1</span> &lt;-<span class="st"> </span><span class="kw">rnorm</span>(n, <span class="dt">mean =</span> <span class="dv">10</span>, <span class="dt">sd =</span> <span class="dv">1</span>)</span>
+<span id="cb214-10"><a href="errors-in-inference.html#cb214-10"></a>  sample_<span class="dv">2</span> &lt;-<span class="st"> </span><span class="kw">rnorm</span>(n, <span class="dt">mean =</span> <span class="dv">11</span>, <span class="dt">sd =</span> <span class="dv">1</span>)</span>
+<span id="cb214-11"><a href="errors-in-inference.html#cb214-11"></a>  y &lt;-<span class="st"> </span><span class="kw">c</span>(sample_<span class="dv">1</span>, sample_<span class="dv">2</span>)</span>
+<span id="cb214-12"><a href="errors-in-inference.html#cb214-12"></a>  m1 &lt;-<span class="st"> </span><span class="kw">lm</span>(y <span class="op">~</span><span class="st"> </span>treatment) <span class="co"># no data statement necessary because both variables in workspace</span></span>
+<span id="cb214-13"><a href="errors-in-inference.html#cb214-13"></a>  p_t[iter] &lt;-<span class="st"> </span><span class="kw">coef</span>(<span class="kw">summary</span>(m1))[<span class="st">&quot;treatmenttr&quot;</span>, <span class="st">&quot;Pr(&gt;|t|)&quot;</span>]</span>
+<span id="cb214-14"><a href="errors-in-inference.html#cb214-14"></a>  </span>
+<span id="cb214-15"><a href="errors-in-inference.html#cb214-15"></a>  m2 &lt;-<span class="st"> </span><span class="kw">lmp</span>(y <span class="op">~</span><span class="st"> </span>treatment,</span>
+<span id="cb214-16"><a href="errors-in-inference.html#cb214-16"></a>            <span class="dt">perm =</span> <span class="st">&quot;Prob&quot;</span>,</span>
+<span id="cb214-17"><a href="errors-in-inference.html#cb214-17"></a>            <span class="dt">settings =</span> <span class="ot">FALSE</span>)</span>
+<span id="cb214-18"><a href="errors-in-inference.html#cb214-18"></a>  p_perm[iter] &lt;-<span class="st"> </span><span class="kw">coef</span>(<span class="kw">summary</span>(m2))[<span class="st">&quot;treatment1&quot;</span>, <span class="st">&quot;Pr(Prob)&quot;</span>]</span>
+<span id="cb214-19"><a href="errors-in-inference.html#cb214-19"></a>}</span>
+<span id="cb214-20"><a href="errors-in-inference.html#cb214-20"></a>power_t &lt;-<span class="st"> </span><span class="kw">sum</span>(p_t <span class="op">&lt;</span><span class="st"> </span><span class="fl">0.05</span>)<span class="op">/</span>n_iter</span>
+<span id="cb214-21"><a href="errors-in-inference.html#cb214-21"></a>power_perm &lt;-<span class="st"> </span><span class="kw">sum</span>(p_perm <span class="op">&lt;</span><span class="st"> </span><span class="fl">0.05</span>)<span class="op">/</span>n_iter</span>
+<span id="cb214-22"><a href="errors-in-inference.html#cb214-22"></a>power_table_normal &lt;-<span class="st"> </span><span class="kw">data.table</span>(<span class="dt">Method =</span> <span class="kw">c</span>(<span class="st">&quot;lm&quot;</span>, <span class="st">&quot;perm&quot;</span>),</span>
+<span id="cb214-23"><a href="errors-in-inference.html#cb214-23"></a>                         <span class="dt">Power =</span> <span class="kw">c</span>(power_t, power_perm))</span>
+<span id="cb214-24"><a href="errors-in-inference.html#cb214-24"></a>knitr<span class="op">::</span><span class="kw">kable</span>(power_table_normal, <span class="dt">digits =</span> <span class="dv">3</span>)</span></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Method</th>
+<th align="right">Power</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">lm</td>
+<td align="right">0.554</td>
+</tr>
+<tr class="even">
+<td align="left">perm</td>
+<td align="right">0.554</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="power-example-2-the-power-of-a-t-test-vs.-a-permutation-test-when-the-data-look-like-typical-count-data" class="section level4">
+<h4><span class="header-section-number">8.1.2.2</span> Power example 2: the power of a <em>t</em>-test vs. a permutation test, when the data look like typical count data</h4>
+<div class="sourceCode" id="cb215"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb215-1"><a href="errors-in-inference.html#cb215-1"></a><span class="kw">set.seed</span>(<span class="dv">1</span>)</span>
+<span id="cb215-2"><a href="errors-in-inference.html#cb215-2"></a>n &lt;-<span class="st"> </span><span class="dv">10</span></span>
+<span id="cb215-3"><a href="errors-in-inference.html#cb215-3"></a>n_iter &lt;-<span class="st"> </span><span class="dv">10000</span></span>
+<span id="cb215-4"><a href="errors-in-inference.html#cb215-4"></a>p_t &lt;-<span class="st"> </span><span class="kw">numeric</span>(n_iter)</span>
+<span id="cb215-5"><a href="errors-in-inference.html#cb215-5"></a>p_perm &lt;-<span class="st"> </span><span class="kw">numeric</span>(n_iter)</span>
+<span id="cb215-6"><a href="errors-in-inference.html#cb215-6"></a></span>
+<span id="cb215-7"><a href="errors-in-inference.html#cb215-7"></a>treatment &lt;-<span class="st"> </span><span class="kw">rep</span>(<span class="kw">c</span>(<span class="st">&quot;cn&quot;</span>, <span class="st">&quot;tr&quot;</span>), <span class="dt">each =</span> n)</span>
+<span id="cb215-8"><a href="errors-in-inference.html#cb215-8"></a></span>
+<span id="cb215-9"><a href="errors-in-inference.html#cb215-9"></a><span class="cf">for</span>(iter <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>n_iter){</span>
+<span id="cb215-10"><a href="errors-in-inference.html#cb215-10"></a>  <span class="co">#  qplot(rnegbin(n = 10^4, mu = 100, theta = 1))</span></span>
+<span id="cb215-11"><a href="errors-in-inference.html#cb215-11"></a>  sample_<span class="dv">1</span> &lt;-<span class="st"> </span><span class="kw">rnegbin</span>(n, <span class="dt">mu =</span> <span class="dv">100</span>, <span class="dt">theta =</span> <span class="dv">1</span>)</span>
+<span id="cb215-12"><a href="errors-in-inference.html#cb215-12"></a>  sample_<span class="dv">2</span> &lt;-<span class="st"> </span><span class="kw">rnegbin</span>(n, <span class="dt">mu =</span> <span class="dv">300</span>, <span class="dt">theta =</span> <span class="dv">1</span>)</span>
+<span id="cb215-13"><a href="errors-in-inference.html#cb215-13"></a>  y &lt;-<span class="st"> </span><span class="kw">c</span>(sample_<span class="dv">1</span>, sample_<span class="dv">2</span>)</span>
+<span id="cb215-14"><a href="errors-in-inference.html#cb215-14"></a>  <span class="co"># qplot(x=treatment, y = y)</span></span>
+<span id="cb215-15"><a href="errors-in-inference.html#cb215-15"></a>  m1 &lt;-<span class="st"> </span><span class="kw">lm</span>(y <span class="op">~</span><span class="st"> </span>treatment) <span class="co"># no data statement necessary because both variables in workspace</span></span>
+<span id="cb215-16"><a href="errors-in-inference.html#cb215-16"></a>  p_t[iter] &lt;-<span class="st"> </span><span class="kw">coef</span>(<span class="kw">summary</span>(m1))[<span class="st">&quot;treatmenttr&quot;</span>, <span class="st">&quot;Pr(&gt;|t|)&quot;</span>]</span>
+<span id="cb215-17"><a href="errors-in-inference.html#cb215-17"></a>  </span>
+<span id="cb215-18"><a href="errors-in-inference.html#cb215-18"></a>  m2 &lt;-<span class="st"> </span><span class="kw">lmp</span>(y <span class="op">~</span><span class="st"> </span>treatment,</span>
+<span id="cb215-19"><a href="errors-in-inference.html#cb215-19"></a>            <span class="dt">perm =</span> <span class="st">&quot;Prob&quot;</span>,</span>
+<span id="cb215-20"><a href="errors-in-inference.html#cb215-20"></a>            <span class="dt">settings =</span> <span class="ot">FALSE</span>)</span>
+<span id="cb215-21"><a href="errors-in-inference.html#cb215-21"></a>  p_perm[iter] &lt;-<span class="st"> </span><span class="kw">coef</span>(<span class="kw">summary</span>(m2))[<span class="st">&quot;treatment1&quot;</span>, <span class="st">&quot;Pr(Prob)&quot;</span>]</span>
+<span id="cb215-22"><a href="errors-in-inference.html#cb215-22"></a>}</span>
+<span id="cb215-23"><a href="errors-in-inference.html#cb215-23"></a>power_t &lt;-<span class="st"> </span><span class="kw">sum</span>(p_t <span class="op">&lt;</span><span class="st"> </span><span class="fl">0.05</span>)<span class="op">/</span>n_iter</span>
+<span id="cb215-24"><a href="errors-in-inference.html#cb215-24"></a>power_perm &lt;-<span class="st"> </span><span class="kw">sum</span>(p_perm <span class="op">&lt;</span><span class="st"> </span><span class="fl">0.05</span>)<span class="op">/</span>n_iter</span>
+<span id="cb215-25"><a href="errors-in-inference.html#cb215-25"></a>power_table_count &lt;-<span class="st"> </span><span class="kw">data.table</span>(<span class="dt">Method =</span> <span class="kw">c</span>(<span class="st">&quot;lm&quot;</span>, <span class="st">&quot;perm&quot;</span>),</span>
+<span id="cb215-26"><a href="errors-in-inference.html#cb215-26"></a>                         <span class="dt">Power =</span> <span class="kw">c</span>(power_t, power_perm))</span>
+<span id="cb215-27"><a href="errors-in-inference.html#cb215-27"></a>knitr<span class="op">::</span><span class="kw">kable</span>(power_table_count, <span class="dt">digits =</span> <span class="dv">3</span>)</span></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Method</th>
+<th align="right">Power</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">lm</td>
+<td align="right">0.512</td>
+</tr>
+<tr class="even">
+<td align="left">perm</td>
+<td align="right">0.584</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div id="a-non-neyman-pearson-concept-of-power" class="section level2">
+<h2><span class="header-section-number">8.2</span> A non-Neyman-Pearson concept of power</h2>
+<p>Size and power are concepts specific to the Neyman-Pearson hypothesis testing framework. Size and power also have limited (or no) use in a research program in which the null hypothesis is never (or rarely) strictly true. That said, the concept of size and power are useful. For example, what if we framed power as the distribution of <em>p</em>-values instead of the frequency of <em>p</em>-values less than <span class="math inline">\(\alpha\)</span>.</p>
+<p>Table <a href="#tab:error-power-dis"><strong>??</strong></a> shows the <em>p</em>-value at the 10th, 25th, 50th, 75th, and 90th percentile of the set of <em>p</em>-values computed in Power Example 2 above (count data). The <em>n</em>th percentile is the value in an ordered set of numbers in which <em>n</em> % are less than the value and 100 - <em>n</em>% are greater than the value. The 50th percentile is the median. The table shows that at all percentiles except the 90th, the permutation <em>p</em>-value is smaller than the <em>t</em>-test <em>p</em>-value. And, importantly, the value at 75% for both is ~ 0.12. This means that for experiments that generate data something like the fake data generated in Power Example 2, the permutation test is more sensistive to the incompatibility between the null model and the data than the <em>t</em>-test, except in the random samples when both methods fail.</p>
+<div class="sourceCode" id="cb216"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb216-1"><a href="errors-in-inference.html#cb216-1"></a>quantile_list &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="fl">0.1</span>, <span class="fl">0.25</span>, <span class="fl">0.5</span>, <span class="fl">0.75</span>, <span class="fl">0.9</span>)</span>
+<span id="cb216-2"><a href="errors-in-inference.html#cb216-2"></a>percentiles_t &lt;-<span class="st"> </span><span class="kw">quantile</span>(p_t, quantile_list)</span>
+<span id="cb216-3"><a href="errors-in-inference.html#cb216-3"></a>percentiles_perm &lt;-<span class="st"> </span><span class="kw">quantile</span>(p_perm, quantile_list)</span>
+<span id="cb216-4"><a href="errors-in-inference.html#cb216-4"></a></span>
+<span id="cb216-5"><a href="errors-in-inference.html#cb216-5"></a>alt_power_table &lt;-<span class="st"> </span><span class="kw">data.table</span>(<span class="dt">method =</span> <span class="kw">c</span>(<span class="st">&quot;t-test&quot;</span>, <span class="st">&quot;permutation&quot;</span>),</span>
+<span id="cb216-6"><a href="errors-in-inference.html#cb216-6"></a>                              (<span class="kw">rbind</span>(percentiles_t,</span>
+<span id="cb216-7"><a href="errors-in-inference.html#cb216-7"></a>                                     percentiles_perm)))</span>
+<span id="cb216-8"><a href="errors-in-inference.html#cb216-8"></a>knitr<span class="op">::</span><span class="kw">kable</span>(alt_power_table, <span class="dt">digits =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">4</span>, <span class="dv">3</span>, <span class="dv">3</span>, <span class="dv">2</span>, <span class="dv">2</span>))</span></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">method</th>
+<th align="right">10%</th>
+<th align="right">25%</th>
+<th align="right">50%</th>
+<th align="right">75%</th>
+<th align="right">90%</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">t-test</td>
+<td align="right">0.0045</td>
+<td align="right">0.016</td>
+<td align="right">0.047</td>
+<td align="right">0.13</td>
+<td align="right">0.28</td>
+</tr>
+<tr class="even">
+<td align="left">permutation</td>
+<td align="right">0.0012</td>
+<td align="right">0.007</td>
+<td align="right">0.032</td>
+<td align="right">0.12</td>
+<td align="right">0.32</td>
+</tr>
+</tbody>
+</table>
+<div id="estimation-error" class="section level3">
+<h3><span class="header-section-number">8.2.1</span> Estimation error</h3>
+</div>
+<div id="coverage" class="section level3">
+<h3><span class="header-section-number">8.2.2</span> Coverage</h3>
+<p>This text advocates reporting a confidence interval with each reported effect size. An important property of an <strong>estimator</strong> is <strong>coverage probability</strong>, often shortened to “coverage”.</p>
+</div>
+<div id="type-s-error" class="section level3">
+<h3><span class="header-section-number">8.2.3</span> Type S error</h3>
+<p>Instead of framing the “size” concept as the rate of Type I error, what if we framed this as the rate that an estimate is in the correct direction (meaning, the sign of an effect is the same as the true value). And,</p>
+</div>
+<div id="type-m-error" class="section level3">
+<h3><span class="header-section-number">8.2.4</span> Type M error</h3>
 
+</div>
 </div>
 </div>
             </section>
@@ -670,8 +852,8 @@ This looks pretty good. Given these checks, lets move on and look at the table o
           </div>
         </div>
       </div>
-<a href="part-ii-an-introduction-to-the-analysis-of-experimental-data-with-a-linear-model.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="background-physiology-to-the-experiments-in-figure-2-of-ask1-inhibits-browning-of-white-adipose-tissue-in-obesity.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="p-values.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="part-v-introduction-to-linear-models.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -703,7 +885,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/rstudio/bookdown-demo/edit/master/chapters/05-ask1_fig2i.Rmd",
+"link": "https://github.com/rstudio/bookdown-demo/edit/master/chapters/18-error.Rmd",
 "text": "Edit"
 },
 "history": {

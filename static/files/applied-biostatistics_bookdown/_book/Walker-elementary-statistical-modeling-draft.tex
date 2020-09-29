@@ -124,7 +124,7 @@
   \postauthor{\par}
       \predate{\centering\large\emph}
   \postdate{\par}
-    \date{Draft: 2020-09-27}
+    \date{Draft: 2020-09-29}
 
 \usepackage{booktabs}
 \usepackage{amsthm}
@@ -5758,7 +5758,7 @@ On page 606, of Lock et al ``Statistics: Unlocking the Power of Data'', the auth
 \item
   For small \emph{p}-values, there is little reason to report more than one significant digit (report ``\(p = 0.0002\)'' not ``\(p = 0.00018\)'').
 \item
-  For really small p-values, there is little reason to report the exact \emph{p}-value (report ``\(p < 0.0001\)'' and not ``\(p = 2.365E-11\)''). Recognize that ``really small'' is entirely arbitrary -- I think it's okay to report ``\(p = 1E-11\)'' if \(p = 2.365E-11\).
+  For really small p-values, there is little reason to report the exact \emph{p}-value (report ``\(p < 0.0001\)'' and not ``\(p = 2.365E-11\)''). Recognize that ``really small'' is entirely arbitrary. Rafael Irizarry suggested that \emph{p}-values less than something like the probability of being killed by lightning strike should be reported as ``\(p < m\)'', where \(m\) is the probability of being killed by lightning strike\footnote{\url{https://twitter.com/rafalab/status/1310610623898808320}}. According Google University, this is 0.00000142 in one year or 0.00033 in one lifetime. This text will use \(p < ls\)" for \emph{p}-values less than 0.0001 -- the lifetime probability of being killed by lightning strike in someone that spends too much time in doors analyzing data.
 \end{itemize}
 
 \begin{enumerate}
@@ -5831,8 +5831,8 @@ b. should the same effect be added to each individual? Yes! It is the random com
 4. Compute the power, the relative frequency \(p \le 0.05\).
 5. Repeat with different values of \(n\), effect size, and sd, but only vary one at a time. How does power vary with these three parameters?
 
-\hypertarget{choosing-models-that-are-less-often-wrong}{%
-\chapter{Choosing models that are less often wrong}\label{choosing-models-that-are-less-often-wrong}}
+\hypertarget{errors-in-inference}{%
+\chapter{Errors in inference}\label{errors-in-inference}}
 
 \hypertarget{classical-nhst-concepts-of-wrong}{%
 \section{Classical NHST concepts of wrong}\label{classical-nhst-concepts-of-wrong}}
@@ -6183,6 +6183,23 @@ The data are from a \href{https://mnspruce.ornl.gov}{long-term experiment on the
 
 The question pursued is in this study is, what is the causal effect of warming on the timing (or phenology) of the transition into photosynthetic activity (``green-up'') in the spring and of the transition out of photosynthetic activity (``green-down'') in the fall? The researchers measured these transition dates, or Day of Year (DOY), using foliage color. Here, we focus on the transition out of photosynthesis or ``green-down'' DOY.
 
+\textbf{Import the data}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{data_from <-}\StringTok{ "Ecosystem warming extends vegetation activity but heightens vulnerability to cold temperatures"}
+\NormalTok{file_name <-}\StringTok{ "41586_2018_399_MOESM3_ESM.xlsx"}
+\NormalTok{file_path <-}\StringTok{ }\KeywordTok{here}\NormalTok{(data_folder, data_from, file_name)}
+\NormalTok{fig2 <-}\StringTok{ }\KeywordTok{read_excel}\NormalTok{(file_path) }\OperatorTok{%>%}\StringTok{ }\CommentTok{# import}
+\StringTok{  }\KeywordTok{clean_names}\NormalTok{() }\OperatorTok{%>%}\StringTok{ }\CommentTok{# clean the column names}
+\StringTok{  }\KeywordTok{data.table}\NormalTok{() }\CommentTok{# convert to data.table}
+\CommentTok{# View(fig2)}
+
+\NormalTok{fig2c <-}\StringTok{ }\NormalTok{fig2[panel }\OperatorTok{==}\StringTok{ "2c"}\NormalTok{,]}
+\CommentTok{# View(fig2c)}
+\end{Highlighting}
+\end{Shaded}
+
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
 \tightlist
@@ -6388,14 +6405,14 @@ In \textbf{multivariable} models (models with multiple \(X\) variables), the coe
 
 In this text, ``explanatory'' means ``causal'' and a goal of explanatory modeling is the estimate of causal effects using a \textbf{causal interpretation} of the linear model (=regression) coefficients. ``What what? I learned in my stats 101 course that we cannot interpret regression coefficients causally''.
 
-Statisticians (and statistics textbooks) have been quite rigid that a regression coefficient has a descriptive (or ``probabilistic'', see below) interpretation but not a causal interpretation. At the same time, statisticians (and statistics textbooks) do not seem to have any issue with interpeting the modeled effects from an experiment causally, since this is how they are interpreted. But if the modeled effects are simply coefficients from a linear (= regression) model, then this historical practice is muddled.
+Statisticians (and statistics textbooks) have been quite rigid that a regression coefficient has a descriptive (or ``observational'', see below) interpretation but not a causal interpretation. At the same time, statisticians (and statistics textbooks) do not seem to have any issue with interpeting the modeled effects from an experiment causally, since this is how they are interpreted. But if the modeled effects are simply coefficients from a linear (= regression) model, then this historical practice is muddled.
 
 Part of this muddled history arises from the use of ``regression'' for models fit to observational data with one or more continuous \(X\) variables and the use of ``ANOVA'' for models fit to experimental data with one or more categorical \(X\). This separation seems to have blinded statisticians from working on the formal probabilistic statements underlying causal interpretations of effect estimates in ANOVA and the synthesis of these statements with the probabilistic statements in regression modeling. Two major approaches to developing formal, probabilistic statements of causal modeling in statistics are the \textbf{Rubin causal model} and the \textbf{do-operator} of Pearl. Despite the gigantic progress in these approaches, little to none of this has found its way into biostatistics textbooks.
 
 \hypertarget{what-a-regression-coefficient-means}{%
 \subsubsection{What a regression coefficient means}\label{what-a-regression-coefficient-means}}
 
-A linear (``regression'') model coefficient, such as the coefficient for temperature, \(\beta_1\), has two interpretations, a \textbf{probabilistic} interpretation and a \textbf{causal interpretation}. To understand these interpretations, it's useful to remember that a predicted value from a regression model is a \textbf{conditional mean}
+A linear (``regression'') model coefficient, such as the coefficient for temperature, \(\beta_1\), has two interpretations, an \textbf{observational} interpretation and a \textbf{causal interpretation}. To understand these interpretations, it's useful to remember that a predicted value from a regression model is a \textbf{conditional mean}
 
 \begin{equation}
 \textrm{E}[day|temperature] = \beta_0 + \beta_1 temperature
@@ -6415,7 +6432,7 @@ In words, ``beta-one is the expected value of day of green-down when the tempera
 
 tl;dr. Note that the ``+ 1'' in this definition is mere convenience. Since the slope of a line is \(\frac{y_2 - y_1}{x_2 - x_1}\), where (\(x_1\), \(y_1\)) and (\(x_2\), \(y_2\)) are the coordinates of any two points on the line, it is convenient to choose two points that differ in \(X\) by one unit, which makes the fraction equal to the numerator only. The numerator is a difference in conditional means. It is also why the units of a regression coefficient are "per unit of \(X\) even if defined as a difference in two \(Y\) values.
 
-The difference between probabilistic and causal interpretations of \(\beta_1\) depends on the ``event'' conditioned on in \(\textrm{E}[day|temperature]\). Let's start with the causal interpretation, which is how we should think about the regression coefficients in the green-down experiment.
+The difference between observational and causal interpretations of \(\beta_1\) depends on the ``event'' conditioned on in \(\textrm{E}[day|temperature]\). Let's start with the causal interpretation, which is how we should think about the regression coefficients in the green-down experiment.
 
 \hypertarget{causal-interpretation-conditional-on-doing-x-x}{%
 \subsubsection{Causal interpretation -- conditional on ``doing'' X = x}\label{causal-interpretation-conditional-on-doing-x-x}}
@@ -6430,16 +6447,16 @@ In words, ``beta-one is the expected value of day of green-down were we to set t
 
 tl;dr. In the green-down experiment, the researchers didn't set the temperature in the intervened enclosures to the ambient temperature + 1 but to ambient + 2.25, ambient + 4.5, ambient + 6.75, and ambient + 9.0. Again (see tl;dr above), the + 1 is mere convenience in the definition.
 
-\hypertarget{probabilistic-interpretation-conditional-on-seeing-x-x.}{%
-\subsubsection{Probabilistic interpretation -- conditional on ``seeing'' X = x.}\label{probabilistic-interpretation-conditional-on-seeing-x-x.}}
+\hypertarget{observational-interpretation-conditional-on-seeing-x-x.}{%
+\subsubsection{Observational interpretation -- conditional on ``seeing'' X = x.}\label{observational-interpretation-conditional-on-seeing-x-x.}}
 
-In the probabilistic interpretation of regression, \(\textrm{E}[day|temperature]\) is conditioned on sampling data and ``seeing'' a value of \(temperature\). We can state this explicitly as \(\textrm{E}[day|\;see\;temperature]\). From this, we can interpret \(\beta_1\) as a \textbf{probabilistic coefficient}
+In the observational interpretation of regression, \(\textrm{E}[day|temperature]\) is conditioned on sampling data and ``seeing'' a value of \(temperature\). We can state this explicitly as \(\textrm{E}[day|\;see\;temperature]\). From this, we can interpret \(\beta_1\) as an \textbf{observational coefficient}
 
 \begin{equation}
 \beta_1 = \textrm{E}[day|\;see\;temperature = x+1] - \textrm{E}[day|\;see \;temperature = x]
 \end{equation}
 
-In words, ``beta-one is the expected value of day of green-down when see that temperature equals x + 1 minus the expected value of day of green-down when we see that temperature equals x.'' To understand what I mean by ``probabilistic'', let's imagine that the green-down data do not come from an experiment in which the researchers intervened and set the added temperature to a specifc value but from ten sites that naturally vary in mean annual temperature. Or from a single site with 10 years of data, with some years warmer and some years colder. Data from this kind of study is \textbf{observational} -- the researcher didn't intervene and set the \(X\) values but merely observed the \(X\) values.
+In words, ``beta-one is the expected value of day of green-down when see that temperature equals x + 1 minus the expected value of day of green-down when we see that temperature equals x.'' To understand what I mean by ``observational'', let's imagine that the green-down data do not come from an experiment in which the researchers intervened and set the added temperature to a specifc value but from ten sites that naturally vary in mean annual temperature. Or from a single site with 10 years of data, with some years warmer and some years colder. Data from this kind of study is \textbf{observational} -- the researcher didn't intervene and set the \(X\) values but merely observed the \(X\) values.
 
 If we sample (or ``see'') a site with a mean annual temperature that is 2.5 °C above a reference value, the expected day of green-down is \(\textrm{E}[day|temperature = 2.5 °C]\). That is, values near \(\textrm{E}[day|temperature = 2.5 °C]\) are more probable than values away from \(\textrm{E}[day|temperature = 2.5 °C]\). Or, if the only information that we have about this site is a mean annual temperature that is 2.5 °C above some reference, then our best prediction of the day of green-down would be \(\textrm{E}[day|temperature = 2.5 °C]\). We do not claim that the 4.98 day delay in green-down is caused by the warmer temperature, only that this is the expected delay relative to the reference having seen the data.
 
@@ -6448,7 +6465,7 @@ The seeing interpretation of a regression coefficient is \textbf{descriptive}-- 
 \hypertarget{omitted-variable-bias}{%
 \subsubsection{Omitted variable bias}\label{omitted-variable-bias}}
 
-What is the consequence of interpreting a regression coefficient causally instead of probabilistically?
+What is the consequence of interpreting a regression coefficient causally instead of observationally?
 
 \begin{figure}
 \centering
@@ -6473,8 +6490,8 @@ Lets fit two linear models.
 
 This bias (\(\rho \alpha \frac{\sigma_{moisture}}{\sigma_{temperature}}\)) is \textbf{omitted variable bias}. The omitted variable \(moisture\) is an unmeasured, \textbf{confounding variable}. A variable \(X_2\) is a confounder for variable \(X_1\) if \(X_2\) has both a correlation with \(X_1\) and a path to the response \(Y\) that is not through \(X_1\). With ommitted variable bias, as we sample more and more data, our estimate of the effect doesn't converge on the truth but the truth plus some bias.
 
-\hypertarget{causal-modeling-with-xxperimental-versus-observational-data}{%
-\subsubsection{Causal modeling with xxperimental versus observational data}\label{causal-modeling-with-xxperimental-versus-observational-data}}
+\hypertarget{causal-modeling-with-experimental-versus-observational-data}{%
+\subsubsection{Causal modeling with experimental versus observational data}\label{causal-modeling-with-experimental-versus-observational-data}}
 
 Causal interpretation requires conditioning on ``doing X=x''. For the green-down data, ``doing X=x'' is achieved by the random treatment assignment of the enclosures. How does random treatment assignment achieve this? Look again at Figure \ref{fig:continuous-x-dag}. If the values of \(treatment\) are randomly assigned, then, by definition, the expected value of the correlation between \(treatment\) and \(moisture\) is zero. In fact, the expected value of the correlation between \(treatment\) and any measurable variable at the study site is zero. Given, this, the expected value of the regression coefficient for \(temperature\) (\(b_1\)) is \(\beta\) because \(\rho=0\). That is, the estimate of the true effect is unbiased. It doesn't matter if \(moisture\), or any other variable, is excluded from the model. (That said, we may want to include moisture or other variables in the model to increase precision of the causal effect. This is addressed in the chapter ``Models with Covariates''). This is what an experiment does and why experiments are used to answer causal questions.
 
@@ -6586,8 +6603,8 @@ type \texttt{?lm} into the console to see other arguments of the \texttt{lm} fun
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{x <-}\StringTok{ }\NormalTok{fig2[panel_2c, temperature]}
-\NormalTok{y <-}\StringTok{ }\NormalTok{fig2[panel_2c, transition_date]}
+\NormalTok{x <-}\StringTok{ }\NormalTok{fig2[, temperature]}
+\NormalTok{y <-}\StringTok{ }\NormalTok{fig2[, transition_date]}
 \NormalTok{m4 <-}\StringTok{ }\KeywordTok{lm}\NormalTok{(y }\OperatorTok{~}\StringTok{ }\NormalTok{x)}
 \KeywordTok{coef}\NormalTok{(m4)}
 \end{Highlighting}
@@ -6595,7 +6612,7 @@ type \texttt{?lm} into the console to see other arguments of the \texttt{lm} fun
 
 \begin{verbatim}
 ## (Intercept)           x 
-##  289.458750    4.982745
+## 204.8866185   0.4324755
 \end{verbatim}
 
 \hypertarget{getting-to-know-the-linear-model-the-summary-function}{%
@@ -6725,15 +6742,15 @@ R^2 = \frac{\mathrm{VAR}(\hat{y})}{\mathrm{VAR}(y)}
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\KeywordTok{var}\NormalTok{(}\KeywordTok{fitted}\NormalTok{(m1))}\OperatorTok{/}\KeywordTok{var}\NormalTok{(fig2[panel_2c, transition_date])}
+\KeywordTok{var}\NormalTok{(}\KeywordTok{fitted}\NormalTok{(m1))}\OperatorTok{/}\KeywordTok{var}\NormalTok{(fig2[, transition_date])}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
-## [1] 0.9099475
+## [1] 0.02165428
 \end{verbatim}
 
-\(R^2\) will vary from zero (the model accounts for nothing) to one (the model accounts for everything). \(R^2\) is often described as the fraction of total variation \emph{explained} by the model" but the usage of ``explain'' is probabilistic and not causal. Because of the ambiguous usage of ``explain'' in statistics, I prefer to avoid the word.
+\(R^2\) will vary from zero (the model accounts for nothing) to one (the model accounts for everything). \(R^2\) is often described as the fraction of total variation \emph{explained} by the model" but the usage of ``explain'' is observational and not causal. Because of the ambiguous usage of ``explain'' in statistics, I prefer to avoid the word.
 
 It can be useful sometimes to think of \(R^2\) in terms of \textbf{residual error}, which is the variance of the residuals from the model. The larger the residual error, the smaller the \(R^2\), or
 
@@ -6743,12 +6760,12 @@ R^2 = 1 - \frac{\mathrm{VAR}(e)}{\mathrm{VAR}(y)}
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\DecValTok{1} \OperatorTok{-}\StringTok{ }\KeywordTok{var}\NormalTok{(}\KeywordTok{residuals}\NormalTok{(m1))}\OperatorTok{/}\KeywordTok{var}\NormalTok{(fig2[panel_2c, transition_date])}
+\DecValTok{1} \OperatorTok{-}\StringTok{ }\KeywordTok{var}\NormalTok{(}\KeywordTok{residuals}\NormalTok{(m1))}\OperatorTok{/}\KeywordTok{var}\NormalTok{(fig2[, transition_date])}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
-## [1] 0.9099475
+## [1] 0.997857
 \end{verbatim}
 
 The smaller the residuals, the higher the \(R^2\) and the closer the predicted values are to the measured values. The sum of the model variance and residual variance equals the total variance and, consequently, \(R^2\) is a signal to signal + noise ratio. The noise in \(R^2\) is the sampling variance of the individual measures. The noise in a \emph{t}-value is the sampling variance of the parameter (for m1, this is the sampling variance of \(b_1\)). This is an important distinction because it means that \emph{t} and \(R^2\) are not related 1:1. In a simple model with only a single \(X\), one might expect \(R^2\) to be big if the \emph{p}-value for the slope is tiny, but this isn't necessarily true because of the different meaning of noise in each. A study with a very large sample size \(n\) can have a tiny \emph{p}-value \emph{and} a small \(R^2\). A \emph{p}-value is not a good indicator of predictability. \(R^2\) is.
