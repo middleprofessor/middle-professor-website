@@ -124,7 +124,7 @@
   \postauthor{\par}
       \predate{\centering\large\emph}
   \postdate{\par}
-    \date{Draft: 2020-09-29}
+    \date{Draft: 2020-09-30}
 
 \usepackage{booktabs}
 \usepackage{amsthm}
@@ -6185,21 +6185,6 @@ The question pursued is in this study is, what is the causal effect of warming o
 
 \textbf{Import the data}
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{data_from <-}\StringTok{ "Ecosystem warming extends vegetation activity but heightens vulnerability to cold temperatures"}
-\NormalTok{file_name <-}\StringTok{ "41586_2018_399_MOESM3_ESM.xlsx"}
-\NormalTok{file_path <-}\StringTok{ }\KeywordTok{here}\NormalTok{(data_folder, data_from, file_name)}
-\NormalTok{fig2 <-}\StringTok{ }\KeywordTok{read_excel}\NormalTok{(file_path) }\OperatorTok{%>%}\StringTok{ }\CommentTok{# import}
-\StringTok{  }\KeywordTok{clean_names}\NormalTok{() }\OperatorTok{%>%}\StringTok{ }\CommentTok{# clean the column names}
-\StringTok{  }\KeywordTok{data.table}\NormalTok{() }\CommentTok{# convert to data.table}
-\CommentTok{# View(fig2)}
-
-\NormalTok{fig2c <-}\StringTok{ }\NormalTok{fig2[panel }\OperatorTok{==}\StringTok{ "2c"}\NormalTok{,]}
-\CommentTok{# View(fig2c)}
-\end{Highlighting}
-\end{Shaded}
-
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
 \tightlist
@@ -6225,7 +6210,7 @@ The question pursued is in this study is, what is the causal effect of warming o
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-127-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/continuous-x-vet-1.pdf}
 
 No plot shows any obvious outlier that might be due to measurement blunders or curation error. The linear regression in the left-most plot clearly shows that a linear response is sufficient to capture the effect of temperature on day of green-down.
 
@@ -6261,7 +6246,7 @@ No plot shows any obvious outlier that might be due to measurement blunders or c
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-129-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/continuous-x-check-qq-1.pdf}
 
 The Q-Q plot indicates the distribution of residuals is well within that expected for a normal sample and there is no cause for concern with inference.
 
@@ -6272,7 +6257,7 @@ The Q-Q plot indicates the distribution of residuals is well within that expecte
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-130-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/continuous-x-check-spread-1.pdf}
 
 \begin{verbatim}
 ## 
@@ -6321,7 +6306,7 @@ The effect of added temperature on the day of green-down is 4.98 d per 1 °C (95
 \begin{figure}
 \centering
 \includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/continuous-x-plot-1.pdf}
-\caption{\label{fig:continuous-x-plot}Modification of the published Figure 2c showing the experimental effect of warming on the date of autumn green-down (the transition to fall foliage color) in a mixed shrub community. The bottom panel is a scatterplot. The regression line shows the expected value of Y (transition day of year) given a value of X (added temperature). The slope of the regression line is the effect. The estimate and 95\% confidence interval of the estimate are given in the top panel.}
+\caption{\label{fig:continuous-x-plot}Modification of the published Figure 2c showing the experimental effect of warming on the date of autumn green-down (the transition to fall foliage color) in a mixed shrub community. The bottom panel is a scatterplot. The regression line shows the expected value of Y (transition day of year) given a value of X (added temperature). The slope of the regression line is the estimate of the effect. The estimate and 95\% confidence interval of the estimate are given in the top panel.}
 \end{figure}
 
 \begin{enumerate}
@@ -6332,7 +6317,7 @@ The effect of added temperature on the day of green-down is 4.98 d per 1 °C (95
   Report the results
 \end{enumerate}
 
-The effect of added temperature is Slope: 4.98 (3.7, 6.26) d per 1 °C (\ref{fig:continuous-x-plot}).
+The modeled effect of added temperature is Slope: 4.98 (3.7, 6.26) d per 1 °C (\ref{fig:continuous-x-plot}).
 
 \hypertarget{learning-from-the-green-down-example}{%
 \subsection{Learning from the green-down example}\label{learning-from-the-green-down-example}}
@@ -6362,8 +6347,8 @@ day &= \beta_0 + \beta_1 temperature + \varepsilon\\
 
 A generating model of the data is used to make inference, for example, a measure of uncertainty in a prediction in the timing of green-down with future warming, or a measure of uncertainty about the effect of temperature on green-down.
 
-\hypertarget{using-a-linear-model-for-prediction-prediction-models}{%
-\subsection{Using a linear model for prediction -- prediction models}\label{using-a-linear-model-for-prediction-prediction-models}}
+\hypertarget{using-a-regression-model-for-prediction-prediction-models}{%
+\subsection{Using a regression model for prediction -- prediction models}\label{using-a-regression-model-for-prediction-prediction-models}}
 
 Model \eqref{eq:continuous-x-fit} recovers the measured value of \(day\) (green-down DOY) for each enclosure. The equation includes the linear predictor (\(b_0 + b_1 temperature\)) and the \textbf{residual} from the predictor (\(e_i\)). The predictor part is called ``predictor'' because it is the equation for predicting the timing of green-down for any value of \(temperature\)
 
@@ -6400,8 +6385,8 @@ Predicted Green-down DOY
 
 In \textbf{multivariable} models (models with multiple \(X\) variables), the coefficients (or some function of the coefficients) might be used to assess the ``importance'' of the \(X\) variable to the prediction. In general, researchers are not interested in what the coefficients ``mean'' unless the model is also explicitly causal.
 
-\hypertarget{using-a-linear-model-for-explanation-causal-models}{%
-\subsection{Using a linear model for ``explanation'' -- causal models}\label{using-a-linear-model-for-explanation-causal-models}}
+\hypertarget{using-a-regression-model-for-explanation-causal-models}{%
+\subsection{Using a regression model for ``explanation'' -- causal models}\label{using-a-regression-model-for-explanation-causal-models}}
 
 In this text, ``explanatory'' means ``causal'' and a goal of explanatory modeling is the estimate of causal effects using a \textbf{causal interpretation} of the linear model (=regression) coefficients. ``What what? I learned in my stats 101 course that we cannot interpret regression coefficients causally''.
 
@@ -6496,6 +6481,58 @@ This bias (\(\rho \alpha \frac{\sigma_{moisture}}{\sigma_{temperature}}\)) is \t
 Causal interpretation requires conditioning on ``doing X=x''. For the green-down data, ``doing X=x'' is achieved by the random treatment assignment of the enclosures. How does random treatment assignment achieve this? Look again at Figure \ref{fig:continuous-x-dag}. If the values of \(treatment\) are randomly assigned, then, by definition, the expected value of the correlation between \(treatment\) and \(moisture\) is zero. In fact, the expected value of the correlation between \(treatment\) and any measurable variable at the study site is zero. Given, this, the expected value of the regression coefficient for \(temperature\) (\(b_1\)) is \(\beta\) because \(\rho=0\). That is, the estimate of the true effect is unbiased. It doesn't matter if \(moisture\), or any other variable, is excluded from the model. (That said, we may want to include moisture or other variables in the model to increase precision of the causal effect. This is addressed in the chapter ``Models with Covariates''). This is what an experiment does and why experiments are used to answer causal questions.
 
 Can we use observational data for causal modeling? Yes, but the methods for this are outside of the scope of this text. The mathematical foundation for this is known as \textbf{path analysis}, which was developed by geneticist and evolutionary biologist Sewell Wright (I include this because this work has inspired much of how I think about biology and because he is both my academic grandfather and great-grandfather). Causal analysis of observational data in biology is rare outside of ecology and epidemiology. Good starting points for the modern development of causal analysis are \href{https://www.hsph.harvard.edu/miguel-hernan/causal-inference-book/}{Hernán MA and Robins JM (2020)} and \href{https://www.annualreviews.org/doi/abs/10.1146/annurev-genom-083117-021731}{Burgess et al.~(2018)}. A gentle introduction is \href{https://www.basicbooks.com/titles/judea-pearl/the-book-of-why/9780465097609/}{Pearl and Mackenzie (2018)}
+
+\hypertarget{using-a-regression-model-for-creating-a-new-response-variable-comparing-slopes-of-longitudinal-data}{%
+\subsection{Using a regression model for creating a new response variable -- comparing slopes of longitudinal data}\label{using-a-regression-model-for-creating-a-new-response-variable-comparing-slopes-of-longitudinal-data}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{N <-}\StringTok{ }\KeywordTok{nrow}\NormalTok{(fig1f_wide)}
+\NormalTok{id_list <-}\StringTok{ }\NormalTok{fig1f_wide[, id]}
+\ControlFlowTok{for}\NormalTok{(i }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\NormalTok{N)\{}
+\NormalTok{  fit <-}\StringTok{ }\KeywordTok{lm}\NormalTok{(volume }\OperatorTok{~}\StringTok{ }\NormalTok{day, }\DataTypeTok{data =}\NormalTok{ fig1f[id }\OperatorTok{==}\StringTok{ }\NormalTok{id_list[i]])}
+\NormalTok{  fig1f_wide[id }\OperatorTok{==}\StringTok{ }\NormalTok{id_list[i], growth }\OperatorTok{:}\ErrorTok{=}\StringTok{ }\KeywordTok{coef}\NormalTok{(fit)[}\DecValTok{2}\NormalTok{]]}
+\NormalTok{\}}
+\CommentTok{# View(fig1f_wide)}
+\CommentTok{# qplot(x = treatment, y = growth, data = fig1f_wide)}
+\CommentTok{# qplot(x = day, y = volume, color = treatment, data = fig1f) + geom_smooth(aes(group = id), method = "lm", se = FALSE)}
+\end{Highlighting}
+\end{Shaded}
+
+Step 3. \textbf{fit the model}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{m1 <-}\StringTok{ }\KeywordTok{lm}\NormalTok{(growth }\OperatorTok{~}\StringTok{ }\NormalTok{treatment, }\DataTypeTok{data =}\NormalTok{ fig1f_wide)}
+\end{Highlighting}
+\end{Shaded}
+
+Step 5. \textbf{inference from the model}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{m1_coef <-}\StringTok{ }\KeywordTok{summary}\NormalTok{(m1) }\OperatorTok{%>%}
+\StringTok{  }\NormalTok{coef}
+\NormalTok{m1_ci <-}\StringTok{ }\KeywordTok{confint}\NormalTok{(m1)}
+\NormalTok{(m1_coef_table <-}\StringTok{ }\KeywordTok{cbind}\NormalTok{(m1_coef, m1_ci))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##              Estimate Std. Error   t value     Pr(>|t|)     2.5 %
+## (Intercept)  52.63406   3.102096 16.967258 9.865155e-11  45.98072
+## treatmentMR -23.57616   4.387026 -5.374065 9.809457e-05 -32.98540
+##                97.5 %
+## (Intercept)  59.28739
+## treatmentMR -14.16693
+\end{verbatim}
+
+Step 6. \textbf{plot the model}
+
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/continuous-x-long-plot-1.pdf}
+
+\hypertarget{using-a-regression-model-for-for-calibration}{%
+\subsection{Using a regression model for for calibration}\label{using-a-regression-model-for-for-calibration}}
 
 \hypertarget{working-in-r-1}{%
 \section{Working in R}\label{working-in-r-1}}
@@ -6787,7 +6824,7 @@ Inference from model \eqref{eq:continuous-x-m1} assumes the data were sampled fr
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-147-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-139-1.pdf}
 
 Approximately normal residuals will track the solid line and stay largely within the boundaries marked by the dashed lines. The residuals from m1 fit to the green-down data track the solid line and remain within the dashed lines, indicating adequate model fit.
 
@@ -6801,7 +6838,7 @@ Inference from model \eqref{eq:continuous-x-m1} assumes homogeneity of the respo
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-148-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-140-1.pdf}
 
 \begin{verbatim}
 ## 
@@ -6809,6 +6846,244 @@ Inference from model \eqref{eq:continuous-x-m1} assumes homogeneity of the respo
 \end{verbatim}
 
 The dashed blue line shows linear trends while the magenta line shows non-linear trends. For the green-down data, the dashed line is very flat while the magenta-line shows what looks like random fluctations. Taken together, the two lines indicate adequate model fit.
+
+\hypertarget{hidden-code}{%
+\section{Hidden code}\label{hidden-code}}
+
+\hypertarget{import-and-plot-of-fig2c-ecosystem-warming-data}{%
+\subsection{Import and plot of fig2c (ecosystem warming) data}\label{import-and-plot-of-fig2c-ecosystem-warming-data}}
+
+Import
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{data_from <-}\StringTok{ "Ecosystem warming extends vegetation activity but heightens vulnerability to cold temperatures"}
+\NormalTok{file_name <-}\StringTok{ "41586_2018_399_MOESM3_ESM.xlsx"}
+\NormalTok{file_path <-}\StringTok{ }\KeywordTok{here}\NormalTok{(data_folder, data_from, file_name)}
+\NormalTok{fig2 <-}\StringTok{ }\KeywordTok{read_excel}\NormalTok{(file_path) }\OperatorTok{%>%}\StringTok{ }\CommentTok{# import}
+\StringTok{  }\KeywordTok{clean_names}\NormalTok{() }\OperatorTok{%>%}\StringTok{ }\CommentTok{# clean the column names}
+\StringTok{  }\KeywordTok{data.table}\NormalTok{() }\CommentTok{# convert to data.table}
+\CommentTok{# View(fig2)}
+
+\NormalTok{fig2c <-}\StringTok{ }\NormalTok{fig2[panel }\OperatorTok{==}\StringTok{ "2c"}\NormalTok{,]}
+\CommentTok{# View(fig2c)}
+\end{Highlighting}
+\end{Shaded}
+
+Creating the response plot (the bottom component)
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{m1_b <-}\StringTok{ }\KeywordTok{coef}\NormalTok{(m1)}
+\NormalTok{m1_ci <-}\StringTok{ }\KeywordTok{confint}\NormalTok{(m1)}
+\NormalTok{m1_b0_text <-}\StringTok{ }\KeywordTok{paste0}\NormalTok{(}\StringTok{"Intercept: "}\NormalTok{,}
+                  \KeywordTok{round}\NormalTok{(m1_b[}\DecValTok{1}\NormalTok{],}\DecValTok{1}\NormalTok{),}
+                  \StringTok{" ("}\NormalTok{,}
+                  \KeywordTok{round}\NormalTok{(m1_ci[}\DecValTok{1}\NormalTok{,}\DecValTok{1}\NormalTok{],}\DecValTok{1}\NormalTok{),}
+                  \StringTok{", "}\NormalTok{,}
+                  \KeywordTok{round}\NormalTok{(m1_ci[}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{],}\DecValTok{1}\NormalTok{),}
+                  \StringTok{") d"}\NormalTok{)}
+\NormalTok{m1_b1_text <-}\StringTok{ }\KeywordTok{paste0}\NormalTok{(}\StringTok{"Slope: "}\NormalTok{,}
+                  \KeywordTok{round}\NormalTok{(m1_b[}\DecValTok{2}\NormalTok{],}\DecValTok{2}\NormalTok{),}
+                  \StringTok{" ("}\NormalTok{,}
+                  \KeywordTok{round}\NormalTok{(m1_ci[}\DecValTok{2}\NormalTok{,}\DecValTok{1}\NormalTok{],}\DecValTok{2}\NormalTok{),}
+                  \StringTok{", "}\NormalTok{,}
+                  \KeywordTok{round}\NormalTok{(m1_ci[}\DecValTok{2}\NormalTok{,}\DecValTok{2}\NormalTok{],}\DecValTok{2}\NormalTok{),}
+                  \StringTok{") d per 1 °C"}\NormalTok{)}
+
+\CommentTok{# regression line}
+\NormalTok{m1_x <-}\StringTok{ }\KeywordTok{min}\NormalTok{(fig2c[, temperature])}
+\NormalTok{m1_xend <-}\StringTok{ }\KeywordTok{max}\NormalTok{(fig2c[, temperature])}
+\NormalTok{m1_y <-}\StringTok{ }\NormalTok{m1_b[}\DecValTok{1}\NormalTok{] }\OperatorTok{+}\StringTok{ }\NormalTok{m1_b[}\DecValTok{2}\NormalTok{]}\OperatorTok{*}\NormalTok{m1_x}
+\NormalTok{m1_yend <-}\StringTok{ }\NormalTok{m1_b[}\DecValTok{1}\NormalTok{] }\OperatorTok{+}\StringTok{ }\NormalTok{m1_b[}\DecValTok{2}\NormalTok{]}\OperatorTok{*}\NormalTok{m1_xend}
+
+\NormalTok{fig2c_gg_response <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ fig2c,}
+             \KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ temperature,}
+                \DataTypeTok{y =}\NormalTok{ transition_date)) }\OperatorTok{+}
+\StringTok{  }
+\StringTok{  }\CommentTok{# regression line first, to not block point}
+\StringTok{  }\KeywordTok{geom_segment}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ m1_x,}
+               \DataTypeTok{y =}\NormalTok{ m1_y,}
+               \DataTypeTok{xend =}\NormalTok{ m1_xend,}
+               \DataTypeTok{yend =}\NormalTok{ m1_yend) }\OperatorTok{+}
+\StringTok{  }\CommentTok{# create black edge to points}
+\StringTok{  }\CommentTok{# geom_point(size = 4,}
+\StringTok{  }\CommentTok{#            color = "black") +}
+\StringTok{  }\KeywordTok{geom_point}\NormalTok{(}\DataTypeTok{size =} \DecValTok{3}\NormalTok{,}
+             \DataTypeTok{color =}\NormalTok{ pal_okabe_ito[}\DecValTok{1}\NormalTok{]) }\OperatorTok{+}
+\StringTok{   }\KeywordTok{scale_x_continuous}\NormalTok{(}\DataTypeTok{breaks =} \KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\FloatTok{2.25}\NormalTok{, }\FloatTok{4.5}\NormalTok{, }\FloatTok{6.75}\NormalTok{, }\DecValTok{9}\NormalTok{)) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{xlab}\NormalTok{(}\StringTok{"Plot temperature (ΔT, °C)"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{ylab}\NormalTok{(}\StringTok{"Autumn green-down (DOY)"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{theme_pubr}\NormalTok{() }\OperatorTok{+}
+\StringTok{  }
+\StringTok{  }\OtherTok{NULL}
+
+\CommentTok{# fig2c_gg_response}
+\end{Highlighting}
+\end{Shaded}
+
+Creating the effects plot (the top component)
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{m1_coeff_dt <-}\StringTok{ }\KeywordTok{data.table}\NormalTok{(}\DataTypeTok{term =} \KeywordTok{row.names}\NormalTok{(m1_coeff),}
+                          \KeywordTok{data.table}\NormalTok{(m1_coeff))[}\DecValTok{2}\NormalTok{,] }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{clean_names}\NormalTok{()}
+\NormalTok{m1_coeff_dt[ , p_pretty }\OperatorTok{:}\ErrorTok{=}\StringTok{ }\KeywordTok{pvalString}\NormalTok{(pr_t)]}
+
+\NormalTok{min_bound <-}\StringTok{ }\KeywordTok{min}\NormalTok{(m1_coeff_dt[, x2_}\DecValTok{5}\NormalTok{_percent])}
+\NormalTok{max_bound <-}\StringTok{ }\KeywordTok{min}\NormalTok{(m1_coeff_dt[, x97_}\DecValTok{5}\NormalTok{_percent])}
+
+\NormalTok{y_lo <-}\StringTok{ }\KeywordTok{min}\NormalTok{(min_bound}\OperatorTok{+}\NormalTok{min_bound}\OperatorTok{*}\FloatTok{0.2}\NormalTok{,}
+            \OperatorTok{-}\NormalTok{max_bound)}
+\NormalTok{y_hi <-}\StringTok{ }\KeywordTok{max}\NormalTok{(max_bound }\OperatorTok{+}\StringTok{ }\NormalTok{max_bound}\OperatorTok{*}\FloatTok{0.2}\NormalTok{,}
+            \OperatorTok{-}\NormalTok{min_bound)}
+\NormalTok{y_lims <-}\StringTok{ }\KeywordTok{c}\NormalTok{(y_lo, y_hi)}
+
+\NormalTok{fig2c_gg_effect <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(}\DataTypeTok{data=}\NormalTok{m1_coeff_dt, }
+                          \KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ term,}
+                              \DataTypeTok{y =}\NormalTok{ estimate)) }\OperatorTok{+}
+\StringTok{  }\CommentTok{# confidence level of effect}
+\StringTok{  }\KeywordTok{geom_errorbar}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{ymin=}\NormalTok{x2_}\DecValTok{5}\NormalTok{_percent, }
+                    \DataTypeTok{ymax=}\NormalTok{x97_}\DecValTok{5}\NormalTok{_percent),}
+                \DataTypeTok{width=}\DecValTok{0}\NormalTok{, }
+                \DataTypeTok{color=}\StringTok{"black"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\CommentTok{# estimate of effect}
+\StringTok{  }\KeywordTok{geom_point}\NormalTok{(}\DataTypeTok{size =} \DecValTok{3}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }
+\StringTok{  }\CommentTok{# zero effect}
+\StringTok{  }\KeywordTok{geom_hline}\NormalTok{(}\DataTypeTok{yintercept=}\DecValTok{0}\NormalTok{, }\DataTypeTok{linetype =} \DecValTok{2}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }
+\StringTok{  }\CommentTok{# p-value}
+\StringTok{  }\KeywordTok{annotate}\NormalTok{(}\DataTypeTok{geom =} \StringTok{"text"}\NormalTok{,}
+           \DataTypeTok{label =}\NormalTok{ m1_coeff_dt}\OperatorTok{$}\NormalTok{p_pretty,}
+           \DataTypeTok{x =} \DecValTok{1}\NormalTok{,}
+           \DataTypeTok{y =} \FloatTok{7.5}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }
+\StringTok{  }\CommentTok{# aesthetics}
+\StringTok{  }\KeywordTok{scale_y_continuous}\NormalTok{(}\DataTypeTok{position=}\StringTok{"right"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_x_discrete}\NormalTok{(}\DataTypeTok{labels =} \StringTok{"Temperature}\CharTok{\textbackslash{}n}\StringTok{effect"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{ylab}\NormalTok{(}\StringTok{"Effects (day/°C)"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{coord_flip}\NormalTok{(}\DataTypeTok{ylim =}\NormalTok{ y_lims) }\OperatorTok{+}\StringTok{ }
+\StringTok{  }\KeywordTok{theme_pubr}\NormalTok{() }\OperatorTok{+}
+\StringTok{  }\KeywordTok{theme}\NormalTok{(}\DataTypeTok{axis.title.y =} \KeywordTok{element_blank}\NormalTok{()) }\OperatorTok{+}
+\StringTok{  }
+\StringTok{  }\OtherTok{NULL}
+
+\CommentTok{#fig2c_gg_effect}
+\end{Highlighting}
+\end{Shaded}
+
+Combining the response and effects plots into single plot
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{fig3d_fig <-}\StringTok{ }\KeywordTok{plot_grid}\NormalTok{(fig2c_gg_effect,}
+\NormalTok{                       fig2c_gg_response,}
+                       \DataTypeTok{nrow=}\DecValTok{2}\NormalTok{,}
+                       \DataTypeTok{align =} \StringTok{"v"}\NormalTok{,}
+                       \DataTypeTok{axis =} \StringTok{"lr"}\NormalTok{,}
+                       \DataTypeTok{rel_heights =} \KeywordTok{c}\NormalTok{(}\FloatTok{0.4}\NormalTok{,}\DecValTok{1}\NormalTok{))}
+\NormalTok{fig3d_fig}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{import-and-plot-of-fig1f-methionine-restriction-data}{%
+\subsection{Import and plot of fig1f (methionine restriction) data}\label{import-and-plot-of-fig1f-methionine-restriction-data}}
+
+Import
+
+Creating the response plot (the bottom component)
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{fig1f_gg_response <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ fig1f,}
+                      \KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ day, }\DataTypeTok{y =}\NormalTok{ volume, }\DataTypeTok{color =}\NormalTok{ treatment)) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_point}\NormalTok{() }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_smooth}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{group =}\NormalTok{ id), }\DataTypeTok{method =} \StringTok{"lm"}\NormalTok{, }\DataTypeTok{se =} \OtherTok{FALSE}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{xlab}\NormalTok{(}\StringTok{"Day"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{ylab}\NormalTok{(}\KeywordTok{expression}\NormalTok{(Tumor}\OperatorTok{~}\NormalTok{Volume}\OperatorTok{~}\NormalTok{(mm}\OperatorTok{^}\DecValTok{3}\NormalTok{))) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_color_manual}\NormalTok{(}\DataTypeTok{values=}\NormalTok{pal_nature_mod) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{theme_pubr}\NormalTok{() }\OperatorTok{+}
+\StringTok{  }\KeywordTok{theme}\NormalTok{(}
+    \DataTypeTok{legend.position =} \KeywordTok{c}\NormalTok{(.}\DecValTok{15}\NormalTok{, }\FloatTok{.98}\NormalTok{),}
+    \DataTypeTok{legend.justification =} \KeywordTok{c}\NormalTok{(}\StringTok{"right"}\NormalTok{, }\StringTok{"top"}\NormalTok{),}
+    \DataTypeTok{legend.box.just =} \StringTok{"right"}\NormalTok{,}
+    \DataTypeTok{legend.margin =} \KeywordTok{margin}\NormalTok{(}\DecValTok{6}\NormalTok{, }\DecValTok{6}\NormalTok{, }\DecValTok{6}\NormalTok{, }\DecValTok{6}\NormalTok{),}
+    \DataTypeTok{legend.title =} \KeywordTok{element_blank}\NormalTok{()}
+\NormalTok{    ) }\OperatorTok{+}
+
+\StringTok{  }\OtherTok{NULL}
+
+\CommentTok{# fig1f_gg_response}
+\end{Highlighting}
+\end{Shaded}
+
+Creating the effects plot (the top component)
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{m1_coeff_dt <-}\StringTok{ }\KeywordTok{data.table}\NormalTok{(}\DataTypeTok{term =} \KeywordTok{row.names}\NormalTok{(m1_coef_table),}
+                          \KeywordTok{data.table}\NormalTok{(m1_coef_table))[}\DecValTok{2}\NormalTok{,] }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{clean_names}\NormalTok{()}
+\NormalTok{m1_coeff_dt[ , p_pretty }\OperatorTok{:}\ErrorTok{=}\StringTok{ }\KeywordTok{pvalString}\NormalTok{(pr_t)]}
+
+\NormalTok{min_bound <-}\StringTok{ }\KeywordTok{min}\NormalTok{(m1_coeff_dt[, x2_}\DecValTok{5}\NormalTok{_percent])}
+\NormalTok{max_bound <-}\StringTok{ }\KeywordTok{min}\NormalTok{(m1_coeff_dt[, x97_}\DecValTok{5}\NormalTok{_percent])}
+
+\NormalTok{y_lo <-}\StringTok{ }\KeywordTok{min}\NormalTok{(min_bound}\OperatorTok{+}\NormalTok{min_bound}\OperatorTok{*}\FloatTok{0.2}\NormalTok{,}
+            \OperatorTok{-}\NormalTok{max_bound)}
+\NormalTok{y_hi <-}\StringTok{ }\KeywordTok{max}\NormalTok{(max_bound }\OperatorTok{+}\StringTok{ }\NormalTok{max_bound}\OperatorTok{*}\FloatTok{0.2}\NormalTok{,}
+            \OperatorTok{-}\NormalTok{min_bound)}
+\NormalTok{y_lims <-}\StringTok{ }\KeywordTok{c}\NormalTok{(y_lo, y_hi)}
+
+\NormalTok{fig1f_gg_effect <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(}\DataTypeTok{data=}\NormalTok{m1_coeff_dt, }
+                          \KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ term,}
+                              \DataTypeTok{y =}\NormalTok{ estimate)) }\OperatorTok{+}
+\StringTok{  }\CommentTok{# confidence level of effect}
+\StringTok{  }\KeywordTok{geom_errorbar}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{ymin=}\NormalTok{x2_}\DecValTok{5}\NormalTok{_percent, }
+                    \DataTypeTok{ymax=}\NormalTok{x97_}\DecValTok{5}\NormalTok{_percent),}
+                \DataTypeTok{width=}\DecValTok{0}\NormalTok{, }
+                \DataTypeTok{color=}\StringTok{"black"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\CommentTok{# estimate of effect}
+\StringTok{  }\KeywordTok{geom_point}\NormalTok{(}\DataTypeTok{size =} \DecValTok{3}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }
+\StringTok{  }\CommentTok{# zero effect}
+\StringTok{  }\KeywordTok{geom_hline}\NormalTok{(}\DataTypeTok{yintercept=}\DecValTok{0}\NormalTok{, }\DataTypeTok{linetype =} \DecValTok{2}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }
+\StringTok{  }\CommentTok{# p-value}
+\StringTok{  }\KeywordTok{annotate}\NormalTok{(}\DataTypeTok{geom =} \StringTok{"text"}\NormalTok{,}
+           \DataTypeTok{label =}\NormalTok{ m1_coeff_dt}\OperatorTok{$}\NormalTok{p_pretty,}
+           \DataTypeTok{x =} \DecValTok{1}\NormalTok{,}
+           \DataTypeTok{y =} \FloatTok{7.5}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }
+\StringTok{  }\CommentTok{# aesthetics}
+\StringTok{  }\KeywordTok{scale_y_continuous}\NormalTok{(}\DataTypeTok{position=}\StringTok{"right"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_x_discrete}\NormalTok{(}\DataTypeTok{labels =} \StringTok{"MR}\CharTok{\textbackslash{}n}\StringTok{effect"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{ylab}\NormalTok{(}\KeywordTok{expression}\NormalTok{(Growth}\OperatorTok{~}\NormalTok{(mm}\OperatorTok{^}\DecValTok{3}\OperatorTok{/}\NormalTok{day))) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{coord_flip}\NormalTok{(}\DataTypeTok{ylim =}\NormalTok{ y_lims) }\OperatorTok{+}\StringTok{ }
+\StringTok{  }\KeywordTok{theme_pubr}\NormalTok{() }\OperatorTok{+}
+\StringTok{  }\KeywordTok{theme}\NormalTok{(}\DataTypeTok{axis.title.y =} \KeywordTok{element_blank}\NormalTok{()) }\OperatorTok{+}
+\StringTok{  }
+\StringTok{  }\OtherTok{NULL}
+
+\CommentTok{#fig1f_gg_effect}
+\end{Highlighting}
+\end{Shaded}
+
+Combining the response and effects plots into single plot
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{fig1f_gg <-}\StringTok{ }\KeywordTok{plot_grid}\NormalTok{(fig1f_gg_effect,}
+\NormalTok{                      fig1f_gg_response,}
+                      \DataTypeTok{nrow=}\DecValTok{2}\NormalTok{,}
+                      \DataTypeTok{align =} \StringTok{"v"}\NormalTok{,}
+                      \DataTypeTok{axis =} \StringTok{"lr"}\NormalTok{,}
+                      \DataTypeTok{rel_heights =} \KeywordTok{c}\NormalTok{(}\FloatTok{0.4}\NormalTok{,}\DecValTok{1}\NormalTok{))}
+\NormalTok{fig1f_gg}
+\end{Highlighting}
+\end{Shaded}
 
 \hypertarget{a-linear-model-with-a-single-categorical-x}{%
 \chapter{\texorpdfstring{A linear model with a single, categorical \emph{X}}{A linear model with a single, categorical X}}\label{a-linear-model-with-a-single-categorical-x}}
@@ -6850,7 +7125,7 @@ The first step in any analysis is to open the data and, if necessary, wrangle in
 
 The second step is to explore the data to 1) check for biological implausible outliers that suggest measurement failure, or transcription error (from a notebook, not in a cell) and 2) assess reasonable distributions and models for analysis.
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-151-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-143-1.pdf}
 
 There are no obviously implausible data points. A normal distribution is a good, reasonable start. This can be checked more thoroughly after fitting the model.
 
@@ -6860,11 +7135,11 @@ There are no obviously implausible data points. A normal distribution is a good,
 \hypertarget{figure-3d-check-the-model}{%
 \paragraph{Figure 3d -- check the model}\label{figure-3d-check-the-model}}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-153-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-145-1.pdf}
 
 The Q-Q plot indicates the distribution of residuals is well within that expected for a normal sample and there is no cause for concern with inference.
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-154-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-146-1.pdf}
 
 \begin{verbatim}
 ## 
@@ -6912,7 +7187,7 @@ The spread-location plot shows no conspicuous trend in how the spread changes wi
 \hypertarget{figure-3d-plot-the-model}{%
 \paragraph{Figure 3d -- plot the model}\label{figure-3d-plot-the-model}}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-161-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-153-1.pdf}
 
 \hypertarget{figure-3d-report-the-model-results}{%
 \paragraph{Figure 3d -- report the model results}\label{figure-3d-report-the-model-results}}
@@ -7071,8 +7346,8 @@ tl;dr. What is a population? In the experimental biology examples in this text, 
 
 \begin{figure}
 \centering
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-164-1.pdf}
-\caption{\label{fig:unnamed-chunk-164}What the coefficients of a linear model with a single categorical X mean. The means of the two treatment levels for the serum TG data are shown with the filled circles. The intercept (\(b_0\)) is the mean of the reference treatment level. The coefficient \(b_1\) is the difference between the treatment level's mean and the reference mean. As with a linear model with a continuous X, the coefficients are effects.}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-156-1.pdf}
+\caption{\label{fig:unnamed-chunk-156}What the coefficients of a linear model with a single categorical X mean. The means of the two treatment levels for the serum TG data are shown with the filled circles. The intercept (\(b_0\)) is the mean of the reference treatment level. The coefficient \(b_1\) is the difference between the treatment level's mean and the reference mean. As with a linear model with a continuous X, the coefficients are effects.}
 \end{figure}
 
 Let's put this all together. \(b_0\) is the conditional mean of the reference level (``Vehicle'') and is an estimate of \(\beta_0\), the true, conditional mean of the population. \(b_1\) is the difference in the conditional means of the first non-reference level (``12,13-diHOME'') and the reference level (``Vehicle'') and is an estimate of \(\beta_1\), the true difference in the conditional means of the population with and without the treatment 12,13-diHOME.
@@ -7411,7 +7686,7 @@ Count data often have an excess of zeroes (for example a lake with no nests or a
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-168-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-160-1.pdf}
 
 \hypertarget{constrained-lower-and-upper-bounds}{%
 \subsubsection{Constrained lower and upper bounds}\label{constrained-lower-and-upper-bounds}}
@@ -7670,7 +7945,7 @@ If a researcher caries out many tests, and ranks the effects by magnitude or \em
 \caption{\label{fig:inflation-histogram}A histogram of the distribution of the 10,000 effects}
 \end{figure}
 
-\label{tab:unnamed-chunk-170}The top 10 genes ranked by p-value. Rank is the rank of the true effect, from large to small.
+\label{tab:unnamed-chunk-162}The top 10 genes ranked by p-value. Rank is the rank of the true effect, from large to small.
 
 effect
 
@@ -8470,7 +8745,7 @@ ldlc.r = \beta_0 + \beta_1 treatment + \varepsilon
 
 where \(ldlc.r\) is the set of residuals.
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-180-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-172-1.pdf}
 
 Now the estimate of the effect is -4.7 mg/dL blood and the SE is only 0.88. In this two-stage analysis (stage 1: fit ldlc \textasciitilde{} age to get residuals, stage 2: fit residuals \textasciitilde{} treatment), we have \emph{eliminated the effect of age} on the variance of the response and, as a consequence, the estimate of the effect of the drug is much more precise -- the effect of \(treatment\) has a smaller standard error.
 
@@ -8489,11 +8764,11 @@ ldlc = \beta_0 + \beta_1 age + \beta_2 treatment + \varepsilon
 
 which results in the Harrell Plot
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-181-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-173-1.pdf}
 
 and the coefficient table
 
-\label{tab:unnamed-chunk-182}Coefficients of the model that includes the covariate age.
+\label{tab:unnamed-chunk-174}Coefficients of the model that includes the covariate age.
 
 Estimate
 
@@ -9670,7 +9945,7 @@ These can be combined into a single table using \texttt{rbind}
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-192-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-184-1.pdf}
 
 \hypertarget{plots-that-communicate-the-factorial-design}{%
 \subsubsection{Plots that communicate the factorial design}\label{plots-that-communicate-the-factorial-design}}
@@ -9817,7 +10092,7 @@ An interaction plot is an okay plot. It doesn't show the data, only a minimal, d
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-193-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-185-1.pdf}
 
 This effects plot shows the four simple effects, the single interaction (Temp18:CO21100), and their 95\% confidence intervals. In the original paper, the researchers were testing a scientific (not statistical!) model that predicted no interaction between CO2 and Temp, and the researchers argued that these data supported this model because of the ``not statistically significant'' \emph{p}-value for the interaction effect. The data are consistent with this model (one end of the 95\% CI for the interaction includes zero) but also support a model of a large, negative interaction (the other end of the 95\% CI includes large negative values). The data are too course (or the signal:noise ratio is to small) to have much confidence in the size of the interaction effect.
 
@@ -9834,7 +10109,7 @@ This effects plot shows the four simple effects, the single interaction (Temp18:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-194-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-186-1.pdf}
 
 The effects and interaction plot are combined into a single plot.
 
@@ -12499,7 +12774,7 @@ A plot of the dispersion statistic can be generated using the object returned by
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-216-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-208-1.pdf}
 
 \begin{verbatim}
 ## 
