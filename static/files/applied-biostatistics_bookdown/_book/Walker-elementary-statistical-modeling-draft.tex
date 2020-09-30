@@ -2081,350 +2081,6 @@ Mean TG level in ASK1Δadipo mice on a high-fat diet was 21.6 µmol/g less than 
 \hypertarget{figure-2j}{%
 \section{Figure 2j}\label{figure-2j}}
 
-\hypertarget{an-introduction-to-linear-models}{%
-\chapter{An introduction to linear models}\label{an-introduction-to-linear-models}}
-
-Chapter \ref{analyzing-experimental-data-with-a-linear-model} (\protect\hyperlink{analyzing-experimental-data-with-a-linear-model}{Analyzing experimental data with a linear model}) is an introduction to how to use a linear model to estimate treatment effects, with only a few explanations of what a linear model \emph{is}. This chapter introduces the linear model more generally and expands on different goals of linear modeling, including description and prediction, in addition to explanation (the estimate of treatment effects, or causal effects more generally).
-
-All students are familiar with the idea of a linear model from learning the equation of a line, which is
-
-\begin{equation}
-Y = mX + b
-\label{eq:line}
-\end{equation}
-
-where \(m\) is the slope of the line and \(b\) is the \(Y\)-intercept. It is useful to think of equation \eqref{eq:line} as a function that maps values of \(X\) to values of \(Y\). Using this function, if we input some value of \(X\), we always get the same value of Y as the output.
-
-A linear model is a function, like that in equation \eqref{eq:line}, that is fit to a set of data, often to model a process that generated the data or something like the data. The line in Figure \ref{fig:line}A is just that, a line, but the line in Figure \ref{fig:line}B is a linear model fit to the data in Figure \ref{fig:line}B.
-
-\begin{figure}
-\centering
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/line-1.pdf}
-\caption{\label{fig:line}A line vs.~a linear model. (A) the line \(y=-3.48X + 105.7\) is drawn. (B) A linear model fit to the data. The model coefficients are numerically equal to the slope and intercept of the line in A.}
-\end{figure}
-
-\hypertarget{two-specifications-of-a-linear-model}{%
-\section{Two specifications of a linear model}\label{two-specifications-of-a-linear-model}}
-
-\hypertarget{the-error-draw-specification}{%
-\subsection{The ``error draw'' specification}\label{the-error-draw-specification}}
-
-A linear model is commonly specified using an ``measurement error model''.
-
-\begin{align}
-Y &= \beta_0 + \beta_1 X + \varepsilon\\
-\varepsilon &\sim N(0, \sigma^2)
-\label{eq:error-spec}
-\end{align}
-
-The first line of this specification has two components: the \textbf{linear predictor} \(Y = \beta_0 + \beta_1 X\) and the \textbf{error} \(\varepsilon\). The linear predictor component looks like the equation for a line except that 1) \(\beta_0\) is used for the intercept and \(\beta_1\) for the slope and 2) the intercept term precedes the slope term. This re-labeling and re-arrangement make the notation for a linear model more flexible for more complicated linear models. For example \(Y = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \varepsilon\) is a model where \(Y\) is a function of two \(X\) variables.
-
-The linear predictor is deterministic or \textbf{systematic}. As with the equation for a line, the linear predictor component of a linear model is a function that maps a specific value of \(X\) to a value of \(Y\). This mapped value is the \textbf{expected value}, or expectation, given a specific input value of \(X\). This is often written as \(\mathrm{E}[Y|X]\), which is read as ``the expected value of \(Y\) given \(X\)'', where ``given X'' means a specific value of X. This text will often use the word \textbf{conditional} in place of ``given''. For example, I would read \(\mathrm{E}[Y|X]\) as ``the expected value of \(Y\) conditional on \(X\)''. It is important to recognize that \(\mathrm{E}[Y|X]\) is a \textbf{conditional mean} -- it is the mean value of \(Y\) when we observe that \(X\) has some specific value \(x\) (that is \(X = x\)).
-
-The second line of the specification \eqref{eq:error-spec} is read as ``epsilon is distributed as Normal with mean zero and variance sigma squared''. This line explicitly specifies the distribution of the error component of line 1. The error component of a linear model is a random ``draw'' from a normal distribution with mean zero and variance \(\sigma^2\). The second line shows that the error component of the first line is \textbf{stochastic}. Using the error-model specification, we can think of any measurement of \(Y\) as an expected value plus some random value sampled from a normal distribution with a specified variance. Because the stochastic part of this specification draws an ``error'' from a population, I refer to this as the \textbf{error-draw} specification of the linear model.
-
-\hypertarget{the-conditional-draw-specification}{%
-\subsection{The ``conditional draw'' specification}\label{the-conditional-draw-specification}}
-
-A second way of specifying a linear model is using a ``sampling model''.
-
-\begin{align}
-y_i &\sim N(\mu_i, \sigma^2)\\
-\mathrm{E}(Y|X) &= \mu\\
-\mu_i &= \beta_0 + \beta_1 x_i
-\label{eq:draw-spec}
-\end{align}
-
-The first line states that the response variable \(Y\) is a random variable independently drawn from a normal distribution with mean \(\mu\) and variance \(\sigma^2\). This first line is the \textbf{stochastic} part of the statistical model. The second line simply states that \(\mu\) (the greek letter ``mu'') from the first line is the conditional mean (or expectation). The third line states how \(\mu_i\) is generated given that \(X=x_i\). This is the linear predictor, which is the \textbf{systematic} (or deterministic) part of the statistical model. It is systematic because the same value of \(x_i\) will always generate the same \(\mu_i\). Using the sampling-draw specification, we can think of any measurement of \(Y\) as a random drom from a specified distribution. Because it is \(Y\) and not some ``error'' that is drawn from a specified distribution, I refer to this as the \textbf{conditional-draw} specification of the linear model.
-
-\hypertarget{comparing-the-two-ways-of-specifying-the-linear-model}{%
-\subsection{Comparing the two ways of specifying the linear model}\label{comparing-the-two-ways-of-specifying-the-linear-model}}
-
-These two ways of specifying the model encourage slightly different ways of thinking about how the data (the response varible \(Y\)) were generated. The error-draw specification ``generates'' data by 1) constructing what \(y_i\) ``should be'' given \(x_i\) (this is the conditional expection), then 2) adding some error \(e_i\) drawn from a normal distribution with mean zero and some specified variance. The conditional-draw specification ``generates'' data by 1) constructing what \(y_i\) ``should be'' given \(x_i\), then 2) drawing a random variable from some specified distribution \emph{whose mean is this expectation}. This random draw is not ``error'' but the measured value \(y_i\). For the error draw generation, we need only one hat of random numbers, but for the conditional draw generation, we need a hat for each value of \(x_i\).
-
-Here is a short script that generates data by implementing both the error-draw and conditional-draw specifications. See if you can follow the logic of the code and match it to the meaning of these two ways of specifying a linear model.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{n <-}\StringTok{ }\DecValTok{5}
-\NormalTok{b_}\DecValTok{0}\NormalTok{ <-}\StringTok{ }\FloatTok{10.0}
-\NormalTok{b_}\DecValTok{1}\NormalTok{ <-}\StringTok{ }\FloatTok{1.2}
-\NormalTok{sigma <-}\StringTok{ }\FloatTok{0.4}
-\NormalTok{x <-}\StringTok{ }\DecValTok{1}\OperatorTok{:}\NormalTok{n}
-\NormalTok{y_expected <-}\StringTok{ }\NormalTok{b_}\DecValTok{0} \OperatorTok{+}\StringTok{ }\NormalTok{b_}\DecValTok{1}\OperatorTok{*}\NormalTok{x}
-
-\CommentTok{# error-draw. Note that the n draws are all from the same distribution}
-\KeywordTok{set.seed}\NormalTok{(}\DecValTok{1}\NormalTok{)}
-\NormalTok{y_error_draw <-}\StringTok{ }\NormalTok{y_expected }\OperatorTok{+}\StringTok{ }\KeywordTok{rnorm}\NormalTok{(n, }\DataTypeTok{mean =} \DecValTok{0}\NormalTok{, }\DataTypeTok{sd =}\NormalTok{ sigma)}
-
-\CommentTok{# conditional-draw. Note that the n draws are each from a different}
-\CommentTok{# distribution because each has a different mean.}
-\KeywordTok{set.seed}\NormalTok{(}\DecValTok{1}\NormalTok{)}
-\NormalTok{y_conditional_draw <-}\StringTok{ }\KeywordTok{rnorm}\NormalTok{(n, }\DataTypeTok{mean =}\NormalTok{ y_expected, }\DataTypeTok{sd =}\NormalTok{ sigma)}
-
-\KeywordTok{data.table}\NormalTok{(}\DataTypeTok{X =}\NormalTok{ x,}
-           \StringTok{"Y (error draw)"}\NormalTok{ =}\StringTok{ }\NormalTok{y_error_draw,}
-           \StringTok{"Y (conditional draw)"}\NormalTok{ =}\StringTok{ }\NormalTok{y_conditional_draw)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-##    X Y (error draw) Y (conditional draw)
-## 1: 1       10.94942             10.94942
-## 2: 2       12.47346             12.47346
-## 3: 3       13.26575             13.26575
-## 4: 4       15.43811             15.43811
-## 5: 5       16.13180             16.13180
-\end{verbatim}
-
-The error-draw specification is not very useful for thinking about data generation for data analyzed by generalized linear models, which are models that allow one to specify distribution families other than Normal (such as the binomial, Poisson, and Gamma families). In fact, thinking about a model as a predictor plus error can lead to the misconception that in a generalized linear model, the error (or residuals from the fit) has a distribution from the non-Normal distribution modeled. This cannot be true because the distributions modeled using generalized linear models (other than the Normal) do not have negative values (some residuals must have negative values since the mean of the residuals is zero). Introductory biostatistics textbooks typically only introduce the error-draw specification because introductory textbooks recommend data transformation or non-parametric tests if the data are not approximately normal. This is unfortunate because generalized linear models are extremely useful for real biological data.
-
-Although a linear model (or statistical model more generally) is a model of a data-generating process, linear models are not typically used to actually generate any data. Instead, when we use a linear model to understand something about a real dataset, we think of our data as one realization of a process that generates data like ours. A linear model is a model of that process. That said, it is incredibly useful to use linear models to create fake datasets for at least two reasons: to probe our understanding of statistical modeling generally and, more specifically, to check that a model actually creates data like that in the real dataset that we are analyzing.
-
-\hypertarget{a-linear-model-can-be-fit-to-data-with-continuous-discrete-or-categorical-x-variables}{%
-\section{\texorpdfstring{A linear model can be fit to data with continuous, discrete, or categorical \(X\) variables}{A linear model can be fit to data with continuous, discrete, or categorical X variables}}\label{a-linear-model-can-be-fit-to-data-with-continuous-discrete-or-categorical-x-variables}}
-
-In the linear model fit to the data in Figure \ref{fig:line}B, the \(X\) variable is \textbf{continuous}, which can take any real number between the minimum \(X\) and maximum \(X\) in the data. For biological data, most variables that are continuous are positive, real numbers (a zero is not physically possible but could be recorded in the data if the true value is less than the minimum measurable amount). One exception is a \textbf{composition} (the fraction of a total), which can be zero. Negative values can occur with variables in which negative represent a direction (work, electrical potential) or a rate. \textbf{Discrete} variables are numeric but limited to certain real numbers. Most biological variables that are discrete are counts, and can be zero, but not negative. \textbf{Categorical variables} are non-numeric descriptions of a measure. Many of the categorical variables in this text will be the experimentally controlled treatment variable of interest (the variable \(treatment\) containing the values ``wild type'' and ``knockout'') but some are measured covariates (the variable \(sex\) containing the values ``female'' and ``male'').
-
-\hypertarget{fitting-linear-models-to-experimental-data-in-which-the-x-variable-is-continuous-or-discrete}{%
-\subsection{\texorpdfstring{Fitting linear models to experimental data in which the \(X\) variable is continuous or discrete}{Fitting linear models to experimental data in which the X variable is continuous or discrete}}\label{fitting-linear-models-to-experimental-data-in-which-the-x-variable-is-continuous-or-discrete}}
-
-A linear model fit to data with a numeric (continous or discrete) \(X\) is classical \textbf{regression} and the result is typically communicated by a regression line. The experiment introduced in Chapter \ref{linear-models-with-a-single-continuous-x} \protect\hyperlink{linear-models-with-a-single-continuous-x}{Linear models with a single, continuous \emph{X}} is a good example. In this experiment, the researchers designed an experiment to measure the effect of warming on the timing of photosynthetic activity. Temperature was experimentally controlled at one of five settings (0, 2.25, 4.5, 6.75, or 9 °C above ambient temperature) within twelve, large enclosures. The response variable in the illustrated example is Autumn ``green-down'', which is the day of year (DOY) of the transition to loss of photosynthesis. The intercept and slope parameters of the regression line (Figure \ref{fig:intro-linear-models-cont-slope}) are the coefficients of the linear model. The slope (4.98 days per 1 °C added warmth) estimates the \textbf{effect} of warming on green-down DOY. What is not often appreciated at the introductory biostatistics level is that \textbf{the slope is a difference in conditional means}. Any point on a regression line is the expected value of \(Y\) at a specified value of \(X\), that is, the conditional mean \(\mathrm{E}(Y|X)\). \textbf{The slope is the difference in expected values for a pair of points that differ in \(X\) by one unit}.
-
-\begin{equation}
-b_1 = \mathrm{E}(Y|X=x+1) - \mathrm{E}(Y|X=x+1)
-\end{equation}
-
-I show this in Figure \ref{fig:intro-linear-models-cont-slope} using the points on the regression line at \(x = 5\) and \(x = 6\). Thinking about a regression coefficient as a difference in conditional means is especially useful for understanding the coefficients of a categorical \(X\) variable, as described below.
-
-\begin{figure}
-\centering
-\includegraphics{/Users/jwalker/Documents/Github projects/Bookdown projects/applied-biostats/output/fig_2c_explainer.png}
-\caption{\label{fig:intro-linear-models-cont-slope}Illustration of the slope in a linear model with a numeric X. The slope (the coefficient of X) is the difference in expected value for any two X that are one unit apart. This is illustrated for the points on the line at x = 5 and x = 6.}
-\end{figure}
-
-\hypertarget{fitting-linear-models-to-experimental-data-in-which-the-x-variable-is-categorical}{%
-\subsection{\texorpdfstring{Fitting linear models to experimental data in which the \(X\) variable is categorical}{Fitting linear models to experimental data in which the X variable is categorical}}\label{fitting-linear-models-to-experimental-data-in-which-the-x-variable-is-categorical}}
-
-Linear models can be fit to experimental data in which the \(X\) variable is categorical -- this is the focus of this text! For the model fit to the data in Figure \ref{fig:line}B, the coefficient of \(X\) is the slope of the line. Perhaps surprisingly, 1) we can fit a model like equation \eqref{eq:error-spec} to data in which the \(X\) variable is categorical and 2) the coefficient of \(X\) \emph{is} a slope. How is this possible? The slope of a line is \(\frac{y_2 - y_1}{x_2 - x_1}\) where \((x_1, y_1)\) and \((x_2, y_2)\) are the graph coordinates of any two points on the line. What is the denominator of the slope function \((x_2 - x_1)\) when \(X\) is categorical?
-
-The solution to using a linear model with categorical \(X\) is to recode the factor levels into numbers. An example of this was outlined in Chapter \ref{analyzing-experimental-data-with-a-linear-model} (\protect\hyperlink{analyzing-experimental-data-with-a-linear-model}{Analyzing experimental data with a linear model}). The value of \(X\) for individual mouse \emph{i} is a number that indicates the treatment assignment -- a value of 0 is given to mice with a functional ASK1 gene and a value of 1 is given to mice with a knocked out gene. The regression line goes through the two group means (Figure \ref{fig:intro-linear-models-cat-slope}). With the (0, 1) coding, \(\overline{x}_{ASK1Δadipo} - \overline{x}_{ASK1F/F} = 1\), so the denominator of the slope is equal to one and the slope is simply equal to the numerator \(\overline{y}_{ASK1Δadipo} - \overline{y}_{ASK1F/F}\). The coefficient (which is a slope!) \emph{is} the difference in conditional means.
-
-\begin{figure}
-\centering
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/intro-linear-models-cat-slope-1.pdf}
-\caption{\label{fig:intro-linear-models-cat-slope}Illustration of the slope in a linear model with categorical X. The slope (the coefficient of X) is the difference in conditional means.}
-\end{figure}
-
-\hypertarget{statistical-models-are-used-for-prediction-explanation-and-description}{%
-\section{Statistical models are used for prediction, explanation, and description}\label{statistical-models-are-used-for-prediction-explanation-and-description}}
-
-Researchers typically use statistical models to understand relationships between one or more \(Y\) variables and one or more \(X\) variables. These relationships include
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\item
-  Descriptive modeling. Sometimes a researcher merely wants to describe the relationship between \(Y\) and a set of \(X\) variables, perhaps to discover patterns. For example, the arrival of a spring migrant bird (\(Y\)) as a function of sex (\(X_1\)) and age (\(X_2\)) might show that males and younger individuals arrive earlier. Importantly, if another \(X\) variable is added to the model (or one dropped), the coefficients, and therefore, the precise description, will change. That is, the interpretation of a coefficient as a descriptor is \emph{conditional} on the other covariates (\(X\) variables) in the model. In a descriptive model, there is no implication of causal effects and the goal is not prediction. Nevertheless, it is very hard for humans to discuss a descriptive model without using causal language, which probably means that it is hard for us to think of these models as \emph{mere description}. Like natural history, descriptive models are useful as patterns in want of an explanation, using more explicit causal models including experiments.
-\item
-  Predictive modeling. Predictive modeling is very common in applied research. For example, fisheries researchers might model the relationship between population density and habitat variables to predict which subset of ponds in a region are most suitable for brook trout (\emph{Salvelinus fontinalis}) reintroduction. The goal is to build a model with minimal prediction error, which is the error between predicted and actual values for a future sample. In predictive modeling, the \(X\) (``predictor'') variables are largely instrumental -- how these are related to \(Y\) is not a goal of the modeling, although sometimes an investigator may be interested in the relative importance among the \(X\) for predicting \(Y\) (for example, collecting the data may be time consuming, or expensive, or enviromentally destructive, so know which subset of \(X\) are most important for predicting \(Y\) is a useful strategy).
-\item
-  Explanatory (causal) modeling. Very often, researchers are explicitly interested in \emph{how} the \(X\) variables are causally related to \(Y\). The fisheries researchers that want to reintroduce trout may want to develop and manage a set of ponds to maintain healthy trout populations. This active management requires intervention to change habitat traits in a direction, and with a magnitude, to cause the desired response. This model is predictive -- a specific change in \(X\) predicts a specific response in \(Y\) -- because the coefficients of the model provide knowledge on how the system functions -- how changes in the inputs \emph{cause} change in the output. Causal interpretation of model coefficients requires a set of strong assumptions about the \(X\) variables in the model. These assumptions are typically met in \textbf{experimental designs} but not \textbf{observational designs}.
-\end{enumerate}
-
-With observational designs, biologists are often not very explicit about which of these is the goal of the modeling and use a combination of descriptive, predictive, and causal language to describe and discuss results. Many papers read as if the researchers intend explanatory inference but because of norms within the biology community, mask this intention with ``predictive'' language. Here, I advocate embracing explicit, explanatory modeling by being very transparent about the model's goal and assumptions.
-
-\hypertarget{what-do-we-call-the-x-and-y-variables}{%
-\section{\texorpdfstring{What do we call the \(X\) and \(Y\) variables?}{What do we call the X and Y variables?}}\label{what-do-we-call-the-x-and-y-variables}}
-
-The inputs to a linear model (the \(X\) variables) have many names. In this text, the \(X\) variables are typically
-
-\begin{itemize}
-\tightlist
-\item
-  \textbf{treatment variables} -- this term makes sense only for categorical variables and is often used for variables that are a \textbf{factor} containing the treatment assignment (for example ``control'' and ``knockout'')
-\item
-  \textbf{factor variables} (or simply, \textbf{factors}) -- again, this term makes sense only for categorical variables
-\item
-  \textbf{covariates} -- this term is usually used for the non-focal \(X\) variables in a statistical model.
-\end{itemize}
-
-A linear model is a regression model and in regression modeling, the \(X\) variables are typically called
-
-\begin{itemize}
-\tightlist
-\item
-  \textbf{independent variables} (often shortened to IV) -- ``independent'' in the sense that in a statistical model at least, the \(X\) are not a function of \(Y\).
-\item
-  \textbf{predictor variables} (or simply, ``predictors'') -- this makes the most sense in prediction models.
-\item
-  \textbf{explanatory variables} -- this term is usually applied in observational designs and is best used if the explicit goal is causal modeling.
-\end{itemize}
-
-In this text, the output of a linear model (the \(Y\) variable or variables if the model is multivariate) will most often be calle either of
-
-\begin{itemize}
-\tightlist
-\item
-  \textbf{response variable} (or simply, ``response'')
-\item
-  \textbf{outcome variable} (or simply, ``outcome'')
-\end{itemize}
-
-These terms have a causal connotation in everyday english. These terms are often used in regression modeling with observational data, even if the model is not explicitly causal. On other term, common in introductory textbooks, is
-
-\begin{itemize}
-\tightlist
-\item
-  \textbf{dependent variable} -- ``dependent'' in the sense that in a statistical model at least, the \(Y\) is a function of the \(X\).
-\end{itemize}
-
-\hypertarget{modeling-strategy}{%
-\section{Modeling strategy}\label{modeling-strategy}}
-
-A ``best practice'' sequence of steps used throughout this text to analyze experimental data is
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\tightlist
-\item
-  \textbf{exploratory plots} to
-\end{enumerate}
-
-\begin{itemize}
-\tightlist
-\item
-  examine individual points and identify outliers that are likely due to data transcription errors or measurement blunders (not simply odd, but biologically plausible measures).
-\item
-  provide useful information for initial model filtering (narrowing the list of potential models that are relevant to the question and data). Statistical modeling includes a diverse array of models, yet almost all methods used by researchers in biology, and all models in this book, are generalizations of the linear model specified in \eqref{eq:draw-spec}. For some experiments, there may be multiple models that are relevant to the question and data. Model checking (step 3) can help decide which model to ultimately use.
-\end{itemize}
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\setcounter{enumi}{1}
-\tightlist
-\item
-  \textbf{fit the model}, in order to estimate the model parameters and the uncertainty in these estimates.
-\item
-  \textbf{check the model}, which means to use a series of diagnostic plots and computations of model output to check that the fit model reasonably approximates the data. If the diagnostic plots suggest a poor approximation, then choose a different model and go back to step 2.
-\item
-  \textbf{inference from the model}, which means to use the fit parameters to learn, with uncertainty, about the system, or to predict future observations, with uncertainty.
-\item
-  \textbf{plot the model}, which means to plot the data, which may be adjusted, and the estimated parameters (or other results dervived from the estimates) with their uncertainty.
-\end{enumerate}
-
-Note that step 1 (exploratory plots) is \emph{not} data mining, or exploring the data for patterns to test.
-
-\hypertarget{predictions-from-the-model}{%
-\section{Predictions from the model}\label{predictions-from-the-model}}
-
-For the linear model specified in Model \eqref{eq:error-spec}, the fit model is
-
-\begin{equation}
-y_i = b_0 + b_1 x_i + e_i
-\label{eq:y-i}
-\end{equation}
-
-where \(b_0\) and \(b_1\) are the coefficients of the fit model and the \(e_i\) are the residuals of the fit model. We can use the coefficients and residuals to recover the \(y_i\), although this would rarely be done. More commonly, we could use the coefficients to calculate conditional means (the mean conditional on a specified value of \(X\)).
-
-\begin{equation}
-\hat{y}_i = b_0 + b_1 x_i
-\label{eq:yhat}
-\end{equation}
-
-The conditional means are typically called \textbf{fitted values}, if the \(X\) are the \(X\) used to fit the model, or \textbf{predicted values}, if the \(X\) are new. ``Predicted values'' is often shortened to ``the prediction''.
-
-\hypertarget{inference-from-the-model}{%
-\section{Inference from the model}\label{inference-from-the-model}}
-
-If our goal is inference, we want to use the fit parameters to learn, with uncertainty, about the system. Using equation \eqref{eq:y-i}, the coefficients \(b_0\) and \(b_1\) are \textbf{point estimates} of the true, generating parameters \(\beta_0\) and \(\beta_1\), the \(e_i\) are estimates of \(\varepsilon_i\) (the true, biological ``noise''), and \(\frac{\sum{e_i^2}}{N-2}\) is an estimate of the true, population variance \(\sigma^2\) (this will be covered more in chapter xxx but you may recognize that \(\frac{\sum{e_i^2}}{N-2}\) is the formula for a variance). And, using equation \eqref{eq:yhat}, \(\hat{y}_i\) is the point estimate of the parameter \(\mu_i\) (the true mean conditional on \(X=x_i\)). Throughout this text, Greek letters refer to a theoretical parameter and Roman letters refer to point estimates.
-
-Our uncertainty in the estimates of the parameters due to sampling is the standard error of the estimate. It is routine to report standard errors of means and coefficients of the model. While a standard error of the estimate of \(\sigma\) is available, this is effectively never reported, at least in the experimental biology literature, presumably because the variance is thought of as a nuisance parameter (noise) and not something worthy of study. This is a pity. Certainly treatments can effect the variance in addition to the mean.
-
-Throughout this text, I recommend reporting and interpreting \textbf{interval estimates} of the point estimate. A \textbf{confidence interval} is a type of interval estimate. A confidence interval of a parameter is a measure of the uncertainty in the estimate. A 95\% confidence interval has a 95\% probability (in the sense of long-run frequency) of containing the parameter. This probability is a property of the population of intervals that could be computed using the same sampling and measuring procedure. It is not correct, without further assumptions, to state that there is a 95\% probability that the parameter lies within the interval. Perhaps a more useful interpretation is that the interval is a \textbf{compatability interval} in that it contains the range of estimates that are compatible with the data, in the sense that a \(t\)-test would not reject the null hypothesis of a difference between the estimate and any value within the interval (this interpretation does not imply anything about the true value).
-
-\hypertarget{assumptions-for-inference-with-a-statistical-model}{%
-\section{Assumptions for inference with a statistical model}\label{assumptions-for-inference-with-a-statistical-model}}
-
-\textbf{Inference} refers to using the fit model to generalize from the sample to the mechanism generating a ``population''. \textbf{Parametric} inference assumes that the response is drawn from some probability distribution (Normal, or Poisson, or Bernouli, etc.). Throughout this text, I emphasize reporting and interpreting point estimates and confidence intervals. Another kind of inference is a \textbf{significance test}, which is the computation of the probability of ``seeing the data'' or something more extreme than the data, given a specified null hypothesis. A significance test results in a \textbf{p-value}, which can be reported with the point estimate and confidence interval. Somewhat related to a significance test is a hypothesis test, or a \textbf{Null-Hypothesis Signficance Test} (NHST), in which the \(p\)-value from a significance test is compared to a pre-specified error rate called \(\alpha\). Hypothesis testing was developed as a formal means of decision making but this is rarely the use of NHST in experimental biology. For almost all applications of \emph{p}-values that I see in the literature that I read in ecology, evolution, physiology, and wet-bench biology, comparing a \(p\)-value to \(\alpha\) adds no value to the communication of the results.
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\tightlist
-\item
-  The data were generated by a process that is ``linear in the parameters'', which means that the different components of the model are added together. This additive part of the model containing the parameters is the linear predictor in specifications \eqref{eq:error-spec} and \eqref{eq:draw-spec} above. For example, a cubic polynomial model
-\end{enumerate}
-
-\begin{equation}
-\mathrm{E}(Y|X) = \beta_0 + \beta_1 X + \beta_2 X^2 + \beta_3 X^3
-\end{equation}
-
-is a linear model, even though the function is non-linear, because the different components are added. Because a linear predictor is additive, it can be compactly defined using matrix algebra
-
-\begin{equation}
-\mathrm{E}(Y|X) = \mathbf{X}\boldsymbol{\beta}
-\end{equation}
-
-where \(mathbf{X}\) is the \textbf{model matrix} and \(\boldsymbol{\beta}\) is the vector of parameters. We discuss these more in chapter xxx.
-
-A \textbf{Generalized Linear Model} (GLM) has the form \(g(\mu_i) = \eta_i\) where \(\eta\) (the Greek letter ``eta'') is the linear predictor
-
-\begin{equation}
-\eta = \mathbf{X}\boldsymbol{\beta} 
-\end{equation}
-
-GLMs are extensions of linear models. There are non-linear models that are not linear in the parameters, that is, the predictor is not a simple dot product of the model matrix and a vector of parameters. For example, the Michaelis-Menten model is a non-linear model
-
-\begin{equation}
-\mathrm{E}(Y|X)  = \frac{\beta_1 X}{\beta_2 + X}
-\end{equation}
-
-that is non-linear in the parameters because the parts are not added together. This text covers linear models and generalized linear models, but not non-linear models that are also non-linear in the parameters.
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\setcounter{enumi}{1}
-\tightlist
-\item
-  The draws from the probability distribution are \textbf{independent}. Independence implies \textbf{uncorrelated} \(Y\) conditional on the \(X\), that is, for any two \(Y\) with the same value of \(X\), we cannot predict the value of one given the value of the other. For example, in the ASK1 data above, ``uncorrelated'' implies that we cannot predict the glucose level of one mouse within a specific treatment combination given the glucose level of another mouse in that combination. For linear models, this assumption is often stated as ``independent errors'' (the \(\varepsilon\) in model \eqref{eq:error-spec}) instead of independent observations.
-\end{enumerate}
-
-There are lots of reasons that conditional responses might be correlated. In the mouse example, correlation within treatment group could arise if subsets of mice in a treatment group are siblings or are housed in the same cage. More generally, if there are measures both within and among experimental units (field sites or humans or rats) then we'd expect the measures within the same unit to err from the model in the same direction. Multiple measures within experimental units (a site or individual) creates ``clustered'' observations. Lack of independence or clustered observations can be modeled using models with \textbf{random effects}. These models go by many names including linear mixed models (common in Ecology), hierarchical models, multilevel models, and random effects models. A linear mixed model is a variation of model \eqref{eq:error-spec}. This text introduces linear mixed models in chapter xxx.
-
-Measures that are taken from sites that are closer together or measures taken closer in time or measures from more closely related biological species will tend to have more similar values than measures taken from sites that are further apart or from times that are further apart or from species that are less closely related. Space and time and phylogeny create \textbf{spatial and temporal and phylogenetic autocorrelation}. Correlated error due to space or time or phylogeny can be modeled with \textbf{Generalized Least Squares} (GLS) models. A GLS model is a variation of model \eqref{eq:error-spec}.
-
-\hypertarget{specific-assumptions-for-inference-with-a-linear-model}{%
-\section{Specific assumptions for inference with a linear model}\label{specific-assumptions-for-inference-with-a-linear-model}}
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\tightlist
-\item
-  \textbf{Constant variance} or \textbf{homoskedasticity}. The most common way of thinking about this is the error term \(\varepsilon\) has constant variance, which is a short way of saying that random draws of \(\varepsilon\) in model \eqref{eq:error-spec} are all from the same (or \textbf{identical}) distribution. This is explicitly stated in the second line of model specification \eqref{eq:error-spec}. If we were to think about this using model specification \eqref{eq:draw-spec}, then homoskedasticity means that \(\sigma\) in \(N(\mu, \sigma)\) is constant for all observations (or that the \emph{conditional} probability distributions are identical, where \emph{conditional} would mean adjusted for \(\mu\))
-\end{enumerate}
-
-Many biological processes generate data in which the error is a function of the mean. For example, measures of biological variables that grow, such as lengths of body parts or population size, have variances that ``grow'' with the mean. Or, measures of counts, such as the number of cells damaged by toxin, the number of eggs in a nest, or the number of mRNA transcripts per cell have variances that are a function of the mean. Heteroskedastic error can be modeled with \textbf{Generalized Least Squares}, a generalization of the linear model, and with \textbf{Generalized Linear Models} (GLM), which are ``extensions'' of the classical linear model.
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\setcounter{enumi}{1}
-\tightlist
-\item
-  Normal or \textbf{Gaussian} probability distribution. As above, the most common way of thinking about this is the error term \(\varepsilon\) is Normal. Using model specification \eqref{eq:draw-spec}, we'd say the conditional probablity distribution of the response is normal. A normal probability distribution implies that 1) the response is continuous and 2) the conditional probability is symmetric around \(mu_i\). If the conditional probability distribution has a long left or right tail it is \textbf{skewed} left or right. Counts (number of cells, number of eggs, number of mRNA transcripts) and binary responses (sucessful escape or sucessful infestation of host) are not continuous and often often have asymmetric probablity distributions that are skewed to the right and while sometimes both can be reasonably modeled using a linear model they are more often modeled using generalized linear models, which, again, is an extension of the linear model in equation \eqref{eq:draw-spec}. A classical linear model is a specific case of a GLM.
-\end{enumerate}
-
-A common misconception is that inference from a linear model assumes that the raw response variable is normally distributed. Both the error-draw and conditional-draw specifications of a linear model show precisely why this conception is wrong. Model \eqref{eq:lm} states explicitly that it is the error that has the normal distribution -- the distribution of \(Y\) is a mix of the distribution of \(X\) and the error. Model \eqref{eq:draw-spec} states that the conditional outcome has a normal distribution, that is, the distribution after adjusting for variation in \(X\).
-
-\hypertarget{linear-modelregression-model-orstatistical-model}{%
-\section{``linear model,''regression model``, or''statistical model"?}\label{linear-modelregression-model-orstatistical-model}}
-
-Statistical modeling terminology can be confusing. The \(X\) variables in a statistical model may be quantitative (continuous or integers) or categorical (names or qualitative amounts) or some mix of the two. Linear models with all quantitative independent variables are often called ``regression models.'' Linear models with all categorical independent variables are often called ``ANOVA models.'' Linear models with a mix of quantitative and categorical variables are often called ``ANCOVA models'' if the focus is on one of the categorical \(X\) or ``regression models'' if there tend to be many independent variables.
-
-This confusion partly results from the history of the development of regression for the analysis of observational data and ANOVA for the analysis of experimental data. The math underneath classical regression (without categorical variables) is the linear model. The math underneath classical ANOVA is the computation of sums of squared deviations from a group mean, or ``sums of squares''. The basic output from a regression is a table of coefficients with standard errors. The basic ouput from ANOVA is an ANOVA table, containing the sums of squares along with mean-squares, \emph{F}-ratios, and \emph{p}-values. Because of these historical differences in usage, underlying math, and output, many textbooks in biostatistics are organized around regression ``vs.'' ANOVA, presenting regression as if it is ``for'' observational studies and ANOVA as if it is ``for'' experiments.
-
-It has been recognized for many decades that experiments can be analyzed using the technique of classical regression if the categorical variables are coded as numbers (again, this will be explained later) and that both regression and ANOVA are variations of a more general, linear model. Despite this, the ``regression vs.~ANOVA'' way-of-thinking dominates the teaching of biostatistics.
-
-To avoid misconceptions that arise from thinking of statistical analysis as ``regression vs.~ANOVA'', I will use the term ``linear model'' as the general, umbrella term to cover everything in this book. By linear model, I mean any model that is linear in the parameters, including classical regression models, marginal models, linear mixed models, and generalized linear models. To avoid repetition, I'll also use ``statistical model''.
-
 \hypertarget{part-iii-r-fundamentals}{%
 \chapter*{Part III: R fundamentals}\label{part-iii-r-fundamentals}}
 \addcontentsline{toc}{chapter}{Part III: R fundamentals}
@@ -2948,7 +2604,7 @@ A pretty-good-plot using the \texttt{ggpubr} package
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-66-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-65-1.pdf}
 
 \hypertarget{wide-to-long-enteric-nervous-system-data}{%
 \subsubsection{Wide to long -- Enteric nervous system data}\label{wide-to-long-enteric-nervous-system-data}}
@@ -3407,7 +3063,7 @@ Let's do a quick plot to examine the data
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-74-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-73-1.pdf}
 
 \hypertarget{combining-data}{%
 \subsection{Combining data}\label{combining-data}}
@@ -3458,7 +3114,7 @@ Let's use the pi3k\_long data from above to explore this. First, the plot of pla
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-75-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-74-1.pdf}
 
 \texttt{pi3k\_long{[}treatment\ ==\ "Chow",{]})} is the subset of rows in which entries in the column ``treatment'' take the value ``Chow'' using the ``is equal'' (``=='') operator
 
@@ -3472,7 +3128,7 @@ Let's use the pi3k\_long data from above to explore this. First, the plot of pla
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-76-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-75-1.pdf}
 
 And the subset of rows in which entries in the column ``treatment'' take any value but ``Chow'' using the ``not equal'' operator (``!='').
 
@@ -3486,7 +3142,7 @@ And the subset of rows in which entries in the column ``treatment'' take any val
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-77-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-76-1.pdf}
 
 The subset of rows in which entries in the column ``treatment'' take either the value ``Chow'' or the value ``SGLT2i'' by combining two ``is equal'' (``=='') operators using the OR (``\textbar{}'') boolean operator
 
@@ -3500,7 +3156,7 @@ The subset of rows in which entries in the column ``treatment'' take either the 
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-78-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-77-1.pdf}
 
 The subset of rows in which entries in the column ``time'' take either the value ``30'' or the value ``60'' using the ``in a list'' operator (\%in\%). The values in the ``time'' column look like integers but are actually treatment levels (which act like string or character variables).
 
@@ -3514,7 +3170,7 @@ The subset of rows in which entries in the column ``time'' take either the value
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-79-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-78-1.pdf}
 
 The subset of rows in which entries in the column ``time\_c'' are less than or equal to 60 using the ``less than or equal to'' operator AND the value in the treatment column is in the list (``Chow'', ``SGLT2i''). The two comparisons are combined with the AND (``\&'') Boolean operator.
 
@@ -3529,7 +3185,7 @@ The subset of rows in which entries in the column ``time\_c'' are less than or e
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-80-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-79-1.pdf}
 
 The same result as above but using different operators. I would describe this as, the subset of rows in which entries in the column ``time\_c'' are less than or equal to 60 using the ``less than or equal to'' operator AND the value in the treatment column is either ``Chow'' OR ``SGLT2i''. The two comparisons are combined with the AND (``\&'') Boolean operator. The order of operations is determined by the parentheses, as with all algebra.
 
@@ -3544,7 +3200,7 @@ The same result as above but using different operators. I would describe this as
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-81-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-80-1.pdf}
 
 \hypertarget{wrangling-columns}{%
 \subsection{Wrangling columns}\label{wrangling-columns}}
@@ -3818,7 +3474,7 @@ with a useful warning.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-91-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-90-1.pdf}
 
 \hypertarget{regression-model-functions-lm-glm-gls-etc.-handle-missing-values-by-default}{%
 \paragraph{Regression model functions (lm, glm, gls, etc.) handle missing values by default}\label{regression-model-functions-lm-glm-gls-etc.-handle-missing-values-by-default}}
@@ -3974,7 +3630,7 @@ Look at your project directory to make sure the file is where it should be! We u
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-97-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-96-1.pdf}
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
@@ -3994,7 +3650,7 @@ Look at your project directory to make sure the file is where it should be! We u
   Modify the code from exercise 1 to pretty-good-plot the data as in exercise 1.
 \end{itemize}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-99-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-98-1.pdf}
 
 \hypertarget{plotting-models}{%
 \chapter{Plotting Models}\label{plotting-models}}
@@ -4502,7 +4158,7 @@ For the plot of effects, we use table of contrasts m1.pairs as the data.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-102-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-101-1.pdf}
 
 \hypertarget{combining-effects-and-response-plots}{%
 \subsubsection{Combining effects and response plots}\label{combining-effects-and-response-plots}}
@@ -4516,7 +4172,7 @@ The ggplots are combined using \texttt{plot\_grid} from the package \href{https:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-103-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-102-1.pdf}
 
 \hypertarget{plotting-two-factors}{%
 \subsection{Plotting two factors}\label{plotting-two-factors}}
@@ -4592,7 +4248,7 @@ Modeled means, standard errors, and confidence limits are conveniently computed 
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-106-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-105-1.pdf}
 
 \hypertarget{interaction-plot}{%
 \subsection{Interaction plot}\label{interaction-plot}}
@@ -4613,7 +4269,7 @@ Modeled means, standard errors, and confidence limits are conveniently computed 
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-107-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-106-1.pdf}
 
 \hypertarget{plot-components}{%
 \subsection{Plot components}\label{plot-components}}
@@ -4635,7 +4291,7 @@ If there are only a few cases per group, there is little reason to summarize the
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-108-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-107-1.pdf}
 
 With more points, a stripchart can be okay but with too many points the distribution might be obscured. Reasonable alternatives are a box plot, a violin plot, and a dotplot.
 
@@ -4663,7 +4319,7 @@ With more points, a stripchart can be okay but with too many points the distribu
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-109-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-108-1.pdf}
 
 \hypertarget{part-iv-some-fundamentals-of-statistical-modeling}{%
 \chapter*{Part IV: Some Fundamentals of Statistical Modeling}\label{part-iv-some-fundamentals-of-statistical-modeling}}
@@ -4878,7 +4534,7 @@ This is a visualization of the spread, or variability, of the sampled means
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-113-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-112-1.pdf}
 
 Compute the mean of the means
 
@@ -5176,7 +4832,7 @@ Let's look at the confidence intervals of all three vole groups in light of the 
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-121-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-120-1.pdf}
 
 \hypertarget{p-values}{%
 \chapter{P-values}\label{p-values}}
@@ -6157,6 +5813,352 @@ Instead of framing the ``size'' concept as the rate of Type I error, what if we 
 \chapter*{Part V: Introduction to Linear Models}\label{part-v-introduction-to-linear-models}}
 \addcontentsline{toc}{chapter}{Part V: Introduction to Linear Models}
 
+\hypertarget{an-introduction-to-linear-models}{%
+\chapter{An introduction to linear models}\label{an-introduction-to-linear-models}}
+
+Chapter \ref{analyzing-experimental-data-with-a-linear-model} (\protect\hyperlink{analyzing-experimental-data-with-a-linear-model}{Analyzing experimental data with a linear model}) is an introduction to how to use a linear model to estimate treatment effects, with only a few explanations of what a linear model \emph{is}. This chapter introduces the linear model more generally and expands on different goals of linear modeling, including description and prediction, in addition to explanation (the estimate of treatment effects, or causal effects more generally).
+
+All students are familiar with the idea of a linear model from learning the equation of a line, which is
+
+\begin{equation}
+Y = mX + b
+\label{eq:line}
+\end{equation}
+
+where \(m\) is the slope of the line and \(b\) is the \(Y\)-intercept. It is useful to think of equation \eqref{eq:line} as a function that maps values of \(X\) to values of \(Y\). Using this function, if we input some value of \(X\), we always get the same value of Y as the output.
+
+A linear model is a function, like that in equation \eqref{eq:line}, that is fit to a set of data, often to model a process that generated the data or something like the data. The line in Figure \ref{fig:line}A is just that, a line, but the line in Figure \ref{fig:line}B is a linear model fit to the data in Figure \ref{fig:line}B.
+
+\begin{figure}
+\centering
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/line-1.pdf}
+\caption{\label{fig:line}A line vs.~a linear model. (A) the line \(y=-3.48X + 105.7\) is drawn. (B) A linear model fit to the data. The model coefficients are numerically equal to the slope and intercept of the line in A.}
+\end{figure}
+
+\hypertarget{two-specifications-of-a-linear-model}{%
+\section{Two specifications of a linear model}\label{two-specifications-of-a-linear-model}}
+
+\hypertarget{the-error-draw-specification}{%
+\subsection{The ``error draw'' specification}\label{the-error-draw-specification}}
+
+A linear model is commonly specified using an ``measurement error model''.
+
+\begin{align}
+Y &= \beta_0 + \beta_1 X + \varepsilon\\
+\varepsilon &\sim N(0, \sigma^2)
+\label{eq:error-spec}
+\end{align}
+
+The first line of this specification has two components: the \textbf{linear predictor} \(Y = \beta_0 + \beta_1 X\) and the \textbf{error} \(\varepsilon\). The linear predictor component looks like the equation for a line except that 1) \(\beta_0\) is used for the intercept and \(\beta_1\) for the slope and 2) the intercept term precedes the slope term. This re-labeling and re-arrangement make the notation for a linear model more flexible for more complicated linear models. For example \(Y = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \varepsilon\) is a model where \(Y\) is a function of two \(X\) variables.
+
+The linear predictor is deterministic or \textbf{systematic}. As with the equation for a line, the linear predictor component of a linear model is a function that maps a specific value of \(X\) to a value of \(Y\). This mapped value is the \textbf{expected value}, or expectation, given a specific input value of \(X\). This is often written as \(\mathrm{E}[Y|X]\), which is read as ``the expected value of \(Y\) given \(X\)'', where ``given X'' means a specific value of X. This text will often use the word \textbf{conditional} in place of ``given''. For example, I would read \(\mathrm{E}[Y|X]\) as ``the expected value of \(Y\) conditional on \(X\)''. It is important to recognize that \(\mathrm{E}[Y|X]\) is a \textbf{conditional mean} -- it is the mean value of \(Y\) when we observe that \(X\) has some specific value \(x\) (that is \(X = x\)).
+
+The second line of the specification \eqref{eq:error-spec} is read as ``epsilon is distributed as Normal with mean zero and variance sigma squared''. This line explicitly specifies the distribution of the error component of line 1. The error component of a linear model is a random ``draw'' from a normal distribution with mean zero and variance \(\sigma^2\). The second line shows that the error component of the first line is \textbf{stochastic}. Using the error-model specification, we can think of any measurement of \(Y\) as an expected value plus some random value sampled from a normal distribution with a specified variance. Because the stochastic part of this specification draws an ``error'' from a population, I refer to this as the \textbf{error-draw} specification of the linear model.
+
+\hypertarget{the-conditional-draw-specification}{%
+\subsection{The ``conditional draw'' specification}\label{the-conditional-draw-specification}}
+
+A second way of specifying a linear model is using a ``sampling model''.
+
+\begin{align}
+y_i &\sim N(\mu_i, \sigma^2)\\
+\mathrm{E}(Y|X) &= \mu\\
+\mu_i &= \beta_0 + \beta_1 x_i
+\label{eq:draw-spec}
+\end{align}
+
+The first line states that the response variable \(Y\) is a random variable independently drawn from a normal distribution with mean \(\mu\) and variance \(\sigma^2\). This first line is the \textbf{stochastic} part of the statistical model. The second line simply states that \(\mu\) (the greek letter ``mu'') from the first line is the conditional mean (or expectation). The third line states how \(\mu_i\) is generated given that \(X=x_i\). This is the linear predictor, which is the \textbf{systematic} (or deterministic) part of the statistical model. It is systematic because the same value of \(x_i\) will always generate the same \(\mu_i\). Using the sampling-draw specification, we can think of any measurement of \(Y\) as a random drom from a specified distribution. Because it is \(Y\) and not some ``error'' that is drawn from a specified distribution, I refer to this as the \textbf{conditional-draw} specification of the linear model.
+
+\hypertarget{comparing-the-two-ways-of-specifying-the-linear-model}{%
+\subsection{Comparing the two ways of specifying the linear model}\label{comparing-the-two-ways-of-specifying-the-linear-model}}
+
+These two ways of specifying the model encourage slightly different ways of thinking about how the data (the response varible \(Y\)) were generated. The error-draw specification ``generates'' data by 1) constructing what \(y_i\) ``should be'' given \(x_i\) (this is the conditional expection), then 2) adding some error \(e_i\) drawn from a normal distribution with mean zero and some specified variance. The conditional-draw specification ``generates'' data by 1) constructing what \(y_i\) ``should be'' given \(x_i\), then 2) drawing a random variable from some specified distribution \emph{whose mean is this expectation}. This random draw is not ``error'' but the measured value \(y_i\). For the error draw generation, we need only one hat of random numbers, but for the conditional draw generation, we need a hat for each value of \(x_i\).
+
+Here is a short script that generates data by implementing both the error-draw and conditional-draw specifications. See if you can follow the logic of the code and match it to the meaning of these two ways of specifying a linear model.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{n <-}\StringTok{ }\DecValTok{5}
+\NormalTok{b_}\DecValTok{0}\NormalTok{ <-}\StringTok{ }\FloatTok{10.0}
+\NormalTok{b_}\DecValTok{1}\NormalTok{ <-}\StringTok{ }\FloatTok{1.2}
+\NormalTok{sigma <-}\StringTok{ }\FloatTok{0.4}
+\NormalTok{x <-}\StringTok{ }\DecValTok{1}\OperatorTok{:}\NormalTok{n}
+\NormalTok{y_expected <-}\StringTok{ }\NormalTok{b_}\DecValTok{0} \OperatorTok{+}\StringTok{ }\NormalTok{b_}\DecValTok{1}\OperatorTok{*}\NormalTok{x}
+
+\CommentTok{# error-draw. Note that the n draws are all from the same distribution}
+\KeywordTok{set.seed}\NormalTok{(}\DecValTok{1}\NormalTok{)}
+\NormalTok{y_error_draw <-}\StringTok{ }\NormalTok{y_expected }\OperatorTok{+}\StringTok{ }\KeywordTok{rnorm}\NormalTok{(n, }\DataTypeTok{mean =} \DecValTok{0}\NormalTok{, }\DataTypeTok{sd =}\NormalTok{ sigma)}
+
+\CommentTok{# conditional-draw. Note that the n draws are each from a different}
+\CommentTok{# distribution because each has a different mean.}
+\KeywordTok{set.seed}\NormalTok{(}\DecValTok{1}\NormalTok{)}
+\NormalTok{y_conditional_draw <-}\StringTok{ }\KeywordTok{rnorm}\NormalTok{(n, }\DataTypeTok{mean =}\NormalTok{ y_expected, }\DataTypeTok{sd =}\NormalTok{ sigma)}
+
+\KeywordTok{data.table}\NormalTok{(}\DataTypeTok{X =}\NormalTok{ x,}
+           \StringTok{"Y (error draw)"}\NormalTok{ =}\StringTok{ }\NormalTok{y_error_draw,}
+           \StringTok{"Y (conditional draw)"}\NormalTok{ =}\StringTok{ }\NormalTok{y_conditional_draw)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##    X Y (error draw) Y (conditional draw)
+## 1: 1       10.94942             10.94942
+## 2: 2       12.47346             12.47346
+## 3: 3       13.26575             13.26575
+## 4: 4       15.43811             15.43811
+## 5: 5       16.13180             16.13180
+\end{verbatim}
+
+The error-draw specification is not very useful for thinking about data generation for data analyzed by generalized linear models, which are models that allow one to specify distribution families other than Normal (such as the binomial, Poisson, and Gamma families). In fact, thinking about a model as a predictor plus error can lead to the misconception that in a generalized linear model, the error (or residuals from the fit) has a distribution from the non-Normal distribution modeled. This cannot be true because the distributions modeled using generalized linear models (other than the Normal) do not have negative values (some residuals must have negative values since the mean of the residuals is zero). Introductory biostatistics textbooks typically only introduce the error-draw specification because introductory textbooks recommend data transformation or non-parametric tests if the data are not approximately normal. This is unfortunate because generalized linear models are extremely useful for real biological data.
+
+Although a linear model (or statistical model more generally) is a model of a data-generating process, linear models are not typically used to actually generate any data. Instead, when we use a linear model to understand something about a real dataset, we think of our data as one realization of a process that generates data like ours. A linear model is a model of that process. That said, it is incredibly useful to use linear models to create fake datasets for at least two reasons: to probe our understanding of statistical modeling generally and, more specifically, to check that a model actually creates data like that in the real dataset that we are analyzing.
+
+\hypertarget{a-linear-model-can-be-fit-to-data-with-continuous-discrete-or-categorical-x-variables}{%
+\section{\texorpdfstring{A linear model can be fit to data with continuous, discrete, or categorical \(X\) variables}{A linear model can be fit to data with continuous, discrete, or categorical X variables}}\label{a-linear-model-can-be-fit-to-data-with-continuous-discrete-or-categorical-x-variables}}
+
+In the linear model fit to the data in Figure \ref{fig:line}B, the \(X\) variable is \textbf{continuous}, which can take any real number between the minimum \(X\) and maximum \(X\) in the data. For biological data, most variables that are continuous are positive, real numbers (a zero is not physically possible but could be recorded in the data if the true value is less than the minimum measurable amount). One exception is a \textbf{composition} (the fraction of a total), which can be zero. Negative values can occur with variables in which negative represent a direction (work, electrical potential) or a rate. \textbf{Discrete} variables are numeric but limited to certain real numbers. Most biological variables that are discrete are counts, and can be zero, but not negative. \textbf{Categorical variables} are non-numeric descriptions of a measure. Many of the categorical variables in this text will be the experimentally controlled treatment variable of interest (the variable \(treatment\) containing the values ``wild type'' and ``knockout'') but some are measured covariates (the variable \(sex\) containing the values ``female'' and ``male'').
+
+\hypertarget{fitting-linear-models-to-experimental-data-in-which-the-x-variable-is-continuous-or-discrete}{%
+\subsection{\texorpdfstring{Fitting linear models to experimental data in which the \(X\) variable is continuous or discrete}{Fitting linear models to experimental data in which the X variable is continuous or discrete}}\label{fitting-linear-models-to-experimental-data-in-which-the-x-variable-is-continuous-or-discrete}}
+
+A linear model fit to data with a numeric (continous or discrete) \(X\) is classical \textbf{regression} and the result is typically communicated by a regression line. The experiment introduced in Chapter \ref{linear-models-with-a-single-continuous-x} \protect\hyperlink{linear-models-with-a-single-continuous-x}{Linear models with a single, continuous \emph{X}} is a good example. In this experiment, the researchers designed an experiment to measure the effect of warming on the timing of photosynthetic activity. Temperature was experimentally controlled at one of five settings (0, 2.25, 4.5, 6.75, or 9 °C above ambient temperature) within twelve, large enclosures. The response variable in the illustrated example is Autumn ``green-down'', which is the day of year (DOY) of the transition to loss of photosynthesis. The intercept and slope parameters of the regression line (Figure \ref{fig:intro-linear-models-cont-slope}) are the coefficients of the linear model. The slope (4.98 days per 1 °C added warmth) estimates the \textbf{effect} of warming on green-down DOY. What is not often appreciated at the introductory biostatistics level is that \textbf{the slope is a difference in conditional means}. Any point on a regression line is the expected value of \(Y\) at a specified value of \(X\), that is, the conditional mean \(\mathrm{E}(Y|X)\). \textbf{The slope is the difference in expected values for a pair of points that differ in \(X\) by one unit}.
+
+\begin{equation}
+b_1 = \mathrm{E}(Y|X=x+1) - \mathrm{E}(Y|X=x+1)
+\end{equation}
+
+I show this in Figure \ref{fig:intro-linear-models-cont-slope} using the points on the regression line at \(x = 5\) and \(x = 6\). Thinking about a regression coefficient as a difference in conditional means is especially useful for understanding the coefficients of a categorical \(X\) variable, as described below.
+
+\begin{figure}
+\centering
+\includegraphics{/Users/jwalker/Documents/Github projects/Bookdown projects/applied-biostats/output/fig_2c_explainer.png}
+\caption{\label{fig:intro-linear-models-cont-slope}Illustration of the slope in a linear model with a numeric X. The slope (the coefficient of X) is the difference in expected value for any two X that are one unit apart. This is illustrated for the points on the line at x = 5 and x = 6.}
+\end{figure}
+
+\hypertarget{fitting-linear-models-to-experimental-data-in-which-the-x-variable-is-categorical}{%
+\subsection{\texorpdfstring{Fitting linear models to experimental data in which the \(X\) variable is categorical}{Fitting linear models to experimental data in which the X variable is categorical}}\label{fitting-linear-models-to-experimental-data-in-which-the-x-variable-is-categorical}}
+
+Linear models can be fit to experimental data in which the \(X\) variable is categorical -- this is the focus of this text! For the model fit to the data in Figure \ref{fig:line}B, the coefficient of \(X\) is the slope of the line. Perhaps surprisingly, 1) we can fit a model like equation \eqref{eq:error-spec} to data in which the \(X\) variable is categorical and 2) the coefficient of \(X\) \emph{is} a slope. How is this possible? The slope of a line is \(\frac{y_2 - y_1}{x_2 - x_1}\) where \((x_1, y_1)\) and \((x_2, y_2)\) are the graph coordinates of any two points on the line. What is the denominator of the slope function \((x_2 - x_1)\) when \(X\) is categorical?
+
+The solution to using a linear model with categorical \(X\) is to recode the factor levels into numbers. An example of this was outlined in Chapter \ref{analyzing-experimental-data-with-a-linear-model} (\protect\hyperlink{analyzing-experimental-data-with-a-linear-model}{Analyzing experimental data with a linear model}). The value of \(X\) for individual mouse \emph{i} is a number that indicates the treatment assignment -- a value of 0 is given to mice with a functional ASK1 gene and a value of 1 is given to mice with a knocked out gene. The regression line goes through the two group means (Figure \ref{fig:intro-linear-models-cat-slope}). With the (0, 1) coding, \(\overline{x}_{ASK1Δadipo} - \overline{x}_{ASK1F/F} = 1\), so the denominator of the slope is equal to one and the slope is simply equal to the numerator \(\overline{y}_{ASK1Δadipo} - \overline{y}_{ASK1F/F}\). The coefficient (which is a slope!) \emph{is} the difference in conditional means.
+
+\begin{figure}
+\centering
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/intro-linear-models-cat-slope-1.pdf}
+\caption{\label{fig:intro-linear-models-cat-slope}Illustration of the slope in a linear model with categorical X. The slope (the coefficient of X) is the difference in conditional means.}
+\end{figure}
+
+\hypertarget{statistical-models-are-used-for-prediction-explanation-and-description}{%
+\section{Statistical models are used for prediction, explanation, and description}\label{statistical-models-are-used-for-prediction-explanation-and-description}}
+
+Researchers typically use statistical models to understand relationships between one or more \(Y\) variables and one or more \(X\) variables. These relationships include
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  Descriptive modeling. Sometimes a researcher merely wants to describe the relationship between \(Y\) and a set of \(X\) variables, perhaps to discover patterns. For example, the arrival of a spring migrant bird (\(Y\)) as a function of sex (\(X_1\)) and age (\(X_2\)) might show that males and younger individuals arrive earlier. Importantly, if another \(X\) variable is added to the model (or one dropped), the coefficients, and therefore, the precise description, will change. That is, the interpretation of a coefficient as a descriptor is \emph{conditional} on the other covariates (\(X\) variables) in the model. In a descriptive model, there is no implication of causal effects and the goal is not prediction. Nevertheless, it is very hard for humans to discuss a descriptive model without using causal language, which probably means that it is hard for us to think of these models as \emph{mere description}. Like natural history, descriptive models are useful as patterns in want of an explanation, using more explicit causal models including experiments.
+\item
+  Predictive modeling. Predictive modeling is very common in applied research. For example, fisheries researchers might model the relationship between population density and habitat variables to predict which subset of ponds in a region are most suitable for brook trout (\emph{Salvelinus fontinalis}) reintroduction. The goal is to build a model with minimal prediction error, which is the error between predicted and actual values for a future sample. In predictive modeling, the \(X\) (``predictor'') variables are largely instrumental -- how these are related to \(Y\) is not a goal of the modeling, although sometimes an investigator may be interested in the relative importance among the \(X\) for predicting \(Y\) (for example, collecting the data may be time consuming, or expensive, or enviromentally destructive, so know which subset of \(X\) are most important for predicting \(Y\) is a useful strategy).
+\item
+  Explanatory (causal) modeling. Very often, researchers are explicitly interested in \emph{how} the \(X\) variables are causally related to \(Y\). The fisheries researchers that want to reintroduce trout may want to develop and manage a set of ponds to maintain healthy trout populations. This active management requires intervention to change habitat traits in a direction, and with a magnitude, to cause the desired response. This model is predictive -- a specific change in \(X\) predicts a specific response in \(Y\) -- because the coefficients of the model provide knowledge on how the system functions -- how changes in the inputs \emph{cause} change in the output. Causal interpretation of model coefficients requires a set of strong assumptions about the \(X\) variables in the model. These assumptions are typically met in \textbf{experimental designs} but not \textbf{observational designs}.
+\end{enumerate}
+
+With observational designs, biologists are often not very explicit about which of these is the goal of the modeling and use a combination of descriptive, predictive, and causal language to describe and discuss results. Many papers read as if the researchers intend explanatory inference but because of norms within the biology community, mask this intention with ``predictive'' language. Here, I advocate embracing explicit, explanatory modeling by being very transparent about the model's goal and assumptions.
+
+\hypertarget{what-do-we-call-the-x-and-y-variables}{%
+\section{\texorpdfstring{What do we call the \(X\) and \(Y\) variables?}{What do we call the X and Y variables?}}\label{what-do-we-call-the-x-and-y-variables}}
+
+The inputs to a linear model (the \(X\) variables) have many names. In this text, the \(X\) variables are typically
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{treatment variables} -- this term makes sense only for categorical variables and is often used for variables that are a \textbf{factor} containing the treatment assignment (for example ``control'' and ``knockout'')
+\item
+  \textbf{factor variables} (or simply, \textbf{factors}) -- again, this term makes sense only for categorical variables
+\item
+  \textbf{covariates} -- this term is usually used for the non-focal \(X\) variables in a statistical model.
+\end{itemize}
+
+A linear model is a regression model and in regression modeling, the \(X\) variables are typically called
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{independent variables} (often shortened to IV) -- ``independent'' in the sense that in a statistical model at least, the \(X\) are not a function of \(Y\).
+\item
+  \textbf{predictor variables} (or simply, ``predictors'') -- this makes the most sense in prediction models.
+\item
+  \textbf{explanatory variables} -- this term is usually applied in observational designs and is best used if the explicit goal is causal modeling.
+\end{itemize}
+
+In this text, the output of a linear model (the \(Y\) variable or variables if the model is multivariate) will most often be calle either of
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{response variable} (or simply, ``response'')
+\item
+  \textbf{outcome variable} (or simply, ``outcome'')
+\end{itemize}
+
+These terms have a causal connotation in everyday english. These terms are often used in regression modeling with observational data, even if the model is not explicitly causal. On other term, common in introductory textbooks, is
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{dependent variable} -- ``dependent'' in the sense that in a statistical model at least, the \(Y\) is a function of the \(X\).
+\end{itemize}
+
+\hypertarget{modeling-strategy}{%
+\section{Modeling strategy}\label{modeling-strategy}}
+
+A ``best practice'' sequence of steps used throughout this text to analyze experimental data is
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{exploratory plots} to
+\end{enumerate}
+
+\begin{itemize}
+\tightlist
+\item
+  examine individual points and identify outliers that are likely due to data transcription errors or measurement blunders (not simply odd, but biologically plausible measures).
+\item
+  provide useful information for initial model filtering (narrowing the list of potential models that are relevant to the question and data). Statistical modeling includes a diverse array of models, yet almost all methods used by researchers in biology, and all models in this book, are generalizations of the linear model specified in \eqref{eq:draw-spec}. For some experiments, there may be multiple models that are relevant to the question and data. Model checking (step 3) can help decide which model to ultimately use.
+\end{itemize}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{1}
+\tightlist
+\item
+  \textbf{fit the model}, in order to estimate the model parameters and the uncertainty in these estimates.
+\item
+  \textbf{check the model}, which means to use a series of diagnostic plots and computations of model output to check that the fit model reasonably approximates the data. If the diagnostic plots suggest a poor approximation, then choose a different model and go back to step 2.
+\item
+  \textbf{inference from the model}, which means to use the fit parameters to learn, with uncertainty, about the system, or to predict future observations, with uncertainty.
+\item
+  \textbf{plot the model}, which means to plot the data, which may be adjusted, and the estimated parameters (or other results dervived from the estimates) with their uncertainty.
+\end{enumerate}
+
+Note that step 1 (exploratory plots) is \emph{not} data mining, or exploring the data for patterns to test.
+
+\hypertarget{predictions-from-the-model}{%
+\section{Predictions from the model}\label{predictions-from-the-model}}
+
+For the linear model specified in Model \eqref{eq:error-spec}, the fit model is
+
+\begin{equation}
+y_i = b_0 + b_1 x_i + e_i
+\label{eq:y-i}
+\end{equation}
+
+where \(b_0\) and \(b_1\) are the coefficients of the fit model and the \(e_i\) are the residuals of the fit model. We can use the coefficients and residuals to recover the \(y_i\), although this would rarely be done. More commonly, we could use the coefficients to calculate conditional means (the mean conditional on a specified value of \(X\)).
+
+\begin{equation}
+\hat{y}_i = b_0 + b_1 x_i
+\label{eq:yhat}
+\end{equation}
+
+The conditional means are typically called \textbf{fitted values}, if the \(X\) are the \(X\) used to fit the model, or \textbf{predicted values}, if the \(X\) are new. ``Predicted values'' is often shortened to ``the prediction''.
+
+\hypertarget{inference-from-the-model}{%
+\section{Inference from the model}\label{inference-from-the-model}}
+
+If our goal is inference, we want to use the fit parameters to learn, with uncertainty, about the system. Using equation \eqref{eq:y-i}, the coefficients \(b_0\) and \(b_1\) are \textbf{point estimates} of the true, generating parameters \(\beta_0\) and \(\beta_1\), the \(e_i\) are estimates of \(\varepsilon_i\) (the true, biological ``noise''), and \(\frac{\sum{e_i^2}}{N-2}\) is an estimate of the true, population variance \(\sigma^2\) (this will be covered more in chapter xxx but you may recognize that \(\frac{\sum{e_i^2}}{N-2}\) is the formula for a variance). And, using equation \eqref{eq:yhat}, \(\hat{y}_i\) is the point estimate of the parameter \(\mu_i\) (the true mean conditional on \(X=x_i\)). Throughout this text, Greek letters refer to a theoretical parameter and Roman letters refer to point estimates.
+
+Our uncertainty in the estimates of the parameters due to sampling is the standard error of the estimate. It is routine to report standard errors of means and coefficients of the model. While a standard error of the estimate of \(\sigma\) is available, this is effectively never reported, at least in the experimental biology literature, presumably because the variance is thought of as a nuisance parameter (noise) and not something worthy of study. This is a pity. Certainly treatments can effect the variance in addition to the mean.
+
+\textbf{Parametric} inference assumes that the response is drawn from some probability distribution (Normal, or Poisson, or Bernouli, etc.). Throughout this text, I emphasize reporting and interpreting point estimates and \textbf{interval estimates} of the point estimate. A \textbf{confidence interval} is a type of interval estimate. A confidence interval of a parameter is a measure of the uncertainty in the estimate. A 95\% confidence interval has a 95\% probability (in the sense of long-run frequency) of containing the parameter. This probability is a property of the population of intervals that could be computed using the same sampling and measuring procedure. It is not correct, without further assumptions, to state that there is a 95\% probability that the parameter lies within the interval. Perhaps a more useful interpretation is that the interval is a \textbf{compatability interval} in that it contains the range of estimates that are compatible with the data, in the sense that a \(t\)-test would not reject the null hypothesis of a difference between the estimate and any value within the interval (this interpretation does not imply anything about the true value).
+
+Another kind of inference is a \textbf{significance test}, which is the computation of the probability of ``seeing the data'' or something more extreme than the data, given a specified null hypothesis. This probability is the \textbf{p-value}, which can be reported with the point estimate and confidence interval. There are some reasonable arguments made by very influential statisticians that \emph{p}-values are not useful and lead researchers into a quagmire of misconceptions that impede good science. Nevertheless, the current methodology in most fields of Biology have developed in a way to become completely dependent on \emph{p}-values. I think at this point, a \emph{p}-value can be a useful, if imperfect tool in inference, and will show how to compute \emph{p}-values throughout this text.
+
+Somewhat related to a significance test is a hypothesis test, or a \textbf{Null-Hypothesis Signficance Test} (NHST), in which the \(p\)-value from a significance test is compared to a pre-specified error rate called \(\alpha\). Hypothesis testing was developed as a formal means of decision making but this is rarely the use of NHST in experimental biology. For almost all applications of \emph{p}-values that I see in the literature that I read in ecology, evolution, physiology, and wet-bench biology, comparing a \(p\)-value to \(\alpha\) adds no value to the communication of the results.
+
+\hypertarget{assumptions-for-inference-with-a-statistical-model}{%
+\subsection{Assumptions for inference with a statistical model}\label{assumptions-for-inference-with-a-statistical-model}}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  The data were generated by a process that is ``linear in the parameters'', which means that the different components of the model are added together. This additive part of the model containing the parameters is the linear predictor in specifications \eqref{eq:error-spec} and \eqref{eq:draw-spec} above. For example, a cubic polynomial model
+\end{enumerate}
+
+\begin{equation}
+\mathrm{E}(Y|X) = \beta_0 + \beta_1 X + \beta_2 X^2 + \beta_3 X^3
+\end{equation}
+
+is a linear model, even though the function is non-linear, because the different components are added. Because a linear predictor is additive, it can be compactly defined using matrix algebra
+
+\begin{equation}
+\mathrm{E}(Y|X) = \mathbf{X}\boldsymbol{\beta}
+\end{equation}
+
+where \(mathbf{X}\) is the \textbf{model matrix} and \(\boldsymbol{\beta}\) is the vector of parameters. We discuss these more in chapter xxx.
+
+A \textbf{Generalized Linear Model} (GLM) has the form \(g(\mu_i) = \eta_i\) where \(\eta\) (the Greek letter ``eta'') is the linear predictor
+
+\begin{equation}
+\eta = \mathbf{X}\boldsymbol{\beta} 
+\end{equation}
+
+GLMs are extensions of linear models. There are non-linear models that are not linear in the parameters, that is, the predictor is not a simple dot product of the model matrix and a vector of parameters. For example, the Michaelis-Menten model is a non-linear model
+
+\begin{equation}
+\mathrm{E}(Y|X)  = \frac{\beta_1 X}{\beta_2 + X}
+\end{equation}
+
+that is non-linear in the parameters because the parts are not added together. This text covers linear models and generalized linear models, but not non-linear models that are also non-linear in the parameters.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{1}
+\tightlist
+\item
+  The draws from the probability distribution are \textbf{independent}. Independence implies \textbf{uncorrelated} \(Y\) conditional on the \(X\), that is, for any two \(Y\) with the same value of \(X\), we cannot predict the value of one given the value of the other. For example, in the ASK1 data above, ``uncorrelated'' implies that we cannot predict the glucose level of one mouse within a specific treatment combination given the glucose level of another mouse in that combination. For linear models, this assumption is often stated as ``independent errors'' (the \(\varepsilon\) in model \eqref{eq:error-spec}) instead of independent observations.
+\end{enumerate}
+
+There are lots of reasons that conditional responses might be correlated. In the mouse example, correlation within treatment group could arise if subsets of mice in a treatment group are siblings or are housed in the same cage. More generally, if there are measures both within and among experimental units (field sites or humans or rats) then we'd expect the measures within the same unit to err from the model in the same direction. Multiple measures within experimental units (a site or individual) creates ``clustered'' observations. Lack of independence or clustered observations can be modeled using models with \textbf{random effects}. These models go by many names including linear mixed models (common in Ecology), hierarchical models, multilevel models, and random effects models. A linear mixed model is a variation of model \eqref{eq:error-spec}. This text introduces linear mixed models in chapter xxx.
+
+Measures that are taken from sites that are closer together or measures taken closer in time or measures from more closely related biological species will tend to have more similar values than measures taken from sites that are further apart or from times that are further apart or from species that are less closely related. Space and time and phylogeny create \textbf{spatial and temporal and phylogenetic autocorrelation}. Correlated error due to space or time or phylogeny can be modeled with \textbf{Generalized Least Squares} (GLS) models. A GLS model is a variation of model \eqref{eq:error-spec}.
+
+\hypertarget{specific-assumptions-for-inference-with-a-linear-model}{%
+\subsection{Specific assumptions for inference with a linear model}\label{specific-assumptions-for-inference-with-a-linear-model}}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{Constant variance} or \textbf{homoskedasticity}. The most common way of thinking about this is the error term \(\varepsilon\) has constant variance, which is a short way of saying that random draws of \(\varepsilon\) in model \eqref{eq:error-spec} are all from the same (or \textbf{identical}) distribution. This is explicitly stated in the second line of model specification \eqref{eq:error-spec}. If we were to think about this using model specification \eqref{eq:draw-spec}, then homoskedasticity means that \(\sigma\) in \(N(\mu, \sigma)\) is constant for all observations (or that the \emph{conditional} probability distributions are identical, where \emph{conditional} would mean adjusted for \(\mu\))
+\end{enumerate}
+
+Many biological processes generate data in which the error is a function of the mean. For example, measures of biological variables that grow, such as lengths of body parts or population size, have variances that ``grow'' with the mean. Or, measures of counts, such as the number of cells damaged by toxin, the number of eggs in a nest, or the number of mRNA transcripts per cell have variances that are a function of the mean. Heteroskedastic error can be modeled with \textbf{Generalized Least Squares}, a generalization of the linear model, and with \textbf{Generalized Linear Models} (GLM), which are ``extensions'' of the classical linear model.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{1}
+\tightlist
+\item
+  Normal or \textbf{Gaussian} probability distribution. As above, the most common way of thinking about this is the error term \(\varepsilon\) is Normal. Using model specification \eqref{eq:draw-spec}, we'd say the conditional probablity distribution of the response is normal. A normal probability distribution implies that 1) the response is continuous and 2) the conditional probability is symmetric around \(mu_i\). If the conditional probability distribution has a long left or right tail it is \textbf{skewed} left or right. Counts (number of cells, number of eggs, number of mRNA transcripts) and binary responses (sucessful escape or sucessful infestation of host) are not continuous and often often have asymmetric probablity distributions that are skewed to the right and while sometimes both can be reasonably modeled using a linear model they are more often modeled using generalized linear models, which, again, is an extension of the linear model in equation \eqref{eq:draw-spec}. A classical linear model is a specific case of a GLM.
+\end{enumerate}
+
+A common misconception is that inference from a linear model assumes that the raw response variable is normally distributed. Both the error-draw and conditional-draw specifications of a linear model show precisely why this conception is wrong. Model \eqref{eq:lm} states explicitly that it is the error that has the normal distribution -- the distribution of \(Y\) is a mix of the distribution of \(X\) and the error. Model \eqref{eq:draw-spec} states that the conditional outcome has a normal distribution, that is, the distribution after adjusting for variation in \(X\).
+
+\hypertarget{linear-modelregression-model-orstatistical-model}{%
+\section{``linear model,''regression model``, or''statistical model"?}\label{linear-modelregression-model-orstatistical-model}}
+
+Statistical modeling terminology can be confusing. The \(X\) variables in a statistical model may be quantitative (continuous or integers) or categorical (names or qualitative amounts) or some mix of the two. Linear models with all quantitative independent variables are often called ``regression models.'' Linear models with all categorical independent variables are often called ``ANOVA models.'' Linear models with a mix of quantitative and categorical variables are often called ``ANCOVA models'' if the focus is on one of the categorical \(X\) or ``regression models'' if there tend to be many independent variables.
+
+This confusion partly results from the history of the development of regression for the analysis of observational data and ANOVA for the analysis of experimental data. The math underneath classical regression (without categorical variables) is the linear model. The math underneath classical ANOVA is the computation of sums of squared deviations from a group mean, or ``sums of squares''. The basic output from a regression is a table of coefficients with standard errors. The basic ouput from ANOVA is an ANOVA table, containing the sums of squares along with mean-squares, \emph{F}-ratios, and \emph{p}-values. Because of these historical differences in usage, underlying math, and output, many textbooks in biostatistics are organized around regression ``vs.'' ANOVA, presenting regression as if it is ``for'' observational studies and ANOVA as if it is ``for'' experiments.
+
+It has been recognized for many decades that experiments can be analyzed using the technique of classical regression if the categorical variables are coded as numbers (again, this will be explained later) and that both regression and ANOVA are variations of a more general, linear model. Despite this, the ``regression vs.~ANOVA'' way-of-thinking dominates the teaching of biostatistics.
+
+To avoid misconceptions that arise from thinking of statistical analysis as ``regression vs.~ANOVA'', I will use the term ``linear model'' as the general, umbrella term to cover everything in this book. By linear model, I mean any model that is linear in the parameters, including classical regression models, marginal models, linear mixed models, and generalized linear models. To avoid repetition, I'll also use ``statistical model''.
+
 \hypertarget{linear-models-with-a-single-continuous-x}{%
 \chapter{\texorpdfstring{Linear models with a single, continuous \emph{X}}{Linear models with a single, continuous X}}\label{linear-models-with-a-single-continuous-x}}
 
@@ -6485,12 +6487,32 @@ Can we use observational data for causal modeling? Yes, but the methods for this
 \hypertarget{using-a-regression-model-for-creating-a-new-response-variable-comparing-slopes-of-longitudinal-data}{%
 \subsection{Using a regression model for creating a new response variable -- comparing slopes of longitudinal data}\label{using-a-regression-model-for-creating-a-new-response-variable-comparing-slopes-of-longitudinal-data}}
 
+The researchers compared the growth rate of tumors in mice fed normal chow versus mice with a methionine restricted diet. Growth rate wasn't actually compared. Instead, the researchers used a \emph{t}-test to compare the size of the tumor measured at six different days. A problem with multiple \emph{t}-tests for this dataset is that the errors (residuals from the model) on one day are correlated with the errors from another day because of the repeated measures on each mouse. This correlation will inflate Type I error rate.
+
+Instead of six \emph{t}-tests, a better strategy for these data is to use a regression to calculate a tumor growth rate for each mouse. There are sixteen mice so this is sixteen fit models. Here I use a ``for loop'' to fit the model to the data from a single mouse and use the slope (\(b_1\)) as the estimate of the tumor growth rate for that mouse.
+
+Use a for-loop to estimate growth rate for each mouse. In each pass through the loop
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  the subset of fig1f (the data in long format) belonging to mouse \emph{i} is created
+\item
+  the linear model \texttt{volume\ \textasciitilde{}\ day} is fit to the subset
+\item
+  the coefficient of day (the slope, \(b_1\)) is inserted in mouse \emph{i}'s row in the column ``growth'' in the data.table ``fig1f\_wide''.
+\end{enumerate}
+
+At the end of the loop, we have the data.table fig1f\_wide which has one row for each mouse, a column for the treatment factor (diet) and a column called ``growth'' containing each mouse's growth rate. There are also columns of tumor volume for each mouse on each day but these are ignored.
+
 \begin{Shaded}
 \begin{Highlighting}[]
 \NormalTok{N <-}\StringTok{ }\KeywordTok{nrow}\NormalTok{(fig1f_wide)}
 \NormalTok{id_list <-}\StringTok{ }\NormalTok{fig1f_wide[, id]}
 \ControlFlowTok{for}\NormalTok{(i }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\NormalTok{N)\{}
-\NormalTok{  fit <-}\StringTok{ }\KeywordTok{lm}\NormalTok{(volume }\OperatorTok{~}\StringTok{ }\NormalTok{day, }\DataTypeTok{data =}\NormalTok{ fig1f[id }\OperatorTok{==}\StringTok{ }\NormalTok{id_list[i]])}
+\NormalTok{  mouse_i_data <-}\StringTok{ }\NormalTok{fig1f[id }\OperatorTok{==}\StringTok{ }\NormalTok{id_list[i]] }\CommentTok{# subset}
+\NormalTok{  fit <-}\StringTok{ }\KeywordTok{lm}\NormalTok{(volume }\OperatorTok{~}\StringTok{ }\NormalTok{day, }\DataTypeTok{data =}\NormalTok{ mouse_i_data)}
 \NormalTok{  fig1f_wide[id }\OperatorTok{==}\StringTok{ }\NormalTok{id_list[i], growth }\OperatorTok{:}\ErrorTok{=}\StringTok{ }\KeywordTok{coef}\NormalTok{(fit)[}\DecValTok{2}\NormalTok{]]}
 \NormalTok{\}}
 \CommentTok{# View(fig1f_wide)}
@@ -6992,6 +7014,39 @@ Combining the response and effects plots into single plot
 \subsection{Import and plot of fig1f (methionine restriction) data}\label{import-and-plot-of-fig1f-methionine-restriction-data}}
 
 Import
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{data_from <-}\StringTok{ "Dietary methionine influences therapy in mouse cancer models and alters human metabolism"}
+\NormalTok{file_name <-}\StringTok{ "41586_2019_1437_MOESM2_ESM.xlsx"}
+\NormalTok{file_path <-}\StringTok{ }\KeywordTok{here}\NormalTok{(data_folder, data_from, file_name)}
+
+\NormalTok{fig1f_wide <-}\StringTok{ }\KeywordTok{read_excel}\NormalTok{(file_path,}
+                    \DataTypeTok{sheet =} \StringTok{"f"}\NormalTok{,}
+                    \DataTypeTok{range =} \StringTok{"B7:R12"}\NormalTok{,}
+                    \DataTypeTok{col_names =} \OtherTok{FALSE}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{data.table}\NormalTok{() }\CommentTok{# convert to data.table}
+
+\KeywordTok{setnames}\NormalTok{(fig1f_wide,}
+         \DataTypeTok{old =} \KeywordTok{colnames}\NormalTok{(fig1f_wide),}
+         \DataTypeTok{new =} \KeywordTok{c}\NormalTok{(}\StringTok{"day"}\NormalTok{,}
+                 \KeywordTok{paste0}\NormalTok{(}\StringTok{"Cn_"}\NormalTok{, }\DecValTok{1}\OperatorTok{:}\DecValTok{8}\NormalTok{),}
+                 \KeywordTok{paste0}\NormalTok{(}\StringTok{"MR_"}\NormalTok{, }\DecValTok{1}\OperatorTok{:}\DecValTok{8}\NormalTok{)))}
+
+\NormalTok{fig1f_wide <-}\StringTok{ }\KeywordTok{transpose}\NormalTok{(fig1f_wide, }\DataTypeTok{make.names =} \DecValTok{1}\NormalTok{, }\DataTypeTok{keep.names =} \StringTok{"id"}\NormalTok{)}
+\NormalTok{fig1f_wide[, treatment }\OperatorTok{:}\ErrorTok{=}\StringTok{ }\KeywordTok{factor}\NormalTok{(}\KeywordTok{substr}\NormalTok{(id, }\DecValTok{1}\NormalTok{, }\DecValTok{2}\NormalTok{))]}
+
+\NormalTok{days <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\DecValTok{21}\NormalTok{, }\DecValTok{25}\NormalTok{, }\DecValTok{28}\NormalTok{, }\DecValTok{30}\NormalTok{, }\DecValTok{34}\NormalTok{, }\DecValTok{39}\NormalTok{)}
+\NormalTok{fig1f <-}\StringTok{ }\KeywordTok{melt}\NormalTok{(fig1f_wide,}
+\NormalTok{              id.vars <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"treatment"}\NormalTok{, }\StringTok{"id"}\NormalTok{),}
+\NormalTok{              measure.vars <-}\StringTok{ }\KeywordTok{as.character}\NormalTok{(days),}
+              \DataTypeTok{variable.name =} \StringTok{"day"}\NormalTok{,}
+              \DataTypeTok{value.name =} \StringTok{"volume"}\NormalTok{)}
+\NormalTok{fig1f[, day }\OperatorTok{:}\ErrorTok{=}\StringTok{ }\KeywordTok{as.numeric}\NormalTok{(}\KeywordTok{as.character}\NormalTok{(day))]}
+\CommentTok{# View(fig1f)}
+\CommentTok{# qplot(x = day, y = volume, color = treatment, data = fig1f) + geom_line(aes(group = id))}
+\end{Highlighting}
+\end{Shaded}
 
 Creating the response plot (the bottom component)
 
