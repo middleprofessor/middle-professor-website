@@ -124,7 +124,7 @@
   \postauthor{\par}
       \predate{\centering\large\emph}
   \postdate{\par}
-    \date{Draft: 2020-09-30}
+    \date{Draft: 2020-10-04}
 
 \usepackage{booktabs}
 \usepackage{amsthm}
@@ -6019,13 +6019,15 @@ A ``best practice'' sequence of steps used throughout this text to analyze exper
 \def\labelenumi{\arabic{enumi}.}
 \tightlist
 \item
-  \textbf{exploratory plots} to
+  \textbf{examine the data} using \textbf{exploratory plots} to
 \end{enumerate}
 
 \begin{itemize}
 \tightlist
 \item
-  examine individual points and identify outliers that are likely due to data transcription errors or measurement blunders (not simply odd, but biologically plausible measures).
+  examine individual points and identify outliers that are likely due to data transcription errors or measurement blunders
+\item
+  examine \textbf{outlier} points that are biologically plausible, but raise ref flags about undue influe on fit models. This information is used to inform the researcher on the strategy to handle outliers in the statistical analysis, including algorithms for excluding data or implementation of \textbf{robust} methods.
 \item
   provide useful information for initial model filtering (narrowing the list of potential models that are relevant to the question and data). Statistical modeling includes a diverse array of models, yet almost all methods used by researchers in biology, and all models in this book, are generalizations of the linear model specified in \eqref{eq:draw-spec}. For some experiments, there may be multiple models that are relevant to the question and data. Model checking (step 3) can help decide which model to ultimately use.
 \end{itemize}
@@ -6179,7 +6181,11 @@ To avoid misconceptions that arise from thinking of statistical analysis as ``re
 \hypertarget{analysis-of-green-down-data}{%
 \subsection{Analysis of ``green-down'' data}\label{analysis-of-green-down-data}}
 
-To introduce some principles of modeling with a single continuous \(X\) variable, I'll use a dataset from \href{https://doi.org/10.1038/s41586-018-0399-1}{Richardson, A.D., Hufkens, K., Milliman, T. et al.~Ecosystem warming extends vegetation activity but heightens vulnerability to cold temperatures. Nature 560, 368--371 (2018).}.
+To introduce some principles of modeling with a single continuous \(X\) variable, I'll use a dataset from
+
+\href{https://doi.org/10.1038/s41586-018-0399-1}{Richardson, A.D., Hufkens, K., Milliman, T. et al.~Ecosystem warming extends vegetation activity but heightens vulnerability to cold temperatures. Nature 560, 368--371 (2018).}
+
+\href{https://www.nature.com/articles/s41586-018-0399-1\#Sec15}{Source data}
 
 The data are from a \href{https://mnspruce.ornl.gov}{long-term experiment on the effects of warming and CO2 on a high-carbon northern temperate peatland} and is the focal dataset of the study. The experiment involves 10 large, temperature and CO2 controlled enclosures. CO2 is set to 400 ppm in five enclosures and 900 ppm in five enclosures. Temperature of the five enclosures within each CO2 level is set to 0, 2.25, 4.5, 6.75, or 9 °C above ambient temperature. The multiple temperature levels is a \textbf{regression design}, which allows a researcher to measure non-linear effects. Read more about the experimental design and the \href{https://mnspruce.ornl.gov/design}{beautiful implementation}.
 
@@ -6191,7 +6197,7 @@ The question pursued is in this study is, what is the causal effect of warming o
 \def\labelenumi{\arabic{enumi}.}
 \tightlist
 \item
-  \textbf{Vet the data}
+  \textbf{Examine the data}
 \end{enumerate}
 
 \begin{Shaded}
@@ -6349,44 +6355,6 @@ day &= \beta_0 + \beta_1 temperature + \varepsilon\\
 
 A generating model of the data is used to make inference, for example, a measure of uncertainty in a prediction in the timing of green-down with future warming, or a measure of uncertainty about the effect of temperature on green-down.
 
-\hypertarget{using-a-regression-model-for-prediction-prediction-models}{%
-\subsection{Using a regression model for prediction -- prediction models}\label{using-a-regression-model-for-prediction-prediction-models}}
-
-Model \eqref{eq:continuous-x-fit} recovers the measured value of \(day\) (green-down DOY) for each enclosure. The equation includes the linear predictor (\(b_0 + b_1 temperature\)) and the \textbf{residual} from the predictor (\(e_i\)). The predictor part is called ``predictor'' because it is the equation for predicting the timing of green-down for any value of \(temperature\)
-
-\begin{equation}
-\widehat{day}_i = b_0 + b_1 temperature_i
-(\#eq:doy_hat)
-\end{equation}
-
-where \(\widehat{day}\) is read as ``day hat'' and is the \textbf{predicted value} or simply the \textbf{prediction}. I prefer \textbf{modeled value} but that term is not in widespread use. If the value is computed for the data that were used for the fit, then \(\widehat{day}_i\) is the \textbf{fitted value}. In a \textbf{prediction model}, we use the predictor part to predict unknown or future values given different modeled inputs (the \(X\)).
-
-T increase (°C)
-
-Predicted Green-down DOY
-
-1
-
-294
-
-2
-
-299
-
-3
-
-304
-
-4
-
-309
-
-5
-
-314
-
-In \textbf{multivariable} models (models with multiple \(X\) variables), the coefficients (or some function of the coefficients) might be used to assess the ``importance'' of the \(X\) variable to the prediction. In general, researchers are not interested in what the coefficients ``mean'' unless the model is also explicitly causal.
-
 \hypertarget{using-a-regression-model-for-explanation-causal-models}{%
 \subsection{Using a regression model for ``explanation'' -- causal models}\label{using-a-regression-model-for-explanation-causal-models}}
 
@@ -6482,12 +6450,239 @@ This bias (\(\rho \alpha \frac{\sigma_{moisture}}{\sigma_{temperature}}\)) is \t
 
 Causal interpretation requires conditioning on ``doing X=x''. For the green-down data, ``doing X=x'' is achieved by the random treatment assignment of the enclosures. How does random treatment assignment achieve this? Look again at Figure \ref{fig:continuous-x-dag}. If the values of \(treatment\) are randomly assigned, then, by definition, the expected value of the correlation between \(treatment\) and \(moisture\) is zero. In fact, the expected value of the correlation between \(treatment\) and any measurable variable at the study site is zero. Given, this, the expected value of the regression coefficient for \(temperature\) (\(b_1\)) is \(\beta\) because \(\rho=0\). That is, the estimate of the true effect is unbiased. It doesn't matter if \(moisture\), or any other variable, is excluded from the model. (That said, we may want to include moisture or other variables in the model to increase precision of the causal effect. This is addressed in the chapter ``Models with Covariates''). This is what an experiment does and why experiments are used to answer causal questions.
 
-Can we use observational data for causal modeling? Yes, but the methods for this are outside of the scope of this text. The mathematical foundation for this is known as \textbf{path analysis}, which was developed by geneticist and evolutionary biologist Sewell Wright (I include this because this work has inspired much of how I think about biology and because he is both my academic grandfather and great-grandfather). Causal analysis of observational data in biology is rare outside of ecology and epidemiology. Good starting points for the modern development of causal analysis are \href{https://www.hsph.harvard.edu/miguel-hernan/causal-inference-book/}{Hernán MA and Robins JM (2020)} and \href{https://www.annualreviews.org/doi/abs/10.1146/annurev-genom-083117-021731}{Burgess et al.~(2018)}. A gentle introduction is \href{https://www.basicbooks.com/titles/judea-pearl/the-book-of-why/9780465097609/}{Pearl and Mackenzie (2018)}
+Can we use observational data for causal modeling? Yes, but the methods for this are outside of the scope of this text. The mathematical foundation for this is known as \textbf{path analysis}, which was developed by geneticist and evolutionary biologist Sewell Wright (I include this because this work has inspired much of how I think about biology and because he is both my academic grandfather and great-grandfather). Causal analysis of observational data in biology is rare outside of ecology and epidemiology. Good starting points for the modern development of causal analysis are \href{https://www.hsph.harvard.edu/miguel-hernan/causal-inference-book/}{Hernán MA and Robins JM (2020)} and \href{https://www.annualreviews.org/doi/abs/10.1146/annurev-genom-083117-021731}{Burgess et al.~(2018)}. A gentle introduction is \href{https://www.basicbooks.com/titles/judea-pearl/the-book-of-why/9780465097609/}{Pearl and Mackenzie (2018)}.
+
+\hypertarget{using-a-regression-model-for-prediction-prediction-models}{%
+\subsection{Using a regression model for prediction -- prediction models}\label{using-a-regression-model-for-prediction-prediction-models}}
+
+The researchers in the green-down study also presented estimates of the effect of temperature on green-down using two observational datasets. Let's use the one in Extended Data Figure 3d to explore using a regression model for prediction. The data are taken from measurements of the day of green-down over an 86 year period at a single site. The response variable is \(green\_down\_anomaly\) (the difference between the day of green down for the year and the mean of these days over the 86 years). The predictor variable is \(autumn\_temp\_anomaly\) (the difference between the mean temperature over the year and the mean of these means).
+
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/continuous-x-pred-fig-1.pdf}
+
+The plot in figure \ref{fig:continuous-x-pred-fig} shows the regression line of a linear model fit to the data. Two statistics are given in the plot.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  The \emph{p}-value of the slope (the coefficient \(b_1\) of \(autumn\_temp\_anomaly\)) 2. The \(R^2\) of the model fit.
+\end{enumerate}
+
+In addition, two intervals are shown.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  95\% \textbf{confidence interval} of the expected values in blue. The width of this band is a measure of the precision of the estimates of expected values.
+\item
+  95\% \textbf{prediction interval} of the predictions in gray. The width of this band is a measure of how well the model predicts.
+\end{enumerate}
+
+It is important that researchers knows what each of these statistics and bands are, when to compute them and when to ignore them them, and what to say about each when communicating the results.
+
+\hypertarget{ci-and-p-value}{%
+\subsubsection{\texorpdfstring{95\% CI and \emph{p}-value}{95\% CI and p-value}}\label{ci-and-p-value}}
+
+Both the 95\% confidence interval of the expected values and the \emph{p}-value are a function of the standard error of the slope coefficient \(b_1\) and so are complimentary statistics. The \emph{p}-value is the probability of sampling the null that results in a \(t\)-value as or more extreme than the observed \emph{t} for the coefficient \(b_1\). This null includes the hypothesis \(\beta_1 = 0\). The 95\% confidence interval of the expected values is the band containing expected values (mean \(green\_down\_anomaly\) conditional on \(autumn\_temp\_anomaly\)) that are compatible with the data. There are a couple of useful ways of thinking about this band.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  The band captures an infinite number of regression lines that are compatible with the data. Some are more steep and predict smaller expected values at the low end of \(autumn\_temp\_anomaly\) and higher expected values at the high end of \(autumn\_temp\_anomaly\). Others are less steep and predict higher expected values at the low end of \(autumn\_temp\_anomaly\) and lower expected values at the high end of \(autumn\_temp\_anomaly\).
+\item
+  The band captures the 95\% CI of the conditional mean at every value of \(X\). Consider the 95\% CI of the conditional mean at the mean value of \(X\). As we move away from this mean value (lower to higher \(X\)), the 95\% CI of the conditional mean increases.
+\end{enumerate}
+
+A 95\% CI and \emph{p}-value are useful statistics to report if the purpose is \emph{causal modeling}, as in the example above using the experimental green-down data (where the 95\% CI was not presented as a confidence band of the expected values but a CI of the estimate of the effect of added temperature).
+
+\hypertarget{prediction-interval-and-r2}{%
+\subsubsection{\texorpdfstring{95\% prediction interval and \(R^2\)}{95\% prediction interval and R\^{}2}}\label{prediction-interval-and-r2}}
+
+Both the \(R^2\) and the 95\% prediction interval are a function of the \emph{population} variability of \(green\_down\_anomaly\) conditional on \(autumn\_temp\_anomaly\) (the spread of points along a vertical axis about the regression line) and are complimentary statistics. Briefly,
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  the \(R^2\) is a measure of the fraction of the variance in the response that is accounted by the model (some sources say ``explained by the model'' but this is an odd use of ``explain''). It is a number between 0 and 1 and is a measure of ``predictability'' if the goal is prediction modeling.
+\item
+  The 95\% prediction interval will contain a new observation 95\% of the time. It provides bounds on a \textbf{prediction} -- given a new observation, there is a 95\% probability that the interval at \(x_{new}\) will contain \(y_{new}\).
+\end{enumerate}
+
+To understand \(R^2\) and the 95\% prediction interval a bit better, let's back up.
+
+\begin{equation}
+green\_down\_anomaly_i = b_0 + b_1 autumn\_temp\_anomaly_i + e_i
+(\#eq:doy_fit)
+\end{equation}
+
+Model @ref(eq:eq:doy\_fit) recovers the measured value of \(green\_down\_anomaly\) for any year, given the \(autumn\_temp\_anomaly\) for the year. The equation includes the linear predictor (\(b_0 + b_1 autumn\_temp\_anomaly_i\)) and the \textbf{residual} from the predictor (\(e_i\)). The predictor part of @ref(eq:doy\_fit) is used to compute \(\hat{y}\) (``y hat'').
+
+\begin{equation}
+\hat{y}_i = b_0 + b_1 autumn\_temp\_anomaly_i
+(\#eq:doy_hat)
+\end{equation}
+
+The \(\hat{y}\) are \textbf{fitted values}, if the values are computed from the data that were used for the fit, or \textbf{predicted values} (or simply the \textbf{prediction}), if the values are computed from values of the predictor variables outside the set used to fit the model. For the purpose of plotting, generally, with models with categorical factors as \(X\), I prefer either \textbf{modeled values} or \textbf{conditional means} to fitted values.
+
+\hypertarget{r2}{%
+\subsubsection{\texorpdfstring{\(R^2\)}{R\^{}2}}\label{r2}}
+
+A good model accounts for a sizable fraction of the total variance in the response. This fraction is the \(R^2\) value, which is given in \texttt{summary(m1)} and accessed directly with
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{summary}\NormalTok{(m1)}\OperatorTok{$}\NormalTok{r.squared}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0.1305754
+\end{verbatim}
+
+\(R^2\) is the fraction of the total variance of \(Y\) that is generated by the linear predictor.
+
+\begin{equation}
+R^2 = \frac{\mathrm{VAR}(\hat{y})}{\mathrm{VAR}(y)}
+\end{equation}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{yhat <-}\StringTok{ }\KeywordTok{fitted}\NormalTok{(m1)}
+\NormalTok{y <-}\StringTok{ }\NormalTok{efig_3d[, green_down_anomaly]}
+\KeywordTok{var}\NormalTok{(yhat)}\OperatorTok{/}\KeywordTok{var}\NormalTok{(y)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0.1305754
+\end{verbatim}
+
+\(R^2\) will vary from zero (the model accounts for nothing) to one (the model accounts for everything). \(R^2\) is often described as the fraction of total variation \emph{explained} by the model" but the usage of ``explain'' is observational and not causal. Because of the ambiguous usage of ``explain'' in statistics, I prefer to avoid the word.
+
+It can be useful sometimes to think of \(R^2\) in terms of \textbf{residual error}, which is the variance of the residuals from the model. The larger the residual error, the smaller the \(R^2\), or
+
+\begin{equation}
+R^2 = 1 - \frac{\mathrm{VAR}(e)}{\mathrm{VAR}(y)}
+\end{equation}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{e <-}\StringTok{ }\KeywordTok{residuals}\NormalTok{(m1)}
+\NormalTok{y <-}\StringTok{ }\NormalTok{efig_3d[, green_down_anomaly]}
+\DecValTok{1} \OperatorTok{-}\StringTok{ }\KeywordTok{var}\NormalTok{(e)}\OperatorTok{/}\KeywordTok{var}\NormalTok{(y)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0.1305754
+\end{verbatim}
+
+The smaller the residuals, the higher the \(R^2\) and the closer the predicted values are to the measured values. The sum of the model variance and residual variance equals the total variance and, consequently, \(R^2\) is a signal to signal + noise ratio. The noise in \(R^2\) is the sampling variance of the individual measures. The noise in a \emph{t}-value is the sampling variance of the parameter (for m1, this is the sampling variance of \(b_1\)). This is an important distinction because it means that \emph{t} and \(R^2\) are not related 1:1. In a simple model with only a single \(X\), one might expect \(R^2\) to be big if the \emph{p}-value for the slope is tiny, but this isn't necessarily true because of the different meaning of noise in each. A study with a very large sample size \(n\) can have a tiny \emph{p}-value \emph{and} a small \(R^2\). A \emph{p}-value is not a good indicator of predictability. \(R^2\) is. This is explored more below.
+
+\hypertarget{prediction-interval}{%
+\subsubsection{Prediction interval}\label{prediction-interval}}
+
+A good prediction model has high predictability, meaning the range of predicted values is narrow. A 95\% CI is a reasonable range to communicate. For any decision making using prediction, it is better to look at numbers than a band on a plot.
+
+Autumn Temp Anomaly (°C)
+
+Expected (days)
+
+2.5\% (days)
+
+97.5\% (days)
+
+0.5
+
+0.8
+
+-8.7
+
+10.3
+
+1.0
+
+1.6
+
+-7.9
+
+11.1
+
+1.5
+
+2.4
+
+-7.2
+
+12.0
+
+2.0
+
+3.2
+
+-6.4
+
+12.8
+
+2.5
+
+4.0
+
+-5.7
+
+13.7
+
+Given these data and the fit model, if we see a 2 °C increase in mean fall temperature, we expect the autumn green-down to extend 3.2 days. This expectation is an average. We'd expect 95\% of actual values to range between -6.4 days and 12.8 days. This is a lot of variability. Any prediction has a reasonable probability of being over a week early or late. This may seem surprising given the \emph{p}-value of the fit, which is 0.0006. But the \emph{p}-value is not a reliable indicator of predictability. It is a statistic related to the blue band, not the gray band.
+
+To understand this prediction interval a bit more, and why a \emph{p}-value is not a good indicator of predictability, it's useful to understand what makes a prediction interval ``wide''. The width of the prediction interval is a function of two kinds of variability
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  The variance of the expected value at a specific value of \(X\). This is the square of the standard error of \(b_1\). The blue band is communicating the CI based on this variance. The \emph{p}-value is related to the wideth of this band.
+\item
+  The variance of \(Y\) at a specific value of \(X\). This variance is \(\sigma^2\). It is useful for learning to think about the equation for the estimate of this variance.
+\end{enumerate}
+
+\begin{equation}
+\hat\sigma^2 = \frac{\sum{e_i^2}}{n-2}
+\end{equation}
+
+Again, \(e_i\) is the residual for the \emph{i}th case. The denominator (\(n-2\)) is the degrees of freedom of the model. Computing \(\hat\sigma^2\) manually helps to insure that we understand what is going on.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{summary}\NormalTok{(m1)}\OperatorTok{$}\NormalTok{sigma }\CommentTok{# R's calculation of sigma hat}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 4.736643
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{df <-}\StringTok{ }\KeywordTok{summary}\NormalTok{(m1)}\OperatorTok{$}\NormalTok{df[}\DecValTok{2}\NormalTok{] }\CommentTok{# R's calculation of df. Check that this is n-2!}
+\KeywordTok{sqrt}\NormalTok{(}\KeywordTok{sum}\NormalTok{(e}\OperatorTok{^}\DecValTok{2}\NormalTok{)}\OperatorTok{/}\NormalTok{df)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 4.736643
+\end{verbatim}
+
+Remember that an assumption of the linear models that we are working with at this point is, this variance is constant for all values of \(X\), so we have a single \(\sigma\). Later, we will cover linear models that model heterogeneity in this variance. \(\sigma\) is a function of variability in the population -- it is the population standard deviation conditional on \(X\).
+
+Importantly, predictability is a function of both these components of variability. As a consequence, it is \(R^2\), and not the \emph{p}-value, that is the indicator of predictability. In the observational green-down data, even if we had thousands of years of data, we would still have a pretty low \(R^2\) because of the population variability of \(green\_down\_anomaly\) at a given \(autumn\_temp\_anomaly\).
 
 \hypertarget{using-a-regression-model-for-creating-a-new-response-variable-comparing-slopes-of-longitudinal-data}{%
 \subsection{Using a regression model for creating a new response variable -- comparing slopes of longitudinal data}\label{using-a-regression-model-for-creating-a-new-response-variable-comparing-slopes-of-longitudinal-data}}
 
-The researchers compared the growth rate of tumors in mice fed normal chow versus mice with a methionine restricted diet. Growth rate wasn't actually compared. Instead, the researchers used a \emph{t}-test to compare the size of the tumor measured at six different days. A problem with multiple \emph{t}-tests for this dataset is that the errors (residuals from the model) on one day are correlated with the errors from another day because of the repeated measures on each mouse. This correlation will inflate Type I error rate.
+In the study in this example, the researchers compared the growth rate of tumors in mice fed normal chow versus mice with a methionine restricted diet. Growth rate wasn't actually compared. Instead, the researchers used a \emph{t}-test to compare the size of the tumor measured at six different days. A problem with multiple \emph{t}-tests for this dataset is that the errors (residuals from the model) on one day are correlated with the errors from another day because of the repeated measures on each mouse. This correlation will inflate Type I error rate.
 
 Instead of six \emph{t}-tests, a better strategy for these data is to use a regression to calculate a tumor growth rate for each mouse. There are sixteen mice so this is sixteen fit models. Here I use a ``for loop'' to fit the model to the data from a single mouse and use the slope (\(b_1\)) as the estimate of the tumor growth rate for that mouse.
 
@@ -6771,71 +6966,21 @@ Confidence intervals are often interpreted like \(p\)-values. That is, the resea
 
 Second, what we want to use the CI for is to guide us about how big or small the effect might reasonably be, given the data. Again, A CI is a measure of parameter values that are ``compatible'' with the data. If our biological interpretations at the small-end and at the big-end of the interval's range radically differ, then we don't have enough \emph{precision} in our analysis to reach an unambiguous conclusion.
 
-\hypertarget{how-good-is-our-model}{%
-\subsection{How good is our model?}\label{how-good-is-our-model}}
+\hypertarget{how-good-is-our-model-model-checking}{%
+\subsection{How good is our model? -- Model checking}\label{how-good-is-our-model-model-checking}}
 
-There are two, quite different senses of what is meant by a good model. The first sense is, how good is the model at predicting? The second is, how well do the data look like a sample from the modeled distribution? For predictive models, we care about the first but not the second. For explanatory models -- the stuff of this text -- we care about the second (always) and the first (more or less).
+There are two, quite different senses of what is meant by a good model.
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
 \tightlist
 \item
-  \textbf{R\^{}2} For prediction, a good model accounts for a large fraction of the total variance. The fraction of the total variance accounted for by the model is the \(R^2\) value, which is given in \texttt{summary(m1)} and accessed directly with
-\end{enumerate}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{summary}\NormalTok{(m1)}\OperatorTok{$}\NormalTok{r.squared}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-## [1] 0.9099475
-\end{verbatim}
-
-\(R^2\) is the fraction of the total variance of \(Y\) that is generated by the linear predictor.
-
-\begin{equation}
-R^2 = \frac{\mathrm{VAR}(\hat{y})}{\mathrm{VAR}(y)}
-\end{equation}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{var}\NormalTok{(}\KeywordTok{fitted}\NormalTok{(m1))}\OperatorTok{/}\KeywordTok{var}\NormalTok{(fig2[, transition_date])}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-## [1] 0.02165428
-\end{verbatim}
-
-\(R^2\) will vary from zero (the model accounts for nothing) to one (the model accounts for everything). \(R^2\) is often described as the fraction of total variation \emph{explained} by the model" but the usage of ``explain'' is observational and not causal. Because of the ambiguous usage of ``explain'' in statistics, I prefer to avoid the word.
-
-It can be useful sometimes to think of \(R^2\) in terms of \textbf{residual error}, which is the variance of the residuals from the model. The larger the residual error, the smaller the \(R^2\), or
-
-\begin{equation}
-R^2 = 1 - \frac{\mathrm{VAR}(e)}{\mathrm{VAR}(y)}
-\end{equation}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\DecValTok{1} \OperatorTok{-}\StringTok{ }\KeywordTok{var}\NormalTok{(}\KeywordTok{residuals}\NormalTok{(m1))}\OperatorTok{/}\KeywordTok{var}\NormalTok{(fig2[, transition_date])}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-## [1] 0.997857
-\end{verbatim}
-
-The smaller the residuals, the higher the \(R^2\) and the closer the predicted values are to the measured values. The sum of the model variance and residual variance equals the total variance and, consequently, \(R^2\) is a signal to signal + noise ratio. The noise in \(R^2\) is the sampling variance of the individual measures. The noise in a \emph{t}-value is the sampling variance of the parameter (for m1, this is the sampling variance of \(b_1\)). This is an important distinction because it means that \emph{t} and \(R^2\) are not related 1:1. In a simple model with only a single \(X\), one might expect \(R^2\) to be big if the \emph{p}-value for the slope is tiny, but this isn't necessarily true because of the different meaning of noise in each. A study with a very large sample size \(n\) can have a tiny \emph{p}-value \emph{and} a small \(R^2\). A \emph{p}-value is not a good indicator of predictability. \(R^2\) is.
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\setcounter{enumi}{1}
-\tightlist
+  How good is the model at predicting? Or, how much of the variance in the response (the stuff to be ``explained'') is accounted for by the model? This was described above.
 \item
-  \textbf{Model checking} For inference, a good model generates data that looks like the real data. If this is true, our fit model will have well-behaved residuals. There are several aspects of ``well-behaved'' and each is checked with a diagnostic plot. This model checking is covered in more detail in chapter xxx.
+  How well do the data look like a sample from the modeled distribution? If not well, we should consider alternative models. This is \textbf{model checking}.
 \end{enumerate}
+
+For inference, a good model generates data that look like the real data. If this is true, our fit model will have well-behaved residuals. There are several aspects of ``well-behaved'' and each is checked with a diagnostic plot. This \textbf{model checking} is covered in more detail in chapter xxx.
 
 Inference from model \eqref{eq:continuous-x-m1} assumes the data were sampled from a normal distribution. To check this, use a quantile-quantile or \textbf{Q-Q plot}. The \texttt{qqPlot} function from the car package generates a more useful plot than that from Base R.
 
@@ -6846,7 +6991,7 @@ Inference from model \eqref{eq:continuous-x-m1} assumes the data were sampled fr
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-139-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-140-1.pdf}
 
 Approximately normal residuals will track the solid line and stay largely within the boundaries marked by the dashed lines. The residuals from m1 fit to the green-down data track the solid line and remain within the dashed lines, indicating adequate model fit.
 
@@ -6860,7 +7005,7 @@ Inference from model \eqref{eq:continuous-x-m1} assumes homogeneity of the respo
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-140-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-141-1.pdf}
 
 \begin{verbatim}
 ## 
@@ -6869,11 +7014,275 @@ Inference from model \eqref{eq:continuous-x-m1} assumes homogeneity of the respo
 
 The dashed blue line shows linear trends while the magenta line shows non-linear trends. For the green-down data, the dashed line is very flat while the magenta-line shows what looks like random fluctations. Taken together, the two lines indicate adequate model fit.
 
+\hypertarget{plotting-models-with-continuous-x}{%
+\subsection{\texorpdfstring{Plotting models with continuous \emph{X}}{Plotting models with continuous X}}\label{plotting-models-with-continuous-x}}
+
+\hypertarget{quick-plot}{%
+\subsubsection{Quick plot}\label{quick-plot}}
+
+\texttt{qplot} from the ggplot package is useful for initial examinations of the data
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{qplot}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ temperature, }\DataTypeTok{y =}\NormalTok{ transition_date, }\DataTypeTok{data =}\NormalTok{ fig2c) }\OperatorTok{+}\StringTok{ }\KeywordTok{geom_smooth}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-142-1.pdf}
+
+Some variations of this quick plot to explore include
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  use \texttt{geom\_smooth(method\ =\ "lm")}
+\end{enumerate}
+
+\hypertarget{ggpubr-plots}{%
+\subsubsection{ggpubr plots}\label{ggpubr-plots}}
+
+ggpubr is a package with functions that automates the construction of publication-ready ggplots. \texttt{ggscatter} can generate a publishable plot with little effort.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{ggscatter}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ fig2c,}
+          \DataTypeTok{x =} \StringTok{"temperature"}\NormalTok{,}
+          \DataTypeTok{y =} \StringTok{"transition_date"}\NormalTok{,}
+          \DataTypeTok{add =} \StringTok{"reg.line"}\NormalTok{,}
+          \DataTypeTok{xlab =} \StringTok{"Added Temperature (°C)"}\NormalTok{,}
+          \DataTypeTok{ylab =} \StringTok{"Day of Green-down (DOY)"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-143-1.pdf}
+
+It take only a little more effort to add useful modifications.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{ggscatter}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ fig2c,}
+          \DataTypeTok{x =} \StringTok{"temperature"}\NormalTok{,}
+          \DataTypeTok{y =} \StringTok{"transition_date"}\NormalTok{,}
+          \DataTypeTok{color =} \StringTok{"black"}\NormalTok{,}
+          \DataTypeTok{fill =} \StringTok{"red"}\NormalTok{,}
+          \DataTypeTok{shape =} \DecValTok{21}\NormalTok{,}
+          \DataTypeTok{size =} \DecValTok{3}\NormalTok{,}
+          \DataTypeTok{add =} \StringTok{"reg.line"}\NormalTok{,}
+          \DataTypeTok{add.params =} \KeywordTok{list}\NormalTok{(}\DataTypeTok{color =} \StringTok{"steelblue"}\NormalTok{,}
+                            \DataTypeTok{fill =} \StringTok{"lightgray"}\NormalTok{),}
+          \DataTypeTok{conf.int =} \OtherTok{TRUE}\NormalTok{,}
+          \DataTypeTok{xlab =} \StringTok{"Added Temperature (°C)"}\NormalTok{,}
+          \DataTypeTok{ylab =} \StringTok{"Day of Green-down (DOY)"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }
+\StringTok{  }\KeywordTok{stat_regline_equation}\NormalTok{(}\DataTypeTok{size =} \DecValTok{4}\NormalTok{,}
+                        \DataTypeTok{label.y =} \DecValTok{340}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{stat_cor}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{label =} \KeywordTok{paste}\NormalTok{(..rr.label.., ..p.label.., }\DataTypeTok{sep =} \StringTok{"~`,`~"}\NormalTok{)),}
+           \DataTypeTok{size =} \DecValTok{4}\NormalTok{,}
+           \DataTypeTok{label.y =} \DecValTok{335}\NormalTok{) }\OperatorTok{+}
+
+\StringTok{  }\OtherTok{NULL}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-144-1.pdf}
+
+Notes
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  The interval shown is the 95\% confidence interval of the expected values, which is what we want to communicate with the experimental green-down data. Were we to want to use this as a prediction model, we would want the 95\% prediction interval. I'm not sure that ggpubr can plot a prediction interval. To see how I plotted the prediction interval in Figure \ref{fig:continuous-x-pred-fig} above, see the Hidden Code section below.
+\item
+  The arguments of the \texttt{ggscatter} function are typed in explicitly (\texttt{x\ =\ "temperarture"} and not just \texttt{"temperature"}). Each argument starts on a new line to increase readability.
+\item
+  The \texttt{+} after the \texttt{ggscatter} function adds additional layers to the plot. Each additional component is started on a new line to increase readability.
+\item
+  The first line of the \texttt{stat\_cor} function (everything within \texttt{aes()}) plots the \(R^2\) instead of the correlation coefficient \(r\). Copy and pasting this whole line just works.
+\item
+  Comment out the line of the ggplot script starting with \texttt{stat\_cor} and re-run (comment out by inserting a \texttt{\#} at the front of the line. A consistent way to do this is to triple-click the line to highlight the line and then type command-shift-c on Mac OS). The script runs without error because \texttt{NULL} has been added as the final plot component. Adding ``NULL'' is a useful trick.
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{ggscatter}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ efig_3d,}
+          \DataTypeTok{x =} \StringTok{"autumn_temp_anomaly"}\NormalTok{,}
+          \DataTypeTok{y =} \StringTok{"green_down_anomaly"}\NormalTok{,}
+          \DataTypeTok{color =} \StringTok{"black"}\NormalTok{,}
+          \DataTypeTok{fill =} \StringTok{"red"}\NormalTok{,}
+          \DataTypeTok{shape =} \DecValTok{21}\NormalTok{,}
+          \DataTypeTok{size =} \DecValTok{3}\NormalTok{,}
+          \DataTypeTok{add =} \StringTok{"reg.line"}\NormalTok{,}
+          \DataTypeTok{add.params =} \KeywordTok{list}\NormalTok{(}\DataTypeTok{color =} \StringTok{"steelblue"}\NormalTok{,}
+                            \DataTypeTok{fill =} \StringTok{"lightgray"}\NormalTok{),}
+          \DataTypeTok{conf.int =} \OtherTok{TRUE}\NormalTok{,}
+          \DataTypeTok{xlab =} \StringTok{"Added Temperature (°C)"}\NormalTok{,}
+          \DataTypeTok{ylab =} \StringTok{"Day of Green-down (DOY)"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-145-1.pdf}
+
+\hypertarget{ggplots}{%
+\subsubsection{ggplots}\label{ggplots}}
+
+Use \texttt{ggplot} from the ggplot2 package for full control of plots. See the Hidden Code below for how I generated the plots in Figure \ref{fig:continuous-x-plot} above.
+
+\hypertarget{creating-a-table-of-predicted-values-and-95-prediction-intervals}{%
+\subsection{Creating a table of predicted values and 95\% prediction intervals}\label{creating-a-table-of-predicted-values-and-95-prediction-intervals}}
+
+efig\_3d is the data.table created from importing the data in Extended Data Figure 3d above. The fit model is
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{efig3d_m1 <-}\StringTok{ }\KeywordTok{lm}\NormalTok{(green_down_anomaly }\OperatorTok{~}\StringTok{ }\NormalTok{autumn_temp_anomaly, }\DataTypeTok{data =}\NormalTok{ efig_3d)}
+\end{Highlighting}
+\end{Shaded}
+
+The \texttt{predict(efig3d\_m1)} function is used to compute either fitted or predicted values, and either the confidence or prediction interval of these values.
+
+Unless specified by \texttt{newdata}, the default x-values used to generate the y in \texttt{predict(efig3d\_m1)} are the x-values in the data used to fit the model. The returned values are the expected value for each \(x_i\) in the data. The argument \texttt{newdata} passes a data.frame (remember a data.table is a data.frame!) with new x-values. Since these x-values were not in the data used to fit the model, the returned \(y_{hat}\) are predicted values.
+
+The range of x-values in the data is
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{range}\NormalTok{(efig_3d[,autumn_temp_anomaly])}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] -2.673793  2.568045
+\end{verbatim}
+
+Let's get predicted values for a value of \(autumn\_temp\_anomaly = 2\).
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{predict}\NormalTok{(efig3d_m1, }\DataTypeTok{newdata =} \KeywordTok{data.table}\NormalTok{(}\DataTypeTok{autumn_temp_anomaly =} \DecValTok{2}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##        1 
+## 3.192646
+\end{verbatim}
+
+And predicted values across the range of measured values
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{new_dt <-}\StringTok{ }\KeywordTok{data.table}\NormalTok{(}\DataTypeTok{autumn_temp_anomaly =} \KeywordTok{c}\NormalTok{(}\OperatorTok{-}\DecValTok{2}\NormalTok{, }\DecValTok{-1}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{2}\NormalTok{))}
+\KeywordTok{predict}\NormalTok{(efig3d_m1, }\DataTypeTok{newdata =}\NormalTok{ new_dt)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##         1         2         3         4 
+## -3.192646 -1.596323  1.596323  3.192646
+\end{verbatim}
+
+Add 95\% confidence intervals (this could be used to create the band for plotting)
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{predict}\NormalTok{(efig3d_m1, }
+        \DataTypeTok{newdata =}\NormalTok{ new_dt,}
+        \DataTypeTok{interval =} \StringTok{"confidence"}\NormalTok{,}
+        \DataTypeTok{se.fit =} \OtherTok{TRUE}\NormalTok{)}\OperatorTok{$}\NormalTok{fit}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##         fit        lwr        upr
+## 1 -3.192646 -5.2485713 -1.1367215
+## 2 -1.596323 -2.9492686 -0.2433778
+## 3  1.596323  0.2433778  2.9492686
+## 4  3.192646  1.1367215  5.2485713
+\end{verbatim}
+
+Change to the 95\% prediction intervals
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{predict}\NormalTok{(efig3d_m1, }
+        \DataTypeTok{newdata =}\NormalTok{ new_dt,}
+        \DataTypeTok{interval =} \StringTok{"prediction"}\NormalTok{,}
+        \DataTypeTok{se.fit =} \OtherTok{TRUE}\NormalTok{)}\OperatorTok{$}\NormalTok{fit}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##         fit        lwr       upr
+## 1 -3.192646 -12.833739  6.448446
+## 2 -1.596323 -11.112325  7.919679
+## 3  1.596323  -7.919679 11.112325
+## 4  3.192646  -6.448446 12.833739
+\end{verbatim}
+
+Put this all together in a pretty table. I've used knitr's \texttt{kable} function but there are table packages in R that allow extensive control of the output.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{efig3d_m1 <-}\StringTok{ }\KeywordTok{lm}\NormalTok{(green_down_anomaly }\OperatorTok{~}\StringTok{ }\NormalTok{autumn_temp_anomaly, }\DataTypeTok{data =}\NormalTok{ efig_3d)}
+\NormalTok{new_dt <-}\StringTok{ }\KeywordTok{data.table}\NormalTok{(}\DataTypeTok{autumn_temp_anomaly =} \KeywordTok{c}\NormalTok{(}\OperatorTok{-}\DecValTok{2}\NormalTok{, }\DecValTok{-1}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{2}\NormalTok{))}
+\NormalTok{prediction_table <-}\StringTok{ }\KeywordTok{predict}\NormalTok{(efig3d_m1, }
+                            \DataTypeTok{newdata =}\NormalTok{ new_dt,}
+                            \DataTypeTok{interval =} \StringTok{"prediction"}\NormalTok{,}
+                            \DataTypeTok{se.fit =} \OtherTok{TRUE}\NormalTok{)}\OperatorTok{$}\NormalTok{fit}
+\NormalTok{prediction_table <-}\StringTok{ }\KeywordTok{data.table}\NormalTok{(new_dt, prediction_table)}
+\NormalTok{pretty_names <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"Autumn Temp Anomaly"}\NormalTok{, }\StringTok{"Estimate"}\NormalTok{, }\StringTok{"2.5%"}\NormalTok{, }\StringTok{"97.5%"}\NormalTok{)}
+\KeywordTok{setnames}\NormalTok{(prediction_table, }\DataTypeTok{old =} \KeywordTok{colnames}\NormalTok{(prediction_table), }\DataTypeTok{new =}\NormalTok{ pretty_names)}
+\NormalTok{knitr}\OperatorTok{::}\KeywordTok{kable}\NormalTok{(prediction_table, }\DataTypeTok{digits =} \KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{1}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+Autumn Temp Anomaly
+
+Estimate
+
+2.5\%
+
+97.5\%
+
+-2
+
+-3.2
+
+-12.8
+
+6.4
+
+-1
+
+-1.6
+
+-11.1
+
+7.9
+
+1
+
+1.6
+
+-7.9
+
+11.1
+
+2
+
+3.2
+
+-6.4
+
+12.8
+
 \hypertarget{hidden-code}{%
 \section{Hidden code}\label{hidden-code}}
 
-\hypertarget{import-and-plot-of-fig2c-ecosystem-warming-data}{%
-\subsection{Import and plot of fig2c (ecosystem warming) data}\label{import-and-plot-of-fig2c-ecosystem-warming-data}}
+\hypertarget{import-and-plot-of-fig2c-ecosystem-warming-experimental-data}{%
+\subsection{Import and plot of fig2c (ecosystem warming experimental) data}\label{import-and-plot-of-fig2c-ecosystem-warming-experimental-data}}
 
 Import
 
@@ -7010,6 +7419,95 @@ Combining the response and effects plots into single plot
 \end{Highlighting}
 \end{Shaded}
 
+\hypertarget{import-and-plot-efig_3d-ecosysem-warming-observational-data}{%
+\subsection{Import and plot efig\_3d (Ecosysem warming observational) data}\label{import-and-plot-efig_3d-ecosysem-warming-observational-data}}
+
+Import
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{data_from <-}\StringTok{ "Ecosystem warming extends vegetation activity but heightens vulnerability to cold temperatures"}
+\NormalTok{file_name <-}\StringTok{ "41586_2018_399_MOESM6_ESM.xlsx"}
+\NormalTok{file_path <-}\StringTok{ }\KeywordTok{here}\NormalTok{(data_folder, data_from, file_name)}
+\NormalTok{efig_3d <-}\StringTok{ }\KeywordTok{read_excel}\NormalTok{(file_path,}
+                   \DataTypeTok{range =} \StringTok{"J2:K87"}\NormalTok{,}
+                   \DataTypeTok{col_names =} \OtherTok{FALSE}\NormalTok{) }\OperatorTok{%>%}\StringTok{ }\CommentTok{# header causing issues}
+\StringTok{  }\KeywordTok{data.table}\NormalTok{() }\CommentTok{# convert to data.table}
+\KeywordTok{setnames}\NormalTok{(efig_3d, }\DataTypeTok{old =} \KeywordTok{colnames}\NormalTok{(efig_3d), }\DataTypeTok{new =} \KeywordTok{c}\NormalTok{(}\StringTok{"autumn_temp_anomaly"}\NormalTok{, }\StringTok{"green_down_anomaly"}\NormalTok{))}
+
+\CommentTok{# View(efig_3d)}
+\end{Highlighting}
+\end{Shaded}
+
+Plot
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{m1 <-}\StringTok{ }\KeywordTok{lm}\NormalTok{(green_down_anomaly }\OperatorTok{~}\StringTok{ }\NormalTok{autumn_temp_anomaly, }\DataTypeTok{data =}\NormalTok{ efig_3d)}
+
+\CommentTok{# get x for drawing slope}
+\NormalTok{minx <-}\StringTok{ }\KeywordTok{min}\NormalTok{(efig_3d[,autumn_temp_anomaly])}
+\NormalTok{maxx <-}\StringTok{ }\KeywordTok{max}\NormalTok{(efig_3d[,autumn_temp_anomaly])}
+\NormalTok{new_x <-}\StringTok{ }\KeywordTok{seq}\NormalTok{(minx, maxx, }\DataTypeTok{length.out =} \DecValTok{20}\NormalTok{)}
+\NormalTok{new_data <-}\StringTok{ }\KeywordTok{data.table}\NormalTok{(}\DataTypeTok{autumn_temp_anomaly =}\NormalTok{ new_x)}
+\NormalTok{new_data[, yhat }\OperatorTok{:}\ErrorTok{=}\StringTok{ }\KeywordTok{predict}\NormalTok{(m1, }\DataTypeTok{newdata =}\NormalTok{ new_data)]}
+\NormalTok{new_data[, conf_lwr }\OperatorTok{:}\ErrorTok{=}\StringTok{ }\KeywordTok{predict}\NormalTok{(m1, }
+                           \DataTypeTok{se.fit =} \OtherTok{TRUE}\NormalTok{,}
+                           \DataTypeTok{interval =} \StringTok{"confidence"}\NormalTok{,}
+                           \DataTypeTok{newdata =}\NormalTok{ new_data)}\OperatorTok{$}\NormalTok{fit[, }\StringTok{"lwr"}\NormalTok{]]}
+\NormalTok{new_data[, conf_upr }\OperatorTok{:}\ErrorTok{=}\StringTok{ }\KeywordTok{predict}\NormalTok{(m1, }
+                           \DataTypeTok{se.fit =} \OtherTok{TRUE}\NormalTok{,}
+                           \DataTypeTok{interval =} \StringTok{"confidence"}\NormalTok{,}
+                           \DataTypeTok{newdata =}\NormalTok{ new_data)}\OperatorTok{$}\NormalTok{fit[, }\StringTok{"upr"}\NormalTok{]]}
+\NormalTok{new_data[, pred_lwr }\OperatorTok{:}\ErrorTok{=}\StringTok{ }\KeywordTok{predict}\NormalTok{(m1, }
+                           \DataTypeTok{se.fit =} \OtherTok{TRUE}\NormalTok{,}
+                           \DataTypeTok{interval =} \StringTok{"prediction"}\NormalTok{,}
+                           \DataTypeTok{newdata =}\NormalTok{ new_data)}\OperatorTok{$}\NormalTok{fit[, }\StringTok{"lwr"}\NormalTok{]]}
+\NormalTok{new_data[, pred_upr }\OperatorTok{:}\ErrorTok{=}\StringTok{ }\KeywordTok{predict}\NormalTok{(m1, }
+                           \DataTypeTok{se.fit =} \OtherTok{TRUE}\NormalTok{,}
+                           \DataTypeTok{interval =} \StringTok{"prediction"}\NormalTok{,}
+                           \DataTypeTok{newdata =}\NormalTok{ new_data)}\OperatorTok{$}\NormalTok{fit[, }\StringTok{"upr"}\NormalTok{]]}
+
+\NormalTok{gg <-}\StringTok{ }\KeywordTok{ggscatter}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ efig_3d,}
+          \DataTypeTok{x =} \StringTok{"autumn_temp_anomaly"}\NormalTok{,}
+          \DataTypeTok{y =} \StringTok{"green_down_anomaly"}\NormalTok{,}
+          \DataTypeTok{color =} \StringTok{"black"}\NormalTok{,}
+          \DataTypeTok{shape =} \DecValTok{21}\NormalTok{,}
+          \DataTypeTok{size =} \DecValTok{3}\NormalTok{,}
+          \DataTypeTok{add =} \StringTok{"reg.line"}\NormalTok{,}
+          \DataTypeTok{add.params =} \KeywordTok{list}\NormalTok{(}\DataTypeTok{color =} \StringTok{"steelblue"}\NormalTok{,}
+                            \DataTypeTok{fill =} \StringTok{"lightgray"}\NormalTok{),}
+          \DataTypeTok{xlab =} \StringTok{"Temperature Anomaly (°C)"}\NormalTok{,}
+          \DataTypeTok{ylab =} \StringTok{"Day of Green-down Anomaly (DOY)"}\NormalTok{) }\OperatorTok{+}
+
+\StringTok{  }\KeywordTok{geom_ribbon}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ new_data,}
+              \KeywordTok{aes}\NormalTok{(}\DataTypeTok{ymin =}\NormalTok{ pred_lwr,}
+                  \DataTypeTok{ymax =}\NormalTok{ pred_upr,}
+                  \DataTypeTok{y =}\NormalTok{ yhat,}
+                  \DataTypeTok{fill =} \StringTok{"band"}\NormalTok{),}
+              \DataTypeTok{fill =} \StringTok{"gray"}\NormalTok{,}
+              \DataTypeTok{alpha =} \FloatTok{0.3}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }
+\StringTok{  }\KeywordTok{geom_ribbon}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ new_data,}
+              \KeywordTok{aes}\NormalTok{(}\DataTypeTok{ymin =}\NormalTok{ conf_lwr,}
+                  \DataTypeTok{ymax =}\NormalTok{ conf_upr,}
+                  \DataTypeTok{y =}\NormalTok{ yhat,}
+                  \DataTypeTok{fill =} \StringTok{"band"}\NormalTok{), }\DataTypeTok{alpha =} \FloatTok{0.3}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }
+\StringTok{  }\KeywordTok{stat_cor}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{label =} \KeywordTok{paste}\NormalTok{(..rr.label.., ..p.label.., }\DataTypeTok{sep =} \StringTok{"~`,`~"}\NormalTok{)),}
+           \DataTypeTok{size =} \DecValTok{4}\NormalTok{,}
+           \DataTypeTok{label.y =} \DecValTok{10}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }
+\StringTok{  }\KeywordTok{scale_fill_manual}\NormalTok{(}\DataTypeTok{values =} \KeywordTok{friendly_pal}\NormalTok{(}\StringTok{"ito_seven"}\NormalTok{)) }\OperatorTok{+}
+
+\StringTok{  }\KeywordTok{theme}\NormalTok{(}\DataTypeTok{legend.position=}\StringTok{"none"}\NormalTok{) }\OperatorTok{+}
+
+\StringTok{  }\OtherTok{NULL}  
+
+\NormalTok{gg}
+\end{Highlighting}
+\end{Shaded}
+
 \hypertarget{import-and-plot-of-fig1f-methionine-restriction-data}{%
 \subsection{Import and plot of fig1f (methionine restriction) data}\label{import-and-plot-of-fig1f-methionine-restriction-data}}
 
@@ -7058,7 +7556,7 @@ Creating the response plot (the bottom component)
 \StringTok{  }\KeywordTok{geom_smooth}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{group =}\NormalTok{ id), }\DataTypeTok{method =} \StringTok{"lm"}\NormalTok{, }\DataTypeTok{se =} \OtherTok{FALSE}\NormalTok{) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{xlab}\NormalTok{(}\StringTok{"Day"}\NormalTok{) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{ylab}\NormalTok{(}\KeywordTok{expression}\NormalTok{(Tumor}\OperatorTok{~}\NormalTok{Volume}\OperatorTok{~}\NormalTok{(mm}\OperatorTok{^}\DecValTok{3}\NormalTok{))) }\OperatorTok{+}
-\StringTok{  }\KeywordTok{scale_color_manual}\NormalTok{(}\DataTypeTok{values=}\NormalTok{pal_nature_mod) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_color_manual}\NormalTok{(}\DataTypeTok{values =}\NormalTok{ pal_okabe_ito) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{theme_pubr}\NormalTok{() }\OperatorTok{+}
 \StringTok{  }\KeywordTok{theme}\NormalTok{(}
     \DataTypeTok{legend.position =} \KeywordTok{c}\NormalTok{(.}\DecValTok{15}\NormalTok{, }\FloatTok{.98}\NormalTok{),}
@@ -7140,6 +7638,81 @@ Combining the response and effects plots into single plot
 \end{Highlighting}
 \end{Shaded}
 
+\hypertarget{try-it}{%
+\section{Try it}\label{try-it}}
+
+\hypertarget{a-prediction-model-from-the-literature}{%
+\subsection{A prediction model from the literature}\label{a-prediction-model-from-the-literature}}
+
+Parker, B.L., Calkin, A.C., Seldin, M.M., Keating, M.F., Tarling, E.J., Yang, P., Moody, S.C., Liu, Y., Zerenturk, E.J., Needham, E.J. and Miller, M.L., 2019. An integrative systems genetic analysis of mammalian lipid metabolism. Nature, 567(7747), pp.187-193.(\url{https://idp.nature.com/authorize/casa?redirect_uri=https://www.nature.com/articles/s41586-019-0984-y\&casa_token=9rpBLACc40cAAAAA:BzRKQHYdU9DOrzBS0f0lwrbp07MlfVqqL4yuyedE5b_xZ8geHuUCPFIDE3yQUBO-ibQLCrCI4t84aO8})\{target="\_blank"\}
+
+\href{https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6656374/}{Public source}
+
+\href{https://www.nature.com/articles/s41586-019-0984-y\#Sec35}{Source data}
+
+The researchers built prediction models from a hybrid mouse diversity panel (HMDP) to predict liver lipid levels from measured plasma lipid levels in mice \emph{and} in humans. The value of the predictor (\(X\)) variable for an individual is not a measured value of a single plasma lipid but the predicted value, or \textbf{score}, from the prediction model based on an entire panel of lipid measurements in that individual. The \(Y\) variable for the individual is the total measured level across a family of lipids (ceramides, triacylglycerols, diacylglycerols) in the liver of the individual. The question is, how well does the prediction score predict the actual liver level?
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Use the data for TG (triacylglycerols). The column D is the ``score'' from the prediction model using plasma lipid levels. This is the \(X\) variable (the column header is ``fitted.total.Cer''). The column E is the total measured liver TG, so is the \(Y\) variable.
+\item
+  Fit the linear model y \textasciitilde{} x.
+\item
+  Create a publication-quality plot of liver TG (\emph{Y}-axis) against score (\emph{X}-axis) -- what the researchers labeled ``fitted.total.Cer''. Include \(R^2\) on the plot.
+\item
+  Advanced -- add a 95\% prediction interval to the plot
+\item
+  Create a table of expected liver TG and 95\% prediction interval of liver TG of the score values (13.5, 14, 14.5, 15, 15.5, 16).
+\item
+  Comment on the predictability of liver TG using the plasma scores.
+\end{enumerate}
+
+\begin{verbatim}
+## [1] 0.5626346
+\end{verbatim}
+
+\begin{verbatim}
+## [1] 13.30278 16.21966
+\end{verbatim}
+
+\hypertarget{intuition-pumps}{%
+\section{Intuition pumps}\label{intuition-pumps}}
+
+\hypertarget{correlation-and-r2}{%
+\subsection{Correlation and \$R\^{}2}\label{correlation-and-r2}}
+
+In the code below
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  change the value of \texttt{n} to explore effect on the variability of the estimate. Look at this variability, and the magnitude of the SE, and the magnitude of the p-value.
+\item
+  change the value of \texttt{beta\_1} to explore effect on what different slopes and correlations look like. Notice that if the variance is fixed (as in this simulation) the expected slope and expected correlation are equal. (Because I've fixed the variance in this simple simulation, this code will fail if abs(beta\_1) \textgreater= 1).
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{n <-}\StringTok{ }\DecValTok{100} \CommentTok{# choose between 3 and 10^5}
+\NormalTok{beta_}\DecValTok{1}\NormalTok{ <-}\StringTok{ }\FloatTok{0.6} \CommentTok{# choose a value between -0.99 and 0.99}
+\NormalTok{x <-}\StringTok{ }\KeywordTok{rnorm}\NormalTok{(n)}
+\NormalTok{y <-}\StringTok{ }\NormalTok{beta_}\DecValTok{1}\OperatorTok{*}\NormalTok{x }\OperatorTok{+}\StringTok{ }\KeywordTok{sqrt}\NormalTok{(}\DecValTok{1}\OperatorTok{-}\NormalTok{beta_}\DecValTok{1}\OperatorTok{^}\DecValTok{2}\NormalTok{)}\OperatorTok{*}\KeywordTok{rnorm}\NormalTok{(n)}
+\NormalTok{m1 <-}\StringTok{ }\KeywordTok{lm}\NormalTok{(y }\OperatorTok{~}\StringTok{ }\NormalTok{x)}
+\NormalTok{slope <-}\StringTok{ }\KeywordTok{paste}\NormalTok{(}\StringTok{"b_1: "}\NormalTok{, }\KeywordTok{round}\NormalTok{(}\KeywordTok{coef}\NormalTok{(m1)[}\DecValTok{2}\NormalTok{], }\DecValTok{3}\NormalTok{))}
+\NormalTok{se <-}\StringTok{ }\KeywordTok{paste}\NormalTok{(}\StringTok{"SE: "}\NormalTok{, }\KeywordTok{round}\NormalTok{(}\KeywordTok{coef}\NormalTok{(}\KeywordTok{summary}\NormalTok{(m1))[}\DecValTok{2}\NormalTok{,}\DecValTok{2}\NormalTok{], }\DecValTok{3}\NormalTok{))}
+\NormalTok{r <-}\StringTok{ }\KeywordTok{paste}\NormalTok{(}\StringTok{"r: "}\NormalTok{, }\KeywordTok{round}\NormalTok{(}\KeywordTok{cor}\NormalTok{(x,y), }\DecValTok{3}\NormalTok{))}
+\NormalTok{r2 <-}\StringTok{ }\KeywordTok{paste}\NormalTok{(}\StringTok{"R^2: "}\NormalTok{, }\KeywordTok{round}\NormalTok{(}\KeywordTok{summary}\NormalTok{(m1)}\OperatorTok{$}\NormalTok{r.squared, }\DecValTok{3}\NormalTok{))}
+\KeywordTok{ggscatter}\NormalTok{(}\DataTypeTok{data =} \KeywordTok{data.table}\NormalTok{(}\DataTypeTok{x=}\NormalTok{x, }\DataTypeTok{y=}\NormalTok{y), }\DataTypeTok{x =} \StringTok{"x"}\NormalTok{, }\DataTypeTok{y =} \StringTok{"y"}\NormalTok{,}
+          \DataTypeTok{add =} \StringTok{"reg.line"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{ggtitle}\NormalTok{(}\DataTypeTok{label =} \KeywordTok{paste}\NormalTok{(slope,se,r,r2,}\DataTypeTok{sep=}\StringTok{";  "}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-155-1.pdf}
+
 \hypertarget{a-linear-model-with-a-single-categorical-x}{%
 \chapter{\texorpdfstring{A linear model with a single, categorical \emph{X}}{A linear model with a single, categorical X}}\label{a-linear-model-with-a-single-categorical-x}}
 
@@ -7180,7 +7753,7 @@ The first step in any analysis is to open the data and, if necessary, wrangle in
 
 The second step is to explore the data to 1) check for biological implausible outliers that suggest measurement failure, or transcription error (from a notebook, not in a cell) and 2) assess reasonable distributions and models for analysis.
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-143-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-158-1.pdf}
 
 There are no obviously implausible data points. A normal distribution is a good, reasonable start. This can be checked more thoroughly after fitting the model.
 
@@ -7190,11 +7763,11 @@ There are no obviously implausible data points. A normal distribution is a good,
 \hypertarget{figure-3d-check-the-model}{%
 \paragraph{Figure 3d -- check the model}\label{figure-3d-check-the-model}}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-145-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-160-1.pdf}
 
 The Q-Q plot indicates the distribution of residuals is well within that expected for a normal sample and there is no cause for concern with inference.
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-146-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-161-1.pdf}
 
 \begin{verbatim}
 ## 
@@ -7242,7 +7815,7 @@ The spread-location plot shows no conspicuous trend in how the spread changes wi
 \hypertarget{figure-3d-plot-the-model}{%
 \paragraph{Figure 3d -- plot the model}\label{figure-3d-plot-the-model}}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-153-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-168-1.pdf}
 
 \hypertarget{figure-3d-report-the-model-results}{%
 \paragraph{Figure 3d -- report the model results}\label{figure-3d-report-the-model-results}}
@@ -7401,8 +7974,8 @@ tl;dr. What is a population? In the experimental biology examples in this text, 
 
 \begin{figure}
 \centering
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-156-1.pdf}
-\caption{\label{fig:unnamed-chunk-156}What the coefficients of a linear model with a single categorical X mean. The means of the two treatment levels for the serum TG data are shown with the filled circles. The intercept (\(b_0\)) is the mean of the reference treatment level. The coefficient \(b_1\) is the difference between the treatment level's mean and the reference mean. As with a linear model with a continuous X, the coefficients are effects.}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-171-1.pdf}
+\caption{\label{fig:unnamed-chunk-171}What the coefficients of a linear model with a single categorical X mean. The means of the two treatment levels for the serum TG data are shown with the filled circles. The intercept (\(b_0\)) is the mean of the reference treatment level. The coefficient \(b_1\) is the difference between the treatment level's mean and the reference mean. As with a linear model with a continuous X, the coefficients are effects.}
 \end{figure}
 
 Let's put this all together. \(b_0\) is the conditional mean of the reference level (``Vehicle'') and is an estimate of \(\beta_0\), the true, conditional mean of the population. \(b_1\) is the difference in the conditional means of the first non-reference level (``12,13-diHOME'') and the reference level (``Vehicle'') and is an estimate of \(\beta_1\), the true difference in the conditional means of the population with and without the treatment 12,13-diHOME.
@@ -7741,7 +8314,7 @@ Count data often have an excess of zeroes (for example a lake with no nests or a
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-160-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-175-1.pdf}
 
 \hypertarget{constrained-lower-and-upper-bounds}{%
 \subsubsection{Constrained lower and upper bounds}\label{constrained-lower-and-upper-bounds}}
@@ -8000,7 +8573,7 @@ If a researcher caries out many tests, and ranks the effects by magnitude or \em
 \caption{\label{fig:inflation-histogram}A histogram of the distribution of the 10,000 effects}
 \end{figure}
 
-\label{tab:unnamed-chunk-162}The top 10 genes ranked by p-value. Rank is the rank of the true effect, from large to small.
+\label{tab:unnamed-chunk-177}The top 10 genes ranked by p-value. Rank is the rank of the true effect, from large to small.
 
 effect
 
@@ -8800,7 +9373,7 @@ ldlc.r = \beta_0 + \beta_1 treatment + \varepsilon
 
 where \(ldlc.r\) is the set of residuals.
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-172-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-187-1.pdf}
 
 Now the estimate of the effect is -4.7 mg/dL blood and the SE is only 0.88. In this two-stage analysis (stage 1: fit ldlc \textasciitilde{} age to get residuals, stage 2: fit residuals \textasciitilde{} treatment), we have \emph{eliminated the effect of age} on the variance of the response and, as a consequence, the estimate of the effect of the drug is much more precise -- the effect of \(treatment\) has a smaller standard error.
 
@@ -8819,11 +9392,11 @@ ldlc = \beta_0 + \beta_1 age + \beta_2 treatment + \varepsilon
 
 which results in the Harrell Plot
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-173-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-188-1.pdf}
 
 and the coefficient table
 
-\label{tab:unnamed-chunk-174}Coefficients of the model that includes the covariate age.
+\label{tab:unnamed-chunk-189}Coefficients of the model that includes the covariate age.
 
 Estimate
 
@@ -10000,7 +10573,7 @@ These can be combined into a single table using \texttt{rbind}
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-184-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-199-1.pdf}
 
 \hypertarget{plots-that-communicate-the-factorial-design}{%
 \subsubsection{Plots that communicate the factorial design}\label{plots-that-communicate-the-factorial-design}}
@@ -10147,7 +10720,7 @@ An interaction plot is an okay plot. It doesn't show the data, only a minimal, d
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-185-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-200-1.pdf}
 
 This effects plot shows the four simple effects, the single interaction (Temp18:CO21100), and their 95\% confidence intervals. In the original paper, the researchers were testing a scientific (not statistical!) model that predicted no interaction between CO2 and Temp, and the researchers argued that these data supported this model because of the ``not statistically significant'' \emph{p}-value for the interaction effect. The data are consistent with this model (one end of the 95\% CI for the interaction includes zero) but also support a model of a large, negative interaction (the other end of the 95\% CI includes large negative values). The data are too course (or the signal:noise ratio is to small) to have much confidence in the size of the interaction effect.
 
@@ -10164,7 +10737,7 @@ This effects plot shows the four simple effects, the single interaction (Temp18:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-186-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-201-1.pdf}
 
 The effects and interaction plot are combined into a single plot.
 
@@ -12829,7 +13402,7 @@ A plot of the dispersion statistic can be generated using the object returned by
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-208-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-223-1.pdf}
 
 \begin{verbatim}
 ## 
