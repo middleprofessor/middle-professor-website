@@ -124,7 +124,7 @@
   \postauthor{\par}
       \predate{\centering\large\emph}
   \postdate{\par}
-    \date{Draft: 2020-10-04}
+    \date{Draft: 2020-10-07}
 
 \usepackage{booktabs}
 \usepackage{amsthm}
@@ -273,6 +273,8 @@ Open R Studio and choose the menu item ``Tools'' \textgreater{} ``Install Packag
 \begin{itemize}
 \tightlist
 \item
+  devtools -- we use this to install packages that are not on CRAN
+\item
   here -- we use to read from and write to the correct folder
 \item
   janitor -- we use the function clean\_names from this package
@@ -330,7 +332,13 @@ Open R Studio and choose the menu item ``Tools'' \textgreater{} ``Install Packag
   dabestr -- we use this to make several plot types
 \item
   cowplot -- we use this to combine plots
+\item
+  ggpubfigs -- we use this for the color palettes
 \end{itemize}
+
+ggpubfigs is new and has not been uploaded to the R CRAN library. To install ggpubfigs, copy and paste this into the console:
+
+\texttt{devtools::install\_github("JLSteenwyk/ggpubfigs")}
 
 Once these are installed, you don't need to do this again although there will be additional packages that you might install. You simply need to use the \texttt{library()} function at the start of a markdown script.
 
@@ -412,13 +420,21 @@ The setup chunk should look something like this
 \KeywordTok{library}\NormalTok{(data.table)}
 
 \CommentTok{# analysis packages}
-\KeywordTok{library}\NormalTok{(MASS)}
+\KeywordTok{library}\NormalTok{(MASS) }\CommentTok{# negative binomial and some other functions}
+\KeywordTok{library}\NormalTok{(nlme) }\CommentTok{# gls and some lmm}
 
 \CommentTok{# graphing packages}
-\KeywordTok{library}\NormalTok{(ggsci)}
-\KeywordTok{library}\NormalTok{(ggpubr)}
-\KeywordTok{library}\NormalTok{(ggforce)}
-\KeywordTok{library}\NormalTok{(cowplot)}
+\KeywordTok{library}\NormalTok{(ggsci) }\CommentTok{# color palettes}
+\KeywordTok{library}\NormalTok{(ggpubr) }\CommentTok{# publication quality plots}
+\KeywordTok{library}\NormalTok{(ggforce) }\CommentTok{# better jitter}
+\KeywordTok{library}\NormalTok{(cowplot) }\CommentTok{# combine plots}
+\KeywordTok{library}\NormalTok{(ggpubfigs) }\CommentTok{# color palettes}
+\CommentTok{# ggpubfigs is not in CRAN. To install run the next line.}
+\CommentTok{# devtools::install_github("JLSteenwyk/ggpubfigs")}
+
+\CommentTok{# Okabe & Ito palette}
+\NormalTok{ito_seven <-}\StringTok{ }\KeywordTok{friendly_pal}\NormalTok{(}\StringTok{"ito_seven"}\NormalTok{) }\CommentTok{# ggpubfigs}
+\NormalTok{pal_okabe_ito <-}\StringTok{ }\NormalTok{ito_seven[}\KeywordTok{c}\NormalTok{(}\DecValTok{6}\NormalTok{,}\DecValTok{5}\NormalTok{,}\DecValTok{3}\NormalTok{,}\DecValTok{7}\NormalTok{,}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{,}\DecValTok{4}\NormalTok{)] }\CommentTok{# order of Wilke}
 
 \NormalTok{here <-}\StringTok{ }\NormalTok{here}\OperatorTok{::}\NormalTok{here}
 \NormalTok{data_path <-}\StringTok{ "data"}
@@ -6465,7 +6481,9 @@ The plot in figure \ref{fig:continuous-x-pred-fig} shows the regression line of 
 \def\labelenumi{\arabic{enumi}.}
 \tightlist
 \item
-  The \emph{p}-value of the slope (the coefficient \(b_1\) of \(autumn\_temp\_anomaly\)) 2. The \(R^2\) of the model fit.
+  The \emph{p}-value of the slope (the coefficient \(b_1\) of \(autumn\_temp\_anomaly\))
+\item
+  The \(R^2\) of the model fit.
 \end{enumerate}
 
 In addition, two intervals are shown.
@@ -7664,7 +7682,7 @@ The researchers built prediction models from a hybrid mouse diversity panel (HMD
 \item
   Create a publication-quality plot of liver TG (\emph{Y}-axis) against score (\emph{X}-axis) -- what the researchers labeled ``fitted.total.Cer''. Include \(R^2\) on the plot.
 \item
-  Advanced -- add a 95\% prediction interval to the plot
+  Advanced -- add a 95\% prediction interval to the plot (the template code for this is in the Hidden Code section for efig3d)
 \item
   Create a table of expected liver TG and 95\% prediction interval of liver TG of the score values (13.5, 14, 14.5, 15, 15.5, 16).
 \item
@@ -7715,15 +7733,17 @@ In the code below
 
 \includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-155-1.pdf}
 
-\hypertarget{a-linear-model-with-a-single-categorical-x}{%
-\chapter{\texorpdfstring{A linear model with a single, categorical \emph{X}}{A linear model with a single, categorical X}}\label{a-linear-model-with-a-single-categorical-x}}
+\hypertarget{linear-models-with-a-single-categorical-x}{%
+\chapter{\texorpdfstring{Linear models with a single, categorical \emph{X}}{Linear models with a single, categorical X}}\label{linear-models-with-a-single-categorical-x}}
 
-\hypertarget{a-linear-model-with-a-single-categorical-x-variable-estimates-the-effect-of-x-on-the-response.}{%
-\section{\texorpdfstring{A linear model with a single, categorical \emph{X} variable estimates the effect of \emph{X} on the response.}{A linear model with a single, categorical X variable estimates the effect of X on the response.}}\label{a-linear-model-with-a-single-categorical-x-variable-estimates-the-effect-of-x-on-the-response.}}
+\hypertarget{a-linear-model-with-a-single-categorical-x-variable-estimates-the-effects-of-the-levels-of-x-on-the-response.}{%
+\section{\texorpdfstring{A linear model with a single, categorical \emph{X} variable estimates the effects of the levels of \emph{X} on the response.}{A linear model with a single, categorical X variable estimates the effects of the levels of X on the response.}}\label{a-linear-model-with-a-single-categorical-x-variable-estimates-the-effects-of-the-levels-of-x-on-the-response.}}
 
-To introduce a linear model with a single, categorical \(X\) variable, I'll use data from a set of experiments designed to measure the effect of 12,13-diHOME on brown adipose tissue (BAT) thermoregulation and the mechanism of this effect.
+To introduce a linear model with a single, categorical \(X\) variable, I'll use data from a set of experiments designed to measure the effect of the lipid 12,13-diHOME on brown adipose tissue (BAT) thermoregulation and the mechanism of this effect.
 
-\href{https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5699924/pdf/nihms916046.pdf}{Article source}
+\href{https://www.nature.com/articles/nm.4297}{Lynes, M.D., Leiria, L.O., Lundh, M., Bartelt, A., Shamsi, F., Huang, T.L., Takahashi, H., Hirshman, M.F., Schlein, C., Lee, A. and Baer, L.A., 2017. The cold-induced lipokine 12, 13-diHOME promotes fatty acid transport into brown adipose tissue. Nature medicine, 23(5), pp.631-637.}
+
+\href{https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5699924/pdf/nihms916046.pdf}{Public source}
 
 \href{https://www.nature.com/articles/nm.4297\#Sec14}{Data source}
 
@@ -7742,32 +7762,74 @@ Let's start with the experiment in Figure 3d, which was designed to measure the 
 
 \textbf{design}: single, categorical \emph{X}
 
-\hypertarget{the-report}{%
-\subsubsection{The Report}\label{the-report}}
+\hypertarget{step-1-import}{%
+\subsubsection{Step 1 -- import}\label{step-1-import}}
 
-\hypertarget{figure-3d-import}{%
-\paragraph{Figure 3d -- import}\label{figure-3d-import}}
+The first step in any analysis is to open the data and, if necessary, wrangle into an analyzable format. The script to import these data is in the section Hidden code below.
 
-The first step in any analysis is to open the data and, if necessary, wrangle into an analyzable format.
+\hypertarget{step-2-examine-the-data}{%
+\subsubsection{Step 2 -- examine the data}\label{step-2-examine-the-data}}
 
-\hypertarget{figure-3d-exploratory-plots}{%
-\paragraph{Figure 3d -- exploratory plots}\label{figure-3d-exploratory-plots}}
+The second step is to examine the data to
 
-The second step is to explore the data to 1) check for biological implausible outliers that suggest measurement failure, or transcription error (from a notebook, not in a cell) and 2) assess reasonable distributions and models for analysis.
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{5}
+\tightlist
+\item
+  get a sense of sample size and balance
+\item
+  check for biologically implausible outliers that suggest measurement failure, or transcription error (from a notebook, not in a cell)
+\item
+  assess outliers for outlier strategy or robust analysis
+\item
+  assess reasonable distributions and models for analysis.
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{qplot}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ treatment, }\DataTypeTok{y =}\NormalTok{ serum_tg, }\DataTypeTok{data =}\NormalTok{ fig_3d)}
+\end{Highlighting}
+\end{Shaded}
 
 \includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-158-1.pdf}
 
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# ggdotplot(x = "treatment", y = "serum_tg", data = fig_3d)}
+\end{Highlighting}
+\end{Shaded}
+
 There are no obviously implausible data points. A normal distribution is a good, reasonable start. This can be checked more thoroughly after fitting the model.
 
-\hypertarget{figure-3d-fit-the-model}{%
-\paragraph{Figure 3d -- fit the model}\label{figure-3d-fit-the-model}}
+\hypertarget{step-3-fit-the-model}{%
+\subsubsection{Step 3 -- fit the model}\label{step-3-fit-the-model}}
 
-\hypertarget{figure-3d-check-the-model}{%
-\paragraph{Figure 3d -- check the model}\label{figure-3d-check-the-model}}
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{fig3d_m1 <-}\StringTok{ }\KeywordTok{lm}\NormalTok{(serum_tg }\OperatorTok{~}\StringTok{ }\NormalTok{treatment, }\DataTypeTok{data =}\NormalTok{ fig_3d)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{step-4-check-the-model}{%
+\subsubsection{Step 4 -- check the model}\label{step-4-check-the-model}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{set.seed}\NormalTok{(}\DecValTok{1}\NormalTok{)}
+\KeywordTok{qqPlot}\NormalTok{(fig3d_m1, }\DataTypeTok{id=}\OtherTok{FALSE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
 
 \includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-160-1.pdf}
 
 The Q-Q plot indicates the distribution of residuals is well within that expected for a normal sample and there is no cause for concern with inference.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{spreadLevelPlot}\NormalTok{(fig3d_m1, }\DataTypeTok{id=}\OtherTok{FALSE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
 
 \includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-161-1.pdf}
 
@@ -7778,11 +7840,19 @@ The Q-Q plot indicates the distribution of residuals is well within that expecte
 
 The spread-location plot shows no conspicuous trend in how the spread changes with the conditonal mean. There is no cause for concern with inference.
 
-\hypertarget{figure-3d-inference}{%
-\paragraph{Figure 3d -- inference}\label{figure-3d-inference}}
+\hypertarget{step-5-inference}{%
+\subsubsection{Step 5 -- inference}\label{step-5-inference}}
 
 \hypertarget{coefficient-table}{%
-\subparagraph{coefficient table}\label{coefficient-table}}
+\paragraph{coefficient table}\label{coefficient-table}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{fig3d_m1_coef <-}\StringTok{ }\KeywordTok{cbind}\NormalTok{(}\KeywordTok{coef}\NormalTok{(}\KeywordTok{summary}\NormalTok{(fig3d_m1)),}
+                        \KeywordTok{confint}\NormalTok{(fig3d_m1))}
+\NormalTok{fig3d_m1_coef}
+\end{Highlighting}
+\end{Shaded}
 
 \begin{verbatim}
 ##                        Estimate Std. Error   t value     Pr(>|t|)
@@ -7793,8 +7863,20 @@ The spread-location plot shows no conspicuous trend in how the spread changes wi
 ## treatment12,13-diHOME -12.42125 -1.914175
 \end{verbatim}
 
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#knitr::kable(fig3d_m1_coef, digits = c(1,2,1,4,1,1))}
+\end{Highlighting}
+\end{Shaded}
+
 \hypertarget{marginal-means-table}{%
-\subparagraph{Marginal means table}\label{marginal-means-table}}
+\paragraph{Marginal means table}\label{marginal-means-table}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{(fig3d_m1_emm <-}\StringTok{ }\KeywordTok{emmeans}\NormalTok{(fig3d_m1, }\DataTypeTok{specs =} \StringTok{"treatment"}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
 
 \begin{verbatim}
 ##  treatment    emmean   SE df lower.CL upper.CL
@@ -7805,7 +7887,15 @@ The spread-location plot shows no conspicuous trend in how the spread changes wi
 \end{verbatim}
 
 \hypertarget{contrasts-table}{%
-\subparagraph{Contrasts table}\label{contrasts-table}}
+\paragraph{Contrasts table}\label{contrasts-table}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{(fig3d_m1_pairs <-}\StringTok{ }\KeywordTok{contrast}\NormalTok{(fig3d_m1_emm,}
+                            \DataTypeTok{method =} \StringTok{"revpairwise"}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{summary}\NormalTok{(}\DataTypeTok{infer =} \OtherTok{TRUE}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
 
 \begin{verbatim}
 ##  contrast               estimate   SE df lower.CL upper.CL t.ratio p.value
@@ -7814,36 +7904,38 @@ The spread-location plot shows no conspicuous trend in how the spread changes wi
 ## Confidence level used: 0.95
 \end{verbatim}
 
-\hypertarget{figure-3d-plot-the-model}{%
-\paragraph{Figure 3d -- plot the model}\label{figure-3d-plot-the-model}}
+\hypertarget{step-6-plot-the-model}{%
+\subsubsection{Step 6 -- plot the model}\label{step-6-plot-the-model}}
+
+The script for plotting the model in the section Hidden code below.
 
 \includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-168-1.pdf}
 
-\hypertarget{figure-3d-report-the-model-results}{%
-\paragraph{Figure 3d -- report the model results}\label{figure-3d-report-the-model-results}}
+\hypertarget{step-7-report-the-model-results}{%
+\subsubsection{Step 7 -- report the model results}\label{step-7-report-the-model-results}}
 
 Mean serum TG in mice with 12,13-diHOME (35.5 µg/dL, 95\% CI: 31.7, 39.2) was 7.17 µg/dL less (95\% CI: -12.4, -1.9, \(p = 0.012\)) than mean serum TG in control mice (42.6 µg/dL, 95\% CI: 38.9, 46.3).
 
-\hypertarget{understanding-the-analysis}{%
-\subsubsection{Understanding the Analysis}\label{understanding-the-analysis}}
+\hypertarget{understanding-the-analysis-with-two-treatment-levels}{%
+\subsection{Understanding the analysis with two treatment levels}\label{understanding-the-analysis-with-two-treatment-levels}}
 
 The variable \(treatment\) in the Figure 3d mouse experiment, is a single, categorical \(X\) variable. In a linear model, categorical variables are called \textbf{factors}. \(treatment\) can take two different values, ``Vehicle'' and ``12,13-diHOME''. The different values in a factor are the \textbf{factor levels} (or just ``levels''). ``Levels'' is a strange usage of this word; a less formal name for levels is ``groups''. In a \textbf{Nominal} categorical factor, the levels have no units and are unordered, even if the variable is based on a numeric measurement. For example, I might design an experiment in which mice are randomly assigned to one of three treatments: one hour at 14 °C, one hour at 18 °C, or one hour at 26 °C. If I model this treatment as a nominal categorical factor, then I simply have three levels. While I would certainly choose to arrange these levels in a meaningful way in a plot, for the analysis itself, these levels have no units and there is no order. \textbf{Ordinal} categorical factors have levels that are ordered but there is no information on relative distance. The treatment at 18 °C is not more similar to 14 °C than to 26 °C. Nominal categorical factors is the default in R and how all factors are analyzed in this text.
 
 \hypertarget{linear-models-are-regression-models}{%
-\paragraph{Linear models are regression models}\label{linear-models-are-regression-models}}
+\subsubsection{Linear models are regression models}\label{linear-models-are-regression-models}}
 
 The linear model fit to the serum TG data is
 
 \begin{align}
-serum\_tg &= treatment + \varepsilon
-\varepsilon ~ N(0, sigma^2)
+serum\_tg &= treatment + \varepsilon\\
+\varepsilon &~ N(0, sigma^2)
 \label{eq:lm-serum-tg}
 \end{align}
 
 This specification is potentially confusing because the variable \(treatment\) is a factor containing the words ``Vehicle'' and ``12,13-diHOME'' and not numbers. A linear model with a single factor containing two levels can be specified using notation for a regression model.
 
 \begin{align}
-Y &= \beta_0 + \beta_1 X_1 + \varepsilon//
+Y &= \beta_0 + \beta_1 X_1 + \varepsilon\\
 \varepsilon &\sim N(0, \sigma^2)
 \label{eq:model-cat-x}
 \end{align}
@@ -7853,7 +7945,7 @@ Model \eqref{eq:model-cat-x} is a regression model where \(X_1\) is not the vari
 For the serum TG data, ``Vehicle'' is the reference, so we can write the linear model fit to the serum TG data using regression model notation.
 
 \begin{align}
-serum\_tg &= \beta_0 + \beta_1 treatment_{12,13-diHOME} + \varepsilon//
+serum\_tg &= \beta_0 + \beta_1 treatment_{12,13-diHOME} + \varepsilon\\
 \varepsilon &\sim N(0, \sigma^2)
 \label{eq:model-cat-serum-tg}
 \end{align}
@@ -7945,7 +8037,7 @@ R names dummy variables by combining the names of the factor and the name of the
 Analysis fail. There are alternatives to dummy coding for creating indicator variables. Dummy coding is the default in R and it makes sense when thinking about experimental data with an obvious control level. I also like the interpretation of a ``interaction effect'' using Dummy coding. The classical coding for ANOVA is deviation effect coding, which creates coefficients that are deviations from the grand mean. In contrast to R, Deviation coding is the default in many statistical software packages including SAS, SPSS, and JMP. The method of coding can make a difference in an ANOVA table. Watch out for this -- I've come across numerous published papers where the researchers used the default dummy coding but interpreted the ANOVA table as if they had used deviation coding. This is both getting ahead of ourselves and somewhat moot, because I don't advocate publishing ANOVA tables.
 
 \hypertarget{the-estimates-in-the-coefficient-table-are-estimates-of-the-parameters-of-the-linear-model-fit-to-the-data.}{%
-\paragraph{The ``Estimates'' in the coefficient table are estimates of the parameters of the linear model fit to the data.}\label{the-estimates-in-the-coefficient-table-are-estimates-of-the-parameters-of-the-linear-model-fit-to-the-data.}}
+\subsubsection{The ``Estimates'' in the coefficient table are estimates of the parameters of the linear model fit to the data.}\label{the-estimates-in-the-coefficient-table-are-estimates-of-the-parameters-of-the-linear-model-fit-to-the-data.}}
 
 \begin{verbatim}
 ##                        Estimate Std. Error   t value     Pr(>|t|)
@@ -7966,7 +8058,7 @@ serum\_tg = b_0 + b_1 \beta_1 treatment_{12,13-diHOME} + e
 The coefficients \(b_0\) and \(b_1\) are the two values in the column ``Estimate'' of the table of model coefficients (or ``coefficient table''). In addition to the estimates, the table inlcludes the standard error, 95\% confidence interval, and \emph{t} and \emph{p}-values of each estimate.
 
 \hypertarget{the-parameters-of-a-linear-model-using-dummy-coding-have-an-impoortant-interpretation}{%
-\paragraph{The parameters of a linear model using dummy coding have an impoortant interpretation}\label{the-parameters-of-a-linear-model-using-dummy-coding-have-an-impoortant-interpretation}}
+\subsubsection{The parameters of a linear model using dummy coding have an impoortant interpretation}\label{the-parameters-of-a-linear-model-using-dummy-coding-have-an-impoortant-interpretation}}
 
 It is important to understand the interpretation of the coefficients of the fit linear model @\ref(eq:fit-serum-tg). The ``coefficient'' \(b_0\) is the first value in the ``Estimate'' column of the coefficient table (in the row ``(intercept)''). This is the conditional mean of the response for the reference level, which is ``Vehicle''. Remember that a conditional mean is the mean of a group that all have the same value for one or more \(X\) variables. The coefficient \(b_1\) is the second value in the ``Estimate'' column (in the row ``treatment12,13-diHOME''). \(b_1\) is the difference between the conditional means of the 12,13-diHOME level and the reference (Vehicle) level. The \emph{direction} of this difference is important; it is \(\bar{Y}_{12,13-diHOME} - \bar{Y}_{Vehicle}\), that is, the non-reference level minus the reference level. The estimate for treatment12,13-diHOME is the \textbf{effect} that we are interested in. Specifically, it is the effect of 12,13-diHOME on serum TG. When we inject 12,13-diHOME, we find the mean serum TG decreases by -7.2 µg/dL relative to the mean serum TG in the mice that were injected with saline. Importantly, the reference level is not a property of an experiment but is set by whomever is analyzing the data. Since the non-reference estimates are differences in means, it often makes sense to set the ``control'' treatment level as the reference level.
 
@@ -7983,7 +8075,7 @@ tl;dr. What is a population? In the experimental biology examples in this text, 
 Let's put this all together. \(b_0\) is the conditional mean of the reference level (``Vehicle'') and is an estimate of \(\beta_0\), the true, conditional mean of the population. \(b_1\) is the difference in the conditional means of the first non-reference level (``12,13-diHOME'') and the reference level (``Vehicle'') and is an estimate of \(\beta_1\), the true difference in the conditional means of the population with and without the treatment 12,13-diHOME.
 
 \hypertarget{the-table-of-marginal-means-is-a-table-of-modeled-means-and-inferential-statistics-not-a-table-of-raw-means-and-inferential-statistics}{%
-\paragraph{The table of marginal means is a table of modeled means and inferential statistics, not a table of raw means and inferential statistics}\label{the-table-of-marginal-means-is-a-table-of-modeled-means-and-inferential-statistics-not-a-table-of-raw-means-and-inferential-statistics}}
+\subsubsection{The table of marginal means is a table of modeled means and inferential statistics, not a table of raw means and inferential statistics}\label{the-table-of-marginal-means-is-a-table-of-modeled-means-and-inferential-statistics-not-a-table-of-raw-means-and-inferential-statistics}}
 
 The table of marginal means for the model fit to the Figure 3d serum TG data is (shown to five decimal places for a later comparison)
 
@@ -8029,108 +8121,10 @@ If the design is \textbf{balanced}, meaning the sample size for each conditional
 
 Like the modeled means, the standard errors in the marginal means table are modeled and not raw values. Recall that the standard error of a mean is \(\frac{s}{\sqrt{n}}\), where \(s\) is the sample standard deviation. In the marginal means table, \(s\) is not the raw standard deviation of the group but the estimate of \(\sigma\), the square root of the true variance. As with the raw standard error of the mean, the denominator is the sample size \(n\) for the group. Since the numerator of the modeled SE is the same for all groups, the modeled SE will be the same in all groups that have the same sample size, as seen in the marginal means table for the model fit to the Figure 3d data. This may seem odd. It is not. Remember that an assumption of the linear model is homogeneity of variances -- that the \(e_i\) for each group are drawn from \(N(0, \sigma^2)\) regardless of group. \(s^2\), which is computed as a variance of the model residuals, is an estimate this true variance (\(\sigma^2\)). It is also useful to think of the raw variances computed separately for each group (level of \(treatment\)) as estimates of \(\sigma^2\). The separately computed estimates are averaged to create a single estimate, which is equal to \(s^2\) computed from the model residuals.
 
-\begin{verbatim}
-## [1] 4.083853
-\end{verbatim}
-
-\begin{verbatim}
-## [1] 3.893801
-\end{verbatim}
-
-\begin{verbatim}
-## [1] 4.083853
-\end{verbatim}
-
-\begin{verbatim}
-## [1] 1.667226
-\end{verbatim}
-
-\begin{verbatim}
-## [1] 4.083853
-\end{verbatim}
-
-\begin{verbatim}
-## [1] 4.083853
-\end{verbatim}
-
-\begin{verbatim}
-## [1] 4.303704
-\end{verbatim}
-
-\begin{verbatim}
-## [1] 4.303704
-\end{verbatim}
-
-\begin{verbatim}
-## [1] 1.75698
-\end{verbatim}
-
-\begin{verbatim}
-## [1] 1.924675
-\end{verbatim}
-
-treatment
-
-emmean
-
-SE
-
-df
-
-lower.CL
-
-upper.CL
-
-Vehicle
-
-42.67223
-
-1.924675
-
-9
-
-38.31832
-
-47.02615
-
-12,13-diHOME
-
-35.45233
-
-1.756980
-
-9
-
-31.47777
-
-39.42690
-
-\begin{verbatim}
-## [1] 4.303704
-\end{verbatim}
-
-\begin{verbatim}
-## [1] 4.361875
-\end{verbatim}
-
-\begin{verbatim}
-## 
-##  Welch Two Sample t-test
-## 
-## data:  serum_tg by treatment
-## t = 3.04, df = 9.8307, p-value = 0.0127
-## alternative hypothesis: true difference in means is not equal to 0
-## 95 percent confidence interval:
-##   1.901885 12.433536
-## sample estimates:
-##      mean in group Vehicle mean in group 12,13-diHOME 
-##                   42.62004                   35.45233
-\end{verbatim}
-
-But, unlike the modeled means, the modeled standard error and confidence interval will, effectively, never equal the raw values.
+Unlike the modeled means, the modeled standard error and confidence interval will, effectively, never equal the raw values.
 
 \hypertarget{report-the-modeled-means-and-inferential-statistics-from-the-marginal-means-table-not-the-raw-means-and-inferential-statistics}{%
-\paragraph{Report the modeled means and inferential statistics from the marginal means table, not the raw means and inferential statistics}\label{report-the-modeled-means-and-inferential-statistics-from-the-marginal-means-table-not-the-raw-means-and-inferential-statistics}}
+\subsubsection{Report the modeled means and inferential statistics from the marginal means table, not the raw means and inferential statistics}\label{report-the-modeled-means-and-inferential-statistics-from-the-marginal-means-table-not-the-raw-means-and-inferential-statistics}}
 
 This text advocates the best practice of reporting, including plotting, the modeled means and inferential statistics (SEM or confidence interval) and not the raw means and summary statistics, because only the modeled means and statistics are consistent with the modeled statistical analysis. Raw means and summary statistics can both mask the effects that we want to communicate and give misleading interpretation of the statistics, including the conditional distribution of the data.
 
@@ -8151,6 +8145,878 @@ The raw, group means and standard errors of each mean of the Figure 3d serum TG 
 \end{verbatim}
 
 The raw means are equal to the modeled means but the SE differs.
+
+\hypertarget{estimates-of-the-effects-are-in-the-contrasts-table}{%
+\subsubsection{Estimates of the effects are in the contrasts table}\label{estimates-of-the-effects-are-in-the-contrasts-table}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{fig3d_m1_pairs}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##  contrast               estimate   SE df lower.CL upper.CL t.ratio p.value
+##  12,13-diHOME - Vehicle    -7.17 2.36 10    -12.4    -1.91 -3.040  0.0125 
+## 
+## Confidence level used: 0.95
+\end{verbatim}
+
+This table is important for reporting treatment effects and CIs and for plotting the model. A contrast is a difference in means. With only two treatment levels, the table of contrasts doesn't give any more information than the coefficient table -- the single contrast is the coefficient \(b_1\) in the coefficient table. Nevertheless, I advocate computing this table to stay consistent and because the script to plot the model uses this table and not the coefficient table.
+
+The values in the column ``estimate'' is the simple difference of groups given in the contrast column (what you would compute if you simply computed the difference for these groups). This is true for this model, but is not generally true.
+
+The values in the ``SE'' column are standard errors of a difference (SED), specifically the difference in the estimate column. These SEs are from the fit model using the pooled estimate of \(\sigma\).
+
+The values in the ``lower.CL'' and ``upper.CL'' columns are the bounds of the 95\% confidence interval of the estimate. This confidence level applies to the procedure and not the estimate. Think of this interval as containing potential values of the true parameter (the true difference in means between the two groups) that are reasonably compatible with the data. More formally, it is correct to interpret this CI as ``95\% of the CIs computed using this procedure include the true value given the model conditions.''
+
+The columns ``t.ratio'' and ``p.value'' contains the \emph{t} and \emph{p} values of the significance (not hypothesis!) test of the estimate. The \emph{t}-statistic is the ratio of the estimate to the SE of the estimate (use the console to confirm this given the values in the table). It is a signal (the estimate) to noise (SE of the estimate) ratio. The \emph{p}-value is the probability of sampling the same distribution, fiting the linear model, and observing a \emph{t}-value as or more extreme than the observed \emph{t}. A very small \emph{p}-value is consistent with the experiment ``not sampling from distributions with the same mean'' -- meaning that adding a treatment affects the mean of the distribution. This is the logic used to infer a treatment effect. Unfortunately, it is also consistent with the experiment not approximating other conditions of the model, including non-random assignment, non-independence, non-normal conditional responses, and variance heterogeneity. It is up to the rigorous researcher to be sure that these other model conditions are approximated or ``good enough'' to use the \emph{p}-value to infer a treatment effect on the mean.
+
+\hypertarget{t-and-p-from-the-contrasts-table-when-there-are-only-two-levels-in-x-are-the-same-as-t-and-p-from-a-t-test}{%
+\subsubsection{\texorpdfstring{\emph{t} and \emph{p} from the contrasts table -- when there are only two levels in \(X\) -- are the same as \emph{t} and \emph{p} from a \emph{t}-test}{t and p from the contrasts table -- when there are only two levels in X -- are the same as t and p from a t-test}}\label{t-and-p-from-the-contrasts-table-when-there-are-only-two-levels-in-x-are-the-same-as-t-and-p-from-a-t-test}}
+
+Compare
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{m1 <-}\StringTok{ }\KeywordTok{lm}\NormalTok{(serum_tg }\OperatorTok{~}\StringTok{ }\NormalTok{treatment, }\DataTypeTok{data =}\NormalTok{ fig_3d)}
+\NormalTok{m1_pairs <-}\StringTok{ }\KeywordTok{emmeans}\NormalTok{(m1, }\DataTypeTok{specs =} \StringTok{"treatment"}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{contrast}\NormalTok{(}\DataTypeTok{method =} \StringTok{"revpairwise"}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{summary}\NormalTok{(}\DataTypeTok{infer =} \OtherTok{TRUE}\NormalTok{)}
+\NormalTok{m1_pairs}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##  contrast               estimate   SE df lower.CL upper.CL t.ratio p.value
+##  12,13-diHOME - Vehicle    -7.17 2.36 10    -12.4    -1.91 -3.040  0.0125 
+## 
+## Confidence level used: 0.95
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{m2 <-}\StringTok{ }\KeywordTok{t.test}\NormalTok{(serum_tg }\OperatorTok{~}\StringTok{ }\NormalTok{treatment,}
+                \DataTypeTok{data =}\NormalTok{ fig_3d,}
+                \DataTypeTok{var.equal =} \OtherTok{TRUE}\NormalTok{)}
+\KeywordTok{glance}\NormalTok{(m2) }\CommentTok{# glance is from the broom package}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 1 x 9
+##   estimate1 estimate2 statistic p.value parameter conf.low conf.high method
+##       <dbl>     <dbl>     <dbl>   <dbl>     <dbl>    <dbl>     <dbl> <chr> 
+## 1      42.6      35.5      3.04  0.0125        10     1.91      12.4 " Two~
+## # ... with 1 more variable: alternative <chr>
+\end{verbatim}
+
+Notes
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  The ``statistic'' in the output contains the \emph{t}-value of the \emph{t}-test. It is equal in magnitude but opposite in sign to that in the contrast table from the linear model. This is because the \texttt{method\ =\ "revpairwise"} argument tells the \texttt{contrast} function to use the difference ``non-reference mean minus reference mean'', which is the direction I prefer (I like to compare to the reference, which is usually a control)
+\item
+  The ``p.value'' in the output contains the \emph{p}-value of the \emph{t}-test. It is equal to that in the contrast table from the linear model.
+\item
+  The \texttt{t.test} function doesn't output the estimate of the difference in means, only the estimates of each mean.
+\item
+  The \texttt{t.test} function does give the 95\% confidence intervals of the difference in means. Notice that these have the same magnitude but opposite sign of those in the contrast table, for the same reason given in note 1 above.
+\end{enumerate}
+
+The \emph{t} and \emph{p} values for the \emph{t}-test are the same as those for the linear model, because the \emph{t}-test is a specific case of the linear model. Reasons to abandon classic \emph{t}-tests and learn the linear modeling strategy include
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  A linear modeling strategy encourages researchers to think about the effect and uncertainty in the effect and not just a \emph{p}-value.
+\item
+  The linear model is nearly infinitely flexible and expandible while the \emph{t}-test has extremely limited flexibility.
+\end{enumerate}
+
+\hypertarget{example-2-three-treatment-levels-groups}{%
+\subsection{Example 2 -- three treatment levels (``groups'')}\label{example-2-three-treatment-levels-groups}}
+
+The data come from the experiment reported in Figure 2a of the 12,13-diHOME article described above. This experiment was designed to probe the hypothesis that 12,13-diHOME is a mediator of known stimulators of increased BAT activity (exposure to cold temperature and sympathetic nervous system activation). Mice were assigned to control (30 °C), one-hour exposure to 4 °C, or 30 minute norepinephrine (NE) treatment level (NE is the neurotransmitter of the sympathetic neurons targeting peripheral tissues).
+
+\textbf{response variable}: \emph{serum\_tg}, a continuous variable.
+
+\textbf{treatment variable}: \emph{treatment}, with levels: ``Vehicle'', ``12,13-diHOME'' (the control or ``Vehicle'' mice were injected with saline). Coded as a factor.
+
+\textbf{design}: single, categorical \emph{X}
+
+\hypertarget{fit-the-model}{%
+\subsubsection{fit the model}\label{fit-the-model}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{fig1b_m1 <-}\StringTok{ }\KeywordTok{lm}\NormalTok{(diHOME }\OperatorTok{~}\StringTok{ }\NormalTok{treatment, }\DataTypeTok{data =}\NormalTok{ fig1b)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{check-the-model}{%
+\subsubsection{check the model}\label{check-the-model}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{set.seed}\NormalTok{(}\DecValTok{1}\NormalTok{)}
+\KeywordTok{qqPlot}\NormalTok{(fig1b_m1)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-181-1.pdf}
+
+\begin{verbatim}
+## [1]  3 18
+\end{verbatim}
+
+The Q-Q plot indicates potential issues at the extreme quantiles, what is called ``heavy tails''. The two values are the extreme values in the ``30 min NE'' group. This could be the result of a small sample from a response with a larger variance.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{spreadLevelPlot}\NormalTok{(fig1b_m1, }\DataTypeTok{id=}\OtherTok{FALSE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-182-1.pdf}
+
+\begin{verbatim}
+## 
+## Suggested power transformation:  0.4430799
+\end{verbatim}
+
+The combination of the raw residuals and the spread-level plot suggests heterogeneity but low confidence in anything given the small sample size.
+
+\hypertarget{inference-from-the-model-1}{%
+\subsubsection{Inference from the model}\label{inference-from-the-model-1}}
+
+\hypertarget{coefficient-table-1}{%
+\paragraph{Coefficient table}\label{coefficient-table-1}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{fig1b_m1_coef <-}\StringTok{ }\KeywordTok{cbind}\NormalTok{(}\KeywordTok{coef}\NormalTok{(}\KeywordTok{summary}\NormalTok{(fig1b_m1)),}
+                        \KeywordTok{confint}\NormalTok{(fig1b_m1))}
+\NormalTok{fig1b_m1_coef}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##                       Estimate Std. Error  t value    Pr(>|t|)     2.5 %
+## (Intercept)          12.023075   3.081337 3.901902 0.001595771  5.414264
+## treatment1 hour cold  7.140386   4.570362 1.562324 0.140527829 -2.662066
+## treatment30 min NE   14.794354   4.357669 3.395015 0.004355868  5.448083
+##                        97.5 %
+## (Intercept)          18.63189
+## treatment1 hour cold 16.94284
+## treatment30 min NE   24.14063
+\end{verbatim}
+
+\hypertarget{marginal-means-table-1}{%
+\paragraph{Marginal means table}\label{marginal-means-table-1}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{(fig1b_m1_emm <-}\StringTok{ }\KeywordTok{emmeans}\NormalTok{(fig1b_m1, }\DataTypeTok{specs =} \StringTok{"treatment"}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##  treatment   emmean   SE df lower.CL upper.CL
+##  Control       12.0 3.08 14     5.41     18.6
+##  1 hour cold   19.2 3.38 14    11.92     26.4
+##  30 min NE     26.8 3.08 14    20.21     33.4
+## 
+## Confidence level used: 0.95
+\end{verbatim}
+
+\hypertarget{contrasts-table-1}{%
+\paragraph{Contrasts table}\label{contrasts-table-1}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{(fig1b_m1_pairs <-}\StringTok{ }\KeywordTok{contrast}\NormalTok{(fig1b_m1_emm,}
+                            \DataTypeTok{method =} \StringTok{"revpairwise"}\NormalTok{,}
+                            \DataTypeTok{adjust =} \StringTok{"none"}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{summary}\NormalTok{(}\DataTypeTok{infer =} \OtherTok{TRUE}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##  contrast                estimate   SE df lower.CL upper.CL t.ratio
+##  1 hour cold - Control       7.14 4.57 14    -2.66     16.9 1.562  
+##  30 min NE - Control        14.79 4.36 14     5.45     24.1 3.395  
+##  30 min NE - 1 hour cold     7.65 4.57 14    -2.15     17.5 1.675  
+##  p.value
+##  0.1405 
+##  0.0044 
+##  0.1162 
+## 
+## Confidence level used: 0.95
+\end{verbatim}
+
+\hypertarget{plot-the-model}{%
+\subsubsection{plot the model}\label{plot-the-model}}
+
+The script for plotting the model in the section Hidden code below.
+
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/categorical-x-fig1b-plot-1.pdf}
+
+\hypertarget{report-the-model-results}{%
+\subsubsection{Report the model results}\label{report-the-model-results}}
+
+Compared to control mice (12.0 pmol/mL, 95\% CI: 5.4, 18.6), mean serum 12,13-diHOME in mice exposed to one-hour cold (19.2 pmol/mL, 95\% CI: 11.9, 26.4) was 7.1 pmol/mL higher (95\% CI: -2.7, 16.9, \(p = 0.14\)) while mean Serum 12,13-diHOME in mice exposed to 30 minutes NE (26.8 pmol/mL, 95\% CI: 20.2, 33.3) was 14.8 pmol/mL higher (95\% CI: 5.4, 24.1 \(p = 0.004\)).
+
+\hypertarget{understanding-the-analysis-with-three-or-more-treatment-levels}{%
+\subsection{Understanding the analysis with three (or more) treatment levels}\label{understanding-the-analysis-with-three-or-more-treatment-levels}}
+
+\hypertarget{the-coefficient-table}{%
+\subsubsection{The coefficient table}\label{the-coefficient-table}}
+
+\begin{verbatim}
+##                       Estimate Std. Error  t value    Pr(>|t|)     2.5 %
+## (Intercept)          12.023075   3.081337 3.901902 0.001595771  5.414264
+## treatment1 hour cold  7.140386   4.570362 1.562324 0.140527829 -2.662066
+## treatment30 min NE   14.794354   4.357669 3.395015 0.004355868  5.448083
+##                        97.5 %
+## (Intercept)          18.63189
+## treatment1 hour cold 16.94284
+## treatment30 min NE   24.14063
+\end{verbatim}
+
+Two understand row names in the first column, its useful to recall the order of the factor levels of \(treatment\), which is
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{levels}\NormalTok{(fig1b}\OperatorTok{$}\NormalTok{treatment) }
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "Control"     "1 hour cold" "30 min NE"
+\end{verbatim}
+
+``Control'' is the reference level, so the Estimate of the intercept is the mean 12,13diHome for the ``Control'' mice. The 2nd row of the coefficient table contains the estimate and statistics for the ``1 hour cold'' level. The estimate (in the column ``Estimate'') is the difference in means \(\bar{y}_{1\_hour\_cold} - \bar{y}_{Control}\). The 3rd row contains the estimate and statistics for the ``30 min NE'' level. The estimate is the difference in means \(\bar{y}_{30\_min\_NE} - \bar{y}_{Control}\).
+
+Let's put this in the context of the linear model fit to the data.
+
+\begin{equation}
+diHOME_i = b_0 + b_1 treatment_{1\_hour\_cold,i} + b_2 treatment_{30\_min\_NE,i} + e_i
+\label{eq:fit-dihome}
+\end{equation}
+
+The value in the column ``Estimate'' for the ``(Intercept)'' row is \(b_0\), the estimate of \(\beta_0\), the ``population'' mean of ``control'' mice. The value in the column ``Estimate'' for the ``treatment1 hour cold'' row is \(b_1\), the estimate of \(\beta_1\), the effect of the cold treatment on the response (relative to the control). The value in the column ``Estimate'' for the ``treatment30 min NE'' row is \(b_1\), the estimate of \(\beta_2\), the effect of the NE treatment on the response (relative to the control).
+
+\(treatment_{1\_hour\_cold, i}\) is a dummy-coded indicator variable, containing the number 1, if \(i\) is in the ``1 hour cold'' group, or the number 0, otherwise. \(treatment_{30\_min\_NE, i}\) is a dummy-coded indicator variable, containing the number 1, if \(i\) is in the ``30 min NE'' group, or the number 0, otherwise. Importantly, the function \texttt{lm} creates these indicator variables under the hood. You don't create these but understanding how these are made gives you phenomenal cosmic power (because there are models where you have to construct these manually).
+
+This generalizes to any number of levels of the factor variable. If there are \(k\) levels of the factor, there are \(k-1\) indicator variables, each with its own coefficient (\(b_1\) through \(b_{k-1}\)) that estimates the effect of that treatment level relative to the control (if using dummy coding).
+
+As in the example with only two treatment levels above, both \(b_1\) and \(b_2\) are ``slopes''. Don't visualize this as a single line from the control mean through both non-control means but as two lines, each with their own slopes. The numerator of each slope is the difference between that group's mean and the control mean. The denominator of each slope is 1 (because each has the value 1 when the row is assigned to that group).
+
+The model formula (\texttt{dihome\ \textasciitilde{}\ treatment}) used in the \texttt{lm} function is the same, regardless of the number of levels in the factor \(treatment\). This model formula is the verbal form of the fit linear model and is useful for communication, but disconnects the formula from the actual model. For example, it might lead to the confusion on how the model \texttt{dihome\ \textasciitilde{}\ treatment} can output an intercept and \emph{two} coefficients when there is only \emph{one} \(X\) variable. The answer is, this question confuses the verbal formula with the quantitative formula. The model is fit using the quantitative formula which has \(3-1=2\) indicator variables resulting in two (non-intercept) coefficients.
+
+\hypertarget{the-estimated-marginal-means-table}{%
+\subsubsection{The estimated marginal means table}\label{the-estimated-marginal-means-table}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{fig1b_m1_emm}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##  treatment   emmean   SE df lower.CL upper.CL
+##  Control       12.0 3.08 14     5.41     18.6
+##  1 hour cold   19.2 3.38 14    11.92     26.4
+##  30 min NE     26.8 3.08 14    20.21     33.4
+## 
+## Confidence level used: 0.95
+\end{verbatim}
+
+This table is important for reporting means and CIs and for plotting the model. As in example 1, the values in the column ``emmean'' are the simple means of each group (what you would compute if you simply computed the mean for that group). Again, this is true for this model, but is not generally true. Despite the column label standing for ``estimated marginal mean'', these are conditional means -- the mean conditional on treatment level.
+
+Also as in example 1, the SE for each mean is \emph{not} the sample SE but the modeled SE -- it is based on a pooled estimate of \(\sigma\). \emph{These are the SEs that you should report} because it is these SEs that are used to compute the \emph{p}-value and CI that you report, that is, they tell the same ``story''. The SE for the ``1 hour cold'' group is a bit higher because the sample size \(n\) for this group is smaller by 1.
+
+\hypertarget{the-contrasts-table}{%
+\subsubsection{The contrasts table}\label{the-contrasts-table}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{fig1b_m1_pairs}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##  contrast                estimate   SE df lower.CL upper.CL t.ratio
+##  1 hour cold - Control       7.14 4.57 14    -2.66     16.9 1.562  
+##  30 min NE - Control        14.79 4.36 14     5.45     24.1 3.395  
+##  30 min NE - 1 hour cold     7.65 4.57 14    -2.15     17.5 1.675  
+##  p.value
+##  0.1405 
+##  0.0044 
+##  0.1162 
+## 
+## Confidence level used: 0.95
+\end{verbatim}
+
+If a factor variable has more than two levels, there are multiple kinds of contrasts that a researcher can compare. The simplest are \textbf{pairwise contrasts}, which are differences between group means. These are typically called ``post-hoc'' tests in hypothesis testing but I avoid that because the focus in this text is estimation.
+
+This table is important for reporting treatment effects and CIs and for plotting the model. As in example 1, the values in the column ``estimate'' are the simple differences between the means of the groups given in the contrast column (what you would compute if you simply computed the difference for these groups). Again, this is true for this model, but is not generally true.
+
+The values in the ``SE'' column are standard errors of a difference (SED), specifically the difference in the estimate column. These SEs are from the fit model using the pooled estimate of \(\sigma\) and not the SED one would compute if one simply used the two groups in the contrast column. \emph{These are the SEs that you should report} because it is these SEs that are used to compute the \emph{p}-value and CI that you report, that is, they tell the same ``story''.
+
+The values in the ``lower.CL'' and ``upper.CL'' columns are the bounds of the 95\% confidence interval of the estimate. Again, this confidence level applies to the procedure and not the estimate. Think of this interval as containing potential values of the true parameter (the true difference in means between the two groups) that are reasonably compatible with the data. More formally, it is correct to interpret this CI as ``95\% of the CIs computed using this procedure include the true value given the model conditions.''
+
+The columns ``t.ratio'' and ``p.value'' contains the \emph{t} and \emph{p} values of the significance (not hypothesis!) test of the estimate. The \emph{t}-statistic is the ratio of the estimate to the SE of the estimate (use the console to confirm this given the values in the table). It is a signal (the estimate) to noise (SE of the estimate) ratio. The \emph{p}-value is the probability of sampling the same distribution, fiting the linear model, and observing a \emph{t}-value as or more extreme than the observed \emph{t}. A very small \emph{p}-value is consistent with the experiment ``not sampling from distributions with the same mean'' -- meaning that adding a treatment affects the mean of the distribution. This is the logic used to infer a treatment effect. Unfortunately, it is also consistent with the experiment not approximating other conditions of the model, including non-random assignment, non-independence, non-normal conditional responses, and variance heterogeneity. It is up to the rigorous researcher to be sure that these other model conditions are approximated or ``good enough'' to use the \emph{p}-value to infer a treatment effect on the mean.
+
+\hypertarget{t-and-p-from-the-contrasts-table-when-there-are-more-than-two-levels-in-x-are-not-the-same-as-those-from-pairwise-t-tests-among-pairs-of-groups}{%
+\subsubsection{\texorpdfstring{\emph{t} and \emph{p} from the contrasts table -- when there are more than two levels in \(X\) -- are not the same as those from pairwise \emph{t}-tests among pairs of groups}{t and p from the contrasts table -- when there are more than two levels in X -- are not the same as those from pairwise t-tests among pairs of groups}}\label{t-and-p-from-the-contrasts-table-when-there-are-more-than-two-levels-in-x-are-not-the-same-as-those-from-pairwise-t-tests-among-pairs-of-groups}}
+
+The contrasts, CIs, and significance test statistics in the contrasts table come from a single model fit to the data. Researchers commonly fit separate \emph{t}-tests for each pair of treatment levels instead of a single linear model.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# classic t-test}
+\NormalTok{test1 <-}\StringTok{ }\KeywordTok{t.test}\NormalTok{(fig1b[treatment }\OperatorTok{==}\StringTok{ "1 hour cold"}\NormalTok{, diHOME],}
+\NormalTok{       fig1b[treatment }\OperatorTok{==}\StringTok{ "Control"}\NormalTok{, diHOME],}
+       \DataTypeTok{var.equal=}\OtherTok{TRUE}\NormalTok{)}
+
+\NormalTok{test2 <-}\StringTok{ }\KeywordTok{t.test}\NormalTok{(fig1b[treatment }\OperatorTok{==}\StringTok{ "30 min NE"}\NormalTok{, diHOME],}
+\NormalTok{       fig1b[treatment }\OperatorTok{==}\StringTok{ "Control"}\NormalTok{, diHOME],}
+       \DataTypeTok{var.equal=}\OtherTok{TRUE}\NormalTok{)}
+
+\NormalTok{test3 <-}\StringTok{ }\KeywordTok{t.test}\NormalTok{(fig1b[treatment }\OperatorTok{==}\StringTok{ "30 min NE"}\NormalTok{, diHOME],}
+\NormalTok{       fig1b[treatment }\OperatorTok{==}\StringTok{ "1 hour cold"}\NormalTok{, diHOME],}
+       \DataTypeTok{var.equal=}\OtherTok{TRUE}\NormalTok{)}
+
+\NormalTok{ttests <-}\StringTok{ }\KeywordTok{data.frame}\NormalTok{(}\DataTypeTok{t =} \KeywordTok{c}\NormalTok{(test1}\OperatorTok{$}\NormalTok{statistic, test2}\OperatorTok{$}\NormalTok{statistic, test3}\OperatorTok{$}\NormalTok{statistic),}
+                     \DataTypeTok{p =} \KeywordTok{c}\NormalTok{(test1}\OperatorTok{$}\NormalTok{p.value, test2}\OperatorTok{$}\NormalTok{p.value, test3}\OperatorTok{$}\NormalTok{p.value))}
+\KeywordTok{row.names}\NormalTok{(ttests) <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"1 hour cold - Control"}\NormalTok{, }
+                       \StringTok{"30 min NE - Control"}\NormalTok{,}
+                       \StringTok{"30 min NE - 1 hour cold"}\NormalTok{)}
+\NormalTok{ttests}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##                                t           p
+## 1 hour cold - Control   2.415122 0.038920739
+## 30 min NE - Control     3.238158 0.008897132
+## 30 min NE - 1 hour cold 1.380666 0.200700587
+\end{verbatim}
+
+The \emph{t} and \emph{p}-values computed from three separate tests differ from the \emph{t} and \emph{p}-values computed from the single linear model shown in the contrasts table above. The values differ because the SE in the denominators used to compute the \(t\)-values differ. The \emph{t}-value computed from the linear model use variation in all three groups to estimate \(\sigma^2\) the variance of the response conditional on treatment level, and this estimate is commmon to all three \emph{t}-tests (the SE differs slightly because of sample size differences among levels). The \emph{t}-value computed from the separate tests each use variation from only the two groups in that test to estimate \(\sigma^2\). Consequently, \(\sigma^2\), and the SE of the estimate, differs for each test.
+
+Using the linear model is a better practice than the pairwise \emph{t}-tests. The reason is that the \emph{t}-tests assume homogeneity of variance, that is, the \(\sigma^2\) equal in all three groups. And, since a \emph{t}-test estimates \(\sigma^2\), it is more precise to estimate this using three groups (the linear model) than two groups (the pairwise \emph{t}-test). And, because the three pairwise \emph{t}-test computes three estimates of \(\sigma^2\), it is inconsistent to use one estimate in one test and a different estimate in a second test (why would we think the \(\sigma^2\) for the Control group is two different values?).
+
+\hypertarget{the-contrasts-table-when-there-are-more-than-two-levels-in-x-has-multiple-p-values.-how-to-handle-this-multiple-testing-is-highly-controversial}{%
+\subsubsection{\texorpdfstring{The contrasts table -- when there are more than two levels in \(X\) -- has multiple p-values. How to handle this ``multiple testing'' is highly controversial}{The contrasts table -- when there are more than two levels in X -- has multiple p-values. How to handle this ``multiple testing'' is highly controversial}}\label{the-contrasts-table-when-there-are-more-than-two-levels-in-x-has-multiple-p-values.-how-to-handle-this-multiple-testing-is-highly-controversial}}
+
+\textbf{Multiple testing} is the practice of adjusting \emph{p}-values (and less commonly confidence intervals) to account for the expected increase in the frequency of Type I error in a batch, or \emph{family}, of tests. An example of a batch of tests is the three tests in the contrast table for the analysis of the fig1b data. Multiple testing is a concept that exists because of Neyman-Pearson hypothesis testing strategy. My own belief is that the major problem of multiple testing is less the inflation of Type I error and more the idea that we ``discover by p-value''. If we focus on effects and uncertainty in experiments where we have good prior knowledge to have reasonable expectations of these effects for the different treatment levels, we shouldn't be concerned about inflated Type I error. If we use experiments to ``see what happens'' in tens, hundreds, thousands, or millions of response variables after we perturb the system, then multiple testing is more problematic. Issues surrounding multiple testing are fleshed out in more detail in Chapter xxx ``Best Practices''. Computing adjusted values is covered below in the ``Working in R'' section.
+
+\hypertarget{working-in-r-2}{%
+\section{Working in R}\label{working-in-r-2}}
+
+\hypertarget{specifying-the-contrasts}{%
+\subsection{Specifying the contrasts}\label{specifying-the-contrasts}}
+
+\hypertarget{adjustment-for-multiple-comparisons}{%
+\subsection{Adjustment for multiple comparisons}\label{adjustment-for-multiple-comparisons}}
+
+If the head of your group or a reviewer demands that you adjust p-values in data from an experiment like that for the fig1b data, then the \texttt{adjust} argument in \texttt{emmeans::contrast()} controls the method for \emph{p}-value adjustment. The default is ``tukey''.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  ``none'' -- no adjustment, in general my preference.
+\item
+  ``tukey'' -- Tukey's HSD
+\item
+  ``bonferroni'' -- the standard bonferroni, which is conservative
+\item
+  ``fdr'' -- the false discovery rate
+\item
+  ``mvt'' -- based on the multivariate \emph{t} distribution and using covariance structure of the variables
+\end{enumerate}
+
+Here I use the Tukey HSD adjustment, which is a common choice for the ``posthoc comparison of means'' in experimental data like this. The Tukey adjustment is the default of \texttt{emmeans::contrast()} if the method of comparison is \texttt{revpairwise}, which means that the \texttt{adjust} argument does not need to be specified. That said, explicitly specify the adjustment as this makes the analysis more transparent.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{(fig1b_m1_pairs_tukey <-}\StringTok{ }\KeywordTok{contrast}\NormalTok{(fig1b_m1_emm,}
+                            \DataTypeTok{method =} \StringTok{"revpairwise"}\NormalTok{,}
+                            \DataTypeTok{adjust =} \StringTok{"tukey"}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{summary}\NormalTok{(}\DataTypeTok{infer =} \OtherTok{TRUE}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##  contrast                estimate   SE df lower.CL upper.CL t.ratio
+##  1 hour cold - Control       7.14 4.57 14    -4.82     19.1 1.562  
+##  30 min NE - Control        14.79 4.36 14     3.39     26.2 3.395  
+##  30 min NE - 1 hour cold     7.65 4.57 14    -4.31     19.6 1.675  
+##  p.value
+##  0.2936 
+##  0.0114 
+##  0.2490 
+## 
+## Confidence level used: 0.95 
+## Conf-level adjustment: tukey method for comparing a family of 3 estimates 
+## P value adjustment: tukey method for comparing a family of 3 estimates
+\end{verbatim}
+
+\hypertarget{plotting-models-with-a-single-categorical-x}{%
+\subsection{\texorpdfstring{Plotting models with a single, categorical \(X\)}{Plotting models with a single, categorical X}}\label{plotting-models-with-a-single-categorical-x}}
+
+\hypertarget{ggpubr-plots-1}{%
+\subsubsection{ggpubr plots}\label{ggpubr-plots-1}}
+
+The package ggpubr makes it very easy to create a publishable plot.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{gg_good <-}\StringTok{ }\KeywordTok{ggstripchart}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ fig1b,}
+                    \DataTypeTok{x =} \StringTok{"treatment"}\NormalTok{,}
+                    \DataTypeTok{y =} \StringTok{"diHOME"}\NormalTok{,}
+                    \DataTypeTok{add =} \StringTok{"mean_se"}
+\NormalTok{)}
+\NormalTok{gg_good}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-194-1.pdf}
+
+With a little work, we can improve this. Note that I've changed the error interval from 1 SE to a 95\% CI.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{compare_list <-}\StringTok{ }\KeywordTok{list}\NormalTok{(}\KeywordTok{c}\NormalTok{(}\StringTok{"Control"}\NormalTok{, }\StringTok{"1 hour cold"}\NormalTok{), }\KeywordTok{c}\NormalTok{(}\StringTok{"Control"}\NormalTok{, }\StringTok{"30 min NE"}\NormalTok{))}
+
+\NormalTok{gg_better <-}\StringTok{ }\KeywordTok{ggstripchart}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ fig1b,}
+                    \DataTypeTok{x =} \StringTok{"treatment"}\NormalTok{,}
+                    \DataTypeTok{y =} \StringTok{"diHOME"}\NormalTok{,}
+                    \DataTypeTok{add =} \StringTok{"mean_ci"}\NormalTok{,}
+                    \DataTypeTok{color =} \StringTok{"treatment"}\NormalTok{,}
+                    \DataTypeTok{palette =} \StringTok{"jco"}
+\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{stat_compare_means}\NormalTok{(}\DataTypeTok{method =} \StringTok{"t.test"}\NormalTok{,}
+                     \DataTypeTok{comparisons=}\NormalTok{compare_list)}
+
+\NormalTok{gg_better}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-195-1.pdf}
+
+The CI's and \emph{p}-values computed using ggpubr are sample statistics and multiple, independent Welch \emph{t}-tests and not from the linear model \texttt{lm(fig1b\ \textasciitilde{}\ treatment)}. Since the p-values are from Welch \emph{t}-tests, the CIs and \emph{p}-values are consistent in that they are using the same models to compute them.
+
+ggpubr and \texttt{stat\_compare\_means()} have very limited flexibility in the means, CI's and \emph{p} values that can be reported in a plot. This raises issues with best practices in this text, which advocates reporting modeled means, CIs and \emph{p}-values. This includes adjusted \emph{p}-values, which are not handled by \texttt{stat\_compare\_means()}. ggpubr has the function \texttt{stat\_pvalue\_manual()}, which is useful for reporting \emph{p}-values from tests other than the limited number of tests available in \texttt{stat\_compare\_means()}. For the model used with fig1b, we can use ggpub to construct the base plot of means and raw values. But with more complex models, we have to skip ggpubr alltogether and use ggplot2 directly.
+
+Step 1 -- convert the two tables to data.table. The ``emm'' table is ready after conversion to a data.table but the ``pairs'' table needs additional columns
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  create a column of pretty \emph{p}-values that are rounded or converted to ``\textless{} 0.001'' if small.
+\item
+  create the group columns containing the pair of groups that are compared. adding \emph{p}-values to the graph requires a bracket to show which groups are being compared. The column ``group1'' is added to list the ``x value'' of the first group. The column ``group2'' is added to list the ``x value'' of the second group. The ``x value'' of a group is the index of the group returned by the \texttt{levels()} function.
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{levels}\NormalTok{(fig1b}\OperatorTok{$}\NormalTok{treatment)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "Control"     "1 hour cold" "30 min NE"
+\end{verbatim}
+
+As an example, the contrast in the first row of the contrast table is ``1 hour cold - Control''. This is 2 - 1. The first element of Group1 is ``2'' and the first element of Group2 is ``1''. ggpubr will use these columns to construct the brackets.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{fig1b_m1_emm_dt <-}\StringTok{ }\KeywordTok{summary}\NormalTok{(fig1b_m1_emm) }\OperatorTok{%>%}
+\StringTok{  }\NormalTok{data.table}
+\NormalTok{fig1b_m1_pairs_dt <-}\StringTok{ }\KeywordTok{data.table}\NormalTok{(fig1b_m1_pairs)}
+
+\CommentTok{# pvalString is from package lazyWeave}
+\NormalTok{fig1b_m1_pairs_dt[ , p_pretty }\OperatorTok{:}\ErrorTok{=}\StringTok{ }\KeywordTok{pvalString}\NormalTok{(p.value)]}
+
+\CommentTok{# create group columns}
+\NormalTok{fig1b_m1_pairs_dt[, group1 }\OperatorTok{:}\ErrorTok{=}\StringTok{ }\KeywordTok{c}\NormalTok{(}\DecValTok{2}\NormalTok{, }\DecValTok{3}\NormalTok{, }\DecValTok{3}\NormalTok{)]}
+\NormalTok{fig1b_m1_pairs_dt[, group2 }\OperatorTok{:}\ErrorTok{=}\StringTok{ }\KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{2}\NormalTok{)]}
+\end{Highlighting}
+\end{Shaded}
+
+Step 2 -- Add the CIs and \emph{p}-value to a ggpubr plot
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{gg_almost_best <-}\StringTok{ }\KeywordTok{ggstripchart}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ fig1b,}
+                    \DataTypeTok{x =} \StringTok{"treatment"}\NormalTok{,}
+                    \DataTypeTok{y =} \StringTok{"diHOME"}\NormalTok{,}
+                    \DataTypeTok{add =} \StringTok{"mean"}\NormalTok{,}
+                    \DataTypeTok{color =} \StringTok{"treatment"}\NormalTok{,}
+                    \DataTypeTok{palette =} \StringTok{"jco"}
+\NormalTok{) }\OperatorTok{+}
+\StringTok{  }
+\StringTok{  }\KeywordTok{geom_errorbar}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ fig1b_m1_emm_dt,}
+                \KeywordTok{aes}\NormalTok{(}\DataTypeTok{y =}\NormalTok{ emmean,}
+                    \DataTypeTok{ymin =}\NormalTok{ lower.CL,}
+                    \DataTypeTok{ymax =}\NormalTok{ upper.CL,}
+                    \DataTypeTok{color =}\NormalTok{ treatment),}
+                \DataTypeTok{width =} \DecValTok{0}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }
+\StringTok{  }\CommentTok{# only plotting 1st two p-values}
+\StringTok{  }\KeywordTok{stat_pvalue_manual}\NormalTok{(fig1b_m1_pairs_dt,}
+                           \DataTypeTok{label =} \StringTok{"p_pretty"}\NormalTok{, }
+                           \DataTypeTok{y.position =} \KeywordTok{c}\NormalTok{(}\DecValTok{46}\NormalTok{, }\DecValTok{54}\NormalTok{, }\DecValTok{50}\NormalTok{)) }\OperatorTok{+}
+
+\StringTok{  }\OtherTok{NULL} \CommentTok{# add to ease exploring plot components}
+  
+\NormalTok{gg_almost_best}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-198-1.pdf}
+
+Notes
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  The \texttt{y.position} argument in \texttt{stat\_pvalue\_manual()} contains the position on the y-axis for the p-value brackets. I typically choose these values ``by eye''. Essentially, I look at the maximum y-value on the plot and then choose a value just above this for the first bracket.
+\item
+  All three \emph{p}-values are shown. In general, all \emph{p}-values (and means and CIs) should be reported but these can be in a supplemental table. To limit the \emph{p}-values that are shown, use the row index of a data.table. For example, to show on the \emph{p}-values with the control, use the following script (note that y.position was also changed to only show the y position of two brackets).
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+  \KeywordTok{stat_pvalue_manual}\NormalTok{(fig1b_m1_pairs_dt[}\DecValTok{1}\OperatorTok{:}\DecValTok{2}\NormalTok{,],}
+                           \DataTypeTok{label =} \StringTok{"p_pretty"}\NormalTok{, }
+                           \DataTypeTok{y.position =} \KeywordTok{c}\NormalTok{(}\DecValTok{46}\NormalTok{, }\DecValTok{50}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## mapping: xmin = ~xmin, xmax = ~xmax, label = ~label, y.position = ~y.position, vjust = ~vjust, group = 1:2, step.increase = c(0, 0), x = ~xmin, y = ~y.position 
+## geom_bracket: na.rm = FALSE
+## stat_bracket: tip.length = 0.03, na.rm = FALSE
+## position_identity
+\end{verbatim}
+
+\hypertarget{ggplot-plots}{%
+\subsubsection{ggplot plots}\label{ggplot-plots}}
+
+This text advocates reporting effects and CIs of effects in a plot, in addition to the response. This was done in \ref{fig:categorical-x-fig1b-plot} above. The code for this plot is in the section ``Hidden Code'' below.
+
+\hypertarget{issues-in-inference-in-models-with-a-single-categorical-x}{%
+\section{\texorpdfstring{Issues in inference in models with a single, categorical \(X\)}{Issues in inference in models with a single, categorical X}}\label{issues-in-inference-in-models-with-a-single-categorical-x}}
+
+\hypertarget{lack-of-independence}{%
+\subsection{Lack of independence}\label{lack-of-independence}}
+
+\hypertarget{heterogeneity-of-variances}{%
+\subsection{Heterogeneity of variances}\label{heterogeneity-of-variances}}
+
+Textbooks that use a ``which test?'' strategy often point to a Welch's \emph{t}-test in place of Student's \emph{t}-test if there is heterogeneity of variances between treatment groups. A Welch t-test is infrequent in the experimental biology literature, perhaps because
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  it is poorly known and it doesn't occur to researchers to use a test that models heterogeneity of variances.
+\item
+  many experiments have more than two levels, or are factorial, and these are often analyzed with ANOVA instead of multiple \emph{t}-tests.
+\item
+  heterogeneity often arises in right-skewed data, which is often analyzed with a non-parametric test like the Mann-Whitney U test.
+\end{enumerate}
+
+Welch's \emph{t}-test is a special case of a linear model that explicitly models the within-group variance using \textbf{generalized least squares} (GLS). Inference from a gls linear model and inference from Welch's t-test are the same -- this includes a 95\% CI of a mean differences and \emph{p}-values. Advantages of using a linear modeling strategy is that a researcer uses the model to estimate effects (difference in means) and measures of uncertainty in the effects (standard errors or confidence intervals of the difference). Advantages of specifically using the gls extension of the linear model is that it is a doorway to recognizing that the a gls linear model can be easily expanded to analyze more complex designs including 1) more than two treatment groups, 2) more than one factor, and 3) additional covariates.
+
+Modeling variance heterogenity is the focus of chapter xxx so the account here is brief. Heterogeneity can be modeled using a generalized least squares linear model with the \texttt{gls} function. The \texttt{weights} argument is used to model the variances using each group's sample variance. In this example, I use the data from the Figure 1b experiment, which can be compared to the analysis of the same data in Example 2 above.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{subdata <-}\StringTok{ }\NormalTok{fig1b[}\KeywordTok{is.na}\NormalTok{(diHOME) }\OperatorTok{==}\StringTok{ }\OtherTok{FALSE}\NormalTok{,] }\CommentTok{# omit rows with missing data}
+\NormalTok{fig1b_m2 <-}\StringTok{ }\KeywordTok{gls}\NormalTok{(diHOME }\OperatorTok{~}\StringTok{ }\NormalTok{treatment,}
+                \DataTypeTok{data =}\NormalTok{ subdata,}
+                \DataTypeTok{weights =} \KeywordTok{varIdent}\NormalTok{(}\DataTypeTok{form =} \OperatorTok{~}\StringTok{ }\DecValTok{1} \OperatorTok{|}\StringTok{ }\NormalTok{treatment))}
+\end{Highlighting}
+\end{Shaded}
+
+The model fig1b\_m2 uses variance computed in each group separately as the estimate of \(\sigma^2\) for that group. The coefficient table of the GLS model is
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{summary}\NormalTok{(fig1b_m2) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{coef}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##                          Value Std.Error   t-value      p-value
+## (Intercept)          12.023075  1.200139 10.018072 9.134757e-08
+## treatment1 hour cold  7.140386  3.163467  2.257139 4.050473e-02
+## treatment30 min NE   14.794354  4.568757  3.238157 5.951274e-03
+\end{verbatim}
+
+Notes
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{Important} for reporting \emph{p}-values. Unlike the linear model modeling homogenous variance, the \emph{p}-values for the coefficients of \(treatment1\;hour\;cold\) and \(treatment30\;min\;NE\) are \emph{not} the same as the \emph{p}-values of these equivalent contrasts in the contrasts table (see below). The reason is, the computation of the \emph{p}-value in the two tables use two different degrees of freedom. Report the \emph{p}-values from the contrast table using the Satterthwaite df.
+\end{enumerate}
+
+The modeled means and contrasts are computed as above for the \texttt{lm} object
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{fig1b_m2_emm <-}\StringTok{ }\KeywordTok{emmeans}\NormalTok{(fig1b_m2, }\DataTypeTok{specs=}\StringTok{"treatment"}\NormalTok{)}
+\NormalTok{fig1b_m2_emm}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##  treatment   emmean   SE df lower.CL upper.CL
+##  Control       12.0 1.20  5     8.94     15.1
+##  1 hour cold   19.2 2.93  4    11.04     27.3
+##  30 min NE     26.8 4.41  5    15.49     38.1
+## 
+## Degrees-of-freedom method: satterthwaite 
+## Confidence level used: 0.95
+\end{verbatim}
+
+Notes
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  The SE of the means in this table are modeled SEs but are equal to the sample SE of the means, because this was specified in the GLS model.
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{fig1b_m2_pairs <-}\StringTok{  }\KeywordTok{contrast}\NormalTok{(fig1b_m2_emm,}
+                            \DataTypeTok{method =} \StringTok{"revpairwise"}\NormalTok{,}
+                            \DataTypeTok{adjust =} \StringTok{"none"}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{summary}\NormalTok{(}\DataTypeTok{infer =} \OtherTok{TRUE}\NormalTok{)}
+\NormalTok{fig1b_m2_pairs}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##  contrast                estimate   SE   df lower.CL upper.CL t.ratio
+##  1 hour cold - Control       7.14 3.16 5.34   -0.839     15.1 2.257  
+##  30 min NE - Control        14.79 4.57 5.74    3.490     26.1 3.238  
+##  30 min NE - 1 hour cold     7.65 5.29 8.35   -4.460     19.8 1.446  
+##  p.value
+##  0.0703 
+##  0.0189 
+##  0.1845 
+## 
+## Degrees-of-freedom method: satterthwaite 
+## Confidence level used: 0.95
+\end{verbatim}
+
+Compare this table to the three Welch \emph{t}-tests of all pairs of treatment levels in the fig1b experiment.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{test1 <-}\StringTok{ }\KeywordTok{t.test}\NormalTok{(fig1b[treatment }\OperatorTok{==}\StringTok{ "1 hour cold"}\NormalTok{, diHOME],}
+\NormalTok{       fig1b[treatment }\OperatorTok{==}\StringTok{ "Control"}\NormalTok{, diHOME],}
+       \DataTypeTok{var.equal=}\OtherTok{FALSE}\NormalTok{)}
+
+\NormalTok{test2 <-}\StringTok{ }\KeywordTok{t.test}\NormalTok{(fig1b[treatment }\OperatorTok{==}\StringTok{ "30 min NE"}\NormalTok{, diHOME],}
+\NormalTok{       fig1b[treatment }\OperatorTok{==}\StringTok{ "Control"}\NormalTok{, diHOME],}
+       \DataTypeTok{var.equal=}\OtherTok{FALSE}\NormalTok{)}
+
+\NormalTok{test3 <-}\StringTok{ }\KeywordTok{t.test}\NormalTok{(fig1b[treatment }\OperatorTok{==}\StringTok{ "30 min NE"}\NormalTok{, diHOME],}
+\NormalTok{       fig1b[treatment }\OperatorTok{==}\StringTok{ "1 hour cold"}\NormalTok{, diHOME],}
+       \DataTypeTok{var.equal=}\OtherTok{FALSE}\NormalTok{)}
+
+\NormalTok{welch_tests <-}\StringTok{ }\KeywordTok{data.frame}\NormalTok{(}\DataTypeTok{t =} \KeywordTok{c}\NormalTok{(test1}\OperatorTok{$}\NormalTok{statistic, test2}\OperatorTok{$}\NormalTok{statistic, test3}\OperatorTok{$}\NormalTok{statistic),}
+                     \DataTypeTok{p =} \KeywordTok{c}\NormalTok{(test1}\OperatorTok{$}\NormalTok{p.value, test2}\OperatorTok{$}\NormalTok{p.value, test3}\OperatorTok{$}\NormalTok{p.value))}
+\KeywordTok{row.names}\NormalTok{(welch_tests) <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"1 hour cold - Control"}\NormalTok{, }
+                       \StringTok{"30 min NE - Control"}\NormalTok{,}
+                       \StringTok{"30 min NE - 1 hour cold"}\NormalTok{)}
+\NormalTok{welch_tests}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##                                t          p
+## 1 hour cold - Control   2.257139 0.07026220
+## 30 min NE - Control     3.238158 0.01889041
+## 30 min NE - 1 hour cold 1.446454 0.18451549
+\end{verbatim}
+
+The \emph{t} and \emph{p}-values computed from the GLS linear model and from the three, pairwise Welch \emph{t}-tests are the same (to about the 6th decimal place). They are the same because each is estimating \(\sigma^2\) separately for each group and not as the pooled (among two groups for \emph{t}-test or three groups for the linear model) estimate and because they use the same degrees of freedom to compute the \emph{p}-value.
+
+Let's summarize these comparisons
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Inference from a linear model using homogenous variance (the \texttt{lm} function) and from a Student's \emph{t}-test are the same if there are only two levels in the treatment variable.
+\item
+  Inference from a linear model using homogenous variance (the \texttt{lm} function) and from the series of pairwise, Student's \emph{t}-tests differ when there are more than two levels in the treatment variable.
+\item
+  Inference from a GLS linear model using heterogenous variance (the \texttt{gls} function) and from a Welch \emph{t}-test are the same regardless of the number of levels in the treatment variable.
+\end{enumerate}
+
+Even though the linear model that models heterogeneity and the Welch \emph{t}-test produce the same results, researchers should use the linear model because
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  A linear modeling strategy encourages researchers to think about the effect and uncertainty in the effect and not just a \emph{p}-value.
+\item
+  The linear model is nearly infinitely flexible and expandible while the \emph{t}-test has extremely limited flexibility (The Welch \emph{t}-test is one way to expand the classical, Student's \emph{t}-test).
+\end{enumerate}
+
+\hypertarget{the-conditional-response-isnt-normal}{%
+\subsection{The conditional response isn't Normal}\label{the-conditional-response-isnt-normal}}
+
+\hypertarget{pre-post-designs}{%
+\subsection{Pre-post designs}\label{pre-post-designs}}
+
+\hypertarget{longitudinal-designs}{%
+\subsection{Longitudinal designs}\label{longitudinal-designs}}
+
+\hypertarget{comparing-responses-normalized-to-a-standard}{%
+\subsection{Comparing responses normalized to a standard}\label{comparing-responses-normalized-to-a-standard}}
+
+\hypertarget{comparing-responses-that-are-ratios}{%
+\subsection{Comparing responses that are ratios}\label{comparing-responses-that-are-ratios}}
+
+\hypertarget{researcher-degrees-of-freedom}{%
+\subsection{Researcher degrees of freedom}\label{researcher-degrees-of-freedom}}
+
+Conspicuously, the \emph{p}-value for the ``1 hour cold - Control'' contrast is 0.039, which is ``significant'' using the conventional
+
+\hypertarget{hidden-code-1}{%
+\section{Hidden Code}\label{hidden-code-1}}
+
+\hypertarget{fig1b-data}{%
+\subsection{fig1b data}\label{fig1b-data}}
+
+The script for plotting the model in the section Hidden code below.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{fig1b_m1_emm_dt <-}\StringTok{ }\KeywordTok{summary}\NormalTok{(fig1b_m1_emm) }\OperatorTok{%>%}
+\StringTok{  }\NormalTok{data.table}
+\NormalTok{fig1b_m1_pairs_dt <-}\StringTok{ }\KeywordTok{data.table}\NormalTok{(fig1b_m1_pairs)}
+\NormalTok{fig1b_m1_pairs_dt[ , p_pretty }\OperatorTok{:}\ErrorTok{=}\StringTok{ }\KeywordTok{pvalString}\NormalTok{(p.value)]}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{fig1b_gg_response <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ fig1b,}
+                            \KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ treatment,}
+                                \DataTypeTok{y =}\NormalTok{ diHOME,}
+                                \DataTypeTok{color =}\NormalTok{ treatment)) }\OperatorTok{+}
+\StringTok{  }
+\StringTok{  }\CommentTok{# points}
+\StringTok{  }\KeywordTok{geom_sina}\NormalTok{(}\DataTypeTok{alpha =} \FloatTok{0.5}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }
+\StringTok{  }\CommentTok{# plot means and CI}
+\StringTok{  }\KeywordTok{geom_errorbar}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ fig1b_m1_emm_dt,}
+                \KeywordTok{aes}\NormalTok{(}\DataTypeTok{y =}\NormalTok{ emmean,}
+                    \DataTypeTok{ymin =}\NormalTok{ lower.CL,}
+                    \DataTypeTok{ymax =}\NormalTok{ upper.CL,}
+                    \DataTypeTok{color =}\NormalTok{ treatment),}
+                \DataTypeTok{width =} \DecValTok{0}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }
+\StringTok{  }\KeywordTok{geom_point}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ fig1b_m1_emm_dt,}
+             \KeywordTok{aes}\NormalTok{(}\DataTypeTok{y =}\NormalTok{ emmean,}
+                 \DataTypeTok{color =}\NormalTok{ treatment),}
+             \DataTypeTok{size =} \DecValTok{3}
+\NormalTok{  ) }\OperatorTok{+}
+
+\StringTok{  }\CommentTok{# aesthetics}
+\StringTok{  }\KeywordTok{ylab}\NormalTok{(}\StringTok{"12,13-diHOME (pmol/mL)"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_color_manual}\NormalTok{(}\DataTypeTok{values=}\NormalTok{pal_okabe_ito,}
+                     \DataTypeTok{name =} \OtherTok{NULL}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{theme_pubr}\NormalTok{() }\OperatorTok{+}
+\StringTok{  }\KeywordTok{theme}\NormalTok{(}\DataTypeTok{legend.position=}\StringTok{"none"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{theme}\NormalTok{(}\DataTypeTok{axis.title.x=}\KeywordTok{element_blank}\NormalTok{()) }\OperatorTok{+}
+\StringTok{  }
+\StringTok{  }\OtherTok{NULL}
+
+\CommentTok{#fig1b_gg_response}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# reverse order of rows so flipped plot has original order}
+\NormalTok{fig1b_m1_pairs_dt <-}\StringTok{ }\NormalTok{fig1b_m1_pairs_dt[}\KeywordTok{rev}\NormalTok{(}\DecValTok{1}\OperatorTok{:}\NormalTok{.N)]}
+
+\CommentTok{# order "contrast" factor as in table!}
+\NormalTok{contrast_order <-}\StringTok{ }\NormalTok{fig1b_m1_pairs_dt[, contrast]}
+\NormalTok{fig1b_m1_pairs_dt[, contrast }\OperatorTok{:}\ErrorTok{=}\StringTok{ }\KeywordTok{factor}\NormalTok{(contrast, contrast_order)]}
+
+\NormalTok{min_bound <-}\StringTok{ }\KeywordTok{min}\NormalTok{(fig1b_m1_pairs_dt[, lower.CL])}
+\NormalTok{max_bound <-}\StringTok{ }\KeywordTok{min}\NormalTok{(fig1b_m1_pairs_dt[, upper.CL])}
+\NormalTok{y_lo <-}\StringTok{ }\KeywordTok{min}\NormalTok{(min_bound}\OperatorTok{+}\NormalTok{min_bound}\OperatorTok{*}\FloatTok{0.2}\NormalTok{,}
+            \OperatorTok{-}\NormalTok{max_bound)}
+\NormalTok{y_hi <-}\StringTok{ }\KeywordTok{max}\NormalTok{(max_bound }\OperatorTok{+}\StringTok{ }\NormalTok{max_bound}\OperatorTok{*}\FloatTok{0.2}\NormalTok{,}
+            \OperatorTok{-}\NormalTok{min_bound)}
+\NormalTok{y_lims <-}\StringTok{ }\KeywordTok{c}\NormalTok{(y_lo, y_hi)}
+
+\NormalTok{fig1b_gg_effect <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(}\DataTypeTok{data=}\NormalTok{fig1b_m1_pairs_dt, }
+                          \KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ contrast,}
+                              \DataTypeTok{y =}\NormalTok{ estimate)) }\OperatorTok{+}
+\StringTok{  }\CommentTok{# confidence level of effect}
+\StringTok{  }\KeywordTok{geom_errorbar}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{ymin=}\NormalTok{lower.CL, }
+                    \DataTypeTok{ymax=}\NormalTok{upper.CL),}
+                \DataTypeTok{width=}\DecValTok{0}\NormalTok{, }
+                \DataTypeTok{color=}\StringTok{"black"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\CommentTok{# estimate of effect}
+\StringTok{  }\KeywordTok{geom_point}\NormalTok{(}\DataTypeTok{size =} \DecValTok{3}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }
+\StringTok{  }\CommentTok{# zero effect}
+\StringTok{  }\KeywordTok{geom_hline}\NormalTok{(}\DataTypeTok{yintercept=}\DecValTok{0}\NormalTok{, }\DataTypeTok{linetype =} \DecValTok{2}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }
+\StringTok{  }\CommentTok{# p-value}
+\StringTok{  }\KeywordTok{annotate}\NormalTok{(}\DataTypeTok{geom =} \StringTok{"text"}\NormalTok{,}
+           \DataTypeTok{label =}\NormalTok{ fig1b_m1_pairs_dt}\OperatorTok{$}\NormalTok{p_pretty,}
+           \DataTypeTok{x =} \DecValTok{1}\OperatorTok{:}\DecValTok{3}\NormalTok{,}
+           \DataTypeTok{y =} \DecValTok{-10}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }
+\StringTok{  }\CommentTok{# aesthetics}
+\StringTok{  }\KeywordTok{scale_y_continuous}\NormalTok{(}\DataTypeTok{position=}\StringTok{"right"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_x_discrete}\NormalTok{(}\DataTypeTok{labels =} \KeywordTok{c}\NormalTok{(}\StringTok{"NE minus cold"}\NormalTok{,}
+                              \StringTok{"NE effect"}\NormalTok{,}
+                              \StringTok{"cold effect"}
+\NormalTok{  )) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{coord_flip}\NormalTok{(}\DataTypeTok{ylim =}\NormalTok{ y_lims) }\OperatorTok{+}\StringTok{ }
+\StringTok{  }\KeywordTok{theme_pubr}\NormalTok{() }\OperatorTok{+}
+\StringTok{  }\KeywordTok{ylab}\NormalTok{(}\StringTok{"Effects (pmol/mL)"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{theme}\NormalTok{(}\DataTypeTok{axis.title.y =} \KeywordTok{element_blank}\NormalTok{()) }\OperatorTok{+}
+\StringTok{  }\OtherTok{NULL}
+
+\CommentTok{# fig1b_gg_effect}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-208-1.pdf}
 
 \hypertarget{model-checking}{%
 \chapter{Model Checking}\label{model-checking}}
@@ -8316,7 +9182,7 @@ Count data often have an excess of zeroes (for example a lake with no nests or a
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-175-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-209-1.pdf}
 
 \hypertarget{constrained-lower-and-upper-bounds}{%
 \subsubsection{Constrained lower and upper bounds}\label{constrained-lower-and-upper-bounds}}
@@ -8437,18 +9303,10 @@ R^2 = 1- \frac{SS(error)}{SS(total)}
 which is an obvious alternative given the decomposition. I prefer the former equation because it emphasizes the model fit instead of model ill-fit.
 
 \hypertarget{best-practices-issues-in-inference}{%
-\chapter{Best Practices -- Issues in Inference}\label{best-practices-issues-in-inference}}
-
-\hypertarget{power-1}{%
-\section{Power}\label{power-1}}
-
-\hypertarget{types-of-error}{%
-\subsection{``Types'' of Error}\label{types-of-error}}
-
-I, II, S, M
+\chapter{Best practices -- issues in inference}\label{best-practices-issues-in-inference}}
 
 \hypertarget{multiple-testing}{%
-\section{multiple testing}\label{multiple-testing}}
+\section{Multiple testing}\label{multiple-testing}}
 
 \textbf{Multiple testing} is the practice of adjusting \emph{p}-values (and less commonly confidence intervals) to account for the expected increase in the frequency of Type I error when there are multiple tests (typically Null Hypothesis Significance Tests). Multiple testing tends to arise in two types of situations:
 
@@ -8575,7 +9433,7 @@ If a researcher caries out many tests, and ranks the effects by magnitude or \em
 \caption{\label{fig:inflation-histogram}A histogram of the distribution of the 10,000 effects}
 \end{figure}
 
-\label{tab:unnamed-chunk-177}The top 10 genes ranked by p-value. Rank is the rank of the true effect, from large to small.
+\label{tab:unnamed-chunk-211}The top 10 genes ranked by p-value. Rank is the rank of the true effect, from large to small.
 
 effect
 
@@ -8852,8 +9710,8 @@ This list is roughly in the order of how I would advise researchers, although th
 
 On this last point, do not use the \emph{p}-value from a ``test for normality'' (such as a Shapiro-Wilk test) to decide between using the linear model (or t-test or ANOVA) and an alternative such as a generalized linear model (or transformation or non-parametric test). No real data is normal. Tests of normality will tend to ``not reject'' normality (p \textgreater{} 0.05) when the sample size is small and ``reject'' normality (p \textless{} 0.05) when the sample size is very large. But again, a ``not rejected'' hypothesis test does not mean the null (in this case, the data are normal) is true. More importantly, where the test for normality tends to fail to reject (encouraging a researcher to use parametric statistics) is where parametric inference performs the worst (because of small \emph{n}) and where the test for normality tends to reject (encouraging a researcher to use non-parametric statistics) is where the parametric inference performs the best (because of large sample size) (Lumley xxx).
 
-\hypertarget{working-in-r-2}{%
-\subsection{Working in R}\label{working-in-r-2}}
+\hypertarget{working-in-r-3}{%
+\subsection{Working in R}\label{working-in-r-3}}
 
 The data for demonstrating different strategies are from Fig. 4A of ``Data from The enteric nervous system promotes intestinal health by constraining microbiota composition''. There is a single factor with two treatment levels. The response is neutrophil count.
 
@@ -9245,8 +10103,8 @@ If we are going to compute a \(p\)-value, we want it to be uniformly distributed
 
 Type I error is computed for the linear model, the linear model with a log transformed responpse, Mann-Whitney-Wilcoxon, and permutation tests. All four tests are slightly conservative for data that look like that modeled. The computed Type I error of the permutation test is closest to the nominal value of 0.05.
 
-\hypertarget{power-2}{%
-\subsubsection{Power}\label{power-2}}
+\hypertarget{power-1}{%
+\subsubsection{Power}\label{power-1}}
 
 Power is the probability of a test to reject the null hypothesis if the null hypothesis is false (that is, if an effect exists)
 
@@ -9293,12 +10151,6 @@ If all we care about is a \(p-value\) then we want to use a test that is most po
 \end{verbatim}
 
 As above, Power is computed for the linear model, linear model with a log-transformed response, Mann-Whitney-Wilcoxan, and permutation, by simulating a ``low power'' experiment. The effect is huge (twice as many cells) but the power is low because the sample size is small (\(n = 5\)). At this sample size, and for this model of fake data, all tests have low power. The power of the log-transformed response is the largest. A problem is, this is not a test of the means but of the log transformed mean plus 1. The power of the permutation test is about 25\% larger than that of the linear model and Mann-Whitney-Wilcoxan test. An advantage of this test is that it is a p-value of the mean. A good complement to this p-value would be bootstraped confidence intervals. Repeat this simulation using \(n=40\) do see how the relative power among the three change in a simulation of an experiment with more power.
-
-\hypertarget{max-vs.-mean}{%
-\section{max vs.~mean}\label{max-vs.-mean}}
-
-\hypertarget{pre-post-normalization}{%
-\section{pre-post, normalization}\label{pre-post-normalization}}
 
 \hypertarget{part-vi-more-than-one-x-multivariable-models}{%
 \chapter*{\texorpdfstring{Part VI: More than one \(X\) -- Multivariable Models}{Part VI: More than one X -- Multivariable Models}}\label{part-vi-more-than-one-x-multivariable-models}}
@@ -9375,7 +10227,7 @@ ldlc.r = \beta_0 + \beta_1 treatment + \varepsilon
 
 where \(ldlc.r\) is the set of residuals.
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-187-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-221-1.pdf}
 
 Now the estimate of the effect is -4.7 mg/dL blood and the SE is only 0.88. In this two-stage analysis (stage 1: fit ldlc \textasciitilde{} age to get residuals, stage 2: fit residuals \textasciitilde{} treatment), we have \emph{eliminated the effect of age} on the variance of the response and, as a consequence, the estimate of the effect of the drug is much more precise -- the effect of \(treatment\) has a smaller standard error.
 
@@ -9394,11 +10246,11 @@ ldlc = \beta_0 + \beta_1 age + \beta_2 treatment + \varepsilon
 
 which results in the Harrell Plot
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-188-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-222-1.pdf}
 
 and the coefficient table
 
-\label{tab:unnamed-chunk-189}Coefficients of the model that includes the covariate age.
+\label{tab:unnamed-chunk-223}Coefficients of the model that includes the covariate age.
 
 Estimate
 
@@ -10343,8 +11195,8 @@ The effect of the increased temperature at the control CO2 level was 4.5 pmol O2
 
 The CI on the interaction includes both large negative values and trivially small values, including zero, and, consequently, our data is compatible with both scientific models (that is, we can neither support nor reject the predictions of the scientific model using these results).
 
-\hypertarget{working-in-r-3}{%
-\section{Working in R}\label{working-in-r-3}}
+\hypertarget{working-in-r-4}{%
+\section{Working in R}\label{working-in-r-4}}
 
 \hypertarget{model-formula}{%
 \subsection{Model formula}\label{model-formula}}
@@ -10575,7 +11427,7 @@ These can be combined into a single table using \texttt{rbind}
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-199-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-233-1.pdf}
 
 \hypertarget{plots-that-communicate-the-factorial-design}{%
 \subsubsection{Plots that communicate the factorial design}\label{plots-that-communicate-the-factorial-design}}
@@ -10722,7 +11574,7 @@ An interaction plot is an okay plot. It doesn't show the data, only a minimal, d
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-200-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-234-1.pdf}
 
 This effects plot shows the four simple effects, the single interaction (Temp18:CO21100), and their 95\% confidence intervals. In the original paper, the researchers were testing a scientific (not statistical!) model that predicted no interaction between CO2 and Temp, and the researchers argued that these data supported this model because of the ``not statistically significant'' \emph{p}-value for the interaction effect. The data are consistent with this model (one end of the 95\% CI for the interaction includes zero) but also support a model of a large, negative interaction (the other end of the 95\% CI includes large negative values). The data are too course (or the signal:noise ratio is to small) to have much confidence in the size of the interaction effect.
 
@@ -10739,7 +11591,7 @@ This effects plot shows the four simple effects, the single interaction (Temp18:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-201-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-235-1.pdf}
 
 The effects and interaction plot are combined into a single plot.
 
@@ -11875,8 +12727,8 @@ The hypothesis tested by each row in the ANOVA table using Type III sum of squar
 \hypertarget{the-anova-tables-for-type-i-ii-and-iii-sum-of-squares-are-the-same-if-the-design-is-balanced.}{%
 \subsection{The anova tables for Type I, II, and III sum of squares are the same if the design is balanced.}\label{the-anova-tables-for-type-i-ii-and-iii-sum-of-squares-are-the-same-if-the-design-is-balanced.}}
 
-\hypertarget{working-in-r-4}{%
-\section{Working in R}\label{working-in-r-4}}
+\hypertarget{working-in-r-5}{%
+\section{Working in R}\label{working-in-r-5}}
 
 \hypertarget{type-i-sum-of-squares-in-r}{%
 \subsection{Type I sum of squares in R}\label{type-i-sum-of-squares-in-r}}
@@ -12764,8 +13616,8 @@ To understand this, rank order the treatment effects for each strain. An individ
 
 \textbf{Not more than you want to know} -- Shrinkage estimators are not only useful when we are interested in block-specific effects but are also useful for estimating effects when there are \textbf{multiple responses}. For example, consider a researcher interested in measuring the effects of some exercise treatment on gene expression in adipose cells. The researcher measures expression levels in 10,000 genes. Given the typical content in undergraduate biostatics courses, a researcher would probably model these responses using 10,000 \emph{t}-tests, or equivalently, 10,000 separate linear models. If the tests were ranked by \(p\)-value or absolute effect size, many of the genes with largest absolute effect would be there because of a large error component and many of the largest effects would be massively overinflated. Re-imagining the design as a single, linear mixed model with each gene modeled as a block would lead to a rank order in which the biggest measured effects more closely approximate the true effects.
 
-\hypertarget{working-in-r-5}{%
-\section{Working in R}\label{working-in-r-5}}
+\hypertarget{working-in-r-6}{%
+\section{Working in R}\label{working-in-r-6}}
 
 The major function for working with linear mixed models is \texttt{lmer()} from the lme4 package. An older, and still sometimes used and useful function is \texttt{lme()} from the nlme package. The authors of the lme4 package argue that the df in a linear mixed model are too approximate for a useful \(p\)-value and, consequently, the \texttt{lme} function does not return a \(p\)-value. Many biological researchers want a \(p\)-value and typically use the \texttt{lmerTest} package to get this.
 
@@ -13299,8 +14151,8 @@ which give us the \textbf{relative effect} of Infected\_HG compared to the Contr
   Effects on the response scale are not additive but multiplicative! So, for example, the mean of the Infected HG treatment level on the response scale is \(\overline{Control}*RR_{Infected\_HG}\) (remember that with a linear model the mean would be \(b_{Control} + b_{Infected\_HG}\)). Check and see if this works.
 \end{enumerate}
 
-\hypertarget{working-in-r-6}{%
-\section{Working in R}\label{working-in-r-6}}
+\hypertarget{working-in-r-7}{%
+\section{Working in R}\label{working-in-r-7}}
 
 \textbf{Fitting a GLM to count data}. The poisson family is specified with the base R \texttt{glm()} function. For negative binomial, use \texttt{glm.nb} from the MASS package
 
@@ -13404,7 +14256,7 @@ A plot of the dispersion statistic can be generated using the object returned by
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-223-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-257-1.pdf}
 
 \begin{verbatim}
 ## 
