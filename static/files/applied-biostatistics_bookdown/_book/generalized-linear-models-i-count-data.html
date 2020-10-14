@@ -384,7 +384,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="10.3.8" data-path="linear-models-with-a-single-categorical-x.html"><a href="linear-models-with-a-single-categorical-x.html#researcher-degrees-of-freedom"><i class="fa fa-check"></i><b>10.3.8</b> Researcher degrees of freedom</a></li>
 </ul></li>
 <li class="chapter" data-level="10.4" data-path="linear-models-with-a-single-categorical-x.html"><a href="linear-models-with-a-single-categorical-x.html#hidden-code-1"><i class="fa fa-check"></i><b>10.4</b> Hidden Code</a><ul>
-<li class="chapter" data-level="10.4.1" data-path="linear-models-with-a-single-categorical-x.html"><a href="linear-models-with-a-single-categorical-x.html#fig1b-data"><i class="fa fa-check"></i><b>10.4.1</b> fig1b data</a></li>
+<li class="chapter" data-level="10.4.1" data-path="linear-models-with-a-single-categorical-x.html"><a href="linear-models-with-a-single-categorical-x.html#fig2a-data"><i class="fa fa-check"></i><b>10.4.1</b> fig2a data</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="11" data-path="model-checking.html"><a href="model-checking.html"><i class="fa fa-check"></i><b>11</b> Model Checking</a><ul>
@@ -396,9 +396,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="11.3.1" data-path="model-checking.html"><a href="model-checking.html#residuals"><i class="fa fa-check"></i><b>11.3.1</b> Residuals</a></li>
 <li class="chapter" data-level="11.3.2" data-path="model-checking.html"><a href="model-checking.html#a-normal-q-q-plot-is-used-to-check-for-characteristic-departures-from-normality"><i class="fa fa-check"></i><b>11.3.2</b> A Normal Q-Q plot is used to check for characteristic departures from Normality</a></li>
 <li class="chapter" data-level="11.3.3" data-path="model-checking.html"><a href="model-checking.html#mapping-qq-plot-departures-from-normality"><i class="fa fa-check"></i><b>11.3.3</b> Mapping QQ-plot departures from Normality</a></li>
+<li class="chapter" data-level="11.3.4" data-path="model-checking.html"><a href="model-checking.html#model-checking-homoskedasticity"><i class="fa fa-check"></i><b>11.3.4</b> Model checking homoskedasticity</a></li>
 </ul></li>
-<li class="chapter" data-level="11.4" data-path="model-checking.html"><a href="model-checking.html#model-checking-homoskedasticity"><i class="fa fa-check"></i><b>11.4</b> Model checking homoskedasticity</a></li>
-<li class="chapter" data-level="11.5" data-path="model-checking.html"><a href="model-checking.html#using-r"><i class="fa fa-check"></i><b>11.5</b> Using R</a></li>
+<li class="chapter" data-level="11.4" data-path="model-checking.html"><a href="model-checking.html#using-r"><i class="fa fa-check"></i><b>11.4</b> Using R</a><ul>
+<li class="chapter" data-level="11.4.1" data-path="model-checking.html"><a href="model-checking.html#normal-q-q-plots"><i class="fa fa-check"></i><b>11.4.1</b> Normal Q-Q plots</a></li>
+</ul></li>
 </ul></li>
 <li class="chapter" data-level="12" data-path="model-fitting-and-model-fit-ols.html"><a href="model-fitting-and-model-fit-ols.html"><i class="fa fa-check"></i><b>12</b> Model Fitting and Model Fit (OLS)</a><ul>
 <li class="chapter" data-level="12.1" data-path="model-fitting-and-model-fit-ols.html"><a href="model-fitting-and-model-fit-ols.html#least-squares-estimation-and-the-decomposition-of-variance"><i class="fa fa-check"></i><b>12.1</b> Least Squares Estimation and the Decomposition of Variance</a></li>
@@ -819,60 +821,60 @@ RR_{Infected\_HG} = \frac{\overline{Infected\_HG}}{\overline{Control}}
 <div id="working-in-r-7" class="section level2">
 <h2><span class="header-section-number">19.3</span> Working in R</h2>
 <p><strong>Fitting a GLM to count data</strong>. The poisson family is specified with the base R <code>glm()</code> function. For negative binomial, use <code>glm.nb</code> from the MASS package</p>
-<div class="sourceCode" id="cb438"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb438-1"><a href="generalized-linear-models-i-count-data.html#cb438-1"></a><span class="co"># poisson - less likely to fit to real biological data well because of overdispersion</span></span>
-<span id="cb438-2"><a href="generalized-linear-models-i-count-data.html#cb438-2"></a>fit &lt;-<span class="st"> </span><span class="kw">glm</span>(y <span class="op">~</span><span class="st"> </span>treatment, <span class="dt">family =</span> <span class="st">&quot;poisson&quot;</span>, <span class="dt">data =</span> dt)</span>
-<span id="cb438-3"><a href="generalized-linear-models-i-count-data.html#cb438-3"></a></span>
-<span id="cb438-4"><a href="generalized-linear-models-i-count-data.html#cb438-4"></a><span class="co"># two alternatives to overdispersed poisson fit</span></span>
-<span id="cb438-5"><a href="generalized-linear-models-i-count-data.html#cb438-5"></a><span class="co"># quasipoisson</span></span>
-<span id="cb438-6"><a href="generalized-linear-models-i-count-data.html#cb438-6"></a>fit &lt;-<span class="st"> </span><span class="kw">glm</span>(y <span class="op">~</span><span class="st"> </span>treatment, <span class="dt">family =</span> <span class="st">&quot;quasipoisson&quot;</span>, <span class="dt">data=</span>dt)</span>
-<span id="cb438-7"><a href="generalized-linear-models-i-count-data.html#cb438-7"></a><span class="co"># negative binomial - more likely to fit to real biological data well</span></span>
-<span id="cb438-8"><a href="generalized-linear-models-i-count-data.html#cb438-8"></a><span class="co"># note that &quot;family&quot; is not an argument since this function is used only to fit a negative binomial distribution!</span></span>
-<span id="cb438-9"><a href="generalized-linear-models-i-count-data.html#cb438-9"></a>fit &lt;-<span class="st"> </span><span class="kw">glm.nb</span>(y <span class="op">~</span><span class="st"> </span>treatment, <span class="dt">data =</span> dt)</span></code></pre></div>
+<div class="sourceCode" id="cb446"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb446-1"><a href="generalized-linear-models-i-count-data.html#cb446-1"></a><span class="co"># poisson - less likely to fit to real biological data well because of overdispersion</span></span>
+<span id="cb446-2"><a href="generalized-linear-models-i-count-data.html#cb446-2"></a>fit &lt;-<span class="st"> </span><span class="kw">glm</span>(y <span class="op">~</span><span class="st"> </span>treatment, <span class="dt">family =</span> <span class="st">&quot;poisson&quot;</span>, <span class="dt">data =</span> dt)</span>
+<span id="cb446-3"><a href="generalized-linear-models-i-count-data.html#cb446-3"></a></span>
+<span id="cb446-4"><a href="generalized-linear-models-i-count-data.html#cb446-4"></a><span class="co"># two alternatives to overdispersed poisson fit</span></span>
+<span id="cb446-5"><a href="generalized-linear-models-i-count-data.html#cb446-5"></a><span class="co"># quasipoisson</span></span>
+<span id="cb446-6"><a href="generalized-linear-models-i-count-data.html#cb446-6"></a>fit &lt;-<span class="st"> </span><span class="kw">glm</span>(y <span class="op">~</span><span class="st"> </span>treatment, <span class="dt">family =</span> <span class="st">&quot;quasipoisson&quot;</span>, <span class="dt">data=</span>dt)</span>
+<span id="cb446-7"><a href="generalized-linear-models-i-count-data.html#cb446-7"></a><span class="co"># negative binomial - more likely to fit to real biological data well</span></span>
+<span id="cb446-8"><a href="generalized-linear-models-i-count-data.html#cb446-8"></a><span class="co"># note that &quot;family&quot; is not an argument since this function is used only to fit a negative binomial distribution!</span></span>
+<span id="cb446-9"><a href="generalized-linear-models-i-count-data.html#cb446-9"></a>fit &lt;-<span class="st"> </span><span class="kw">glm.nb</span>(y <span class="op">~</span><span class="st"> </span>treatment, <span class="dt">data =</span> dt)</span></code></pre></div>
 <p><strong>Fitting a GLM to a continuous conditional response with right skew</strong>. The Gamma family is specified with the base R <code>glm()</code> function.</p>
-<div class="sourceCode" id="cb439"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb439-1"><a href="generalized-linear-models-i-count-data.html#cb439-1"></a>fit &lt;-<span class="st"> </span><span class="kw">glm</span>(y <span class="op">~</span><span class="st"> </span>treatment, <span class="dt">family =</span> <span class="kw">Gamma</span>(<span class="dt">link =</span> <span class="st">&quot;log&quot;</span>), <span class="dt">data =</span> dt)</span></code></pre></div>
+<div class="sourceCode" id="cb447"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb447-1"><a href="generalized-linear-models-i-count-data.html#cb447-1"></a>fit &lt;-<span class="st"> </span><span class="kw">glm</span>(y <span class="op">~</span><span class="st"> </span>treatment, <span class="dt">family =</span> <span class="kw">Gamma</span>(<span class="dt">link =</span> <span class="st">&quot;log&quot;</span>), <span class="dt">data =</span> dt)</span></code></pre></div>
 <p><strong>Fitting a GLM to a binary (success or failure, presence or absence, survived or died) response</strong></p>
 <p>The binomial family is specified with base R <code>glm()</code> function.</p>
-<div class="sourceCode" id="cb440"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb440-1"><a href="generalized-linear-models-i-count-data.html#cb440-1"></a><span class="co"># if the data includes a 0 or 1 for every observation of y</span></span>
-<span id="cb440-2"><a href="generalized-linear-models-i-count-data.html#cb440-2"></a>fit &lt;-<span class="st"> </span><span class="kw">glm</span>(y <span class="op">~</span><span class="st"> </span>treatment, <span class="dt">family =</span> <span class="st">&quot;binomial&quot;</span>, <span class="dt">data =</span> dt)</span>
-<span id="cb440-3"><a href="generalized-linear-models-i-count-data.html#cb440-3"></a></span>
-<span id="cb440-4"><a href="generalized-linear-models-i-count-data.html#cb440-4"></a><span class="co"># if the data includes the frequency of success AND there is a measure of the total n</span></span>
-<span id="cb440-5"><a href="generalized-linear-models-i-count-data.html#cb440-5"></a>dt[ , failure <span class="op">:</span><span class="er">=</span><span class="st"> </span>n <span class="op">-</span><span class="st"> </span>success]</span>
-<span id="cb440-6"><a href="generalized-linear-models-i-count-data.html#cb440-6"></a>fit &lt;-<span class="st"> </span><span class="kw">glm</span>(<span class="kw">cbind</span>(success, failure) <span class="op">~</span><span class="st"> </span>treatment, <span class="dt">family =</span> <span class="st">&quot;binomial&quot;</span>, <span class="dt">data =</span> dt)</span></code></pre></div>
+<div class="sourceCode" id="cb448"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb448-1"><a href="generalized-linear-models-i-count-data.html#cb448-1"></a><span class="co"># if the data includes a 0 or 1 for every observation of y</span></span>
+<span id="cb448-2"><a href="generalized-linear-models-i-count-data.html#cb448-2"></a>fit &lt;-<span class="st"> </span><span class="kw">glm</span>(y <span class="op">~</span><span class="st"> </span>treatment, <span class="dt">family =</span> <span class="st">&quot;binomial&quot;</span>, <span class="dt">data =</span> dt)</span>
+<span id="cb448-3"><a href="generalized-linear-models-i-count-data.html#cb448-3"></a></span>
+<span id="cb448-4"><a href="generalized-linear-models-i-count-data.html#cb448-4"></a><span class="co"># if the data includes the frequency of success AND there is a measure of the total n</span></span>
+<span id="cb448-5"><a href="generalized-linear-models-i-count-data.html#cb448-5"></a>dt[ , failure <span class="op">:</span><span class="er">=</span><span class="st"> </span>n <span class="op">-</span><span class="st"> </span>success]</span>
+<span id="cb448-6"><a href="generalized-linear-models-i-count-data.html#cb448-6"></a>fit &lt;-<span class="st"> </span><span class="kw">glm</span>(<span class="kw">cbind</span>(success, failure) <span class="op">~</span><span class="st"> </span>treatment, <span class="dt">family =</span> <span class="st">&quot;binomial&quot;</span>, <span class="dt">data =</span> dt)</span></code></pre></div>
 <p><strong>Fitting Generalized Linear Mixed Models</strong>
 Generalized linear mixed models are fit with <code>glmer</code> from the lmer package.</p>
-<div class="sourceCode" id="cb441"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb441-1"><a href="generalized-linear-models-i-count-data.html#cb441-1"></a><span class="co"># random intercept of factor &quot;id&quot;</span></span>
-<span id="cb441-2"><a href="generalized-linear-models-i-count-data.html#cb441-2"></a>fit &lt;-<span class="st"> </span><span class="kw">glmer</span>(y <span class="op">~</span><span class="st"> </span>treatment <span class="op">+</span><span class="st"> </span>(<span class="dv">1</span><span class="op">|</span>id), <span class="dt">family =</span> <span class="st">&quot;poisson&quot;</span>, <span class="dt">data =</span> dt)</span>
-<span id="cb441-3"><a href="generalized-linear-models-i-count-data.html#cb441-3"></a></span>
-<span id="cb441-4"><a href="generalized-linear-models-i-count-data.html#cb441-4"></a><span class="co"># random intercept and slope of factor &quot;id&quot;</span></span>
-<span id="cb441-5"><a href="generalized-linear-models-i-count-data.html#cb441-5"></a>fit &lt;-<span class="st"> </span><span class="kw">glmer</span>(y <span class="op">~</span><span class="st"> </span>treatment <span class="op">+</span><span class="st"> </span>(treatment<span class="op">|</span>id), <span class="dt">family =</span> <span class="kw">Gamma</span>(<span class="dt">link =</span> <span class="st">&quot;log&quot;</span>), <span class="dt">data =</span> dt)</span>
-<span id="cb441-6"><a href="generalized-linear-models-i-count-data.html#cb441-6"></a></span>
-<span id="cb441-7"><a href="generalized-linear-models-i-count-data.html#cb441-7"></a><span class="co"># Again, negative binomial uses a special function</span></span>
-<span id="cb441-8"><a href="generalized-linear-models-i-count-data.html#cb441-8"></a>fit &lt;-<span class="st"> </span><span class="kw">glmer.nb</span>(y <span class="op">~</span><span class="st"> </span>treatment <span class="op">+</span><span class="st"> </span>(treatment<span class="op">|</span>id), <span class="dt">data =</span> dt)</span></code></pre></div>
+<div class="sourceCode" id="cb449"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb449-1"><a href="generalized-linear-models-i-count-data.html#cb449-1"></a><span class="co"># random intercept of factor &quot;id&quot;</span></span>
+<span id="cb449-2"><a href="generalized-linear-models-i-count-data.html#cb449-2"></a>fit &lt;-<span class="st"> </span><span class="kw">glmer</span>(y <span class="op">~</span><span class="st"> </span>treatment <span class="op">+</span><span class="st"> </span>(<span class="dv">1</span><span class="op">|</span>id), <span class="dt">family =</span> <span class="st">&quot;poisson&quot;</span>, <span class="dt">data =</span> dt)</span>
+<span id="cb449-3"><a href="generalized-linear-models-i-count-data.html#cb449-3"></a></span>
+<span id="cb449-4"><a href="generalized-linear-models-i-count-data.html#cb449-4"></a><span class="co"># random intercept and slope of factor &quot;id&quot;</span></span>
+<span id="cb449-5"><a href="generalized-linear-models-i-count-data.html#cb449-5"></a>fit &lt;-<span class="st"> </span><span class="kw">glmer</span>(y <span class="op">~</span><span class="st"> </span>treatment <span class="op">+</span><span class="st"> </span>(treatment<span class="op">|</span>id), <span class="dt">family =</span> <span class="kw">Gamma</span>(<span class="dt">link =</span> <span class="st">&quot;log&quot;</span>), <span class="dt">data =</span> dt)</span>
+<span id="cb449-6"><a href="generalized-linear-models-i-count-data.html#cb449-6"></a></span>
+<span id="cb449-7"><a href="generalized-linear-models-i-count-data.html#cb449-7"></a><span class="co"># Again, negative binomial uses a special function</span></span>
+<span id="cb449-8"><a href="generalized-linear-models-i-count-data.html#cb449-8"></a>fit &lt;-<span class="st"> </span><span class="kw">glmer.nb</span>(y <span class="op">~</span><span class="st"> </span>treatment <span class="op">+</span><span class="st"> </span>(treatment<span class="op">|</span>id), <span class="dt">data =</span> dt)</span></code></pre></div>
 <p>Another good package for GLMMs is <code>glmmTMB</code> from the glmmTMB package</p>
-<div class="sourceCode" id="cb442"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb442-1"><a href="generalized-linear-models-i-count-data.html#cb442-1"></a><span class="co"># negative binomial</span></span>
-<span id="cb442-2"><a href="generalized-linear-models-i-count-data.html#cb442-2"></a>fit &lt;-<span class="st"> </span><span class="kw">glmmTMB</span>(y <span class="op">~</span><span class="st"> </span>treatment <span class="op">+</span><span class="st"> </span>(<span class="dv">1</span><span class="op">|</span>id), <span class="dt">family=</span><span class="st">&quot;nbinom2&quot;</span>, <span class="dt">data =</span> dt)</span>
-<span id="cb442-3"><a href="generalized-linear-models-i-count-data.html#cb442-3"></a></span>
-<span id="cb442-4"><a href="generalized-linear-models-i-count-data.html#cb442-4"></a><span class="co"># nbinom1, the mean variance relationship is that of quasipoisson</span></span>
-<span id="cb442-5"><a href="generalized-linear-models-i-count-data.html#cb442-5"></a>fit &lt;-<span class="st"> </span><span class="kw">glmmTMB</span>(y <span class="op">~</span><span class="st"> </span>treatment <span class="op">+</span><span class="st"> </span>(<span class="dv">1</span><span class="op">|</span>id), <span class="dt">family=</span><span class="st">&quot;nbinom1&quot;</span>, <span class="dt">data =</span> dt)</span></code></pre></div>
+<div class="sourceCode" id="cb450"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb450-1"><a href="generalized-linear-models-i-count-data.html#cb450-1"></a><span class="co"># negative binomial</span></span>
+<span id="cb450-2"><a href="generalized-linear-models-i-count-data.html#cb450-2"></a>fit &lt;-<span class="st"> </span><span class="kw">glmmTMB</span>(y <span class="op">~</span><span class="st"> </span>treatment <span class="op">+</span><span class="st"> </span>(<span class="dv">1</span><span class="op">|</span>id), <span class="dt">family=</span><span class="st">&quot;nbinom2&quot;</span>, <span class="dt">data =</span> dt)</span>
+<span id="cb450-3"><a href="generalized-linear-models-i-count-data.html#cb450-3"></a></span>
+<span id="cb450-4"><a href="generalized-linear-models-i-count-data.html#cb450-4"></a><span class="co"># nbinom1, the mean variance relationship is that of quasipoisson</span></span>
+<span id="cb450-5"><a href="generalized-linear-models-i-count-data.html#cb450-5"></a>fit &lt;-<span class="st"> </span><span class="kw">glmmTMB</span>(y <span class="op">~</span><span class="st"> </span>treatment <span class="op">+</span><span class="st"> </span>(<span class="dv">1</span><span class="op">|</span>id), <span class="dt">family=</span><span class="st">&quot;nbinom1&quot;</span>, <span class="dt">data =</span> dt)</span></code></pre></div>
 <div id="fitting-a-glm-to-count-data" class="section level3">
 <h3><span class="header-section-number">19.3.1</span> Fitting a GLM to count data</h3>
 <p>Source publication: Benesh, D. P., &amp; Kalbe, M. (2016). Experimental parasite community ecology: intraspecific variation in a large tapeworm affects community assembly. Journal of Animal Ecology, 85(4), 1004-1013.</p>
 <p>Source data URL: <a href="https://datadryad.org/resource/doi:10.5061/dryad.bq8j8" class="uri">https://datadryad.org/resource/doi:10.5061/dryad.bq8j8</a></p>
 <p>Source file: “Lab_exp.csv”</p>
 <p>Poisson fit. A quantile residual Q-Q plot can be generated using the package DHARMa</p>
-<div class="sourceCode" id="cb443"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb443-1"><a href="generalized-linear-models-i-count-data.html#cb443-1"></a>fit.pois &lt;-<span class="st"> </span><span class="kw">glm</span>(Diplo_intensity <span class="op">~</span><span class="st"> </span>Treatment, <span class="dt">family=</span><span class="st">&quot;poisson&quot;</span>, <span class="dt">data=</span>worm)</span>
-<span id="cb443-2"><a href="generalized-linear-models-i-count-data.html#cb443-2"></a></span>
-<span id="cb443-3"><a href="generalized-linear-models-i-count-data.html#cb443-3"></a><span class="co"># from the DHARMa package</span></span>
-<span id="cb443-4"><a href="generalized-linear-models-i-count-data.html#cb443-4"></a>  n_sim &lt;-<span class="st"> </span><span class="dv">250</span></span>
-<span id="cb443-5"><a href="generalized-linear-models-i-count-data.html#cb443-5"></a>  simulationOutput &lt;-<span class="st"> </span><span class="kw">simulateResiduals</span>(<span class="dt">fittedModel =</span> fit.pois, <span class="dt">n =</span> n_sim)</span>
-<span id="cb443-6"><a href="generalized-linear-models-i-count-data.html#cb443-6"></a>  <span class="kw">plot</span>(simulationOutput, <span class="dt">asFactor =</span> F)</span></code></pre></div>
+<div class="sourceCode" id="cb451"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb451-1"><a href="generalized-linear-models-i-count-data.html#cb451-1"></a>fit.pois &lt;-<span class="st"> </span><span class="kw">glm</span>(Diplo_intensity <span class="op">~</span><span class="st"> </span>Treatment, <span class="dt">family=</span><span class="st">&quot;poisson&quot;</span>, <span class="dt">data=</span>worm)</span>
+<span id="cb451-2"><a href="generalized-linear-models-i-count-data.html#cb451-2"></a></span>
+<span id="cb451-3"><a href="generalized-linear-models-i-count-data.html#cb451-3"></a><span class="co"># from the DHARMa package</span></span>
+<span id="cb451-4"><a href="generalized-linear-models-i-count-data.html#cb451-4"></a>  n_sim &lt;-<span class="st"> </span><span class="dv">250</span></span>
+<span id="cb451-5"><a href="generalized-linear-models-i-count-data.html#cb451-5"></a>  simulationOutput &lt;-<span class="st"> </span><span class="kw">simulateResiduals</span>(<span class="dt">fittedModel =</span> fit.pois, <span class="dt">n =</span> n_sim)</span>
+<span id="cb451-6"><a href="generalized-linear-models-i-count-data.html#cb451-6"></a>  <span class="kw">plot</span>(simulationOutput, <span class="dt">asFactor =</span> F)</span></code></pre></div>
 <p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/glm1-working-in-r-1.png" width="576" /></p>
 <p>A plot of the dispersion statistic can be generated using the object returned by the <code>SimulateOutput</code> function but with <code>refit = TRUE</code>, which refits a model each iteration. This refitting isn’t necessary if only the quantiile residuals are needed. The Dharma package does not divide the sum of squared Pearson residuals by the residual degrees of freedom and so the expected value of the statistic is <span class="math inline">\(df\)</span>.</p>
-<div class="sourceCode" id="cb444"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb444-1"><a href="generalized-linear-models-i-count-data.html#cb444-1"></a><span class="co"># from the DHARMa package</span></span>
-<span id="cb444-2"><a href="generalized-linear-models-i-count-data.html#cb444-2"></a>  n_sim &lt;-<span class="st"> </span><span class="dv">250</span></span>
-<span id="cb444-3"><a href="generalized-linear-models-i-count-data.html#cb444-3"></a>  simulationOutput &lt;-<span class="st"> </span><span class="kw">simulateResiduals</span>(<span class="dt">fittedModel=</span>fit.pois, <span class="dt">n=</span>n_sim, <span class="dt">refit=</span><span class="ot">TRUE</span>)</span>
-<span id="cb444-4"><a href="generalized-linear-models-i-count-data.html#cb444-4"></a>  <span class="kw">testDispersion</span>(simulationOutput)</span></code></pre></div>
-<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/unnamed-chunk-259-1.png" width="576" /></p>
+<div class="sourceCode" id="cb452"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb452-1"><a href="generalized-linear-models-i-count-data.html#cb452-1"></a><span class="co"># from the DHARMa package</span></span>
+<span id="cb452-2"><a href="generalized-linear-models-i-count-data.html#cb452-2"></a>  n_sim &lt;-<span class="st"> </span><span class="dv">250</span></span>
+<span id="cb452-3"><a href="generalized-linear-models-i-count-data.html#cb452-3"></a>  simulationOutput &lt;-<span class="st"> </span><span class="kw">simulateResiduals</span>(<span class="dt">fittedModel=</span>fit.pois, <span class="dt">n=</span>n_sim, <span class="dt">refit=</span><span class="ot">TRUE</span>)</span>
+<span id="cb452-4"><a href="generalized-linear-models-i-count-data.html#cb452-4"></a>  <span class="kw">testDispersion</span>(simulationOutput)</span></code></pre></div>
+<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/unnamed-chunk-265-1.png" width="576" /></p>
 <pre><code>## 
 ##  DHARMa nonparametric dispersion test via mean deviance residual
 ##  fitted vs. simulated-refitted
@@ -881,14 +883,14 @@ Generalized linear mixed models are fit with <code>glmer</code> from the lmer pa
 ## dispersion = 3.3788, p-value &lt; 2.2e-16
 ## alternative hypothesis: two.sided</code></pre>
 <p>Negative binomial fit.</p>
-<div class="sourceCode" id="cb446"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb446-1"><a href="generalized-linear-models-i-count-data.html#cb446-1"></a>fit.nb &lt;-<span class="st"> </span><span class="kw">glm.nb</span>(Diplo_intensity <span class="op">~</span><span class="st"> </span>Treatment, <span class="dt">data=</span>worm)</span>
-<span id="cb446-2"><a href="generalized-linear-models-i-count-data.html#cb446-2"></a><span class="co"># from the DHARMa package</span></span>
-<span id="cb446-3"><a href="generalized-linear-models-i-count-data.html#cb446-3"></a>  simulationOutput &lt;-<span class="st"> </span><span class="kw">simulateResiduals</span>(<span class="dt">fittedModel =</span> fit.nb, <span class="dt">n =</span> n_sim)</span>
-<span id="cb446-4"><a href="generalized-linear-models-i-count-data.html#cb446-4"></a>  <span class="kw">plot</span>(simulationOutput, <span class="dt">asFactor =</span> F)</span></code></pre></div>
+<div class="sourceCode" id="cb454"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb454-1"><a href="generalized-linear-models-i-count-data.html#cb454-1"></a>fit.nb &lt;-<span class="st"> </span><span class="kw">glm.nb</span>(Diplo_intensity <span class="op">~</span><span class="st"> </span>Treatment, <span class="dt">data=</span>worm)</span>
+<span id="cb454-2"><a href="generalized-linear-models-i-count-data.html#cb454-2"></a><span class="co"># from the DHARMa package</span></span>
+<span id="cb454-3"><a href="generalized-linear-models-i-count-data.html#cb454-3"></a>  simulationOutput &lt;-<span class="st"> </span><span class="kw">simulateResiduals</span>(<span class="dt">fittedModel =</span> fit.nb, <span class="dt">n =</span> n_sim)</span>
+<span id="cb454-4"><a href="generalized-linear-models-i-count-data.html#cb454-4"></a>  <span class="kw">plot</span>(simulationOutput, <span class="dt">asFactor =</span> F)</span></code></pre></div>
 <p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/glm-working-in-r-2-1.png" width="576" /></p>
-<div class="sourceCode" id="cb447"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb447-1"><a href="generalized-linear-models-i-count-data.html#cb447-1"></a><span class="co"># link scale</span></span>
-<span id="cb447-2"><a href="generalized-linear-models-i-count-data.html#cb447-2"></a>emm &lt;-<span class="st"> </span><span class="kw">emmeans</span>(fit.nb, <span class="dt">specs=</span><span class="st">&quot;Treatment&quot;</span>)</span>
-<span id="cb447-3"><a href="generalized-linear-models-i-count-data.html#cb447-3"></a>emm</span></code></pre></div>
+<div class="sourceCode" id="cb455"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb455-1"><a href="generalized-linear-models-i-count-data.html#cb455-1"></a><span class="co"># link scale</span></span>
+<span id="cb455-2"><a href="generalized-linear-models-i-count-data.html#cb455-2"></a>emm &lt;-<span class="st"> </span><span class="kw">emmeans</span>(fit.nb, <span class="dt">specs=</span><span class="st">&quot;Treatment&quot;</span>)</span>
+<span id="cb455-3"><a href="generalized-linear-models-i-count-data.html#cb455-3"></a>emm</span></code></pre></div>
 <pre><code>##  Treatment   emmean     SE  df asymp.LCL asymp.UCL
 ##  Control       1.82 0.0804 Inf      1.66      1.98
 ##  Uninfected    1.50 0.1093 Inf      1.29      1.72
@@ -897,7 +899,7 @@ Generalized linear mixed models are fit with <code>glmer</code> from the lmer pa
 ## 
 ## Results are given on the log (not the response) scale. 
 ## Confidence level used: 0.95</code></pre>
-<div class="sourceCode" id="cb449"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb449-1"><a href="generalized-linear-models-i-count-data.html#cb449-1"></a><span class="kw">summary</span>(<span class="kw">contrast</span>(emm, <span class="dt">method=</span><span class="st">&quot;trt.vs.ctrl&quot;</span>, <span class="dt">adjust=</span><span class="st">&quot;none&quot;</span>), <span class="dt">infer=</span><span class="kw">c</span>(<span class="ot">TRUE</span>, <span class="ot">TRUE</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb457"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb457-1"><a href="generalized-linear-models-i-count-data.html#cb457-1"></a><span class="kw">summary</span>(<span class="kw">contrast</span>(emm, <span class="dt">method=</span><span class="st">&quot;trt.vs.ctrl&quot;</span>, <span class="dt">adjust=</span><span class="st">&quot;none&quot;</span>), <span class="dt">infer=</span><span class="kw">c</span>(<span class="ot">TRUE</span>, <span class="ot">TRUE</span>))</span></code></pre></div>
 <pre><code>##  contrast              estimate    SE  df asymp.LCL asymp.UCL z.ratio
 ##  Uninfected - Control    -0.317 0.136 Inf    -0.583   -0.0514 -2.339 
 ##  Infected LG - Control   -0.197 0.158 Inf    -0.507    0.1126 -1.248 
@@ -909,9 +911,9 @@ Generalized linear mixed models are fit with <code>glmer</code> from the lmer pa
 ## 
 ## Results are given on the log (not the response) scale. 
 ## Confidence level used: 0.95</code></pre>
-<div class="sourceCode" id="cb451"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb451-1"><a href="generalized-linear-models-i-count-data.html#cb451-1"></a><span class="co"># response scale</span></span>
-<span id="cb451-2"><a href="generalized-linear-models-i-count-data.html#cb451-2"></a>emm.response &lt;-<span class="st"> </span><span class="kw">emmeans</span>(fit.nb, <span class="dt">specs=</span><span class="st">&quot;Treatment&quot;</span>, <span class="dt">type=</span><span class="st">&quot;response&quot;</span>)</span>
-<span id="cb451-3"><a href="generalized-linear-models-i-count-data.html#cb451-3"></a><span class="kw">summary</span>(<span class="kw">contrast</span>(emm, <span class="dt">method=</span><span class="st">&quot;trt.vs.ctrl&quot;</span>, <span class="dt">adjust=</span><span class="st">&quot;none&quot;</span>, <span class="dt">type=</span><span class="st">&quot;response&quot;</span>), <span class="dt">infer=</span><span class="kw">c</span>(<span class="ot">TRUE</span>, <span class="ot">TRUE</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb459"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb459-1"><a href="generalized-linear-models-i-count-data.html#cb459-1"></a><span class="co"># response scale</span></span>
+<span id="cb459-2"><a href="generalized-linear-models-i-count-data.html#cb459-2"></a>emm.response &lt;-<span class="st"> </span><span class="kw">emmeans</span>(fit.nb, <span class="dt">specs=</span><span class="st">&quot;Treatment&quot;</span>, <span class="dt">type=</span><span class="st">&quot;response&quot;</span>)</span>
+<span id="cb459-3"><a href="generalized-linear-models-i-count-data.html#cb459-3"></a><span class="kw">summary</span>(<span class="kw">contrast</span>(emm, <span class="dt">method=</span><span class="st">&quot;trt.vs.ctrl&quot;</span>, <span class="dt">adjust=</span><span class="st">&quot;none&quot;</span>, <span class="dt">type=</span><span class="st">&quot;response&quot;</span>), <span class="dt">infer=</span><span class="kw">c</span>(<span class="ot">TRUE</span>, <span class="ot">TRUE</span>))</span></code></pre></div>
 <pre><code>##  contrast              ratio     SE  df asymp.LCL asymp.UCL z.ratio
 ##  Uninfected / Control  0.728 0.0988 Inf     0.558      0.95 -2.339 
 ##  Infected LG / Control 0.821 0.1298 Inf     0.602      1.12 -1.248 

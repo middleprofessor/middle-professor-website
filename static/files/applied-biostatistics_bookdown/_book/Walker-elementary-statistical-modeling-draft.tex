@@ -124,7 +124,7 @@
   \postauthor{\par}
       \predate{\centering\large\emph}
   \postdate{\par}
-    \date{Draft: 2020-10-12}
+    \date{Draft: 2020-10-14}
 
 \usepackage{booktabs}
 \usepackage{amsthm}
@@ -5201,7 +5201,7 @@ Since we want to be working scientists who want to use \emph{p}-values as a tool
 \hypertarget{fishers-interpretation}{%
 \subsubsection{Fisher's interpretation}\label{fishers-interpretation}}
 
-Fisher was working in the context of an agricultural field station, the goal of which is to discover better agricultural practices. Does this new fertilizer work better than our old fertilizer? This is the context of much of modern biosciences and clinical medicine. Fisher thought of \emph{p} as evidence against the null; the smaller the \emph{p} the better the evidence that the means differ, which, in an experimental context, implies a treatment effect. If an experiment results in a large \emph{p}-value, we can move on and test other fertilizers. If an experiment results in a small \emph{p}-value, we want to pursue this new fertilizer more. Do more experiments! Fisher never thought of a single experiment as definitive. The decision to move on or pursue is only partly informed by the \emph{p}-value and Fisher offered no rule about what \emph{p}-value lies on the threshold of this decision. When pressed, Fisher might say that \(p=0.05\) is a reasonable threshold.
+Fisher was working in the context of an agricultural experiments, the goal of which was to discover better agricultural practices. Does this new fertilizer work better than our old fertilizer? This is the context of much of modern biosciences and clinical medicine. Fisher thought of \emph{p} as evidence against the null; the smaller the \emph{p} the stronger the evidence that the two sampling distributions differ, which, in an experimental context, implies a treatment effect. If an experiment results in a large \emph{p}-value, we can move on and test other fertilizers. If an experiment results in a small \emph{p}-value, we want to pursue this new fertilizer more. Do more experiments! Fisher never thought of a single experiment as definitive. The decision to move on or pursue is only partly informed by the \emph{p}-value and Fisher offered no rule about what \emph{p}-value lies on the threshold of this decision. When pressed, Fisher might say that \(p=0.05\) is a reasonable threshold.
 
 \hypertarget{neyman-pearson-interpretation}{%
 \subsubsection{Neyman-Pearson interpretation}\label{neyman-pearson-interpretation}}
@@ -6513,7 +6513,7 @@ Both the 95\% confidence interval of the expected values and the \emph{p}-value 
   The band captures the 95\% CI of the conditional mean at every value of \(X\). Consider the 95\% CI of the conditional mean at the mean value of \(X\). As we move away from this mean value (lower to higher \(X\)), the 95\% CI of the conditional mean increases.
 \end{enumerate}
 
-A 95\% CI and \emph{p}-value are useful statistics to report if the purpose is \emph{causal modeling}, as in the example above using the experimental green-down data (where the 95\% CI was not presented as a confidence band of the expected values but a CI of the estimate of the effect of added temperature).
+A 95\% CI and \emph{p}-value are useful statistics to report if the purpose is \emph{causal modeling}, as in the example above using the experimental green-down data (where the 95\% CI was not presented as a confidence band of the expected values but a CI of the estimate of the effect of added temperature). A 95\% CI and \emph{p}-value are also useful statistics to report if the purpose is \emph{descriptive modeling}, simply wanting to know how the conditional mean of the response is related to an \(X\) variable.
 
 \hypertarget{prediction-interval-and-r2}{%
 \subsubsection{\texorpdfstring{95\% prediction interval and \(R^2\)}{95\% prediction interval and R\^{}2}}\label{prediction-interval-and-r2}}
@@ -6667,10 +6667,10 @@ To understand this prediction interval a bit more, and why a \emph{p}-value is n
 \end{enumerate}
 
 \begin{equation}
-\hat\sigma^2 = \frac{\sum{e_i^2}}{n-2}
+\hat\sigma^2 = \frac{\sum{e_i^2}}{N-2}
 \end{equation}
 
-Again, \(e_i\) is the residual for the \emph{i}th case. The denominator (\(n-2\)) is the degrees of freedom of the model. Computing \(\hat\sigma^2\) manually helps to insure that we understand what is going on.
+Again, \(e_i\) is the residual for the \emph{i}th case. The denominator (\(N-2\)) is the degrees of freedom of the model. Computing \(\hat\sigma^2\) manually helps to insure that we understand what is going on.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -6696,6 +6696,74 @@ Again, \(e_i\) is the residual for the \emph{i}th case. The denominator (\(n-2\)
 Remember that an assumption of the linear models that we are working with at this point is, this variance is constant for all values of \(X\), so we have a single \(\sigma\). Later, we will cover linear models that model heterogeneity in this variance. \(\sigma\) is a function of variability in the population -- it is the population standard deviation conditional on \(X\).
 
 Importantly, predictability is a function of both these components of variability. As a consequence, it is \(R^2\), and not the \emph{p}-value, that is the indicator of predictability. In the observational green-down data, even if we had thousands of years of data, we would still have a pretty low \(R^2\) because of the population variability of \(green\_down\_anomaly\) at a given \(autumn\_temp\_anomaly\).
+
+\hypertarget{median-absolute-error-and-root-mean-square-error-are-absolute-measures-of-predictability}{%
+\subsubsection{Median Absolute Error and Root Mean Square Error are absolute measures of predictability}\label{median-absolute-error-and-root-mean-square-error-are-absolute-measures-of-predictability}}
+
+A \emph{p}-value is not \emph{at all} a good guide to predictability. \(R^2\) is proportional to predictability but is not really useful in any absolute sense. If we want to predict the effect of warming on the day of green-down, I would like to have a measure of predictability in the units of green-down, which is days. The prediction interval gives this for any value of \(X\). But what about an overall measure of predictability?
+
+Three overall measures of predictability are
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \(\hat{\sigma}\), the estimate of \(\sigma\). This is the standard deviation of the sample conditional on \(X\).
+\item
+  \(RMSE\), the root mean squared error. This is
+\end{enumerate}
+
+\begin{align}
+SSE &= \sum{(y_i - \hat{y}_i)^2}\\
+MSE &= \frac{SSE}{N}\\
+RMSE &= \sqrt{MSE}
+\end{align}
+
+\(SSE\) (``sum of squared error'') is the sum of the squared residuals (\(y_i - \hat{y}_i\)) of the model. \(MSE\) (``mean squared error'') is the mean of the squared errors. \(RMSE\) is the square root of the mean squared error. \(RMSE\) is almost equal to \(\hat{\sigma}\). The difference is the denominator, which is \(N\) in the computation of \(RMSE\) and \(df\) (the degrees of freedom of the model, which is \(N\) minus the number of fit parameters) in the computation of \(\hat{\sigma}\).
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{2}
+\tightlist
+\item
+  \(MAE\), the mean absolute error. This is
+\end{enumerate}
+
+\begin{equation}
+MAE = \frac{1}{N}\sum{|y_i - \hat{y}_i|}
+\end{equation}
+
+sigma
+
+RMSE
+
+MAE
+
+4.74
+
+4.68
+
+3.58
+
+If the goal of an analysis is prediction, one of these statistics should be reported. For the model fit to the observational green-down data in Extended Figure 3d, these three statistics are given in Table \ref{table:continuous-x-average-error} above (to two decimal places simply to show numerical difference between \(\hat{\sigma}\) and \(RMSE\)). All of these are measures of an ``average'' prediction error in the units of the response. The average error is either 4.7 or 3.6 days, depending on which statistic we report. Why the difference? Both \(\hat{\sigma}\) and \(RMSE\) are functions of squared error and so big differences between predicted and actual value are emphasized. If an error of 6 days is more than twice as bad than an error of 3 days, report \(RMSE\). Why \(RMSE\) and not \(\hat{\sigma}\)? Simply because researchers using prediction models are more familiar with \(RMSE\). If an error of 6 days is \emph{not} more than twice as bad than an error of 3 days, report \(MAE\).
+
+\hypertarget{prediction-modeling-is-more-sophisticated-than-presented-here}{%
+\subsubsection{Prediction modeling is more sophisticated than presented here}\label{prediction-modeling-is-more-sophisticated-than-presented-here}}
+
+For data where the response is a non-linear function of the predictor, or for data with many predictor variables, researchers will often build a model using a \textbf{model selection} method. Stepwise regression is a classical model selection method that is commonly taught in intro biostatistics and commonly used by researchers. Stepwise regression as a method of model selection has many well-known problems and should be avoided.
+
+Some \emph{excellent} books that are useful for building models and model selection are
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \href{https://web.stanford.edu/~hastie/ElemStatLearn/}{The Elements of Statistical Learning}
+\item
+  \href{https://avehtari.github.io/ROS-Examples/}{Regression and Other Stories}
+\item
+  \href{http://hbiostat.org/doc/rms/4day.html}{Regression Modeling Strategies}
+\end{enumerate}
 
 \hypertarget{using-a-regression-model-for-creating-a-new-response-variable-comparing-slopes-of-longitudinal-data}{%
 \subsection{Using a regression model for creating a new response variable -- comparing slopes of longitudinal data}\label{using-a-regression-model-for-creating-a-new-response-variable-comparing-slopes-of-longitudinal-data}}
@@ -8236,9 +8304,9 @@ The \emph{t} and \emph{p} values for the \emph{t}-test are the same as those for
 
 The data come from the experiment reported in Figure 2a of the 12,13-diHOME article described above. This experiment was designed to probe the hypothesis that 12,13-diHOME is a mediator of known stimulators of increased BAT activity (exposure to cold temperature and sympathetic nervous system activation). Mice were assigned to control (30 °C), one-hour exposure to 4 °C, or 30 minute norepinephrine (NE) treatment level (NE is the neurotransmitter of the sympathetic neurons targeting peripheral tissues).
 
-\textbf{response variable}: \emph{serum\_tg}, a continuous variable.
+\textbf{response variable}: \emph{diHOME}, the serum concentration of 12,13-diHOME. a continuous variable.
 
-\textbf{treatment variable}: \emph{treatment}, with levels: ``Vehicle'', ``12,13-diHOME'' (the control or ``Vehicle'' mice were injected with saline). Coded as a factor.
+\textbf{treatment variable}: \emph{treatment}, with levels: ``Control'', ``1 hour cold'', "30 min NE. Coded as a factor.
 
 \textbf{design}: single, categorical \emph{X}
 
@@ -8247,7 +8315,7 @@ The data come from the experiment reported in Figure 2a of the 12,13-diHOME arti
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{fig1b_m1 <-}\StringTok{ }\KeywordTok{lm}\NormalTok{(diHOME }\OperatorTok{~}\StringTok{ }\NormalTok{treatment, }\DataTypeTok{data =}\NormalTok{ fig1b)}
+\NormalTok{fig2a_m1 <-}\StringTok{ }\KeywordTok{lm}\NormalTok{(diHOME }\OperatorTok{~}\StringTok{ }\NormalTok{treatment, }\DataTypeTok{data =}\NormalTok{ fig2a)}
 \end{Highlighting}
 \end{Shaded}
 
@@ -8257,7 +8325,7 @@ The data come from the experiment reported in Figure 2a of the 12,13-diHOME arti
 \begin{Shaded}
 \begin{Highlighting}[]
 \KeywordTok{set.seed}\NormalTok{(}\DecValTok{1}\NormalTok{)}
-\KeywordTok{qqPlot}\NormalTok{(fig1b_m1)}
+\KeywordTok{qqPlot}\NormalTok{(fig2a_m1)}
 \end{Highlighting}
 \end{Shaded}
 
@@ -8271,7 +8339,7 @@ The Q-Q plot indicates potential issues at the extreme quantiles, what is called
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\KeywordTok{spreadLevelPlot}\NormalTok{(fig1b_m1, }\DataTypeTok{id=}\OtherTok{FALSE}\NormalTok{)}
+\KeywordTok{spreadLevelPlot}\NormalTok{(fig2a_m1, }\DataTypeTok{id=}\OtherTok{FALSE}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
@@ -8292,9 +8360,9 @@ The combination of the raw residuals and the spread-level plot suggests heteroge
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{fig1b_m1_coef <-}\StringTok{ }\KeywordTok{cbind}\NormalTok{(}\KeywordTok{coef}\NormalTok{(}\KeywordTok{summary}\NormalTok{(fig1b_m1)),}
-                        \KeywordTok{confint}\NormalTok{(fig1b_m1))}
-\NormalTok{fig1b_m1_coef}
+\NormalTok{fig2a_m1_coef <-}\StringTok{ }\KeywordTok{cbind}\NormalTok{(}\KeywordTok{coef}\NormalTok{(}\KeywordTok{summary}\NormalTok{(fig2a_m1)),}
+                        \KeywordTok{confint}\NormalTok{(fig2a_m1))}
+\NormalTok{fig2a_m1_coef}
 \end{Highlighting}
 \end{Shaded}
 
@@ -8314,7 +8382,7 @@ The combination of the raw residuals and the spread-level plot suggests heteroge
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{(fig1b_m1_emm <-}\StringTok{ }\KeywordTok{emmeans}\NormalTok{(fig1b_m1, }\DataTypeTok{specs =} \StringTok{"treatment"}\NormalTok{))}
+\NormalTok{(fig2a_m1_emm <-}\StringTok{ }\KeywordTok{emmeans}\NormalTok{(fig2a_m1, }\DataTypeTok{specs =} \StringTok{"treatment"}\NormalTok{))}
 \end{Highlighting}
 \end{Shaded}
 
@@ -8332,7 +8400,7 @@ The combination of the raw residuals and the spread-level plot suggests heteroge
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{(fig1b_m1_pairs <-}\StringTok{ }\KeywordTok{contrast}\NormalTok{(fig1b_m1_emm,}
+\NormalTok{(fig2a_m1_pairs <-}\StringTok{ }\KeywordTok{contrast}\NormalTok{(fig2a_m1_emm,}
                             \DataTypeTok{method =} \StringTok{"revpairwise"}\NormalTok{,}
                             \DataTypeTok{adjust =} \StringTok{"none"}\NormalTok{) }\OperatorTok{%>%}
 \StringTok{  }\KeywordTok{summary}\NormalTok{(}\DataTypeTok{infer =} \OtherTok{TRUE}\NormalTok{))}
@@ -8357,7 +8425,7 @@ The combination of the raw residuals and the spread-level plot suggests heteroge
 
 The script for plotting the model in the section Hidden code below.
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/categorical-x-fig1b-plot-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/categorical-x-fig2a-plot-1.pdf}
 
 \hypertarget{report-the-model-results}{%
 \subsubsection{Report the model results}\label{report-the-model-results}}
@@ -8385,7 +8453,7 @@ Two understand row names in the first column, its useful to recall the order of 
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\KeywordTok{levels}\NormalTok{(fig1b}\OperatorTok{$}\NormalTok{treatment) }
+\KeywordTok{levels}\NormalTok{(fig2a}\OperatorTok{$}\NormalTok{treatment) }
 \end{Highlighting}
 \end{Shaded}
 
@@ -8417,7 +8485,7 @@ The model formula (\texttt{dihome\ \textasciitilde{}\ treatment}) used in the \t
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{fig1b_m1_emm}
+\NormalTok{fig2a_m1_emm}
 \end{Highlighting}
 \end{Shaded}
 
@@ -8439,7 +8507,7 @@ Also as in example 1, the SE for each mean is \emph{not} the sample SE but the m
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{fig1b_m1_pairs}
+\NormalTok{fig2a_m1_pairs}
 \end{Highlighting}
 \end{Shaded}
 
@@ -8474,16 +8542,16 @@ The contrasts, CIs, and significance test statistics in the contrasts table come
 \begin{Shaded}
 \begin{Highlighting}[]
 \CommentTok{# classic t-test}
-\NormalTok{test1 <-}\StringTok{ }\KeywordTok{t.test}\NormalTok{(fig1b[treatment }\OperatorTok{==}\StringTok{ "1 hour cold"}\NormalTok{, diHOME],}
-\NormalTok{       fig1b[treatment }\OperatorTok{==}\StringTok{ "Control"}\NormalTok{, diHOME],}
+\NormalTok{test1 <-}\StringTok{ }\KeywordTok{t.test}\NormalTok{(fig2a[treatment }\OperatorTok{==}\StringTok{ "1 hour cold"}\NormalTok{, diHOME],}
+\NormalTok{       fig2a[treatment }\OperatorTok{==}\StringTok{ "Control"}\NormalTok{, diHOME],}
        \DataTypeTok{var.equal=}\OtherTok{TRUE}\NormalTok{)}
 
-\NormalTok{test2 <-}\StringTok{ }\KeywordTok{t.test}\NormalTok{(fig1b[treatment }\OperatorTok{==}\StringTok{ "30 min NE"}\NormalTok{, diHOME],}
-\NormalTok{       fig1b[treatment }\OperatorTok{==}\StringTok{ "Control"}\NormalTok{, diHOME],}
+\NormalTok{test2 <-}\StringTok{ }\KeywordTok{t.test}\NormalTok{(fig2a[treatment }\OperatorTok{==}\StringTok{ "30 min NE"}\NormalTok{, diHOME],}
+\NormalTok{       fig2a[treatment }\OperatorTok{==}\StringTok{ "Control"}\NormalTok{, diHOME],}
        \DataTypeTok{var.equal=}\OtherTok{TRUE}\NormalTok{)}
 
-\NormalTok{test3 <-}\StringTok{ }\KeywordTok{t.test}\NormalTok{(fig1b[treatment }\OperatorTok{==}\StringTok{ "30 min NE"}\NormalTok{, diHOME],}
-\NormalTok{       fig1b[treatment }\OperatorTok{==}\StringTok{ "1 hour cold"}\NormalTok{, diHOME],}
+\NormalTok{test3 <-}\StringTok{ }\KeywordTok{t.test}\NormalTok{(fig2a[treatment }\OperatorTok{==}\StringTok{ "30 min NE"}\NormalTok{, diHOME],}
+\NormalTok{       fig2a[treatment }\OperatorTok{==}\StringTok{ "1 hour cold"}\NormalTok{, diHOME],}
        \DataTypeTok{var.equal=}\OtherTok{TRUE}\NormalTok{)}
 
 \NormalTok{ttests <-}\StringTok{ }\KeywordTok{data.frame}\NormalTok{(}\DataTypeTok{t =} \KeywordTok{c}\NormalTok{(test1}\OperatorTok{$}\NormalTok{statistic, test2}\OperatorTok{$}\NormalTok{statistic, test3}\OperatorTok{$}\NormalTok{statistic),}
@@ -8509,7 +8577,7 @@ Using the linear model is a better practice than the pairwise \emph{t}-tests. Th
 \hypertarget{the-contrasts-table-when-there-are-more-than-two-levels-in-x-has-multiple-p-values.-how-to-handle-this-multiple-testing-is-highly-controversial}{%
 \subsubsection{\texorpdfstring{The contrasts table -- when there are more than two levels in \(X\) -- has multiple p-values. How to handle this ``multiple testing'' is highly controversial}{The contrasts table -- when there are more than two levels in X -- has multiple p-values. How to handle this ``multiple testing'' is highly controversial}}\label{the-contrasts-table-when-there-are-more-than-two-levels-in-x-has-multiple-p-values.-how-to-handle-this-multiple-testing-is-highly-controversial}}
 
-\textbf{Multiple testing} is the practice of adjusting \emph{p}-values (and less commonly confidence intervals) to account for the expected increase in the frequency of Type I error in a batch, or \emph{family}, of tests. An example of a batch of tests is the three tests in the contrast table for the analysis of the fig1b data. Multiple testing is a concept that exists because of Neyman-Pearson hypothesis testing strategy. My own belief is that the major problem of multiple testing is less the inflation of Type I error and more the idea that we ``discover by p-value''. If we focus on effects and uncertainty in experiments where we have good prior knowledge to have reasonable expectations of these effects for the different treatment levels, we shouldn't be concerned about inflated Type I error. If we use experiments to ``see what happens'' in tens, hundreds, thousands, or millions of response variables after we perturb the system, then multiple testing is more problematic. Issues surrounding multiple testing are fleshed out in more detail in Chapter xxx ``Best Practices''. Computing adjusted values is covered below in the ``Working in R'' section.
+\textbf{Multiple testing} is the practice of adjusting \emph{p}-values (and less commonly confidence intervals) to account for the expected increase in the frequency of Type I error in a batch, or \emph{family}, of tests. An example of a batch of tests is the three tests in the contrast table for the analysis of the fig2a data. Multiple testing is a concept that exists because of Neyman-Pearson hypothesis testing strategy. My own belief is that the major problem of multiple testing is less the inflation of Type I error and more the idea that we ``discover by p-value''. If we focus on effects and uncertainty in experiments where we have good prior knowledge to have reasonable expectations of these effects for the different treatment levels, we shouldn't be concerned about inflated Type I error. If we use experiments to ``see what happens'' in tens, hundreds, thousands, or millions of response variables after we perturb the system, then multiple testing is more problematic. Issues surrounding multiple testing are fleshed out in more detail in Chapter xxx ``Best Practices''. Computing adjusted values is covered below in the ``Working in R'' section.
 
 \hypertarget{working-in-r-2}{%
 \section{Working in R}\label{working-in-r-2}}
@@ -8520,7 +8588,7 @@ Using the linear model is a better practice than the pairwise \emph{t}-tests. Th
 \hypertarget{adjustment-for-multiple-comparisons}{%
 \subsection{Adjustment for multiple comparisons}\label{adjustment-for-multiple-comparisons}}
 
-If the head of your group or a reviewer demands that you adjust p-values in data from an experiment like that for the fig1b data, then the \texttt{adjust} argument in \texttt{emmeans::contrast()} controls the method for \emph{p}-value adjustment. The default is ``tukey''.
+If the head of your group or a reviewer demands that you adjust p-values in data from an experiment like that for the fig2a data, then the \texttt{adjust} argument in \texttt{emmeans::contrast()} controls the method for \emph{p}-value adjustment. The default is ``tukey''.
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
@@ -8541,7 +8609,7 @@ Here I use the Tukey HSD adjustment, which is a common choice for the ``posthoc 
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{(fig1b_m1_pairs_tukey <-}\StringTok{ }\KeywordTok{contrast}\NormalTok{(fig1b_m1_emm,}
+\NormalTok{(fig2a_m1_pairs_tukey <-}\StringTok{ }\KeywordTok{contrast}\NormalTok{(fig2a_m1_emm,}
                             \DataTypeTok{method =} \StringTok{"revpairwise"}\NormalTok{,}
                             \DataTypeTok{adjust =} \StringTok{"tukey"}\NormalTok{) }\OperatorTok{%>%}
 \StringTok{  }\KeywordTok{summary}\NormalTok{(}\DataTypeTok{infer =} \OtherTok{TRUE}\NormalTok{))}
@@ -8573,7 +8641,7 @@ The package ggpubr makes it very easy to create a publishable plot.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{gg_good <-}\StringTok{ }\KeywordTok{ggstripchart}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ fig1b,}
+\NormalTok{gg_good <-}\StringTok{ }\KeywordTok{ggstripchart}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ fig2a,}
                     \DataTypeTok{x =} \StringTok{"treatment"}\NormalTok{,}
                     \DataTypeTok{y =} \StringTok{"diHOME"}\NormalTok{,}
                     \DataTypeTok{add =} \StringTok{"mean_se"}
@@ -8590,7 +8658,7 @@ With a little work, we can improve this. Note that I've changed the error interv
 \begin{Highlighting}[]
 \NormalTok{compare_list <-}\StringTok{ }\KeywordTok{list}\NormalTok{(}\KeywordTok{c}\NormalTok{(}\StringTok{"Control"}\NormalTok{, }\StringTok{"1 hour cold"}\NormalTok{), }\KeywordTok{c}\NormalTok{(}\StringTok{"Control"}\NormalTok{, }\StringTok{"30 min NE"}\NormalTok{))}
 
-\NormalTok{gg_better <-}\StringTok{ }\KeywordTok{ggstripchart}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ fig1b,}
+\NormalTok{gg_better <-}\StringTok{ }\KeywordTok{ggstripchart}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ fig2a,}
                     \DataTypeTok{x =} \StringTok{"treatment"}\NormalTok{,}
                     \DataTypeTok{y =} \StringTok{"diHOME"}\NormalTok{,}
                     \DataTypeTok{add =} \StringTok{"mean_ci"}\NormalTok{,}
@@ -8606,9 +8674,9 @@ With a little work, we can improve this. Note that I've changed the error interv
 
 \includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-195-1.pdf}
 
-The CI's and \emph{p}-values computed using ggpubr are sample statistics and multiple, independent Welch \emph{t}-tests and not from the linear model \texttt{lm(fig1b\ \textasciitilde{}\ treatment)}. Since the p-values are from Welch \emph{t}-tests, the CIs and \emph{p}-values are consistent in that they are using the same models to compute them.
+The CI's and \emph{p}-values computed using ggpubr are sample statistics and multiple, independent Welch \emph{t}-tests and not from the linear model \texttt{lm(fig2a\ \textasciitilde{}\ treatment)}. Since the p-values are from Welch \emph{t}-tests, the CIs and \emph{p}-values are consistent in that they are using the same models to compute them.
 
-ggpubr and \texttt{stat\_compare\_means()} have very limited flexibility in the means, CI's and \emph{p} values that can be reported in a plot. This raises issues with best practices in this text, which advocates reporting modeled means, CIs and \emph{p}-values. This includes adjusted \emph{p}-values, which are not handled by \texttt{stat\_compare\_means()}. ggpubr has the function \texttt{stat\_pvalue\_manual()}, which is useful for reporting \emph{p}-values from tests other than the limited number of tests available in \texttt{stat\_compare\_means()}. For the model used with fig1b, we can use ggpub to construct the base plot of means and raw values. But with more complex models, we have to skip ggpubr alltogether and use ggplot2 directly.
+ggpubr and \texttt{stat\_compare\_means()} have very limited flexibility in the means, CI's and \emph{p} values that can be reported in a plot. This raises issues with best practices in this text, which advocates reporting modeled means, CIs and \emph{p}-values. This includes adjusted \emph{p}-values, which are not handled by \texttt{stat\_compare\_means()}. ggpubr has the function \texttt{stat\_pvalue\_manual()}, which is useful for reporting \emph{p}-values from tests other than the limited number of tests available in \texttt{stat\_compare\_means()}. For the model used with fig2a, we can use ggpub to construct the base plot of means and raw values. But with more complex models, we have to skip ggpubr alltogether and use ggplot2 directly.
 
 Step 1 -- convert the two tables to data.table. The ``emm'' table is ready after conversion to a data.table but the ``pairs'' table needs additional columns
 
@@ -8623,7 +8691,7 @@ Step 1 -- convert the two tables to data.table. The ``emm'' table is ready after
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\KeywordTok{levels}\NormalTok{(fig1b}\OperatorTok{$}\NormalTok{treatment)}
+\KeywordTok{levels}\NormalTok{(fig2a}\OperatorTok{$}\NormalTok{treatment)}
 \end{Highlighting}
 \end{Shaded}
 
@@ -8635,16 +8703,16 @@ As an example, the contrast in the first row of the contrast table is ``1 hour c
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{fig1b_m1_emm_dt <-}\StringTok{ }\KeywordTok{summary}\NormalTok{(fig1b_m1_emm) }\OperatorTok{%>%}
+\NormalTok{fig2a_m1_emm_dt <-}\StringTok{ }\KeywordTok{summary}\NormalTok{(fig2a_m1_emm) }\OperatorTok{%>%}
 \StringTok{  }\NormalTok{data.table}
-\NormalTok{fig1b_m1_pairs_dt <-}\StringTok{ }\KeywordTok{data.table}\NormalTok{(fig1b_m1_pairs)}
+\NormalTok{fig2a_m1_pairs_dt <-}\StringTok{ }\KeywordTok{data.table}\NormalTok{(fig2a_m1_pairs)}
 
 \CommentTok{# pvalString is from package lazyWeave}
-\NormalTok{fig1b_m1_pairs_dt[ , p_pretty }\OperatorTok{:}\ErrorTok{=}\StringTok{ }\KeywordTok{pvalString}\NormalTok{(p.value)]}
+\NormalTok{fig2a_m1_pairs_dt[ , p_pretty }\OperatorTok{:}\ErrorTok{=}\StringTok{ }\KeywordTok{pvalString}\NormalTok{(p.value)]}
 
 \CommentTok{# create group columns}
-\NormalTok{fig1b_m1_pairs_dt[, group1 }\OperatorTok{:}\ErrorTok{=}\StringTok{ }\KeywordTok{c}\NormalTok{(}\DecValTok{2}\NormalTok{, }\DecValTok{3}\NormalTok{, }\DecValTok{3}\NormalTok{)]}
-\NormalTok{fig1b_m1_pairs_dt[, group2 }\OperatorTok{:}\ErrorTok{=}\StringTok{ }\KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{2}\NormalTok{)]}
+\NormalTok{fig2a_m1_pairs_dt[, group1 }\OperatorTok{:}\ErrorTok{=}\StringTok{ }\KeywordTok{c}\NormalTok{(}\DecValTok{2}\NormalTok{, }\DecValTok{3}\NormalTok{, }\DecValTok{3}\NormalTok{)]}
+\NormalTok{fig2a_m1_pairs_dt[, group2 }\OperatorTok{:}\ErrorTok{=}\StringTok{ }\KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{2}\NormalTok{)]}
 \end{Highlighting}
 \end{Shaded}
 
@@ -8652,7 +8720,7 @@ Step 2 -- Add the CIs and \emph{p}-value to a ggpubr plot
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{gg_almost_best <-}\StringTok{ }\KeywordTok{ggstripchart}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ fig1b,}
+\NormalTok{gg_almost_best <-}\StringTok{ }\KeywordTok{ggstripchart}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ fig2a,}
                     \DataTypeTok{x =} \StringTok{"treatment"}\NormalTok{,}
                     \DataTypeTok{y =} \StringTok{"diHOME"}\NormalTok{,}
                     \DataTypeTok{add =} \StringTok{"mean"}\NormalTok{,}
@@ -8660,7 +8728,7 @@ Step 2 -- Add the CIs and \emph{p}-value to a ggpubr plot
                     \DataTypeTok{palette =} \StringTok{"jco"}
 \NormalTok{) }\OperatorTok{+}
 \StringTok{  }
-\StringTok{  }\KeywordTok{geom_errorbar}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ fig1b_m1_emm_dt,}
+\StringTok{  }\KeywordTok{geom_errorbar}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ fig2a_m1_emm_dt,}
                 \KeywordTok{aes}\NormalTok{(}\DataTypeTok{y =}\NormalTok{ emmean,}
                     \DataTypeTok{ymin =}\NormalTok{ lower.CL,}
                     \DataTypeTok{ymax =}\NormalTok{ upper.CL,}
@@ -8668,7 +8736,7 @@ Step 2 -- Add the CIs and \emph{p}-value to a ggpubr plot
                 \DataTypeTok{width =} \DecValTok{0}\NormalTok{) }\OperatorTok{+}
 \StringTok{  }
 \StringTok{  }\CommentTok{# only plotting 1st two p-values}
-\StringTok{  }\KeywordTok{stat_pvalue_manual}\NormalTok{(fig1b_m1_pairs_dt,}
+\StringTok{  }\KeywordTok{stat_pvalue_manual}\NormalTok{(fig2a_m1_pairs_dt,}
                            \DataTypeTok{label =} \StringTok{"p_pretty"}\NormalTok{, }
                            \DataTypeTok{y.position =} \KeywordTok{c}\NormalTok{(}\DecValTok{46}\NormalTok{, }\DecValTok{54}\NormalTok{, }\DecValTok{50}\NormalTok{)) }\OperatorTok{+}
 
@@ -8693,7 +8761,7 @@ Notes
 
 \begin{Shaded}
 \begin{Highlighting}[]
-  \KeywordTok{stat_pvalue_manual}\NormalTok{(fig1b_m1_pairs_dt[}\DecValTok{1}\OperatorTok{:}\DecValTok{2}\NormalTok{,],}
+  \KeywordTok{stat_pvalue_manual}\NormalTok{(fig2a_m1_pairs_dt[}\DecValTok{1}\OperatorTok{:}\DecValTok{2}\NormalTok{,],}
                            \DataTypeTok{label =} \StringTok{"p_pretty"}\NormalTok{, }
                            \DataTypeTok{y.position =} \KeywordTok{c}\NormalTok{(}\DecValTok{46}\NormalTok{, }\DecValTok{50}\NormalTok{))}
 \end{Highlighting}
@@ -8709,7 +8777,7 @@ Notes
 \hypertarget{ggplot-plots}{%
 \subsubsection{ggplot plots}\label{ggplot-plots}}
 
-This text advocates reporting effects and CIs of effects in a plot, in addition to the response. This was done in \ref{fig:categorical-x-fig1b-plot} above. The code for this plot is in the section ``Hidden Code'' below.
+This text advocates reporting effects and CIs of effects in a plot, in addition to the response. This was done in \ref{fig:categorical-x-fig2a-plot} above. The code for this plot is in the section ``Hidden Code'' below.
 
 \hypertarget{issues-in-inference-in-models-with-a-single-categorical-x}{%
 \section{\texorpdfstring{Issues in inference in models with a single, categorical \(X\)}{Issues in inference in models with a single, categorical X}}\label{issues-in-inference-in-models-with-a-single-categorical-x}}
@@ -8739,18 +8807,18 @@ Modeling variance heterogenity is the focus of chapter xxx so the account here i
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{subdata <-}\StringTok{ }\NormalTok{fig1b[}\KeywordTok{is.na}\NormalTok{(diHOME) }\OperatorTok{==}\StringTok{ }\OtherTok{FALSE}\NormalTok{,] }\CommentTok{# omit rows with missing data}
-\NormalTok{fig1b_m2 <-}\StringTok{ }\KeywordTok{gls}\NormalTok{(diHOME }\OperatorTok{~}\StringTok{ }\NormalTok{treatment,}
+\NormalTok{subdata <-}\StringTok{ }\NormalTok{fig2a[}\KeywordTok{is.na}\NormalTok{(diHOME) }\OperatorTok{==}\StringTok{ }\OtherTok{FALSE}\NormalTok{,] }\CommentTok{# omit rows with missing data}
+\NormalTok{fig2a_m2 <-}\StringTok{ }\KeywordTok{gls}\NormalTok{(diHOME }\OperatorTok{~}\StringTok{ }\NormalTok{treatment,}
                 \DataTypeTok{data =}\NormalTok{ subdata,}
                 \DataTypeTok{weights =} \KeywordTok{varIdent}\NormalTok{(}\DataTypeTok{form =} \OperatorTok{~}\StringTok{ }\DecValTok{1} \OperatorTok{|}\StringTok{ }\NormalTok{treatment))}
 \end{Highlighting}
 \end{Shaded}
 
-The model fig1b\_m2 uses variance computed in each group separately as the estimate of \(\sigma^2\) for that group. The coefficient table of the GLS model is
+The model fig2a\_m2 uses variance computed in each group separately as the estimate of \(\sigma^2\) for that group. The coefficient table of the GLS model is
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\KeywordTok{summary}\NormalTok{(fig1b_m2) }\OperatorTok{%>%}
+\KeywordTok{summary}\NormalTok{(fig2a_m2) }\OperatorTok{%>%}
 \StringTok{  }\KeywordTok{coef}\NormalTok{()}
 \end{Highlighting}
 \end{Shaded}
@@ -8775,8 +8843,8 @@ The modeled means and contrasts are computed as above for the \texttt{lm} object
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{fig1b_m2_emm <-}\StringTok{ }\KeywordTok{emmeans}\NormalTok{(fig1b_m2, }\DataTypeTok{specs=}\StringTok{"treatment"}\NormalTok{)}
-\NormalTok{fig1b_m2_emm}
+\NormalTok{fig2a_m2_emm <-}\StringTok{ }\KeywordTok{emmeans}\NormalTok{(fig2a_m2, }\DataTypeTok{specs=}\StringTok{"treatment"}\NormalTok{)}
+\NormalTok{fig2a_m2_emm}
 \end{Highlighting}
 \end{Shaded}
 
@@ -8801,11 +8869,11 @@ Notes
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{fig1b_m2_pairs <-}\StringTok{  }\KeywordTok{contrast}\NormalTok{(fig1b_m2_emm,}
+\NormalTok{fig2a_m2_pairs <-}\StringTok{  }\KeywordTok{contrast}\NormalTok{(fig2a_m2_emm,}
                             \DataTypeTok{method =} \StringTok{"revpairwise"}\NormalTok{,}
                             \DataTypeTok{adjust =} \StringTok{"none"}\NormalTok{) }\OperatorTok{%>%}
 \StringTok{  }\KeywordTok{summary}\NormalTok{(}\DataTypeTok{infer =} \OtherTok{TRUE}\NormalTok{)}
-\NormalTok{fig1b_m2_pairs}
+\NormalTok{fig2a_m2_pairs}
 \end{Highlighting}
 \end{Shaded}
 
@@ -8823,20 +8891,20 @@ Notes
 ## Confidence level used: 0.95
 \end{verbatim}
 
-Compare this table to the three Welch \emph{t}-tests of all pairs of treatment levels in the fig1b experiment.
+Compare this table to the three Welch \emph{t}-tests of all pairs of treatment levels in the fig2a experiment.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{test1 <-}\StringTok{ }\KeywordTok{t.test}\NormalTok{(fig1b[treatment }\OperatorTok{==}\StringTok{ "1 hour cold"}\NormalTok{, diHOME],}
-\NormalTok{       fig1b[treatment }\OperatorTok{==}\StringTok{ "Control"}\NormalTok{, diHOME],}
+\NormalTok{test1 <-}\StringTok{ }\KeywordTok{t.test}\NormalTok{(fig2a[treatment }\OperatorTok{==}\StringTok{ "1 hour cold"}\NormalTok{, diHOME],}
+\NormalTok{       fig2a[treatment }\OperatorTok{==}\StringTok{ "Control"}\NormalTok{, diHOME],}
        \DataTypeTok{var.equal=}\OtherTok{FALSE}\NormalTok{)}
 
-\NormalTok{test2 <-}\StringTok{ }\KeywordTok{t.test}\NormalTok{(fig1b[treatment }\OperatorTok{==}\StringTok{ "30 min NE"}\NormalTok{, diHOME],}
-\NormalTok{       fig1b[treatment }\OperatorTok{==}\StringTok{ "Control"}\NormalTok{, diHOME],}
+\NormalTok{test2 <-}\StringTok{ }\KeywordTok{t.test}\NormalTok{(fig2a[treatment }\OperatorTok{==}\StringTok{ "30 min NE"}\NormalTok{, diHOME],}
+\NormalTok{       fig2a[treatment }\OperatorTok{==}\StringTok{ "Control"}\NormalTok{, diHOME],}
        \DataTypeTok{var.equal=}\OtherTok{FALSE}\NormalTok{)}
 
-\NormalTok{test3 <-}\StringTok{ }\KeywordTok{t.test}\NormalTok{(fig1b[treatment }\OperatorTok{==}\StringTok{ "30 min NE"}\NormalTok{, diHOME],}
-\NormalTok{       fig1b[treatment }\OperatorTok{==}\StringTok{ "1 hour cold"}\NormalTok{, diHOME],}
+\NormalTok{test3 <-}\StringTok{ }\KeywordTok{t.test}\NormalTok{(fig2a[treatment }\OperatorTok{==}\StringTok{ "30 min NE"}\NormalTok{, diHOME],}
+\NormalTok{       fig2a[treatment }\OperatorTok{==}\StringTok{ "1 hour cold"}\NormalTok{, diHOME],}
        \DataTypeTok{var.equal=}\OtherTok{FALSE}\NormalTok{)}
 
 \NormalTok{welch_tests <-}\StringTok{ }\KeywordTok{data.frame}\NormalTok{(}\DataTypeTok{t =} \KeywordTok{c}\NormalTok{(test1}\OperatorTok{$}\NormalTok{statistic, test2}\OperatorTok{$}\NormalTok{statistic, test3}\OperatorTok{$}\NormalTok{statistic),}
@@ -8904,23 +8972,23 @@ Conspicuously, the \emph{p}-value for the ``1 hour cold - Control'' contrast is 
 \hypertarget{hidden-code-1}{%
 \section{Hidden Code}\label{hidden-code-1}}
 
-\hypertarget{fig1b-data}{%
-\subsection{fig1b data}\label{fig1b-data}}
+\hypertarget{fig2a-data}{%
+\subsection{fig2a data}\label{fig2a-data}}
 
 The script for plotting the model in the section Hidden code below.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{fig1b_m1_emm_dt <-}\StringTok{ }\KeywordTok{summary}\NormalTok{(fig1b_m1_emm) }\OperatorTok{%>%}
+\NormalTok{fig2a_m1_emm_dt <-}\StringTok{ }\KeywordTok{summary}\NormalTok{(fig2a_m1_emm) }\OperatorTok{%>%}
 \StringTok{  }\NormalTok{data.table}
-\NormalTok{fig1b_m1_pairs_dt <-}\StringTok{ }\KeywordTok{data.table}\NormalTok{(fig1b_m1_pairs)}
-\NormalTok{fig1b_m1_pairs_dt[ , p_pretty }\OperatorTok{:}\ErrorTok{=}\StringTok{ }\KeywordTok{pvalString}\NormalTok{(p.value)]}
+\NormalTok{fig2a_m1_pairs_dt <-}\StringTok{ }\KeywordTok{data.table}\NormalTok{(fig2a_m1_pairs)}
+\NormalTok{fig2a_m1_pairs_dt[ , p_pretty }\OperatorTok{:}\ErrorTok{=}\StringTok{ }\KeywordTok{pvalString}\NormalTok{(p.value)]}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{fig1b_gg_response <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ fig1b,}
+\NormalTok{fig2a_gg_response <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ fig2a,}
                             \KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ treatment,}
                                 \DataTypeTok{y =}\NormalTok{ diHOME,}
                                 \DataTypeTok{color =}\NormalTok{ treatment)) }\OperatorTok{+}
@@ -8929,7 +8997,7 @@ The script for plotting the model in the section Hidden code below.
 \StringTok{  }\KeywordTok{geom_sina}\NormalTok{(}\DataTypeTok{alpha =} \FloatTok{0.5}\NormalTok{) }\OperatorTok{+}
 \StringTok{  }
 \StringTok{  }\CommentTok{# plot means and CI}
-\StringTok{  }\KeywordTok{geom_errorbar}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ fig1b_m1_emm_dt,}
+\StringTok{  }\KeywordTok{geom_errorbar}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ fig2a_m1_emm_dt,}
                 \KeywordTok{aes}\NormalTok{(}\DataTypeTok{y =}\NormalTok{ emmean,}
                     \DataTypeTok{ymin =}\NormalTok{ lower.CL,}
                     \DataTypeTok{ymax =}\NormalTok{ upper.CL,}
@@ -8937,7 +9005,7 @@ The script for plotting the model in the section Hidden code below.
                 \DataTypeTok{width =} \DecValTok{0}
 \NormalTok{  ) }\OperatorTok{+}
 \StringTok{  }
-\StringTok{  }\KeywordTok{geom_point}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ fig1b_m1_emm_dt,}
+\StringTok{  }\KeywordTok{geom_point}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ fig2a_m1_emm_dt,}
              \KeywordTok{aes}\NormalTok{(}\DataTypeTok{y =}\NormalTok{ emmean,}
                  \DataTypeTok{color =}\NormalTok{ treatment),}
              \DataTypeTok{size =} \DecValTok{3}
@@ -8953,28 +9021,28 @@ The script for plotting the model in the section Hidden code below.
 \StringTok{  }
 \StringTok{  }\OtherTok{NULL}
 
-\CommentTok{#fig1b_gg_response}
+\CommentTok{#fig2a_gg_response}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{Shaded}
 \begin{Highlighting}[]
 \CommentTok{# reverse order of rows so flipped plot has original order}
-\NormalTok{fig1b_m1_pairs_dt <-}\StringTok{ }\NormalTok{fig1b_m1_pairs_dt[}\KeywordTok{rev}\NormalTok{(}\DecValTok{1}\OperatorTok{:}\NormalTok{.N)]}
+\NormalTok{fig2a_m1_pairs_dt <-}\StringTok{ }\NormalTok{fig2a_m1_pairs_dt[}\KeywordTok{rev}\NormalTok{(}\DecValTok{1}\OperatorTok{:}\NormalTok{.N)]}
 
 \CommentTok{# order "contrast" factor as in table!}
-\NormalTok{contrast_order <-}\StringTok{ }\NormalTok{fig1b_m1_pairs_dt[, contrast]}
-\NormalTok{fig1b_m1_pairs_dt[, contrast }\OperatorTok{:}\ErrorTok{=}\StringTok{ }\KeywordTok{factor}\NormalTok{(contrast, contrast_order)]}
+\NormalTok{contrast_order <-}\StringTok{ }\NormalTok{fig2a_m1_pairs_dt[, contrast]}
+\NormalTok{fig2a_m1_pairs_dt[, contrast }\OperatorTok{:}\ErrorTok{=}\StringTok{ }\KeywordTok{factor}\NormalTok{(contrast, contrast_order)]}
 
-\NormalTok{min_bound <-}\StringTok{ }\KeywordTok{min}\NormalTok{(fig1b_m1_pairs_dt[, lower.CL])}
-\NormalTok{max_bound <-}\StringTok{ }\KeywordTok{min}\NormalTok{(fig1b_m1_pairs_dt[, upper.CL])}
+\NormalTok{min_bound <-}\StringTok{ }\KeywordTok{min}\NormalTok{(fig2a_m1_pairs_dt[, lower.CL])}
+\NormalTok{max_bound <-}\StringTok{ }\KeywordTok{min}\NormalTok{(fig2a_m1_pairs_dt[, upper.CL])}
 \NormalTok{y_lo <-}\StringTok{ }\KeywordTok{min}\NormalTok{(min_bound}\OperatorTok{+}\NormalTok{min_bound}\OperatorTok{*}\FloatTok{0.2}\NormalTok{,}
             \OperatorTok{-}\NormalTok{max_bound)}
 \NormalTok{y_hi <-}\StringTok{ }\KeywordTok{max}\NormalTok{(max_bound }\OperatorTok{+}\StringTok{ }\NormalTok{max_bound}\OperatorTok{*}\FloatTok{0.2}\NormalTok{,}
             \OperatorTok{-}\NormalTok{min_bound)}
 \NormalTok{y_lims <-}\StringTok{ }\KeywordTok{c}\NormalTok{(y_lo, y_hi)}
 
-\NormalTok{fig1b_gg_effect <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(}\DataTypeTok{data=}\NormalTok{fig1b_m1_pairs_dt, }
+\NormalTok{fig2a_gg_effect <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(}\DataTypeTok{data=}\NormalTok{fig2a_m1_pairs_dt, }
                           \KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ contrast,}
                               \DataTypeTok{y =}\NormalTok{ estimate)) }\OperatorTok{+}
 \StringTok{  }\CommentTok{# confidence level of effect}
@@ -8990,7 +9058,7 @@ The script for plotting the model in the section Hidden code below.
 \StringTok{  }
 \StringTok{  }\CommentTok{# p-value}
 \StringTok{  }\KeywordTok{annotate}\NormalTok{(}\DataTypeTok{geom =} \StringTok{"text"}\NormalTok{,}
-           \DataTypeTok{label =}\NormalTok{ fig1b_m1_pairs_dt}\OperatorTok{$}\NormalTok{p_pretty,}
+           \DataTypeTok{label =}\NormalTok{ fig2a_m1_pairs_dt}\OperatorTok{$}\NormalTok{p_pretty,}
            \DataTypeTok{x =} \DecValTok{1}\OperatorTok{:}\DecValTok{3}\NormalTok{,}
            \DataTypeTok{y =} \DecValTok{-10}\NormalTok{) }\OperatorTok{+}
 \StringTok{  }
@@ -9006,7 +9074,7 @@ The script for plotting the model in the section Hidden code below.
 \StringTok{  }\KeywordTok{theme}\NormalTok{(}\DataTypeTok{axis.title.y =} \KeywordTok{element_blank}\NormalTok{()) }\OperatorTok{+}
 \StringTok{  }\OtherTok{NULL}
 
-\CommentTok{# fig1b_gg_effect}
+\CommentTok{# fig2a_gg_effect}
 \end{Highlighting}
 \end{Shaded}
 
@@ -9116,18 +9184,50 @@ The two plots suggest two different approaches for model checking. First, we cou
 \hypertarget{a-normal-q-q-plot-is-used-to-check-for-characteristic-departures-from-normality}{%
 \subsection{A Normal Q-Q plot is used to check for characteristic departures from Normality}\label{a-normal-q-q-plot-is-used-to-check-for-characteristic-departures-from-normality}}
 
-A Normal Q-Q plot is not a test if the data are Normal. Instead, a Normal Q-Q plot is used to check for characteristic departures from Normality that are signatures of certain well-known distribution families. A researcher can look at a QQ-plot and reason that a departure is small and choose to fit a classic linear model using the Normal distribution. Or, a researcher can look at a QQ-plot and reason that the departure is large enough to fit a generalized linear model with a specific distribution family.
-
 A Normal Q-Q plot is a scatterplot of
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
 \tightlist
 \item
-  \textbf{sample quantiles} on the \emph{y} axis. The sample quantiles is the vector of \(N\) residuals in rank order, from smallest (most negative) to largest (most positive). Sometimes this vector is standardized (doing this makes not difference to the interpretation of the Q-Q plot).
+  \textbf{sample quantiles} on the \emph{y} axis. The sample quantiles is the vector of \(N\) residuals in rank order, from smallest (most negative) to largest (most positive). Sometimes this vector is standardized by dividing the residual by the standard deviation of the residuals (doing this makes no difference to the interpretation of the Q-Q plot).
 \item
-  \textbf{standard normal quantiles} on the \emph{x} axis. This is the vector of standard normal quantiles given \(N\) elements in the vector.
+  \textbf{standard normal quantiles} on the \emph{x} axis. This is the vector of standard, Normal quantiles given \(N\) elements in the vector. ``Standard Normal'' means a normal distribution with mean zero and standard deviation (\(\sigma\)) one. A Normal quantile is the expected deviation given a probability. For example, if the probability is 0.025, the Normal quantile is -1.959964. Check your understanding: 2.5\% of the values in a Normal distribution with mean 0 and standard deviation one are more negative than -1.959964. The Normal quantiles of a Normal Q-Q plot are computed for the set of \(N\) values that evenly split the probability span from 0 to 1. For \(N=20\), this would be
 \end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{p <-}\StringTok{ }\KeywordTok{data.frame}\NormalTok{(}\DataTypeTok{quantile =} \KeywordTok{qnorm}\NormalTok{(}\KeywordTok{ppoints}\NormalTok{(}\DecValTok{1}\OperatorTok{:}\DecValTok{20}\NormalTok{)))}
+\KeywordTok{row.names}\NormalTok{(p) <-}\StringTok{ }\KeywordTok{ppoints}\NormalTok{(}\DecValTok{1}\OperatorTok{:}\DecValTok{20}\NormalTok{)}
+\NormalTok{p}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##          quantile
+## 0.025 -1.95996398
+## 0.075 -1.43953147
+## 0.125 -1.15034938
+## 0.175 -0.93458929
+## 0.225 -0.75541503
+## 0.275 -0.59776013
+## 0.325 -0.45376219
+## 0.375 -0.31863936
+## 0.425 -0.18911843
+## 0.475 -0.06270678
+## 0.525  0.06270678
+## 0.575  0.18911843
+## 0.625  0.31863936
+## 0.675  0.45376219
+## 0.725  0.59776013
+## 0.775  0.75541503
+## 0.825  0.93458929
+## 0.875  1.15034938
+## 0.925  1.43953147
+## 0.975  1.95996398
+\end{verbatim}
+
+A Normal Q-Q plot is not a test if the data are Normal. Instead, a Normal Q-Q plot is used to check for characteristic departures from Normality that are signatures of certain well-known distribution families. A researcher can look at a QQ-plot and reason that a departure is small and choose to fit a classic linear model using the Normal distribution. Or, a researcher can look at a QQ-plot and reason that the departure is large enough to fit a generalized linear model with a specific distribution family.
 
 \textbf{Stats 101} A quantile is the value of a distribution that is greater than \(p\) percent of the values in the distribution. The 2.5\% quantile of a uniform distribution from 0 to 1 is 0.025. The 2.5\% quantile of a standard normal distribution is -1.96 (remember that 95\% of the values in a standard normal distribution are between -1.96 and 1.96). The 50\% quantile of a uniform distribution is 0.5 and the 50\% quantile of a standard normal distribution is 0.0 (this is the median of the distribtion -- 50\% of the values are smaller and 50\% of the values are larger).
 
@@ -9147,43 +9247,215 @@ What about the intepretation of the Q-Q plot in Figure \ref{fig:model-check-qq}?
 \hypertarget{mapping-qq-plot-departures-from-normality}{%
 \subsection{Mapping QQ-plot departures from Normality}\label{mapping-qq-plot-departures-from-normality}}
 
-\textbf{Skew Right QQ}
+Let's look at simulated samples drawn from non-normal distributions to identify their characteristic deviations. Each set of plots below shows
 
-\includegraphics[width=0.9\linewidth]{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-209-1}
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  (left panel) A histogram of 10,000 random draws from the non-Normal distribution (blue). This histogram is superimposed over that of 10,000 random draws from a Normal distribution (orange) with the same mean and variance as that of the non-normal distribution.
+\item
+  (middle panel) Box plots and strip chart of a random subset (\(N=1000\)) of data in the left panel.
+\item
+  (right panel) Normal Q-Q plot of the non\_Normal data only.
+\end{enumerate}
 
-\textbf{Skew Left QQ}
+\textbf{Skewed-Right Q-Q}
 
 \includegraphics[width=0.9\linewidth]{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-210-1}
 
-\textbf{Heavy Tail QQ}
+The Normal Q-Q plot of a sample from a right-skewed distribution is characterized by sample quantiles at the high (right) end being more positive than the expected Normal quantiles. Often, the quantiles at the low (left) end are also less negative than the expected normal quantiles. The consequence is a concave up pattern.
+
+The histograms in the left panel explain this pattern. The right tail of the skewed-right distribution extends further than the right tail of the Normal. It is easy to see from this that, if we rank the values of each distribution from small to large (these are the quantiles), the upper quantiles of the skewed-right distribution will be larger than the matching quantile of the Normal distribution. For example, the 99,990th quantile for the skewed-right distribution will be much more positive than the 99,990th quantile for the Normal distribution. The opposite occurs at the left tail, which extends further in the negative direction in the Normal than the skewed-right distribution.
+
+The middle panel compares a boxplot and stripchart of samples from the two distributions to show what researchers should look for in their own publication-ready plots as well as the published plots of colleagues. The skewed-right plot exhibits several hallmarks of a skewed-right distribution including 1) a median line (the horizontal line within the box) that is closer to the 25th percentile line (the lower end of the box) than to the 75th percentile line (the upper end of the box), 2) a longer upper than lower whisker (the vertical lines extending out of the box), 3) more outliers above the upper whisker than below the lower whisker, and 4) a lengthened, upward smear of the scatter of points at the high end of the values, relative to the more compact smear at the low end of the values.
+
+\textbf{Skewed-Left Q-Q}
 
 \includegraphics[width=0.9\linewidth]{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-211-1}
 
-Now let's look at simulated samples drawn from non-normal distributions to identify their characteristic deviations.
+The Normal Q-Q plot of a sample from a left-skewed distribution is characterized by sample quantiles at the low (left) end being more negative than the expected Normal quantiles. Often, the quantiles at the high (right) end are also less positive than the expected normal quantiles. The consequence is a concave down pattern.
 
-\hypertarget{continuous-response-variables-of-length-area-weight-or-duration-can-have-right-skewed-distributions-and-variances-that-grow-with-the-mean}{%
-\subsubsection{Continuous response variables of length, area, weight, or duration can have right skewed distributions and variances that grow with the mean}\label{continuous-response-variables-of-length-area-weight-or-duration-can-have-right-skewed-distributions-and-variances-that-grow-with-the-mean}}
+The histograms in the left panel explain this pattern. The left tail of the skewed-left distribution extends further than the left tail of the Normal. It is easy to see from this that, if we rank the values of each distribution from small to large (these are the quantiles), the lower quantiles of the skewed-left distribution will be more negative than the matching quantile of the Normal distribution. For example, the 10th quantile for the skewed-left distribution will be much more negative than the 10th quantile for the Normal distribution. The opposite occurs at the right tail, which extends further in the positive direction in the Normal than the skewed-left distribution.
 
-\hypertarget{count-response-frequently-have-right-skewed-distributions-and-variances-that-grow-with-the-mean}{%
-\subsubsection{Count response frequently have right skewed distributions and variances that grow with the mean}\label{count-response-frequently-have-right-skewed-distributions-and-variances-that-grow-with-the-mean}}
+The skewed-left plot in the middle panel highlights several hallmarks of a skewed-left distribution including 1) a median line (the horizontal line within the box) that is closer to the 75th percentile line (the lower end of the box) than to the 25th percentile line (the upper end of the box), 2) a longer lower than upper whisker (the vertical lines extending out of the box), 3) more outliers below the lower whisker than above the upper whisker, and 4) a lengthened, downward smear of the scatter of points at the low end of the values, relative to the more compact smear at the upper end of the values.
 
-\hypertarget{proportions-can-have-both-right-and-left-skewed-distributions}{%
-\subsubsection{Proportions can have both right and left skewed distributions}\label{proportions-can-have-both-right-and-left-skewed-distributions}}
+\textbf{Heavy Tail Q-Q}
 
-\hypertarget{otherwise-left-skewed-distribution-are-uncommon}{%
-\subsubsection{Otherwise, left skewed distribution are uncommon}\label{otherwise-left-skewed-distribution-are-uncommon}}
+\includegraphics[width=0.9\linewidth]{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-212-1}
 
-Many biological measures are from a distribution with long, right tails (right skewed). Examples include many count variables (number of eggs in a clutch, number of cells colonized by a parasite), and measures of duration, weight, or length. What is common to all of these is unconstrained upper bounday but a constrained lower boundary at or above zero (A nest might have zero eggs. The weight of a fat depot must be greater than zero but the weight of a specific species of fish in a trawl catch might be zero).
+The Normal Q-Q plot of a sample from a heavy-tail distribution is characterized by sample quantiles at the low (left) end being more negative than the expected Normal quantiles and quantiles at the high (right) end that are more positive than the expected normal quantiles.
 
-A long right tail of conditional responses creates a characteristic positive deviation of the largest quantiles in a Normal Q-Q plot of the residuals from a linear model. Positive deviations at the upper end indicate larger values than expected given a normal distribution. This is the signature of the residuals of a linear model fit to right skewed data.
+The histograms in the left panel explain this pattern. At each tail, the heavy-tail distribution has more \textbf{density} -- there are more values far from the mean -- compared to the Normal distribution. This is the origin of ``heavy tail''. It is easy to see from this that, if we rank the values of each distribution from small to large (these are the quantiles), the lower quantiles of the heavy tail distribution will be more negative than the matching quantile of the Normal distribution. For example, the 10th quantile for the heavy-tail distribution will be much more negative than the 10th quantile for the Normal distribution. Likewise, the upper quantiles of the heavy tail distribution will be more positive than the matching quantile of the Normal distribution. For example, the 99,990th quantile for the heavy-tail distribution will be much more positive than the 99,990th quantile for the Normal distribution.
 
-A continous response with a right skewed distribution can be modeled with a generalized linear model using a lognormal or gamma distribution. A count response can be modeled with a generalized linear model using a Poisson, quasi-Poisson, or negative binomial distribution (Chapter xxx).
+The heavy-tail plot in the middle panel shows more boxplot outliers than in the Normal plot. This would be hard to recognize in a plot of real data.
+
+\hypertarget{mapping-characteristic-departures-on-a-q-q-plot-to-specific-distributions}{%
+\subsubsection{Mapping characteristic departures on a Q-Q plot to specific distributions}\label{mapping-characteristic-departures-on-a-q-q-plot-to-specific-distributions}}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Continuous response variables of length, area, weight, or duration will often look like samples from a continous probability distribution that is right-skewed, such as the \textbf{lognormal} or \textbf{gamma} distributions.
+\item
+  Count response variables will frequently look like samples from a discrete probability distribution that is right-skewed, such as the \textbf{poisson}, \textbf{quasi-poisson}, or \textbf{negative binomial} distributions.
+\item
+  Proportion (fraction of a whole) response variables will frequently look like samples from a continuous probability distribution bounded by 0 and 1, such as the \textbf{beta} distribution. Samples from a beta distribution can be left skewed, if the mean is near 1, right-skewed, if the mean is near zero, or symmetrical, if the mean is near 0.5.
+\end{enumerate}
+
+\hypertarget{pump-your-intuition-confidence-bands-of-a-q-q-plot}{%
+\subsubsection{Pump your intuition -- confidence bands of a Q-Q plot}\label{pump-your-intuition-confidence-bands-of-a-q-q-plot}}
+
+In introducing the confidence bands of the Q-Q plot above, I stated ``A pattern of observed quantiles with some individual points outside of these boundaries indicates a sample that would be unusual if sampled from a Normal distribution.'' Let's use a parametric bootstrap to explore this.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Sample \(n\) values from a Normal distribution
+\item
+  Compute the sample quantiles by re-ordering the residuals of the sampled values from the sampled mean, from most negative to most positive.
+\item
+  Plot the quantiles against Normal quantiles for \(n\) points.
+\item
+  Repeat steps 1-3 \(n\_iter\) times, superimposing the new sample quantiles over all previous sample quantiles. This creates a band of all sample quantiles over \(n\_iter\) iterations of sampling \(n\) values from a Normal distribution.
+\item
+  At each value of the Normal quantile, compute the 95 percentile range of the sampled quantiles. Draw a ribbon inside these boundaries.
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{n_iter <-}\StringTok{ }\DecValTok{1000}
+\NormalTok{n <-}\StringTok{ }\DecValTok{20}
+\NormalTok{normal_qq <-}\StringTok{ }\KeywordTok{ppoints}\NormalTok{(n) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{qnorm}\NormalTok{()}
+\NormalTok{sample_qq <-}\StringTok{ }\KeywordTok{numeric}\NormalTok{(n_iter}\OperatorTok{*}\NormalTok{n)}
+\NormalTok{inc <-}\StringTok{ }\DecValTok{1}\OperatorTok{:}\NormalTok{n}
+\ControlFlowTok{for}\NormalTok{(iter }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\NormalTok{n_iter)\{}
+\NormalTok{  y <-}\StringTok{ }\KeywordTok{rnorm}\NormalTok{(n)}
+\NormalTok{  y_res <-}\StringTok{ }\NormalTok{y }\OperatorTok{-}\StringTok{ }\KeywordTok{mean}\NormalTok{(y)}
+\NormalTok{  sample_qq[inc] <-}\StringTok{ }\NormalTok{y_res[}\KeywordTok{order}\NormalTok{(y_res)]}
+\NormalTok{  inc <-}\StringTok{ }\NormalTok{inc }\OperatorTok{+}\StringTok{ }\NormalTok{n}
+\NormalTok{\}}
+
+\NormalTok{qq_data <-}\StringTok{ }\KeywordTok{data.table}\NormalTok{(}\DataTypeTok{normal_qq =}\NormalTok{ normal_qq,}
+                      \DataTypeTok{sample_qq =}\NormalTok{ sample_qq)}
+
+\NormalTok{qq_ci <-}\StringTok{ }\NormalTok{qq_data[, .(}\DataTypeTok{median =} \KeywordTok{median}\NormalTok{(sample_qq),}
+                     \DataTypeTok{lower =} \KeywordTok{quantile}\NormalTok{(sample_qq, }\FloatTok{0.025}\NormalTok{),}
+                     \DataTypeTok{upper =} \KeywordTok{quantile}\NormalTok{(sample_qq, }\FloatTok{0.975}\NormalTok{)),}
+\NormalTok{                 by =}\StringTok{ }\NormalTok{normal_qq]}
+
+\KeywordTok{ggplot}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ qq_data,}
+       \KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ normal_qq,}
+           \DataTypeTok{y =}\NormalTok{ sample_qq)) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_point}\NormalTok{(}\DataTypeTok{alpha =} \FloatTok{0.2}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_ribbon}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ qq_ci,}
+              \KeywordTok{aes}\NormalTok{(}\DataTypeTok{ymin =}\NormalTok{ lower,}
+                  \DataTypeTok{ymax =}\NormalTok{ upper,}
+                  \DataTypeTok{y =}\NormalTok{ median,}
+                  \DataTypeTok{fill =} \StringTok{"band"}\NormalTok{),}
+              \DataTypeTok{fill =}\NormalTok{ pal_okabe_ito[}\DecValTok{1}\NormalTok{],}
+              \DataTypeTok{alpha =} \FloatTok{0.3}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{xlab}\NormalTok{(}\StringTok{"Normal Quantile"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{ylab}\NormalTok{(}\StringTok{"Sample Quantile"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{theme_grid}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
 
 \hypertarget{model-checking-homoskedasticity}{%
-\section{Model checking homoskedasticity}\label{model-checking-homoskedasticity}}
+\subsection{Model checking homoskedasticity}\label{model-checking-homoskedasticity}}
 
 \hypertarget{using-r}{%
 \section{Using R}\label{using-r}}
+
+Source: \href{https://www.nature.com/articles/s41586-019-1450-6}{Wellenstein, M.D., Coffelt, S.B., Duits, D.E., van Miltenburg, M.H., Slagter, M., de Rink, I., Henneman, L., Kas, S.M., Prekovic, S., Hau, C.S. and Vrijland, K., 2019. Loss of p53 triggers WNT-dependent systemic inflammation to drive breast cancer metastasis. Nature, 572(7770), pp.538-542.}
+
+\href{https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6707815/}{Public source}
+
+\href{https://www.nature.com/articles/s41586-019-1450-6\#Sec22}{Data source}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{data_from <-}\StringTok{ "Loss of p53 triggers WNT-dependent systemic inflammation to drive breast cancer metastasis"}
+\NormalTok{file_name <-}\StringTok{ "41586_2019_1450_MOESM3_ESM.xlsx"}
+\NormalTok{file_path <-}\StringTok{ }\KeywordTok{here}\NormalTok{(data_folder, data_from, file_name)}
+  
+\NormalTok{treatment_levels <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"Trp53+/+"}\NormalTok{, }\StringTok{"Trp53-/-"}\NormalTok{)}
+\NormalTok{fig1f <-}\StringTok{ }\KeywordTok{read_excel}\NormalTok{(file_path,}
+                     \DataTypeTok{sheet =} \StringTok{"Fig. 1f"}\NormalTok{,}
+                     \DataTypeTok{range =} \StringTok{"A2:B23"}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{data.table}\NormalTok{() }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{melt}\NormalTok{(}\DataTypeTok{measure.vars =}\NormalTok{ treatment_levels,}
+       \DataTypeTok{variable.name =} \StringTok{"treatment"}\NormalTok{,}
+       \DataTypeTok{value.name =} \StringTok{"il1beta"}\NormalTok{)}
+\NormalTok{fig1f[, treatment }\OperatorTok{:}\ErrorTok{=}\StringTok{ }\KeywordTok{factor}\NormalTok{(treatment, treatment_levels)]}
+
+\CommentTok{# be careful of the missing data. This can create mismatch between id and residual unless specified in lm}
+
+\CommentTok{# head(fig1f)}
+\end{Highlighting}
+\end{Shaded}
+
+Fit a linear model
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{m1 <-}\StringTok{ }\KeywordTok{lm}\NormalTok{(il1beta }\OperatorTok{~}\StringTok{ }\NormalTok{treatment,}
+         \DataTypeTok{data =}\NormalTok{ fig1f)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{normal-q-q-plots}{%
+\subsection{Normal Q-Q plots}\label{normal-q-q-plots}}
+
+\texttt{car::qqPlot} has several important arguments to control the type of Q-Q plot. The function uses base graphics instead of ggplot2. Typically, these plots would not be published other than possibly a supplement. \href{https://www.tjmahr.com/quantile-quantile-plots-from-scratch/}{Q-Q Plots and Worm Plots from Scratch} is a good source of some of the arguments in \texttt{qqPlot}. Three important arguments are:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  simulate. The default (\texttt{simulate\ =\ TRUE}) confidence band is generated by a parametric bootstrap. This band will differ somewhat each time you replot unless you set the seed with \texttt{set.seed}. Setting the argument \texttt{simulate\ =\ FALSE} returns the parametric band.
+\item
+  line. The default (\texttt{line\ =\ "robust"}) uses the median and interquartile range to set the intercept and slope of the line. This apparently works better when data are less Normal. The standard line using the mean and standard deviation is plotted using (\texttt{line\ =\ "quartiles"})
+\item
+  id. The default identifies the index of the two points with the most extreme quartiles. Set to FALSE to hide.
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# defaults: robust line with bootstrap CI}
+\KeywordTok{set.seed}\NormalTok{(}\DecValTok{1}\NormalTok{)}
+\KeywordTok{qqPlot}\NormalTok{(m1, }\DataTypeTok{id =} \OtherTok{FALSE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-215-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# classic: standard line with parametric CI}
+\KeywordTok{set.seed}\NormalTok{(}\DecValTok{1}\NormalTok{)}
+\KeywordTok{qqPlot}\NormalTok{(m1,}
+       \DataTypeTok{line =} \StringTok{"quartiles"}\NormalTok{,}
+       \DataTypeTok{simulate =} \OtherTok{FALSE}\NormalTok{,}
+       \DataTypeTok{id =} \OtherTok{FALSE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\texttt{ggpubr::ggqqplot} generates a pretty, ggplot2 based Normal Q-Q plot, using the standard method for computing the line and confidence band.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{m1_residuals <-}\StringTok{ }\KeywordTok{data.table}\NormalTok{(}\DataTypeTok{m1_residuals =} \KeywordTok{residuals}\NormalTok{(m1))}
+\NormalTok{m1_residuals[, studentized }\OperatorTok{:}\ErrorTok{=}\StringTok{ }\NormalTok{m1_residuals}\OperatorTok{/}\KeywordTok{sd}\NormalTok{(m1_residuals)]}
+\KeywordTok{ggqqplot}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ m1_residuals,}
+                          \DataTypeTok{x =} \StringTok{"studentized"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-217-1.pdf}
 
 \hypertarget{model-fitting-and-model-fit-ols}{%
 \chapter{Model Fitting and Model Fit (OLS)}\label{model-fitting-and-model-fit-ols}}
@@ -9412,7 +9684,7 @@ If a researcher caries out many tests, and ranks the effects by magnitude or \em
 \caption{\label{fig:inflation-histogram}A histogram of the distribution of the 10,000 effects}
 \end{figure}
 
-\label{tab:unnamed-chunk-213}The top 10 genes ranked by p-value. Rank is the rank of the true effect, from large to small.
+\label{tab:unnamed-chunk-219}The top 10 genes ranked by p-value. Rank is the rank of the true effect, from large to small.
 
 effect
 
@@ -10206,7 +10478,7 @@ ldlc.r = \beta_0 + \beta_1 treatment + \varepsilon
 
 where \(ldlc.r\) is the set of residuals.
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-223-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-229-1.pdf}
 
 Now the estimate of the effect is -4.7 mg/dL blood and the SE is only 0.88. In this two-stage analysis (stage 1: fit ldlc \textasciitilde{} age to get residuals, stage 2: fit residuals \textasciitilde{} treatment), we have \emph{eliminated the effect of age} on the variance of the response and, as a consequence, the estimate of the effect of the drug is much more precise -- the effect of \(treatment\) has a smaller standard error.
 
@@ -10225,11 +10497,11 @@ ldlc = \beta_0 + \beta_1 age + \beta_2 treatment + \varepsilon
 
 which results in the Harrell Plot
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-224-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-230-1.pdf}
 
 and the coefficient table
 
-\label{tab:unnamed-chunk-225}Coefficients of the model that includes the covariate age.
+\label{tab:unnamed-chunk-231}Coefficients of the model that includes the covariate age.
 
 Estimate
 
@@ -11406,7 +11678,7 @@ These can be combined into a single table using \texttt{rbind}
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-235-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-241-1.pdf}
 
 \hypertarget{plots-that-communicate-the-factorial-design}{%
 \subsubsection{Plots that communicate the factorial design}\label{plots-that-communicate-the-factorial-design}}
@@ -11553,7 +11825,7 @@ An interaction plot is an okay plot. It doesn't show the data, only a minimal, d
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-236-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-242-1.pdf}
 
 This effects plot shows the four simple effects, the single interaction (Temp18:CO21100), and their 95\% confidence intervals. In the original paper, the researchers were testing a scientific (not statistical!) model that predicted no interaction between CO2 and Temp, and the researchers argued that these data supported this model because of the ``not statistically significant'' \emph{p}-value for the interaction effect. The data are consistent with this model (one end of the 95\% CI for the interaction includes zero) but also support a model of a large, negative interaction (the other end of the 95\% CI includes large negative values). The data are too course (or the signal:noise ratio is to small) to have much confidence in the size of the interaction effect.
 
@@ -11570,7 +11842,7 @@ This effects plot shows the four simple effects, the single interaction (Temp18:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-237-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-243-1.pdf}
 
 The effects and interaction plot are combined into a single plot.
 
@@ -14235,7 +14507,7 @@ A plot of the dispersion statistic can be generated using the object returned by
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-259-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-265-1.pdf}
 
 \begin{verbatim}
 ## 
