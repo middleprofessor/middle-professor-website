@@ -1815,16 +1815,16 @@ Y = \beta_0 + \beta_1 A^+ + \beta_1 B^+ + \beta_3 C^+ + \beta_4 A^+ B^+ + \beta_
 <div id="model-formula" class="section level3">
 <h3><span class="header-section-number">15.3.1</span> Model formula</h3>
 <p>A full-factorial model with two factors is specified in the model formula as <code>y ~ A*B</code> where A is the first factor, and B is the second factor. The * indicates to cross A and B. R expands this formula to <code>y ~ 1 + A + B + A:B</code> where the colon indicates an interaction (multiplicative) effect.</p>
-<div class="sourceCode" id="cb402"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb402-1"><a href="two-or-more-categorical-x-factorial-designs.html#cb402-1"></a>m1 &lt;-<span class="st"> </span><span class="kw">lm</span>(Resp <span class="op">~</span><span class="st"> </span>Temp<span class="op">*</span>CO2, <span class="dt">data=</span>urchin) <span class="co"># use urchin1 data with relabeled levels</span></span>
-<span id="cb402-2"><a href="two-or-more-categorical-x-factorial-designs.html#cb402-2"></a><span class="kw">coef</span>(<span class="kw">summary</span>(m1))</span></code></pre></div>
+<div class="sourceCode" id="cb403"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb403-1"><a href="two-or-more-categorical-x-factorial-designs.html#cb403-1"></a>m1 &lt;-<span class="st"> </span><span class="kw">lm</span>(Resp <span class="op">~</span><span class="st"> </span>Temp<span class="op">*</span>CO2, <span class="dt">data=</span>urchin) <span class="co"># use urchin1 data with relabeled levels</span></span>
+<span id="cb403-2"><a href="two-or-more-categorical-x-factorial-designs.html#cb403-2"></a><span class="kw">coef</span>(<span class="kw">summary</span>(m1))</span></code></pre></div>
 <pre><code>##                  Estimate Std. Error    t value     Pr(&gt;|t|)
 ## (Intercept)     8.2333333  0.7255577 11.3475922 3.626935e-10
 ## Temp18          4.5100000  1.0260936  4.3953106 2.792573e-04
 ## CO21100        -0.3166667  1.0260936 -0.3086138 7.608069e-01
 ## Temp18:CO21100 -2.6850000  1.4511155 -1.8503007 7.910035e-02</code></pre>
 <p>The additive model is specified by the formula <code>y ~ A + B</code></p>
-<div class="sourceCode" id="cb404"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb404-1"><a href="two-or-more-categorical-x-factorial-designs.html#cb404-1"></a>m2 &lt;-<span class="st"> </span><span class="kw">lm</span>(Resp <span class="op">~</span><span class="st"> </span>Temp <span class="op">+</span><span class="st"> </span>CO2, <span class="dt">data=</span>urchin) <span class="co"># use urchin1 data with relabeled levels</span></span>
-<span id="cb404-2"><a href="two-or-more-categorical-x-factorial-designs.html#cb404-2"></a><span class="kw">coef</span>(<span class="kw">summary</span>(m2))</span></code></pre></div>
+<div class="sourceCode" id="cb405"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb405-1"><a href="two-or-more-categorical-x-factorial-designs.html#cb405-1"></a>m2 &lt;-<span class="st"> </span><span class="kw">lm</span>(Resp <span class="op">~</span><span class="st"> </span>Temp <span class="op">+</span><span class="st"> </span>CO2, <span class="dt">data=</span>urchin) <span class="co"># use urchin1 data with relabeled levels</span></span>
+<span id="cb405-2"><a href="two-or-more-categorical-x-factorial-designs.html#cb405-2"></a><span class="kw">coef</span>(<span class="kw">summary</span>(m2))</span></code></pre></div>
 <pre><code>##              Estimate Std. Error   t value     Pr(&gt;|t|)
 ## (Intercept)  8.904583  0.6636207 13.418183 9.038657e-12
 ## Temp18       3.167500  0.7662831  4.133590 4.721000e-04
@@ -1833,8 +1833,8 @@ Y = \beta_0 + \beta_1 A^+ + \beta_1 B^+ + \beta_3 C^+ + \beta_4 A^+ B^+ + \beta_
 <div id="modeled-means" class="section level3">
 <h3><span class="header-section-number">15.3.2</span> Modeled means</h3>
 <p>Modeled means are estimated using <code>emmeans::emmeans</code>. The means for all combinations of Temp and CO2 are obtained with the specs argument.</p>
-<div class="sourceCode" id="cb406"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb406-1"><a href="two-or-more-categorical-x-factorial-designs.html#cb406-1"></a>m1.emm &lt;-<span class="st"> </span><span class="kw">emmeans</span>(m1, <span class="dt">specs=</span><span class="kw">c</span>(<span class="st">&quot;Temp&quot;</span>, <span class="st">&quot;CO2&quot;</span>))</span>
-<span id="cb406-2"><a href="two-or-more-categorical-x-factorial-designs.html#cb406-2"></a>m1.emm</span></code></pre></div>
+<div class="sourceCode" id="cb407"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb407-1"><a href="two-or-more-categorical-x-factorial-designs.html#cb407-1"></a>m1.emm &lt;-<span class="st"> </span><span class="kw">emmeans</span>(m1, <span class="dt">specs=</span><span class="kw">c</span>(<span class="st">&quot;Temp&quot;</span>, <span class="st">&quot;CO2&quot;</span>))</span>
+<span id="cb407-2"><a href="two-or-more-categorical-x-factorial-designs.html#cb407-2"></a>m1.emm</span></code></pre></div>
 <pre><code>##  Temp CO2  emmean    SE df lower.CL upper.CL
 ##  13   400    8.23 0.726 20     6.72     9.75
 ##  18   400   12.74 0.726 20    11.23    14.26
@@ -1846,16 +1846,16 @@ Y = \beta_0 + \beta_1 A^+ + \beta_1 B^+ + \beta_3 C^+ + \beta_4 A^+ B^+ + \beta_
 <div id="marginal-means" class="section level3">
 <h3><span class="header-section-number">15.3.3</span> Marginal means</h3>
 <p>The marginal means are</p>
-<div class="sourceCode" id="cb408"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb408-1"><a href="two-or-more-categorical-x-factorial-designs.html#cb408-1"></a>m1.emm.temp &lt;-<span class="st"> </span><span class="kw">emmeans</span>(m1, <span class="dt">specs=</span><span class="kw">c</span>(<span class="st">&quot;Temp&quot;</span>))</span>
-<span id="cb408-2"><a href="two-or-more-categorical-x-factorial-designs.html#cb408-2"></a>m1.emm.co2 &lt;-<span class="st"> </span><span class="kw">emmeans</span>(m1, <span class="dt">specs=</span><span class="kw">c</span>(<span class="st">&quot;CO2&quot;</span>))</span>
-<span id="cb408-3"><a href="two-or-more-categorical-x-factorial-designs.html#cb408-3"></a>m1.emm.temp</span></code></pre></div>
+<div class="sourceCode" id="cb409"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb409-1"><a href="two-or-more-categorical-x-factorial-designs.html#cb409-1"></a>m1.emm.temp &lt;-<span class="st"> </span><span class="kw">emmeans</span>(m1, <span class="dt">specs=</span><span class="kw">c</span>(<span class="st">&quot;Temp&quot;</span>))</span>
+<span id="cb409-2"><a href="two-or-more-categorical-x-factorial-designs.html#cb409-2"></a>m1.emm.co2 &lt;-<span class="st"> </span><span class="kw">emmeans</span>(m1, <span class="dt">specs=</span><span class="kw">c</span>(<span class="st">&quot;CO2&quot;</span>))</span>
+<span id="cb409-3"><a href="two-or-more-categorical-x-factorial-designs.html#cb409-3"></a>m1.emm.temp</span></code></pre></div>
 <pre><code>##  Temp emmean    SE df lower.CL upper.CL
 ##  13     8.07 0.513 20      7.0     9.15
 ##  18    11.24 0.513 20     10.2    12.31
 ## 
 ## Results are averaged over the levels of: CO2 
 ## Confidence level used: 0.95</code></pre>
-<div class="sourceCode" id="cb410"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb410-1"><a href="two-or-more-categorical-x-factorial-designs.html#cb410-1"></a>m1.emm.co2</span></code></pre></div>
+<div class="sourceCode" id="cb411"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb411-1"><a href="two-or-more-categorical-x-factorial-designs.html#cb411-1"></a>m1.emm.co2</span></code></pre></div>
 <pre><code>##  CO2  emmean    SE df lower.CL upper.CL
 ##  400   10.49 0.513 20     9.42     11.6
 ##  1100   8.83 0.513 20     7.76      9.9
@@ -1866,10 +1866,10 @@ Y = \beta_0 + \beta_1 A^+ + \beta_1 B^+ + \beta_3 C^+ + \beta_4 A^+ B^+ + \beta_
 <div id="contrasts" class="section level3">
 <h3><span class="header-section-number">15.3.4</span> Contrasts</h3>
 <p>All six pairwise contrasts are computed using <code>emmeans::contrast</code>. The adjust argument specifies the adjustment for multiple testing. The method argument specifies the type of contrast (pairwise and revpairwise give all pairwise contrasts. revpairwise simply gives the reverse of pairwise)</p>
-<div class="sourceCode" id="cb412"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb412-1"><a href="two-or-more-categorical-x-factorial-designs.html#cb412-1"></a>m1.contrast &lt;-<span class="st"> </span><span class="kw">contrast</span>(m1.emm, <span class="dt">adjust=</span><span class="st">&quot;none&quot;</span>, <span class="dt">method=</span><span class="st">&quot;revpairwise&quot;</span>)</span>
-<span id="cb412-2"><a href="two-or-more-categorical-x-factorial-designs.html#cb412-2"></a><span class="co"># add CIs</span></span>
-<span id="cb412-3"><a href="two-or-more-categorical-x-factorial-designs.html#cb412-3"></a>m1.contrast.ci &lt;-<span class="st"> </span><span class="kw">summary</span>(m1.contrast, <span class="dt">infer=</span><span class="kw">c</span>(<span class="ot">TRUE</span>, <span class="ot">TRUE</span>))</span>
-<span id="cb412-4"><a href="two-or-more-categorical-x-factorial-designs.html#cb412-4"></a>m1.contrast.ci</span></code></pre></div>
+<div class="sourceCode" id="cb413"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb413-1"><a href="two-or-more-categorical-x-factorial-designs.html#cb413-1"></a>m1.contrast &lt;-<span class="st"> </span><span class="kw">contrast</span>(m1.emm, <span class="dt">adjust=</span><span class="st">&quot;none&quot;</span>, <span class="dt">method=</span><span class="st">&quot;revpairwise&quot;</span>)</span>
+<span id="cb413-2"><a href="two-or-more-categorical-x-factorial-designs.html#cb413-2"></a><span class="co"># add CIs</span></span>
+<span id="cb413-3"><a href="two-or-more-categorical-x-factorial-designs.html#cb413-3"></a>m1.contrast.ci &lt;-<span class="st"> </span><span class="kw">summary</span>(m1.contrast, <span class="dt">infer=</span><span class="kw">c</span>(<span class="ot">TRUE</span>, <span class="ot">TRUE</span>))</span>
+<span id="cb413-4"><a href="two-or-more-categorical-x-factorial-designs.html#cb413-4"></a>m1.contrast.ci</span></code></pre></div>
 <pre><code>##  contrast          estimate   SE df lower.CL upper.CL t.ratio p.value
 ##  18,400 - 13,400      4.510 1.03 20    2.370    6.650  4.395  0.0003 
 ##  13,1100 - 13,400    -0.317 1.03 20   -2.457    1.824 -0.309  0.7608 
@@ -1883,13 +1883,13 @@ Y = \beta_0 + \beta_1 A^+ + \beta_1 B^+ + \beta_3 C^+ + \beta_4 A^+ B^+ + \beta_
 <div id="simple-effects" class="section level3">
 <h3><span class="header-section-number">15.3.5</span> Simple effects</h3>
 <p>The four conditional (simple) effects are a subset of the contrasts above and are computed using the arguments <code>simple="each"</code> and <code>combine=TRUE</code>.</p>
-<div class="sourceCode" id="cb414"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb414-1"><a href="two-or-more-categorical-x-factorial-designs.html#cb414-1"></a>m1.effects &lt;-<span class="st"> </span><span class="kw">summary</span>(<span class="kw">contrast</span>(m1.emm,</span>
-<span id="cb414-2"><a href="two-or-more-categorical-x-factorial-designs.html#cb414-2"></a>                 <span class="dt">method=</span><span class="st">&quot;revpairwise&quot;</span>,</span>
-<span id="cb414-3"><a href="two-or-more-categorical-x-factorial-designs.html#cb414-3"></a>                 <span class="dt">adjust=</span><span class="st">&quot;none&quot;</span>,</span>
-<span id="cb414-4"><a href="two-or-more-categorical-x-factorial-designs.html#cb414-4"></a>                 <span class="dt">simple =</span> <span class="st">&quot;each&quot;</span>,</span>
-<span id="cb414-5"><a href="two-or-more-categorical-x-factorial-designs.html#cb414-5"></a>                 <span class="dt">combine=</span><span class="ot">TRUE</span>),</span>
-<span id="cb414-6"><a href="two-or-more-categorical-x-factorial-designs.html#cb414-6"></a>        <span class="dt">infer=</span><span class="kw">c</span>(<span class="ot">TRUE</span>,<span class="ot">TRUE</span>))</span>
-<span id="cb414-7"><a href="two-or-more-categorical-x-factorial-designs.html#cb414-7"></a>m1.effects</span></code></pre></div>
+<div class="sourceCode" id="cb415"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb415-1"><a href="two-or-more-categorical-x-factorial-designs.html#cb415-1"></a>m1.effects &lt;-<span class="st"> </span><span class="kw">summary</span>(<span class="kw">contrast</span>(m1.emm,</span>
+<span id="cb415-2"><a href="two-or-more-categorical-x-factorial-designs.html#cb415-2"></a>                 <span class="dt">method=</span><span class="st">&quot;revpairwise&quot;</span>,</span>
+<span id="cb415-3"><a href="two-or-more-categorical-x-factorial-designs.html#cb415-3"></a>                 <span class="dt">adjust=</span><span class="st">&quot;none&quot;</span>,</span>
+<span id="cb415-4"><a href="two-or-more-categorical-x-factorial-designs.html#cb415-4"></a>                 <span class="dt">simple =</span> <span class="st">&quot;each&quot;</span>,</span>
+<span id="cb415-5"><a href="two-or-more-categorical-x-factorial-designs.html#cb415-5"></a>                 <span class="dt">combine=</span><span class="ot">TRUE</span>),</span>
+<span id="cb415-6"><a href="two-or-more-categorical-x-factorial-designs.html#cb415-6"></a>        <span class="dt">infer=</span><span class="kw">c</span>(<span class="ot">TRUE</span>,<span class="ot">TRUE</span>))</span>
+<span id="cb415-7"><a href="two-or-more-categorical-x-factorial-designs.html#cb415-7"></a>m1.effects</span></code></pre></div>
 <pre><code>##  CO2  Temp contrast   estimate   SE df lower.CL upper.CL t.ratio p.value
 ##  400  .    18 - 13       4.510 1.03 20    2.370    6.650  4.395  0.0003 
 ##  1100 .    18 - 13       1.825 1.03 20   -0.315    3.965  1.779  0.0905 
@@ -1901,31 +1901,31 @@ Y = \beta_0 + \beta_1 A^+ + \beta_1 B^+ + \beta_3 C^+ + \beta_4 A^+ B^+ + \beta_
 <div id="marginal-effects-1" class="section level3">
 <h3><span class="header-section-number">15.3.6</span> Marginal effects</h3>
 <p>The marginal effects of the factorial model are</p>
-<div class="sourceCode" id="cb416"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb416-1"><a href="two-or-more-categorical-x-factorial-designs.html#cb416-1"></a>m1.emm<span class="fl">.1</span> &lt;-<span class="st"> </span><span class="kw">emmeans</span>(m1, <span class="dt">specs=</span><span class="kw">c</span>(<span class="st">&quot;Temp&quot;</span>))</span>
-<span id="cb416-2"><a href="two-or-more-categorical-x-factorial-designs.html#cb416-2"></a>m1.effects<span class="fl">.1</span> &lt;-<span class="st"> </span><span class="kw">summary</span>(<span class="kw">contrast</span>(m1.emm<span class="fl">.1</span>,</span>
-<span id="cb416-3"><a href="two-or-more-categorical-x-factorial-designs.html#cb416-3"></a>                 <span class="dt">method=</span><span class="st">&quot;revpairwise&quot;</span>,</span>
-<span id="cb416-4"><a href="two-or-more-categorical-x-factorial-designs.html#cb416-4"></a>                 <span class="dt">adjust=</span><span class="st">&quot;none&quot;</span>),</span>
-<span id="cb416-5"><a href="two-or-more-categorical-x-factorial-designs.html#cb416-5"></a>        <span class="dt">infer=</span><span class="kw">c</span>(<span class="ot">TRUE</span>,<span class="ot">TRUE</span>))</span>
-<span id="cb416-6"><a href="two-or-more-categorical-x-factorial-designs.html#cb416-6"></a>m1.effects<span class="fl">.1</span></span></code></pre></div>
+<div class="sourceCode" id="cb417"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb417-1"><a href="two-or-more-categorical-x-factorial-designs.html#cb417-1"></a>m1.emm<span class="fl">.1</span> &lt;-<span class="st"> </span><span class="kw">emmeans</span>(m1, <span class="dt">specs=</span><span class="kw">c</span>(<span class="st">&quot;Temp&quot;</span>))</span>
+<span id="cb417-2"><a href="two-or-more-categorical-x-factorial-designs.html#cb417-2"></a>m1.effects<span class="fl">.1</span> &lt;-<span class="st"> </span><span class="kw">summary</span>(<span class="kw">contrast</span>(m1.emm<span class="fl">.1</span>,</span>
+<span id="cb417-3"><a href="two-or-more-categorical-x-factorial-designs.html#cb417-3"></a>                 <span class="dt">method=</span><span class="st">&quot;revpairwise&quot;</span>,</span>
+<span id="cb417-4"><a href="two-or-more-categorical-x-factorial-designs.html#cb417-4"></a>                 <span class="dt">adjust=</span><span class="st">&quot;none&quot;</span>),</span>
+<span id="cb417-5"><a href="two-or-more-categorical-x-factorial-designs.html#cb417-5"></a>        <span class="dt">infer=</span><span class="kw">c</span>(<span class="ot">TRUE</span>,<span class="ot">TRUE</span>))</span>
+<span id="cb417-6"><a href="two-or-more-categorical-x-factorial-designs.html#cb417-6"></a>m1.effects<span class="fl">.1</span></span></code></pre></div>
 <pre><code>##  contrast estimate    SE df lower.CL upper.CL t.ratio p.value
 ##  18 - 13      3.17 0.726 20     1.65     4.68 4.366   0.0003 
 ## 
 ## Results are averaged over the levels of: CO2 
 ## Confidence level used: 0.95</code></pre>
-<div class="sourceCode" id="cb418"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb418-1"><a href="two-or-more-categorical-x-factorial-designs.html#cb418-1"></a>m1.emm<span class="fl">.2</span> &lt;-<span class="st"> </span><span class="kw">emmeans</span>(m1, <span class="dt">specs=</span><span class="kw">c</span>(<span class="st">&quot;CO2&quot;</span>))</span>
-<span id="cb418-2"><a href="two-or-more-categorical-x-factorial-designs.html#cb418-2"></a>m1.effects<span class="fl">.2</span> &lt;-<span class="st"> </span><span class="kw">summary</span>(<span class="kw">contrast</span>(m1.emm<span class="fl">.2</span>,</span>
-<span id="cb418-3"><a href="two-or-more-categorical-x-factorial-designs.html#cb418-3"></a>                 <span class="dt">method=</span><span class="st">&quot;revpairwise&quot;</span>,</span>
-<span id="cb418-4"><a href="two-or-more-categorical-x-factorial-designs.html#cb418-4"></a>                 <span class="dt">adjust=</span><span class="st">&quot;none&quot;</span>),</span>
-<span id="cb418-5"><a href="two-or-more-categorical-x-factorial-designs.html#cb418-5"></a>        <span class="dt">infer=</span><span class="kw">c</span>(<span class="ot">TRUE</span>,<span class="ot">TRUE</span>))</span>
-<span id="cb418-6"><a href="two-or-more-categorical-x-factorial-designs.html#cb418-6"></a>m1.effects<span class="fl">.2</span></span></code></pre></div>
+<div class="sourceCode" id="cb419"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb419-1"><a href="two-or-more-categorical-x-factorial-designs.html#cb419-1"></a>m1.emm<span class="fl">.2</span> &lt;-<span class="st"> </span><span class="kw">emmeans</span>(m1, <span class="dt">specs=</span><span class="kw">c</span>(<span class="st">&quot;CO2&quot;</span>))</span>
+<span id="cb419-2"><a href="two-or-more-categorical-x-factorial-designs.html#cb419-2"></a>m1.effects<span class="fl">.2</span> &lt;-<span class="st"> </span><span class="kw">summary</span>(<span class="kw">contrast</span>(m1.emm<span class="fl">.2</span>,</span>
+<span id="cb419-3"><a href="two-or-more-categorical-x-factorial-designs.html#cb419-3"></a>                 <span class="dt">method=</span><span class="st">&quot;revpairwise&quot;</span>,</span>
+<span id="cb419-4"><a href="two-or-more-categorical-x-factorial-designs.html#cb419-4"></a>                 <span class="dt">adjust=</span><span class="st">&quot;none&quot;</span>),</span>
+<span id="cb419-5"><a href="two-or-more-categorical-x-factorial-designs.html#cb419-5"></a>        <span class="dt">infer=</span><span class="kw">c</span>(<span class="ot">TRUE</span>,<span class="ot">TRUE</span>))</span>
+<span id="cb419-6"><a href="two-or-more-categorical-x-factorial-designs.html#cb419-6"></a>m1.effects<span class="fl">.2</span></span></code></pre></div>
 <pre><code>##  contrast   estimate    SE df lower.CL upper.CL t.ratio p.value
 ##  1100 - 400    -1.66 0.726 20    -3.17   -0.146 -2.287  0.0332 
 ## 
 ## Results are averaged over the levels of: Temp 
 ## Confidence level used: 0.95</code></pre>
 <p>These can be combined into a single table using <code>rbind</code></p>
-<div class="sourceCode" id="cb420"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb420-1"><a href="two-or-more-categorical-x-factorial-designs.html#cb420-1"></a>m1.effects.marginal &lt;-<span class="st"> </span><span class="kw">rbind</span>(<span class="kw">data.table</span>(m1.effects<span class="fl">.1</span>), <span class="kw">data.table</span>(m1.effects<span class="fl">.2</span>))</span>
-<span id="cb420-2"><a href="two-or-more-categorical-x-factorial-designs.html#cb420-2"></a>m1.effects.marginal</span></code></pre></div>
+<div class="sourceCode" id="cb421"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb421-1"><a href="two-or-more-categorical-x-factorial-designs.html#cb421-1"></a>m1.effects.marginal &lt;-<span class="st"> </span><span class="kw">rbind</span>(<span class="kw">data.table</span>(m1.effects<span class="fl">.1</span>), <span class="kw">data.table</span>(m1.effects<span class="fl">.2</span>))</span>
+<span id="cb421-2"><a href="two-or-more-categorical-x-factorial-designs.html#cb421-2"></a>m1.effects.marginal</span></code></pre></div>
 <pre><code>##      contrast  estimate        SE df  lower.CL   upper.CL   t.ratio
 ## 1:    18 - 13  3.167500 0.7255577 20  1.654013  4.6809869  4.365607
 ## 2: 1100 - 400 -1.659167 0.7255577 20 -3.172654 -0.1456798 -2.286747
@@ -1937,85 +1937,85 @@ Y = \beta_0 + \beta_1 A^+ + \beta_1 B^+ + \beta_3 C^+ + \beta_4 A^+ B^+ + \beta_
 <h3><span class="header-section-number">15.3.7</span> Plotting results</h3>
 <div id="bar-plot-with-uniform-coloring-poorly-communicate-the-factorial-design" class="section level4">
 <h4><span class="header-section-number">15.3.7.1</span> Bar plot with uniform coloring poorly communicate the factorial design</h4>
-<div class="sourceCode" id="cb422"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb422-1"><a href="two-or-more-categorical-x-factorial-designs.html#cb422-1"></a><span class="co"># bar plot with uniform color</span></span>
-<span id="cb422-2"><a href="two-or-more-categorical-x-factorial-designs.html#cb422-2"></a>urchin[, xlabel <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">paste0</span>(<span class="st">&quot;Temp:&quot;</span>,Temp,<span class="st">&quot;/&quot;</span>,<span class="st">&quot;CO2:&quot;</span>,CO2)]</span>
-<span id="cb422-3"><a href="two-or-more-categorical-x-factorial-designs.html#cb422-3"></a><span class="kw">ggbarplot</span>(<span class="dt">x=</span><span class="st">&quot;xlabel&quot;</span>,</span>
-<span id="cb422-4"><a href="two-or-more-categorical-x-factorial-designs.html#cb422-4"></a>          <span class="dt">y=</span><span class="st">&quot;Resp&quot;</span>,</span>
-<span id="cb422-5"><a href="two-or-more-categorical-x-factorial-designs.html#cb422-5"></a>          <span class="dt">data=</span>urchin[<span class="op">!</span><span class="kw">is.na</span>(Resp),],</span>
-<span id="cb422-6"><a href="two-or-more-categorical-x-factorial-designs.html#cb422-6"></a>          <span class="dt">add=</span><span class="kw">c</span>(<span class="st">&quot;mean_ci&quot;</span>, <span class="st">&quot;jitter&quot;</span>),</span>
-<span id="cb422-7"><a href="two-or-more-categorical-x-factorial-designs.html#cb422-7"></a>          <span class="dt">fill=</span>(<span class="kw">pal_jco</span>(<span class="st">&quot;default&quot;</span>)(<span class="dv">4</span>))[<span class="dv">1</span>]) <span class="op">+</span></span>
-<span id="cb422-8"><a href="two-or-more-categorical-x-factorial-designs.html#cb422-8"></a><span class="st">  </span><span class="kw">xlab</span>(<span class="st">&quot;Treatment&quot;</span>) <span class="op">+</span></span>
-<span id="cb422-9"><a href="two-or-more-categorical-x-factorial-designs.html#cb422-9"></a><span class="st">  </span><span class="ot">NULL</span></span></code></pre></div>
-<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/unnamed-chunk-250-1.png" width="576" /></p>
+<div class="sourceCode" id="cb423"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb423-1"><a href="two-or-more-categorical-x-factorial-designs.html#cb423-1"></a><span class="co"># bar plot with uniform color</span></span>
+<span id="cb423-2"><a href="two-or-more-categorical-x-factorial-designs.html#cb423-2"></a>urchin[, xlabel <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">paste0</span>(<span class="st">&quot;Temp:&quot;</span>,Temp,<span class="st">&quot;/&quot;</span>,<span class="st">&quot;CO2:&quot;</span>,CO2)]</span>
+<span id="cb423-3"><a href="two-or-more-categorical-x-factorial-designs.html#cb423-3"></a><span class="kw">ggbarplot</span>(<span class="dt">x=</span><span class="st">&quot;xlabel&quot;</span>,</span>
+<span id="cb423-4"><a href="two-or-more-categorical-x-factorial-designs.html#cb423-4"></a>          <span class="dt">y=</span><span class="st">&quot;Resp&quot;</span>,</span>
+<span id="cb423-5"><a href="two-or-more-categorical-x-factorial-designs.html#cb423-5"></a>          <span class="dt">data=</span>urchin[<span class="op">!</span><span class="kw">is.na</span>(Resp),],</span>
+<span id="cb423-6"><a href="two-or-more-categorical-x-factorial-designs.html#cb423-6"></a>          <span class="dt">add=</span><span class="kw">c</span>(<span class="st">&quot;mean_ci&quot;</span>, <span class="st">&quot;jitter&quot;</span>),</span>
+<span id="cb423-7"><a href="two-or-more-categorical-x-factorial-designs.html#cb423-7"></a>          <span class="dt">fill=</span>(<span class="kw">pal_jco</span>(<span class="st">&quot;default&quot;</span>)(<span class="dv">4</span>))[<span class="dv">1</span>]) <span class="op">+</span></span>
+<span id="cb423-8"><a href="two-or-more-categorical-x-factorial-designs.html#cb423-8"></a><span class="st">  </span><span class="kw">xlab</span>(<span class="st">&quot;Treatment&quot;</span>) <span class="op">+</span></span>
+<span id="cb423-9"><a href="two-or-more-categorical-x-factorial-designs.html#cb423-9"></a><span class="st">  </span><span class="ot">NULL</span></span></code></pre></div>
+<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/unnamed-chunk-249-1.png" width="576" /></p>
 </div>
 <div id="plots-that-communicate-the-factorial-design" class="section level4">
 <h4><span class="header-section-number">15.3.7.2</span> Plots that communicate the factorial design</h4>
-<div class="sourceCode" id="cb423"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb423-1"><a href="two-or-more-categorical-x-factorial-designs.html#cb423-1"></a><span class="co"># bar-plot with 2nd factor different color</span></span>
-<span id="cb423-2"><a href="two-or-more-categorical-x-factorial-designs.html#cb423-2"></a>pd &lt;-<span class="st"> </span><span class="kw">position_dodge</span>(<span class="fl">0.7</span>)</span>
-<span id="cb423-3"><a href="two-or-more-categorical-x-factorial-designs.html#cb423-3"></a>gg1 &lt;-<span class="st"> </span><span class="kw">ggbarplot</span>(<span class="dt">x=</span><span class="st">&quot;Temp&quot;</span>,</span>
-<span id="cb423-4"><a href="two-or-more-categorical-x-factorial-designs.html#cb423-4"></a>          <span class="dt">y=</span><span class="st">&quot;Resp&quot;</span>,</span>
-<span id="cb423-5"><a href="two-or-more-categorical-x-factorial-designs.html#cb423-5"></a>          <span class="dt">fill=</span><span class="st">&quot;CO2&quot;</span>,</span>
-<span id="cb423-6"><a href="two-or-more-categorical-x-factorial-designs.html#cb423-6"></a>          <span class="dt">data=</span>urchin[<span class="op">!</span><span class="kw">is.na</span>(Resp),],</span>
-<span id="cb423-7"><a href="two-or-more-categorical-x-factorial-designs.html#cb423-7"></a>          <span class="dt">add=</span><span class="kw">c</span>(<span class="st">&quot;mean_ci&quot;</span>),</span>
-<span id="cb423-8"><a href="two-or-more-categorical-x-factorial-designs.html#cb423-8"></a>          <span class="dt">position=</span>pd) <span class="op">+</span></span>
-<span id="cb423-9"><a href="two-or-more-categorical-x-factorial-designs.html#cb423-9"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">fill=</span>CO2), </span>
-<span id="cb423-10"><a href="two-or-more-categorical-x-factorial-designs.html#cb423-10"></a>             <span class="dt">color=</span><span class="st">&quot;black&quot;</span>, </span>
-<span id="cb423-11"><a href="two-or-more-categorical-x-factorial-designs.html#cb423-11"></a>             <span class="dt">position=</span><span class="kw">position_jitterdodge</span>(<span class="dt">jitter.width=</span><span class="fl">0.2</span>), </span>
-<span id="cb423-12"><a href="two-or-more-categorical-x-factorial-designs.html#cb423-12"></a>             <span class="dt">show.legend=</span><span class="ot">FALSE</span>, </span>
-<span id="cb423-13"><a href="two-or-more-categorical-x-factorial-designs.html#cb423-13"></a>             <span class="dt">alpha=</span><span class="fl">0.5</span>) <span class="op">+</span></span>
-<span id="cb423-14"><a href="two-or-more-categorical-x-factorial-designs.html#cb423-14"></a><span class="st">  </span><span class="kw">scale_fill_jco</span>() <span class="op">+</span></span>
-<span id="cb423-15"><a href="two-or-more-categorical-x-factorial-designs.html#cb423-15"></a><span class="st">  </span><span class="ot">NULL</span></span>
-<span id="cb423-16"><a href="two-or-more-categorical-x-factorial-designs.html#cb423-16"></a></span>
-<span id="cb423-17"><a href="two-or-more-categorical-x-factorial-designs.html#cb423-17"></a><span class="co"># &quot;interaction&quot; plot</span></span>
-<span id="cb423-18"><a href="two-or-more-categorical-x-factorial-designs.html#cb423-18"></a>m1.emm.dt &lt;-<span class="st"> </span><span class="kw">data.table</span>(<span class="kw">summary</span>(m1.emm))</span>
-<span id="cb423-19"><a href="two-or-more-categorical-x-factorial-designs.html#cb423-19"></a>pd =<span class="st"> </span><span class="kw">position_dodge</span>(<span class="fl">0.7</span>)</span>
-<span id="cb423-20"><a href="two-or-more-categorical-x-factorial-designs.html#cb423-20"></a>gg2 &lt;-<span class="st"> </span><span class="kw">ggplot</span>(<span class="dt">data=</span>m1.emm.dt, </span>
-<span id="cb423-21"><a href="two-or-more-categorical-x-factorial-designs.html#cb423-21"></a>                      <span class="kw">aes</span>(<span class="dt">x=</span>Temp, </span>
-<span id="cb423-22"><a href="two-or-more-categorical-x-factorial-designs.html#cb423-22"></a>                          <span class="dt">y=</span>emmean, </span>
-<span id="cb423-23"><a href="two-or-more-categorical-x-factorial-designs.html#cb423-23"></a>                          <span class="dt">shape=</span>CO2, </span>
-<span id="cb423-24"><a href="two-or-more-categorical-x-factorial-designs.html#cb423-24"></a>                          <span class="dt">color=</span>CO2, </span>
-<span id="cb423-25"><a href="two-or-more-categorical-x-factorial-designs.html#cb423-25"></a>                          <span class="dt">group=</span>CO2)) <span class="op">+</span></span>
-<span id="cb423-26"><a href="two-or-more-categorical-x-factorial-designs.html#cb423-26"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">position=</span>pd, <span class="dt">size=</span><span class="dv">3</span>) <span class="op">+</span></span>
-<span id="cb423-27"><a href="two-or-more-categorical-x-factorial-designs.html#cb423-27"></a><span class="st">  </span><span class="kw">geom_errorbar</span>(<span class="kw">aes</span>(<span class="dt">x=</span>Temp, </span>
-<span id="cb423-28"><a href="two-or-more-categorical-x-factorial-designs.html#cb423-28"></a>                                 <span class="dt">ymin=</span>lower.CL, </span>
-<span id="cb423-29"><a href="two-or-more-categorical-x-factorial-designs.html#cb423-29"></a>                                 <span class="dt">ymax=</span>upper.CL,</span>
-<span id="cb423-30"><a href="two-or-more-categorical-x-factorial-designs.html#cb423-30"></a>                                 <span class="dt">group=</span>CO2)</span>
-<span id="cb423-31"><a href="two-or-more-categorical-x-factorial-designs.html#cb423-31"></a>                , <span class="dt">position=</span>pd, <span class="dt">width=</span><span class="fl">0.1</span>) <span class="op">+</span></span>
-<span id="cb423-32"><a href="two-or-more-categorical-x-factorial-designs.html#cb423-32"></a><span class="st">  </span><span class="kw">geom_line</span>(<span class="dt">position=</span>pd) <span class="op">+</span></span>
-<span id="cb423-33"><a href="two-or-more-categorical-x-factorial-designs.html#cb423-33"></a><span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;Resp&quot;</span>) <span class="op">+</span></span>
-<span id="cb423-34"><a href="two-or-more-categorical-x-factorial-designs.html#cb423-34"></a><span class="st">  </span><span class="kw">scale_color_jco</span>() <span class="op">+</span></span>
-<span id="cb423-35"><a href="two-or-more-categorical-x-factorial-designs.html#cb423-35"></a><span class="st">  </span><span class="kw">theme_pubr</span>() <span class="op">+</span></span>
-<span id="cb423-36"><a href="two-or-more-categorical-x-factorial-designs.html#cb423-36"></a><span class="st">  </span><span class="co">#theme(legend.position=&quot;bottom&quot;) +</span></span>
-<span id="cb423-37"><a href="two-or-more-categorical-x-factorial-designs.html#cb423-37"></a><span class="st">  </span><span class="ot">NULL</span></span>
-<span id="cb423-38"><a href="two-or-more-categorical-x-factorial-designs.html#cb423-38"></a></span>
-<span id="cb423-39"><a href="two-or-more-categorical-x-factorial-designs.html#cb423-39"></a><span class="co"># interaction &quot;jitter&quot; plot</span></span>
-<span id="cb423-40"><a href="two-or-more-categorical-x-factorial-designs.html#cb423-40"></a>gg3 &lt;-<span class="st"> </span>gg2 <span class="op">+</span></span>
-<span id="cb423-41"><a href="two-or-more-categorical-x-factorial-designs.html#cb423-41"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">data=</span>urchin[<span class="op">!</span><span class="kw">is.na</span>(Resp),], <span class="kw">aes</span>(<span class="dt">x=</span>Temp, <span class="dt">y=</span>Resp, <span class="dt">fill=</span>CO2),</span>
-<span id="cb423-42"><a href="two-or-more-categorical-x-factorial-designs.html#cb423-42"></a>             <span class="dt">position=</span><span class="kw">position_jitterdodge</span>(<span class="dt">jitter.width=</span><span class="fl">0.2</span>)) <span class="op">+</span></span>
-<span id="cb423-43"><a href="two-or-more-categorical-x-factorial-designs.html#cb423-43"></a><span class="co">#             position=position_jitter(width=0.2)) +</span></span>
-<span id="cb423-44"><a href="two-or-more-categorical-x-factorial-designs.html#cb423-44"></a><span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position=</span><span class="st">&quot;bottom&quot;</span>) <span class="op">+</span></span>
-<span id="cb423-45"><a href="two-or-more-categorical-x-factorial-designs.html#cb423-45"></a><span class="st">  </span><span class="ot">NULL</span></span>
-<span id="cb423-46"><a href="two-or-more-categorical-x-factorial-designs.html#cb423-46"></a>gg_response &lt;-<span class="st"> </span>gg3 <span class="co"># used below</span></span>
-<span id="cb423-47"><a href="two-or-more-categorical-x-factorial-designs.html#cb423-47"></a></span>
-<span id="cb423-48"><a href="two-or-more-categorical-x-factorial-designs.html#cb423-48"></a><span class="co"># box &quot;interaction&quot; plot</span></span>
-<span id="cb423-49"><a href="two-or-more-categorical-x-factorial-designs.html#cb423-49"></a>m1.emm.dt &lt;-<span class="st"> </span><span class="kw">data.table</span>(<span class="kw">summary</span>(m1.emm))</span>
-<span id="cb423-50"><a href="two-or-more-categorical-x-factorial-designs.html#cb423-50"></a>pd &lt;-<span class="st"> </span><span class="kw">position_dodge</span>(<span class="fl">0.8</span>)</span>
-<span id="cb423-51"><a href="two-or-more-categorical-x-factorial-designs.html#cb423-51"></a>gg4 &lt;-<span class="st"> </span><span class="kw">ggboxplot</span>(<span class="dt">x=</span><span class="st">&quot;Temp&quot;</span>,</span>
-<span id="cb423-52"><a href="two-or-more-categorical-x-factorial-designs.html#cb423-52"></a>          <span class="dt">y=</span><span class="st">&quot;Resp&quot;</span>,</span>
-<span id="cb423-53"><a href="two-or-more-categorical-x-factorial-designs.html#cb423-53"></a>          <span class="dt">data=</span>urchin[<span class="op">!</span><span class="kw">is.na</span>(Resp),],</span>
-<span id="cb423-54"><a href="two-or-more-categorical-x-factorial-designs.html#cb423-54"></a>          <span class="dt">fill=</span><span class="st">&quot;CO2&quot;</span>) <span class="op">+</span></span>
-<span id="cb423-55"><a href="two-or-more-categorical-x-factorial-designs.html#cb423-55"></a><span class="st">  </span><span class="kw">scale_fill_jco</span>() <span class="op">+</span></span>
-<span id="cb423-56"><a href="two-or-more-categorical-x-factorial-designs.html#cb423-56"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">data=</span>m1.emm.dt, </span>
-<span id="cb423-57"><a href="two-or-more-categorical-x-factorial-designs.html#cb423-57"></a>             <span class="kw">aes</span>(<span class="dt">x=</span>Temp, <span class="dt">y=</span>emmean, <span class="dt">group=</span>CO2),</span>
-<span id="cb423-58"><a href="two-or-more-categorical-x-factorial-designs.html#cb423-58"></a>             <span class="dt">color=</span><span class="st">&quot;red&quot;</span>,</span>
-<span id="cb423-59"><a href="two-or-more-categorical-x-factorial-designs.html#cb423-59"></a>             <span class="dt">position=</span>pd) <span class="op">+</span></span>
-<span id="cb423-60"><a href="two-or-more-categorical-x-factorial-designs.html#cb423-60"></a><span class="st">  </span><span class="kw">geom_line</span>(<span class="dt">data=</span>m1.emm.dt, </span>
-<span id="cb423-61"><a href="two-or-more-categorical-x-factorial-designs.html#cb423-61"></a>            <span class="kw">aes</span>(<span class="dt">x=</span>Temp, <span class="dt">y=</span>emmean, <span class="dt">group=</span>CO2),</span>
-<span id="cb423-62"><a href="two-or-more-categorical-x-factorial-designs.html#cb423-62"></a>            <span class="dt">position=</span>pd) <span class="op">+</span></span>
-<span id="cb423-63"><a href="two-or-more-categorical-x-factorial-designs.html#cb423-63"></a><span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position=</span><span class="st">&quot;bottom&quot;</span>) <span class="op">+</span></span>
-<span id="cb423-64"><a href="two-or-more-categorical-x-factorial-designs.html#cb423-64"></a><span class="st">  </span><span class="ot">NULL</span></span>
-<span id="cb423-65"><a href="two-or-more-categorical-x-factorial-designs.html#cb423-65"></a></span>
-<span id="cb423-66"><a href="two-or-more-categorical-x-factorial-designs.html#cb423-66"></a><span class="kw">plot_grid</span>(gg1, gg2, gg3, gg4, <span class="dt">nrow=</span><span class="dv">2</span>, <span class="dt">labels=</span><span class="st">&quot;AUTO&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb424"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb424-1"><a href="two-or-more-categorical-x-factorial-designs.html#cb424-1"></a><span class="co"># bar-plot with 2nd factor different color</span></span>
+<span id="cb424-2"><a href="two-or-more-categorical-x-factorial-designs.html#cb424-2"></a>pd &lt;-<span class="st"> </span><span class="kw">position_dodge</span>(<span class="fl">0.7</span>)</span>
+<span id="cb424-3"><a href="two-or-more-categorical-x-factorial-designs.html#cb424-3"></a>gg1 &lt;-<span class="st"> </span><span class="kw">ggbarplot</span>(<span class="dt">x=</span><span class="st">&quot;Temp&quot;</span>,</span>
+<span id="cb424-4"><a href="two-or-more-categorical-x-factorial-designs.html#cb424-4"></a>          <span class="dt">y=</span><span class="st">&quot;Resp&quot;</span>,</span>
+<span id="cb424-5"><a href="two-or-more-categorical-x-factorial-designs.html#cb424-5"></a>          <span class="dt">fill=</span><span class="st">&quot;CO2&quot;</span>,</span>
+<span id="cb424-6"><a href="two-or-more-categorical-x-factorial-designs.html#cb424-6"></a>          <span class="dt">data=</span>urchin[<span class="op">!</span><span class="kw">is.na</span>(Resp),],</span>
+<span id="cb424-7"><a href="two-or-more-categorical-x-factorial-designs.html#cb424-7"></a>          <span class="dt">add=</span><span class="kw">c</span>(<span class="st">&quot;mean_ci&quot;</span>),</span>
+<span id="cb424-8"><a href="two-or-more-categorical-x-factorial-designs.html#cb424-8"></a>          <span class="dt">position=</span>pd) <span class="op">+</span></span>
+<span id="cb424-9"><a href="two-or-more-categorical-x-factorial-designs.html#cb424-9"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">fill=</span>CO2), </span>
+<span id="cb424-10"><a href="two-or-more-categorical-x-factorial-designs.html#cb424-10"></a>             <span class="dt">color=</span><span class="st">&quot;black&quot;</span>, </span>
+<span id="cb424-11"><a href="two-or-more-categorical-x-factorial-designs.html#cb424-11"></a>             <span class="dt">position=</span><span class="kw">position_jitterdodge</span>(<span class="dt">jitter.width=</span><span class="fl">0.2</span>), </span>
+<span id="cb424-12"><a href="two-or-more-categorical-x-factorial-designs.html#cb424-12"></a>             <span class="dt">show.legend=</span><span class="ot">FALSE</span>, </span>
+<span id="cb424-13"><a href="two-or-more-categorical-x-factorial-designs.html#cb424-13"></a>             <span class="dt">alpha=</span><span class="fl">0.5</span>) <span class="op">+</span></span>
+<span id="cb424-14"><a href="two-or-more-categorical-x-factorial-designs.html#cb424-14"></a><span class="st">  </span><span class="kw">scale_fill_jco</span>() <span class="op">+</span></span>
+<span id="cb424-15"><a href="two-or-more-categorical-x-factorial-designs.html#cb424-15"></a><span class="st">  </span><span class="ot">NULL</span></span>
+<span id="cb424-16"><a href="two-or-more-categorical-x-factorial-designs.html#cb424-16"></a></span>
+<span id="cb424-17"><a href="two-or-more-categorical-x-factorial-designs.html#cb424-17"></a><span class="co"># &quot;interaction&quot; plot</span></span>
+<span id="cb424-18"><a href="two-or-more-categorical-x-factorial-designs.html#cb424-18"></a>m1.emm.dt &lt;-<span class="st"> </span><span class="kw">data.table</span>(<span class="kw">summary</span>(m1.emm))</span>
+<span id="cb424-19"><a href="two-or-more-categorical-x-factorial-designs.html#cb424-19"></a>pd =<span class="st"> </span><span class="kw">position_dodge</span>(<span class="fl">0.7</span>)</span>
+<span id="cb424-20"><a href="two-or-more-categorical-x-factorial-designs.html#cb424-20"></a>gg2 &lt;-<span class="st"> </span><span class="kw">ggplot</span>(<span class="dt">data=</span>m1.emm.dt, </span>
+<span id="cb424-21"><a href="two-or-more-categorical-x-factorial-designs.html#cb424-21"></a>                      <span class="kw">aes</span>(<span class="dt">x=</span>Temp, </span>
+<span id="cb424-22"><a href="two-or-more-categorical-x-factorial-designs.html#cb424-22"></a>                          <span class="dt">y=</span>emmean, </span>
+<span id="cb424-23"><a href="two-or-more-categorical-x-factorial-designs.html#cb424-23"></a>                          <span class="dt">shape=</span>CO2, </span>
+<span id="cb424-24"><a href="two-or-more-categorical-x-factorial-designs.html#cb424-24"></a>                          <span class="dt">color=</span>CO2, </span>
+<span id="cb424-25"><a href="two-or-more-categorical-x-factorial-designs.html#cb424-25"></a>                          <span class="dt">group=</span>CO2)) <span class="op">+</span></span>
+<span id="cb424-26"><a href="two-or-more-categorical-x-factorial-designs.html#cb424-26"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">position=</span>pd, <span class="dt">size=</span><span class="dv">3</span>) <span class="op">+</span></span>
+<span id="cb424-27"><a href="two-or-more-categorical-x-factorial-designs.html#cb424-27"></a><span class="st">  </span><span class="kw">geom_errorbar</span>(<span class="kw">aes</span>(<span class="dt">x=</span>Temp, </span>
+<span id="cb424-28"><a href="two-or-more-categorical-x-factorial-designs.html#cb424-28"></a>                                 <span class="dt">ymin=</span>lower.CL, </span>
+<span id="cb424-29"><a href="two-or-more-categorical-x-factorial-designs.html#cb424-29"></a>                                 <span class="dt">ymax=</span>upper.CL,</span>
+<span id="cb424-30"><a href="two-or-more-categorical-x-factorial-designs.html#cb424-30"></a>                                 <span class="dt">group=</span>CO2)</span>
+<span id="cb424-31"><a href="two-or-more-categorical-x-factorial-designs.html#cb424-31"></a>                , <span class="dt">position=</span>pd, <span class="dt">width=</span><span class="fl">0.1</span>) <span class="op">+</span></span>
+<span id="cb424-32"><a href="two-or-more-categorical-x-factorial-designs.html#cb424-32"></a><span class="st">  </span><span class="kw">geom_line</span>(<span class="dt">position=</span>pd) <span class="op">+</span></span>
+<span id="cb424-33"><a href="two-or-more-categorical-x-factorial-designs.html#cb424-33"></a><span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;Resp&quot;</span>) <span class="op">+</span></span>
+<span id="cb424-34"><a href="two-or-more-categorical-x-factorial-designs.html#cb424-34"></a><span class="st">  </span><span class="kw">scale_color_jco</span>() <span class="op">+</span></span>
+<span id="cb424-35"><a href="two-or-more-categorical-x-factorial-designs.html#cb424-35"></a><span class="st">  </span><span class="kw">theme_pubr</span>() <span class="op">+</span></span>
+<span id="cb424-36"><a href="two-or-more-categorical-x-factorial-designs.html#cb424-36"></a><span class="st">  </span><span class="co">#theme(legend.position=&quot;bottom&quot;) +</span></span>
+<span id="cb424-37"><a href="two-or-more-categorical-x-factorial-designs.html#cb424-37"></a><span class="st">  </span><span class="ot">NULL</span></span>
+<span id="cb424-38"><a href="two-or-more-categorical-x-factorial-designs.html#cb424-38"></a></span>
+<span id="cb424-39"><a href="two-or-more-categorical-x-factorial-designs.html#cb424-39"></a><span class="co"># interaction &quot;jitter&quot; plot</span></span>
+<span id="cb424-40"><a href="two-or-more-categorical-x-factorial-designs.html#cb424-40"></a>gg3 &lt;-<span class="st"> </span>gg2 <span class="op">+</span></span>
+<span id="cb424-41"><a href="two-or-more-categorical-x-factorial-designs.html#cb424-41"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">data=</span>urchin[<span class="op">!</span><span class="kw">is.na</span>(Resp),], <span class="kw">aes</span>(<span class="dt">x=</span>Temp, <span class="dt">y=</span>Resp, <span class="dt">fill=</span>CO2),</span>
+<span id="cb424-42"><a href="two-or-more-categorical-x-factorial-designs.html#cb424-42"></a>             <span class="dt">position=</span><span class="kw">position_jitterdodge</span>(<span class="dt">jitter.width=</span><span class="fl">0.2</span>)) <span class="op">+</span></span>
+<span id="cb424-43"><a href="two-or-more-categorical-x-factorial-designs.html#cb424-43"></a><span class="co">#             position=position_jitter(width=0.2)) +</span></span>
+<span id="cb424-44"><a href="two-or-more-categorical-x-factorial-designs.html#cb424-44"></a><span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position=</span><span class="st">&quot;bottom&quot;</span>) <span class="op">+</span></span>
+<span id="cb424-45"><a href="two-or-more-categorical-x-factorial-designs.html#cb424-45"></a><span class="st">  </span><span class="ot">NULL</span></span>
+<span id="cb424-46"><a href="two-or-more-categorical-x-factorial-designs.html#cb424-46"></a>gg_response &lt;-<span class="st"> </span>gg3 <span class="co"># used below</span></span>
+<span id="cb424-47"><a href="two-or-more-categorical-x-factorial-designs.html#cb424-47"></a></span>
+<span id="cb424-48"><a href="two-or-more-categorical-x-factorial-designs.html#cb424-48"></a><span class="co"># box &quot;interaction&quot; plot</span></span>
+<span id="cb424-49"><a href="two-or-more-categorical-x-factorial-designs.html#cb424-49"></a>m1.emm.dt &lt;-<span class="st"> </span><span class="kw">data.table</span>(<span class="kw">summary</span>(m1.emm))</span>
+<span id="cb424-50"><a href="two-or-more-categorical-x-factorial-designs.html#cb424-50"></a>pd &lt;-<span class="st"> </span><span class="kw">position_dodge</span>(<span class="fl">0.8</span>)</span>
+<span id="cb424-51"><a href="two-or-more-categorical-x-factorial-designs.html#cb424-51"></a>gg4 &lt;-<span class="st"> </span><span class="kw">ggboxplot</span>(<span class="dt">x=</span><span class="st">&quot;Temp&quot;</span>,</span>
+<span id="cb424-52"><a href="two-or-more-categorical-x-factorial-designs.html#cb424-52"></a>          <span class="dt">y=</span><span class="st">&quot;Resp&quot;</span>,</span>
+<span id="cb424-53"><a href="two-or-more-categorical-x-factorial-designs.html#cb424-53"></a>          <span class="dt">data=</span>urchin[<span class="op">!</span><span class="kw">is.na</span>(Resp),],</span>
+<span id="cb424-54"><a href="two-or-more-categorical-x-factorial-designs.html#cb424-54"></a>          <span class="dt">fill=</span><span class="st">&quot;CO2&quot;</span>) <span class="op">+</span></span>
+<span id="cb424-55"><a href="two-or-more-categorical-x-factorial-designs.html#cb424-55"></a><span class="st">  </span><span class="kw">scale_fill_jco</span>() <span class="op">+</span></span>
+<span id="cb424-56"><a href="two-or-more-categorical-x-factorial-designs.html#cb424-56"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">data=</span>m1.emm.dt, </span>
+<span id="cb424-57"><a href="two-or-more-categorical-x-factorial-designs.html#cb424-57"></a>             <span class="kw">aes</span>(<span class="dt">x=</span>Temp, <span class="dt">y=</span>emmean, <span class="dt">group=</span>CO2),</span>
+<span id="cb424-58"><a href="two-or-more-categorical-x-factorial-designs.html#cb424-58"></a>             <span class="dt">color=</span><span class="st">&quot;red&quot;</span>,</span>
+<span id="cb424-59"><a href="two-or-more-categorical-x-factorial-designs.html#cb424-59"></a>             <span class="dt">position=</span>pd) <span class="op">+</span></span>
+<span id="cb424-60"><a href="two-or-more-categorical-x-factorial-designs.html#cb424-60"></a><span class="st">  </span><span class="kw">geom_line</span>(<span class="dt">data=</span>m1.emm.dt, </span>
+<span id="cb424-61"><a href="two-or-more-categorical-x-factorial-designs.html#cb424-61"></a>            <span class="kw">aes</span>(<span class="dt">x=</span>Temp, <span class="dt">y=</span>emmean, <span class="dt">group=</span>CO2),</span>
+<span id="cb424-62"><a href="two-or-more-categorical-x-factorial-designs.html#cb424-62"></a>            <span class="dt">position=</span>pd) <span class="op">+</span></span>
+<span id="cb424-63"><a href="two-or-more-categorical-x-factorial-designs.html#cb424-63"></a><span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position=</span><span class="st">&quot;bottom&quot;</span>) <span class="op">+</span></span>
+<span id="cb424-64"><a href="two-or-more-categorical-x-factorial-designs.html#cb424-64"></a><span class="st">  </span><span class="ot">NULL</span></span>
+<span id="cb424-65"><a href="two-or-more-categorical-x-factorial-designs.html#cb424-65"></a></span>
+<span id="cb424-66"><a href="two-or-more-categorical-x-factorial-designs.html#cb424-66"></a><span class="kw">plot_grid</span>(gg1, gg2, gg3, gg4, <span class="dt">nrow=</span><span class="dv">2</span>, <span class="dt">labels=</span><span class="st">&quot;AUTO&quot;</span>)</span></code></pre></div>
 <div class="figure"><span id="fig:factorial-interaction-plots"></span>
 <img src="Walker-elementary-statistical-modeling-draft_files/figure-html/factorial-interaction-plots-1.png" alt="Interaction plots. (B) is the classic interaction plot, which is characterized by lines connecting the groups that share the same Factor B level. This line allows one to visual the effect of Factor A (the slope) at each level of Factor B." width="576" />
 <p class="caption">
@@ -2034,55 +2034,55 @@ Figure 15.2: Interaction plots. (B) is the classic interaction plot, which is ch
 </div>
 <div id="effects-plots" class="section level4">
 <h4><span class="header-section-number">15.3.7.3</span> Effects plots</h4>
-<div class="sourceCode" id="cb424"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb424-1"><a href="two-or-more-categorical-x-factorial-designs.html#cb424-1"></a><span class="co"># need m1.emm and m1.effects from above</span></span>
-<span id="cb424-2"><a href="two-or-more-categorical-x-factorial-designs.html#cb424-2"></a><span class="co"># convert to data.table</span></span>
-<span id="cb424-3"><a href="two-or-more-categorical-x-factorial-designs.html#cb424-3"></a>m1.coefs &lt;-<span class="st"> </span><span class="kw">coef</span>(<span class="kw">summary</span>(m1))</span>
-<span id="cb424-4"><a href="two-or-more-categorical-x-factorial-designs.html#cb424-4"></a>m1.ci &lt;-<span class="st"> </span><span class="kw">confint</span>(m1)</span>
-<span id="cb424-5"><a href="two-or-more-categorical-x-factorial-designs.html#cb424-5"></a>m1.coefs.dt &lt;-<span class="st"> </span><span class="kw">data.table</span>(<span class="dt">Term=</span><span class="kw">row.names</span>(m1.coefs), m1.coefs, m1.ci)</span>
-<span id="cb424-6"><a href="two-or-more-categorical-x-factorial-designs.html#cb424-6"></a><span class="co"># convert labels to match those of m1.effects</span></span>
-<span id="cb424-7"><a href="two-or-more-categorical-x-factorial-designs.html#cb424-7"></a><span class="kw">setnames</span>(m1.coefs.dt, </span>
-<span id="cb424-8"><a href="two-or-more-categorical-x-factorial-designs.html#cb424-8"></a>         <span class="dt">old=</span><span class="kw">c</span>(<span class="st">&quot;Estimate&quot;</span>, <span class="st">&quot;Std. Error&quot;</span>, <span class="st">&quot;Pr(&gt;|t|)&quot;</span>, <span class="st">&quot;2.5 %&quot;</span>, <span class="st">&quot;97.5 %&quot;</span>),</span>
-<span id="cb424-9"><a href="two-or-more-categorical-x-factorial-designs.html#cb424-9"></a>         <span class="dt">new=</span><span class="kw">c</span>(<span class="st">&quot;estimate&quot;</span>, <span class="st">&quot;SE&quot;</span>, <span class="st">&quot;p.value&quot;</span>, <span class="st">&quot;lower.CL&quot;</span>, <span class="st">&quot;upper.CL&quot;</span>))</span>
-<span id="cb424-10"><a href="two-or-more-categorical-x-factorial-designs.html#cb424-10"></a>m1.contrasts.dt &lt;-<span class="st"> </span><span class="kw">data.table</span>(m1.effects)</span>
-<span id="cb424-11"><a href="two-or-more-categorical-x-factorial-designs.html#cb424-11"></a><span class="co"># create a label for each contrast</span></span>
-<span id="cb424-12"><a href="two-or-more-categorical-x-factorial-designs.html#cb424-12"></a>m1.contrasts.dt[, Term<span class="op">:</span><span class="er">=</span><span class="kw">ifelse</span>(CO2<span class="op">!=</span><span class="st">&quot;.&quot;</span>, </span>
-<span id="cb424-13"><a href="two-or-more-categorical-x-factorial-designs.html#cb424-13"></a>                              <span class="kw">paste0</span>(CO2, <span class="st">&quot;:&quot;</span>, contrast), </span>
-<span id="cb424-14"><a href="two-or-more-categorical-x-factorial-designs.html#cb424-14"></a>                              <span class="kw">paste0</span>(Temp, <span class="st">&quot;:&quot;</span>, contrast))]</span>
-<span id="cb424-15"><a href="two-or-more-categorical-x-factorial-designs.html#cb424-15"></a>m1.effects.dt &lt;-<span class="st"> </span><span class="kw">rbind</span>(m1.coefs.dt[<span class="dv">4</span>,], m1.contrasts.dt, <span class="dt">fill=</span><span class="ot">TRUE</span>)</span>
-<span id="cb424-16"><a href="two-or-more-categorical-x-factorial-designs.html#cb424-16"></a></span>
-<span id="cb424-17"><a href="two-or-more-categorical-x-factorial-designs.html#cb424-17"></a><span class="co"># effects plot</span></span>
-<span id="cb424-18"><a href="two-or-more-categorical-x-factorial-designs.html#cb424-18"></a><span class="co"># get p-values</span></span>
-<span id="cb424-19"><a href="two-or-more-categorical-x-factorial-designs.html#cb424-19"></a>pval &lt;-<span class="st"> </span><span class="kw">as.character</span>(<span class="kw">round</span>(m1.effects.dt<span class="op">$</span>p.value, <span class="dv">3</span>))</span>
-<span id="cb424-20"><a href="two-or-more-categorical-x-factorial-designs.html#cb424-20"></a>pval[<span class="dv">2</span>] &lt;-<span class="st"> &quot;0.0003&quot;</span></span>
-<span id="cb424-21"><a href="two-or-more-categorical-x-factorial-designs.html#cb424-21"></a>gg_effects &lt;-<span class="st"> </span><span class="kw">ggdotplot</span>(<span class="dt">x=</span><span class="st">&quot;Term&quot;</span>, </span>
-<span id="cb424-22"><a href="two-or-more-categorical-x-factorial-designs.html#cb424-22"></a>                 <span class="dt">y=</span><span class="st">&quot;estimate&quot;</span>, </span>
-<span id="cb424-23"><a href="two-or-more-categorical-x-factorial-designs.html#cb424-23"></a>                 <span class="dt">data=</span>m1.effects.dt, </span>
-<span id="cb424-24"><a href="two-or-more-categorical-x-factorial-designs.html#cb424-24"></a>                 <span class="dt">color =</span> (<span class="kw">pal_jco</span>(<span class="st">&quot;default&quot;</span>)(<span class="dv">4</span>))[<span class="dv">1</span>],</span>
-<span id="cb424-25"><a href="two-or-more-categorical-x-factorial-designs.html#cb424-25"></a>                 <span class="dt">fill =</span> (<span class="kw">pal_jco</span>(<span class="st">&quot;default&quot;</span>)(<span class="dv">4</span>))[<span class="dv">1</span>],</span>
-<span id="cb424-26"><a href="two-or-more-categorical-x-factorial-designs.html#cb424-26"></a>                 <span class="dt">size=</span><span class="fl">0.5</span>) <span class="op">+</span></span>
-<span id="cb424-27"><a href="two-or-more-categorical-x-factorial-designs.html#cb424-27"></a><span class="st">  </span><span class="kw">geom_errorbar</span>(<span class="kw">aes</span>(<span class="dt">x=</span>Term, <span class="dt">ymin=</span>lower.CL, <span class="dt">ymax=</span>upper.CL),</span>
-<span id="cb424-28"><a href="two-or-more-categorical-x-factorial-designs.html#cb424-28"></a>                <span class="dt">width=</span><span class="fl">0.15</span>, <span class="dt">color=</span>(<span class="kw">pal_jco</span>(<span class="st">&quot;default&quot;</span>)(<span class="dv">4</span>))[<span class="dv">1</span>]) <span class="op">+</span></span>
-<span id="cb424-29"><a href="two-or-more-categorical-x-factorial-designs.html#cb424-29"></a><span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;Contrast&quot;</span>) <span class="op">+</span></span>
-<span id="cb424-30"><a href="two-or-more-categorical-x-factorial-designs.html#cb424-30"></a><span class="st">  </span><span class="kw">geom_hline</span>(<span class="dt">yintercept=</span><span class="dv">0</span>, <span class="dt">linetype =</span> <span class="dv">2</span>) <span class="op">+</span></span>
-<span id="cb424-31"><a href="two-or-more-categorical-x-factorial-designs.html#cb424-31"></a><span class="st">  </span><span class="kw">annotate</span>(<span class="st">&quot;text&quot;</span>, <span class="dt">x =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">5</span>, <span class="dt">y =</span> <span class="kw">rep</span>(<span class="fl">7.75</span>, <span class="dv">5</span>), <span class="dt">label =</span> pval) <span class="op">+</span></span>
-<span id="cb424-32"><a href="two-or-more-categorical-x-factorial-designs.html#cb424-32"></a><span class="st">  </span><span class="kw">annotate</span>(<span class="st">&quot;text&quot;</span>, <span class="dt">x=</span><span class="fl">5.4</span>, <span class="dt">y=</span><span class="fl">7.75</span>, <span class="dt">label=</span><span class="st">&quot;p-value&quot;</span>) <span class="op">+</span></span>
-<span id="cb424-33"><a href="two-or-more-categorical-x-factorial-designs.html#cb424-33"></a><span class="st">  </span><span class="kw">expand_limits</span>(<span class="dt">y =</span> <span class="fl">8.3</span>) <span class="op">+</span></span>
-<span id="cb424-34"><a href="two-or-more-categorical-x-factorial-designs.html#cb424-34"></a><span class="st">  </span><span class="kw">xlab</span>(<span class="st">&quot;Contrast&quot;</span>) <span class="op">+</span></span>
-<span id="cb424-35"><a href="two-or-more-categorical-x-factorial-designs.html#cb424-35"></a><span class="st">  </span><span class="kw">coord_flip</span>() <span class="op">+</span><span class="st"> </span></span>
-<span id="cb424-36"><a href="two-or-more-categorical-x-factorial-designs.html#cb424-36"></a><span class="st">  </span><span class="ot">NULL</span></span>
-<span id="cb424-37"><a href="two-or-more-categorical-x-factorial-designs.html#cb424-37"></a></span>
-<span id="cb424-38"><a href="two-or-more-categorical-x-factorial-designs.html#cb424-38"></a>gg_effects</span></code></pre></div>
-<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/unnamed-chunk-251-1.png" width="576" /></p>
+<div class="sourceCode" id="cb425"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb425-1"><a href="two-or-more-categorical-x-factorial-designs.html#cb425-1"></a><span class="co"># need m1.emm and m1.effects from above</span></span>
+<span id="cb425-2"><a href="two-or-more-categorical-x-factorial-designs.html#cb425-2"></a><span class="co"># convert to data.table</span></span>
+<span id="cb425-3"><a href="two-or-more-categorical-x-factorial-designs.html#cb425-3"></a>m1.coefs &lt;-<span class="st"> </span><span class="kw">coef</span>(<span class="kw">summary</span>(m1))</span>
+<span id="cb425-4"><a href="two-or-more-categorical-x-factorial-designs.html#cb425-4"></a>m1.ci &lt;-<span class="st"> </span><span class="kw">confint</span>(m1)</span>
+<span id="cb425-5"><a href="two-or-more-categorical-x-factorial-designs.html#cb425-5"></a>m1.coefs.dt &lt;-<span class="st"> </span><span class="kw">data.table</span>(<span class="dt">Term=</span><span class="kw">row.names</span>(m1.coefs), m1.coefs, m1.ci)</span>
+<span id="cb425-6"><a href="two-or-more-categorical-x-factorial-designs.html#cb425-6"></a><span class="co"># convert labels to match those of m1.effects</span></span>
+<span id="cb425-7"><a href="two-or-more-categorical-x-factorial-designs.html#cb425-7"></a><span class="kw">setnames</span>(m1.coefs.dt, </span>
+<span id="cb425-8"><a href="two-or-more-categorical-x-factorial-designs.html#cb425-8"></a>         <span class="dt">old=</span><span class="kw">c</span>(<span class="st">&quot;Estimate&quot;</span>, <span class="st">&quot;Std. Error&quot;</span>, <span class="st">&quot;Pr(&gt;|t|)&quot;</span>, <span class="st">&quot;2.5 %&quot;</span>, <span class="st">&quot;97.5 %&quot;</span>),</span>
+<span id="cb425-9"><a href="two-or-more-categorical-x-factorial-designs.html#cb425-9"></a>         <span class="dt">new=</span><span class="kw">c</span>(<span class="st">&quot;estimate&quot;</span>, <span class="st">&quot;SE&quot;</span>, <span class="st">&quot;p.value&quot;</span>, <span class="st">&quot;lower.CL&quot;</span>, <span class="st">&quot;upper.CL&quot;</span>))</span>
+<span id="cb425-10"><a href="two-or-more-categorical-x-factorial-designs.html#cb425-10"></a>m1.contrasts.dt &lt;-<span class="st"> </span><span class="kw">data.table</span>(m1.effects)</span>
+<span id="cb425-11"><a href="two-or-more-categorical-x-factorial-designs.html#cb425-11"></a><span class="co"># create a label for each contrast</span></span>
+<span id="cb425-12"><a href="two-or-more-categorical-x-factorial-designs.html#cb425-12"></a>m1.contrasts.dt[, Term<span class="op">:</span><span class="er">=</span><span class="kw">ifelse</span>(CO2<span class="op">!=</span><span class="st">&quot;.&quot;</span>, </span>
+<span id="cb425-13"><a href="two-or-more-categorical-x-factorial-designs.html#cb425-13"></a>                              <span class="kw">paste0</span>(CO2, <span class="st">&quot;:&quot;</span>, contrast), </span>
+<span id="cb425-14"><a href="two-or-more-categorical-x-factorial-designs.html#cb425-14"></a>                              <span class="kw">paste0</span>(Temp, <span class="st">&quot;:&quot;</span>, contrast))]</span>
+<span id="cb425-15"><a href="two-or-more-categorical-x-factorial-designs.html#cb425-15"></a>m1.effects.dt &lt;-<span class="st"> </span><span class="kw">rbind</span>(m1.coefs.dt[<span class="dv">4</span>,], m1.contrasts.dt, <span class="dt">fill=</span><span class="ot">TRUE</span>)</span>
+<span id="cb425-16"><a href="two-or-more-categorical-x-factorial-designs.html#cb425-16"></a></span>
+<span id="cb425-17"><a href="two-or-more-categorical-x-factorial-designs.html#cb425-17"></a><span class="co"># effects plot</span></span>
+<span id="cb425-18"><a href="two-or-more-categorical-x-factorial-designs.html#cb425-18"></a><span class="co"># get p-values</span></span>
+<span id="cb425-19"><a href="two-or-more-categorical-x-factorial-designs.html#cb425-19"></a>pval &lt;-<span class="st"> </span><span class="kw">as.character</span>(<span class="kw">round</span>(m1.effects.dt<span class="op">$</span>p.value, <span class="dv">3</span>))</span>
+<span id="cb425-20"><a href="two-or-more-categorical-x-factorial-designs.html#cb425-20"></a>pval[<span class="dv">2</span>] &lt;-<span class="st"> &quot;0.0003&quot;</span></span>
+<span id="cb425-21"><a href="two-or-more-categorical-x-factorial-designs.html#cb425-21"></a>gg_effects &lt;-<span class="st"> </span><span class="kw">ggdotplot</span>(<span class="dt">x=</span><span class="st">&quot;Term&quot;</span>, </span>
+<span id="cb425-22"><a href="two-or-more-categorical-x-factorial-designs.html#cb425-22"></a>                 <span class="dt">y=</span><span class="st">&quot;estimate&quot;</span>, </span>
+<span id="cb425-23"><a href="two-or-more-categorical-x-factorial-designs.html#cb425-23"></a>                 <span class="dt">data=</span>m1.effects.dt, </span>
+<span id="cb425-24"><a href="two-or-more-categorical-x-factorial-designs.html#cb425-24"></a>                 <span class="dt">color =</span> (<span class="kw">pal_jco</span>(<span class="st">&quot;default&quot;</span>)(<span class="dv">4</span>))[<span class="dv">1</span>],</span>
+<span id="cb425-25"><a href="two-or-more-categorical-x-factorial-designs.html#cb425-25"></a>                 <span class="dt">fill =</span> (<span class="kw">pal_jco</span>(<span class="st">&quot;default&quot;</span>)(<span class="dv">4</span>))[<span class="dv">1</span>],</span>
+<span id="cb425-26"><a href="two-or-more-categorical-x-factorial-designs.html#cb425-26"></a>                 <span class="dt">size=</span><span class="fl">0.5</span>) <span class="op">+</span></span>
+<span id="cb425-27"><a href="two-or-more-categorical-x-factorial-designs.html#cb425-27"></a><span class="st">  </span><span class="kw">geom_errorbar</span>(<span class="kw">aes</span>(<span class="dt">x=</span>Term, <span class="dt">ymin=</span>lower.CL, <span class="dt">ymax=</span>upper.CL),</span>
+<span id="cb425-28"><a href="two-or-more-categorical-x-factorial-designs.html#cb425-28"></a>                <span class="dt">width=</span><span class="fl">0.15</span>, <span class="dt">color=</span>(<span class="kw">pal_jco</span>(<span class="st">&quot;default&quot;</span>)(<span class="dv">4</span>))[<span class="dv">1</span>]) <span class="op">+</span></span>
+<span id="cb425-29"><a href="two-or-more-categorical-x-factorial-designs.html#cb425-29"></a><span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;Contrast&quot;</span>) <span class="op">+</span></span>
+<span id="cb425-30"><a href="two-or-more-categorical-x-factorial-designs.html#cb425-30"></a><span class="st">  </span><span class="kw">geom_hline</span>(<span class="dt">yintercept=</span><span class="dv">0</span>, <span class="dt">linetype =</span> <span class="dv">2</span>) <span class="op">+</span></span>
+<span id="cb425-31"><a href="two-or-more-categorical-x-factorial-designs.html#cb425-31"></a><span class="st">  </span><span class="kw">annotate</span>(<span class="st">&quot;text&quot;</span>, <span class="dt">x =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">5</span>, <span class="dt">y =</span> <span class="kw">rep</span>(<span class="fl">7.75</span>, <span class="dv">5</span>), <span class="dt">label =</span> pval) <span class="op">+</span></span>
+<span id="cb425-32"><a href="two-or-more-categorical-x-factorial-designs.html#cb425-32"></a><span class="st">  </span><span class="kw">annotate</span>(<span class="st">&quot;text&quot;</span>, <span class="dt">x=</span><span class="fl">5.4</span>, <span class="dt">y=</span><span class="fl">7.75</span>, <span class="dt">label=</span><span class="st">&quot;p-value&quot;</span>) <span class="op">+</span></span>
+<span id="cb425-33"><a href="two-or-more-categorical-x-factorial-designs.html#cb425-33"></a><span class="st">  </span><span class="kw">expand_limits</span>(<span class="dt">y =</span> <span class="fl">8.3</span>) <span class="op">+</span></span>
+<span id="cb425-34"><a href="two-or-more-categorical-x-factorial-designs.html#cb425-34"></a><span class="st">  </span><span class="kw">xlab</span>(<span class="st">&quot;Contrast&quot;</span>) <span class="op">+</span></span>
+<span id="cb425-35"><a href="two-or-more-categorical-x-factorial-designs.html#cb425-35"></a><span class="st">  </span><span class="kw">coord_flip</span>() <span class="op">+</span><span class="st"> </span></span>
+<span id="cb425-36"><a href="two-or-more-categorical-x-factorial-designs.html#cb425-36"></a><span class="st">  </span><span class="ot">NULL</span></span>
+<span id="cb425-37"><a href="two-or-more-categorical-x-factorial-designs.html#cb425-37"></a></span>
+<span id="cb425-38"><a href="two-or-more-categorical-x-factorial-designs.html#cb425-38"></a>gg_effects</span></code></pre></div>
+<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/unnamed-chunk-250-1.png" width="576" /></p>
 <p>This effects plot shows the four simple effects, the single interaction (Temp18:CO21100), and their 95% confidence intervals. In the original paper, the researchers were testing a scientific (not statistical!) model that predicted no interaction between CO2 and Temp, and the researchers argued that these data supported this model because of the “not statistically significant” <em>p</em>-value for the interaction effect. The data are consistent with this model (one end of the 95% CI for the interaction includes zero) but also support a model of a large, negative interaction (the other end of the 95% CI includes large negative values). The data are too course (or the signal:noise ratio is to small) to have much confidence in the size of the interaction effect.</p>
 </div>
 <div id="harrell-plots" class="section level4">
 <h4><span class="header-section-number">15.3.7.4</span> Harrell plots</h4>
-<div class="sourceCode" id="cb425"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb425-1"><a href="two-or-more-categorical-x-factorial-designs.html#cb425-1"></a>gg_effects &lt;-<span class="st"> </span>gg_effects <span class="op">+</span><span class="st"> </span><span class="kw">scale_y_continuous</span>(<span class="dt">position=</span><span class="st">&quot;right&quot;</span>)</span>
-<span id="cb425-2"><a href="two-or-more-categorical-x-factorial-designs.html#cb425-2"></a></span>
-<span id="cb425-3"><a href="two-or-more-categorical-x-factorial-designs.html#cb425-3"></a><span class="kw">plot_grid</span>(gg_effects, gg_response, <span class="dt">nrow=</span><span class="dv">2</span>, </span>
-<span id="cb425-4"><a href="two-or-more-categorical-x-factorial-designs.html#cb425-4"></a>          <span class="dt">align =</span> <span class="st">&quot;v&quot;</span>, </span>
-<span id="cb425-5"><a href="two-or-more-categorical-x-factorial-designs.html#cb425-5"></a>          <span class="dt">rel_heights =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="fl">1.75</span>))</span></code></pre></div>
-<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/unnamed-chunk-252-1.png" width="576" /></p>
+<div class="sourceCode" id="cb426"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb426-1"><a href="two-or-more-categorical-x-factorial-designs.html#cb426-1"></a>gg_effects &lt;-<span class="st"> </span>gg_effects <span class="op">+</span><span class="st"> </span><span class="kw">scale_y_continuous</span>(<span class="dt">position=</span><span class="st">&quot;right&quot;</span>)</span>
+<span id="cb426-2"><a href="two-or-more-categorical-x-factorial-designs.html#cb426-2"></a></span>
+<span id="cb426-3"><a href="two-or-more-categorical-x-factorial-designs.html#cb426-3"></a><span class="kw">plot_grid</span>(gg_effects, gg_response, <span class="dt">nrow=</span><span class="dv">2</span>, </span>
+<span id="cb426-4"><a href="two-or-more-categorical-x-factorial-designs.html#cb426-4"></a>          <span class="dt">align =</span> <span class="st">&quot;v&quot;</span>, </span>
+<span id="cb426-5"><a href="two-or-more-categorical-x-factorial-designs.html#cb426-5"></a>          <span class="dt">rel_heights =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="fl">1.75</span>))</span></code></pre></div>
+<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/unnamed-chunk-251-1.png" width="576" /></p>
 <p>The effects and interaction plot are combined into a single plot.</p>
 </div>
 </div>

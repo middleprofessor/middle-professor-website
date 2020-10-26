@@ -124,7 +124,7 @@
   \postauthor{\par}
       \predate{\centering\large\emph}
   \postdate{\par}
-    \date{Draft: 2020-10-25}
+    \date{Draft: 2020-10-26}
 
 \usepackage{booktabs}
 \usepackage{amsthm}
@@ -8706,7 +8706,7 @@ As an example, the contrast in the first row of the contrast table is ``1 hour c
 \CommentTok{# also create a column with "p-val: "}
 \NormalTok{fig2a_m1_pairs_dt[ , pval_pretty }\OperatorTok{:}\ErrorTok{=}\StringTok{ }\KeywordTok{paste}\NormalTok{(}\StringTok{"p-val:"}\NormalTok{, p_pretty)]}
 
-\CommentTok{# create group columns}
+\CommentTok{# create group columns -- this is needed for p-value brackets}
 \NormalTok{fig2a_m1_pairs_dt[, group1 }\OperatorTok{:}\ErrorTok{=}\StringTok{ }\KeywordTok{c}\NormalTok{(}\DecValTok{2}\NormalTok{, }\DecValTok{3}\NormalTok{, }\DecValTok{3}\NormalTok{)]}
 \NormalTok{fig2a_m1_pairs_dt[, group2 }\OperatorTok{:}\ErrorTok{=}\StringTok{ }\KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{2}\NormalTok{)]}
 \end{Highlighting}
@@ -8830,10 +8830,19 @@ Step 2 - plot using the color-blind friendly Okabe-Ito paletter instead of ``jco
 \hypertarget{effects-plot}{%
 \subsubsection{Effects plot}\label{effects-plot}}
 
-Effects plots commonly use the y-axis for the categorical variable (the contrast pairs) and the x-axis for the continous variable (the effects).
+Effects plots commonly use the y-axis for the categorical variable (the contrast pairs) and the x-axis for the continuous variable (the effects). It is important to make sure the order of the plotted contrasts and p-values match!
 
 \begin{Shaded}
 \begin{Highlighting}[]
+\CommentTok{# important -- this insures the order of the contrasts in the plot i}
+\CommentTok{# the order in the pairs table.}
+\NormalTok{contrast_order <-}\StringTok{ }\NormalTok{fig2a_m1_pairs_dt[, contrast]}
+\NormalTok{fig2a_m1_pairs_dt[, contrast }\OperatorTok{:}\ErrorTok{=}\StringTok{ }\KeywordTok{factor}\NormalTok{(contrast, contrast_order)]}
+\CommentTok{# labels for plotting contrasts - double check the order}
+\NormalTok{fig2a_m1_pairs_dt[, contrast_label }\OperatorTok{:}\ErrorTok{=}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"cold effect"}\NormalTok{,}
+                                        \StringTok{"NE effect"}\NormalTok{,}
+                                        \StringTok{"NE minus cold"}\NormalTok{)]}
+
 \NormalTok{gg_effect <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(}\DataTypeTok{data=}\NormalTok{fig2a_m1_pairs_dt, }
                           \KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ estimate,}
                               \DataTypeTok{y =}\NormalTok{ contrast)) }\OperatorTok{+}
@@ -8858,11 +8867,8 @@ Effects plots commonly use the y-axis for the categorical variable (the contrast
            \DataTypeTok{y =} \FloatTok{3.25}\NormalTok{,}
            \DataTypeTok{x =} \DecValTok{28}\NormalTok{) }\OperatorTok{+}
 \StringTok{  }
-\StringTok{  }\CommentTok{# contrast labels}
-\StringTok{  }\KeywordTok{scale_y_discrete}\NormalTok{(}\DataTypeTok{labels =} \KeywordTok{c}\NormalTok{(}\StringTok{"NE minus cold"}\NormalTok{,}
-                              \StringTok{"NE effect"}\NormalTok{,}
-                              \StringTok{"cold effect"}
-\NormalTok{  )) }\OperatorTok{+}
+\StringTok{  }\CommentTok{# # contrast labels}
+\StringTok{  }\KeywordTok{scale_y_discrete}\NormalTok{(}\DataTypeTok{labels =}\NormalTok{ fig2a_m1_pairs_dt}\OperatorTok{$}\NormalTok{contrast_label) }\OperatorTok{+}
 \StringTok{  }
 \StringTok{  }\CommentTok{# x-axis label and aesthetics}
 \StringTok{  }\KeywordTok{xlab}\NormalTok{(}\StringTok{"Effects (pmol/mL)"}\NormalTok{) }\OperatorTok{+}
@@ -8887,6 +8893,15 @@ Effects plots commonly use the y-axis for the categorical variable (the contrast
 
 \begin{Shaded}
 \begin{Highlighting}[]
+\CommentTok{# important -- this insures the order of the contrasts in the plot i}
+\CommentTok{# the order in the pairs table.}
+\NormalTok{contrast_order <-}\StringTok{ }\NormalTok{fig2a_m1_pairs_dt[, contrast]}
+\NormalTok{fig2a_m1_pairs_dt[, contrast }\OperatorTok{:}\ErrorTok{=}\StringTok{ }\KeywordTok{factor}\NormalTok{(contrast, contrast_order)]}
+\CommentTok{# labels for plotting contrasts - double check the order}
+\NormalTok{fig2a_m1_pairs_dt[, contrast_label }\OperatorTok{:}\ErrorTok{=}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"cold effect"}\NormalTok{,}
+                                        \StringTok{"NE effect"}\NormalTok{,}
+                                        \StringTok{"NE minus cold"}\NormalTok{)]}
+
 \NormalTok{gg_effect <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(}\DataTypeTok{data=}\NormalTok{fig2a_m1_pairs_dt, }
                           \KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ estimate,}
                               \DataTypeTok{y =}\NormalTok{ contrast)) }\OperatorTok{+}
@@ -8907,18 +8922,7 @@ Effects plots commonly use the y-axis for the categorical variable (the contrast
            \DataTypeTok{y =} \DecValTok{1}\OperatorTok{:}\DecValTok{3}\NormalTok{,}
            \DataTypeTok{x =} \DecValTok{28}\NormalTok{) }\OperatorTok{+}
 \StringTok{  }
-\StringTok{  }\CommentTok{# comment this out}
-\StringTok{  }\CommentTok{# annotate(geom = "text",}
-\StringTok{  }\CommentTok{#          label = "p-value",}
-\StringTok{  }\CommentTok{#          y = 3.25,}
-\StringTok{  }\CommentTok{#          x = 28) +}
-\StringTok{  }\CommentTok{# }
-\StringTok{  }\CommentTok{# contrast labels}
-\StringTok{  }
-\StringTok{  }\KeywordTok{scale_y_discrete}\NormalTok{(}\DataTypeTok{labels =} \KeywordTok{c}\NormalTok{(}\StringTok{"NE minus cold"}\NormalTok{,}
-                              \StringTok{"NE effect"}\NormalTok{,}
-                              \StringTok{"cold effect"}
-\NormalTok{  )) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_y_discrete}\NormalTok{(}\DataTypeTok{labels =}\NormalTok{ fig2a_m1_pairs_dt}\OperatorTok{$}\NormalTok{contrast_label) }\OperatorTok{+}
 \StringTok{  }
 \StringTok{  }\CommentTok{# x-axis label and aesthetics}
 \StringTok{  }\KeywordTok{xlab}\NormalTok{(}\StringTok{"Effects (pmol/mL)"}\NormalTok{) }\OperatorTok{+}
@@ -10650,49 +10654,44 @@ In its most general sense, \textbf{Covariates} are simply the \(X\) variables in
 
 I use fake data to introduce the concept of \textbf{statistical elimination} of a \textbf{covariate} in a statistical model. Here I am modeling the effect of a new drug on blood LDL-C levels. LDL is a kind of lipoprotein, which are particles in the blood that transport fats and cholesterol to and from different tissues. LDL-C is cholesterol associated with LDL particles. LDL-C is considered ``bad cholesterol'' because LDL is believed to transport cholesterol and other lipids to arterial walls, which is the basis for atherosclerosis.
 
-Twenty applied biostats students are recruited and are randomly assigned to either the ``placebo'' treatment level or ``drug'' treatment level. The response is blood LDL-C concentration. The drug manufacturer wants a measure of the effect of the new drug on ldlc.
+Thirty applied biostats students are recruited and are randomly assigned to either the ``placebo'' treatment level or ``drug'' treatment level. The response is blood LDL-C concentration. The drug manufacturer wants a measure of the effect of the new drug on ldlc.
 
-The plot below shows the LDL-C response in the placebo and drug groups, including the group means and 95\% confidence intervals.
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/covariate-fd-plot-no-cov-1.pdf}
+The linear model fit to the simulated LDL-C data is
 
 \begin{equation}
-ldlc = \beta_0 + \beta_1 treatment + \varepsilon
+ldlc = \beta_0 + \beta_1 treatment_{drug} + \varepsilon
 \label{eq:cov-no-cov}
 \end{equation}
 
-where \(treatment\) is the dummy variable with \(placebo=0\) and \(drug=1\).
-
-\begin{figure}
-\centering
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/cov-harrelplot-1.pdf}
-\caption{\label{fig:cov-harrelplot}The fake LDL-C experiment.}
-\end{figure}
+where \(treatment_{drug}\) is the dummy variable, which is set to 0 when \(treatment = \mathrm{''placebo''}\) and to 1 when \(treatment = \mathrm{''drug''}\).
 
 The coefficient table is
 
 \begin{verbatim}
-##               Estimate Std. Error t value Pr(>|t|)
-## (Intercept)    113.069      1.899  59.548    0.000
-## treatmentdrug   -1.947      2.685  -0.725    0.478
+##               Estimate Std. Error t value Pr(>|t|)   2.5 %  97.5 %
+## (Intercept)    106.045      1.070  99.111    0.000 103.854 108.237
+## treatmentdrug   -1.554      1.513  -1.027    0.313  -4.654   1.546
 \end{verbatim}
 
-The plot shows large overlap in LDL-C. There ``is no effect of the drug (\(p = .478\))'' is an incorrect interpretation of the hypothesis test of the estimate of \(\beta_1\). A correct interpretation is, the estimated effect is -1.9 but everything from large, negative effects to moderate positive effects are consistent with the data.
+The response-effect plot shows large overlap in the LDL-C response and treatment effect that is small relative to the noise. ``No effect of the drug (\(p = .31\))'' is an incorrect interpretation of the \emph{p}-value of the significance test of the estimate of \(\beta_1\). A better interpretation is, the estimated effect is -1.6 but everything from large, negative effects to moderate positive effects are consistent with the data.
 
-LDL-C is strongly correlated with age and there is a large range in age among the Applied Bistats students. Consequently, age will contribute to a large fraction of the variance in LDL-C. If so, this age-related variance \emph{might} be masking the effect of the drug. Here is a plot of LDL-C vs.~age, with treatment assignment color coded. Remember, these are the exact same values of LDL-C as in figure \ref{fig:cov-harrelplot} above.
+LDL-C is strongly correlated with age and there is a large range in age among the Applied Bistats students. d, age will contribute to a large fraction of the variance in LDL-C. If so, this age-related variance \emph{might} be masking the effect of the drug. Here is a plot of LDL-C vs.~age, with treatment assignment color coded. Remember, these are the exact same values of LDL-C as in figure \ref{fig:cov-harrelplot} above.
 
 \begin{figure}
 \centering
 \includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/ancova-plot2-1.pdf}
-\caption{\label{fig:ancova-plot2}Linear regression of \(ldlc\) on dietary \(fat\) fit to the fake LDL-C data. The points are color coded by treatment.}
+\caption{\label{fig:ancova-plot2}Linear regression of \(ldlc\) on age fit to the fake LDL-C data. The points are color coded by treatment.}
 \end{figure}
 
-The line is the bivariate regression fit to the data ignoring treatment level.
+The regression line is from the fit of the linear model
 
 \begin{equation}
 ldlc = \beta_0 + \beta_1 age + \varepsilon
 \label{eq:cov-age}
 \end{equation}
 
-While the points are color-coded by treatment level, \(treatment\) is not in model \eqref{eq:cov-age}. The color-coding makes it clear that most of the ``placebo'' data points are above the line, or have positive residuals from the model, while the ``drug'' data points are below the line, or have negative residuals from the model. A better way to think about this pattern is that \textbf{at any specific level of age, the LDL-C for drug is lower than the LDL-C for placebo}.
+While the points are color-coded by treatment level, \(treatment\) is not in model \eqref{eq:cov-age}. The color-coding makes it clear that most of the ``placebo'' data points are above the line, or have positive residuals from the model, while the ``drug'' data points are below the line, or have negative residuals from the model. That is, \textbf{at any specific value of age, there is very small overlap of LDL-C values for drug and for placebo}.
 
 What is happening? Age is contributing to the variance of LDL-C, and the noise in \(\varepsilon\) in model \eqref{eq:cov-no-cov}, and this added noise makes it harder to measure the effect of the new drug relative to placebo. Age is masking the effect. If we could somehow measure the effect of the drug at a specific age, then we could get a more precise estimate of the effect. But how to do this? Here are three possible methods. The third is \emph{the only} one you should use but the second is useful for understanding the third.
 
@@ -10705,15 +10704,15 @@ What is happening? Age is contributing to the variance of LDL-C, and the noise i
 \end{enumerate}
 
 \begin{equation}
-ldlc.r = \beta_0 + \beta_1 treatment + \varepsilon
+ldlc\_residual = \beta_0 + \beta_1 treatment_{drug} + \varepsilon
 \label{eq:ancova-3}
 \end{equation}
 
-where \(ldlc.r\) is the set of residuals.
+where \(ldlc\_residua\) is the set of residuals from the fit model \eqref{eq:cov-age}.
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-238-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/covariate-fd-plot-cov-1.pdf}
 
-Now the estimate of the effect is -4.7 mg/dL blood and the SE is only 0.88. In this two-stage analysis (stage 1: fit ldlc \textasciitilde{} age to get residuals, stage 2: fit residuals \textasciitilde{} treatment), we have \emph{eliminated the effect of age} on the variance of the response and, as a consequence, the estimate of the effect of the drug is much more precise -- the effect of \(treatment\) has a smaller standard error.
+Now the estimate of the effect is -3.8 mg/dL blood and the SE is only 0.79. In this two-stage analysis (stage 1: fit ldlc \textasciitilde{} age to get residuals, stage 2: fit residuals \textasciitilde{} treatment), we have \emph{eliminated the effect of age} on the variance of the response and, as a consequence, the estimate of the effect of the drug is much more precise -- the effect of \(treatment\) has a smaller standard error.
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
@@ -10724,57 +10723,24 @@ Now the estimate of the effect is -4.7 mg/dL blood and the SE is only 0.88. In t
 \end{enumerate}
 
 \begin{equation}
-ldlc = \beta_0 + \beta_1 age + \beta_2 treatment + \varepsilon
+ldlc = \beta_0 + \beta_1 age + \beta_2 treatment_{drug} + \varepsilon
 \label{eq:cov-cov}
 \end{equation}
 
 which results in the Harrell Plot
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-239-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-238-1.pdf}
 
 and the coefficient table
 
-\label{tab:unnamed-chunk-240}Coefficients of the model that includes the covariate age.
+\begin{verbatim}
+##               Estimate Std. Error t value Pr(>|t|)
+## (Intercept)     75.586      3.257  23.205        0
+## age              1.261      0.133   9.474        0
+## treatmentdrug   -4.450      0.802  -5.552        0
+\end{verbatim}
 
-Estimate
-
-Std. Error
-
-t value
-
-Pr(\textgreater\textbar t\textbar)
-
-(Intercept)
-
-68.8
-
-3.46
-
-19.9
-
-0.0e+00
-
-age
-
-1.6
-
-0.12
-
-13.0
-
-0.0e+00
-
-treatmentdrug
-
--5.1
-
-0.87
-
--5.9
-
-1.8e-05
-
-In the linear model that includes the covariate \(age\) (model \eqref{eq:cov-cov}), the SE of the treatment effect is 0.87. Compare this to SE of the treatment effect in the model without the covariate (model \eqref{eq:cov-no-cov}), which is 3.1X larger.
+In the linear model that includes the covariate \(age\) (model \eqref{eq:cov-cov}), the SE of the treatment effect is 0.8. Compare this to SE of the treatment effect in the model without the covariate (model \eqref{eq:cov-no-cov}), which is 1.9X larger.
 
 \hypertarget{adding-covariates-can-decrease-prediction-error-in-predictive-models}{%
 \section{Adding covariates can decrease prediction error in predictive models}\label{adding-covariates-can-decrease-prediction-error-in-predictive-models}}
@@ -11911,7 +11877,7 @@ These can be combined into a single table using \texttt{rbind}
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-250-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-249-1.pdf}
 
 \hypertarget{plots-that-communicate-the-factorial-design}{%
 \subsubsection{Plots that communicate the factorial design}\label{plots-that-communicate-the-factorial-design}}
@@ -12058,7 +12024,7 @@ An interaction plot is an okay plot. It doesn't show the data, only a minimal, d
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-251-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-250-1.pdf}
 
 This effects plot shows the four simple effects, the single interaction (Temp18:CO21100), and their 95\% confidence intervals. In the original paper, the researchers were testing a scientific (not statistical!) model that predicted no interaction between CO2 and Temp, and the researchers argued that these data supported this model because of the ``not statistically significant'' \emph{p}-value for the interaction effect. The data are consistent with this model (one end of the 95\% CI for the interaction includes zero) but also support a model of a large, negative interaction (the other end of the 95\% CI includes large negative values). The data are too course (or the signal:noise ratio is to small) to have much confidence in the size of the interaction effect.
 
@@ -12075,7 +12041,7 @@ This effects plot shows the four simple effects, the single interaction (Temp18:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-252-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-251-1.pdf}
 
 The effects and interaction plot are combined into a single plot.
 
@@ -14740,7 +14706,7 @@ A plot of the dispersion statistic can be generated using the object returned by
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-274-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-273-1.pdf}
 
 \begin{verbatim}
 ## 

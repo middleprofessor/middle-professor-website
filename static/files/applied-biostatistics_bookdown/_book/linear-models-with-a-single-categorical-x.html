@@ -1151,7 +1151,7 @@ diHOME_i = b_0 + b_1 treatment_{1\_hour\_cold,i} + b_2 treatment_{30\_min\_NE,i}
 <span id="cb331-7"><a href="linear-models-with-a-single-categorical-x.html#cb331-7"></a><span class="co"># also create a column with &quot;p-val: &quot;</span></span>
 <span id="cb331-8"><a href="linear-models-with-a-single-categorical-x.html#cb331-8"></a>fig2a_m1_pairs_dt[ , pval_pretty <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">paste</span>(<span class="st">&quot;p-val:&quot;</span>, p_pretty)]</span>
 <span id="cb331-9"><a href="linear-models-with-a-single-categorical-x.html#cb331-9"></a></span>
-<span id="cb331-10"><a href="linear-models-with-a-single-categorical-x.html#cb331-10"></a><span class="co"># create group columns</span></span>
+<span id="cb331-10"><a href="linear-models-with-a-single-categorical-x.html#cb331-10"></a><span class="co"># create group columns -- this is needed for p-value brackets</span></span>
 <span id="cb331-11"><a href="linear-models-with-a-single-categorical-x.html#cb331-11"></a>fig2a_m1_pairs_dt[, group1 <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">c</span>(<span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">3</span>)]</span>
 <span id="cb331-12"><a href="linear-models-with-a-single-categorical-x.html#cb331-12"></a>fig2a_m1_pairs_dt[, group2 <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">2</span>)]</span></code></pre></div>
 <p>Step 2 – Add the CIs and <em>p</em>-value to a ggpubr plot</p>
@@ -1242,100 +1242,104 @@ diHOME_i = b_0 + b_1 treatment_{1\_hour\_cold,i} + b_2 treatment_{30\_min\_NE,i}
 </div>
 <div id="effects-plot" class="section level4">
 <h4><span class="header-section-number">10.2.3.4</span> Effects plot</h4>
-<p>Effects plots commonly use the y-axis for the categorical variable (the contrast pairs) and the x-axis for the continous variable (the effects).</p>
-<div class="sourceCode" id="cb336"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb336-1"><a href="linear-models-with-a-single-categorical-x.html#cb336-1"></a>gg_effect &lt;-<span class="st"> </span><span class="kw">ggplot</span>(<span class="dt">data=</span>fig2a_m1_pairs_dt, </span>
-<span id="cb336-2"><a href="linear-models-with-a-single-categorical-x.html#cb336-2"></a>                          <span class="kw">aes</span>(<span class="dt">x =</span> estimate,</span>
-<span id="cb336-3"><a href="linear-models-with-a-single-categorical-x.html#cb336-3"></a>                              <span class="dt">y =</span> contrast)) <span class="op">+</span></span>
-<span id="cb336-4"><a href="linear-models-with-a-single-categorical-x.html#cb336-4"></a><span class="st">  </span><span class="co"># confidence level of effect</span></span>
-<span id="cb336-5"><a href="linear-models-with-a-single-categorical-x.html#cb336-5"></a><span class="st">  </span><span class="kw">geom_errorbar</span>(<span class="kw">aes</span>(<span class="dt">xmin=</span>lower.CL, </span>
-<span id="cb336-6"><a href="linear-models-with-a-single-categorical-x.html#cb336-6"></a>                    <span class="dt">xmax=</span>upper.CL),</span>
-<span id="cb336-7"><a href="linear-models-with-a-single-categorical-x.html#cb336-7"></a>                <span class="dt">width=</span><span class="dv">0</span>, </span>
-<span id="cb336-8"><a href="linear-models-with-a-single-categorical-x.html#cb336-8"></a>                <span class="dt">color=</span><span class="st">&quot;black&quot;</span>) <span class="op">+</span></span>
-<span id="cb336-9"><a href="linear-models-with-a-single-categorical-x.html#cb336-9"></a><span class="st">  </span><span class="co"># estimate of effect</span></span>
-<span id="cb336-10"><a href="linear-models-with-a-single-categorical-x.html#cb336-10"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">size =</span> <span class="dv">3</span>) <span class="op">+</span></span>
-<span id="cb336-11"><a href="linear-models-with-a-single-categorical-x.html#cb336-11"></a><span class="st">  </span></span>
-<span id="cb336-12"><a href="linear-models-with-a-single-categorical-x.html#cb336-12"></a><span class="st">  </span><span class="co"># draw a line at effect = 0</span></span>
-<span id="cb336-13"><a href="linear-models-with-a-single-categorical-x.html#cb336-13"></a><span class="st">  </span><span class="kw">geom_vline</span>(<span class="dt">xintercept=</span><span class="dv">0</span>, <span class="dt">linetype =</span> <span class="dv">2</span>) <span class="op">+</span></span>
-<span id="cb336-14"><a href="linear-models-with-a-single-categorical-x.html#cb336-14"></a><span class="st">  </span></span>
-<span id="cb336-15"><a href="linear-models-with-a-single-categorical-x.html#cb336-15"></a><span class="st">  </span><span class="co"># p-value. The y coordinates are set by eye</span></span>
-<span id="cb336-16"><a href="linear-models-with-a-single-categorical-x.html#cb336-16"></a><span class="st">  </span><span class="kw">annotate</span>(<span class="dt">geom =</span> <span class="st">&quot;text&quot;</span>,</span>
-<span id="cb336-17"><a href="linear-models-with-a-single-categorical-x.html#cb336-17"></a>           <span class="dt">label =</span> fig2a_m1_pairs_dt<span class="op">$</span>p_pretty,</span>
-<span id="cb336-18"><a href="linear-models-with-a-single-categorical-x.html#cb336-18"></a>           <span class="dt">y =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">3</span>,</span>
-<span id="cb336-19"><a href="linear-models-with-a-single-categorical-x.html#cb336-19"></a>           <span class="dt">x =</span> <span class="dv">28</span>) <span class="op">+</span></span>
-<span id="cb336-20"><a href="linear-models-with-a-single-categorical-x.html#cb336-20"></a><span class="st">  </span><span class="kw">annotate</span>(<span class="dt">geom =</span> <span class="st">&quot;text&quot;</span>,</span>
-<span id="cb336-21"><a href="linear-models-with-a-single-categorical-x.html#cb336-21"></a>           <span class="dt">label =</span> <span class="st">&quot;p-value&quot;</span>,</span>
-<span id="cb336-22"><a href="linear-models-with-a-single-categorical-x.html#cb336-22"></a>           <span class="dt">y =</span> <span class="fl">3.25</span>,</span>
-<span id="cb336-23"><a href="linear-models-with-a-single-categorical-x.html#cb336-23"></a>           <span class="dt">x =</span> <span class="dv">28</span>) <span class="op">+</span></span>
-<span id="cb336-24"><a href="linear-models-with-a-single-categorical-x.html#cb336-24"></a><span class="st">  </span></span>
-<span id="cb336-25"><a href="linear-models-with-a-single-categorical-x.html#cb336-25"></a><span class="st">  </span><span class="co"># contrast labels</span></span>
-<span id="cb336-26"><a href="linear-models-with-a-single-categorical-x.html#cb336-26"></a><span class="st">  </span><span class="kw">scale_y_discrete</span>(<span class="dt">labels =</span> <span class="kw">c</span>(<span class="st">&quot;NE minus cold&quot;</span>,</span>
-<span id="cb336-27"><a href="linear-models-with-a-single-categorical-x.html#cb336-27"></a>                              <span class="st">&quot;NE effect&quot;</span>,</span>
-<span id="cb336-28"><a href="linear-models-with-a-single-categorical-x.html#cb336-28"></a>                              <span class="st">&quot;cold effect&quot;</span></span>
-<span id="cb336-29"><a href="linear-models-with-a-single-categorical-x.html#cb336-29"></a>  )) <span class="op">+</span></span>
-<span id="cb336-30"><a href="linear-models-with-a-single-categorical-x.html#cb336-30"></a><span class="st">  </span></span>
-<span id="cb336-31"><a href="linear-models-with-a-single-categorical-x.html#cb336-31"></a><span class="st">  </span><span class="co"># x-axis label and aesthetics</span></span>
-<span id="cb336-32"><a href="linear-models-with-a-single-categorical-x.html#cb336-32"></a><span class="st">  </span><span class="kw">xlab</span>(<span class="st">&quot;Effects (pmol/mL)&quot;</span>) <span class="op">+</span></span>
-<span id="cb336-33"><a href="linear-models-with-a-single-categorical-x.html#cb336-33"></a><span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;Contrast&quot;</span>) <span class="op">+</span></span>
-<span id="cb336-34"><a href="linear-models-with-a-single-categorical-x.html#cb336-34"></a><span class="st">  </span><span class="kw">coord_cartesian</span>(<span class="dt">xlim =</span> <span class="kw">c</span>(<span class="op">-</span><span class="dv">10</span>,<span class="dv">30</span>)) <span class="op">+</span></span>
-<span id="cb336-35"><a href="linear-models-with-a-single-categorical-x.html#cb336-35"></a></span>
-<span id="cb336-36"><a href="linear-models-with-a-single-categorical-x.html#cb336-36"></a><span class="st">  </span><span class="co"># use ggpubr theme</span></span>
-<span id="cb336-37"><a href="linear-models-with-a-single-categorical-x.html#cb336-37"></a><span class="st">  </span><span class="kw">theme_pubr</span>() <span class="op">+</span></span>
-<span id="cb336-38"><a href="linear-models-with-a-single-categorical-x.html#cb336-38"></a><span class="st">  </span></span>
-<span id="cb336-39"><a href="linear-models-with-a-single-categorical-x.html#cb336-39"></a><span class="st">  </span><span class="ot">NULL</span></span>
-<span id="cb336-40"><a href="linear-models-with-a-single-categorical-x.html#cb336-40"></a></span>
-<span id="cb336-41"><a href="linear-models-with-a-single-categorical-x.html#cb336-41"></a>gg_effect</span></code></pre></div>
+<p>Effects plots commonly use the y-axis for the categorical variable (the contrast pairs) and the x-axis for the continuous variable (the effects). It is important to make sure the order of the plotted contrasts and p-values match!</p>
+<div class="sourceCode" id="cb336"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb336-1"><a href="linear-models-with-a-single-categorical-x.html#cb336-1"></a><span class="co"># important -- this insures the order of the contrasts in the plot i</span></span>
+<span id="cb336-2"><a href="linear-models-with-a-single-categorical-x.html#cb336-2"></a><span class="co"># the order in the pairs table.</span></span>
+<span id="cb336-3"><a href="linear-models-with-a-single-categorical-x.html#cb336-3"></a>contrast_order &lt;-<span class="st"> </span>fig2a_m1_pairs_dt[, contrast]</span>
+<span id="cb336-4"><a href="linear-models-with-a-single-categorical-x.html#cb336-4"></a>fig2a_m1_pairs_dt[, contrast <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">factor</span>(contrast, contrast_order)]</span>
+<span id="cb336-5"><a href="linear-models-with-a-single-categorical-x.html#cb336-5"></a><span class="co"># labels for plotting contrasts - double check the order</span></span>
+<span id="cb336-6"><a href="linear-models-with-a-single-categorical-x.html#cb336-6"></a>fig2a_m1_pairs_dt[, contrast_label <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;cold effect&quot;</span>,</span>
+<span id="cb336-7"><a href="linear-models-with-a-single-categorical-x.html#cb336-7"></a>                                        <span class="st">&quot;NE effect&quot;</span>,</span>
+<span id="cb336-8"><a href="linear-models-with-a-single-categorical-x.html#cb336-8"></a>                                        <span class="st">&quot;NE minus cold&quot;</span>)]</span>
+<span id="cb336-9"><a href="linear-models-with-a-single-categorical-x.html#cb336-9"></a></span>
+<span id="cb336-10"><a href="linear-models-with-a-single-categorical-x.html#cb336-10"></a>gg_effect &lt;-<span class="st"> </span><span class="kw">ggplot</span>(<span class="dt">data=</span>fig2a_m1_pairs_dt, </span>
+<span id="cb336-11"><a href="linear-models-with-a-single-categorical-x.html#cb336-11"></a>                          <span class="kw">aes</span>(<span class="dt">x =</span> estimate,</span>
+<span id="cb336-12"><a href="linear-models-with-a-single-categorical-x.html#cb336-12"></a>                              <span class="dt">y =</span> contrast)) <span class="op">+</span></span>
+<span id="cb336-13"><a href="linear-models-with-a-single-categorical-x.html#cb336-13"></a><span class="st">  </span><span class="co"># confidence level of effect</span></span>
+<span id="cb336-14"><a href="linear-models-with-a-single-categorical-x.html#cb336-14"></a><span class="st">  </span><span class="kw">geom_errorbar</span>(<span class="kw">aes</span>(<span class="dt">xmin=</span>lower.CL, </span>
+<span id="cb336-15"><a href="linear-models-with-a-single-categorical-x.html#cb336-15"></a>                    <span class="dt">xmax=</span>upper.CL),</span>
+<span id="cb336-16"><a href="linear-models-with-a-single-categorical-x.html#cb336-16"></a>                <span class="dt">width=</span><span class="dv">0</span>, </span>
+<span id="cb336-17"><a href="linear-models-with-a-single-categorical-x.html#cb336-17"></a>                <span class="dt">color=</span><span class="st">&quot;black&quot;</span>) <span class="op">+</span></span>
+<span id="cb336-18"><a href="linear-models-with-a-single-categorical-x.html#cb336-18"></a><span class="st">  </span><span class="co"># estimate of effect</span></span>
+<span id="cb336-19"><a href="linear-models-with-a-single-categorical-x.html#cb336-19"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">size =</span> <span class="dv">3</span>) <span class="op">+</span></span>
+<span id="cb336-20"><a href="linear-models-with-a-single-categorical-x.html#cb336-20"></a><span class="st">  </span></span>
+<span id="cb336-21"><a href="linear-models-with-a-single-categorical-x.html#cb336-21"></a><span class="st">  </span><span class="co"># draw a line at effect = 0</span></span>
+<span id="cb336-22"><a href="linear-models-with-a-single-categorical-x.html#cb336-22"></a><span class="st">  </span><span class="kw">geom_vline</span>(<span class="dt">xintercept=</span><span class="dv">0</span>, <span class="dt">linetype =</span> <span class="dv">2</span>) <span class="op">+</span></span>
+<span id="cb336-23"><a href="linear-models-with-a-single-categorical-x.html#cb336-23"></a><span class="st">  </span></span>
+<span id="cb336-24"><a href="linear-models-with-a-single-categorical-x.html#cb336-24"></a><span class="st">  </span><span class="co"># p-value. The y coordinates are set by eye</span></span>
+<span id="cb336-25"><a href="linear-models-with-a-single-categorical-x.html#cb336-25"></a><span class="st">  </span><span class="kw">annotate</span>(<span class="dt">geom =</span> <span class="st">&quot;text&quot;</span>,</span>
+<span id="cb336-26"><a href="linear-models-with-a-single-categorical-x.html#cb336-26"></a>           <span class="dt">label =</span> fig2a_m1_pairs_dt<span class="op">$</span>p_pretty,</span>
+<span id="cb336-27"><a href="linear-models-with-a-single-categorical-x.html#cb336-27"></a>           <span class="dt">y =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">3</span>,</span>
+<span id="cb336-28"><a href="linear-models-with-a-single-categorical-x.html#cb336-28"></a>           <span class="dt">x =</span> <span class="dv">28</span>) <span class="op">+</span></span>
+<span id="cb336-29"><a href="linear-models-with-a-single-categorical-x.html#cb336-29"></a><span class="st">  </span><span class="kw">annotate</span>(<span class="dt">geom =</span> <span class="st">&quot;text&quot;</span>,</span>
+<span id="cb336-30"><a href="linear-models-with-a-single-categorical-x.html#cb336-30"></a>           <span class="dt">label =</span> <span class="st">&quot;p-value&quot;</span>,</span>
+<span id="cb336-31"><a href="linear-models-with-a-single-categorical-x.html#cb336-31"></a>           <span class="dt">y =</span> <span class="fl">3.25</span>,</span>
+<span id="cb336-32"><a href="linear-models-with-a-single-categorical-x.html#cb336-32"></a>           <span class="dt">x =</span> <span class="dv">28</span>) <span class="op">+</span></span>
+<span id="cb336-33"><a href="linear-models-with-a-single-categorical-x.html#cb336-33"></a><span class="st">  </span></span>
+<span id="cb336-34"><a href="linear-models-with-a-single-categorical-x.html#cb336-34"></a><span class="st">  </span><span class="co"># # contrast labels</span></span>
+<span id="cb336-35"><a href="linear-models-with-a-single-categorical-x.html#cb336-35"></a><span class="st">  </span><span class="kw">scale_y_discrete</span>(<span class="dt">labels =</span> fig2a_m1_pairs_dt<span class="op">$</span>contrast_label) <span class="op">+</span></span>
+<span id="cb336-36"><a href="linear-models-with-a-single-categorical-x.html#cb336-36"></a><span class="st">  </span></span>
+<span id="cb336-37"><a href="linear-models-with-a-single-categorical-x.html#cb336-37"></a><span class="st">  </span><span class="co"># x-axis label and aesthetics</span></span>
+<span id="cb336-38"><a href="linear-models-with-a-single-categorical-x.html#cb336-38"></a><span class="st">  </span><span class="kw">xlab</span>(<span class="st">&quot;Effects (pmol/mL)&quot;</span>) <span class="op">+</span></span>
+<span id="cb336-39"><a href="linear-models-with-a-single-categorical-x.html#cb336-39"></a><span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;Contrast&quot;</span>) <span class="op">+</span></span>
+<span id="cb336-40"><a href="linear-models-with-a-single-categorical-x.html#cb336-40"></a><span class="st">  </span><span class="kw">coord_cartesian</span>(<span class="dt">xlim =</span> <span class="kw">c</span>(<span class="op">-</span><span class="dv">10</span>,<span class="dv">30</span>)) <span class="op">+</span></span>
+<span id="cb336-41"><a href="linear-models-with-a-single-categorical-x.html#cb336-41"></a></span>
+<span id="cb336-42"><a href="linear-models-with-a-single-categorical-x.html#cb336-42"></a><span class="st">  </span><span class="co"># use ggpubr theme</span></span>
+<span id="cb336-43"><a href="linear-models-with-a-single-categorical-x.html#cb336-43"></a><span class="st">  </span><span class="kw">theme_pubr</span>() <span class="op">+</span></span>
+<span id="cb336-44"><a href="linear-models-with-a-single-categorical-x.html#cb336-44"></a><span class="st">  </span></span>
+<span id="cb336-45"><a href="linear-models-with-a-single-categorical-x.html#cb336-45"></a><span class="st">  </span><span class="ot">NULL</span></span>
+<span id="cb336-46"><a href="linear-models-with-a-single-categorical-x.html#cb336-46"></a></span>
+<span id="cb336-47"><a href="linear-models-with-a-single-categorical-x.html#cb336-47"></a>gg_effect</span></code></pre></div>
 <p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/unnamed-chunk-202-1.png" width="576" /></p>
 </div>
 <div id="combined-effects-response-plot" class="section level4">
 <h4><span class="header-section-number">10.2.3.5</span> Combined effects-response plot</h4>
 <p><code>plot_grid</code> from the cowplot package is used to create a combined effects-response plot by combining the gg_effect and gg_response plots. This looks best if the labels of the x-axis are set to “top” instead of “bottom”. Also we don’t need p-values on both components. The placement of “p-value” in the gg_effect plot above does not look good in the combined plot and I cannot remove this (easily) so I’m rebuilding the gg_effect component from scratch.</p>
-<div class="sourceCode" id="cb337"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb337-1"><a href="linear-models-with-a-single-categorical-x.html#cb337-1"></a>gg_effect &lt;-<span class="st"> </span><span class="kw">ggplot</span>(<span class="dt">data=</span>fig2a_m1_pairs_dt, </span>
-<span id="cb337-2"><a href="linear-models-with-a-single-categorical-x.html#cb337-2"></a>                          <span class="kw">aes</span>(<span class="dt">x =</span> estimate,</span>
-<span id="cb337-3"><a href="linear-models-with-a-single-categorical-x.html#cb337-3"></a>                              <span class="dt">y =</span> contrast)) <span class="op">+</span></span>
-<span id="cb337-4"><a href="linear-models-with-a-single-categorical-x.html#cb337-4"></a><span class="st">  </span><span class="co"># confidence level of effect</span></span>
-<span id="cb337-5"><a href="linear-models-with-a-single-categorical-x.html#cb337-5"></a><span class="st">  </span><span class="kw">geom_errorbar</span>(<span class="kw">aes</span>(<span class="dt">xmin=</span>lower.CL, </span>
-<span id="cb337-6"><a href="linear-models-with-a-single-categorical-x.html#cb337-6"></a>                    <span class="dt">xmax=</span>upper.CL),</span>
-<span id="cb337-7"><a href="linear-models-with-a-single-categorical-x.html#cb337-7"></a>                <span class="dt">width=</span><span class="dv">0</span>, </span>
-<span id="cb337-8"><a href="linear-models-with-a-single-categorical-x.html#cb337-8"></a>                <span class="dt">color=</span><span class="st">&quot;black&quot;</span>) <span class="op">+</span></span>
-<span id="cb337-9"><a href="linear-models-with-a-single-categorical-x.html#cb337-9"></a><span class="st">  </span><span class="co"># estimate of effect</span></span>
-<span id="cb337-10"><a href="linear-models-with-a-single-categorical-x.html#cb337-10"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">size =</span> <span class="dv">3</span>) <span class="op">+</span></span>
-<span id="cb337-11"><a href="linear-models-with-a-single-categorical-x.html#cb337-11"></a><span class="st">  </span></span>
-<span id="cb337-12"><a href="linear-models-with-a-single-categorical-x.html#cb337-12"></a><span class="st">  </span><span class="co"># draw a line at effect = 0</span></span>
-<span id="cb337-13"><a href="linear-models-with-a-single-categorical-x.html#cb337-13"></a><span class="st">  </span><span class="kw">geom_vline</span>(<span class="dt">xintercept=</span><span class="dv">0</span>, <span class="dt">linetype =</span> <span class="dv">2</span>) <span class="op">+</span></span>
-<span id="cb337-14"><a href="linear-models-with-a-single-categorical-x.html#cb337-14"></a><span class="st">  </span></span>
-<span id="cb337-15"><a href="linear-models-with-a-single-categorical-x.html#cb337-15"></a><span class="st">  </span><span class="co"># p-value. The y coordinates are set by eye</span></span>
-<span id="cb337-16"><a href="linear-models-with-a-single-categorical-x.html#cb337-16"></a><span class="st">  </span><span class="kw">annotate</span>(<span class="dt">geom =</span> <span class="st">&quot;text&quot;</span>,</span>
-<span id="cb337-17"><a href="linear-models-with-a-single-categorical-x.html#cb337-17"></a>           <span class="dt">label =</span> fig2a_m1_pairs_dt<span class="op">$</span>p_pretty,</span>
-<span id="cb337-18"><a href="linear-models-with-a-single-categorical-x.html#cb337-18"></a>           <span class="dt">y =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">3</span>,</span>
-<span id="cb337-19"><a href="linear-models-with-a-single-categorical-x.html#cb337-19"></a>           <span class="dt">x =</span> <span class="dv">28</span>) <span class="op">+</span></span>
+<div class="sourceCode" id="cb337"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb337-1"><a href="linear-models-with-a-single-categorical-x.html#cb337-1"></a><span class="co"># important -- this insures the order of the contrasts in the plot i</span></span>
+<span id="cb337-2"><a href="linear-models-with-a-single-categorical-x.html#cb337-2"></a><span class="co"># the order in the pairs table.</span></span>
+<span id="cb337-3"><a href="linear-models-with-a-single-categorical-x.html#cb337-3"></a>contrast_order &lt;-<span class="st"> </span>fig2a_m1_pairs_dt[, contrast]</span>
+<span id="cb337-4"><a href="linear-models-with-a-single-categorical-x.html#cb337-4"></a>fig2a_m1_pairs_dt[, contrast <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">factor</span>(contrast, contrast_order)]</span>
+<span id="cb337-5"><a href="linear-models-with-a-single-categorical-x.html#cb337-5"></a><span class="co"># labels for plotting contrasts - double check the order</span></span>
+<span id="cb337-6"><a href="linear-models-with-a-single-categorical-x.html#cb337-6"></a>fig2a_m1_pairs_dt[, contrast_label <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;cold effect&quot;</span>,</span>
+<span id="cb337-7"><a href="linear-models-with-a-single-categorical-x.html#cb337-7"></a>                                        <span class="st">&quot;NE effect&quot;</span>,</span>
+<span id="cb337-8"><a href="linear-models-with-a-single-categorical-x.html#cb337-8"></a>                                        <span class="st">&quot;NE minus cold&quot;</span>)]</span>
+<span id="cb337-9"><a href="linear-models-with-a-single-categorical-x.html#cb337-9"></a></span>
+<span id="cb337-10"><a href="linear-models-with-a-single-categorical-x.html#cb337-10"></a>gg_effect &lt;-<span class="st"> </span><span class="kw">ggplot</span>(<span class="dt">data=</span>fig2a_m1_pairs_dt, </span>
+<span id="cb337-11"><a href="linear-models-with-a-single-categorical-x.html#cb337-11"></a>                          <span class="kw">aes</span>(<span class="dt">x =</span> estimate,</span>
+<span id="cb337-12"><a href="linear-models-with-a-single-categorical-x.html#cb337-12"></a>                              <span class="dt">y =</span> contrast)) <span class="op">+</span></span>
+<span id="cb337-13"><a href="linear-models-with-a-single-categorical-x.html#cb337-13"></a><span class="st">  </span><span class="co"># confidence level of effect</span></span>
+<span id="cb337-14"><a href="linear-models-with-a-single-categorical-x.html#cb337-14"></a><span class="st">  </span><span class="kw">geom_errorbar</span>(<span class="kw">aes</span>(<span class="dt">xmin=</span>lower.CL, </span>
+<span id="cb337-15"><a href="linear-models-with-a-single-categorical-x.html#cb337-15"></a>                    <span class="dt">xmax=</span>upper.CL),</span>
+<span id="cb337-16"><a href="linear-models-with-a-single-categorical-x.html#cb337-16"></a>                <span class="dt">width=</span><span class="dv">0</span>, </span>
+<span id="cb337-17"><a href="linear-models-with-a-single-categorical-x.html#cb337-17"></a>                <span class="dt">color=</span><span class="st">&quot;black&quot;</span>) <span class="op">+</span></span>
+<span id="cb337-18"><a href="linear-models-with-a-single-categorical-x.html#cb337-18"></a><span class="st">  </span><span class="co"># estimate of effect</span></span>
+<span id="cb337-19"><a href="linear-models-with-a-single-categorical-x.html#cb337-19"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">size =</span> <span class="dv">3</span>) <span class="op">+</span></span>
 <span id="cb337-20"><a href="linear-models-with-a-single-categorical-x.html#cb337-20"></a><span class="st">  </span></span>
-<span id="cb337-21"><a href="linear-models-with-a-single-categorical-x.html#cb337-21"></a><span class="st">  </span><span class="co"># comment this out</span></span>
-<span id="cb337-22"><a href="linear-models-with-a-single-categorical-x.html#cb337-22"></a><span class="st">  </span><span class="co"># annotate(geom = &quot;text&quot;,</span></span>
-<span id="cb337-23"><a href="linear-models-with-a-single-categorical-x.html#cb337-23"></a><span class="st">  </span><span class="co">#          label = &quot;p-value&quot;,</span></span>
-<span id="cb337-24"><a href="linear-models-with-a-single-categorical-x.html#cb337-24"></a><span class="st">  </span><span class="co">#          y = 3.25,</span></span>
-<span id="cb337-25"><a href="linear-models-with-a-single-categorical-x.html#cb337-25"></a><span class="st">  </span><span class="co">#          x = 28) +</span></span>
-<span id="cb337-26"><a href="linear-models-with-a-single-categorical-x.html#cb337-26"></a><span class="st">  </span><span class="co"># </span></span>
-<span id="cb337-27"><a href="linear-models-with-a-single-categorical-x.html#cb337-27"></a><span class="st">  </span><span class="co"># contrast labels</span></span>
-<span id="cb337-28"><a href="linear-models-with-a-single-categorical-x.html#cb337-28"></a><span class="st">  </span></span>
-<span id="cb337-29"><a href="linear-models-with-a-single-categorical-x.html#cb337-29"></a><span class="st">  </span><span class="kw">scale_y_discrete</span>(<span class="dt">labels =</span> <span class="kw">c</span>(<span class="st">&quot;NE minus cold&quot;</span>,</span>
-<span id="cb337-30"><a href="linear-models-with-a-single-categorical-x.html#cb337-30"></a>                              <span class="st">&quot;NE effect&quot;</span>,</span>
-<span id="cb337-31"><a href="linear-models-with-a-single-categorical-x.html#cb337-31"></a>                              <span class="st">&quot;cold effect&quot;</span></span>
-<span id="cb337-32"><a href="linear-models-with-a-single-categorical-x.html#cb337-32"></a>  )) <span class="op">+</span></span>
-<span id="cb337-33"><a href="linear-models-with-a-single-categorical-x.html#cb337-33"></a><span class="st">  </span></span>
-<span id="cb337-34"><a href="linear-models-with-a-single-categorical-x.html#cb337-34"></a><span class="st">  </span><span class="co"># x-axis label and aesthetics</span></span>
-<span id="cb337-35"><a href="linear-models-with-a-single-categorical-x.html#cb337-35"></a><span class="st">  </span><span class="kw">xlab</span>(<span class="st">&quot;Effects (pmol/mL)&quot;</span>) <span class="op">+</span></span>
-<span id="cb337-36"><a href="linear-models-with-a-single-categorical-x.html#cb337-36"></a><span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;Contrast&quot;</span>) <span class="op">+</span></span>
-<span id="cb337-37"><a href="linear-models-with-a-single-categorical-x.html#cb337-37"></a><span class="st">  </span><span class="kw">coord_cartesian</span>(<span class="dt">xlim =</span> <span class="kw">c</span>(<span class="op">-</span><span class="dv">10</span>,<span class="dv">30</span>)) <span class="op">+</span></span>
-<span id="cb337-38"><a href="linear-models-with-a-single-categorical-x.html#cb337-38"></a><span class="st">  </span></span>
-<span id="cb337-39"><a href="linear-models-with-a-single-categorical-x.html#cb337-39"></a><span class="st">  </span><span class="co"># the new code</span></span>
-<span id="cb337-40"><a href="linear-models-with-a-single-categorical-x.html#cb337-40"></a><span class="st">  </span><span class="kw">scale_x_continuous</span>(<span class="dt">breaks =</span> <span class="kw">c</span>(<span class="op">-</span><span class="dv">10</span>, <span class="dv">0</span>, <span class="dv">10</span>, <span class="dv">20</span>, <span class="dv">28</span>),</span>
-<span id="cb337-41"><a href="linear-models-with-a-single-categorical-x.html#cb337-41"></a>                     <span class="dt">labels =</span> <span class="kw">c</span>(<span class="st">&quot;-10&quot;</span>, <span class="st">&quot;0&quot;</span>, <span class="st">&quot;10&quot;</span>, <span class="st">&quot;20&quot;</span>, <span class="st">&quot;p-value&quot;</span>),</span>
-<span id="cb337-42"><a href="linear-models-with-a-single-categorical-x.html#cb337-42"></a>                     <span class="dt">position =</span> <span class="st">&quot;top&quot;</span>) <span class="op">+</span><span class="st"> </span><span class="co"># move to top</span></span>
-<span id="cb337-43"><a href="linear-models-with-a-single-categorical-x.html#cb337-43"></a></span>
-<span id="cb337-44"><a href="linear-models-with-a-single-categorical-x.html#cb337-44"></a><span class="st">  </span><span class="co"># use ggpubr theme</span></span>
-<span id="cb337-45"><a href="linear-models-with-a-single-categorical-x.html#cb337-45"></a><span class="st">  </span><span class="kw">theme_pubr</span>() <span class="op">+</span></span>
-<span id="cb337-46"><a href="linear-models-with-a-single-categorical-x.html#cb337-46"></a><span class="st">  </span></span>
-<span id="cb337-47"><a href="linear-models-with-a-single-categorical-x.html#cb337-47"></a><span class="st">  </span><span class="ot">NULL</span></span></code></pre></div>
+<span id="cb337-21"><a href="linear-models-with-a-single-categorical-x.html#cb337-21"></a><span class="st">  </span><span class="co"># draw a line at effect = 0</span></span>
+<span id="cb337-22"><a href="linear-models-with-a-single-categorical-x.html#cb337-22"></a><span class="st">  </span><span class="kw">geom_vline</span>(<span class="dt">xintercept=</span><span class="dv">0</span>, <span class="dt">linetype =</span> <span class="dv">2</span>) <span class="op">+</span></span>
+<span id="cb337-23"><a href="linear-models-with-a-single-categorical-x.html#cb337-23"></a><span class="st">  </span></span>
+<span id="cb337-24"><a href="linear-models-with-a-single-categorical-x.html#cb337-24"></a><span class="st">  </span><span class="co"># p-value. The y coordinates are set by eye</span></span>
+<span id="cb337-25"><a href="linear-models-with-a-single-categorical-x.html#cb337-25"></a><span class="st">  </span><span class="kw">annotate</span>(<span class="dt">geom =</span> <span class="st">&quot;text&quot;</span>,</span>
+<span id="cb337-26"><a href="linear-models-with-a-single-categorical-x.html#cb337-26"></a>           <span class="dt">label =</span> fig2a_m1_pairs_dt<span class="op">$</span>p_pretty,</span>
+<span id="cb337-27"><a href="linear-models-with-a-single-categorical-x.html#cb337-27"></a>           <span class="dt">y =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">3</span>,</span>
+<span id="cb337-28"><a href="linear-models-with-a-single-categorical-x.html#cb337-28"></a>           <span class="dt">x =</span> <span class="dv">28</span>) <span class="op">+</span></span>
+<span id="cb337-29"><a href="linear-models-with-a-single-categorical-x.html#cb337-29"></a><span class="st">  </span></span>
+<span id="cb337-30"><a href="linear-models-with-a-single-categorical-x.html#cb337-30"></a><span class="st">  </span><span class="kw">scale_y_discrete</span>(<span class="dt">labels =</span> fig2a_m1_pairs_dt<span class="op">$</span>contrast_label) <span class="op">+</span></span>
+<span id="cb337-31"><a href="linear-models-with-a-single-categorical-x.html#cb337-31"></a><span class="st">  </span></span>
+<span id="cb337-32"><a href="linear-models-with-a-single-categorical-x.html#cb337-32"></a><span class="st">  </span><span class="co"># x-axis label and aesthetics</span></span>
+<span id="cb337-33"><a href="linear-models-with-a-single-categorical-x.html#cb337-33"></a><span class="st">  </span><span class="kw">xlab</span>(<span class="st">&quot;Effects (pmol/mL)&quot;</span>) <span class="op">+</span></span>
+<span id="cb337-34"><a href="linear-models-with-a-single-categorical-x.html#cb337-34"></a><span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;Contrast&quot;</span>) <span class="op">+</span></span>
+<span id="cb337-35"><a href="linear-models-with-a-single-categorical-x.html#cb337-35"></a><span class="st">  </span><span class="kw">coord_cartesian</span>(<span class="dt">xlim =</span> <span class="kw">c</span>(<span class="op">-</span><span class="dv">10</span>,<span class="dv">30</span>)) <span class="op">+</span></span>
+<span id="cb337-36"><a href="linear-models-with-a-single-categorical-x.html#cb337-36"></a><span class="st">  </span></span>
+<span id="cb337-37"><a href="linear-models-with-a-single-categorical-x.html#cb337-37"></a><span class="st">  </span><span class="co"># the new code</span></span>
+<span id="cb337-38"><a href="linear-models-with-a-single-categorical-x.html#cb337-38"></a><span class="st">  </span><span class="kw">scale_x_continuous</span>(<span class="dt">breaks =</span> <span class="kw">c</span>(<span class="op">-</span><span class="dv">10</span>, <span class="dv">0</span>, <span class="dv">10</span>, <span class="dv">20</span>, <span class="dv">28</span>),</span>
+<span id="cb337-39"><a href="linear-models-with-a-single-categorical-x.html#cb337-39"></a>                     <span class="dt">labels =</span> <span class="kw">c</span>(<span class="st">&quot;-10&quot;</span>, <span class="st">&quot;0&quot;</span>, <span class="st">&quot;10&quot;</span>, <span class="st">&quot;20&quot;</span>, <span class="st">&quot;p-value&quot;</span>),</span>
+<span id="cb337-40"><a href="linear-models-with-a-single-categorical-x.html#cb337-40"></a>                     <span class="dt">position =</span> <span class="st">&quot;top&quot;</span>) <span class="op">+</span><span class="st"> </span><span class="co"># move to top</span></span>
+<span id="cb337-41"><a href="linear-models-with-a-single-categorical-x.html#cb337-41"></a></span>
+<span id="cb337-42"><a href="linear-models-with-a-single-categorical-x.html#cb337-42"></a><span class="st">  </span><span class="co"># use ggpubr theme</span></span>
+<span id="cb337-43"><a href="linear-models-with-a-single-categorical-x.html#cb337-43"></a><span class="st">  </span><span class="kw">theme_pubr</span>() <span class="op">+</span></span>
+<span id="cb337-44"><a href="linear-models-with-a-single-categorical-x.html#cb337-44"></a><span class="st">  </span></span>
+<span id="cb337-45"><a href="linear-models-with-a-single-categorical-x.html#cb337-45"></a><span class="st">  </span><span class="ot">NULL</span></span></code></pre></div>
 <div class="sourceCode" id="cb338"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb338-1"><a href="linear-models-with-a-single-categorical-x.html#cb338-1"></a><span class="kw">plot_grid</span>(gg_effect,</span>
 <span id="cb338-2"><a href="linear-models-with-a-single-categorical-x.html#cb338-2"></a>          gg_response,</span>
 <span id="cb338-3"><a href="linear-models-with-a-single-categorical-x.html#cb338-3"></a>          <span class="dt">nrow=</span><span class="dv">2</span>,</span>
