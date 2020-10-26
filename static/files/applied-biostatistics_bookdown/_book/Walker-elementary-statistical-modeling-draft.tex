@@ -10676,7 +10676,7 @@ The coefficient table is
 
 The response-effect plot shows large overlap in the LDL-C response and treatment effect that is small relative to the noise. ``No effect of the drug (\(p = .31\))'' is an incorrect interpretation of the \emph{p}-value of the significance test of the estimate of \(\beta_1\). A better interpretation is, the estimated effect is -1.6 but everything from large, negative effects to moderate positive effects are consistent with the data.
 
-LDL-C is strongly correlated with age and there is a large range in age among the Applied Bistats students. d, age will contribute to a large fraction of the variance in LDL-C. If so, this age-related variance \emph{might} be masking the effect of the drug. Here is a plot of LDL-C vs.~age, with treatment assignment color coded. Remember, these are the exact same values of LDL-C as in figure \ref{fig:cov-harrelplot} above.
+As expert biologists, we know that LDL-C is strongly correlated with age and there is a large range in age among the Applied Bistats students. If age contributes to a large fraction of the variance in LDL-C among applied biostats students, then age-related variance \emph{might} mask the effect of the drug. Here is a plot of LDL-C vs.~age, with treatment assignment color coded. Remember, these are the exact same values of LDL-C as in figure \ref{fig:cov-harrelplot} above.
 
 \begin{figure}
 \centering
@@ -10684,42 +10684,83 @@ LDL-C is strongly correlated with age and there is a large range in age among th
 \caption{\label{fig:ancova-plot2}Linear regression of \(ldlc\) on age fit to the fake LDL-C data. The points are color coded by treatment.}
 \end{figure}
 
-The regression line is from the fit of the linear model
+The regression line is the fit of the linear model
 
 \begin{equation}
 ldlc = \beta_0 + \beta_1 age + \varepsilon
 \label{eq:cov-age}
 \end{equation}
 
-While the points are color-coded by treatment level, \(treatment\) is not in model \eqref{eq:cov-age}. The color-coding makes it clear that most of the ``placebo'' data points are above the line, or have positive residuals from the model, while the ``drug'' data points are below the line, or have negative residuals from the model. That is, \textbf{at any specific value of age, there is very small overlap of LDL-C values for drug and for placebo}.
+The points are color-coded by treatment level but \(treatment\) is not in model \eqref{eq:cov-age}. The color-coding makes it clear that most of the ``placebo'' data points are above the line, or have positive residuals from the model, while the ``drug'' data points are below the line, or have negative residuals from the model. That is, \textbf{at any specific value of age, there is very small overlap of LDL-C values for drug and for placebo}.
 
-What is happening? Age is contributing to the variance of LDL-C, and the noise in \(\varepsilon\) in model \eqref{eq:cov-no-cov}, and this added noise makes it harder to measure the effect of the new drug relative to placebo. Age is masking the effect. If we could somehow measure the effect of the drug at a specific age, then we could get a more precise estimate of the effect. But how to do this? Here are three possible methods. The third is \emph{the only} one you should use but the second is useful for understanding the third.
+What is happening? Age is contributing to the variance of LDL-C, and the noise in \(\varepsilon\) in model \eqref{eq:cov-no-cov}, and this added noise makes decreases the precision in our estimate of the effect of the new drug relative to placebo. When we view the data as in Figure \ref{covariate-fd-plot-no-cov}, age is masking the effect. If we could somehow measure the effect of the drug at a specific age, then we could get a more precise estimate of the effect. But how to do this? Here are three possible methods. The third is \emph{the only} one you should use but the second is useful for understanding the third.
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
 \item
   We could just analyze a subset of the data, that is, only the cases in which the value of age is nearly equal. This throws away perfectly good data and, consequently, greatly reduces the sample size and thus precision to estimate the effect.
 \item
-  We could use the residuals of the fitted model \eqref{eq:ancova-2} to estimate the effect of drug treatment (this is what we did by eye in figure \ref{fig:ancova-plot2}). Here is the new model
+  We could first fit model \eqref{eq:cov-age} and then use the \emph{residuals} of this fit as a new response variable to estimate the effect of drug treatment (this is what we did by eye in figure \ref{fig:ancova-plot2}).
 \end{enumerate}
+
+step 1:
+
+\begin{equation}
+ldlc = \beta_0 + \beta_1 age + \varepsilon
+\end{equation}
+
+step 2:
 
 \begin{equation}
 ldlc\_residual = \beta_0 + \beta_1 treatment_{drug} + \varepsilon
 \label{eq:ancova-3}
 \end{equation}
 
-where \(ldlc\_residua\) is the set of residuals from the fit model \eqref{eq:cov-age}.
+Here, I use this two-stage method because it is useful to introduce the concept of \textbf{adjusting for a covariate} in a linear model, where the covariate here is \(age\). But, in general, don't do this -- the method usually ``works'' pretty well if the mean of the \textbf{covariate} (the step 1 \(X\) variable) is nearly the same in both treatment levels but artifacts that lead to wrong inference are introduced if the mean of the covariate is far apart.
 
 \includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/covariate-fd-plot-cov-1.pdf}
 
-Now the estimate of the effect is -3.8 mg/dL blood and the SE is only 0.79. In this two-stage analysis (stage 1: fit ldlc \textasciitilde{} age to get residuals, stage 2: fit residuals \textasciitilde{} treatment), we have \emph{eliminated the effect of age} on the variance of the response and, as a consequence, the estimate of the effect of the drug is much more precise -- the effect of \(treatment\) has a smaller standard error.
+Figure \ref{covariate-fd-plot-cov}A is an effect-response plot of the effect of treatment on the LDL-C \textbf{adjusted for age} using the two-step method. Figure \ref{covariate-fd-plot-cov}B is the original (not adjust) effect-response plot. The \textbf{scale} of both plots are the same. This means that the response axis has the same length in both plots and the effects axis has the same length in both plots. This makes comparing the two easy. Two patterns are conspicuous
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  The \textbf{age-adjusted means} in Figure \ref{covariate-fd-plot-cov}A are further apart (the difference is bigger) then the unadjusted means in Figure \ref{covariate-fd-plot-cov}B. This is seen in both the response and the effects components of the plot.
+\item
+  The spread of the residual LDL-C measures within each treatment level in Figure \ref{covariate-fd-plot-cov}A is less than the spread of the raw LDL-C measures in Figure \ref{covariate-fd-plot-cov}B.
+\item
+  The confidence interval of the effect (difference in means) is smaller using the adjusted model (Figure \ref{covariate-fd-plot-cov}A) than in the unadjusted model (Figure \ref{covariate-fd-plot-cov}B)
+\item
+  The \emph{p}-value of the effect (difference in means) is smaller using the adjusted model (Figure \ref{covariate-fd-plot-cov}A) than in the unadjusted model (Figure \ref{covariate-fd-plot-cov}B)
+\end{enumerate}
+
+These patterns are quantified by the Estimates and SEs of the coefficient table. Again, I show both for comparison. Can you match comparisons 1-4 above with the statistic in the coefficient table?
+
+Coefficient table of two-step, ``adjusted'' model (adjusting for \(age\)):
+
+\begin{verbatim}
+##               Estimate Std. Error t value Pr(>|t|)  2.5 % 97.5 %
+## (Intercept)      1.901      0.556   3.422    0.002  0.763  3.040
+## treatmentdrug   -3.803      0.786  -4.840    0.000 -5.412 -2.193
+\end{verbatim}
+
+Coefficient table of unadjusted model (adjusting for \(age\)):
+
+\begin{verbatim}
+##               Estimate Std. Error t value Pr(>|t|)   2.5 %  97.5 %
+## (Intercept)    106.045      1.070  99.111    0.000 103.854 108.237
+## treatmentdrug   -1.554      1.513  -1.027    0.313  -4.654   1.546
+\end{verbatim}
+
+It is clear from the plots and the tables that this two-stage adjustment increases the precision of the estimates of the means and the differences in means by \emph{eliminating the contribution of Age to the variance in LDL-C}.
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
 \setcounter{enumi}{2}
 \tightlist
 \item
-  A better method for this two-stage procedure that increases the precision of the estmate of the treatment effect by eliminating variance of a covariate (\(age\)) is to simply add the covariate to the original linear model.
+  The best practice for \textbf{adjusting for a covariate} (or the \emph{statistical elimination of a covariate}) is to simply add the covariate to the linear model.
 \end{enumerate}
 
 \begin{equation}
@@ -10727,20 +10768,39 @@ ldlc = \beta_0 + \beta_1 age + \beta_2 treatment_{drug} + \varepsilon
 \label{eq:cov-cov}
 \end{equation}
 
-which results in the Harrell Plot
-
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-238-1.pdf}
-
-and the coefficient table
-
 \begin{verbatim}
-##               Estimate Std. Error t value Pr(>|t|)
-## (Intercept)     75.586      3.257  23.205        0
-## age              1.261      0.133   9.474        0
-## treatmentdrug   -4.450      0.802  -5.552        0
+##               Estimate Std. Error t value Pr(>|t|)  2.5 % 97.5 %
+## (Intercept)      75.60      3.260   23.20 2.28e-19 68.900  82.30
+## age               1.26      0.133    9.47 4.46e-10  0.988   1.53
+## treatmentdrug    -4.45      0.802   -5.55 6.94e-06 -6.090  -2.81
 \end{verbatim}
 
-In the linear model that includes the covariate \(age\) (model \eqref{eq:cov-cov}), the SE of the treatment effect is 0.8. Compare this to SE of the treatment effect in the model without the covariate (model \eqref{eq:cov-no-cov}), which is 1.9X larger.
+Again, compare the coefficient table from the model fit without the covariate.
+
+\begin{verbatim}
+##               Estimate Std. Error t value Pr(>|t|)  2.5 % 97.5 %
+## (Intercept)     106.00       1.07   99.10 3.36e-37 104.00 108.00
+## treatmentdrug    -1.55       1.51   -1.03 3.13e-01  -4.65   1.55
+\end{verbatim}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  The adjusted effect is larger (-4.5 vs.~-1.6)
+\item
+  The adjusted SE of the difference is smaller (0.8 vs.~1.5)
+\item
+  The adjusted CIs are narrower (-6.1, -2.8 vs.~-4.7, 1.6)
+\item
+  The p-value of the adjusted difference is smaller (0.000007 vs.~0.31)
+\end{enumerate}
+
+A plot of the model is
+
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/covariate-plot-the-model-1.pdf}
+
+Adjusting should always be done but its not a miracle.
 
 \hypertarget{adding-covariates-can-decrease-prediction-error-in-predictive-models}{%
 \section{Adding covariates can decrease prediction error in predictive models}\label{adding-covariates-can-decrease-prediction-error-in-predictive-models}}
@@ -11877,7 +11937,7 @@ These can be combined into a single table using \texttt{rbind}
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-249-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-251-1.pdf}
 
 \hypertarget{plots-that-communicate-the-factorial-design}{%
 \subsubsection{Plots that communicate the factorial design}\label{plots-that-communicate-the-factorial-design}}
@@ -12024,7 +12084,7 @@ An interaction plot is an okay plot. It doesn't show the data, only a minimal, d
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-250-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-252-1.pdf}
 
 This effects plot shows the four simple effects, the single interaction (Temp18:CO21100), and their 95\% confidence intervals. In the original paper, the researchers were testing a scientific (not statistical!) model that predicted no interaction between CO2 and Temp, and the researchers argued that these data supported this model because of the ``not statistically significant'' \emph{p}-value for the interaction effect. The data are consistent with this model (one end of the 95\% CI for the interaction includes zero) but also support a model of a large, negative interaction (the other end of the 95\% CI includes large negative values). The data are too course (or the signal:noise ratio is to small) to have much confidence in the size of the interaction effect.
 
@@ -12041,7 +12101,7 @@ This effects plot shows the four simple effects, the single interaction (Temp18:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-251-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-253-1.pdf}
 
 The effects and interaction plot are combined into a single plot.
 
@@ -14706,7 +14766,7 @@ A plot of the dispersion statistic can be generated using the object returned by
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-273-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-275-1.pdf}
 
 \begin{verbatim}
 ## 

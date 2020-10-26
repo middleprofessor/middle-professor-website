@@ -592,46 +592,76 @@ ldlc = \beta_0 + \beta_1 treatment_{drug} + \varepsilon
 ## (Intercept)    106.045      1.070  99.111    0.000 103.854 108.237
 ## treatmentdrug   -1.554      1.513  -1.027    0.313  -4.654   1.546</code></pre>
 <p>The response-effect plot shows large overlap in the LDL-C response and treatment effect that is small relative to the noise. “No effect of the drug (<span class="math inline">\(p = .31\)</span>)” is an incorrect interpretation of the <em>p</em>-value of the significance test of the estimate of <span class="math inline">\(\beta_1\)</span>. A better interpretation is, the estimated effect is -1.6 but everything from large, negative effects to moderate positive effects are consistent with the data.</p>
-<p>LDL-C is strongly correlated with age and there is a large range in age among the Applied Bistats students. d, age will contribute to a large fraction of the variance in LDL-C. If so, this age-related variance <em>might</em> be masking the effect of the drug. Here is a plot of LDL-C vs. age, with treatment assignment color coded. Remember, these are the exact same values of LDL-C as in figure <a href="#fig:cov-harrelplot"><strong>??</strong></a> above.</p>
+<p>As expert biologists, we know that LDL-C is strongly correlated with age and there is a large range in age among the Applied Bistats students. If age contributes to a large fraction of the variance in LDL-C among applied biostats students, then age-related variance <em>might</em> mask the effect of the drug. Here is a plot of LDL-C vs. age, with treatment assignment color coded. Remember, these are the exact same values of LDL-C as in figure <a href="#fig:cov-harrelplot"><strong>??</strong></a> above.</p>
 <div class="figure"><span id="fig:ancova-plot2"></span>
 <img src="Walker-elementary-statistical-modeling-draft_files/figure-html/ancova-plot2-1.png" alt="Linear regression of $ldlc$ on age fit to the fake LDL-C data. The points are color coded by treatment." width="576" />
 <p class="caption">
 Figure 14.1: Linear regression of <span class="math inline">\(ldlc\)</span> on age fit to the fake LDL-C data. The points are color coded by treatment.
 </p>
 </div>
-<p>The regression line is from the fit of the linear model</p>
+<p>The regression line is the fit of the linear model</p>
 <p><span class="math display" id="eq:cov-age">\[\begin{equation}
 ldlc = \beta_0 + \beta_1 age + \varepsilon
 \tag{14.2}
 \end{equation}\]</span></p>
-<p>While the points are color-coded by treatment level, <span class="math inline">\(treatment\)</span> is not in model <a href="adding-covariates-to-a-linear-model.html#eq:cov-age">(14.2)</a>. The color-coding makes it clear that most of the “placebo” data points are above the line, or have positive residuals from the model, while the “drug” data points are below the line, or have negative residuals from the model. That is, <strong>at any specific value of age, there is very small overlap of LDL-C values for drug and for placebo</strong>.</p>
-<p>What is happening? Age is contributing to the variance of LDL-C, and the noise in <span class="math inline">\(\varepsilon\)</span> in model <a href="adding-covariates-to-a-linear-model.html#eq:cov-no-cov">(14.1)</a>, and this added noise makes it harder to measure the effect of the new drug relative to placebo. Age is masking the effect. If we could somehow measure the effect of the drug at a specific age, then we could get a more precise estimate of the effect. But how to do this? Here are three possible methods. The third is <em>the only</em> one you should use but the second is useful for understanding the third.</p>
+<p>The points are color-coded by treatment level but <span class="math inline">\(treatment\)</span> is not in model <a href="adding-covariates-to-a-linear-model.html#eq:cov-age">(14.2)</a>. The color-coding makes it clear that most of the “placebo” data points are above the line, or have positive residuals from the model, while the “drug” data points are below the line, or have negative residuals from the model. That is, <strong>at any specific value of age, there is very small overlap of LDL-C values for drug and for placebo</strong>.</p>
+<p>What is happening? Age is contributing to the variance of LDL-C, and the noise in <span class="math inline">\(\varepsilon\)</span> in model <a href="adding-covariates-to-a-linear-model.html#eq:cov-no-cov">(14.1)</a>, and this added noise makes decreases the precision in our estimate of the effect of the new drug relative to placebo. When we view the data as in Figure <a href="#covariate-fd-plot-no-cov"><strong>??</strong></a>, age is masking the effect. If we could somehow measure the effect of the drug at a specific age, then we could get a more precise estimate of the effect. But how to do this? Here are three possible methods. The third is <em>the only</em> one you should use but the second is useful for understanding the third.</p>
 <ol style="list-style-type: decimal">
 <li><p>We could just analyze a subset of the data, that is, only the cases in which the value of age is nearly equal. This throws away perfectly good data and, consequently, greatly reduces the sample size and thus precision to estimate the effect.</p></li>
-<li><p>We could use the residuals of the fitted model <a href="#eq:ancova-2">(<strong>??</strong>)</a> to estimate the effect of drug treatment (this is what we did by eye in figure <a href="adding-covariates-to-a-linear-model.html#fig:ancova-plot2">14.1</a>). Here is the new model</p></li>
+<li><p>We could first fit model <a href="adding-covariates-to-a-linear-model.html#eq:cov-age">(14.2)</a> and then use the <em>residuals</em> of this fit as a new response variable to estimate the effect of drug treatment (this is what we did by eye in figure <a href="adding-covariates-to-a-linear-model.html#fig:ancova-plot2">14.1</a>).</p></li>
 </ol>
+<p>step 1:</p>
+<p><span class="math display">\[\begin{equation}
+ldlc = \beta_0 + \beta_1 age + \varepsilon
+\end{equation}\]</span></p>
+<p>step 2:</p>
 <p><span class="math display" id="eq:ancova-3">\[\begin{equation}
 ldlc\_residual = \beta_0 + \beta_1 treatment_{drug} + \varepsilon
 \tag{14.3}
 \end{equation}\]</span></p>
-<p>where <span class="math inline">\(ldlc\_residua\)</span> is the set of residuals from the fit model <a href="adding-covariates-to-a-linear-model.html#eq:cov-age">(14.2)</a>.</p>
+<p>Here, I use this two-stage method because it is useful to introduce the concept of <strong>adjusting for a covariate</strong> in a linear model, where the covariate here is <span class="math inline">\(age\)</span>. But, in general, don’t do this – the method usually “works” pretty well if the mean of the <strong>covariate</strong> (the step 1 <span class="math inline">\(X\)</span> variable) is nearly the same in both treatment levels but artifacts that lead to wrong inference are introduced if the mean of the covariate is far apart.</p>
 <p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/covariate-fd-plot-cov-1.png" width="576" /></p>
-<p>Now the estimate of the effect is -3.8 mg/dL blood and the SE is only 0.79. In this two-stage analysis (stage 1: fit ldlc ~ age to get residuals, stage 2: fit residuals ~ treatment), we have <em>eliminated the effect of age</em> on the variance of the response and, as a consequence, the estimate of the effect of the drug is much more precise – the effect of <span class="math inline">\(treatment\)</span> has a smaller standard error.</p>
+<p>Figure <a href="#covariate-fd-plot-cov"><strong>??</strong></a>A is an effect-response plot of the effect of treatment on the LDL-C <strong>adjusted for age</strong> using the two-step method. Figure <a href="#covariate-fd-plot-cov"><strong>??</strong></a>B is the original (not adjust) effect-response plot. The <strong>scale</strong> of both plots are the same. This means that the response axis has the same length in both plots and the effects axis has the same length in both plots. This makes comparing the two easy. Two patterns are conspicuous</p>
+<ol style="list-style-type: decimal">
+<li>The <strong>age-adjusted means</strong> in Figure <a href="#covariate-fd-plot-cov"><strong>??</strong></a>A are further apart (the difference is bigger) then the unadjusted means in Figure <a href="#covariate-fd-plot-cov"><strong>??</strong></a>B. This is seen in both the response and the effects components of the plot.</li>
+<li>The spread of the residual LDL-C measures within each treatment level in Figure <a href="#covariate-fd-plot-cov"><strong>??</strong></a>A is less than the spread of the raw LDL-C measures in Figure <a href="#covariate-fd-plot-cov"><strong>??</strong></a>B.</li>
+<li>The confidence interval of the effect (difference in means) is smaller using the adjusted model (Figure <a href="#covariate-fd-plot-cov"><strong>??</strong></a>A) than in the unadjusted model (Figure <a href="#covariate-fd-plot-cov"><strong>??</strong></a>B)</li>
+<li>The <em>p</em>-value of the effect (difference in means) is smaller using the adjusted model (Figure <a href="#covariate-fd-plot-cov"><strong>??</strong></a>A) than in the unadjusted model (Figure <a href="#covariate-fd-plot-cov"><strong>??</strong></a>B)</li>
+</ol>
+<p>These patterns are quantified by the Estimates and SEs of the coefficient table. Again, I show both for comparison. Can you match comparisons 1-4 above with the statistic in the coefficient table?</p>
+<p>Coefficient table of two-step, “adjusted” model (adjusting for <span class="math inline">\(age\)</span>):</p>
+<pre><code>##               Estimate Std. Error t value Pr(&gt;|t|)  2.5 % 97.5 %
+## (Intercept)      1.901      0.556   3.422    0.002  0.763  3.040
+## treatmentdrug   -3.803      0.786  -4.840    0.000 -5.412 -2.193</code></pre>
+<p>Coefficient table of unadjusted model (adjusting for <span class="math inline">\(age\)</span>):</p>
+<pre><code>##               Estimate Std. Error t value Pr(&gt;|t|)   2.5 %  97.5 %
+## (Intercept)    106.045      1.070  99.111    0.000 103.854 108.237
+## treatmentdrug   -1.554      1.513  -1.027    0.313  -4.654   1.546</code></pre>
+<p>It is clear from the plots and the tables that this two-stage adjustment increases the precision of the estimates of the means and the differences in means by <em>eliminating the contribution of Age to the variance in LDL-C</em>.</p>
 <ol start="3" style="list-style-type: decimal">
-<li>A better method for this two-stage procedure that increases the precision of the estmate of the treatment effect by eliminating variance of a covariate (<span class="math inline">\(age\)</span>) is to simply add the covariate to the original linear model.</li>
+<li>The best practice for <strong>adjusting for a covariate</strong> (or the <em>statistical elimination of a covariate</em>) is to simply add the covariate to the linear model.</li>
 </ol>
 <p><span class="math display" id="eq:cov-cov">\[\begin{equation}
 ldlc = \beta_0 + \beta_1 age + \beta_2 treatment_{drug} + \varepsilon
 \tag{14.4}
 \end{equation}\]</span></p>
-<p>which results in the Harrell Plot</p>
-<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/unnamed-chunk-238-1.png" width="576" /></p>
-<p>and the coefficient table</p>
-<pre><code>##               Estimate Std. Error t value Pr(&gt;|t|)
-## (Intercept)     75.586      3.257  23.205        0
-## age              1.261      0.133   9.474        0
-## treatmentdrug   -4.450      0.802  -5.552        0</code></pre>
-<p>In the linear model that includes the covariate <span class="math inline">\(age\)</span> (model <a href="adding-covariates-to-a-linear-model.html#eq:cov-cov">(14.4)</a>), the SE of the treatment effect is 0.8. Compare this to SE of the treatment effect in the model without the covariate (model <a href="adding-covariates-to-a-linear-model.html#eq:cov-no-cov">(14.1)</a>), which is 1.9X larger.</p>
+<pre><code>##               Estimate Std. Error t value Pr(&gt;|t|)  2.5 % 97.5 %
+## (Intercept)      75.60      3.260   23.20 2.28e-19 68.900  82.30
+## age               1.26      0.133    9.47 4.46e-10  0.988   1.53
+## treatmentdrug    -4.45      0.802   -5.55 6.94e-06 -6.090  -2.81</code></pre>
+<p>Again, compare the coefficient table from the model fit without the covariate.</p>
+<pre><code>##               Estimate Std. Error t value Pr(&gt;|t|)  2.5 % 97.5 %
+## (Intercept)     106.00       1.07   99.10 3.36e-37 104.00 108.00
+## treatmentdrug    -1.55       1.51   -1.03 3.13e-01  -4.65   1.55</code></pre>
+<ol style="list-style-type: decimal">
+<li>The adjusted effect is larger (-4.5 vs. -1.6)</li>
+<li>The adjusted SE of the difference is smaller (0.8 vs. 1.5)</li>
+<li>The adjusted CIs are narrower (-6.1, -2.8 vs. -4.7, 1.6)</li>
+<li>The p-value of the adjusted difference is smaller (0.000007 vs. 0.31)</li>
+</ol>
+<p>A plot of the model is</p>
+<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/covariate-plot-the-model-1.png" width="576" /></p>
+<p>Adjusting should always be done but its not a miracle.</p>
 </div>
 <div id="adding-covariates-can-decrease-prediction-error-in-predictive-models" class="section level2">
 <h2><span class="header-section-number">14.2</span> Adding covariates can decrease prediction error in predictive models</h2>

@@ -2146,10 +2146,10 @@ Residuals
 <div id="type-i-sum-of-squares-in-r" class="section level3">
 <h3><span class="header-section-number">16.5.1</span> Type I sum of squares in R</h3>
 <p>The base R function <code>anova()</code> computes the ANOVA table using Type I sum of squares for any fit model object, such as that returned by <code>lm</code>. Here is a script for the urchin data. I first create unbalanced data by deleting the first row that is the control row.</p>
-<div class="sourceCode" id="cb429"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb429-1"><a href="anova-tables.html#cb429-1"></a>cn_rows &lt;-<span class="st"> </span><span class="kw">which</span>(urchin[, Temp]<span class="op">==</span><span class="st">&quot;Temp-&quot;</span> <span class="op">&amp;</span><span class="st"> </span>urchin[, CO2]<span class="op">==</span><span class="st">&quot;CO2-&quot;</span>) <span class="co"># gives the rows of the controls</span></span>
-<span id="cb429-2"><a href="anova-tables.html#cb429-2"></a>urchin_unbalanced &lt;-<span class="st"> </span>urchin[<span class="op">-</span>cn_rows[<span class="dv">1</span>],] <span class="co"># deletes the row that is in first element of cn_rows</span></span>
-<span id="cb429-3"><a href="anova-tables.html#cb429-3"></a>urchin.t1 &lt;-<span class="st"> </span><span class="kw">lm</span>(Resp <span class="op">~</span><span class="st"> </span>Temp<span class="op">*</span>CO2, <span class="dt">data=</span>urchin_unbalanced)</span>
-<span id="cb429-4"><a href="anova-tables.html#cb429-4"></a><span class="kw">anova</span>(urchin.t1)</span></code></pre></div>
+<div class="sourceCode" id="cb432"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb432-1"><a href="anova-tables.html#cb432-1"></a>cn_rows &lt;-<span class="st"> </span><span class="kw">which</span>(urchin[, Temp]<span class="op">==</span><span class="st">&quot;Temp-&quot;</span> <span class="op">&amp;</span><span class="st"> </span>urchin[, CO2]<span class="op">==</span><span class="st">&quot;CO2-&quot;</span>) <span class="co"># gives the rows of the controls</span></span>
+<span id="cb432-2"><a href="anova-tables.html#cb432-2"></a>urchin_unbalanced &lt;-<span class="st"> </span>urchin[<span class="op">-</span>cn_rows[<span class="dv">1</span>],] <span class="co"># deletes the row that is in first element of cn_rows</span></span>
+<span id="cb432-3"><a href="anova-tables.html#cb432-3"></a>urchin.t1 &lt;-<span class="st"> </span><span class="kw">lm</span>(Resp <span class="op">~</span><span class="st"> </span>Temp<span class="op">*</span>CO2, <span class="dt">data=</span>urchin_unbalanced)</span>
+<span id="cb432-4"><a href="anova-tables.html#cb432-4"></a><span class="kw">anova</span>(urchin.t1)</span></code></pre></div>
 <pre><code>## Analysis of Variance Table
 ## 
 ## Response: Resp
@@ -2165,8 +2165,8 @@ Residuals
 <h3><span class="header-section-number">16.5.2</span> Type II and III Sum of Squares</h3>
 <p>Type II sum of squares can be computed manually simply by fitting the model twice, once with the factors ordered one way and then with the factors ordered the opposite way. The car package has the function <code>Anova</code> that specifically outputs Type II and Type III ANOVA tables.</p>
 <p>Type II sum of squares can be fit with the interaction in the model, and this generates the Type II sum of squares for the main terms but the residual is wrong for the <span class="math inline">\(F\)</span>-ratio because it is the residual from the full model and Type II assumes the interaction effect is zero. So, if one wants an ANOVA table with a <span class="math inline">\(F\)</span> and <span class="math inline">\(p\)</span> that reflect this, then the interaction should be dropped from the model.</p>
-<div class="sourceCode" id="cb431"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb431-1"><a href="anova-tables.html#cb431-1"></a>urchin.t2 &lt;-<span class="st"> </span><span class="kw">lm</span>(Resp <span class="op">~</span><span class="st"> </span>Temp<span class="op">*</span>CO2, <span class="dt">data=</span>urchin_unbalanced)</span>
-<span id="cb431-2"><a href="anova-tables.html#cb431-2"></a><span class="kw">Anova</span>(urchin.t2, <span class="dt">type=</span><span class="st">&quot;2&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb434"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb434-1"><a href="anova-tables.html#cb434-1"></a>urchin.t2 &lt;-<span class="st"> </span><span class="kw">lm</span>(Resp <span class="op">~</span><span class="st"> </span>Temp<span class="op">*</span>CO2, <span class="dt">data=</span>urchin_unbalanced)</span>
+<span id="cb434-2"><a href="anova-tables.html#cb434-2"></a><span class="kw">Anova</span>(urchin.t2, <span class="dt">type=</span><span class="st">&quot;2&quot;</span>)</span></code></pre></div>
 <pre><code>## Anova Table (Type II tests)
 ## 
 ## Response: Resp
@@ -2177,8 +2177,8 @@ Residuals
 ## Residuals 62.527 19                      
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
-<div class="sourceCode" id="cb433"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb433-1"><a href="anova-tables.html#cb433-1"></a>urchin.t2 &lt;-<span class="st"> </span><span class="kw">lm</span>(Resp <span class="op">~</span><span class="st"> </span>Temp <span class="op">+</span><span class="st"> </span>CO2, <span class="dt">data=</span>urchin_unbalanced)</span>
-<span id="cb433-2"><a href="anova-tables.html#cb433-2"></a><span class="kw">Anova</span>(urchin.t2, <span class="dt">type=</span><span class="st">&quot;2&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb436"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb436-1"><a href="anova-tables.html#cb436-1"></a>urchin.t2 &lt;-<span class="st"> </span><span class="kw">lm</span>(Resp <span class="op">~</span><span class="st"> </span>Temp <span class="op">+</span><span class="st"> </span>CO2, <span class="dt">data=</span>urchin_unbalanced)</span>
+<span id="cb436-2"><a href="anova-tables.html#cb436-2"></a><span class="kw">Anova</span>(urchin.t2, <span class="dt">type=</span><span class="st">&quot;2&quot;</span>)</span></code></pre></div>
 <pre><code>## Anova Table (Type II tests)
 ## 
 ## Response: Resp
@@ -2189,9 +2189,9 @@ Residuals
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
 <p>To get type III sum of squares, we need to specify effects coding for the model matrix. The safest way to do this is something like this</p>
-<div class="sourceCode" id="cb435"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb435-1"><a href="anova-tables.html#cb435-1"></a>con3 &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">Temp=</span>contr.sum, <span class="dt">CO2=</span>contr.sum) <span class="co"># change the contrasts coding for the model matrix</span></span>
-<span id="cb435-2"><a href="anova-tables.html#cb435-2"></a>urchin.t3 &lt;-<span class="st"> </span><span class="kw">lm</span>(Resp <span class="op">~</span><span class="st"> </span>Temp<span class="op">*</span>CO2, <span class="dt">data=</span>urchin_unbalanced, <span class="dt">contrasts=</span>con3)</span>
-<span id="cb435-3"><a href="anova-tables.html#cb435-3"></a><span class="kw">Anova</span>(urchin.t3, <span class="dt">type=</span><span class="st">&quot;3&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb438"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb438-1"><a href="anova-tables.html#cb438-1"></a>con3 &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">Temp=</span>contr.sum, <span class="dt">CO2=</span>contr.sum) <span class="co"># change the contrasts coding for the model matrix</span></span>
+<span id="cb438-2"><a href="anova-tables.html#cb438-2"></a>urchin.t3 &lt;-<span class="st"> </span><span class="kw">lm</span>(Resp <span class="op">~</span><span class="st"> </span>Temp<span class="op">*</span>CO2, <span class="dt">data=</span>urchin_unbalanced, <span class="dt">contrasts=</span>con3)</span>
+<span id="cb438-3"><a href="anova-tables.html#cb438-3"></a><span class="kw">Anova</span>(urchin.t3, <span class="dt">type=</span><span class="st">&quot;3&quot;</span>)</span></code></pre></div>
 <pre><code>## Anova Table (Type III tests)
 ## 
 ## Response: Resp
