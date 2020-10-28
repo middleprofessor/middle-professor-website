@@ -124,7 +124,7 @@
   \postauthor{\par}
       \predate{\centering\large\emph}
   \postdate{\par}
-    \date{Draft: 2020-10-26}
+    \date{Draft: 2020-10-28}
 
 \usepackage{booktabs}
 \usepackage{amsthm}
@@ -10647,7 +10647,7 @@ As above, Power is computed for the linear model, linear model with a log-transf
 \hypertarget{adding-covariates-to-a-linear-model}{%
 \chapter{Adding covariates to a linear model}\label{adding-covariates-to-a-linear-model}}
 
-In its most general sense, \textbf{Covariates} are simply the \(X\) variables in a statistical model. With data from experiments, ``covariates'' more typically refers to \(X\) variables that are added to a model to increase precision of the treatment effects. In observational designs, covariates might be added to a model to 1) increase predictive ability, 2) because the researcher is interested in specific conditional effects, or 3) to eliminate confounding. These are discussed in later chapters.
+In its most general sense, \textbf{Covariates} are simply the \(X\) variables in a statistical model. With data from experiments, ``covariates'' more typically refers to \(X\) variables that are added to a model to increase precision of the treatment effects. In observational designs, covariates might be added to a model to 1) increase predictive ability, 2) because the researcher is interested in specific conditional effects, or 3) to eliminate confounding. These are discussed in later chapters. In this chapter, the covariate added to a linear model is a continous variable. Nothing is fundamentally different if the covariate added is categorical (\(Sex\) is a common categorical covariate).
 
 \hypertarget{adding-covariates-can-increases-the-precision-of-the-effect-of-interest}{%
 \section{Adding covariates can increases the precision of the effect of interest}\label{adding-covariates-can-increases-the-precision-of-the-effect-of-interest}}
@@ -10656,7 +10656,12 @@ I use fake data to introduce the concept of \textbf{statistical elimination} of 
 
 Thirty applied biostats students are recruited and are randomly assigned to either the ``placebo'' treatment level or ``drug'' treatment level. The response is blood LDL-C concentration. The drug manufacturer wants a measure of the effect of the new drug on ldlc.
 
+\begin{figure}
+\centering
 \includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/covariate-fd-plot-no-cov-1.pdf}
+\caption{\label{fig:covariate-fd-plot-no-cov}Effect of drug therapy on plasma LDL-C.}
+\end{figure}
+
 The linear model fit to the simulated LDL-C data is
 
 \begin{equation}
@@ -10718,7 +10723,11 @@ ldlc\_residual = \beta_0 + \beta_1 treatment_{drug} + \varepsilon
 
 Here, I use this two-stage method because it is useful to introduce the concept of \textbf{adjusting for a covariate} in a linear model, where the covariate here is \(age\). But, in general, don't do this -- the method usually ``works'' pretty well if the mean of the \textbf{covariate} (the step 1 \(X\) variable) is nearly the same in both treatment levels but artifacts that lead to wrong inference are introduced if the mean of the covariate is far apart.
 
+\begin{figure}
+\centering
 \includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/covariate-fd-plot-cov-1.pdf}
+\caption{\label{fig:covariate-fd-plot-cov}Effect of drug therapy on plasma LDL-C using residuals. Don't do this!}
+\end{figure}
 
 Figure \ref{covariate-fd-plot-cov}A is an effect-response plot of the effect of treatment on the LDL-C \textbf{adjusted for age} using the two-step method. Figure \ref{covariate-fd-plot-cov}B is the original (not adjust) effect-response plot. The \textbf{scale} of both plots are the same. This means that the response axis has the same length in both plots and the effects axis has the same length in both plots. This makes comparing the two easy. Two patterns are conspicuous
 
@@ -10798,18 +10807,611 @@ Again, compare the coefficient table from the model fit without the covariate.
 
 A plot of the model is
 
+\begin{figure}
+\centering
 \includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/covariate-plot-the-model-1.pdf}
+\caption{\label{fig:covariate-plot-the-model}Effect of drug therapy, adjusted for age, on plasma LDL-C.}
+\end{figure}
 
-Adjusting should always be done but its not a miracle.
+\hypertarget{understanding-a-linear-model-with-an-added-covariate-heart-necrosis-data}{%
+\section{Understanding a linear model with an added covariate -- heart necrosis data}\label{understanding-a-linear-model-with-an-added-covariate-heart-necrosis-data}}
 
-\hypertarget{adding-covariates-can-decrease-prediction-error-in-predictive-models}{%
-\section{Adding covariates can decrease prediction error in predictive models}\label{adding-covariates-can-decrease-prediction-error-in-predictive-models}}
+\href{https://www.nature.com/articles/s42255-019-0123-y}{1-Deoxydihydroceramide causes anoxic death by impairing chaperonin-mediated protein folding}
 
-\hypertarget{adding-covariates-can-reduce-bias-due-to-confounding-in-explanatory-models}{%
-\section{Adding covariates can reduce bias due to confounding in explanatory models}\label{adding-covariates-can-reduce-bias-due-to-confounding-in-explanatory-models}}
+\href{https://www.nature.com/articles/s42255-019-0123-y\#Sec38}{Source data}
 
-\hypertarget{best-practices-1-a-pre-treatment-measure-of-the-response-should-be-a-covariate-and-not-subtracted-from-the-post-treatment-measure-regression-to-the-mean}{%
-\section{Best practices 1: A pre-treatment measure of the response should be a covariate and not subtracted from the post-treatment measure (regression to the mean)}\label{best-practices-1-a-pre-treatment-measure-of-the-response-should-be-a-covariate-and-not-subtracted-from-the-post-treatment-measure-regression-to-the-mean}}
+In this article, the researchers are investigating the effects of specific sphingolipids on hypoxia (low O2) in the heart. This hypoxia results in necrosis (death) of heart tissue. The researchers are specifically looking at the sphingolipid 1-deoxydihydroceramide (DoxDHCer), which is derived from 1-deoxysphinganine6 (DoxSa).
+
+In the experiment for Figure 4h, the researchers measured the effect of three treatments on necrosis.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Vehicle -- there is no ``cardioprotection'' from the hypoxia-producing sphingolipids. This is the ``control''. We expect more necrotic area in this group.
+  2 Myriocin -- a drug that inhibits the enzyme that iniates sphingolipid production. This drug should provide protection from the hypoxia-producing sphingolipids. We expect less necrotic area (or, cardioprotection) in this group.
+\item
+  Myriocin + DoxSa -- DoxSa is the specific sphingolipid that the researchers believe cause the hypoxia/necrosis. The drug should inhibit the production of sphingolipids but the added DoxSa should reverses the protective effect of the drug. If there is a reversal of the protection, then this supports the hypothesis that DoxSa is the sphingolipid causing the hypoxia/necrosis.
+\end{enumerate}
+
+The response (\(Y\)) variable is \(area\_of\_necrosis\) -- the measured ``area'' of the necrotic tissue (area is used here in the sense of ``region'' and not in the sense of length times width). The covariate is \(area\_at\_risk\) -- the area of heart tissue that is susceptible to necrosis.
+
+\hypertarget{fit-the-model-1}{%
+\subsection{Fit the model}\label{fit-the-model-1}}
+
+The verbal model with added covariate is
+
+\(area\_of\_necrosis \sim area\_at\_risk + treatment\;\;\;(\mathcal{M}_1)\).
+
+which I'll name model \(\mathcal{M}_1\). To understand the model coefficients, it helps to expand model \(\mathcal{M}_1\) into the full linear model.
+
+\begin{equation}
+area\_of\_necrosis = \beta_0 + \beta_1 area\_at\_risk + \beta_2 treatment_{myriosin} + \beta_3 treatment_{Myriocin\;+\;DoxSa} + \varepsilon
+\label{eq:cov-fig4h-additive}
+\end{equation}
+
+The model includes parameters for the effects of area at risk (\(\beta_1\)), the myriosin treatment (\(\beta_2\)) and the myriosin + DoxSa treatment (\(\beta_3\)). I explain the interpretation of these effects in ``Interpretation of the model coefficients'' below.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{fig4h_m1 <-}\StringTok{ }\KeywordTok{lm}\NormalTok{(area_of_necrosis }\OperatorTok{~}\StringTok{ }\NormalTok{area_at_risk }\OperatorTok{+}\StringTok{ }\NormalTok{treatment,}
+               \DataTypeTok{data =}\NormalTok{ fig4h)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{plot-the-model-1}{%
+\subsection{Plot the model}\label{plot-the-model-1}}
+
+\begin{figure}
+\centering
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/fig4h-m1-plot-model-1.pdf}
+\caption{\label{fig:fig4h-m1-plot-model}The effect of treatment on area of necrosis, adjusted for area of risk.}
+\end{figure}
+
+\hypertarget{interpretation-of-the-model-coefficients}{%
+\subsection{Interpretation of the model coefficients}\label{interpretation-of-the-model-coefficients}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{fig4h_m1_coef <-}\StringTok{ }\KeywordTok{cbind}\NormalTok{(}\KeywordTok{coef}\NormalTok{(}\KeywordTok{summary}\NormalTok{(fig4h_m1)),}
+      \KeywordTok{confint}\NormalTok{(fig4h_m1))}
+\KeywordTok{signif}\NormalTok{(fig4h_m1_coef, }\DataTypeTok{digits =} \DecValTok{3}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##                           Estimate Std. Error t value Pr(>|t|)  2.5 %
+## (Intercept)                 -3.890     2.1200   -1.83 7.63e-02 -8.220
+## area_at_risk                 0.453     0.0587    7.73 8.28e-09  0.334
+## treatmentMyriocin           -3.110     1.2300   -2.53 1.64e-02 -5.620
+## treatmentMyriocin + DoxSa   -3.150     1.3700   -2.31 2.78e-02 -5.930
+##                           97.5 %
+## (Intercept)                0.436
+## area_at_risk               0.573
+## treatmentMyriocin         -0.611
+## treatmentMyriocin + DoxSa -0.367
+\end{verbatim}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  The estimate in the ``(Intercept)'' row (\(b_0\)) is the expected value of the reference (here, this is the Vehicle group) when \(area\_at\_risk=0\). Using Figure \ref{fig:fig4h-m1-plot-model}, this can be visualized as the value of \(Y\) where the Vehicle line (the regression line for the reference group) crosses the \emph{y}-axis (at \(X = 0\)). This is not a meaningful estimate since the area at risk in all hearts is above zero.
+\item
+  The estimate in the ``area\_at\_risk'' row (\(b_1\)) is a common slope for all three regression lines. Some might refer to this slope as the ``effect'' of \(area\_at\_risk\) on \(area\_of\_necrosis\) but I recommend against using this causal language because the \(area\_at\_risk\) is not randomly assigned -- its purpose in \emph{this} model (but not necessarily all linear models with an added covariate) is not for interpretation but for improving inference in the expimental treatment factor.
+\item
+  The estimate in the ``treatmentMyriocin'' row (\(b_2\)) is the effect of \(Myriocin\) on \(area\_of\_necrosis\) \textbf{conditional on} (or \textbf{adjusted for}) \(area\_at\_risk\). A frequent phrase is ``the estimate controlling for area at risk'' but avoid this because ``control'' implies experimenter intervention and this is not true for \(area\_at\_risk\). The value is the difference in the elevation of the regression line for the reference group and that for the Myriocin group. This difference is equal to the difference in conditional expectations at a specific value of the covariate.
+\end{enumerate}
+
+\begin{equation}
+b_2 = \mathrm{E}(area\_of\_necrosis|treatment = "Myriocin", X = x) - \mathrm{E}(area\_of\_necrosis|treatment = "Vehicle", X = x)
+\end{equation}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{3}
+\tightlist
+\item
+  The estimate in the ``treatmentMyriocin + DoxSa'' row (\(b_3\)) is the effect of \(Myriocin + DoxSa\) on \(area\_of\_necrosis\) \textbf{conditional on} (or \textbf{adjusted for}) \(area\_at\_risk\). It's interpretation is similar to that for \(b_2\).
+\end{enumerate}
+
+How do we summarize these interpretations given the motivating hypothesis? The results do not support the hypothesis. If DoxSa is one of the sphingolipids inducing hypoxia/necrosis, then we'd expect the Myriocin + DoxSa line to be elevated above the Myriocin line. But the coefficient table ``tests'' this prediction only indirectly. The explicit statistic for this prediction is the (Myriocin + DoxSa) - Myriocin contrast in the contrast table below.
+
+\hypertarget{everything-adds-up}{%
+\subsection{Everything adds up}\label{everything-adds-up}}
+
+Remember that everything adds up in a linear model. A regression line is a line of expected values (the expectation of \(Y\) conditional on \(X\)). The point on the Vehicle line at \(area\_of\_risk = 30\) is \(b_0 + b_1 \cdot 30\). The point on the ``Myriocin'' line at \(area\_of\_risk = 30\) is \(b_0 + b_1 \cdot 30 + b_2\). And, the point on the ``Myriocin + DoxSa'' line at \(area\_of\_risk = 30\) is \(b_0 + b_1 \cdot 30 + b_3\). Understanding how the components of the linear model add up gives you phenomenonal cosmic power in statistical analysis.
+
+\hypertarget{interpretation-of-the-estimated-marginal-means}{%
+\subsection{Interpretation of the estimated marginal means}\label{interpretation-of-the-estimated-marginal-means}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{fig4h_m1_emm <-}\StringTok{ }\KeywordTok{emmeans}\NormalTok{(fig4h_m1, }\DataTypeTok{specs =} \StringTok{"treatment"}\NormalTok{)}
+\NormalTok{fig4h_m1_emm}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##  treatment        emmean    SE df lower.CL upper.CL
+##  Vehicle           11.98 0.839 32     10.3     13.7
+##  Myriocin           8.87 0.916 32      7.0     10.7
+##  Myriocin + DoxSa   8.83 1.045 32      6.7     11.0
+## 
+## Confidence level used: 0.95
+\end{verbatim}
+
+The values in the column ``emmean'' are the expected values of each group when (``conditional on'') \(area\_at\_risk\) is equal to the mean \(area\_at\_risk\).
+
+\hypertarget{interpretation-of-the-contrasts}{%
+\subsection{Interpretation of the contrasts}\label{interpretation-of-the-contrasts}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{fig4h_m1_pairs <-}\StringTok{ }\KeywordTok{contrast}\NormalTok{(fig4h_m1_emm,}
+                           \DataTypeTok{method =} \StringTok{"revpairwise"}\NormalTok{,}
+                           \DataTypeTok{adjust =} \StringTok{"none"}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{summary}\NormalTok{(}\DataTypeTok{infer =} \OtherTok{TRUE}\NormalTok{)}
+\NormalTok{fig4h_m1_pairs}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##  contrast                    estimate   SE df lower.CL upper.CL t.ratio
+##  Myriocin - Vehicle           -3.1139 1.23 32    -5.62   -0.611 -2.534 
+##  Myriocin + DoxSa - Vehicle   -3.1485 1.37 32    -5.93   -0.367 -2.306 
+##  Myriocin + DoxSa - Myriocin  -0.0346 1.43 32    -2.95    2.881 -0.024 
+##  p.value
+##  0.0164 
+##  0.0278 
+##  0.9809 
+## 
+## Confidence level used: 0.95
+\end{verbatim}
+
+The values in the column ``estimate'' are the differences between the estimated marginal means in the estimated marginal means table. The first two contrasts are equal to the coefficients \(b_2\) and \(b_3\) in the coefficient table.
+
+\hypertarget{adding-the-covariate-improves-inference}{%
+\subsection{Adding the covariate improves inference}\label{adding-the-covariate-improves-inference}}
+
+Compare the effects in Model \(\mathcal{M}_1\) (with the added covariate) to the effects in a linear model without the added covariate.
+
+\begin{verbatim}
+##                           Estimate Std. Error t value Pr(>|t|) 2.5 %
+## (Intercept)                 11.200       1.39   8.070 2.60e-09  8.38
+## treatmentMyriocin           -3.660       2.04  -1.790 8.26e-02 -7.82
+## treatmentMyriocin + DoxSa    0.293       2.15   0.136 8.93e-01 -4.09
+##                           97.5 %
+## (Intercept)               14.000
+## treatmentMyriocin          0.499
+## treatmentMyriocin + DoxSa  4.670
+\end{verbatim}
+
+Inference from these two models is very different. From the model adjusting for area at risk (Model \(\mathcal{M}_1\)), we would conclude ``Unexpectedly, the estimated Myriocin + DoxSa effect (-3.2 mg, 95\% CI: -5.9, -0.4) is effectively as big as the Myriocin alone effect.'' By contrast, using the model without the covariate, we would conclude ``Relative to the Myriocin effect, the estimated Myriocin + DoxSa effect is small (.29 mg), and there is large uncertainty in its direction and magnitude (95\% CI: -4.1, 4.7).'' (Note that the authors published a different conclusion to either of these. I cannot recover the results leading to their conclusion using the methods published by the authors.)
+
+\hypertarget{understanding-interaction-effects-with-covariates}{%
+\section{Understanding interaction effects with covariates}\label{understanding-interaction-effects-with-covariates}}
+
+\hypertarget{fit-the-model-2}{%
+\subsection{Fit the model}\label{fit-the-model-2}}
+
+When we add a continuous covariate to a model we sometimes want to model the \textbf{interaction} with the categorical factor variable. An interaction effect represents how the effect of one variable changes given the level of a second variable. The verbal model with an added interaction effect is
+
+\(area\_of\_necrosis \sim area\_at\_risk + treatment + area\_at\_risk \times treatment\;\;\;(\mathcal{M}_2)\)
+
+which I'll refer to as Model \(\mathcal{M}_2\). To understand the model coefficients, it helps to expand this into the full linear model.
+
+\begin{align}
+area\_of\_necrosis = \beta_0 &+ \beta_1 area\_at\_risk + \beta_2 treatment_{myriosin} + \beta_3 treatment_{Myriocin\;+\;DoxSa}\\
+&+ \beta_4 area\_at\_risk \cdot treatment_{myriosin}\\
+&+ \beta_5 area\_at\_risk \cdot treatment_{Myriocin\;+\;DoxSa}\\
+&+ \varepsilon
+\label{eq:cov-fig4h-interaction}
+\end{align}
+
+In addition to the effects of the myriosin (\(\beta_2\)) and the myriosin + DoxSa (\(\beta_3\)) treatments of Model \(\mathcal{M}_1\), Model \(\mathcal{M}_2\) includes coefficients for two \textbf{interaction effects}, the interaction between myriosin and area at risk (\(\beta_4\)) and the interaction between myriosin + DoxSa and area at risk (\(\beta_4\)). The parameters \(\beta_1\) and \(\beta_2\) are \textbf{additive effects} because they are linear (additive) ``in the \(X\)'' variables. The parameters \(\beta_3\) and \(\beta_4\) are \textbf{non-additive effects} because they are not linear ``in the \(X\)'' variables -- these effects are coefficients of an \(X\) that is the product of two variables. You can see this in the model equation but I explain this further below.
+
+For the goals of the researchers in the heart necrosis study, we specifically would not want to model the interaction. Nevertheless, we would want to plot the interaction effect during the ``Step 2: examine the data'' phase of analysis to be sure that an additive model is a reasonable model given the data.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# see working in R to understand this model formula}
+\NormalTok{fig4h_m2 <-}\StringTok{ }\KeywordTok{lm}\NormalTok{(area_of_necrosis }\OperatorTok{~}\StringTok{ }\NormalTok{area_at_risk}\OperatorTok{*}\NormalTok{treatment,}
+               \DataTypeTok{data =}\NormalTok{ fig4h)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{plot-the-model-with-interaction-effect}{%
+\subsection{Plot the model with interaction effect}\label{plot-the-model-with-interaction-effect}}
+
+\begin{figure}
+\centering
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/fig4h-m2-plot-model-1.pdf}
+\caption{\label{fig:fig4h-m2-plot-model}The effect of treatment on area of necrosis, adjusted for area of risk.}
+\end{figure}
+
+\hypertarget{interpretation-of-the-model-coefficients-1}{%
+\subsection{Interpretation of the model coefficients}\label{interpretation-of-the-model-coefficients-1}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{fig4h_m2_coef <-}\StringTok{ }\KeywordTok{cbind}\NormalTok{(}\KeywordTok{coef}\NormalTok{(}\KeywordTok{summary}\NormalTok{(fig4h_m2)),}
+      \KeywordTok{confint}\NormalTok{(fig4h_m2))}
+\KeywordTok{round}\NormalTok{(fig4h_m2_coef[,}\KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{)], }\DataTypeTok{digits =} \DecValTok{2}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##                                        Estimate Std. Error
+## (Intercept)                               -6.55       3.01
+## area_at_risk                               0.53       0.09
+## treatmentMyriocin                          4.90       4.90
+## treatmentMyriocin + DoxSa                 -1.17       5.28
+## area_at_risk:treatmentMyriocin            -0.25       0.15
+## area_at_risk:treatmentMyriocin + DoxSa    -0.06       0.14
+\end{verbatim}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  The estimate in the ``(Intercept)'' row (\(b_0\)) is the expected value of the reference (here, this is the Vehicle group) when \(area\_at\_risk=0\). This is the same interpretation of the intercept in the additive model (Model \(\mathcal{M}_1\)) but the value is different. This is because the slope coefficient (\(b_1\)) estimated in Model \(\mathcal{M}_1\) is a common slope (to all three groups) estimated by pooling data from all three groups. The slope coefficient in the non-additive model (Model \(\mathcal{M}_2\)) is computed from just the reference data. Because the slope differs between Model \(\mathcal{M}_1\) and Model \(\mathcal{M}_2\), the intercept differs (think about why they are necessarily related). As in Model \(\mathcal{M}_1\), the value and inferential statistics are meaningful for this parameterization but there are slight modifications of the model that can make this meaningful.
+\item
+  The estimate in the ``area\_at\_risk'' row (\(b_1\)) is the slope of the regression line for the reference (Vehicle) group, that is, the slope conditional on \(treatment = \mathrm{''Vehicle''}\)
+\item
+  The estimate in the ``treatmentMyriocin'' row (\(b_2\)) is the effect of \(Myriocin\) on \(area\_of\_necrosis\) \textbf{conditional on} \(area\_at\_risk = 0\). Note the difference in interpretation with \(b_2\) in Model \(\mathcal{M}_1\). The difference is because of the interaction. The effect of \(Myriocin\) on \(area\_of\_necrosis\) is no longer constant for all values of \(area\_at\_risk\). This is easily seen in Figure \ref{fig:fig4h-m2-plot-model}, where the effect of Myriocin (the vertical distance between the Vehicle and Myriocin line) is very small at small values of area at risk but very large at large areas at risk.
+\item
+  The estimate in the ``treatmentMyriocin + DoxSa'' row (\(b_3\)) is the effect of \(Myriocin + DoxSa\) on \(area\_of\_necrosis\) \textbf{conditional on} \(area\_at\_risk = 0\). It's interpretation is similar to that for \(b_2\).
+\item
+  The estimate in the ``area\_at\_risk:treatmentMyriocin'' row (\(b_4\)) is the \textbf{interaction effect} between area at risk and Myriocin. It's value is the difference between the slope of the regression line through the Myriocin points in Figure \ref{fig:fig4h-m2-plot-model} and the slope of the regression line through the reference (Vehicle) points in Figure \ref{fig:fig4h-m2-plot-model}. Consequently, the slope of the regression line through the Myriocin points is \(b_1 + b_4\).
+\item
+  The estimate in the ``area\_at\_risk:treatmentMyriocin + DoxSa'' row (\(b_5\)) is the \textbf{interaction effect} between area at risk and Myriocin + DoxSa It's value is the difference between the slope of the regression line through the Myriocin + DoxSa points in Figure \ref{fig:fig4h-m2-plot-model} and the slope of the regression line through the reference (Vehicle) data in Figure \ref{fig:fig4h-m2-plot-model}. Consequently, the slope of the regression line through the Myriocin + DoxSa points is \(b_1 + b_5\).
+\end{enumerate}
+
+Interaction effects are \emph{differences in slopes} (this is also true with interactions between two factor variables, even though we usually describe this as ``differences in differences'') and these difference are easily seen by inspection of a plot similar to that in Figure \ref{fig:fig4h-m2-plot-model}. The bigger the interaction, the less parallel the regression line.
+
+\hypertarget{what-is-the-effect-of-a-treatment-if-interactions-are-modeled-it-depends.}{%
+\subsection{What is the effect of a treatment, if interactions are modeled? -- it depends.}\label{what-is-the-effect-of-a-treatment-if-interactions-are-modeled-it-depends.}}
+
+A very useful way to remember what an interaction \emph{is} is ``it depends''. What is the effect of Myriocin on area at risk? With an interaction term in the linear model, the answer is ``it depends''. It depends on the level of \(area\_at\_risk\). At small values of area at risk, the effect of Myriocin is very small. At large values of area at risk, the effect of Myriocin is large. Likewise, what is the effect of area at risk on necrosis? It depends (if interactions are modeled). It depends on the level of treatment, for example the effect in the Myriocin group is smaller (a smaller slope) than the effect in the Vehicle group. ``It depends'' is the hallmark of interactions -- the effect of one variable on the outcome depends on the level of a second variable.
+
+\hypertarget{which-model-do-we-use-mathcalm_1-or-mathcalm_2}{%
+\subsection{\texorpdfstring{Which model do we use, \(\mathcal{M}_1\) or \(\mathcal{M}_2\)?}{Which model do we use, \textbackslash mathcal\{M\}\_1 or \textbackslash mathcal\{M\}\_2?}}\label{which-model-do-we-use-mathcalm_1-or-mathcalm_2}}
+
+The answer to this question depends partly on our goals. If we are explicitly interested in measuring an interaction effect (perhaps some theory predicts an positive interaction) then we would necesarily add interaction effects to the model. But if we are interested in estimating a treatment effect conditional on a covariate, then we don't include the interaction. Remember that a purpose of initial explorations of data (``Step 2 -- examine the data'') is to help decide which model to specify in the model formula. If an initial plot shows large interactions between treatment levels and the covariate, then adjusting for the covariate won't work, or at least won't work without additional complexity to the interpretation. ``Large interactions'' of course raises the question, how large is too larege to ignore interactions? Many textbooks in biostatistics recommend using an interaction \emph{p}-value to make this decision. I disagree. There is no objective answer to the question. We lose information with all models -- that is what we do in science. It is up to the researcher to be transparent with all decisions. If an additive (no interactions) model is used to condition on (adjust for) a covariate, the researcher should use the supplement to plot the model with interactions as evidence of why this decision is reasonable.
+
+\hypertarget{understanding-ancova-tables}{%
+\section{Understanding ANCOVA tables}\label{understanding-ancova-tables}}
+
+\hypertarget{working-in-r-4}{%
+\section{Working in R}\label{working-in-r-4}}
+
+\hypertarget{importing-the-heart-necrosis-data}{%
+\subsection{Importing the heart necrosis data}\label{importing-the-heart-necrosis-data}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{data_folder <-}\StringTok{ "data"}
+\NormalTok{data_from <-}\StringTok{ "1-Deoxydihydroceramide causes anoxic death by impairing chaperonin-mediated protein folding"}
+\NormalTok{file_name <-}\StringTok{ "42255_2019_123_MOESM7_ESM.xlsx"}
+\NormalTok{file_path <-}\StringTok{ }\KeywordTok{here}\NormalTok{(data_folder, data_from, file_name)}
+  
+\NormalTok{sheet_i <-}\StringTok{ "Figure 4h"}
+\NormalTok{fig4h_}\DecValTok{1}\NormalTok{ <-}\StringTok{ }\KeywordTok{read_excel}\NormalTok{(file_path,}
+                         \DataTypeTok{sheet =}\NormalTok{ sheet_i,}
+                         \DataTypeTok{range =} \StringTok{"A5:B19"}\NormalTok{,}
+                         \DataTypeTok{col_names =} \OtherTok{TRUE}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{clean_names}\NormalTok{() }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{data.table}\NormalTok{()}
+\NormalTok{fig4h_}\DecValTok{2}\NormalTok{ <-}\StringTok{ }\KeywordTok{read_excel}\NormalTok{(file_path,}
+                         \DataTypeTok{sheet =}\NormalTok{ sheet_i,}
+                         \DataTypeTok{range =} \StringTok{"D5:E17"}\NormalTok{,}
+                         \DataTypeTok{col_names =} \OtherTok{TRUE}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{clean_names}\NormalTok{() }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{data.table}\NormalTok{()}
+\NormalTok{fig4h_}\DecValTok{3}\NormalTok{ <-}\StringTok{ }\KeywordTok{read_excel}\NormalTok{(file_path,}
+                         \DataTypeTok{sheet =}\NormalTok{ sheet_i,}
+                         \DataTypeTok{range =} \StringTok{"G5:H15"}\NormalTok{,}
+                         \DataTypeTok{col_names =} \OtherTok{TRUE}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{clean_names}\NormalTok{() }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{data.table}\NormalTok{()}
+
+\NormalTok{fig4h <-}\StringTok{ }\KeywordTok{rbind}\NormalTok{(}\KeywordTok{data.table}\NormalTok{(}\DataTypeTok{treatment =} \StringTok{"Vehicle"}\NormalTok{, fig4h_}\DecValTok{1}\NormalTok{),}
+                    \KeywordTok{data.table}\NormalTok{(}\DataTypeTok{treatment =} \StringTok{"Myriocin"}\NormalTok{, fig4h_}\DecValTok{2}\NormalTok{),}
+                    \KeywordTok{data.table}\NormalTok{(}\DataTypeTok{treatment =} \StringTok{"Myriocin + DoxSa"}\NormalTok{, fig4h_}\DecValTok{3}\NormalTok{))}
+
+\NormalTok{treatment_levels <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"Vehicle"}\NormalTok{, }\StringTok{"Myriocin"}\NormalTok{, }\StringTok{"Myriocin + DoxSa"}\NormalTok{)}
+\NormalTok{fig4h[, treatment }\OperatorTok{:}\ErrorTok{=}\StringTok{ }\KeywordTok{factor}\NormalTok{(treatment, }\DataTypeTok{levels =}\NormalTok{ treatment_levels)]}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{fitting-the-model}{%
+\subsection{Fitting the model}\label{fitting-the-model}}
+
+For an additive model, add the covariate to the model formula using the \texttt{+} operator. The order of the variables doesn't matter (the right-hand-side of the model formula could be \texttt{treatment\ +\ area\_at\_risk}).
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{m1 <-}\StringTok{ }\KeywordTok{lm}\NormalTok{(area_of_necrosis }\OperatorTok{~}\StringTok{ }\NormalTok{area_at_risk }\OperatorTok{+}\StringTok{ }\NormalTok{treatment, }\DataTypeTok{data =}\NormalTok{ fig4h)}
+\end{Highlighting}
+\end{Shaded}
+
+For an nonadditive model with interactions, add the covariate to the model formula using the \texttt{*} operator. \texttt{\textasciitilde{}\ area\_at\_risk\ *\ treatment} is a shortcut to the full model formula, which is \texttt{1\ +\ area\_at\_risk\ +\ treatment\ +\ area\_at\_risk\ *\ treatment}. R expands the short formula to the full formula automatically. Again, the order of the variables doesn't matter (the right-hand-side of the model formula could be \texttt{treatment\ *\ area\_at\_risk}).
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{m2 <-}\StringTok{ }\KeywordTok{lm}\NormalTok{(area_of_necrosis }\OperatorTok{~}\StringTok{ }\NormalTok{area_at_risk }\OperatorTok{*}\StringTok{ }\NormalTok{treatment, }\DataTypeTok{data =}\NormalTok{ fig4h)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{ancova-tables}{%
+\subsection{ANCOVA tables}\label{ancova-tables}}
+
+If you are going to report statistics from an ANCOVA table, be sure that what you report is what you think you are reporting -- it is very easy to get this wrong in R. One way to easily get a table using Type II or III sums of squares is to set the contrast option of the factor variable to \texttt{contr.sum} (this tells R to use deviation coding to form the model matrix for the linear model) and then use the function \texttt{Anova} from the car package (not base R \texttt{anova}).
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  It is safest to set this with the \texttt{lm} function itself.
+\item
+  The coefficients of the linear model will have a different interpretation than that given above. Either understand the new interpretation (not given here) or fit two models, one without the reset contrasts and one with the reset contrasts.
+\item
+  The estimated marginal mean table and the contrast table are the same, regardless of how contrasts are set in the linear model.
+\item
+  Many websites show code that changes the default coding in the R session. I strongly caution against this. If you don't change it back, then you are likely to misinterpret coefficients in later analyses (see point 2).
+\end{enumerate}
+
+For additive models, use Type II sum of squares (Type III will give same results),
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{Anova}\NormalTok{(m1_aov, }\DataTypeTok{type =} \DecValTok{2}\NormalTok{) }\CommentTok{# be sure to use the correct model!}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Anova Table (Type II tests)
+## 
+## Response: area_of_necrosis
+##              Sum Sq Df F value   Pr(>F)    
+## treatment     82.04  2  4.2195  0.02364 *  
+## area_at_risk 580.25  1 59.6874 8.28e-09 ***
+## Residuals    311.09 32                     
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+\end{verbatim}
+
+For non-additive models with interactions
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  The statistics for the interaction effect are the same, regardless of the sum of squares used.
+\item
+  The interpretation of the main effects is problematic, at best. This is discussed more in the ANOVA chapter.
+\item
+  Some statisticians recommend using Type III sums of squares. The effect of \$treatment* has a very specific interpretation with Type III -- it is the effect when the covariate = 0. This can be biologically relevant if the covariate data is re-centered.
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# for coefficients}
+\NormalTok{m2 <-}\StringTok{ }\KeywordTok{lm}\NormalTok{(area_of_necrosis }\OperatorTok{~}\StringTok{ }\NormalTok{treatment }\OperatorTok{*}\StringTok{ }\NormalTok{area_at_risk,}
+         \DataTypeTok{data =}\NormalTok{ fig4h)}
+\CommentTok{# for anova}
+\NormalTok{m2_aov <-}\StringTok{ }\KeywordTok{lm}\NormalTok{(area_of_necrosis }\OperatorTok{~}\StringTok{ }\NormalTok{treatment }\OperatorTok{*}\StringTok{ }\NormalTok{area_at_risk,}
+         \DataTypeTok{data =}\NormalTok{ fig4h,}
+         \DataTypeTok{contrasts =} \KeywordTok{list}\NormalTok{(}\DataTypeTok{treatment =}\NormalTok{ contr.sum))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{Anova}\NormalTok{(m2_aov, }\DataTypeTok{type =} \DecValTok{2}\NormalTok{) }\CommentTok{# be sure to use the correct model!}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Anova Table (Type II tests)
+## 
+## Response: area_of_necrosis
+##                        Sum Sq Df F value    Pr(>F)    
+## treatment               82.04  2  4.3369   0.02216 *  
+## area_at_risk           580.25  1 61.3485 9.685e-09 ***
+## treatment:area_at_risk  27.34  2  1.4453   0.25163    
+## Residuals              283.75 30                      
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{Anova}\NormalTok{(m2_aov, }\DataTypeTok{type =} \DecValTok{3}\NormalTok{) }\CommentTok{# be sure to use the correct model!}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Anova Table (Type III tests)
+## 
+## Response: area_of_necrosis
+##                        Sum Sq Df F value    Pr(>F)    
+## (Intercept)             56.06  1  5.9270   0.02107 *  
+## treatment               12.98  2  0.6863   0.51116    
+## area_at_risk           491.92  1 52.0087 5.012e-08 ***
+## treatment:area_at_risk  27.34  2  1.4453   0.25163    
+## Residuals              283.75 30                      
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+\end{verbatim}
+
+\hypertarget{plotting-the-model}{%
+\subsection{Plotting the model}\label{plotting-the-model}}
+
+\hypertarget{using-ggpubr}{%
+\subsubsection{Using ggpubr}\label{using-ggpubr}}
+
+ggpubr will only plot the model with interactions.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{ggscatter}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ fig4h,}
+          \DataTypeTok{x =} \StringTok{"area_at_risk"}\NormalTok{,}
+          \DataTypeTok{y =} \StringTok{"area_of_necrosis"}\NormalTok{,}
+          \DataTypeTok{color =} \StringTok{"treatment"}\NormalTok{,}
+          \DataTypeTok{add =} \StringTok{"reg.line"}\NormalTok{,}
+          \DataTypeTok{ylab =} \StringTok{"Area of necrosis (mg)"}\NormalTok{,}
+          \DataTypeTok{xlab =} \StringTok{"Area at risk (mg)"}\NormalTok{,}
+          \DataTypeTok{palette =}\NormalTok{ pal_okabe_ito}
+\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-256-1.pdf}
+
+\hypertarget{ggplot2}{%
+\subsubsection{ggplot2}\label{ggplot2}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{m1 <-}\StringTok{ }\KeywordTok{lm}\NormalTok{(area_of_necrosis }\OperatorTok{~}\StringTok{ }\NormalTok{area_at_risk }\OperatorTok{+}\StringTok{ }\NormalTok{treatment,}
+         \DataTypeTok{data =}\NormalTok{ fig4h)}
+
+\NormalTok{gg <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(fig4h, }
+             \KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ area_at_risk,}
+                 \DataTypeTok{y =}\NormalTok{ area_of_necrosis,}
+                 \DataTypeTok{color =}\NormalTok{ treatment)) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_point}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{color=}\NormalTok{treatment)) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_smooth}\NormalTok{(}\DataTypeTok{method =} \StringTok{"lm"}\NormalTok{,}
+              \DataTypeTok{mapping =} \KeywordTok{aes}\NormalTok{(}\DataTypeTok{y =} \KeywordTok{predict}\NormalTok{(m1, fig4h))) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_color_manual}\NormalTok{(}\DataTypeTok{values =}\NormalTok{ pal_okabe_ito,}
+                     \DataTypeTok{name =} \OtherTok{NULL}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{ylab}\NormalTok{(}\StringTok{"Area of necrosis (mg)"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{xlab}\NormalTok{(}\StringTok{"Area at risk (mg)"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{theme_pubr}\NormalTok{() }\OperatorTok{+}
+\StringTok{  }\KeywordTok{theme}\NormalTok{(}\DataTypeTok{legend.position=}\StringTok{"bottom"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\OtherTok{NULL}
+\NormalTok{gg}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-257-1.pdf}
+
+\hypertarget{a-response-effects-plot-using-ggplot2}{%
+\subsubsection{A response-effects plot using ggplot2}\label{a-response-effects-plot-using-ggplot2}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{m1 <-}\StringTok{ }\KeywordTok{lm}\NormalTok{(area_of_necrosis }\OperatorTok{~}\StringTok{ }\NormalTok{area_at_risk }\OperatorTok{+}\StringTok{ }\NormalTok{treatment, }\DataTypeTok{data =}\NormalTok{ fig4h)}
+\NormalTok{b <-}\StringTok{ }\KeywordTok{coef}\NormalTok{(m1)}
+
+\NormalTok{groups <-}\StringTok{ }\KeywordTok{levels}\NormalTok{(fig4h}\OperatorTok{$}\NormalTok{treatment)}
+\NormalTok{line_data <-}\StringTok{ }\NormalTok{fig4h[, .(}\DataTypeTok{min_x =} \KeywordTok{min}\NormalTok{(area_at_risk),}
+                       \DataTypeTok{max_x =} \KeywordTok{max}\NormalTok{(area_at_risk)), by =}\StringTok{ }\NormalTok{treatment]}
+\NormalTok{line_data[, dummy1 }\OperatorTok{:}\ErrorTok{=}\StringTok{ }\KeywordTok{ifelse}\NormalTok{(treatment }\OperatorTok{==}\StringTok{ "Myriocin"}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{0}\NormalTok{)]}
+\NormalTok{line_data[, dummy2 }\OperatorTok{:}\ErrorTok{=}\StringTok{ }\KeywordTok{ifelse}\NormalTok{(treatment }\OperatorTok{==}\StringTok{ "Myriocin + DoxSa"}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{0}\NormalTok{)]}
+
+\NormalTok{line_data[, y_min }\OperatorTok{:}\ErrorTok{=}\StringTok{ }\NormalTok{b[}\DecValTok{1}\NormalTok{] }\OperatorTok{+}\StringTok{ }\NormalTok{b[}\DecValTok{2}\NormalTok{]}\OperatorTok{*}\NormalTok{min_x }\OperatorTok{+}\StringTok{ }\NormalTok{b[}\DecValTok{3}\NormalTok{]}\OperatorTok{*}\NormalTok{dummy1 }\OperatorTok{+}\StringTok{ }\NormalTok{b[}\DecValTok{4}\NormalTok{]}\OperatorTok{*}\NormalTok{dummy2]}
+\NormalTok{line_data[, y_max }\OperatorTok{:}\ErrorTok{=}\StringTok{ }\NormalTok{b[}\DecValTok{1}\NormalTok{] }\OperatorTok{+}\StringTok{ }\NormalTok{b[}\DecValTok{2}\NormalTok{]}\OperatorTok{*}\NormalTok{max_x }\OperatorTok{+}\StringTok{ }\NormalTok{b[}\DecValTok{3}\NormalTok{]}\OperatorTok{*}\NormalTok{dummy1 }\OperatorTok{+}\StringTok{ }\NormalTok{b[}\DecValTok{4}\NormalTok{]}\OperatorTok{*}\NormalTok{dummy2]}
+
+\NormalTok{gg_response <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ fig4h,}
+                      \KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ area_at_risk,}
+                          \DataTypeTok{y =}\NormalTok{ area_of_necrosis,}
+                          \DataTypeTok{color =}\NormalTok{ treatment)) }\OperatorTok{+}
+\StringTok{  }\CommentTok{# points}
+\StringTok{  }\KeywordTok{geom_point}\NormalTok{(}\DataTypeTok{size =} \DecValTok{2}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }
+\StringTok{  }\KeywordTok{geom_segment}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ line_data,}
+               \KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ min_x,}
+                   \DataTypeTok{y =}\NormalTok{ y_min,}
+                   \DataTypeTok{xend =}\NormalTok{ max_x,}
+                   \DataTypeTok{yend =}\NormalTok{ y_max)) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_color_manual}\NormalTok{(}\DataTypeTok{values =}\NormalTok{ pal_okabe_ito,}
+                     \DataTypeTok{name =} \OtherTok{NULL}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{ylab}\NormalTok{(}\StringTok{"Area of necrosis (mg)"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{xlab}\NormalTok{(}\StringTok{"Area at risk (mg)"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{theme_pubr}\NormalTok{() }\OperatorTok{+}
+\StringTok{  }\KeywordTok{theme}\NormalTok{(}\DataTypeTok{legend.position=}\StringTok{"bottom"}\NormalTok{) }\OperatorTok{+}
+
+\StringTok{  }\OtherTok{NULL}
+\CommentTok{#gg_response}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{m1_emm <-}\StringTok{ }\KeywordTok{emmeans}\NormalTok{(m1, }\DataTypeTok{specs =} \StringTok{"treatment"}\NormalTok{)}
+\NormalTok{m1_pairs <-}\StringTok{ }\KeywordTok{contrast}\NormalTok{(m1_emm,}
+                     \DataTypeTok{method =} \StringTok{"revpairwise"}\NormalTok{,}
+                     \DataTypeTok{adjust =} \StringTok{"none"}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{summary}\NormalTok{(}\DataTypeTok{infer =} \OtherTok{TRUE}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{data.table}\NormalTok{()}
+\CommentTok{# pvalString is from package lazyWeave}
+\NormalTok{m1_pairs[ , p_pretty }\OperatorTok{:}\ErrorTok{=}\StringTok{ }\KeywordTok{pvalString}\NormalTok{(p.value)]}
+\CommentTok{# also create a column with "p-val: "}
+\NormalTok{m1_pairs[ , pval_pretty }\OperatorTok{:}\ErrorTok{=}\StringTok{ }\KeywordTok{paste}\NormalTok{(}\StringTok{"p = "}\NormalTok{, p_pretty)]}
+
+\NormalTok{contrast_order <-}\StringTok{ }\NormalTok{m1_pairs[, contrast]}
+\NormalTok{m1_pairs[, contrast }\OperatorTok{:}\ErrorTok{=}\StringTok{ }\KeywordTok{factor}\NormalTok{(contrast, contrast_order)]}
+
+\NormalTok{gg_effect <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ m1_pairs, }
+                    \KeywordTok{aes}\NormalTok{(}\DataTypeTok{y =}\NormalTok{ contrast,}
+                        \DataTypeTok{x =}\NormalTok{ estimate)) }\OperatorTok{+}
+\StringTok{  }\CommentTok{# confidence level of effect}
+\StringTok{  }\KeywordTok{geom_errorbar}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{xmin =}\NormalTok{ lower.CL, }
+                    \DataTypeTok{xmax =}\NormalTok{ upper.CL),}
+                \DataTypeTok{width =} \DecValTok{0}\NormalTok{, }
+                \DataTypeTok{color =} \StringTok{"black"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\CommentTok{# estimate of effect}
+\StringTok{  }\KeywordTok{geom_point}\NormalTok{(}\DataTypeTok{size =} \DecValTok{3}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }
+\StringTok{  }\CommentTok{# draw a line at effect = 0}
+\StringTok{  }\KeywordTok{geom_vline}\NormalTok{(}\DataTypeTok{xintercept =} \DecValTok{0}\NormalTok{, }\DataTypeTok{linetype =} \DecValTok{2}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }
+\StringTok{  }\CommentTok{# p-value. The y coordinates are set by eye}
+\StringTok{  }\KeywordTok{annotate}\NormalTok{(}\DataTypeTok{geom =} \StringTok{"text"}\NormalTok{,}
+           \DataTypeTok{label =}\NormalTok{ m1_pairs}\OperatorTok{$}\NormalTok{pval_pretty,}
+           \DataTypeTok{y =} \DecValTok{1}\OperatorTok{:}\DecValTok{3}\NormalTok{,}
+           \DataTypeTok{x =} \FloatTok{4.5}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }
+\StringTok{  }\CommentTok{# x-axis label and aesthetics}
+\StringTok{  }\KeywordTok{xlab}\NormalTok{(}\StringTok{"Effect (mg)"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{ylab}\NormalTok{(}\StringTok{"Contrast"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{coord_cartesian}\NormalTok{(}\DataTypeTok{xlim =} \KeywordTok{c}\NormalTok{(}\OperatorTok{-}\DecValTok{8}\NormalTok{,}\FloatTok{5.5}\NormalTok{)) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_x_continuous}\NormalTok{(}\DataTypeTok{position=}\StringTok{"top"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }
+\StringTok{  }\KeywordTok{theme_pubr}\NormalTok{() }\OperatorTok{+}
+\StringTok{  }\CommentTok{# theme(axis.title.x = element_blank()) +}
+\StringTok{  }
+\StringTok{  }\OtherTok{NULL}
+\CommentTok{# gg_effect}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{gg <-}\StringTok{ }\KeywordTok{plot_grid}\NormalTok{(gg_effect,}
+\NormalTok{                gg_response,}
+                \DataTypeTok{nrow=}\DecValTok{2}\NormalTok{,}
+                \DataTypeTok{align =} \StringTok{"v"}\NormalTok{,}
+                \DataTypeTok{axis =} \StringTok{"rl"}\NormalTok{,}
+                \DataTypeTok{rel_heights =} \KeywordTok{c}\NormalTok{(}\FloatTok{0.35}\NormalTok{, }\DecValTok{1}\NormalTok{)}
+\NormalTok{                )}
+\NormalTok{gg}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-260-1.pdf}
+
+\hypertarget{best-practices}{%
+\section{Best practices}\label{best-practices}}
+
+\hypertarget{do-not-use-a-ratio-of-partwhole-as-a-response-variable-instead-add-the-denominator-as-a-covariate}{%
+\subsection{Do not use a ratio of part:whole as a response variable -- instead add the denominator as a covariate}\label{do-not-use-a-ratio-of-partwhole-as-a-response-variable-instead-add-the-denominator-as-a-covariate}}
+
+\hypertarget{do-not-use-change-from-baseline-as-a-response-variable-instead-add-the-baseline-measure-as-a-covariate}{%
+\subsection{Do not use change from baseline as a response variable -- instead add the baseline measure as a covariate}\label{do-not-use-change-from-baseline-as-a-response-variable-instead-add-the-baseline-measure-as-a-covariate}}
 
 It is common to measure the outcome variable (\(Y\)) both before and after the experimental treatments are applied and then compare the pre-post \emph{change} in \(Y\) in response to the treatment using a \(t\)-test or ANOVA using this linear model
 
@@ -11705,8 +12307,8 @@ The effect of the increased temperature at the control CO2 level was 4.5 pmol O2
 
 The CI on the interaction includes both large negative values and trivially small values, including zero, and, consequently, our data is compatible with both scientific models (that is, we can neither support nor reject the predictions of the scientific model using these results).
 
-\hypertarget{working-in-r-4}{%
-\section{Working in R}\label{working-in-r-4}}
+\hypertarget{working-in-r-5}{%
+\section{Working in R}\label{working-in-r-5}}
 
 \hypertarget{model-formula}{%
 \subsection{Model formula}\label{model-formula}}
@@ -11937,7 +12539,7 @@ These can be combined into a single table using \texttt{rbind}
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-251-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-270-1.pdf}
 
 \hypertarget{plots-that-communicate-the-factorial-design}{%
 \subsubsection{Plots that communicate the factorial design}\label{plots-that-communicate-the-factorial-design}}
@@ -12084,7 +12686,7 @@ An interaction plot is an okay plot. It doesn't show the data, only a minimal, d
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-252-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-271-1.pdf}
 
 This effects plot shows the four simple effects, the single interaction (Temp18:CO21100), and their 95\% confidence intervals. In the original paper, the researchers were testing a scientific (not statistical!) model that predicted no interaction between CO2 and Temp, and the researchers argued that these data supported this model because of the ``not statistically significant'' \emph{p}-value for the interaction effect. The data are consistent with this model (one end of the 95\% CI for the interaction includes zero) but also support a model of a large, negative interaction (the other end of the 95\% CI includes large negative values). The data are too course (or the signal:noise ratio is to small) to have much confidence in the size of the interaction effect.
 
@@ -12101,7 +12703,7 @@ This effects plot shows the four simple effects, the single interaction (Temp18:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-253-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-272-1.pdf}
 
 The effects and interaction plot are combined into a single plot.
 
@@ -13237,8 +13839,8 @@ The hypothesis tested by each row in the ANOVA table using Type III sum of squar
 \hypertarget{the-anova-tables-for-type-i-ii-and-iii-sum-of-squares-are-the-same-if-the-design-is-balanced.}{%
 \subsection{The anova tables for Type I, II, and III sum of squares are the same if the design is balanced.}\label{the-anova-tables-for-type-i-ii-and-iii-sum-of-squares-are-the-same-if-the-design-is-balanced.}}
 
-\hypertarget{working-in-r-5}{%
-\section{Working in R}\label{working-in-r-5}}
+\hypertarget{working-in-r-6}{%
+\section{Working in R}\label{working-in-r-6}}
 
 \hypertarget{type-i-sum-of-squares-in-r}{%
 \subsection{Type I sum of squares in R}\label{type-i-sum-of-squares-in-r}}
@@ -14126,8 +14728,8 @@ To understand this, rank order the treatment effects for each strain. An individ
 
 \textbf{Not more than you want to know} -- Shrinkage estimators are not only useful when we are interested in block-specific effects but are also useful for estimating effects when there are \textbf{multiple responses}. For example, consider a researcher interested in measuring the effects of some exercise treatment on gene expression in adipose cells. The researcher measures expression levels in 10,000 genes. Given the typical content in undergraduate biostatics courses, a researcher would probably model these responses using 10,000 \emph{t}-tests, or equivalently, 10,000 separate linear models. If the tests were ranked by \(p\)-value or absolute effect size, many of the genes with largest absolute effect would be there because of a large error component and many of the largest effects would be massively overinflated. Re-imagining the design as a single, linear mixed model with each gene modeled as a block would lead to a rank order in which the biggest measured effects more closely approximate the true effects.
 
-\hypertarget{working-in-r-6}{%
-\section{Working in R}\label{working-in-r-6}}
+\hypertarget{working-in-r-7}{%
+\section{Working in R}\label{working-in-r-7}}
 
 The major function for working with linear mixed models is \texttt{lmer()} from the lme4 package. An older, and still sometimes used and useful function is \texttt{lme()} from the nlme package. The authors of the lme4 package argue that the df in a linear mixed model are too approximate for a useful \(p\)-value and, consequently, the \texttt{lme} function does not return a \(p\)-value. Many biological researchers want a \(p\)-value and typically use the \texttt{lmerTest} package to get this.
 
@@ -14661,8 +15263,8 @@ which give us the \textbf{relative effect} of Infected\_HG compared to the Contr
   Effects on the response scale are not additive but multiplicative! So, for example, the mean of the Infected HG treatment level on the response scale is \(\overline{Control}*RR_{Infected\_HG}\) (remember that with a linear model the mean would be \(b_{Control} + b_{Infected\_HG}\)). Check and see if this works.
 \end{enumerate}
 
-\hypertarget{working-in-r-7}{%
-\section{Working in R}\label{working-in-r-7}}
+\hypertarget{working-in-r-8}{%
+\section{Working in R}\label{working-in-r-8}}
 
 \textbf{Fitting a GLM to count data}. The poisson family is specified with the base R \texttt{glm()} function. For negative binomial, use \texttt{glm.nb} from the MASS package
 
@@ -14766,7 +15368,7 @@ A plot of the dispersion statistic can be generated using the object returned by
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-275-1.pdf}
+\includegraphics{Walker-elementary-statistical-modeling-draft_files/figure-latex/unnamed-chunk-294-1.pdf}
 
 \begin{verbatim}
 ## 
