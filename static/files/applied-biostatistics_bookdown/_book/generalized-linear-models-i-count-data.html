@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Chapter 19 Generalized linear models I: Count data | Elements of Statistical Modeling for Experimental Biology</title>
+  <title>Chapter 20 Generalized linear models I: Count data | Elements of Statistical Modeling for Experimental Biology</title>
   <meta name="description" content="A first course in statistical modeling for experimental biology researchers" />
   <meta name="generator" content="bookdown 0.14 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Chapter 19 Generalized linear models I: Count data | Elements of Statistical Modeling for Experimental Biology" />
+  <meta property="og:title" content="Chapter 20 Generalized linear models I: Count data | Elements of Statistical Modeling for Experimental Biology" />
   <meta property="og:type" content="book" />
   
   
@@ -16,7 +16,7 @@
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Chapter 19 Generalized linear models I: Count data | Elements of Statistical Modeling for Experimental Biology" />
+  <meta name="twitter:title" content="Chapter 20 Generalized linear models I: Count data | Elements of Statistical Modeling for Experimental Biology" />
   
   <meta name="twitter:description" content="A first course in statistical modeling for experimental biology researchers" />
   
@@ -30,7 +30,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="linear-mixed-models.html"/>
+<link rel="prev" href="models-for-longitudinal-experiments-pre-post-designs.html"/>
 <link rel="next" href="linear-models-with-heterogenous-variance.html"/>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -49,6 +49,10 @@
 
 
 
+<script src="libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
+<link href="libs/bsTable-3.3.7/bootstrapTable.min.css" rel="stylesheet" />
+<script src="libs/bsTable-3.3.7/bootstrapTable.js"></script>
 
 
 <style type="text/css">
@@ -77,43 +81,46 @@ pre.numberSource code > span > a:first-child::before
     -khtml-user-select: none; -moz-user-select: none;
     -ms-user-select: none; user-select: none;
     padding: 0 4px; width: 4em;
-    color: #aaaaaa;
+    background-color: #ffffff;
+    color: #a0a0a0;
   }
-pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #a0a0a0;  padding-left: 4px; }
 div.sourceCode
-  {   }
+  { color: #1f1c1b; background-color: #ffffff; }
 @media screen {
 code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
-code span.al { color: #ff0000; font-weight: bold; } /* Alert */
-code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-code span.at { color: #7d9029; } /* Attribute */
-code span.bn { color: #40a070; } /* BaseN */
-code span.bu { } /* BuiltIn */
-code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-code span.ch { color: #4070a0; } /* Char */
-code span.cn { color: #880000; } /* Constant */
-code span.co { color: #60a0b0; font-style: italic; } /* Comment */
-code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-code span.do { color: #ba2121; font-style: italic; } /* Documentation */
-code span.dt { color: #902000; } /* DataType */
-code span.dv { color: #40a070; } /* DecVal */
-code span.er { color: #ff0000; font-weight: bold; } /* Error */
-code span.ex { } /* Extension */
-code span.fl { color: #40a070; } /* Float */
-code span.fu { color: #06287e; } /* Function */
-code span.im { } /* Import */
-code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
-code span.kw { color: #007020; font-weight: bold; } /* Keyword */
-code span.op { color: #666666; } /* Operator */
-code span.ot { color: #007020; } /* Other */
-code span.pp { color: #bc7a00; } /* Preprocessor */
-code span.sc { color: #4070a0; } /* SpecialChar */
-code span.ss { color: #bb6688; } /* SpecialString */
-code span.st { color: #4070a0; } /* String */
-code span.va { color: #19177c; } /* Variable */
-code span.vs { color: #4070a0; } /* VerbatimString */
-code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code span. { color: #1f1c1b; } /* Normal */
+code span.al { color: #bf0303; background-color: #f7e6e6; font-weight: bold; } /* Alert */
+code span.an { color: #ca60ca; } /* Annotation */
+code span.at { color: #0057ae; } /* Attribute */
+code span.bn { color: #b08000; } /* BaseN */
+code span.bu { color: #644a9b; font-weight: bold; } /* BuiltIn */
+code span.cf { color: #1f1c1b; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #924c9d; } /* Char */
+code span.cn { color: #aa5500; } /* Constant */
+code span.co { color: #898887; } /* Comment */
+code span.cv { color: #0095ff; } /* CommentVar */
+code span.do { color: #607880; } /* Documentation */
+code span.dt { color: #0057ae; } /* DataType */
+code span.dv { color: #b08000; } /* DecVal */
+code span.er { color: #bf0303; text-decoration: underline; } /* Error */
+code span.ex { color: #0095ff; font-weight: bold; } /* Extension */
+code span.fl { color: #b08000; } /* Float */
+code span.fu { color: #644a9b; } /* Function */
+code span.im { color: #ff5500; } /* Import */
+code span.in { color: #b08000; } /* Information */
+code span.kw { color: #1f1c1b; font-weight: bold; } /* Keyword */
+code span.op { color: #1f1c1b; } /* Operator */
+code span.ot { color: #006e28; } /* Other */
+code span.pp { color: #006e28; } /* Preprocessor */
+code span.re { color: #0057ae; background-color: #e0e9f8; } /* RegionMarker */
+code span.sc { color: #3daee9; } /* SpecialChar */
+code span.ss { color: #ff5500; } /* SpecialString */
+code span.st { color: #bf0303; } /* String */
+code span.va { color: #0057ae; } /* Variable */
+code span.vs { color: #bf0303; } /* VerbatimString */
+code span.wa { color: #bf0303; } /* Warning */
 </style>
 
 <link rel="stylesheet" href="style.css" type="text/css" />
@@ -452,10 +459,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="14.6" data-path="adding-covariates-to-a-linear-model.html"><a href="adding-covariates-to-a-linear-model.html#best-practices"><i class="fa fa-check"></i><b>14.6</b> Best practices</a><ul>
 <li class="chapter" data-level="14.6.1" data-path="adding-covariates-to-a-linear-model.html"><a href="adding-covariates-to-a-linear-model.html#do-not-use-a-ratio-of-partwhole-as-a-response-variable-instead-add-the-denominator-as-a-covariate"><i class="fa fa-check"></i><b>14.6.1</b> Do not use a ratio of part:whole as a response variable – instead add the denominator as a covariate</a></li>
 <li class="chapter" data-level="14.6.2" data-path="adding-covariates-to-a-linear-model.html"><a href="adding-covariates-to-a-linear-model.html#do-not-use-change-from-baseline-as-a-response-variable-instead-add-the-baseline-measure-as-a-covariate"><i class="fa fa-check"></i><b>14.6.2</b> Do not use change from baseline as a response variable – instead add the baseline measure as a covariate</a></li>
-<li class="chapter" data-level="14.6.3" data-path="adding-covariates-to-a-linear-model.html"><a href="adding-covariates-to-a-linear-model.html#regression-to-the-mean-in-words"><i class="fa fa-check"></i><b>14.6.3</b> Regression to the mean in words</a></li>
-<li class="chapter" data-level="14.6.4" data-path="adding-covariates-to-a-linear-model.html"><a href="adding-covariates-to-a-linear-model.html#regression-to-the-mean-in-pictures"><i class="fa fa-check"></i><b>14.6.4</b> Regression to the mean in pictures</a></li>
-<li class="chapter" data-level="14.6.5" data-path="adding-covariates-to-a-linear-model.html"><a href="adding-covariates-to-a-linear-model.html#do-not-use-percent-change-believing-that-percents-account-for-effects-of-initial-weights"><i class="fa fa-check"></i><b>14.6.5</b> Do not use percent change, believing that percents account for effects of initial weights</a></li>
-<li class="chapter" data-level="14.6.6" data-path="adding-covariates-to-a-linear-model.html"><a href="adding-covariates-to-a-linear-model.html#do-not-test-for-balance-of-baseline-measures"><i class="fa fa-check"></i><b>14.6.6</b> Do not “test for balance” of baseline measures</a></li>
+<li class="chapter" data-level="14.6.3" data-path="adding-covariates-to-a-linear-model.html"><a href="adding-covariates-to-a-linear-model.html#do-not-test-for-balance-of-baseline-measures"><i class="fa fa-check"></i><b>14.6.3</b> Do not “test for balance” of baseline measures</a></li>
 </ul></li>
 <li class="chapter" data-level="14.7" data-path="adding-covariates-to-a-linear-model.html"><a href="adding-covariates-to-a-linear-model.html#best-practices-2-use-a-covariate-instead-of-normalizing-a-response"><i class="fa fa-check"></i><b>14.7</b> Best practices 2: Use a covariate instead of normalizing a response</a></li>
 </ul></li>
@@ -513,68 +517,89 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="17.3" data-path="predictive-models.html"><a href="predictive-models.html#shrinkage"><i class="fa fa-check"></i><b>17.3</b> Shrinkage</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="part-vii-expanding-the-linear-model.html"><a href="part-vii-expanding-the-linear-model.html"><i class="fa fa-check"></i>Part VII – Expanding the Linear Model</a></li>
-<li class="chapter" data-level="18" data-path="linear-mixed-models.html"><a href="linear-mixed-models.html"><i class="fa fa-check"></i><b>18</b> Linear mixed models</a><ul>
-<li class="chapter" data-level="18.1" data-path="linear-mixed-models.html"><a href="linear-mixed-models.html#random-effects"><i class="fa fa-check"></i><b>18.1</b> Random effects</a></li>
-<li class="chapter" data-level="18.2" data-path="linear-mixed-models.html"><a href="linear-mixed-models.html#random-effects-in-statistical-models"><i class="fa fa-check"></i><b>18.2</b> Random effects in statistical models</a></li>
-<li class="chapter" data-level="18.3" data-path="linear-mixed-models.html"><a href="linear-mixed-models.html#linear-mixed-models-are-flexible"><i class="fa fa-check"></i><b>18.3</b> Linear mixed models are flexible</a></li>
-<li class="chapter" data-level="18.4" data-path="linear-mixed-models.html"><a href="linear-mixed-models.html#blocking"><i class="fa fa-check"></i><b>18.4</b> Blocking</a><ul>
-<li class="chapter" data-level="18.4.1" data-path="linear-mixed-models.html"><a href="linear-mixed-models.html#visualing-variation-due-to-blocks"><i class="fa fa-check"></i><b>18.4.1</b> Visualing variation due to blocks</a></li>
-<li class="chapter" data-level="18.4.2" data-path="linear-mixed-models.html"><a href="linear-mixed-models.html#blocking-increases-precision-of-point-estimates"><i class="fa fa-check"></i><b>18.4.2</b> Blocking increases precision of point estimates</a></li>
+<li class="chapter" data-level="18" data-path="models-with-random-effects-blocking-and-pseudoreplication.html"><a href="models-with-random-effects-blocking-and-pseudoreplication.html"><i class="fa fa-check"></i><b>18</b> Models with random effects – Blocking and pseudoreplication</a><ul>
+<li class="chapter" data-level="18.1" data-path="models-with-random-effects-blocking-and-pseudoreplication.html"><a href="models-with-random-effects-blocking-and-pseudoreplication.html#random-effects"><i class="fa fa-check"></i><b>18.1</b> Random effects</a></li>
+<li class="chapter" data-level="18.2" data-path="models-with-random-effects-blocking-and-pseudoreplication.html"><a href="models-with-random-effects-blocking-and-pseudoreplication.html#random-effects-in-statistical-models"><i class="fa fa-check"></i><b>18.2</b> Random effects in statistical models</a></li>
+<li class="chapter" data-level="18.3" data-path="models-with-random-effects-blocking-and-pseudoreplication.html"><a href="models-with-random-effects-blocking-and-pseudoreplication.html#linear-mixed-models-are-flexible"><i class="fa fa-check"></i><b>18.3</b> Linear mixed models are flexible</a></li>
+<li class="chapter" data-level="18.4" data-path="models-with-random-effects-blocking-and-pseudoreplication.html"><a href="models-with-random-effects-blocking-and-pseudoreplication.html#blocking"><i class="fa fa-check"></i><b>18.4</b> Blocking</a><ul>
+<li class="chapter" data-level="18.4.1" data-path="models-with-random-effects-blocking-and-pseudoreplication.html"><a href="models-with-random-effects-blocking-and-pseudoreplication.html#visualing-variation-due-to-blocks"><i class="fa fa-check"></i><b>18.4.1</b> Visualing variation due to blocks</a></li>
+<li class="chapter" data-level="18.4.2" data-path="models-with-random-effects-blocking-and-pseudoreplication.html"><a href="models-with-random-effects-blocking-and-pseudoreplication.html#blocking-increases-precision-of-point-estimates"><i class="fa fa-check"></i><b>18.4.2</b> Blocking increases precision of point estimates</a></li>
 </ul></li>
-<li class="chapter" data-level="18.5" data-path="linear-mixed-models.html"><a href="linear-mixed-models.html#pseudoreplication"><i class="fa fa-check"></i><b>18.5</b> Pseudoreplication</a><ul>
-<li class="chapter" data-level="18.5.1" data-path="linear-mixed-models.html"><a href="linear-mixed-models.html#visualizing-pseduoreplication"><i class="fa fa-check"></i><b>18.5.1</b> Visualizing pseduoreplication</a></li>
+<li class="chapter" data-level="18.5" data-path="models-with-random-effects-blocking-and-pseudoreplication.html"><a href="models-with-random-effects-blocking-and-pseudoreplication.html#pseudoreplication"><i class="fa fa-check"></i><b>18.5</b> Pseudoreplication</a><ul>
+<li class="chapter" data-level="18.5.1" data-path="models-with-random-effects-blocking-and-pseudoreplication.html"><a href="models-with-random-effects-blocking-and-pseudoreplication.html#visualizing-pseduoreplication"><i class="fa fa-check"></i><b>18.5.1</b> Visualizing pseduoreplication</a></li>
 </ul></li>
-<li class="chapter" data-level="18.6" data-path="linear-mixed-models.html"><a href="linear-mixed-models.html#mapping-nhst-to-estimation-a-paired-t-test-is-a-special-case-of-a-linear-mixed-model"><i class="fa fa-check"></i><b>18.6</b> Mapping NHST to estimation: A paired t-test is a special case of a linear mixed model</a></li>
-<li class="chapter" data-level="18.7" data-path="linear-mixed-models.html"><a href="linear-mixed-models.html#advanced-topic-linear-mixed-models-shrink-coefficients-by-partial-pooling"><i class="fa fa-check"></i><b>18.7</b> Advanced topic – Linear mixed models shrink coefficients by partial pooling</a></li>
-<li class="chapter" data-level="18.8" data-path="linear-mixed-models.html"><a href="linear-mixed-models.html#working-in-r-7"><i class="fa fa-check"></i><b>18.8</b> Working in R</a><ul>
-<li class="chapter" data-level="18.8.1" data-path="linear-mixed-models.html"><a href="linear-mixed-models.html#coral-data"><i class="fa fa-check"></i><b>18.8.1</b> coral data</a></li>
+<li class="chapter" data-level="18.6" data-path="models-with-random-effects-blocking-and-pseudoreplication.html"><a href="models-with-random-effects-blocking-and-pseudoreplication.html#mapping-nhst-to-estimation-a-paired-t-test-is-a-special-case-of-a-linear-mixed-model"><i class="fa fa-check"></i><b>18.6</b> Mapping NHST to estimation: A paired t-test is a special case of a linear mixed model</a></li>
+<li class="chapter" data-level="18.7" data-path="models-with-random-effects-blocking-and-pseudoreplication.html"><a href="models-with-random-effects-blocking-and-pseudoreplication.html#advanced-topic-linear-mixed-models-shrink-coefficients-by-partial-pooling"><i class="fa fa-check"></i><b>18.7</b> Advanced topic – Linear mixed models shrink coefficients by partial pooling</a></li>
+<li class="chapter" data-level="18.8" data-path="models-with-random-effects-blocking-and-pseudoreplication.html"><a href="models-with-random-effects-blocking-and-pseudoreplication.html#working-in-r-7"><i class="fa fa-check"></i><b>18.8</b> Working in R</a><ul>
+<li class="chapter" data-level="18.8.1" data-path="models-with-random-effects-blocking-and-pseudoreplication.html"><a href="models-with-random-effects-blocking-and-pseudoreplication.html#coral-data"><i class="fa fa-check"></i><b>18.8.1</b> coral data</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="19" data-path="generalized-linear-models-i-count-data.html"><a href="generalized-linear-models-i-count-data.html"><i class="fa fa-check"></i><b>19</b> Generalized linear models I: Count data</a><ul>
-<li class="chapter" data-level="19.1" data-path="generalized-linear-models-i-count-data.html"><a href="generalized-linear-models-i-count-data.html#the-generalized-linear-model"><i class="fa fa-check"></i><b>19.1</b> The generalized linear model</a></li>
-<li class="chapter" data-level="19.2" data-path="generalized-linear-models-i-count-data.html"><a href="generalized-linear-models-i-count-data.html#count-data-example-number-of-trematode-worm-larvae-in-eyes-of-threespine-stickleback-fish"><i class="fa fa-check"></i><b>19.2</b> Count data example – number of trematode worm larvae in eyes of threespine stickleback fish</a><ul>
-<li class="chapter" data-level="19.2.1" data-path="generalized-linear-models-i-count-data.html"><a href="generalized-linear-models-i-count-data.html#modeling-strategy-1"><i class="fa fa-check"></i><b>19.2.1</b> Modeling strategy</a></li>
-<li class="chapter" data-level="19.2.2" data-path="generalized-linear-models-i-count-data.html"><a href="generalized-linear-models-i-count-data.html#checking-the-model-i-a-normal-q-q-plot"><i class="fa fa-check"></i><b>19.2.2</b> Checking the model I – a Normal Q-Q plot</a></li>
-<li class="chapter" data-level="19.2.3" data-path="generalized-linear-models-i-count-data.html"><a href="generalized-linear-models-i-count-data.html#checking-the-model-ii-scale-location-plot-for-checking-homoskedasticity"><i class="fa fa-check"></i><b>19.2.3</b> Checking the model II – scale-location plot for checking homoskedasticity</a></li>
-<li class="chapter" data-level="19.2.4" data-path="generalized-linear-models-i-count-data.html"><a href="generalized-linear-models-i-count-data.html#two-distributions-for-count-data-poisson-and-negative-binomial"><i class="fa fa-check"></i><b>19.2.4</b> Two distributions for count data – Poisson and Negative Binomial</a></li>
-<li class="chapter" data-level="19.2.5" data-path="generalized-linear-models-i-count-data.html"><a href="generalized-linear-models-i-count-data.html#fitting-a-glm-with-a-poisson-distribution-to-the-worm-data"><i class="fa fa-check"></i><b>19.2.5</b> Fitting a GLM with a Poisson distribution to the worm data</a></li>
-<li class="chapter" data-level="19.2.6" data-path="generalized-linear-models-i-count-data.html"><a href="generalized-linear-models-i-count-data.html#model-checking-fits-to-count-data"><i class="fa fa-check"></i><b>19.2.6</b> Model checking fits to count data</a></li>
-<li class="chapter" data-level="19.2.7" data-path="generalized-linear-models-i-count-data.html"><a href="generalized-linear-models-i-count-data.html#fitting-a-glm-with-a-negative-binomial-distribution-to-the-worm-data"><i class="fa fa-check"></i><b>19.2.7</b> Fitting a GLM with a Negative Binomial distribution to the worm data</a></li>
+<li class="chapter" data-level="19" data-path="models-for-longitudinal-experiments-pre-post-designs.html"><a href="models-for-longitudinal-experiments-pre-post-designs.html"><i class="fa fa-check"></i><b>19</b> Models for longitudinal experiments – pre-post designs</a><ul>
+<li class="chapter" data-level="19.1" data-path="models-for-longitudinal-experiments-pre-post-designs.html"><a href="models-for-longitudinal-experiments-pre-post-designs.html#best-practice-models"><i class="fa fa-check"></i><b>19.1</b> Best practice models</a></li>
+<li class="chapter" data-level="19.2" data-path="models-for-longitudinal-experiments-pre-post-designs.html"><a href="models-for-longitudinal-experiments-pre-post-designs.html#common-alternatives-that-are-not-recommended"><i class="fa fa-check"></i><b>19.2</b> Common alternatives that are not recommended</a></li>
+<li class="chapter" data-level="19.3" data-path="models-for-longitudinal-experiments-pre-post-designs.html"><a href="models-for-longitudinal-experiments-pre-post-designs.html#advanced-models"><i class="fa fa-check"></i><b>19.3</b> Advanced models</a></li>
+<li class="chapter" data-level="19.4" data-path="models-for-longitudinal-experiments-pre-post-designs.html"><a href="models-for-longitudinal-experiments-pre-post-designs.html#understanding-the-alternative-models"><i class="fa fa-check"></i><b>19.4</b> Understanding the alternative models</a><ul>
+<li class="chapter" data-level="19.4.1" data-path="models-for-longitudinal-experiments-pre-post-designs.html"><a href="models-for-longitudinal-experiments-pre-post-designs.html#m1-linear-model-with-the-baseline-measure-as-the-covariate-ancova-model"><i class="fa fa-check"></i><b>19.4.1</b> (M1) Linear model with the baseline measure as the covariate (ANCOVA model)</a></li>
+<li class="chapter" data-level="19.4.2" data-path="models-for-longitudinal-experiments-pre-post-designs.html"><a href="models-for-longitudinal-experiments-pre-post-designs.html#m2-linear-model-of-the-change-score-change-score-model"><i class="fa fa-check"></i><b>19.4.2</b> (M2) Linear model of the change score (change-score model)</a></li>
+<li class="chapter" data-level="19.4.3" data-path="models-for-longitudinal-experiments-pre-post-designs.html"><a href="models-for-longitudinal-experiments-pre-post-designs.html#m3-linear-model-of-post-baseline-values-without-the-baseline-as-a-covariate-post-model"><i class="fa fa-check"></i><b>19.4.3</b> (M3) Linear model of post-baseline values without the baseline as a covariate (post model)</a></li>
+<li class="chapter" data-level="19.4.4" data-path="models-for-longitudinal-experiments-pre-post-designs.html"><a href="models-for-longitudinal-experiments-pre-post-designs.html#m4-linear-model-with-factorial-fixed-effects-fixed-effects-model"><i class="fa fa-check"></i><b>19.4.4</b> (M4) Linear model with factorial fixed effects (fixed-effects model)</a></li>
+<li class="chapter" data-level="19.4.5" data-path="models-for-longitudinal-experiments-pre-post-designs.html"><a href="models-for-longitudinal-experiments-pre-post-designs.html#m5-repeated-measures-anova"><i class="fa fa-check"></i><b>19.4.5</b> (M5) Repeated measures ANOVA</a></li>
+<li class="chapter" data-level="19.4.6" data-path="models-for-longitudinal-experiments-pre-post-designs.html"><a href="models-for-longitudinal-experiments-pre-post-designs.html#m6-linear-mixed-model"><i class="fa fa-check"></i><b>19.4.6</b> (M6) Linear mixed model</a></li>
+<li class="chapter" data-level="19.4.7" data-path="models-for-longitudinal-experiments-pre-post-designs.html"><a href="models-for-longitudinal-experiments-pre-post-designs.html#m7-linear-model-with-correlated-error"><i class="fa fa-check"></i><b>19.4.7</b> (M7) Linear model with correlated error</a></li>
+<li class="chapter" data-level="19.4.8" data-path="models-for-longitudinal-experiments-pre-post-designs.html"><a href="models-for-longitudinal-experiments-pre-post-designs.html#m8-constrained-fixed-effects-model-with-correlated-error-clda-model"><i class="fa fa-check"></i><b>19.4.8</b> (M8) Constrained fixed effects model with correlated error (cLDA model)</a></li>
+<li class="chapter" data-level="19.4.9" data-path="models-for-longitudinal-experiments-pre-post-designs.html"><a href="models-for-longitudinal-experiments-pre-post-designs.html#comparison-table"><i class="fa fa-check"></i><b>19.4.9</b> Comparison table</a></li>
 </ul></li>
-<li class="chapter" data-level="19.3" data-path="generalized-linear-models-i-count-data.html"><a href="generalized-linear-models-i-count-data.html#working-in-r-8"><i class="fa fa-check"></i><b>19.3</b> Working in R</a><ul>
-<li class="chapter" data-level="19.3.1" data-path="generalized-linear-models-i-count-data.html"><a href="generalized-linear-models-i-count-data.html#fitting-a-glm-to-count-data"><i class="fa fa-check"></i><b>19.3.1</b> Fitting a GLM to count data</a></li>
-<li class="chapter" data-level="19.3.2" data-path="generalized-linear-models-i-count-data.html"><a href="generalized-linear-models-i-count-data.html#fitting-a-generalized-linear-mixed-model-glmm-to-count-data"><i class="fa fa-check"></i><b>19.3.2</b> Fitting a generalized linear mixed model (GLMM) to count data</a></li>
-<li class="chapter" data-level="19.3.3" data-path="generalized-linear-models-i-count-data.html"><a href="generalized-linear-models-i-count-data.html#fitting-a-generalized-linear-model-to-continouus-data"><i class="fa fa-check"></i><b>19.3.3</b> Fitting a generalized linear model to continouus data</a></li>
+<li class="chapter" data-level="19.5" data-path="models-for-longitudinal-experiments-pre-post-designs.html"><a href="models-for-longitudinal-experiments-pre-post-designs.html#example-1-a-single-post-baseline-measure-pre-post-design"><i class="fa fa-check"></i><b>19.5</b> Example 1 – a single post-baseline measure (pre-post design)</a></li>
+<li class="chapter" data-level="19.6" data-path="models-for-longitudinal-experiments-pre-post-designs.html"><a href="models-for-longitudinal-experiments-pre-post-designs.html#working-in-r-8"><i class="fa fa-check"></i><b>19.6</b> Working in R</a></li>
+<li class="chapter" data-level="19.7" data-path="models-for-longitudinal-experiments-pre-post-designs.html"><a href="models-for-longitudinal-experiments-pre-post-designs.html#hidden-code-2"><i class="fa fa-check"></i><b>19.7</b> Hidden code</a><ul>
+<li class="chapter" data-level="19.7.1" data-path="models-for-longitudinal-experiments-pre-post-designs.html"><a href="models-for-longitudinal-experiments-pre-post-designs.html#import-and-wrangle-mouse-sociability-data"><i class="fa fa-check"></i><b>19.7.1</b> Import and wrangle mouse sociability data</a></li>
 </ul></li>
-<li class="chapter" data-level="19.4" data-path="generalized-linear-models-i-count-data.html"><a href="generalized-linear-models-i-count-data.html#problems-2"><i class="fa fa-check"></i><b>19.4</b> Problems</a></li>
 </ul></li>
-<li class="chapter" data-level="20" data-path="linear-models-with-heterogenous-variance.html"><a href="linear-models-with-heterogenous-variance.html"><i class="fa fa-check"></i><b>20</b> Linear models with heterogenous variance</a><ul>
-<li class="chapter" data-level="20.1" data-path="linear-models-with-heterogenous-variance.html"><a href="linear-models-with-heterogenous-variance.html#gls"><i class="fa fa-check"></i><b>20.1</b> gls</a></li>
+<li class="chapter" data-level="20" data-path="generalized-linear-models-i-count-data.html"><a href="generalized-linear-models-i-count-data.html"><i class="fa fa-check"></i><b>20</b> Generalized linear models I: Count data</a><ul>
+<li class="chapter" data-level="20.1" data-path="generalized-linear-models-i-count-data.html"><a href="generalized-linear-models-i-count-data.html#the-generalized-linear-model"><i class="fa fa-check"></i><b>20.1</b> The generalized linear model</a></li>
+<li class="chapter" data-level="20.2" data-path="generalized-linear-models-i-count-data.html"><a href="generalized-linear-models-i-count-data.html#count-data-example-number-of-trematode-worm-larvae-in-eyes-of-threespine-stickleback-fish"><i class="fa fa-check"></i><b>20.2</b> Count data example – number of trematode worm larvae in eyes of threespine stickleback fish</a><ul>
+<li class="chapter" data-level="20.2.1" data-path="generalized-linear-models-i-count-data.html"><a href="generalized-linear-models-i-count-data.html#modeling-strategy-1"><i class="fa fa-check"></i><b>20.2.1</b> Modeling strategy</a></li>
+<li class="chapter" data-level="20.2.2" data-path="generalized-linear-models-i-count-data.html"><a href="generalized-linear-models-i-count-data.html#checking-the-model-i-a-normal-q-q-plot"><i class="fa fa-check"></i><b>20.2.2</b> Checking the model I – a Normal Q-Q plot</a></li>
+<li class="chapter" data-level="20.2.3" data-path="generalized-linear-models-i-count-data.html"><a href="generalized-linear-models-i-count-data.html#checking-the-model-ii-scale-location-plot-for-checking-homoskedasticity"><i class="fa fa-check"></i><b>20.2.3</b> Checking the model II – scale-location plot for checking homoskedasticity</a></li>
+<li class="chapter" data-level="20.2.4" data-path="generalized-linear-models-i-count-data.html"><a href="generalized-linear-models-i-count-data.html#two-distributions-for-count-data-poisson-and-negative-binomial"><i class="fa fa-check"></i><b>20.2.4</b> Two distributions for count data – Poisson and Negative Binomial</a></li>
+<li class="chapter" data-level="20.2.5" data-path="generalized-linear-models-i-count-data.html"><a href="generalized-linear-models-i-count-data.html#fitting-a-glm-with-a-poisson-distribution-to-the-worm-data"><i class="fa fa-check"></i><b>20.2.5</b> Fitting a GLM with a Poisson distribution to the worm data</a></li>
+<li class="chapter" data-level="20.2.6" data-path="generalized-linear-models-i-count-data.html"><a href="generalized-linear-models-i-count-data.html#model-checking-fits-to-count-data"><i class="fa fa-check"></i><b>20.2.6</b> Model checking fits to count data</a></li>
+<li class="chapter" data-level="20.2.7" data-path="generalized-linear-models-i-count-data.html"><a href="generalized-linear-models-i-count-data.html#fitting-a-glm-with-a-negative-binomial-distribution-to-the-worm-data"><i class="fa fa-check"></i><b>20.2.7</b> Fitting a GLM with a Negative Binomial distribution to the worm data</a></li>
+</ul></li>
+<li class="chapter" data-level="20.3" data-path="generalized-linear-models-i-count-data.html"><a href="generalized-linear-models-i-count-data.html#working-in-r-9"><i class="fa fa-check"></i><b>20.3</b> Working in R</a><ul>
+<li class="chapter" data-level="20.3.1" data-path="generalized-linear-models-i-count-data.html"><a href="generalized-linear-models-i-count-data.html#fitting-a-glm-to-count-data"><i class="fa fa-check"></i><b>20.3.1</b> Fitting a GLM to count data</a></li>
+<li class="chapter" data-level="20.3.2" data-path="generalized-linear-models-i-count-data.html"><a href="generalized-linear-models-i-count-data.html#fitting-a-generalized-linear-mixed-model-glmm-to-count-data"><i class="fa fa-check"></i><b>20.3.2</b> Fitting a generalized linear mixed model (GLMM) to count data</a></li>
+<li class="chapter" data-level="20.3.3" data-path="generalized-linear-models-i-count-data.html"><a href="generalized-linear-models-i-count-data.html#fitting-a-generalized-linear-model-to-continouus-data"><i class="fa fa-check"></i><b>20.3.3</b> Fitting a generalized linear model to continouus data</a></li>
+</ul></li>
+<li class="chapter" data-level="20.4" data-path="generalized-linear-models-i-count-data.html"><a href="generalized-linear-models-i-count-data.html#problems-2"><i class="fa fa-check"></i><b>20.4</b> Problems</a></li>
+</ul></li>
+<li class="chapter" data-level="21" data-path="linear-models-with-heterogenous-variance.html"><a href="linear-models-with-heterogenous-variance.html"><i class="fa fa-check"></i><b>21</b> Linear models with heterogenous variance</a><ul>
+<li class="chapter" data-level="21.1" data-path="linear-models-with-heterogenous-variance.html"><a href="linear-models-with-heterogenous-variance.html#gls"><i class="fa fa-check"></i><b>21.1</b> gls</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="part-v-expanding-the-linear-model-generalized-linear-models-and-multilevel-linear-mixed-models.html"><a href="part-v-expanding-the-linear-model-generalized-linear-models-and-multilevel-linear-mixed-models.html"><i class="fa fa-check"></i>Part V: Expanding the Linear Model – Generalized Linear Models and Multilevel (Linear Mixed) Models</a></li>
-<li class="chapter" data-level="21" data-path="plotting-functions-ggplotsci.html"><a href="plotting-functions-ggplotsci.html"><i class="fa fa-check"></i><b>21</b> Plotting functions (#ggplotsci)</a><ul>
-<li class="chapter" data-level="21.1" data-path="plotting-functions-ggplotsci.html"><a href="plotting-functions-ggplotsci.html#odd-even"><i class="fa fa-check"></i><b>21.1</b> odd-even</a></li>
-<li class="chapter" data-level="21.2" data-path="plotting-functions-ggplotsci.html"><a href="plotting-functions-ggplotsci.html#estimate-response-and-effects-with-emmeans"><i class="fa fa-check"></i><b>21.2</b> estimate response and effects with emmeans</a></li>
-<li class="chapter" data-level="21.3" data-path="plotting-functions-ggplotsci.html"><a href="plotting-functions-ggplotsci.html#emm_table"><i class="fa fa-check"></i><b>21.3</b> emm_table</a></li>
-<li class="chapter" data-level="21.4" data-path="plotting-functions-ggplotsci.html"><a href="plotting-functions-ggplotsci.html#pairs_table"><i class="fa fa-check"></i><b>21.4</b> pairs_table</a></li>
-<li class="chapter" data-level="21.5" data-path="plotting-functions-ggplotsci.html"><a href="plotting-functions-ggplotsci.html#gg_mean_error"><i class="fa fa-check"></i><b>21.5</b> gg_mean_error</a></li>
-<li class="chapter" data-level="21.6" data-path="plotting-functions-ggplotsci.html"><a href="plotting-functions-ggplotsci.html#gg_ancova"><i class="fa fa-check"></i><b>21.6</b> gg_ancova</a></li>
-<li class="chapter" data-level="21.7" data-path="plotting-functions-ggplotsci.html"><a href="plotting-functions-ggplotsci.html#gg_mean_ci_ancova"><i class="fa fa-check"></i><b>21.7</b> gg_mean_ci_ancova</a></li>
-<li class="chapter" data-level="21.8" data-path="plotting-functions-ggplotsci.html"><a href="plotting-functions-ggplotsci.html#gg_effects"><i class="fa fa-check"></i><b>21.8</b> gg_effects</a></li>
+<li class="chapter" data-level="22" data-path="plotting-functions-ggplotsci.html"><a href="plotting-functions-ggplotsci.html"><i class="fa fa-check"></i><b>22</b> Plotting functions (#ggplotsci)</a><ul>
+<li class="chapter" data-level="22.1" data-path="plotting-functions-ggplotsci.html"><a href="plotting-functions-ggplotsci.html#odd-even"><i class="fa fa-check"></i><b>22.1</b> odd-even</a></li>
+<li class="chapter" data-level="22.2" data-path="plotting-functions-ggplotsci.html"><a href="plotting-functions-ggplotsci.html#estimate-response-and-effects-with-emmeans"><i class="fa fa-check"></i><b>22.2</b> estimate response and effects with emmeans</a></li>
+<li class="chapter" data-level="22.3" data-path="plotting-functions-ggplotsci.html"><a href="plotting-functions-ggplotsci.html#emm_table"><i class="fa fa-check"></i><b>22.3</b> emm_table</a></li>
+<li class="chapter" data-level="22.4" data-path="plotting-functions-ggplotsci.html"><a href="plotting-functions-ggplotsci.html#pairs_table"><i class="fa fa-check"></i><b>22.4</b> pairs_table</a></li>
+<li class="chapter" data-level="22.5" data-path="plotting-functions-ggplotsci.html"><a href="plotting-functions-ggplotsci.html#gg_mean_error"><i class="fa fa-check"></i><b>22.5</b> gg_mean_error</a></li>
+<li class="chapter" data-level="22.6" data-path="plotting-functions-ggplotsci.html"><a href="plotting-functions-ggplotsci.html#gg_ancova"><i class="fa fa-check"></i><b>22.6</b> gg_ancova</a></li>
+<li class="chapter" data-level="22.7" data-path="plotting-functions-ggplotsci.html"><a href="plotting-functions-ggplotsci.html#gg_mean_ci_ancova"><i class="fa fa-check"></i><b>22.7</b> gg_mean_ci_ancova</a></li>
+<li class="chapter" data-level="22.8" data-path="plotting-functions-ggplotsci.html"><a href="plotting-functions-ggplotsci.html#gg_effects"><i class="fa fa-check"></i><b>22.8</b> gg_effects</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="appendix-1-getting-started-with-r.html"><a href="appendix-1-getting-started-with-r.html"><i class="fa fa-check"></i>Appendix 1: Getting Started with R</a><ul>
-<li class="chapter" data-level="21.9" data-path="appendix-1-getting-started-with-r.html"><a href="appendix-1-getting-started-with-r.html#get-your-computer-ready"><i class="fa fa-check"></i><b>21.9</b> Get your computer ready</a><ul>
-<li class="chapter" data-level="21.9.1" data-path="appendix-1-getting-started-with-r.html"><a href="appendix-1-getting-started-with-r.html#start-here"><i class="fa fa-check"></i><b>21.9.1</b> Start here</a></li>
-<li class="chapter" data-level="21.9.2" data-path="appendix-1-getting-started-with-r.html"><a href="appendix-1-getting-started-with-r.html#install-r"><i class="fa fa-check"></i><b>21.9.2</b> Install R</a></li>
-<li class="chapter" data-level="21.9.3" data-path="appendix-1-getting-started-with-r.html"><a href="appendix-1-getting-started-with-r.html#install-r-studio"><i class="fa fa-check"></i><b>21.9.3</b> Install R Studio</a></li>
-<li class="chapter" data-level="21.9.4" data-path="appendix-1-getting-started-with-r.html"><a href="appendix-1-getting-started-with-r.html#install-r-markdown-1"><i class="fa fa-check"></i><b>21.9.4</b> Install R Markdown</a></li>
-<li class="chapter" data-level="21.9.5" data-path="appendix-1-getting-started-with-r.html"><a href="appendix-1-getting-started-with-r.html#optional-alternative-latex-installations"><i class="fa fa-check"></i><b>21.9.5</b> (optional) Alternative LaTeX installations</a></li>
+<li class="chapter" data-level="22.9" data-path="appendix-1-getting-started-with-r.html"><a href="appendix-1-getting-started-with-r.html#get-your-computer-ready"><i class="fa fa-check"></i><b>22.9</b> Get your computer ready</a><ul>
+<li class="chapter" data-level="22.9.1" data-path="appendix-1-getting-started-with-r.html"><a href="appendix-1-getting-started-with-r.html#start-here"><i class="fa fa-check"></i><b>22.9.1</b> Start here</a></li>
+<li class="chapter" data-level="22.9.2" data-path="appendix-1-getting-started-with-r.html"><a href="appendix-1-getting-started-with-r.html#install-r"><i class="fa fa-check"></i><b>22.9.2</b> Install R</a></li>
+<li class="chapter" data-level="22.9.3" data-path="appendix-1-getting-started-with-r.html"><a href="appendix-1-getting-started-with-r.html#install-r-studio"><i class="fa fa-check"></i><b>22.9.3</b> Install R Studio</a></li>
+<li class="chapter" data-level="22.9.4" data-path="appendix-1-getting-started-with-r.html"><a href="appendix-1-getting-started-with-r.html#install-r-markdown-1"><i class="fa fa-check"></i><b>22.9.4</b> Install R Markdown</a></li>
+<li class="chapter" data-level="22.9.5" data-path="appendix-1-getting-started-with-r.html"><a href="appendix-1-getting-started-with-r.html#optional-alternative-latex-installations"><i class="fa fa-check"></i><b>22.9.5</b> (optional) Alternative LaTeX installations</a></li>
 </ul></li>
-<li class="chapter" data-level="21.10" data-path="appendix-1-getting-started-with-r.html"><a href="appendix-1-getting-started-with-r.html#start-learning-r-studio"><i class="fa fa-check"></i><b>21.10</b> Start learning R Studio</a></li>
+<li class="chapter" data-level="22.10" data-path="appendix-1-getting-started-with-r.html"><a href="appendix-1-getting-started-with-r.html#start-learning-r-studio"><i class="fa fa-check"></i><b>22.10</b> Start learning R Studio</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="appendix-2-online-resources-for-getting-started-with-statistical-modeling-in-r.html"><a href="appendix-2-online-resources-for-getting-started-with-statistical-modeling-in-r.html"><i class="fa fa-check"></i>Appendix 2: Online Resources for Getting Started with Statistical Modeling in R</a></li>
 <li class="chapter" data-level="" data-path="appendix-3-fake-data-simulations.html"><a href="appendix-3-fake-data-simulations.html"><i class="fa fa-check"></i>Appendix 3: Fake Data Simulations</a><ul>
-<li class="chapter" data-level="21.11" data-path="appendix-3-fake-data-simulations.html"><a href="appendix-3-fake-data-simulations.html#performance-of-blocking-relative-to-a-linear-model"><i class="fa fa-check"></i><b>21.11</b> Performance of Blocking relative to a linear model</a></li>
+<li class="chapter" data-level="22.11" data-path="appendix-3-fake-data-simulations.html"><a href="appendix-3-fake-data-simulations.html#performance-of-blocking-relative-to-a-linear-model"><i class="fa fa-check"></i><b>22.11</b> Performance of Blocking relative to a linear model</a></li>
 </ul></li>
 <li class="divider"></li>
 <li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
@@ -597,37 +622,37 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
             <section class="normal" id="section-">
 <div id="generalized-linear-models-i-count-data" class="section level1">
-<h1><span class="header-section-number">Chapter 19</span> Generalized linear models I: Count data</h1>
+<h1><span class="header-section-number">Chapter 20</span> Generalized linear models I: Count data</h1>
 <p>Biologists frequently count stuff, and design experiments to estimate the effects of different factors on these counts. For example, the effects of environmental mercury on clutch size in a bird, the effects of warming on parasite load in a fish, or the effect of exercise on RNA expression.</p>
-<p>Count data differ from data with normal error in many ways, including 1) counts are discrete, and can be zero or positive integers only, 2) counts tend to bunch up on the small side of the range, creating a distribution with a positive skew, 3) a sample of counts can have an abundance of zeros, and 4) the variance of counts increases with the mean (see Figure <a href="generalized-linear-models-i-count-data.html#fig:glm1-plot1">19.1</a> for some of these properties). Some count data can be approximated by a normal distribution and reasonably modeled with a linear model but more often, count data are modeled with <strong>Poisson distribution</strong> or <strong>negative binomial distribution</strong> using a <strong>generalized linear model</strong> (GLM). Poisson and negative binomial distributions are <strong>discrete probability distributions</strong> with two important properties: 1) the distribution contains only zero and positive integers and 2) the variance is a function of the mean. Back before modern computing and fast processors, count data were often analyzed by either <strong>transforming</strong> the response or by <strong>non-parametric hypothesis tests</strong>. One reason to prefer a statistical modeling approach with a GLM is that we can get interpretable parameter estimates. By contrast, both the analysis of transformed data and non-parametric hypothesis tests are really tools for computing “correct” <span class="math inline">\(p\)</span>-values.</p>
+<p>Count data differ from data with normal error in many ways, including 1) counts are discrete, and can be zero or positive integers only, 2) counts tend to bunch up on the small side of the range, creating a distribution with a positive skew, 3) a sample of counts can have an abundance of zeros, and 4) the variance of counts increases with the mean (see Figure <a href="generalized-linear-models-i-count-data.html#fig:glm1-plot1">20.1</a> for some of these properties). Some count data can be approximated by a normal distribution and reasonably modeled with a linear model but more often, count data are modeled with <strong>Poisson distribution</strong> or <strong>negative binomial distribution</strong> using a <strong>generalized linear model</strong> (GLM). Poisson and negative binomial distributions are <strong>discrete probability distributions</strong> with two important properties: 1) the distribution contains only zero and positive integers and 2) the variance is a function of the mean. Back before modern computing and fast processors, count data were often analyzed by either <strong>transforming</strong> the response or by <strong>non-parametric hypothesis tests</strong>. One reason to prefer a statistical modeling approach with a GLM is that we can get interpretable parameter estimates. By contrast, both the analysis of transformed data and non-parametric hypothesis tests are really tools for computing “correct” <span class="math inline">\(p\)</span>-values.</p>
 <div class="figure"><span id="fig:glm1-plot1"></span>
 <img src="Walker-elementary-statistical-modeling-draft_files/figure-html/glm1-plot1-1.png" alt="Histogram of the count of a trematode parasite larvae in Control vs. Infected fish. Fish in the Infected treatment are infected with a tapeworm." width="576" />
 <p class="caption">
-Figure 19.1: Histogram of the count of a trematode parasite larvae in Control vs. Infected fish. Fish in the Infected treatment are infected with a tapeworm.
+Figure 20.1: Histogram of the count of a trematode parasite larvae in Control vs. Infected fish. Fish in the Infected treatment are infected with a tapeworm.
 </p>
 </div>
 <div id="the-generalized-linear-model" class="section level2">
-<h2><span class="header-section-number">19.1</span> The generalized linear model</h2>
+<h2><span class="header-section-number">20.1</span> The generalized linear model</h2>
 <p>As outlined in section [Assumptions for inference with statistical models] in Chapter 1, a common way that biological researchers think about a response variable is</p>
 <p><span class="math display" id="eq:spec1">\[\begin{align}
 y_i &amp;= \beta_0 + \beta_1 x_i + \varepsilon_i \\
 \varepsilon &amp;\sim N(0, \sigma)
-\tag{19.1}
+\tag{20.1}
 \end{align}\]</span></p>
 <p>That is, we can think of a response as the sum of some systematic part and “random errror”, which is a random draw from a normal distribution with mean zero and variance <span class="math inline">\(\sigma^2\)</span>. This way of thinking about the generation of the response is useful for linear models, and model checking linear models, but is not useful for generalized linear models or model checking generalized liner models. For example, if we want to model the number of parasites that have infected a fish using a Poisson distribution, the following is the <strong>wrong</strong> way to think about the statistical model</p>
 <p><span class="math display" id="eq:spec1-poisson">\[\begin{align}
 y_i &amp;= \beta_0 + \beta_1 x_i + \varepsilon_i\\
 \varepsilon &amp;\sim Poisson(\lambda)
-\tag{19.2}
+\tag{20.2}
 \end{align}\]</span></p>
 <p>That is, we should not think of a count as the sum of a systematic part and a random draw from a Poisson distribution. Why? Because it is the counts (or the counts conditional on <span class="math inline">\(X\)</span>) that are poisson distributed, not the residuals from the fit model.</p>
-<p>Thinking about the distribution of count data using model <a href="generalized-linear-models-i-count-data.html#eq:spec1-poisson">(19.2)</a> leads to absurd consequences. For example, if we set the mean of the Poisson “error” to zero (like with a normal distribution), then the error term for every observation would <em>have to</em> be zero (because the only way to get a mean of zero with non-negative integers is if every value is zero). Or, if the study is modeling the effect of a treatment on the counts (that is, the <span class="math inline">\(X\)</span> are dummy variables) then <span class="math inline">\(\beta_0\)</span> is the expected mean count of the control (or reference) group. But if we add non-zero Poisson error to this, then the mean of the control group would be larger than <span class="math inline">\(\beta_0\)</span>. This doesn’t make sense. And finally, equation <a href="generalized-linear-models-i-count-data.html#eq:spec1-poisson">(19.2)</a> generates a continuous response, instead of an integer, because <span class="math inline">\(\beta_0\)</span> and <span class="math inline">\(\beta_1\)</span> are continuous.</p>
+<p>Thinking about the distribution of count data using model <a href="generalized-linear-models-i-count-data.html#eq:spec1-poisson">(20.2)</a> leads to absurd consequences. For example, if we set the mean of the Poisson “error” to zero (like with a normal distribution), then the error term for every observation would <em>have to</em> be zero (because the only way to get a mean of zero with non-negative integers is if every value is zero). Or, if the study is modeling the effect of a treatment on the counts (that is, the <span class="math inline">\(X\)</span> are dummy variables) then <span class="math inline">\(\beta_0\)</span> is the expected mean count of the control (or reference) group. But if we add non-zero Poisson error to this, then the mean of the control group would be larger than <span class="math inline">\(\beta_0\)</span>. This doesn’t make sense. And finally, equation <a href="generalized-linear-models-i-count-data.html#eq:spec1-poisson">(20.2)</a> generates a continuous response, instead of an integer, because <span class="math inline">\(\beta_0\)</span> and <span class="math inline">\(\beta_1\)</span> are continuous.</p>
 <p>A better way to think about the data generation for a linear model, because this naturally leads to the <em>correct</em> way to think about data generation for a generalized linear model, is</p>
 <p><span class="math display" id="eq:lm-spec2">\[\begin{align}
 y_i &amp;\sim N(\mu_i, \sigma)\\
 \mathrm{E}(Y|X) &amp;= \mu\\
 \mu_i &amp;= \beta_0 + \beta_1 x_i
-\tag{19.3}
+\tag{20.3}
 \end{align}\]</span></p>
 <p>That is, a response is a random draw from a normal distribution with mean <span class="math inline">\(mu\)</span> (not zero!) and variance <span class="math inline">\(\sigma^2\)</span>. Line 1 is the stochastic part of this specification. Line 3 is the systematic part.</p>
 <p>The specification of a generalized linear model has both stochastic and systematic parts but adds a third part, which is a <strong>link function</strong> connecting the stochastic and systematic parts.</p>
@@ -649,31 +674,31 @@ y_i \sim \mathrm{Prob}(\mu_i)
 <p>When modeling counts using the Poisson or negative binomial distributions with a log link, the link scale is linear, and so the effects are additive on the link scale, while the response scale is nonlinear (it is the exponent of the link scale), and so the effects are multiplicative on the response scale. If this doesn’t make sense now, an example is worked out below. The inverse of the link function backtransforms the parameters from the link scale back to the response scale. So, for example, a prediction on the response sale is <span class="math inline">\(\mathrm{exp}(\hat{\eta})\)</span> and a coefficient on the response scale is <span class="math inline">\(\mathrm{exp}(b_j)\)</span>.</p>
 </div>
 <div id="count-data-example-number-of-trematode-worm-larvae-in-eyes-of-threespine-stickleback-fish" class="section level2">
-<h2><span class="header-section-number">19.2</span> Count data example – number of trematode worm larvae in eyes of threespine stickleback fish</h2>
-<p>The example is an experiment measuring the effect of the parasitic tapeworm <em>Schistocephalus solidus</em> infection on the susceptibility of infection from a second parasite, the trematode <em>Diplostomum pseudospathaceum</em>, in the threespine stickleback fish <em>Gasterosteus aculeatus</em><a href="appendix-3-fake-data-simulations.html#fn9" class="footnote-ref" id="fnref9"><sup>9</sup></a>. The treatment levels are “Control” (unexposed to the tapeworm), “Uninfected” " (exposed to the tapeworm but uninfected), “Infected LG” (exposed and infected with the low growth population of the tapeworm), and “Infected HG” (exposed and infected with the high growth population of tapeworm). The response is the number of trematode larvae counted in the eyes (right and left combined) of the fish. A histogram of the counts is shown in Figure <a href="generalized-linear-models-i-count-data.html#fig:glm1-plot1">19.1</a> for the control and Infected HG treatment levels.</p>
+<h2><span class="header-section-number">20.2</span> Count data example – number of trematode worm larvae in eyes of threespine stickleback fish</h2>
+<p>The example is an experiment measuring the effect of the parasitic tapeworm <em>Schistocephalus solidus</em> infection on the susceptibility of infection from a second parasite, the trematode <em>Diplostomum pseudospathaceum</em>, in the threespine stickleback fish <em>Gasterosteus aculeatus</em><a href="appendix-3-fake-data-simulations.html#fn9" class="footnote-ref" id="fnref9"><sup>9</sup></a>. The treatment levels are “Control” (unexposed to the tapeworm), “Uninfected” " (exposed to the tapeworm but uninfected), “Infected LG” (exposed and infected with the low growth population of the tapeworm), and “Infected HG” (exposed and infected with the high growth population of tapeworm). The response is the number of trematode larvae counted in the eyes (right and left combined) of the fish. A histogram of the counts is shown in Figure <a href="generalized-linear-models-i-count-data.html#fig:glm1-plot1">20.1</a> for the control and Infected HG treatment levels.</p>
 <div id="modeling-strategy-1" class="section level3">
-<h3><span class="header-section-number">19.2.1</span> Modeling strategy</h3>
+<h3><span class="header-section-number">20.2.1</span> Modeling strategy</h3>
 <div style="background-color:#cccccc; text-align:left; vertical-align: middle; padding:20px 47px;">
 <p><strong>NHST blues</strong> – Students are often encouraged by textbooks, colleagues, or the literature to start the analysis by first “testing” assumptions with hypothesis tests – for example using a Shaprio-Wilks test of normality as a decision rule to decide if to use a parametric test such as a <span class="math inline">\(t\)</span>-test or ANOVA if the null hypothesis of normality is not rejected, or a non-parametric test such as a Mann-Whitney U test if the null hypothesis of normality is rejected. I advise against this, because 1) this pre-test filtering automatically invalidates the <span class="math inline">\(p\)</span>-value of the hypothesis test as it does not adjust for the filtering procedure, 2) real data are only approximately normal and as <span class="math inline">\(n\)</span> increses, a normality test will reject any real dataset, and 3) hypothesis tests are pretty robust to non-normality anyway.</p>
 </div>
 <p>Instead of testing assumptions of a model using formal hypothesis tests <em>before</em> fitting the model, a better strategy is to 1) fit a model, and then do 2) <strong>model checking</strong> using <strong>diagnostic plots</strong>, diagnostic statistics, and simulation.</p>
-<p>With these data, a researcher would typically fit a GLM with a Poisson or negative binomial distribution and log link. Here, I start with a linear model to illustrate the interpretation of diagnostic plots with non-normal data. I use the “linear model” specification (equation <a href="generalized-linear-models-i-count-data.html#eq:spec1">(19.1)</a>) because the diganostic plots for model checking a linear model use the residuals of the fit model.</p>
+<p>With these data, a researcher would typically fit a GLM with a Poisson or negative binomial distribution and log link. Here, I start with a linear model to illustrate the interpretation of diagnostic plots with non-normal data. I use the “linear model” specification (equation <a href="generalized-linear-models-i-count-data.html#eq:spec1">(20.1)</a>) because the diganostic plots for model checking a linear model use the residuals of the fit model.</p>
 <p><span class="math display" id="eq:worm-lm">\[\begin{align}
 Diplo\_intensity_i &amp;= \beta_0 + \beta_1 Uninfected_i + \beta_2 Infected\_LG_i + \beta_3 Infected\_HG_i + \varepsilon_i \\
 \varepsilon &amp;\sim N(0, \sigma)
-\tag{19.4}
+\tag{20.4}
 \end{align}\]</span></p>
 </div>
 <div id="checking-the-model-i-a-normal-q-q-plot" class="section level3">
-<h3><span class="header-section-number">19.2.2</span> Checking the model I – a Normal Q-Q plot</h3>
-<p>Figure <a href="generalized-linear-models-i-count-data.html#fig:glm1-plot2">19.2</a>A shows a histogram of the residuals from the fit linear model. The plot shows that the residuals are clumped at the negative end of the range, which suggests that a model with a normally distributed conditional outcome (or normal error) is not well approximated.</p>
+<h3><span class="header-section-number">20.2.2</span> Checking the model I – a Normal Q-Q plot</h3>
+<p>Figure <a href="generalized-linear-models-i-count-data.html#fig:glm1-plot2">20.2</a>A shows a histogram of the residuals from the fit linear model. The plot shows that the residuals are clumped at the negative end of the range, which suggests that a model with a normally distributed conditional outcome (or normal error) is not well approximated.</p>
 <div class="figure"><span id="fig:glm1-plot2"></span>
 <img src="Walker-elementary-statistical-modeling-draft_files/figure-html/glm1-plot2-1.png" alt="Diagnostic plots of stickleback parasite data. A) Distribution of the residuals of the fit linear model. B) Normal Q-Q plot of the residuals of the fit linear model." width="576" />
 <p class="caption">
-Figure 19.2: Diagnostic plots of stickleback parasite data. A) Distribution of the residuals of the fit linear model. B) Normal Q-Q plot of the residuals of the fit linear model.
+Figure 20.2: Diagnostic plots of stickleback parasite data. A) Distribution of the residuals of the fit linear model. B) Normal Q-Q plot of the residuals of the fit linear model.
 </p>
 </div>
-<p>A better way to investigate this is with the <strong>Normal Q-Q</strong> plot in Figure <a href="generalized-linear-models-i-count-data.html#fig:glm1-plot2">19.2</a>B, which plots the sample quantiles for a variable against their theoretical quantiles. If the conditional outcome approximates a normal distribution, the points should roughly follow the line. Instead, for the worm data, the points are above the line at both ends. At the left (negative) end, this means that we aren’t seeing the most negative values that would be expected (the observed values are more positive than the theoretical values). Remembering that this plot is of residuals, if we think about this as counts, this means that our smallest counts are not as small as we would expect given the mean and a normal distribution. This shouldn’t be surprising – the counts range down to zero and counts cannot be below zero. At the positive end, the sample values are again more positive than the theoretical values. Thinking about this as counts, this means that are largest counts are larger than expected given the mean and a normal distribution. This pattern is exactly what we’d expect of count data, or at least count data that borders zero.</p>
+<p>A better way to investigate this is with the <strong>Normal Q-Q</strong> plot in Figure <a href="generalized-linear-models-i-count-data.html#fig:glm1-plot2">20.2</a>B, which plots the sample quantiles for a variable against their theoretical quantiles. If the conditional outcome approximates a normal distribution, the points should roughly follow the line. Instead, for the worm data, the points are above the line at both ends. At the left (negative) end, this means that we aren’t seeing the most negative values that would be expected (the observed values are more positive than the theoretical values). Remembering that this plot is of residuals, if we think about this as counts, this means that our smallest counts are not as small as we would expect given the mean and a normal distribution. This shouldn’t be surprising – the counts range down to zero and counts cannot be below zero. At the positive end, the sample values are again more positive than the theoretical values. Thinking about this as counts, this means that are largest counts are larger than expected given the mean and a normal distribution. This pattern is exactly what we’d expect of count data, or at least count data that borders zero.</p>
 <div style="background-color:#cccccc; text-align:left; vertical-align: middle; padding:20px 47px;">
 <p><strong>Intuition Pump</strong> – Let’s construct a Normal Q-Q plot. A <strong>quantile</strong> (or percentile) of a vector of numbers is the value of the point at a specified percentage rank. The median is the 50% quantile. The 95% confidence intervals are at the 2.5% and 97.5% quantiles. In a Normal Q-Q plot, we want to plot the quantiles of the residuals against a set of theoretical quantiles.</p>
 <ol style="list-style-type: decimal">
@@ -686,13 +711,13 @@ Figure 19.2: Diagnostic plots of stickleback parasite data. A) Distribution of t
 </div>
 </div>
 <div id="checking-the-model-ii-scale-location-plot-for-checking-homoskedasticity" class="section level3">
-<h3><span class="header-section-number">19.2.3</span> Checking the model II – scale-location plot for checking homoskedasticity</h3>
+<h3><span class="header-section-number">20.2.3</span> Checking the model II – scale-location plot for checking homoskedasticity</h3>
 <p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/glm1-worm-scale-location-1.png" width="576" /></p>
 <p>A linear model also assumes the error has constant variance (that is, the error variance is not a function of the value of <span class="math inline">\(X\)</span>), or homoskedasticity. The fit model can be checked for homoskedasticity using a scale-location plot, which is a scatterplot of the positive square-root of the standardized residuals against the fitted values<a href="appendix-3-fake-data-simulations.html#fn10" class="footnote-ref" id="fnref10"><sup>10</sup></a>. If the residuals approximate a normal distribution, then a regression line through the scatter should be close to horizontal. The regression line in the scale-location plot of the fit of the linear model to the worm data shows a distinct increase in the “scale” (the square root of the standardized residuals) with increased fitted value, which is expected of data that are lognormally, Poisson, or negative binomially distributed.</p>
 </div>
 <div id="two-distributions-for-count-data-poisson-and-negative-binomial" class="section level3">
-<h3><span class="header-section-number">19.2.4</span> Two distributions for count data – Poisson and Negative Binomial</h3>
-<p>The pattern in the normal Q-Q plot in Figure <a href="generalized-linear-models-i-count-data.html#fig:glm1-plot2">19.2</a>B should discourage one from modeling the data with a normal distribution and instead model the data with an alternative distribution using a Generalized Linear Model. There is no unique mapping between how data are generated and a specific distribution, so this decision is not as easy as thinking about the data generation mechanism and then simply choosing the “correct” distribution. Section 4.5 in Bolker (xxx) is an excellent summary of how to think about the generating processes for different distributions in the context of ecological data. Since the response in the worm data are counts, we need to choose a distribution that generates integer values, such as the Poisson or the negative binomial.</p>
+<h3><span class="header-section-number">20.2.4</span> Two distributions for count data – Poisson and Negative Binomial</h3>
+<p>The pattern in the normal Q-Q plot in Figure <a href="generalized-linear-models-i-count-data.html#fig:glm1-plot2">20.2</a>B should discourage one from modeling the data with a normal distribution and instead model the data with an alternative distribution using a Generalized Linear Model. There is no unique mapping between how data are generated and a specific distribution, so this decision is not as easy as thinking about the data generation mechanism and then simply choosing the “correct” distribution. Section 4.5 in Bolker (xxx) is an excellent summary of how to think about the generating processes for different distributions in the context of ecological data. Since the response in the worm data are counts, we need to choose a distribution that generates integer values, such as the Poisson or the negative binomial.</p>
 <ol style="list-style-type: decimal">
 <li>Poisson – A Poisson distribution is the probability distribution of the number of occurrences of some thing (an egg, a parasite, or a specific mRNA transcript) generated by a process that generates the thing at a constant rate per unit effort (duration or space). This constant rate is <span class="math inline">\(\lambda\)</span>, which is the expectation, so <span class="math inline">\(\mathrm{E}(Y) = \mu = \lambda\)</span>. Because the rate per effort is constant, <em>the variance of a Poisson variable equals the mean</em>, <span class="math inline">\(\sigma^2 = \mu = \lambda\)</span>. Figure <a href="#fig:glm1-poisson"><strong>??</strong></a> shows three samples from a Poisson distribution with <span class="math inline">\(\lambda\)</span> set to 1, 5, and 10. The plots show that, as the mean count (<span class="math inline">\(\lambda\)</span>) moves away from zero, a Poisson distribution 1) becomes less skewed and more closely approximates a normal distribution and 2) has an increasingly low probability of including zero (less than 1% zeros when the mean is 5).</li>
 </ol>
@@ -703,7 +728,7 @@ Figure 19.2: Diagnostic plots of stickleback parasite data. A) Distribution of t
 </ol>
 </div>
 <div id="fitting-a-glm-with-a-poisson-distribution-to-the-worm-data" class="section level3">
-<h3><span class="header-section-number">19.2.5</span> Fitting a GLM with a Poisson distribution to the worm data</h3>
+<h3><span class="header-section-number">20.2.5</span> Fitting a GLM with a Poisson distribution to the worm data</h3>
 <p>Let’s fit a GLM with a Poisson distribution to the worm data. The model is</p>
 <p><span class="math display">\[\begin{align}
 Diplo\_intensity_i &amp;\sim Poisson(\mu_i)\\
@@ -720,13 +745,13 @@ Diplo\_intensity_i &amp;\sim Poisson(\mu_i)\\
 <p>Remember that the conditional mean is the expected/predicted/fitted/modeled value when <span class="math inline">\(X=x_i\)</span>.</p>
 </div>
 <div id="model-checking-fits-to-count-data" class="section level3">
-<h3><span class="header-section-number">19.2.6</span> Model checking fits to count data</h3>
+<h3><span class="header-section-number">20.2.6</span> Model checking fits to count data</h3>
 <p>we use the fit model to check
 1. the overall similarity of observed and theoretical distributions
 2. if the observed distribution is over or under dispersed
 3. if there more zeros than expected by the theoretical distribution. If so, the observed distribution is <strong>zero-inflated</strong></p>
 <div id="model-checking-a-glm-i-the-quantile-residual-q-q-plot" class="section level4">
-<h4><span class="header-section-number">19.2.6.1</span> Model checking a GLM I – the quantile residual Q-Q plot</h4>
+<h4><span class="header-section-number">20.2.6.1</span> Model checking a GLM I – the quantile residual Q-Q plot</h4>
 <p>A quantile-quantile (Q-Q) plot is used to check overall similarity of the observed distribution with the distribution that would be expected under the model. An alternative to a Normal Q-Q plot for a GLM fit is a quantile residual Q-Q plot of observed vs. expected <strong>quantile residuals</strong>. The basic algorithm for this is</p>
 <ol style="list-style-type: decimal">
 <li>Use the model parameters to simulate <span class="math inline">\(p\)</span> fake values of the response for each row of the data. This will be a <span class="math inline">\(n \times p\)</span> matrix of fake data where each column is a new, random sample of a population with parameters equal to that estimated for the observed data. For the Poisson, the parameter for each observation will be <span class="math inline">\(\hat{\mu}_i\)</span>, the modeled value of observation <span class="math inline">\(i\)</span>. For the negative binomial, the parameters will be <span class="math inline">\(\hat{\mu}_i\)</span> and the dispersion parameter <span class="math inline">\(k\)</span>, which is the same for all observations.</li>
@@ -740,7 +765,7 @@ Diplo\_intensity_i &amp;\sim Poisson(\mu_i)\\
 <p>The Q-Q plot using quantile residuals with a Poisson distribution indicates that the counts of <em>Diplostomum</em> larvae in the eyes of the threespine stickleback are not well approximated by a Poisson distribution – there are too many observed values near the ends of the expected tails, indicating the expected values are not spread out enough. This pattern emerges because the observed counts are overdispersed compared to a Poisson distribution.</p>
 </div>
 <div id="model-checking-a-glm-ii-a-dispersion-plot" class="section level4">
-<h4><span class="header-section-number">19.2.6.2</span> Model checking a GLM II – a dispersion plot</h4>
+<h4><span class="header-section-number">20.2.6.2</span> Model checking a GLM II – a dispersion plot</h4>
 <p>If observed counts are Poisson distributed, then the <strong>Pearson residuals</strong> (<span class="math inline">\(r_i\)</span>) and the residual degrees of freedom of the fit model (<span class="math inline">\(df\)</span>) can be used to compute a dispersion statistic</p>
 <p><span class="math display">\[\begin{equation}
 \frac{\sum{r_i}}{df}
@@ -755,13 +780,13 @@ Diplo\_intensity_i &amp;\sim Poisson(\mu_i)\\
 <div class="figure"><span id="fig:glm1-worm-poisson-dispersion-plot"></span>
 <img src="Walker-elementary-statistical-modeling-draft_files/figure-html/glm1-worm-poisson-dispersion-plot-1.png" alt="Observed vs. expected dispersion statistic. The observed statistic marked by the red line. The histogram of expected statistics are from 1000 simulations of the observed data." width="576" />
 <p class="caption">
-Figure 19.3: Observed vs. expected dispersion statistic. The observed statistic marked by the red line. The histogram of expected statistics are from 1000 simulations of the observed data.
+Figure 20.3: Observed vs. expected dispersion statistic. The observed statistic marked by the red line. The histogram of expected statistics are from 1000 simulations of the observed data.
 </p>
 </div>
 </div>
 </div>
 <div id="fitting-a-glm-with-a-negative-binomial-distribution-to-the-worm-data" class="section level3">
-<h3><span class="header-section-number">19.2.7</span> Fitting a GLM with a Negative Binomial distribution to the worm data</h3>
+<h3><span class="header-section-number">20.2.7</span> Fitting a GLM with a Negative Binomial distribution to the worm data</h3>
 <p>The model is</p>
 <p><span class="math display">\[\begin{align}
 Diplo\_intensity &amp;\sim NB(\mu, k)\\
@@ -770,13 +795,13 @@ Diplo\_intensity &amp;\sim NB(\mu, k)\\
 \eta &amp;= \beta_0 + \beta_1 Uninfected + \beta_2 Infected\_LG + \beta_3 Infected\_HG
 \end{align}\]</span></p>
 <p>This model specifies a negative binomial distribution but otherwise is just like that above specifying a Poisson distribution.</p>
-<div id="model-checking-1" class="section level4">
-<h4><span class="header-section-number">19.2.7.1</span> Model checking</h4>
+<div id="model-checking-2" class="section level4">
+<h4><span class="header-section-number">20.2.7.1</span> Model checking</h4>
 <p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/glm1-worm-nb-1.png" width="576" /></p>
 <p>A quantile residual Q-Q plot of the GLM model fit with negative binomial distribution is illustrated above. This looks pretty good.</p>
 </div>
 <div id="model-means-and-coefficients" class="section level4">
-<h4><span class="header-section-number">19.2.7.2</span> Model means and coefficients</h4>
+<h4><span class="header-section-number">20.2.7.2</span> Model means and coefficients</h4>
 <p>In a Generalized Linear Model of counts using either a Poisson or negative binomial distribution, modeled means, coefficients, and contrasts can be reported either on the link or response scale. Remember, the response scale is a count, while the link scale is a log(count).</p>
 <p>The modeled means on the link scale are</p>
 <pre><code>##  Treatment   emmean     SE  df asymp.LCL asymp.UCL
@@ -841,62 +866,62 @@ RR_{Infected\_HG} = \frac{\overline{Infected\_HG}}{\overline{Control}}
 </div>
 </div>
 </div>
-<div id="working-in-r-8" class="section level2">
-<h2><span class="header-section-number">19.3</span> Working in R</h2>
+<div id="working-in-r-9" class="section level2">
+<h2><span class="header-section-number">20.3</span> Working in R</h2>
 <p><strong>Fitting a GLM to count data</strong>. The poisson family is specified with the base R <code>glm()</code> function. For negative binomial, use <code>glm.nb</code> from the MASS package</p>
-<div class="sourceCode" id="cb485"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb485-1"><a href="generalized-linear-models-i-count-data.html#cb485-1"></a><span class="co"># poisson - less likely to fit to real biological data well because of overdispersion</span></span>
-<span id="cb485-2"><a href="generalized-linear-models-i-count-data.html#cb485-2"></a>fit &lt;-<span class="st"> </span><span class="kw">glm</span>(y <span class="op">~</span><span class="st"> </span>treatment, <span class="dt">family =</span> <span class="st">&quot;poisson&quot;</span>, <span class="dt">data =</span> dt)</span>
-<span id="cb485-3"><a href="generalized-linear-models-i-count-data.html#cb485-3"></a></span>
-<span id="cb485-4"><a href="generalized-linear-models-i-count-data.html#cb485-4"></a><span class="co"># two alternatives to overdispersed poisson fit</span></span>
-<span id="cb485-5"><a href="generalized-linear-models-i-count-data.html#cb485-5"></a><span class="co"># quasipoisson</span></span>
-<span id="cb485-6"><a href="generalized-linear-models-i-count-data.html#cb485-6"></a>fit &lt;-<span class="st"> </span><span class="kw">glm</span>(y <span class="op">~</span><span class="st"> </span>treatment, <span class="dt">family =</span> <span class="st">&quot;quasipoisson&quot;</span>, <span class="dt">data=</span>dt)</span>
-<span id="cb485-7"><a href="generalized-linear-models-i-count-data.html#cb485-7"></a><span class="co"># negative binomial - more likely to fit to real biological data well</span></span>
-<span id="cb485-8"><a href="generalized-linear-models-i-count-data.html#cb485-8"></a><span class="co"># note that &quot;family&quot; is not an argument since this function is used only to fit a negative binomial distribution!</span></span>
-<span id="cb485-9"><a href="generalized-linear-models-i-count-data.html#cb485-9"></a>fit &lt;-<span class="st"> </span><span class="kw">glm.nb</span>(y <span class="op">~</span><span class="st"> </span>treatment, <span class="dt">data =</span> dt)</span></code></pre></div>
+<div class="sourceCode" id="cb497"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb497-1"><a href="generalized-linear-models-i-count-data.html#cb497-1"></a><span class="co"># poisson - less likely to fit to real biological data well because of overdispersion</span></span>
+<span id="cb497-2"><a href="generalized-linear-models-i-count-data.html#cb497-2"></a>fit &lt;-<span class="st"> </span><span class="kw">glm</span>(y <span class="op">~</span><span class="st"> </span>treatment, <span class="dt">family =</span> <span class="st">&quot;poisson&quot;</span>, <span class="dt">data =</span> dt)</span>
+<span id="cb497-3"><a href="generalized-linear-models-i-count-data.html#cb497-3"></a></span>
+<span id="cb497-4"><a href="generalized-linear-models-i-count-data.html#cb497-4"></a><span class="co"># two alternatives to overdispersed poisson fit</span></span>
+<span id="cb497-5"><a href="generalized-linear-models-i-count-data.html#cb497-5"></a><span class="co"># quasipoisson</span></span>
+<span id="cb497-6"><a href="generalized-linear-models-i-count-data.html#cb497-6"></a>fit &lt;-<span class="st"> </span><span class="kw">glm</span>(y <span class="op">~</span><span class="st"> </span>treatment, <span class="dt">family =</span> <span class="st">&quot;quasipoisson&quot;</span>, <span class="dt">data=</span>dt)</span>
+<span id="cb497-7"><a href="generalized-linear-models-i-count-data.html#cb497-7"></a><span class="co"># negative binomial - more likely to fit to real biological data well</span></span>
+<span id="cb497-8"><a href="generalized-linear-models-i-count-data.html#cb497-8"></a><span class="co"># note that &quot;family&quot; is not an argument since this function is used only to fit a negative binomial distribution!</span></span>
+<span id="cb497-9"><a href="generalized-linear-models-i-count-data.html#cb497-9"></a>fit &lt;-<span class="st"> </span><span class="kw">glm.nb</span>(y <span class="op">~</span><span class="st"> </span>treatment, <span class="dt">data =</span> dt)</span></code></pre></div>
 <p><strong>Fitting a GLM to a continuous conditional response with right skew</strong>. The Gamma family is specified with the base R <code>glm()</code> function.</p>
-<div class="sourceCode" id="cb486"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb486-1"><a href="generalized-linear-models-i-count-data.html#cb486-1"></a>fit &lt;-<span class="st"> </span><span class="kw">glm</span>(y <span class="op">~</span><span class="st"> </span>treatment, <span class="dt">family =</span> <span class="kw">Gamma</span>(<span class="dt">link =</span> <span class="st">&quot;log&quot;</span>), <span class="dt">data =</span> dt)</span></code></pre></div>
+<div class="sourceCode" id="cb498"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb498-1"><a href="generalized-linear-models-i-count-data.html#cb498-1"></a>fit &lt;-<span class="st"> </span><span class="kw">glm</span>(y <span class="op">~</span><span class="st"> </span>treatment, <span class="dt">family =</span> <span class="kw">Gamma</span>(<span class="dt">link =</span> <span class="st">&quot;log&quot;</span>), <span class="dt">data =</span> dt)</span></code></pre></div>
 <p><strong>Fitting a GLM to a binary (success or failure, presence or absence, survived or died) response</strong></p>
 <p>The binomial family is specified with base R <code>glm()</code> function.</p>
-<div class="sourceCode" id="cb487"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb487-1"><a href="generalized-linear-models-i-count-data.html#cb487-1"></a><span class="co"># if the data includes a 0 or 1 for every observation of y</span></span>
-<span id="cb487-2"><a href="generalized-linear-models-i-count-data.html#cb487-2"></a>fit &lt;-<span class="st"> </span><span class="kw">glm</span>(y <span class="op">~</span><span class="st"> </span>treatment, <span class="dt">family =</span> <span class="st">&quot;binomial&quot;</span>, <span class="dt">data =</span> dt)</span>
-<span id="cb487-3"><a href="generalized-linear-models-i-count-data.html#cb487-3"></a></span>
-<span id="cb487-4"><a href="generalized-linear-models-i-count-data.html#cb487-4"></a><span class="co"># if the data includes the frequency of success AND there is a measure of the total n</span></span>
-<span id="cb487-5"><a href="generalized-linear-models-i-count-data.html#cb487-5"></a>dt[ , failure <span class="op">:</span><span class="er">=</span><span class="st"> </span>n <span class="op">-</span><span class="st"> </span>success]</span>
-<span id="cb487-6"><a href="generalized-linear-models-i-count-data.html#cb487-6"></a>fit &lt;-<span class="st"> </span><span class="kw">glm</span>(<span class="kw">cbind</span>(success, failure) <span class="op">~</span><span class="st"> </span>treatment, <span class="dt">family =</span> <span class="st">&quot;binomial&quot;</span>, <span class="dt">data =</span> dt)</span></code></pre></div>
+<div class="sourceCode" id="cb499"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb499-1"><a href="generalized-linear-models-i-count-data.html#cb499-1"></a><span class="co"># if the data includes a 0 or 1 for every observation of y</span></span>
+<span id="cb499-2"><a href="generalized-linear-models-i-count-data.html#cb499-2"></a>fit &lt;-<span class="st"> </span><span class="kw">glm</span>(y <span class="op">~</span><span class="st"> </span>treatment, <span class="dt">family =</span> <span class="st">&quot;binomial&quot;</span>, <span class="dt">data =</span> dt)</span>
+<span id="cb499-3"><a href="generalized-linear-models-i-count-data.html#cb499-3"></a></span>
+<span id="cb499-4"><a href="generalized-linear-models-i-count-data.html#cb499-4"></a><span class="co"># if the data includes the frequency of success AND there is a measure of the total n</span></span>
+<span id="cb499-5"><a href="generalized-linear-models-i-count-data.html#cb499-5"></a>dt[ , failure <span class="op">:</span><span class="er">=</span><span class="st"> </span>n <span class="op">-</span><span class="st"> </span>success]</span>
+<span id="cb499-6"><a href="generalized-linear-models-i-count-data.html#cb499-6"></a>fit &lt;-<span class="st"> </span><span class="kw">glm</span>(<span class="kw">cbind</span>(success, failure) <span class="op">~</span><span class="st"> </span>treatment, <span class="dt">family =</span> <span class="st">&quot;binomial&quot;</span>, <span class="dt">data =</span> dt)</span></code></pre></div>
 <p><strong>Fitting Generalized Linear Mixed Models</strong>
 Generalized linear mixed models are fit with <code>glmer</code> from the lmer package.</p>
-<div class="sourceCode" id="cb488"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb488-1"><a href="generalized-linear-models-i-count-data.html#cb488-1"></a><span class="co"># random intercept of factor &quot;id&quot;</span></span>
-<span id="cb488-2"><a href="generalized-linear-models-i-count-data.html#cb488-2"></a>fit &lt;-<span class="st"> </span><span class="kw">glmer</span>(y <span class="op">~</span><span class="st"> </span>treatment <span class="op">+</span><span class="st"> </span>(<span class="dv">1</span><span class="op">|</span>id), <span class="dt">family =</span> <span class="st">&quot;poisson&quot;</span>, <span class="dt">data =</span> dt)</span>
-<span id="cb488-3"><a href="generalized-linear-models-i-count-data.html#cb488-3"></a></span>
-<span id="cb488-4"><a href="generalized-linear-models-i-count-data.html#cb488-4"></a><span class="co"># random intercept and slope of factor &quot;id&quot;</span></span>
-<span id="cb488-5"><a href="generalized-linear-models-i-count-data.html#cb488-5"></a>fit &lt;-<span class="st"> </span><span class="kw">glmer</span>(y <span class="op">~</span><span class="st"> </span>treatment <span class="op">+</span><span class="st"> </span>(treatment<span class="op">|</span>id), <span class="dt">family =</span> <span class="kw">Gamma</span>(<span class="dt">link =</span> <span class="st">&quot;log&quot;</span>), <span class="dt">data =</span> dt)</span>
-<span id="cb488-6"><a href="generalized-linear-models-i-count-data.html#cb488-6"></a></span>
-<span id="cb488-7"><a href="generalized-linear-models-i-count-data.html#cb488-7"></a><span class="co"># Again, negative binomial uses a special function</span></span>
-<span id="cb488-8"><a href="generalized-linear-models-i-count-data.html#cb488-8"></a>fit &lt;-<span class="st"> </span><span class="kw">glmer.nb</span>(y <span class="op">~</span><span class="st"> </span>treatment <span class="op">+</span><span class="st"> </span>(treatment<span class="op">|</span>id), <span class="dt">data =</span> dt)</span></code></pre></div>
+<div class="sourceCode" id="cb500"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb500-1"><a href="generalized-linear-models-i-count-data.html#cb500-1"></a><span class="co"># random intercept of factor &quot;id&quot;</span></span>
+<span id="cb500-2"><a href="generalized-linear-models-i-count-data.html#cb500-2"></a>fit &lt;-<span class="st"> </span><span class="kw">glmer</span>(y <span class="op">~</span><span class="st"> </span>treatment <span class="op">+</span><span class="st"> </span>(<span class="dv">1</span><span class="op">|</span>id), <span class="dt">family =</span> <span class="st">&quot;poisson&quot;</span>, <span class="dt">data =</span> dt)</span>
+<span id="cb500-3"><a href="generalized-linear-models-i-count-data.html#cb500-3"></a></span>
+<span id="cb500-4"><a href="generalized-linear-models-i-count-data.html#cb500-4"></a><span class="co"># random intercept and slope of factor &quot;id&quot;</span></span>
+<span id="cb500-5"><a href="generalized-linear-models-i-count-data.html#cb500-5"></a>fit &lt;-<span class="st"> </span><span class="kw">glmer</span>(y <span class="op">~</span><span class="st"> </span>treatment <span class="op">+</span><span class="st"> </span>(treatment<span class="op">|</span>id), <span class="dt">family =</span> <span class="kw">Gamma</span>(<span class="dt">link =</span> <span class="st">&quot;log&quot;</span>), <span class="dt">data =</span> dt)</span>
+<span id="cb500-6"><a href="generalized-linear-models-i-count-data.html#cb500-6"></a></span>
+<span id="cb500-7"><a href="generalized-linear-models-i-count-data.html#cb500-7"></a><span class="co"># Again, negative binomial uses a special function</span></span>
+<span id="cb500-8"><a href="generalized-linear-models-i-count-data.html#cb500-8"></a>fit &lt;-<span class="st"> </span><span class="kw">glmer.nb</span>(y <span class="op">~</span><span class="st"> </span>treatment <span class="op">+</span><span class="st"> </span>(treatment<span class="op">|</span>id), <span class="dt">data =</span> dt)</span></code></pre></div>
 <p>Another good package for GLMMs is <code>glmmTMB</code> from the glmmTMB package</p>
-<div class="sourceCode" id="cb489"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb489-1"><a href="generalized-linear-models-i-count-data.html#cb489-1"></a><span class="co"># negative binomial</span></span>
-<span id="cb489-2"><a href="generalized-linear-models-i-count-data.html#cb489-2"></a>fit &lt;-<span class="st"> </span><span class="kw">glmmTMB</span>(y <span class="op">~</span><span class="st"> </span>treatment <span class="op">+</span><span class="st"> </span>(<span class="dv">1</span><span class="op">|</span>id), <span class="dt">family=</span><span class="st">&quot;nbinom2&quot;</span>, <span class="dt">data =</span> dt)</span>
-<span id="cb489-3"><a href="generalized-linear-models-i-count-data.html#cb489-3"></a></span>
-<span id="cb489-4"><a href="generalized-linear-models-i-count-data.html#cb489-4"></a><span class="co"># nbinom1, the mean variance relationship is that of quasipoisson</span></span>
-<span id="cb489-5"><a href="generalized-linear-models-i-count-data.html#cb489-5"></a>fit &lt;-<span class="st"> </span><span class="kw">glmmTMB</span>(y <span class="op">~</span><span class="st"> </span>treatment <span class="op">+</span><span class="st"> </span>(<span class="dv">1</span><span class="op">|</span>id), <span class="dt">family=</span><span class="st">&quot;nbinom1&quot;</span>, <span class="dt">data =</span> dt)</span></code></pre></div>
+<div class="sourceCode" id="cb501"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb501-1"><a href="generalized-linear-models-i-count-data.html#cb501-1"></a><span class="co"># negative binomial</span></span>
+<span id="cb501-2"><a href="generalized-linear-models-i-count-data.html#cb501-2"></a>fit &lt;-<span class="st"> </span><span class="kw">glmmTMB</span>(y <span class="op">~</span><span class="st"> </span>treatment <span class="op">+</span><span class="st"> </span>(<span class="dv">1</span><span class="op">|</span>id), <span class="dt">family=</span><span class="st">&quot;nbinom2&quot;</span>, <span class="dt">data =</span> dt)</span>
+<span id="cb501-3"><a href="generalized-linear-models-i-count-data.html#cb501-3"></a></span>
+<span id="cb501-4"><a href="generalized-linear-models-i-count-data.html#cb501-4"></a><span class="co"># nbinom1, the mean variance relationship is that of quasipoisson</span></span>
+<span id="cb501-5"><a href="generalized-linear-models-i-count-data.html#cb501-5"></a>fit &lt;-<span class="st"> </span><span class="kw">glmmTMB</span>(y <span class="op">~</span><span class="st"> </span>treatment <span class="op">+</span><span class="st"> </span>(<span class="dv">1</span><span class="op">|</span>id), <span class="dt">family=</span><span class="st">&quot;nbinom1&quot;</span>, <span class="dt">data =</span> dt)</span></code></pre></div>
 <div id="fitting-a-glm-to-count-data" class="section level3">
-<h3><span class="header-section-number">19.3.1</span> Fitting a GLM to count data</h3>
+<h3><span class="header-section-number">20.3.1</span> Fitting a GLM to count data</h3>
 <p>Source publication: Benesh, D. P., &amp; Kalbe, M. (2016). Experimental parasite community ecology: intraspecific variation in a large tapeworm affects community assembly. Journal of Animal Ecology, 85(4), 1004-1013.</p>
 <p>Source data URL: <a href="https://datadryad.org/resource/doi:10.5061/dryad.bq8j8" class="uri">https://datadryad.org/resource/doi:10.5061/dryad.bq8j8</a></p>
 <p>Source file: “Lab_exp.csv”</p>
 <p>Poisson fit. A quantile residual Q-Q plot can be generated using the package DHARMa</p>
-<div class="sourceCode" id="cb490"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb490-1"><a href="generalized-linear-models-i-count-data.html#cb490-1"></a>fit.pois &lt;-<span class="st"> </span><span class="kw">glm</span>(Diplo_intensity <span class="op">~</span><span class="st"> </span>Treatment, <span class="dt">family=</span><span class="st">&quot;poisson&quot;</span>, <span class="dt">data=</span>worm)</span>
-<span id="cb490-2"><a href="generalized-linear-models-i-count-data.html#cb490-2"></a></span>
-<span id="cb490-3"><a href="generalized-linear-models-i-count-data.html#cb490-3"></a><span class="co"># from the DHARMa package</span></span>
-<span id="cb490-4"><a href="generalized-linear-models-i-count-data.html#cb490-4"></a>  n_sim &lt;-<span class="st"> </span><span class="dv">250</span></span>
-<span id="cb490-5"><a href="generalized-linear-models-i-count-data.html#cb490-5"></a>  simulationOutput &lt;-<span class="st"> </span><span class="kw">simulateResiduals</span>(<span class="dt">fittedModel =</span> fit.pois, <span class="dt">n =</span> n_sim)</span>
-<span id="cb490-6"><a href="generalized-linear-models-i-count-data.html#cb490-6"></a>  <span class="kw">plot</span>(simulationOutput, <span class="dt">asFactor =</span> F)</span></code></pre></div>
+<div class="sourceCode" id="cb502"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb502-1"><a href="generalized-linear-models-i-count-data.html#cb502-1"></a>fit.pois &lt;-<span class="st"> </span><span class="kw">glm</span>(Diplo_intensity <span class="op">~</span><span class="st"> </span>Treatment, <span class="dt">family=</span><span class="st">&quot;poisson&quot;</span>, <span class="dt">data=</span>worm)</span>
+<span id="cb502-2"><a href="generalized-linear-models-i-count-data.html#cb502-2"></a></span>
+<span id="cb502-3"><a href="generalized-linear-models-i-count-data.html#cb502-3"></a><span class="co"># from the DHARMa package</span></span>
+<span id="cb502-4"><a href="generalized-linear-models-i-count-data.html#cb502-4"></a>  n_sim &lt;-<span class="st"> </span><span class="dv">250</span></span>
+<span id="cb502-5"><a href="generalized-linear-models-i-count-data.html#cb502-5"></a>  simulationOutput &lt;-<span class="st"> </span><span class="kw">simulateResiduals</span>(<span class="dt">fittedModel =</span> fit.pois, <span class="dt">n =</span> n_sim)</span>
+<span id="cb502-6"><a href="generalized-linear-models-i-count-data.html#cb502-6"></a>  <span class="kw">plot</span>(simulationOutput, <span class="dt">asFactor =</span> F)</span></code></pre></div>
 <p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/glm1-working-in-r-1.png" width="576" /></p>
 <p>A plot of the dispersion statistic can be generated using the object returned by the <code>SimulateOutput</code> function but with <code>refit = TRUE</code>, which refits a model each iteration. This refitting isn’t necessary if only the quantiile residuals are needed. The Dharma package does not divide the sum of squared Pearson residuals by the residual degrees of freedom and so the expected value of the statistic is <span class="math inline">\(df\)</span>.</p>
-<div class="sourceCode" id="cb491"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb491-1"><a href="generalized-linear-models-i-count-data.html#cb491-1"></a><span class="co"># from the DHARMa package</span></span>
-<span id="cb491-2"><a href="generalized-linear-models-i-count-data.html#cb491-2"></a>  n_sim &lt;-<span class="st"> </span><span class="dv">250</span></span>
-<span id="cb491-3"><a href="generalized-linear-models-i-count-data.html#cb491-3"></a>  simulationOutput &lt;-<span class="st"> </span><span class="kw">simulateResiduals</span>(<span class="dt">fittedModel=</span>fit.pois, <span class="dt">n=</span>n_sim, <span class="dt">refit=</span><span class="ot">TRUE</span>)</span>
-<span id="cb491-4"><a href="generalized-linear-models-i-count-data.html#cb491-4"></a>  <span class="kw">testDispersion</span>(simulationOutput)</span></code></pre></div>
+<div class="sourceCode" id="cb503"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb503-1"><a href="generalized-linear-models-i-count-data.html#cb503-1"></a><span class="co"># from the DHARMa package</span></span>
+<span id="cb503-2"><a href="generalized-linear-models-i-count-data.html#cb503-2"></a>  n_sim &lt;-<span class="st"> </span><span class="dv">250</span></span>
+<span id="cb503-3"><a href="generalized-linear-models-i-count-data.html#cb503-3"></a>  simulationOutput &lt;-<span class="st"> </span><span class="kw">simulateResiduals</span>(<span class="dt">fittedModel=</span>fit.pois, <span class="dt">n=</span>n_sim, <span class="dt">refit=</span><span class="ot">TRUE</span>)</span>
+<span id="cb503-4"><a href="generalized-linear-models-i-count-data.html#cb503-4"></a>  <span class="kw">testDispersion</span>(simulationOutput)</span></code></pre></div>
 <p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/unnamed-chunk-294-1.png" width="576" /></p>
 <pre><code>## 
 ##  DHARMa nonparametric dispersion test via mean deviance residual
@@ -906,14 +931,14 @@ Generalized linear mixed models are fit with <code>glmer</code> from the lmer pa
 ## dispersion = 3.3788, p-value &lt; 2.2e-16
 ## alternative hypothesis: two.sided</code></pre>
 <p>Negative binomial fit.</p>
-<div class="sourceCode" id="cb493"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb493-1"><a href="generalized-linear-models-i-count-data.html#cb493-1"></a>fit.nb &lt;-<span class="st"> </span><span class="kw">glm.nb</span>(Diplo_intensity <span class="op">~</span><span class="st"> </span>Treatment, <span class="dt">data=</span>worm)</span>
-<span id="cb493-2"><a href="generalized-linear-models-i-count-data.html#cb493-2"></a><span class="co"># from the DHARMa package</span></span>
-<span id="cb493-3"><a href="generalized-linear-models-i-count-data.html#cb493-3"></a>  simulationOutput &lt;-<span class="st"> </span><span class="kw">simulateResiduals</span>(<span class="dt">fittedModel =</span> fit.nb, <span class="dt">n =</span> n_sim)</span>
-<span id="cb493-4"><a href="generalized-linear-models-i-count-data.html#cb493-4"></a>  <span class="kw">plot</span>(simulationOutput, <span class="dt">asFactor =</span> F)</span></code></pre></div>
+<div class="sourceCode" id="cb505"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb505-1"><a href="generalized-linear-models-i-count-data.html#cb505-1"></a>fit.nb &lt;-<span class="st"> </span><span class="kw">glm.nb</span>(Diplo_intensity <span class="op">~</span><span class="st"> </span>Treatment, <span class="dt">data=</span>worm)</span>
+<span id="cb505-2"><a href="generalized-linear-models-i-count-data.html#cb505-2"></a><span class="co"># from the DHARMa package</span></span>
+<span id="cb505-3"><a href="generalized-linear-models-i-count-data.html#cb505-3"></a>  simulationOutput &lt;-<span class="st"> </span><span class="kw">simulateResiduals</span>(<span class="dt">fittedModel =</span> fit.nb, <span class="dt">n =</span> n_sim)</span>
+<span id="cb505-4"><a href="generalized-linear-models-i-count-data.html#cb505-4"></a>  <span class="kw">plot</span>(simulationOutput, <span class="dt">asFactor =</span> F)</span></code></pre></div>
 <p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/glm-working-in-r-2-1.png" width="576" /></p>
-<div class="sourceCode" id="cb494"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb494-1"><a href="generalized-linear-models-i-count-data.html#cb494-1"></a><span class="co"># link scale</span></span>
-<span id="cb494-2"><a href="generalized-linear-models-i-count-data.html#cb494-2"></a>emm &lt;-<span class="st"> </span><span class="kw">emmeans</span>(fit.nb, <span class="dt">specs=</span><span class="st">&quot;Treatment&quot;</span>)</span>
-<span id="cb494-3"><a href="generalized-linear-models-i-count-data.html#cb494-3"></a>emm</span></code></pre></div>
+<div class="sourceCode" id="cb506"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb506-1"><a href="generalized-linear-models-i-count-data.html#cb506-1"></a><span class="co"># link scale</span></span>
+<span id="cb506-2"><a href="generalized-linear-models-i-count-data.html#cb506-2"></a>emm &lt;-<span class="st"> </span><span class="kw">emmeans</span>(fit.nb, <span class="dt">specs=</span><span class="st">&quot;Treatment&quot;</span>)</span>
+<span id="cb506-3"><a href="generalized-linear-models-i-count-data.html#cb506-3"></a>emm</span></code></pre></div>
 <pre><code>##  Treatment   emmean     SE  df asymp.LCL asymp.UCL
 ##  Control       1.82 0.0804 Inf      1.66      1.98
 ##  Uninfected    1.50 0.1093 Inf      1.29      1.72
@@ -922,7 +947,7 @@ Generalized linear mixed models are fit with <code>glmer</code> from the lmer pa
 ## 
 ## Results are given on the log (not the response) scale. 
 ## Confidence level used: 0.95</code></pre>
-<div class="sourceCode" id="cb496"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb496-1"><a href="generalized-linear-models-i-count-data.html#cb496-1"></a><span class="kw">summary</span>(<span class="kw">contrast</span>(emm, <span class="dt">method=</span><span class="st">&quot;trt.vs.ctrl&quot;</span>, <span class="dt">adjust=</span><span class="st">&quot;none&quot;</span>), <span class="dt">infer=</span><span class="kw">c</span>(<span class="ot">TRUE</span>, <span class="ot">TRUE</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb508"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb508-1"><a href="generalized-linear-models-i-count-data.html#cb508-1"></a><span class="kw">summary</span>(<span class="kw">contrast</span>(emm, <span class="dt">method=</span><span class="st">&quot;trt.vs.ctrl&quot;</span>, <span class="dt">adjust=</span><span class="st">&quot;none&quot;</span>), <span class="dt">infer=</span><span class="kw">c</span>(<span class="ot">TRUE</span>, <span class="ot">TRUE</span>))</span></code></pre></div>
 <pre><code>##  contrast              estimate    SE  df asymp.LCL asymp.UCL z.ratio
 ##  Uninfected - Control    -0.317 0.136 Inf    -0.583   -0.0514 -2.339 
 ##  Infected LG - Control   -0.197 0.158 Inf    -0.507    0.1126 -1.248 
@@ -934,9 +959,9 @@ Generalized linear mixed models are fit with <code>glmer</code> from the lmer pa
 ## 
 ## Results are given on the log (not the response) scale. 
 ## Confidence level used: 0.95</code></pre>
-<div class="sourceCode" id="cb498"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb498-1"><a href="generalized-linear-models-i-count-data.html#cb498-1"></a><span class="co"># response scale</span></span>
-<span id="cb498-2"><a href="generalized-linear-models-i-count-data.html#cb498-2"></a>emm.response &lt;-<span class="st"> </span><span class="kw">emmeans</span>(fit.nb, <span class="dt">specs=</span><span class="st">&quot;Treatment&quot;</span>, <span class="dt">type=</span><span class="st">&quot;response&quot;</span>)</span>
-<span id="cb498-3"><a href="generalized-linear-models-i-count-data.html#cb498-3"></a><span class="kw">summary</span>(<span class="kw">contrast</span>(emm, <span class="dt">method=</span><span class="st">&quot;trt.vs.ctrl&quot;</span>, <span class="dt">adjust=</span><span class="st">&quot;none&quot;</span>, <span class="dt">type=</span><span class="st">&quot;response&quot;</span>), <span class="dt">infer=</span><span class="kw">c</span>(<span class="ot">TRUE</span>, <span class="ot">TRUE</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb510"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb510-1"><a href="generalized-linear-models-i-count-data.html#cb510-1"></a><span class="co"># response scale</span></span>
+<span id="cb510-2"><a href="generalized-linear-models-i-count-data.html#cb510-2"></a>emm.response &lt;-<span class="st"> </span><span class="kw">emmeans</span>(fit.nb, <span class="dt">specs=</span><span class="st">&quot;Treatment&quot;</span>, <span class="dt">type=</span><span class="st">&quot;response&quot;</span>)</span>
+<span id="cb510-3"><a href="generalized-linear-models-i-count-data.html#cb510-3"></a><span class="kw">summary</span>(<span class="kw">contrast</span>(emm, <span class="dt">method=</span><span class="st">&quot;trt.vs.ctrl&quot;</span>, <span class="dt">adjust=</span><span class="st">&quot;none&quot;</span>, <span class="dt">type=</span><span class="st">&quot;response&quot;</span>), <span class="dt">infer=</span><span class="kw">c</span>(<span class="ot">TRUE</span>, <span class="ot">TRUE</span>))</span></code></pre></div>
 <pre><code>##  contrast              ratio     SE  df asymp.LCL asymp.UCL z.ratio
 ##  Uninfected / Control  0.728 0.0988 Inf     0.558      0.95 -2.339 
 ##  Infected LG / Control 0.821 0.1298 Inf     0.602      1.12 -1.248 
@@ -951,14 +976,14 @@ Generalized linear mixed models are fit with <code>glmer</code> from the lmer pa
 ## Tests are performed on the log scale</code></pre>
 </div>
 <div id="fitting-a-generalized-linear-mixed-model-glmm-to-count-data" class="section level3">
-<h3><span class="header-section-number">19.3.2</span> Fitting a generalized linear mixed model (GLMM) to count data</h3>
+<h3><span class="header-section-number">20.3.2</span> Fitting a generalized linear mixed model (GLMM) to count data</h3>
 </div>
 <div id="fitting-a-generalized-linear-model-to-continouus-data" class="section level3">
-<h3><span class="header-section-number">19.3.3</span> Fitting a generalized linear model to continouus data</h3>
+<h3><span class="header-section-number">20.3.3</span> Fitting a generalized linear model to continouus data</h3>
 </div>
 </div>
 <div id="problems-2" class="section level2">
-<h2><span class="header-section-number">19.4</span> Problems</h2>
+<h2><span class="header-section-number">20.4</span> Problems</h2>
 <p>Analyze the data that went into Fig 6B of Tena, A., Pekas, A., Cano, D., Wäckers, F. L., &amp; Urbaneja, A. (2015). Sugar provisioning maximizes the biocontrol service of parasitoids. Journal of Applied Ecology, 52(3), 795-804.</p>
 <ol style="list-style-type: decimal">
 <li>Compute contrasts and CIs among all pairs of all three treatment levels</li>
@@ -974,7 +999,7 @@ Generalized linear mixed models are fit with <code>glmer</code> from the lmer pa
           </div>
         </div>
       </div>
-<a href="linear-mixed-models.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="models-for-longitudinal-experiments-pre-post-designs.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
 <a href="linear-models-with-heterogenous-variance.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
