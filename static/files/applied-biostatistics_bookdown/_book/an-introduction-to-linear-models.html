@@ -251,12 +251,14 @@ code span.wa { color: #bf0303; } /* Warning */
 <li class="chapter" data-level="4.1.1" data-path="plotting-models.html"><a href="plotting-models.html#pretty-good-plot-component-1-modeled-effects-plot"><i class="fa fa-check"></i><b>4.1.1</b> Pretty good plot component 1: Modeled effects plot</a></li>
 <li class="chapter" data-level="4.1.2" data-path="plotting-models.html"><a href="plotting-models.html#pretty-good-plot-component-2-modeled-mean-and-ci-plot"><i class="fa fa-check"></i><b>4.1.2</b> Pretty good plot component 2: Modeled mean and CI plot</a></li>
 <li class="chapter" data-level="4.1.3" data-path="plotting-models.html"><a href="plotting-models.html#combining-effects-and-modeled-mean-and-ci-plots-an-effects-and-response-plot."><i class="fa fa-check"></i><b>4.1.3</b> Combining Effects and Modeled mean and CI plots – an Effects and response plot.</a></li>
+<li class="chapter" data-level="4.1.4" data-path="plotting-models.html"><a href="plotting-models.html#some-comments-on-plot-components"><i class="fa fa-check"></i><b>4.1.4</b> Some comments on plot components</a></li>
 </ul></li>
-<li class="chapter" data-level="4.2" data-path="plotting-models.html"><a href="plotting-models.html#some-comments-on-plot-components"><i class="fa fa-check"></i><b>4.2</b> Some comments on plot components</a></li>
-<li class="chapter" data-level="4.3" data-path="plotting-models.html"><a href="plotting-models.html#working-in-r"><i class="fa fa-check"></i><b>4.3</b> Working in R</a><ul>
-<li class="chapter" data-level="4.3.1" data-path="plotting-models.html"><a href="plotting-models.html#source-data"><i class="fa fa-check"></i><b>4.3.1</b> Source data</a></li>
-<li class="chapter" data-level="4.3.2" data-path="plotting-models.html"><a href="plotting-models.html#plot-the-model-functions"><i class="fa fa-check"></i><b>4.3.2</b> Plot the Model functions</a></li>
-<li class="chapter" data-level="4.3.3" data-path="plotting-models.html"><a href="plotting-models.html#how-to-generate-a-response-plot-using-ggpubr"><i class="fa fa-check"></i><b>4.3.3</b> How to generate a Response Plot using ggpubr</a></li>
+<li class="chapter" data-level="4.2" data-path="plotting-models.html"><a href="plotting-models.html#working-in-r"><i class="fa fa-check"></i><b>4.2</b> Working in R</a><ul>
+<li class="chapter" data-level="4.2.1" data-path="plotting-models.html"><a href="plotting-models.html#source-data"><i class="fa fa-check"></i><b>4.2.1</b> Source data</a></li>
+<li class="chapter" data-level="4.2.2" data-path="plotting-models.html"><a href="plotting-models.html#plot-the-model-functions"><i class="fa fa-check"></i><b>4.2.2</b> Plot the Model functions</a></li>
+<li class="chapter" data-level="4.2.3" data-path="plotting-models.html"><a href="plotting-models.html#how-to-generate-a-response-plot-using-ggpubr"><i class="fa fa-check"></i><b>4.2.3</b> How to generate a Response Plot using ggpubr</a></li>
+<li class="chapter" data-level="4.2.4" data-path="plotting-models.html"><a href="plotting-models.html#how-to-generate-an-effects-plot"><i class="fa fa-check"></i><b>4.2.4</b> How to generate an Effects Plot</a></li>
+<li class="chapter" data-level="4.2.5" data-path="plotting-models.html"><a href="plotting-models.html#how-to-combine-the-response-and-effects-plots"><i class="fa fa-check"></i><b>4.2.5</b> How to combine the response and effects plots</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="part-iv-some-fundamentals-of-statistical-modeling.html"><a href="part-iv-some-fundamentals-of-statistical-modeling.html"><i class="fa fa-check"></i>Part IV: Some Fundamentals of Statistical Modeling</a></li>
@@ -663,25 +665,25 @@ y_i &amp;\sim N(\mu_i, \sigma^2)\\
 <h3><span class="header-section-number">8.1.3</span> Comparing the error-draw and conditional-draw ways of specifying the linear model</h3>
 <p>These two ways of specifying the model encourage slightly different ways of thinking about how the data (the response varible <span class="math inline">\(Y\)</span>) were generated. The error-draw specification “generates” data by 1) constructing what <span class="math inline">\(y_i\)</span> “should be” given <span class="math inline">\(x_i\)</span> (this is the conditional expection), then 2) adding some error <span class="math inline">\(e_i\)</span> drawn from a normal distribution with mean zero and some specified variance. The conditional-draw specification “generates” data by 1) constructing what <span class="math inline">\(y_i\)</span> “should be” given <span class="math inline">\(x_i\)</span>, then 2) drawing a random variable from some specified distribution <em>whose mean is this expectation</em>. This random draw is not “error” but the measured value <span class="math inline">\(y_i\)</span>. For the error draw generation, we need only one hat of random numbers, but for the conditional draw generation, we need a hat for each value of <span class="math inline">\(x_i\)</span>.</p>
 <p>Here is a short script that generates data by implementing both the error-draw and conditional-draw specifications. See if you can follow the logic of the code and match it to the meaning of these two ways of specifying a linear model.</p>
-<div class="sourceCode" id="cb210"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb210-1"><a href="an-introduction-to-linear-models.html#cb210-1"></a>n &lt;-<span class="st"> </span><span class="dv">5</span></span>
-<span id="cb210-2"><a href="an-introduction-to-linear-models.html#cb210-2"></a>b_<span class="dv">0</span> &lt;-<span class="st"> </span><span class="fl">10.0</span></span>
-<span id="cb210-3"><a href="an-introduction-to-linear-models.html#cb210-3"></a>b_<span class="dv">1</span> &lt;-<span class="st"> </span><span class="fl">1.2</span></span>
-<span id="cb210-4"><a href="an-introduction-to-linear-models.html#cb210-4"></a>sigma &lt;-<span class="st"> </span><span class="fl">0.4</span></span>
-<span id="cb210-5"><a href="an-introduction-to-linear-models.html#cb210-5"></a>x &lt;-<span class="st"> </span><span class="dv">1</span><span class="op">:</span>n</span>
-<span id="cb210-6"><a href="an-introduction-to-linear-models.html#cb210-6"></a>y_expected &lt;-<span class="st"> </span>b_<span class="dv">0</span> <span class="op">+</span><span class="st"> </span>b_<span class="dv">1</span><span class="op">*</span>x</span>
-<span id="cb210-7"><a href="an-introduction-to-linear-models.html#cb210-7"></a></span>
-<span id="cb210-8"><a href="an-introduction-to-linear-models.html#cb210-8"></a><span class="co"># error-draw. Note that the n draws are all from the same distribution</span></span>
-<span id="cb210-9"><a href="an-introduction-to-linear-models.html#cb210-9"></a><span class="kw">set.seed</span>(<span class="dv">1</span>)</span>
-<span id="cb210-10"><a href="an-introduction-to-linear-models.html#cb210-10"></a>y_error_draw &lt;-<span class="st"> </span>y_expected <span class="op">+</span><span class="st"> </span><span class="kw">rnorm</span>(n, <span class="dt">mean =</span> <span class="dv">0</span>, <span class="dt">sd =</span> sigma)</span>
-<span id="cb210-11"><a href="an-introduction-to-linear-models.html#cb210-11"></a></span>
-<span id="cb210-12"><a href="an-introduction-to-linear-models.html#cb210-12"></a><span class="co"># conditional-draw. Note that the n draws are each from a different</span></span>
-<span id="cb210-13"><a href="an-introduction-to-linear-models.html#cb210-13"></a><span class="co"># distribution because each has a different mean.</span></span>
-<span id="cb210-14"><a href="an-introduction-to-linear-models.html#cb210-14"></a><span class="kw">set.seed</span>(<span class="dv">1</span>)</span>
-<span id="cb210-15"><a href="an-introduction-to-linear-models.html#cb210-15"></a>y_conditional_draw &lt;-<span class="st"> </span><span class="kw">rnorm</span>(n, <span class="dt">mean =</span> y_expected, <span class="dt">sd =</span> sigma)</span>
-<span id="cb210-16"><a href="an-introduction-to-linear-models.html#cb210-16"></a></span>
-<span id="cb210-17"><a href="an-introduction-to-linear-models.html#cb210-17"></a><span class="kw">data.table</span>(<span class="dt">X =</span> x,</span>
-<span id="cb210-18"><a href="an-introduction-to-linear-models.html#cb210-18"></a>           <span class="st">&quot;Y (error draw)&quot;</span> =<span class="st"> </span>y_error_draw,</span>
-<span id="cb210-19"><a href="an-introduction-to-linear-models.html#cb210-19"></a>           <span class="st">&quot;Y (conditional draw)&quot;</span> =<span class="st"> </span>y_conditional_draw)</span></code></pre></div>
+<div class="sourceCode" id="cb214"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb214-1"><a href="an-introduction-to-linear-models.html#cb214-1"></a>n &lt;-<span class="st"> </span><span class="dv">5</span></span>
+<span id="cb214-2"><a href="an-introduction-to-linear-models.html#cb214-2"></a>b_<span class="dv">0</span> &lt;-<span class="st"> </span><span class="fl">10.0</span></span>
+<span id="cb214-3"><a href="an-introduction-to-linear-models.html#cb214-3"></a>b_<span class="dv">1</span> &lt;-<span class="st"> </span><span class="fl">1.2</span></span>
+<span id="cb214-4"><a href="an-introduction-to-linear-models.html#cb214-4"></a>sigma &lt;-<span class="st"> </span><span class="fl">0.4</span></span>
+<span id="cb214-5"><a href="an-introduction-to-linear-models.html#cb214-5"></a>x &lt;-<span class="st"> </span><span class="dv">1</span><span class="op">:</span>n</span>
+<span id="cb214-6"><a href="an-introduction-to-linear-models.html#cb214-6"></a>y_expected &lt;-<span class="st"> </span>b_<span class="dv">0</span> <span class="op">+</span><span class="st"> </span>b_<span class="dv">1</span><span class="op">*</span>x</span>
+<span id="cb214-7"><a href="an-introduction-to-linear-models.html#cb214-7"></a></span>
+<span id="cb214-8"><a href="an-introduction-to-linear-models.html#cb214-8"></a><span class="co"># error-draw. Note that the n draws are all from the same distribution</span></span>
+<span id="cb214-9"><a href="an-introduction-to-linear-models.html#cb214-9"></a><span class="kw">set.seed</span>(<span class="dv">1</span>)</span>
+<span id="cb214-10"><a href="an-introduction-to-linear-models.html#cb214-10"></a>y_error_draw &lt;-<span class="st"> </span>y_expected <span class="op">+</span><span class="st"> </span><span class="kw">rnorm</span>(n, <span class="dt">mean =</span> <span class="dv">0</span>, <span class="dt">sd =</span> sigma)</span>
+<span id="cb214-11"><a href="an-introduction-to-linear-models.html#cb214-11"></a></span>
+<span id="cb214-12"><a href="an-introduction-to-linear-models.html#cb214-12"></a><span class="co"># conditional-draw. Note that the n draws are each from a different</span></span>
+<span id="cb214-13"><a href="an-introduction-to-linear-models.html#cb214-13"></a><span class="co"># distribution because each has a different mean.</span></span>
+<span id="cb214-14"><a href="an-introduction-to-linear-models.html#cb214-14"></a><span class="kw">set.seed</span>(<span class="dv">1</span>)</span>
+<span id="cb214-15"><a href="an-introduction-to-linear-models.html#cb214-15"></a>y_conditional_draw &lt;-<span class="st"> </span><span class="kw">rnorm</span>(n, <span class="dt">mean =</span> y_expected, <span class="dt">sd =</span> sigma)</span>
+<span id="cb214-16"><a href="an-introduction-to-linear-models.html#cb214-16"></a></span>
+<span id="cb214-17"><a href="an-introduction-to-linear-models.html#cb214-17"></a><span class="kw">data.table</span>(<span class="dt">X =</span> x,</span>
+<span id="cb214-18"><a href="an-introduction-to-linear-models.html#cb214-18"></a>           <span class="st">&quot;Y (error draw)&quot;</span> =<span class="st"> </span>y_error_draw,</span>
+<span id="cb214-19"><a href="an-introduction-to-linear-models.html#cb214-19"></a>           <span class="st">&quot;Y (conditional draw)&quot;</span> =<span class="st"> </span>y_conditional_draw)</span></code></pre></div>
 <pre><code>##    X Y (error draw) Y (conditional draw)
 ## 1: 1       10.94942             10.94942
 ## 2: 2       12.47346             12.47346

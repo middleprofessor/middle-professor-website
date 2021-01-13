@@ -251,12 +251,14 @@ code span.wa { color: #bf0303; } /* Warning */
 <li class="chapter" data-level="4.1.1" data-path="plotting-models.html"><a href="plotting-models.html#pretty-good-plot-component-1-modeled-effects-plot"><i class="fa fa-check"></i><b>4.1.1</b> Pretty good plot component 1: Modeled effects plot</a></li>
 <li class="chapter" data-level="4.1.2" data-path="plotting-models.html"><a href="plotting-models.html#pretty-good-plot-component-2-modeled-mean-and-ci-plot"><i class="fa fa-check"></i><b>4.1.2</b> Pretty good plot component 2: Modeled mean and CI plot</a></li>
 <li class="chapter" data-level="4.1.3" data-path="plotting-models.html"><a href="plotting-models.html#combining-effects-and-modeled-mean-and-ci-plots-an-effects-and-response-plot."><i class="fa fa-check"></i><b>4.1.3</b> Combining Effects and Modeled mean and CI plots – an Effects and response plot.</a></li>
+<li class="chapter" data-level="4.1.4" data-path="plotting-models.html"><a href="plotting-models.html#some-comments-on-plot-components"><i class="fa fa-check"></i><b>4.1.4</b> Some comments on plot components</a></li>
 </ul></li>
-<li class="chapter" data-level="4.2" data-path="plotting-models.html"><a href="plotting-models.html#some-comments-on-plot-components"><i class="fa fa-check"></i><b>4.2</b> Some comments on plot components</a></li>
-<li class="chapter" data-level="4.3" data-path="plotting-models.html"><a href="plotting-models.html#working-in-r"><i class="fa fa-check"></i><b>4.3</b> Working in R</a><ul>
-<li class="chapter" data-level="4.3.1" data-path="plotting-models.html"><a href="plotting-models.html#source-data"><i class="fa fa-check"></i><b>4.3.1</b> Source data</a></li>
-<li class="chapter" data-level="4.3.2" data-path="plotting-models.html"><a href="plotting-models.html#plot-the-model-functions"><i class="fa fa-check"></i><b>4.3.2</b> Plot the Model functions</a></li>
-<li class="chapter" data-level="4.3.3" data-path="plotting-models.html"><a href="plotting-models.html#how-to-generate-a-response-plot-using-ggpubr"><i class="fa fa-check"></i><b>4.3.3</b> How to generate a Response Plot using ggpubr</a></li>
+<li class="chapter" data-level="4.2" data-path="plotting-models.html"><a href="plotting-models.html#working-in-r"><i class="fa fa-check"></i><b>4.2</b> Working in R</a><ul>
+<li class="chapter" data-level="4.2.1" data-path="plotting-models.html"><a href="plotting-models.html#source-data"><i class="fa fa-check"></i><b>4.2.1</b> Source data</a></li>
+<li class="chapter" data-level="4.2.2" data-path="plotting-models.html"><a href="plotting-models.html#plot-the-model-functions"><i class="fa fa-check"></i><b>4.2.2</b> Plot the Model functions</a></li>
+<li class="chapter" data-level="4.2.3" data-path="plotting-models.html"><a href="plotting-models.html#how-to-generate-a-response-plot-using-ggpubr"><i class="fa fa-check"></i><b>4.2.3</b> How to generate a Response Plot using ggpubr</a></li>
+<li class="chapter" data-level="4.2.4" data-path="plotting-models.html"><a href="plotting-models.html#how-to-generate-an-effects-plot"><i class="fa fa-check"></i><b>4.2.4</b> How to generate an Effects Plot</a></li>
+<li class="chapter" data-level="4.2.5" data-path="plotting-models.html"><a href="plotting-models.html#how-to-combine-the-response-and-effects-plots"><i class="fa fa-check"></i><b>4.2.5</b> How to combine the response and effects plots</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="part-iv-some-fundamentals-of-statistical-modeling.html"><a href="part-iv-some-fundamentals-of-statistical-modeling.html"><i class="fa fa-check"></i>Part IV: Some Fundamentals of Statistical Modeling</a></li>
@@ -2192,10 +2194,10 @@ Residuals
 <div id="type-i-sum-of-squares-in-r" class="section level3">
 <h3><span class="header-section-number">16.5.1</span> Type I sum of squares in R</h3>
 <p>The base R function <code>anova()</code> computes the ANOVA table using Type I sum of squares for any fit model object, such as that returned by <code>lm</code>. Here is a script for the urchin data. I first create unbalanced data by deleting the first row that is the control row.</p>
-<div class="sourceCode" id="cb451"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb451-1"><a href="anova-tables.html#cb451-1"></a>cn_rows &lt;-<span class="st"> </span><span class="kw">which</span>(urchin[, Temp]<span class="op">==</span><span class="st">&quot;Temp-&quot;</span> <span class="op">&amp;</span><span class="st"> </span>urchin[, CO2]<span class="op">==</span><span class="st">&quot;CO2-&quot;</span>) <span class="co"># gives the rows of the controls</span></span>
-<span id="cb451-2"><a href="anova-tables.html#cb451-2"></a>urchin_unbalanced &lt;-<span class="st"> </span>urchin[<span class="op">-</span>cn_rows[<span class="dv">1</span>],] <span class="co"># deletes the row that is in first element of cn_rows</span></span>
-<span id="cb451-3"><a href="anova-tables.html#cb451-3"></a>urchin.t1 &lt;-<span class="st"> </span><span class="kw">lm</span>(Resp <span class="op">~</span><span class="st"> </span>Temp<span class="op">*</span>CO2, <span class="dt">data=</span>urchin_unbalanced)</span>
-<span id="cb451-4"><a href="anova-tables.html#cb451-4"></a><span class="kw">anova</span>(urchin.t1)</span></code></pre></div>
+<div class="sourceCode" id="cb455"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb455-1"><a href="anova-tables.html#cb455-1"></a>cn_rows &lt;-<span class="st"> </span><span class="kw">which</span>(urchin[, Temp]<span class="op">==</span><span class="st">&quot;Temp-&quot;</span> <span class="op">&amp;</span><span class="st"> </span>urchin[, CO2]<span class="op">==</span><span class="st">&quot;CO2-&quot;</span>) <span class="co"># gives the rows of the controls</span></span>
+<span id="cb455-2"><a href="anova-tables.html#cb455-2"></a>urchin_unbalanced &lt;-<span class="st"> </span>urchin[<span class="op">-</span>cn_rows[<span class="dv">1</span>],] <span class="co"># deletes the row that is in first element of cn_rows</span></span>
+<span id="cb455-3"><a href="anova-tables.html#cb455-3"></a>urchin.t1 &lt;-<span class="st"> </span><span class="kw">lm</span>(Resp <span class="op">~</span><span class="st"> </span>Temp<span class="op">*</span>CO2, <span class="dt">data=</span>urchin_unbalanced)</span>
+<span id="cb455-4"><a href="anova-tables.html#cb455-4"></a><span class="kw">anova</span>(urchin.t1)</span></code></pre></div>
 <pre><code>## Analysis of Variance Table
 ## 
 ## Response: Resp
@@ -2211,8 +2213,8 @@ Residuals
 <h3><span class="header-section-number">16.5.2</span> Type II and III Sum of Squares</h3>
 <p>Type II sum of squares can be computed manually simply by fitting the model twice, once with the factors ordered one way and then with the factors ordered the opposite way. The car package has the function <code>Anova</code> that specifically outputs Type II and Type III ANOVA tables.</p>
 <p>Type II sum of squares can be fit with the interaction in the model, and this generates the Type II sum of squares for the main terms but the residual is wrong for the <span class="math inline">\(F\)</span>-ratio because it is the residual from the full model and Type II assumes the interaction effect is zero. So, if one wants an ANOVA table with a <span class="math inline">\(F\)</span> and <span class="math inline">\(p\)</span> that reflect this, then the interaction should be dropped from the model.</p>
-<div class="sourceCode" id="cb453"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb453-1"><a href="anova-tables.html#cb453-1"></a>urchin.t2 &lt;-<span class="st"> </span><span class="kw">lm</span>(Resp <span class="op">~</span><span class="st"> </span>Temp<span class="op">*</span>CO2, <span class="dt">data=</span>urchin_unbalanced)</span>
-<span id="cb453-2"><a href="anova-tables.html#cb453-2"></a><span class="kw">Anova</span>(urchin.t2, <span class="dt">type=</span><span class="st">&quot;2&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb457"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb457-1"><a href="anova-tables.html#cb457-1"></a>urchin.t2 &lt;-<span class="st"> </span><span class="kw">lm</span>(Resp <span class="op">~</span><span class="st"> </span>Temp<span class="op">*</span>CO2, <span class="dt">data=</span>urchin_unbalanced)</span>
+<span id="cb457-2"><a href="anova-tables.html#cb457-2"></a><span class="kw">Anova</span>(urchin.t2, <span class="dt">type=</span><span class="st">&quot;2&quot;</span>)</span></code></pre></div>
 <pre><code>## Anova Table (Type II tests)
 ## 
 ## Response: Resp
@@ -2223,8 +2225,8 @@ Residuals
 ## Residuals 62.527 19                      
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
-<div class="sourceCode" id="cb455"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb455-1"><a href="anova-tables.html#cb455-1"></a>urchin.t2 &lt;-<span class="st"> </span><span class="kw">lm</span>(Resp <span class="op">~</span><span class="st"> </span>Temp <span class="op">+</span><span class="st"> </span>CO2, <span class="dt">data=</span>urchin_unbalanced)</span>
-<span id="cb455-2"><a href="anova-tables.html#cb455-2"></a><span class="kw">Anova</span>(urchin.t2, <span class="dt">type=</span><span class="st">&quot;2&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb459"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb459-1"><a href="anova-tables.html#cb459-1"></a>urchin.t2 &lt;-<span class="st"> </span><span class="kw">lm</span>(Resp <span class="op">~</span><span class="st"> </span>Temp <span class="op">+</span><span class="st"> </span>CO2, <span class="dt">data=</span>urchin_unbalanced)</span>
+<span id="cb459-2"><a href="anova-tables.html#cb459-2"></a><span class="kw">Anova</span>(urchin.t2, <span class="dt">type=</span><span class="st">&quot;2&quot;</span>)</span></code></pre></div>
 <pre><code>## Anova Table (Type II tests)
 ## 
 ## Response: Resp
@@ -2235,9 +2237,9 @@ Residuals
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
 <p>To get type III sum of squares, we need to specify effects coding for the model matrix. The safest way to do this is something like this</p>
-<div class="sourceCode" id="cb457"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb457-1"><a href="anova-tables.html#cb457-1"></a>con3 &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">Temp=</span>contr.sum, <span class="dt">CO2=</span>contr.sum) <span class="co"># change the contrasts coding for the model matrix</span></span>
-<span id="cb457-2"><a href="anova-tables.html#cb457-2"></a>urchin.t3 &lt;-<span class="st"> </span><span class="kw">lm</span>(Resp <span class="op">~</span><span class="st"> </span>Temp<span class="op">*</span>CO2, <span class="dt">data=</span>urchin_unbalanced, <span class="dt">contrasts=</span>con3)</span>
-<span id="cb457-3"><a href="anova-tables.html#cb457-3"></a><span class="kw">Anova</span>(urchin.t3, <span class="dt">type=</span><span class="st">&quot;3&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb461"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb461-1"><a href="anova-tables.html#cb461-1"></a>con3 &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">Temp=</span>contr.sum, <span class="dt">CO2=</span>contr.sum) <span class="co"># change the contrasts coding for the model matrix</span></span>
+<span id="cb461-2"><a href="anova-tables.html#cb461-2"></a>urchin.t3 &lt;-<span class="st"> </span><span class="kw">lm</span>(Resp <span class="op">~</span><span class="st"> </span>Temp<span class="op">*</span>CO2, <span class="dt">data=</span>urchin_unbalanced, <span class="dt">contrasts=</span>con3)</span>
+<span id="cb461-3"><a href="anova-tables.html#cb461-3"></a><span class="kw">Anova</span>(urchin.t3, <span class="dt">type=</span><span class="st">&quot;3&quot;</span>)</span></code></pre></div>
 <pre><code>## Anova Table (Type III tests)
 ## 
 ## Response: Resp
