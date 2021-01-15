@@ -255,10 +255,13 @@ code span.wa { color: #bf0303; } /* Warning */
 </ul></li>
 <li class="chapter" data-level="4.2" data-path="plotting-models.html"><a href="plotting-models.html#working-in-r"><i class="fa fa-check"></i><b>4.2</b> Working in R</a><ul>
 <li class="chapter" data-level="4.2.1" data-path="plotting-models.html"><a href="plotting-models.html#source-data"><i class="fa fa-check"></i><b>4.2.1</b> Source data</a></li>
-<li class="chapter" data-level="4.2.2" data-path="plotting-models.html"><a href="plotting-models.html#plot-the-model-functions"><i class="fa fa-check"></i><b>4.2.2</b> Plot the Model functions</a></li>
-<li class="chapter" data-level="4.2.3" data-path="plotting-models.html"><a href="plotting-models.html#how-to-generate-a-response-plot-using-ggpubr"><i class="fa fa-check"></i><b>4.2.3</b> How to generate a Response Plot using ggpubr</a></li>
-<li class="chapter" data-level="4.2.4" data-path="plotting-models.html"><a href="plotting-models.html#how-to-generate-an-effects-plot"><i class="fa fa-check"></i><b>4.2.4</b> How to generate an Effects Plot</a></li>
-<li class="chapter" data-level="4.2.5" data-path="plotting-models.html"><a href="plotting-models.html#how-to-combine-the-response-and-effects-plots"><i class="fa fa-check"></i><b>4.2.5</b> How to combine the response and effects plots</a></li>
+<li class="chapter" data-level="4.2.2" data-path="plotting-models.html"><a href="plotting-models.html#how-to-plot-the-model"><i class="fa fa-check"></i><b>4.2.2</b> How to plot the model</a></li>
+<li class="chapter" data-level="4.2.3" data-path="plotting-models.html"><a href="plotting-models.html#how-to-use-the-plot-the-model-functions"><i class="fa fa-check"></i><b>4.2.3</b> How to use the Plot the Model functions</a></li>
+<li class="chapter" data-level="4.2.4" data-path="plotting-models.html"><a href="plotting-models.html#how-to-generate-a-response-plot-using-ggpubr"><i class="fa fa-check"></i><b>4.2.4</b> How to generate a Response Plot using ggpubr</a></li>
+<li class="chapter" data-level="4.2.5" data-path="plotting-models.html"><a href="plotting-models.html#how-to-generate-a-response-plot-with-a-grid-of-treatments-using-ggplot2"><i class="fa fa-check"></i><b>4.2.5</b> How to generate a Response Plot with a grid of treatments using ggplot2</a></li>
+<li class="chapter" data-level="4.2.6" data-path="plotting-models.html"><a href="plotting-models.html#how-to-generate-an-effects-plot"><i class="fa fa-check"></i><b>4.2.6</b> How to generate an Effects Plot</a></li>
+<li class="chapter" data-level="4.2.7" data-path="plotting-models.html"><a href="plotting-models.html#how-to-combine-the-response-and-effects-plots"><i class="fa fa-check"></i><b>4.2.7</b> How to combine the response and effects plots</a></li>
+<li class="chapter" data-level="4.2.8" data-path="plotting-models.html"><a href="plotting-models.html#how-to-add-the-interaction-effect-to-response-and-effects-plots"><i class="fa fa-check"></i><b>4.2.8</b> How to add the interaction effect to response and effects plots</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="part-iv-some-fundamentals-of-statistical-modeling.html"><a href="part-iv-some-fundamentals-of-statistical-modeling.html"><i class="fa fa-check"></i>Part IV: Some Fundamentals of Statistical Modeling</a></li>
@@ -747,8 +750,8 @@ area\_of\_necrosis = \beta_0 + \beta_1 area\_at\_risk + \beta_2 treatment_{myrio
 \tag{14.5}
 \end{equation}\]</span></p>
 <p>The model includes parameters for the effects of area at risk (<span class="math inline">\(\beta_1\)</span>), the myriosin treatment (<span class="math inline">\(\beta_2\)</span>) and the myriosin + DoxSa treatment (<span class="math inline">\(\beta_3\)</span>). I explain the interpretation of these effects in “Interpretation of the model coefficients” below.</p>
-<div class="sourceCode" id="cb403"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb403-1"><a href="adding-covariates-to-a-linear-model.html#cb403-1"></a>fig4h_m1 &lt;-<span class="st"> </span><span class="kw">lm</span>(area_of_necrosis <span class="op">~</span><span class="st"> </span>area_at_risk <span class="op">+</span><span class="st"> </span>treatment,</span>
-<span id="cb403-2"><a href="adding-covariates-to-a-linear-model.html#cb403-2"></a>               <span class="dt">data =</span> fig4h)</span></code></pre></div>
+<div class="sourceCode" id="cb413"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb413-1"><a href="adding-covariates-to-a-linear-model.html#cb413-1"></a>fig4h_m1 &lt;-<span class="st"> </span><span class="kw">lm</span>(area_of_necrosis <span class="op">~</span><span class="st"> </span>area_at_risk <span class="op">+</span><span class="st"> </span>treatment,</span>
+<span id="cb413-2"><a href="adding-covariates-to-a-linear-model.html#cb413-2"></a>               <span class="dt">data =</span> fig4h)</span></code></pre></div>
 </div>
 <div id="plot-the-model-1" class="section level3">
 <h3><span class="header-section-number">14.2.2</span> Plot the model</h3>
@@ -761,9 +764,9 @@ Figure 14.5: The effect of treatment on area of necrosis, adjusted for area of r
 </div>
 <div id="interpretation-of-the-model-coefficients" class="section level3">
 <h3><span class="header-section-number">14.2.3</span> Interpretation of the model coefficients</h3>
-<div class="sourceCode" id="cb404"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb404-1"><a href="adding-covariates-to-a-linear-model.html#cb404-1"></a>fig4h_m1_coef &lt;-<span class="st"> </span><span class="kw">cbind</span>(<span class="kw">coef</span>(<span class="kw">summary</span>(fig4h_m1)),</span>
-<span id="cb404-2"><a href="adding-covariates-to-a-linear-model.html#cb404-2"></a>      <span class="kw">confint</span>(fig4h_m1))</span>
-<span id="cb404-3"><a href="adding-covariates-to-a-linear-model.html#cb404-3"></a><span class="kw">signif</span>(fig4h_m1_coef, <span class="dt">digits =</span> <span class="dv">3</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb414"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb414-1"><a href="adding-covariates-to-a-linear-model.html#cb414-1"></a>fig4h_m1_coef &lt;-<span class="st"> </span><span class="kw">cbind</span>(<span class="kw">coef</span>(<span class="kw">summary</span>(fig4h_m1)),</span>
+<span id="cb414-2"><a href="adding-covariates-to-a-linear-model.html#cb414-2"></a>      <span class="kw">confint</span>(fig4h_m1))</span>
+<span id="cb414-3"><a href="adding-covariates-to-a-linear-model.html#cb414-3"></a><span class="kw">signif</span>(fig4h_m1_coef, <span class="dt">digits =</span> <span class="dv">3</span>)</span></code></pre></div>
 <pre><code>##                           Estimate Std. Error t value Pr(&gt;|t|)  2.5 %
 ## (Intercept)                 -3.890     2.1200   -1.83 7.63e-02 -8.220
 ## area_at_risk                 0.453     0.0587    7.73 8.28e-09  0.334
@@ -793,8 +796,8 @@ b_2 = \mathrm{E}(area\_of\_necrosis|treatment = &quot;Myriocin&quot;, X = x) - \
 </div>
 <div id="interpretation-of-the-estimated-marginal-means" class="section level3">
 <h3><span class="header-section-number">14.2.5</span> Interpretation of the estimated marginal means</h3>
-<div class="sourceCode" id="cb406"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb406-1"><a href="adding-covariates-to-a-linear-model.html#cb406-1"></a>fig4h_m1_emm &lt;-<span class="st"> </span><span class="kw">emmeans</span>(fig4h_m1, <span class="dt">specs =</span> <span class="st">&quot;treatment&quot;</span>)</span>
-<span id="cb406-2"><a href="adding-covariates-to-a-linear-model.html#cb406-2"></a>fig4h_m1_emm</span></code></pre></div>
+<div class="sourceCode" id="cb416"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb416-1"><a href="adding-covariates-to-a-linear-model.html#cb416-1"></a>fig4h_m1_emm &lt;-<span class="st"> </span><span class="kw">emmeans</span>(fig4h_m1, <span class="dt">specs =</span> <span class="st">&quot;treatment&quot;</span>)</span>
+<span id="cb416-2"><a href="adding-covariates-to-a-linear-model.html#cb416-2"></a>fig4h_m1_emm</span></code></pre></div>
 <pre><code>##  treatment        emmean    SE df lower.CL upper.CL
 ##  Vehicle           11.98 0.839 32     10.3     13.7
 ##  Myriocin           8.87 0.916 32      7.0     10.7
@@ -805,11 +808,11 @@ b_2 = \mathrm{E}(area\_of\_necrosis|treatment = &quot;Myriocin&quot;, X = x) - \
 </div>
 <div id="interpretation-of-the-contrasts" class="section level3">
 <h3><span class="header-section-number">14.2.6</span> Interpretation of the contrasts</h3>
-<div class="sourceCode" id="cb408"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb408-1"><a href="adding-covariates-to-a-linear-model.html#cb408-1"></a>fig4h_m1_pairs &lt;-<span class="st"> </span><span class="kw">contrast</span>(fig4h_m1_emm,</span>
-<span id="cb408-2"><a href="adding-covariates-to-a-linear-model.html#cb408-2"></a>                           <span class="dt">method =</span> <span class="st">&quot;revpairwise&quot;</span>,</span>
-<span id="cb408-3"><a href="adding-covariates-to-a-linear-model.html#cb408-3"></a>                           <span class="dt">adjust =</span> <span class="st">&quot;none&quot;</span>) <span class="op">%&gt;%</span></span>
-<span id="cb408-4"><a href="adding-covariates-to-a-linear-model.html#cb408-4"></a><span class="st">  </span><span class="kw">summary</span>(<span class="dt">infer =</span> <span class="ot">TRUE</span>)</span>
-<span id="cb408-5"><a href="adding-covariates-to-a-linear-model.html#cb408-5"></a>fig4h_m1_pairs</span></code></pre></div>
+<div class="sourceCode" id="cb418"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb418-1"><a href="adding-covariates-to-a-linear-model.html#cb418-1"></a>fig4h_m1_pairs &lt;-<span class="st"> </span><span class="kw">contrast</span>(fig4h_m1_emm,</span>
+<span id="cb418-2"><a href="adding-covariates-to-a-linear-model.html#cb418-2"></a>                           <span class="dt">method =</span> <span class="st">&quot;revpairwise&quot;</span>,</span>
+<span id="cb418-3"><a href="adding-covariates-to-a-linear-model.html#cb418-3"></a>                           <span class="dt">adjust =</span> <span class="st">&quot;none&quot;</span>) <span class="op">%&gt;%</span></span>
+<span id="cb418-4"><a href="adding-covariates-to-a-linear-model.html#cb418-4"></a><span class="st">  </span><span class="kw">summary</span>(<span class="dt">infer =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb418-5"><a href="adding-covariates-to-a-linear-model.html#cb418-5"></a>fig4h_m1_pairs</span></code></pre></div>
 <pre><code>##  contrast                      estimate   SE df lower.CL upper.CL t.ratio
 ##  Myriocin - Vehicle             -3.1139 1.23 32    -5.62   -0.611 -2.534 
 ##  (Myriocin + DoxSa) - Vehicle   -3.1485 1.37 32    -5.93   -0.367 -2.306 
@@ -852,9 +855,9 @@ area\_of\_necrosis = \beta_0 &amp;+ \beta_1 area\_at\_risk + \beta_2 treatment_{
 \end{align}\]</span></p>
 <p>In addition to the effects of the myriosin (<span class="math inline">\(\beta_2\)</span>) and the myriosin + DoxSa (<span class="math inline">\(\beta_3\)</span>) treatments of Model <span class="math inline">\(\mathcal{M}_1\)</span>, Model <span class="math inline">\(\mathcal{M}_2\)</span> includes coefficients for two <strong>interaction effects</strong>, the interaction between myriosin and area at risk (<span class="math inline">\(\beta_4\)</span>) and the interaction between myriosin + DoxSa and area at risk (<span class="math inline">\(\beta_4\)</span>). The parameters <span class="math inline">\(\beta_1\)</span> and <span class="math inline">\(\beta_2\)</span> are <strong>additive effects</strong> because they are linear (additive) “in the <span class="math inline">\(X\)</span>” variables. The parameters <span class="math inline">\(\beta_3\)</span> and <span class="math inline">\(\beta_4\)</span> are <strong>non-additive effects</strong> because they are not linear “in the <span class="math inline">\(X\)</span>” variables – these effects are coefficients of an <span class="math inline">\(X\)</span> that is the product of two variables. You can see this in the model equation but I explain this further below.</p>
 <p>For the goals of the researchers in the heart necrosis study, we specifically would not want to model the interaction. Nevertheless, we would want to plot the interaction effect during the “Step 2: examine the data” phase of analysis to be sure that an additive model is a reasonable model given the data.</p>
-<div class="sourceCode" id="cb411"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb411-1"><a href="adding-covariates-to-a-linear-model.html#cb411-1"></a><span class="co"># see working in R to understand this model formula</span></span>
-<span id="cb411-2"><a href="adding-covariates-to-a-linear-model.html#cb411-2"></a>fig4h_m2 &lt;-<span class="st"> </span><span class="kw">lm</span>(area_of_necrosis <span class="op">~</span><span class="st"> </span>area_at_risk<span class="op">*</span>treatment,</span>
-<span id="cb411-3"><a href="adding-covariates-to-a-linear-model.html#cb411-3"></a>               <span class="dt">data =</span> fig4h)</span></code></pre></div>
+<div class="sourceCode" id="cb421"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb421-1"><a href="adding-covariates-to-a-linear-model.html#cb421-1"></a><span class="co"># see working in R to understand this model formula</span></span>
+<span id="cb421-2"><a href="adding-covariates-to-a-linear-model.html#cb421-2"></a>fig4h_m2 &lt;-<span class="st"> </span><span class="kw">lm</span>(area_of_necrosis <span class="op">~</span><span class="st"> </span>area_at_risk<span class="op">*</span>treatment,</span>
+<span id="cb421-3"><a href="adding-covariates-to-a-linear-model.html#cb421-3"></a>               <span class="dt">data =</span> fig4h)</span></code></pre></div>
 </div>
 <div id="plot-the-model-with-interaction-effect" class="section level3">
 <h3><span class="header-section-number">14.3.2</span> Plot the model with interaction effect</h3>
@@ -867,9 +870,9 @@ Figure 14.6: The effect of treatment on area of necrosis, adjusted for area of r
 </div>
 <div id="interpretation-of-the-model-coefficients-1" class="section level3">
 <h3><span class="header-section-number">14.3.3</span> Interpretation of the model coefficients</h3>
-<div class="sourceCode" id="cb412"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb412-1"><a href="adding-covariates-to-a-linear-model.html#cb412-1"></a>fig4h_m2_coef &lt;-<span class="st"> </span><span class="kw">cbind</span>(<span class="kw">coef</span>(<span class="kw">summary</span>(fig4h_m2)),</span>
-<span id="cb412-2"><a href="adding-covariates-to-a-linear-model.html#cb412-2"></a>      <span class="kw">confint</span>(fig4h_m2))</span>
-<span id="cb412-3"><a href="adding-covariates-to-a-linear-model.html#cb412-3"></a><span class="kw">round</span>(fig4h_m2_coef[,<span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>)], <span class="dt">digits =</span> <span class="dv">2</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb422"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb422-1"><a href="adding-covariates-to-a-linear-model.html#cb422-1"></a>fig4h_m2_coef &lt;-<span class="st"> </span><span class="kw">cbind</span>(<span class="kw">coef</span>(<span class="kw">summary</span>(fig4h_m2)),</span>
+<span id="cb422-2"><a href="adding-covariates-to-a-linear-model.html#cb422-2"></a>      <span class="kw">confint</span>(fig4h_m2))</span>
+<span id="cb422-3"><a href="adding-covariates-to-a-linear-model.html#cb422-3"></a><span class="kw">round</span>(fig4h_m2_coef[,<span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>)], <span class="dt">digits =</span> <span class="dv">2</span>)</span></code></pre></div>
 <pre><code>##                                        Estimate Std. Error
 ## (Intercept)                               -6.55       3.01
 ## area_at_risk                               0.53       0.09
@@ -903,44 +906,44 @@ Figure 14.6: The effect of treatment on area of necrosis, adjusted for area of r
 <h2><span class="header-section-number">14.5</span> Working in R</h2>
 <div id="importing-the-heart-necrosis-data" class="section level3">
 <h3><span class="header-section-number">14.5.1</span> Importing the heart necrosis data</h3>
-<div class="sourceCode" id="cb414"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb414-1"><a href="adding-covariates-to-a-linear-model.html#cb414-1"></a>data_folder &lt;-<span class="st"> &quot;data&quot;</span></span>
-<span id="cb414-2"><a href="adding-covariates-to-a-linear-model.html#cb414-2"></a>data_from &lt;-<span class="st"> &quot;1-Deoxydihydroceramide causes anoxic death by impairing chaperonin-mediated protein folding&quot;</span></span>
-<span id="cb414-3"><a href="adding-covariates-to-a-linear-model.html#cb414-3"></a>file_name &lt;-<span class="st"> &quot;42255_2019_123_MOESM7_ESM.xlsx&quot;</span></span>
-<span id="cb414-4"><a href="adding-covariates-to-a-linear-model.html#cb414-4"></a>file_path &lt;-<span class="st"> </span><span class="kw">here</span>(data_folder, data_from, file_name)</span>
-<span id="cb414-5"><a href="adding-covariates-to-a-linear-model.html#cb414-5"></a>  </span>
-<span id="cb414-6"><a href="adding-covariates-to-a-linear-model.html#cb414-6"></a>sheet_i &lt;-<span class="st"> &quot;Figure 4h&quot;</span></span>
-<span id="cb414-7"><a href="adding-covariates-to-a-linear-model.html#cb414-7"></a>fig4h_<span class="dv">1</span> &lt;-<span class="st"> </span><span class="kw">read_excel</span>(file_path,</span>
-<span id="cb414-8"><a href="adding-covariates-to-a-linear-model.html#cb414-8"></a>                         <span class="dt">sheet =</span> sheet_i,</span>
-<span id="cb414-9"><a href="adding-covariates-to-a-linear-model.html#cb414-9"></a>                         <span class="dt">range =</span> <span class="st">&quot;A5:B19&quot;</span>,</span>
-<span id="cb414-10"><a href="adding-covariates-to-a-linear-model.html#cb414-10"></a>                         <span class="dt">col_names =</span> <span class="ot">TRUE</span>) <span class="op">%&gt;%</span></span>
-<span id="cb414-11"><a href="adding-covariates-to-a-linear-model.html#cb414-11"></a><span class="st">  </span><span class="kw">clean_names</span>() <span class="op">%&gt;%</span></span>
-<span id="cb414-12"><a href="adding-covariates-to-a-linear-model.html#cb414-12"></a><span class="st">  </span><span class="kw">data.table</span>()</span>
-<span id="cb414-13"><a href="adding-covariates-to-a-linear-model.html#cb414-13"></a>fig4h_<span class="dv">2</span> &lt;-<span class="st"> </span><span class="kw">read_excel</span>(file_path,</span>
-<span id="cb414-14"><a href="adding-covariates-to-a-linear-model.html#cb414-14"></a>                         <span class="dt">sheet =</span> sheet_i,</span>
-<span id="cb414-15"><a href="adding-covariates-to-a-linear-model.html#cb414-15"></a>                         <span class="dt">range =</span> <span class="st">&quot;D5:E17&quot;</span>,</span>
-<span id="cb414-16"><a href="adding-covariates-to-a-linear-model.html#cb414-16"></a>                         <span class="dt">col_names =</span> <span class="ot">TRUE</span>) <span class="op">%&gt;%</span></span>
-<span id="cb414-17"><a href="adding-covariates-to-a-linear-model.html#cb414-17"></a><span class="st">  </span><span class="kw">clean_names</span>() <span class="op">%&gt;%</span></span>
-<span id="cb414-18"><a href="adding-covariates-to-a-linear-model.html#cb414-18"></a><span class="st">  </span><span class="kw">data.table</span>()</span>
-<span id="cb414-19"><a href="adding-covariates-to-a-linear-model.html#cb414-19"></a>fig4h_<span class="dv">3</span> &lt;-<span class="st"> </span><span class="kw">read_excel</span>(file_path,</span>
-<span id="cb414-20"><a href="adding-covariates-to-a-linear-model.html#cb414-20"></a>                         <span class="dt">sheet =</span> sheet_i,</span>
-<span id="cb414-21"><a href="adding-covariates-to-a-linear-model.html#cb414-21"></a>                         <span class="dt">range =</span> <span class="st">&quot;G5:H15&quot;</span>,</span>
-<span id="cb414-22"><a href="adding-covariates-to-a-linear-model.html#cb414-22"></a>                         <span class="dt">col_names =</span> <span class="ot">TRUE</span>) <span class="op">%&gt;%</span></span>
-<span id="cb414-23"><a href="adding-covariates-to-a-linear-model.html#cb414-23"></a><span class="st">  </span><span class="kw">clean_names</span>() <span class="op">%&gt;%</span></span>
-<span id="cb414-24"><a href="adding-covariates-to-a-linear-model.html#cb414-24"></a><span class="st">  </span><span class="kw">data.table</span>()</span>
-<span id="cb414-25"><a href="adding-covariates-to-a-linear-model.html#cb414-25"></a></span>
-<span id="cb414-26"><a href="adding-covariates-to-a-linear-model.html#cb414-26"></a>fig4h &lt;-<span class="st"> </span><span class="kw">rbind</span>(<span class="kw">data.table</span>(<span class="dt">treatment =</span> <span class="st">&quot;Vehicle&quot;</span>, fig4h_<span class="dv">1</span>),</span>
-<span id="cb414-27"><a href="adding-covariates-to-a-linear-model.html#cb414-27"></a>                    <span class="kw">data.table</span>(<span class="dt">treatment =</span> <span class="st">&quot;Myriocin&quot;</span>, fig4h_<span class="dv">2</span>),</span>
-<span id="cb414-28"><a href="adding-covariates-to-a-linear-model.html#cb414-28"></a>                    <span class="kw">data.table</span>(<span class="dt">treatment =</span> <span class="st">&quot;Myriocin + DoxSa&quot;</span>, fig4h_<span class="dv">3</span>))</span>
-<span id="cb414-29"><a href="adding-covariates-to-a-linear-model.html#cb414-29"></a></span>
-<span id="cb414-30"><a href="adding-covariates-to-a-linear-model.html#cb414-30"></a>treatment_levels &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Vehicle&quot;</span>, <span class="st">&quot;Myriocin&quot;</span>, <span class="st">&quot;Myriocin + DoxSa&quot;</span>)</span>
-<span id="cb414-31"><a href="adding-covariates-to-a-linear-model.html#cb414-31"></a>fig4h[, treatment <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">factor</span>(treatment, <span class="dt">levels =</span> treatment_levels)]</span></code></pre></div>
+<div class="sourceCode" id="cb424"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb424-1"><a href="adding-covariates-to-a-linear-model.html#cb424-1"></a>data_folder &lt;-<span class="st"> &quot;data&quot;</span></span>
+<span id="cb424-2"><a href="adding-covariates-to-a-linear-model.html#cb424-2"></a>data_from &lt;-<span class="st"> &quot;1-Deoxydihydroceramide causes anoxic death by impairing chaperonin-mediated protein folding&quot;</span></span>
+<span id="cb424-3"><a href="adding-covariates-to-a-linear-model.html#cb424-3"></a>file_name &lt;-<span class="st"> &quot;42255_2019_123_MOESM7_ESM.xlsx&quot;</span></span>
+<span id="cb424-4"><a href="adding-covariates-to-a-linear-model.html#cb424-4"></a>file_path &lt;-<span class="st"> </span><span class="kw">here</span>(data_folder, data_from, file_name)</span>
+<span id="cb424-5"><a href="adding-covariates-to-a-linear-model.html#cb424-5"></a>  </span>
+<span id="cb424-6"><a href="adding-covariates-to-a-linear-model.html#cb424-6"></a>sheet_i &lt;-<span class="st"> &quot;Figure 4h&quot;</span></span>
+<span id="cb424-7"><a href="adding-covariates-to-a-linear-model.html#cb424-7"></a>fig4h_<span class="dv">1</span> &lt;-<span class="st"> </span><span class="kw">read_excel</span>(file_path,</span>
+<span id="cb424-8"><a href="adding-covariates-to-a-linear-model.html#cb424-8"></a>                         <span class="dt">sheet =</span> sheet_i,</span>
+<span id="cb424-9"><a href="adding-covariates-to-a-linear-model.html#cb424-9"></a>                         <span class="dt">range =</span> <span class="st">&quot;A5:B19&quot;</span>,</span>
+<span id="cb424-10"><a href="adding-covariates-to-a-linear-model.html#cb424-10"></a>                         <span class="dt">col_names =</span> <span class="ot">TRUE</span>) <span class="op">%&gt;%</span></span>
+<span id="cb424-11"><a href="adding-covariates-to-a-linear-model.html#cb424-11"></a><span class="st">  </span><span class="kw">clean_names</span>() <span class="op">%&gt;%</span></span>
+<span id="cb424-12"><a href="adding-covariates-to-a-linear-model.html#cb424-12"></a><span class="st">  </span><span class="kw">data.table</span>()</span>
+<span id="cb424-13"><a href="adding-covariates-to-a-linear-model.html#cb424-13"></a>fig4h_<span class="dv">2</span> &lt;-<span class="st"> </span><span class="kw">read_excel</span>(file_path,</span>
+<span id="cb424-14"><a href="adding-covariates-to-a-linear-model.html#cb424-14"></a>                         <span class="dt">sheet =</span> sheet_i,</span>
+<span id="cb424-15"><a href="adding-covariates-to-a-linear-model.html#cb424-15"></a>                         <span class="dt">range =</span> <span class="st">&quot;D5:E17&quot;</span>,</span>
+<span id="cb424-16"><a href="adding-covariates-to-a-linear-model.html#cb424-16"></a>                         <span class="dt">col_names =</span> <span class="ot">TRUE</span>) <span class="op">%&gt;%</span></span>
+<span id="cb424-17"><a href="adding-covariates-to-a-linear-model.html#cb424-17"></a><span class="st">  </span><span class="kw">clean_names</span>() <span class="op">%&gt;%</span></span>
+<span id="cb424-18"><a href="adding-covariates-to-a-linear-model.html#cb424-18"></a><span class="st">  </span><span class="kw">data.table</span>()</span>
+<span id="cb424-19"><a href="adding-covariates-to-a-linear-model.html#cb424-19"></a>fig4h_<span class="dv">3</span> &lt;-<span class="st"> </span><span class="kw">read_excel</span>(file_path,</span>
+<span id="cb424-20"><a href="adding-covariates-to-a-linear-model.html#cb424-20"></a>                         <span class="dt">sheet =</span> sheet_i,</span>
+<span id="cb424-21"><a href="adding-covariates-to-a-linear-model.html#cb424-21"></a>                         <span class="dt">range =</span> <span class="st">&quot;G5:H15&quot;</span>,</span>
+<span id="cb424-22"><a href="adding-covariates-to-a-linear-model.html#cb424-22"></a>                         <span class="dt">col_names =</span> <span class="ot">TRUE</span>) <span class="op">%&gt;%</span></span>
+<span id="cb424-23"><a href="adding-covariates-to-a-linear-model.html#cb424-23"></a><span class="st">  </span><span class="kw">clean_names</span>() <span class="op">%&gt;%</span></span>
+<span id="cb424-24"><a href="adding-covariates-to-a-linear-model.html#cb424-24"></a><span class="st">  </span><span class="kw">data.table</span>()</span>
+<span id="cb424-25"><a href="adding-covariates-to-a-linear-model.html#cb424-25"></a></span>
+<span id="cb424-26"><a href="adding-covariates-to-a-linear-model.html#cb424-26"></a>fig4h &lt;-<span class="st"> </span><span class="kw">rbind</span>(<span class="kw">data.table</span>(<span class="dt">treatment =</span> <span class="st">&quot;Vehicle&quot;</span>, fig4h_<span class="dv">1</span>),</span>
+<span id="cb424-27"><a href="adding-covariates-to-a-linear-model.html#cb424-27"></a>                    <span class="kw">data.table</span>(<span class="dt">treatment =</span> <span class="st">&quot;Myriocin&quot;</span>, fig4h_<span class="dv">2</span>),</span>
+<span id="cb424-28"><a href="adding-covariates-to-a-linear-model.html#cb424-28"></a>                    <span class="kw">data.table</span>(<span class="dt">treatment =</span> <span class="st">&quot;Myriocin + DoxSa&quot;</span>, fig4h_<span class="dv">3</span>))</span>
+<span id="cb424-29"><a href="adding-covariates-to-a-linear-model.html#cb424-29"></a></span>
+<span id="cb424-30"><a href="adding-covariates-to-a-linear-model.html#cb424-30"></a>treatment_levels &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Vehicle&quot;</span>, <span class="st">&quot;Myriocin&quot;</span>, <span class="st">&quot;Myriocin + DoxSa&quot;</span>)</span>
+<span id="cb424-31"><a href="adding-covariates-to-a-linear-model.html#cb424-31"></a>fig4h[, treatment <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">factor</span>(treatment, <span class="dt">levels =</span> treatment_levels)]</span></code></pre></div>
 </div>
 <div id="fitting-the-model" class="section level3">
 <h3><span class="header-section-number">14.5.2</span> Fitting the model</h3>
 <p>For an additive model, add the covariate to the model formula using the <code>+</code> operator. The order of the variables doesn’t matter (the right-hand-side of the model formula could be <code>treatment + area_at_risk</code>).</p>
-<div class="sourceCode" id="cb415"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb415-1"><a href="adding-covariates-to-a-linear-model.html#cb415-1"></a>m1 &lt;-<span class="st"> </span><span class="kw">lm</span>(area_of_necrosis <span class="op">~</span><span class="st"> </span>area_at_risk <span class="op">+</span><span class="st"> </span>treatment, <span class="dt">data =</span> fig4h)</span></code></pre></div>
+<div class="sourceCode" id="cb425"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb425-1"><a href="adding-covariates-to-a-linear-model.html#cb425-1"></a>m1 &lt;-<span class="st"> </span><span class="kw">lm</span>(area_of_necrosis <span class="op">~</span><span class="st"> </span>area_at_risk <span class="op">+</span><span class="st"> </span>treatment, <span class="dt">data =</span> fig4h)</span></code></pre></div>
 <p>For an nonadditive model with interactions, add the covariate to the model formula using the <code>*</code> operator. <code>~ area_at_risk * treatment</code> is a shortcut to the full model formula, which is <code>1 + area_at_risk + treatment + area_at_risk * treatment</code>. R expands the short formula to the full formula automatically. Again, the order of the variables doesn’t matter (the right-hand-side of the model formula could be <code>treatment * area_at_risk</code>).</p>
-<div class="sourceCode" id="cb416"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb416-1"><a href="adding-covariates-to-a-linear-model.html#cb416-1"></a>m2 &lt;-<span class="st"> </span><span class="kw">lm</span>(area_of_necrosis <span class="op">~</span><span class="st"> </span>area_at_risk <span class="op">*</span><span class="st"> </span>treatment, <span class="dt">data =</span> fig4h)</span></code></pre></div>
+<div class="sourceCode" id="cb426"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb426-1"><a href="adding-covariates-to-a-linear-model.html#cb426-1"></a>m2 &lt;-<span class="st"> </span><span class="kw">lm</span>(area_of_necrosis <span class="op">~</span><span class="st"> </span>area_at_risk <span class="op">*</span><span class="st"> </span>treatment, <span class="dt">data =</span> fig4h)</span></code></pre></div>
 </div>
 <div id="ancova-tables" class="section level3">
 <h3><span class="header-section-number">14.5.3</span> ANCOVA tables</h3>
@@ -952,7 +955,7 @@ Figure 14.6: The effect of treatment on area of necrosis, adjusted for area of r
 <li>Many websites show code that changes the default coding in the R session. I strongly caution against this. If you don’t change it back, then you are likely to misinterpret coefficients in later analyses (see point 2).</li>
 </ol>
 <p>For additive models, use Type II sum of squares (Type III will give same results),</p>
-<div class="sourceCode" id="cb417"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb417-1"><a href="adding-covariates-to-a-linear-model.html#cb417-1"></a><span class="kw">Anova</span>(m1_aov, <span class="dt">type =</span> <span class="dv">2</span>) <span class="co"># be sure to use the correct model!</span></span></code></pre></div>
+<div class="sourceCode" id="cb427"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb427-1"><a href="adding-covariates-to-a-linear-model.html#cb427-1"></a><span class="kw">Anova</span>(m1_aov, <span class="dt">type =</span> <span class="dv">2</span>) <span class="co"># be sure to use the correct model!</span></span></code></pre></div>
 <pre><code>## Anova Table (Type II tests)
 ## 
 ## Response: area_of_necrosis
@@ -968,14 +971,14 @@ Figure 14.6: The effect of treatment on area of necrosis, adjusted for area of r
 <li>The interpretation of the main effects is problematic, at best. This is discussed more in the ANOVA chapter.</li>
 <li>Some statisticians recommend using Type III sums of squares. The effect of $treatment* has a very specific interpretation with Type III – it is the effect when the covariate = 0. This can be biologically relevant if the covariate data is re-centered.</li>
 </ol>
-<div class="sourceCode" id="cb419"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb419-1"><a href="adding-covariates-to-a-linear-model.html#cb419-1"></a><span class="co"># for coefficients</span></span>
-<span id="cb419-2"><a href="adding-covariates-to-a-linear-model.html#cb419-2"></a>m2 &lt;-<span class="st"> </span><span class="kw">lm</span>(area_of_necrosis <span class="op">~</span><span class="st"> </span>treatment <span class="op">*</span><span class="st"> </span>area_at_risk,</span>
-<span id="cb419-3"><a href="adding-covariates-to-a-linear-model.html#cb419-3"></a>         <span class="dt">data =</span> fig4h)</span>
-<span id="cb419-4"><a href="adding-covariates-to-a-linear-model.html#cb419-4"></a><span class="co"># for anova</span></span>
-<span id="cb419-5"><a href="adding-covariates-to-a-linear-model.html#cb419-5"></a>m2_aov &lt;-<span class="st"> </span><span class="kw">lm</span>(area_of_necrosis <span class="op">~</span><span class="st"> </span>treatment <span class="op">*</span><span class="st"> </span>area_at_risk,</span>
-<span id="cb419-6"><a href="adding-covariates-to-a-linear-model.html#cb419-6"></a>         <span class="dt">data =</span> fig4h,</span>
-<span id="cb419-7"><a href="adding-covariates-to-a-linear-model.html#cb419-7"></a>         <span class="dt">contrasts =</span> <span class="kw">list</span>(<span class="dt">treatment =</span> contr.sum))</span></code></pre></div>
-<div class="sourceCode" id="cb420"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb420-1"><a href="adding-covariates-to-a-linear-model.html#cb420-1"></a><span class="kw">Anova</span>(m2_aov, <span class="dt">type =</span> <span class="dv">2</span>) <span class="co"># be sure to use the correct model!</span></span></code></pre></div>
+<div class="sourceCode" id="cb429"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb429-1"><a href="adding-covariates-to-a-linear-model.html#cb429-1"></a><span class="co"># for coefficients</span></span>
+<span id="cb429-2"><a href="adding-covariates-to-a-linear-model.html#cb429-2"></a>m2 &lt;-<span class="st"> </span><span class="kw">lm</span>(area_of_necrosis <span class="op">~</span><span class="st"> </span>treatment <span class="op">*</span><span class="st"> </span>area_at_risk,</span>
+<span id="cb429-3"><a href="adding-covariates-to-a-linear-model.html#cb429-3"></a>         <span class="dt">data =</span> fig4h)</span>
+<span id="cb429-4"><a href="adding-covariates-to-a-linear-model.html#cb429-4"></a><span class="co"># for anova</span></span>
+<span id="cb429-5"><a href="adding-covariates-to-a-linear-model.html#cb429-5"></a>m2_aov &lt;-<span class="st"> </span><span class="kw">lm</span>(area_of_necrosis <span class="op">~</span><span class="st"> </span>treatment <span class="op">*</span><span class="st"> </span>area_at_risk,</span>
+<span id="cb429-6"><a href="adding-covariates-to-a-linear-model.html#cb429-6"></a>         <span class="dt">data =</span> fig4h,</span>
+<span id="cb429-7"><a href="adding-covariates-to-a-linear-model.html#cb429-7"></a>         <span class="dt">contrasts =</span> <span class="kw">list</span>(<span class="dt">treatment =</span> contr.sum))</span></code></pre></div>
+<div class="sourceCode" id="cb430"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb430-1"><a href="adding-covariates-to-a-linear-model.html#cb430-1"></a><span class="kw">Anova</span>(m2_aov, <span class="dt">type =</span> <span class="dv">2</span>) <span class="co"># be sure to use the correct model!</span></span></code></pre></div>
 <pre><code>## Anova Table (Type II tests)
 ## 
 ## Response: area_of_necrosis
@@ -986,7 +989,7 @@ Figure 14.6: The effect of treatment on area of necrosis, adjusted for area of r
 ## Residuals              283.75 30                      
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
-<div class="sourceCode" id="cb422"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb422-1"><a href="adding-covariates-to-a-linear-model.html#cb422-1"></a><span class="kw">Anova</span>(m2_aov, <span class="dt">type =</span> <span class="dv">3</span>) <span class="co"># be sure to use the correct model!</span></span></code></pre></div>
+<div class="sourceCode" id="cb432"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb432-1"><a href="adding-covariates-to-a-linear-model.html#cb432-1"></a><span class="kw">Anova</span>(m2_aov, <span class="dt">type =</span> <span class="dv">3</span>) <span class="co"># be sure to use the correct model!</span></span></code></pre></div>
 <pre><code>## Anova Table (Type III tests)
 ## 
 ## Response: area_of_necrosis
@@ -1004,132 +1007,132 @@ Figure 14.6: The effect of treatment on area of necrosis, adjusted for area of r
 <div id="using-ggpubr" class="section level4">
 <h4><span class="header-section-number">14.5.4.1</span> Using ggpubr</h4>
 <p>ggpubr will only plot the model with interactions.</p>
-<div class="sourceCode" id="cb424"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb424-1"><a href="adding-covariates-to-a-linear-model.html#cb424-1"></a><span class="kw">ggscatter</span>(<span class="dt">data =</span> fig4h,</span>
-<span id="cb424-2"><a href="adding-covariates-to-a-linear-model.html#cb424-2"></a>          <span class="dt">x =</span> <span class="st">&quot;area_at_risk&quot;</span>,</span>
-<span id="cb424-3"><a href="adding-covariates-to-a-linear-model.html#cb424-3"></a>          <span class="dt">y =</span> <span class="st">&quot;area_of_necrosis&quot;</span>,</span>
-<span id="cb424-4"><a href="adding-covariates-to-a-linear-model.html#cb424-4"></a>          <span class="dt">color =</span> <span class="st">&quot;treatment&quot;</span>,</span>
-<span id="cb424-5"><a href="adding-covariates-to-a-linear-model.html#cb424-5"></a>          <span class="dt">add =</span> <span class="st">&quot;reg.line&quot;</span>,</span>
-<span id="cb424-6"><a href="adding-covariates-to-a-linear-model.html#cb424-6"></a>          <span class="dt">ylab =</span> <span class="st">&quot;Area of necrosis (mg)&quot;</span>,</span>
-<span id="cb424-7"><a href="adding-covariates-to-a-linear-model.html#cb424-7"></a>          <span class="dt">xlab =</span> <span class="st">&quot;Area at risk (mg)&quot;</span>,</span>
-<span id="cb424-8"><a href="adding-covariates-to-a-linear-model.html#cb424-8"></a>          <span class="dt">palette =</span> pal_okabe_ito</span>
-<span id="cb424-9"><a href="adding-covariates-to-a-linear-model.html#cb424-9"></a>)</span></code></pre></div>
-<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/unnamed-chunk-238-1.png" width="576" /></p>
+<div class="sourceCode" id="cb434"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb434-1"><a href="adding-covariates-to-a-linear-model.html#cb434-1"></a><span class="kw">ggscatter</span>(<span class="dt">data =</span> fig4h,</span>
+<span id="cb434-2"><a href="adding-covariates-to-a-linear-model.html#cb434-2"></a>          <span class="dt">x =</span> <span class="st">&quot;area_at_risk&quot;</span>,</span>
+<span id="cb434-3"><a href="adding-covariates-to-a-linear-model.html#cb434-3"></a>          <span class="dt">y =</span> <span class="st">&quot;area_of_necrosis&quot;</span>,</span>
+<span id="cb434-4"><a href="adding-covariates-to-a-linear-model.html#cb434-4"></a>          <span class="dt">color =</span> <span class="st">&quot;treatment&quot;</span>,</span>
+<span id="cb434-5"><a href="adding-covariates-to-a-linear-model.html#cb434-5"></a>          <span class="dt">add =</span> <span class="st">&quot;reg.line&quot;</span>,</span>
+<span id="cb434-6"><a href="adding-covariates-to-a-linear-model.html#cb434-6"></a>          <span class="dt">ylab =</span> <span class="st">&quot;Area of necrosis (mg)&quot;</span>,</span>
+<span id="cb434-7"><a href="adding-covariates-to-a-linear-model.html#cb434-7"></a>          <span class="dt">xlab =</span> <span class="st">&quot;Area at risk (mg)&quot;</span>,</span>
+<span id="cb434-8"><a href="adding-covariates-to-a-linear-model.html#cb434-8"></a>          <span class="dt">palette =</span> pal_okabe_ito</span>
+<span id="cb434-9"><a href="adding-covariates-to-a-linear-model.html#cb434-9"></a>)</span></code></pre></div>
+<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/unnamed-chunk-239-1.png" width="576" /></p>
 </div>
 <div id="ggplot2" class="section level4">
 <h4><span class="header-section-number">14.5.4.2</span> ggplot2</h4>
-<div class="sourceCode" id="cb425"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb425-1"><a href="adding-covariates-to-a-linear-model.html#cb425-1"></a><span class="co"># pal_batlow &lt;- scico(n, alpha = NULL, begin = 0, end = 1, direction = 1, palette = &quot;batlow&quot;)</span></span>
-<span id="cb425-2"><a href="adding-covariates-to-a-linear-model.html#cb425-2"></a></span>
-<span id="cb425-3"><a href="adding-covariates-to-a-linear-model.html#cb425-3"></a>m1 &lt;-<span class="st"> </span><span class="kw">lm</span>(area_of_necrosis <span class="op">~</span><span class="st"> </span>area_at_risk <span class="op">+</span><span class="st"> </span>treatment,</span>
-<span id="cb425-4"><a href="adding-covariates-to-a-linear-model.html#cb425-4"></a>         <span class="dt">data =</span> fig4h)</span>
-<span id="cb425-5"><a href="adding-covariates-to-a-linear-model.html#cb425-5"></a></span>
-<span id="cb425-6"><a href="adding-covariates-to-a-linear-model.html#cb425-6"></a>gg &lt;-<span class="st"> </span><span class="kw">ggplot</span>(fig4h, </span>
-<span id="cb425-7"><a href="adding-covariates-to-a-linear-model.html#cb425-7"></a>             <span class="kw">aes</span>(<span class="dt">x =</span> area_at_risk,</span>
-<span id="cb425-8"><a href="adding-covariates-to-a-linear-model.html#cb425-8"></a>                 <span class="dt">y =</span> area_of_necrosis,</span>
-<span id="cb425-9"><a href="adding-covariates-to-a-linear-model.html#cb425-9"></a>                 <span class="dt">color =</span> treatment)) <span class="op">+</span></span>
-<span id="cb425-10"><a href="adding-covariates-to-a-linear-model.html#cb425-10"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">color=</span>treatment)) <span class="op">+</span></span>
-<span id="cb425-11"><a href="adding-covariates-to-a-linear-model.html#cb425-11"></a><span class="st">  </span><span class="kw">geom_smooth</span>(<span class="dt">method =</span> <span class="st">&quot;lm&quot;</span>,</span>
-<span id="cb425-12"><a href="adding-covariates-to-a-linear-model.html#cb425-12"></a>              <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">y =</span> <span class="kw">predict</span>(m1, fig4h))) <span class="op">+</span></span>
-<span id="cb425-13"><a href="adding-covariates-to-a-linear-model.html#cb425-13"></a><span class="st">  </span><span class="kw">scale_color_manual</span>(<span class="dt">values =</span> pal_okabe_ito,</span>
-<span id="cb425-14"><a href="adding-covariates-to-a-linear-model.html#cb425-14"></a>                     <span class="dt">name =</span> <span class="ot">NULL</span>) <span class="op">+</span></span>
-<span id="cb425-15"><a href="adding-covariates-to-a-linear-model.html#cb425-15"></a><span class="st">  </span><span class="co"># scale_color_manual(values = pal_batlow,</span></span>
-<span id="cb425-16"><a href="adding-covariates-to-a-linear-model.html#cb425-16"></a><span class="st">  </span><span class="co">#   name = NULL) +</span></span>
-<span id="cb425-17"><a href="adding-covariates-to-a-linear-model.html#cb425-17"></a><span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;Area of necrosis (mg)&quot;</span>) <span class="op">+</span></span>
-<span id="cb425-18"><a href="adding-covariates-to-a-linear-model.html#cb425-18"></a><span class="st">  </span><span class="kw">xlab</span>(<span class="st">&quot;Area at risk (mg)&quot;</span>) <span class="op">+</span></span>
-<span id="cb425-19"><a href="adding-covariates-to-a-linear-model.html#cb425-19"></a><span class="st">  </span><span class="kw">theme_pander</span>() <span class="op">+</span></span>
-<span id="cb425-20"><a href="adding-covariates-to-a-linear-model.html#cb425-20"></a><span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position=</span><span class="st">&quot;bottom&quot;</span>) <span class="op">+</span></span>
-<span id="cb425-21"><a href="adding-covariates-to-a-linear-model.html#cb425-21"></a><span class="st">  </span><span class="ot">NULL</span></span>
-<span id="cb425-22"><a href="adding-covariates-to-a-linear-model.html#cb425-22"></a>gg</span></code></pre></div>
-<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/unnamed-chunk-239-1.png" width="576" /></p>
+<div class="sourceCode" id="cb435"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb435-1"><a href="adding-covariates-to-a-linear-model.html#cb435-1"></a><span class="co"># pal_batlow &lt;- scico(n, alpha = NULL, begin = 0, end = 1, direction = 1, palette = &quot;batlow&quot;)</span></span>
+<span id="cb435-2"><a href="adding-covariates-to-a-linear-model.html#cb435-2"></a></span>
+<span id="cb435-3"><a href="adding-covariates-to-a-linear-model.html#cb435-3"></a>m1 &lt;-<span class="st"> </span><span class="kw">lm</span>(area_of_necrosis <span class="op">~</span><span class="st"> </span>area_at_risk <span class="op">+</span><span class="st"> </span>treatment,</span>
+<span id="cb435-4"><a href="adding-covariates-to-a-linear-model.html#cb435-4"></a>         <span class="dt">data =</span> fig4h)</span>
+<span id="cb435-5"><a href="adding-covariates-to-a-linear-model.html#cb435-5"></a></span>
+<span id="cb435-6"><a href="adding-covariates-to-a-linear-model.html#cb435-6"></a>gg &lt;-<span class="st"> </span><span class="kw">ggplot</span>(fig4h, </span>
+<span id="cb435-7"><a href="adding-covariates-to-a-linear-model.html#cb435-7"></a>             <span class="kw">aes</span>(<span class="dt">x =</span> area_at_risk,</span>
+<span id="cb435-8"><a href="adding-covariates-to-a-linear-model.html#cb435-8"></a>                 <span class="dt">y =</span> area_of_necrosis,</span>
+<span id="cb435-9"><a href="adding-covariates-to-a-linear-model.html#cb435-9"></a>                 <span class="dt">color =</span> treatment)) <span class="op">+</span></span>
+<span id="cb435-10"><a href="adding-covariates-to-a-linear-model.html#cb435-10"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">color=</span>treatment)) <span class="op">+</span></span>
+<span id="cb435-11"><a href="adding-covariates-to-a-linear-model.html#cb435-11"></a><span class="st">  </span><span class="kw">geom_smooth</span>(<span class="dt">method =</span> <span class="st">&quot;lm&quot;</span>,</span>
+<span id="cb435-12"><a href="adding-covariates-to-a-linear-model.html#cb435-12"></a>              <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">y =</span> <span class="kw">predict</span>(m1, fig4h))) <span class="op">+</span></span>
+<span id="cb435-13"><a href="adding-covariates-to-a-linear-model.html#cb435-13"></a><span class="st">  </span><span class="kw">scale_color_manual</span>(<span class="dt">values =</span> pal_okabe_ito,</span>
+<span id="cb435-14"><a href="adding-covariates-to-a-linear-model.html#cb435-14"></a>                     <span class="dt">name =</span> <span class="ot">NULL</span>) <span class="op">+</span></span>
+<span id="cb435-15"><a href="adding-covariates-to-a-linear-model.html#cb435-15"></a><span class="st">  </span><span class="co"># scale_color_manual(values = pal_batlow,</span></span>
+<span id="cb435-16"><a href="adding-covariates-to-a-linear-model.html#cb435-16"></a><span class="st">  </span><span class="co">#   name = NULL) +</span></span>
+<span id="cb435-17"><a href="adding-covariates-to-a-linear-model.html#cb435-17"></a><span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;Area of necrosis (mg)&quot;</span>) <span class="op">+</span></span>
+<span id="cb435-18"><a href="adding-covariates-to-a-linear-model.html#cb435-18"></a><span class="st">  </span><span class="kw">xlab</span>(<span class="st">&quot;Area at risk (mg)&quot;</span>) <span class="op">+</span></span>
+<span id="cb435-19"><a href="adding-covariates-to-a-linear-model.html#cb435-19"></a><span class="st">  </span><span class="kw">theme_pander</span>() <span class="op">+</span></span>
+<span id="cb435-20"><a href="adding-covariates-to-a-linear-model.html#cb435-20"></a><span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position=</span><span class="st">&quot;bottom&quot;</span>) <span class="op">+</span></span>
+<span id="cb435-21"><a href="adding-covariates-to-a-linear-model.html#cb435-21"></a><span class="st">  </span><span class="ot">NULL</span></span>
+<span id="cb435-22"><a href="adding-covariates-to-a-linear-model.html#cb435-22"></a>gg</span></code></pre></div>
+<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/unnamed-chunk-240-1.png" width="576" /></p>
 </div>
 <div id="a-response-effects-plot-using-ggplot2" class="section level4">
 <h4><span class="header-section-number">14.5.4.3</span> A response-effects plot using ggplot2</h4>
-<div class="sourceCode" id="cb426"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb426-1"><a href="adding-covariates-to-a-linear-model.html#cb426-1"></a>m1 &lt;-<span class="st"> </span><span class="kw">lm</span>(area_of_necrosis <span class="op">~</span><span class="st"> </span>area_at_risk <span class="op">+</span><span class="st"> </span>treatment, <span class="dt">data =</span> fig4h)</span>
-<span id="cb426-2"><a href="adding-covariates-to-a-linear-model.html#cb426-2"></a>b &lt;-<span class="st"> </span><span class="kw">coef</span>(m1)</span>
-<span id="cb426-3"><a href="adding-covariates-to-a-linear-model.html#cb426-3"></a></span>
-<span id="cb426-4"><a href="adding-covariates-to-a-linear-model.html#cb426-4"></a>groups &lt;-<span class="st"> </span><span class="kw">levels</span>(fig4h<span class="op">$</span>treatment)</span>
-<span id="cb426-5"><a href="adding-covariates-to-a-linear-model.html#cb426-5"></a>line_data &lt;-<span class="st"> </span>fig4h[, .(<span class="dt">min_x =</span> <span class="kw">min</span>(area_at_risk),</span>
-<span id="cb426-6"><a href="adding-covariates-to-a-linear-model.html#cb426-6"></a>                       <span class="dt">max_x =</span> <span class="kw">max</span>(area_at_risk)), by =<span class="st"> </span>treatment]</span>
-<span id="cb426-7"><a href="adding-covariates-to-a-linear-model.html#cb426-7"></a>line_data[, dummy1 <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">ifelse</span>(treatment <span class="op">==</span><span class="st"> &quot;Myriocin&quot;</span>, <span class="dv">1</span>, <span class="dv">0</span>)]</span>
-<span id="cb426-8"><a href="adding-covariates-to-a-linear-model.html#cb426-8"></a>line_data[, dummy2 <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">ifelse</span>(treatment <span class="op">==</span><span class="st"> &quot;Myriocin + DoxSa&quot;</span>, <span class="dv">1</span>, <span class="dv">0</span>)]</span>
-<span id="cb426-9"><a href="adding-covariates-to-a-linear-model.html#cb426-9"></a></span>
-<span id="cb426-10"><a href="adding-covariates-to-a-linear-model.html#cb426-10"></a>line_data[, y_min <span class="op">:</span><span class="er">=</span><span class="st"> </span>b[<span class="dv">1</span>] <span class="op">+</span><span class="st"> </span>b[<span class="dv">2</span>]<span class="op">*</span>min_x <span class="op">+</span><span class="st"> </span>b[<span class="dv">3</span>]<span class="op">*</span>dummy1 <span class="op">+</span><span class="st"> </span>b[<span class="dv">4</span>]<span class="op">*</span>dummy2]</span>
-<span id="cb426-11"><a href="adding-covariates-to-a-linear-model.html#cb426-11"></a>line_data[, y_max <span class="op">:</span><span class="er">=</span><span class="st"> </span>b[<span class="dv">1</span>] <span class="op">+</span><span class="st"> </span>b[<span class="dv">2</span>]<span class="op">*</span>max_x <span class="op">+</span><span class="st"> </span>b[<span class="dv">3</span>]<span class="op">*</span>dummy1 <span class="op">+</span><span class="st"> </span>b[<span class="dv">4</span>]<span class="op">*</span>dummy2]</span>
-<span id="cb426-12"><a href="adding-covariates-to-a-linear-model.html#cb426-12"></a></span>
-<span id="cb426-13"><a href="adding-covariates-to-a-linear-model.html#cb426-13"></a>gg_response &lt;-<span class="st"> </span><span class="kw">ggplot</span>(<span class="dt">data =</span> fig4h,</span>
-<span id="cb426-14"><a href="adding-covariates-to-a-linear-model.html#cb426-14"></a>                      <span class="kw">aes</span>(<span class="dt">x =</span> area_at_risk,</span>
-<span id="cb426-15"><a href="adding-covariates-to-a-linear-model.html#cb426-15"></a>                          <span class="dt">y =</span> area_of_necrosis,</span>
-<span id="cb426-16"><a href="adding-covariates-to-a-linear-model.html#cb426-16"></a>                          <span class="dt">color =</span> treatment)) <span class="op">+</span></span>
-<span id="cb426-17"><a href="adding-covariates-to-a-linear-model.html#cb426-17"></a><span class="st">  </span><span class="co"># points</span></span>
-<span id="cb426-18"><a href="adding-covariates-to-a-linear-model.html#cb426-18"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">size =</span> <span class="dv">2</span>) <span class="op">+</span></span>
-<span id="cb426-19"><a href="adding-covariates-to-a-linear-model.html#cb426-19"></a><span class="st">  </span></span>
-<span id="cb426-20"><a href="adding-covariates-to-a-linear-model.html#cb426-20"></a><span class="st">  </span><span class="kw">geom_segment</span>(<span class="dt">data =</span> line_data,</span>
-<span id="cb426-21"><a href="adding-covariates-to-a-linear-model.html#cb426-21"></a>               <span class="kw">aes</span>(<span class="dt">x =</span> min_x,</span>
-<span id="cb426-22"><a href="adding-covariates-to-a-linear-model.html#cb426-22"></a>                   <span class="dt">y =</span> y_min,</span>
-<span id="cb426-23"><a href="adding-covariates-to-a-linear-model.html#cb426-23"></a>                   <span class="dt">xend =</span> max_x,</span>
-<span id="cb426-24"><a href="adding-covariates-to-a-linear-model.html#cb426-24"></a>                   <span class="dt">yend =</span> y_max)) <span class="op">+</span></span>
-<span id="cb426-25"><a href="adding-covariates-to-a-linear-model.html#cb426-25"></a><span class="st">  </span><span class="kw">scale_color_manual</span>(<span class="dt">values =</span> pal_okabe_ito,</span>
-<span id="cb426-26"><a href="adding-covariates-to-a-linear-model.html#cb426-26"></a>                     <span class="dt">name =</span> <span class="ot">NULL</span>) <span class="op">+</span></span>
-<span id="cb426-27"><a href="adding-covariates-to-a-linear-model.html#cb426-27"></a><span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;Area of necrosis (mg)&quot;</span>) <span class="op">+</span></span>
-<span id="cb426-28"><a href="adding-covariates-to-a-linear-model.html#cb426-28"></a><span class="st">  </span><span class="kw">xlab</span>(<span class="st">&quot;Area at risk (mg)&quot;</span>) <span class="op">+</span></span>
-<span id="cb426-29"><a href="adding-covariates-to-a-linear-model.html#cb426-29"></a><span class="st">  </span><span class="kw">theme_pubr</span>() <span class="op">+</span></span>
-<span id="cb426-30"><a href="adding-covariates-to-a-linear-model.html#cb426-30"></a><span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position=</span><span class="st">&quot;bottom&quot;</span>) <span class="op">+</span></span>
-<span id="cb426-31"><a href="adding-covariates-to-a-linear-model.html#cb426-31"></a></span>
-<span id="cb426-32"><a href="adding-covariates-to-a-linear-model.html#cb426-32"></a><span class="st">  </span><span class="ot">NULL</span></span>
-<span id="cb426-33"><a href="adding-covariates-to-a-linear-model.html#cb426-33"></a><span class="co">#gg_response</span></span></code></pre></div>
-<div class="sourceCode" id="cb427"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb427-1"><a href="adding-covariates-to-a-linear-model.html#cb427-1"></a>m1_emm &lt;-<span class="st"> </span><span class="kw">emmeans</span>(m1, <span class="dt">specs =</span> <span class="st">&quot;treatment&quot;</span>)</span>
-<span id="cb427-2"><a href="adding-covariates-to-a-linear-model.html#cb427-2"></a>m1_pairs &lt;-<span class="st"> </span><span class="kw">contrast</span>(m1_emm,</span>
-<span id="cb427-3"><a href="adding-covariates-to-a-linear-model.html#cb427-3"></a>                     <span class="dt">method =</span> <span class="st">&quot;revpairwise&quot;</span>,</span>
-<span id="cb427-4"><a href="adding-covariates-to-a-linear-model.html#cb427-4"></a>                     <span class="dt">adjust =</span> <span class="st">&quot;none&quot;</span>) <span class="op">%&gt;%</span></span>
-<span id="cb427-5"><a href="adding-covariates-to-a-linear-model.html#cb427-5"></a><span class="st">  </span><span class="kw">summary</span>(<span class="dt">infer =</span> <span class="ot">TRUE</span>) <span class="op">%&gt;%</span></span>
-<span id="cb427-6"><a href="adding-covariates-to-a-linear-model.html#cb427-6"></a><span class="st">  </span><span class="kw">data.table</span>()</span>
-<span id="cb427-7"><a href="adding-covariates-to-a-linear-model.html#cb427-7"></a><span class="co"># pvalString is from package lazyWeave</span></span>
-<span id="cb427-8"><a href="adding-covariates-to-a-linear-model.html#cb427-8"></a>m1_pairs[ , p_pretty <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">pvalString</span>(p.value)]</span>
-<span id="cb427-9"><a href="adding-covariates-to-a-linear-model.html#cb427-9"></a><span class="co"># also create a column with &quot;p-val: &quot;</span></span>
-<span id="cb427-10"><a href="adding-covariates-to-a-linear-model.html#cb427-10"></a>m1_pairs[ , pval_pretty <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">paste</span>(<span class="st">&quot;p = &quot;</span>, p_pretty)]</span>
-<span id="cb427-11"><a href="adding-covariates-to-a-linear-model.html#cb427-11"></a></span>
-<span id="cb427-12"><a href="adding-covariates-to-a-linear-model.html#cb427-12"></a>contrast_order &lt;-<span class="st"> </span>m1_pairs[, contrast]</span>
-<span id="cb427-13"><a href="adding-covariates-to-a-linear-model.html#cb427-13"></a>m1_pairs[, contrast <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">factor</span>(contrast, contrast_order)]</span>
-<span id="cb427-14"><a href="adding-covariates-to-a-linear-model.html#cb427-14"></a></span>
-<span id="cb427-15"><a href="adding-covariates-to-a-linear-model.html#cb427-15"></a>gg_effect &lt;-<span class="st"> </span><span class="kw">ggplot</span>(<span class="dt">data =</span> m1_pairs, </span>
-<span id="cb427-16"><a href="adding-covariates-to-a-linear-model.html#cb427-16"></a>                    <span class="kw">aes</span>(<span class="dt">y =</span> contrast,</span>
-<span id="cb427-17"><a href="adding-covariates-to-a-linear-model.html#cb427-17"></a>                        <span class="dt">x =</span> estimate)) <span class="op">+</span></span>
-<span id="cb427-18"><a href="adding-covariates-to-a-linear-model.html#cb427-18"></a><span class="st">  </span><span class="co"># confidence level of effect</span></span>
-<span id="cb427-19"><a href="adding-covariates-to-a-linear-model.html#cb427-19"></a><span class="st">  </span><span class="kw">geom_errorbar</span>(<span class="kw">aes</span>(<span class="dt">xmin =</span> lower.CL, </span>
-<span id="cb427-20"><a href="adding-covariates-to-a-linear-model.html#cb427-20"></a>                    <span class="dt">xmax =</span> upper.CL),</span>
-<span id="cb427-21"><a href="adding-covariates-to-a-linear-model.html#cb427-21"></a>                <span class="dt">width =</span> <span class="dv">0</span>, </span>
-<span id="cb427-22"><a href="adding-covariates-to-a-linear-model.html#cb427-22"></a>                <span class="dt">color =</span> <span class="st">&quot;black&quot;</span>) <span class="op">+</span></span>
-<span id="cb427-23"><a href="adding-covariates-to-a-linear-model.html#cb427-23"></a><span class="st">  </span><span class="co"># estimate of effect</span></span>
-<span id="cb427-24"><a href="adding-covariates-to-a-linear-model.html#cb427-24"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">size =</span> <span class="dv">3</span>) <span class="op">+</span></span>
-<span id="cb427-25"><a href="adding-covariates-to-a-linear-model.html#cb427-25"></a><span class="st">  </span></span>
-<span id="cb427-26"><a href="adding-covariates-to-a-linear-model.html#cb427-26"></a><span class="st">  </span><span class="co"># draw a line at effect = 0</span></span>
-<span id="cb427-27"><a href="adding-covariates-to-a-linear-model.html#cb427-27"></a><span class="st">  </span><span class="kw">geom_vline</span>(<span class="dt">xintercept =</span> <span class="dv">0</span>, <span class="dt">linetype =</span> <span class="dv">2</span>) <span class="op">+</span></span>
-<span id="cb427-28"><a href="adding-covariates-to-a-linear-model.html#cb427-28"></a><span class="st">  </span></span>
-<span id="cb427-29"><a href="adding-covariates-to-a-linear-model.html#cb427-29"></a><span class="st">  </span><span class="co"># p-value. The y coordinates are set by eye</span></span>
-<span id="cb427-30"><a href="adding-covariates-to-a-linear-model.html#cb427-30"></a><span class="st">  </span><span class="kw">annotate</span>(<span class="dt">geom =</span> <span class="st">&quot;text&quot;</span>,</span>
-<span id="cb427-31"><a href="adding-covariates-to-a-linear-model.html#cb427-31"></a>           <span class="dt">label =</span> m1_pairs<span class="op">$</span>pval_pretty,</span>
-<span id="cb427-32"><a href="adding-covariates-to-a-linear-model.html#cb427-32"></a>           <span class="dt">y =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">3</span>,</span>
-<span id="cb427-33"><a href="adding-covariates-to-a-linear-model.html#cb427-33"></a>           <span class="dt">x =</span> <span class="fl">4.5</span>) <span class="op">+</span></span>
-<span id="cb427-34"><a href="adding-covariates-to-a-linear-model.html#cb427-34"></a><span class="st">  </span></span>
-<span id="cb427-35"><a href="adding-covariates-to-a-linear-model.html#cb427-35"></a><span class="st">  </span><span class="co"># x-axis label and aesthetics</span></span>
-<span id="cb427-36"><a href="adding-covariates-to-a-linear-model.html#cb427-36"></a><span class="st">  </span><span class="kw">xlab</span>(<span class="st">&quot;Effect (mg)&quot;</span>) <span class="op">+</span></span>
-<span id="cb427-37"><a href="adding-covariates-to-a-linear-model.html#cb427-37"></a><span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;Contrast&quot;</span>) <span class="op">+</span></span>
-<span id="cb427-38"><a href="adding-covariates-to-a-linear-model.html#cb427-38"></a><span class="st">  </span><span class="kw">coord_cartesian</span>(<span class="dt">xlim =</span> <span class="kw">c</span>(<span class="op">-</span><span class="dv">8</span>,<span class="fl">5.5</span>)) <span class="op">+</span></span>
-<span id="cb427-39"><a href="adding-covariates-to-a-linear-model.html#cb427-39"></a><span class="st">  </span><span class="kw">scale_x_continuous</span>(<span class="dt">position=</span><span class="st">&quot;top&quot;</span>) <span class="op">+</span></span>
-<span id="cb427-40"><a href="adding-covariates-to-a-linear-model.html#cb427-40"></a><span class="st">  </span></span>
-<span id="cb427-41"><a href="adding-covariates-to-a-linear-model.html#cb427-41"></a><span class="st">  </span><span class="kw">theme_pubr</span>() <span class="op">+</span></span>
-<span id="cb427-42"><a href="adding-covariates-to-a-linear-model.html#cb427-42"></a><span class="st">  </span><span class="co"># theme(axis.title.x = element_blank()) +</span></span>
-<span id="cb427-43"><a href="adding-covariates-to-a-linear-model.html#cb427-43"></a><span class="st">  </span></span>
-<span id="cb427-44"><a href="adding-covariates-to-a-linear-model.html#cb427-44"></a><span class="st">  </span><span class="ot">NULL</span></span>
-<span id="cb427-45"><a href="adding-covariates-to-a-linear-model.html#cb427-45"></a><span class="co"># gg_effect</span></span></code></pre></div>
-<div class="sourceCode" id="cb428"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb428-1"><a href="adding-covariates-to-a-linear-model.html#cb428-1"></a>gg &lt;-<span class="st"> </span><span class="kw">plot_grid</span>(gg_effect,</span>
-<span id="cb428-2"><a href="adding-covariates-to-a-linear-model.html#cb428-2"></a>                gg_response,</span>
-<span id="cb428-3"><a href="adding-covariates-to-a-linear-model.html#cb428-3"></a>                <span class="dt">nrow=</span><span class="dv">2</span>,</span>
-<span id="cb428-4"><a href="adding-covariates-to-a-linear-model.html#cb428-4"></a>                <span class="dt">align =</span> <span class="st">&quot;v&quot;</span>,</span>
-<span id="cb428-5"><a href="adding-covariates-to-a-linear-model.html#cb428-5"></a>                <span class="dt">axis =</span> <span class="st">&quot;rl&quot;</span>,</span>
-<span id="cb428-6"><a href="adding-covariates-to-a-linear-model.html#cb428-6"></a>                <span class="dt">rel_heights =</span> <span class="kw">c</span>(<span class="fl">0.35</span>, <span class="dv">1</span>)</span>
-<span id="cb428-7"><a href="adding-covariates-to-a-linear-model.html#cb428-7"></a>                )</span>
-<span id="cb428-8"><a href="adding-covariates-to-a-linear-model.html#cb428-8"></a>gg</span></code></pre></div>
-<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/unnamed-chunk-242-1.png" width="576" /></p>
+<div class="sourceCode" id="cb436"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb436-1"><a href="adding-covariates-to-a-linear-model.html#cb436-1"></a>m1 &lt;-<span class="st"> </span><span class="kw">lm</span>(area_of_necrosis <span class="op">~</span><span class="st"> </span>area_at_risk <span class="op">+</span><span class="st"> </span>treatment, <span class="dt">data =</span> fig4h)</span>
+<span id="cb436-2"><a href="adding-covariates-to-a-linear-model.html#cb436-2"></a>b &lt;-<span class="st"> </span><span class="kw">coef</span>(m1)</span>
+<span id="cb436-3"><a href="adding-covariates-to-a-linear-model.html#cb436-3"></a></span>
+<span id="cb436-4"><a href="adding-covariates-to-a-linear-model.html#cb436-4"></a>groups &lt;-<span class="st"> </span><span class="kw">levels</span>(fig4h<span class="op">$</span>treatment)</span>
+<span id="cb436-5"><a href="adding-covariates-to-a-linear-model.html#cb436-5"></a>line_data &lt;-<span class="st"> </span>fig4h[, .(<span class="dt">min_x =</span> <span class="kw">min</span>(area_at_risk),</span>
+<span id="cb436-6"><a href="adding-covariates-to-a-linear-model.html#cb436-6"></a>                       <span class="dt">max_x =</span> <span class="kw">max</span>(area_at_risk)), by =<span class="st"> </span>treatment]</span>
+<span id="cb436-7"><a href="adding-covariates-to-a-linear-model.html#cb436-7"></a>line_data[, dummy1 <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">ifelse</span>(treatment <span class="op">==</span><span class="st"> &quot;Myriocin&quot;</span>, <span class="dv">1</span>, <span class="dv">0</span>)]</span>
+<span id="cb436-8"><a href="adding-covariates-to-a-linear-model.html#cb436-8"></a>line_data[, dummy2 <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">ifelse</span>(treatment <span class="op">==</span><span class="st"> &quot;Myriocin + DoxSa&quot;</span>, <span class="dv">1</span>, <span class="dv">0</span>)]</span>
+<span id="cb436-9"><a href="adding-covariates-to-a-linear-model.html#cb436-9"></a></span>
+<span id="cb436-10"><a href="adding-covariates-to-a-linear-model.html#cb436-10"></a>line_data[, y_min <span class="op">:</span><span class="er">=</span><span class="st"> </span>b[<span class="dv">1</span>] <span class="op">+</span><span class="st"> </span>b[<span class="dv">2</span>]<span class="op">*</span>min_x <span class="op">+</span><span class="st"> </span>b[<span class="dv">3</span>]<span class="op">*</span>dummy1 <span class="op">+</span><span class="st"> </span>b[<span class="dv">4</span>]<span class="op">*</span>dummy2]</span>
+<span id="cb436-11"><a href="adding-covariates-to-a-linear-model.html#cb436-11"></a>line_data[, y_max <span class="op">:</span><span class="er">=</span><span class="st"> </span>b[<span class="dv">1</span>] <span class="op">+</span><span class="st"> </span>b[<span class="dv">2</span>]<span class="op">*</span>max_x <span class="op">+</span><span class="st"> </span>b[<span class="dv">3</span>]<span class="op">*</span>dummy1 <span class="op">+</span><span class="st"> </span>b[<span class="dv">4</span>]<span class="op">*</span>dummy2]</span>
+<span id="cb436-12"><a href="adding-covariates-to-a-linear-model.html#cb436-12"></a></span>
+<span id="cb436-13"><a href="adding-covariates-to-a-linear-model.html#cb436-13"></a>gg_response &lt;-<span class="st"> </span><span class="kw">ggplot</span>(<span class="dt">data =</span> fig4h,</span>
+<span id="cb436-14"><a href="adding-covariates-to-a-linear-model.html#cb436-14"></a>                      <span class="kw">aes</span>(<span class="dt">x =</span> area_at_risk,</span>
+<span id="cb436-15"><a href="adding-covariates-to-a-linear-model.html#cb436-15"></a>                          <span class="dt">y =</span> area_of_necrosis,</span>
+<span id="cb436-16"><a href="adding-covariates-to-a-linear-model.html#cb436-16"></a>                          <span class="dt">color =</span> treatment)) <span class="op">+</span></span>
+<span id="cb436-17"><a href="adding-covariates-to-a-linear-model.html#cb436-17"></a><span class="st">  </span><span class="co"># points</span></span>
+<span id="cb436-18"><a href="adding-covariates-to-a-linear-model.html#cb436-18"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">size =</span> <span class="dv">2</span>) <span class="op">+</span></span>
+<span id="cb436-19"><a href="adding-covariates-to-a-linear-model.html#cb436-19"></a><span class="st">  </span></span>
+<span id="cb436-20"><a href="adding-covariates-to-a-linear-model.html#cb436-20"></a><span class="st">  </span><span class="kw">geom_segment</span>(<span class="dt">data =</span> line_data,</span>
+<span id="cb436-21"><a href="adding-covariates-to-a-linear-model.html#cb436-21"></a>               <span class="kw">aes</span>(<span class="dt">x =</span> min_x,</span>
+<span id="cb436-22"><a href="adding-covariates-to-a-linear-model.html#cb436-22"></a>                   <span class="dt">y =</span> y_min,</span>
+<span id="cb436-23"><a href="adding-covariates-to-a-linear-model.html#cb436-23"></a>                   <span class="dt">xend =</span> max_x,</span>
+<span id="cb436-24"><a href="adding-covariates-to-a-linear-model.html#cb436-24"></a>                   <span class="dt">yend =</span> y_max)) <span class="op">+</span></span>
+<span id="cb436-25"><a href="adding-covariates-to-a-linear-model.html#cb436-25"></a><span class="st">  </span><span class="kw">scale_color_manual</span>(<span class="dt">values =</span> pal_okabe_ito,</span>
+<span id="cb436-26"><a href="adding-covariates-to-a-linear-model.html#cb436-26"></a>                     <span class="dt">name =</span> <span class="ot">NULL</span>) <span class="op">+</span></span>
+<span id="cb436-27"><a href="adding-covariates-to-a-linear-model.html#cb436-27"></a><span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;Area of necrosis (mg)&quot;</span>) <span class="op">+</span></span>
+<span id="cb436-28"><a href="adding-covariates-to-a-linear-model.html#cb436-28"></a><span class="st">  </span><span class="kw">xlab</span>(<span class="st">&quot;Area at risk (mg)&quot;</span>) <span class="op">+</span></span>
+<span id="cb436-29"><a href="adding-covariates-to-a-linear-model.html#cb436-29"></a><span class="st">  </span><span class="kw">theme_pubr</span>() <span class="op">+</span></span>
+<span id="cb436-30"><a href="adding-covariates-to-a-linear-model.html#cb436-30"></a><span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position=</span><span class="st">&quot;bottom&quot;</span>) <span class="op">+</span></span>
+<span id="cb436-31"><a href="adding-covariates-to-a-linear-model.html#cb436-31"></a></span>
+<span id="cb436-32"><a href="adding-covariates-to-a-linear-model.html#cb436-32"></a><span class="st">  </span><span class="ot">NULL</span></span>
+<span id="cb436-33"><a href="adding-covariates-to-a-linear-model.html#cb436-33"></a><span class="co">#gg_response</span></span></code></pre></div>
+<div class="sourceCode" id="cb437"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb437-1"><a href="adding-covariates-to-a-linear-model.html#cb437-1"></a>m1_emm &lt;-<span class="st"> </span><span class="kw">emmeans</span>(m1, <span class="dt">specs =</span> <span class="st">&quot;treatment&quot;</span>)</span>
+<span id="cb437-2"><a href="adding-covariates-to-a-linear-model.html#cb437-2"></a>m1_pairs &lt;-<span class="st"> </span><span class="kw">contrast</span>(m1_emm,</span>
+<span id="cb437-3"><a href="adding-covariates-to-a-linear-model.html#cb437-3"></a>                     <span class="dt">method =</span> <span class="st">&quot;revpairwise&quot;</span>,</span>
+<span id="cb437-4"><a href="adding-covariates-to-a-linear-model.html#cb437-4"></a>                     <span class="dt">adjust =</span> <span class="st">&quot;none&quot;</span>) <span class="op">%&gt;%</span></span>
+<span id="cb437-5"><a href="adding-covariates-to-a-linear-model.html#cb437-5"></a><span class="st">  </span><span class="kw">summary</span>(<span class="dt">infer =</span> <span class="ot">TRUE</span>) <span class="op">%&gt;%</span></span>
+<span id="cb437-6"><a href="adding-covariates-to-a-linear-model.html#cb437-6"></a><span class="st">  </span><span class="kw">data.table</span>()</span>
+<span id="cb437-7"><a href="adding-covariates-to-a-linear-model.html#cb437-7"></a><span class="co"># pvalString is from package lazyWeave</span></span>
+<span id="cb437-8"><a href="adding-covariates-to-a-linear-model.html#cb437-8"></a>m1_pairs[ , p_pretty <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">pvalString</span>(p.value)]</span>
+<span id="cb437-9"><a href="adding-covariates-to-a-linear-model.html#cb437-9"></a><span class="co"># also create a column with &quot;p-val: &quot;</span></span>
+<span id="cb437-10"><a href="adding-covariates-to-a-linear-model.html#cb437-10"></a>m1_pairs[ , pval_pretty <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">paste</span>(<span class="st">&quot;p = &quot;</span>, p_pretty)]</span>
+<span id="cb437-11"><a href="adding-covariates-to-a-linear-model.html#cb437-11"></a></span>
+<span id="cb437-12"><a href="adding-covariates-to-a-linear-model.html#cb437-12"></a>contrast_order &lt;-<span class="st"> </span>m1_pairs[, contrast]</span>
+<span id="cb437-13"><a href="adding-covariates-to-a-linear-model.html#cb437-13"></a>m1_pairs[, contrast <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">factor</span>(contrast, contrast_order)]</span>
+<span id="cb437-14"><a href="adding-covariates-to-a-linear-model.html#cb437-14"></a></span>
+<span id="cb437-15"><a href="adding-covariates-to-a-linear-model.html#cb437-15"></a>gg_effect &lt;-<span class="st"> </span><span class="kw">ggplot</span>(<span class="dt">data =</span> m1_pairs, </span>
+<span id="cb437-16"><a href="adding-covariates-to-a-linear-model.html#cb437-16"></a>                    <span class="kw">aes</span>(<span class="dt">y =</span> contrast,</span>
+<span id="cb437-17"><a href="adding-covariates-to-a-linear-model.html#cb437-17"></a>                        <span class="dt">x =</span> estimate)) <span class="op">+</span></span>
+<span id="cb437-18"><a href="adding-covariates-to-a-linear-model.html#cb437-18"></a><span class="st">  </span><span class="co"># confidence level of effect</span></span>
+<span id="cb437-19"><a href="adding-covariates-to-a-linear-model.html#cb437-19"></a><span class="st">  </span><span class="kw">geom_errorbar</span>(<span class="kw">aes</span>(<span class="dt">xmin =</span> lower.CL, </span>
+<span id="cb437-20"><a href="adding-covariates-to-a-linear-model.html#cb437-20"></a>                    <span class="dt">xmax =</span> upper.CL),</span>
+<span id="cb437-21"><a href="adding-covariates-to-a-linear-model.html#cb437-21"></a>                <span class="dt">width =</span> <span class="dv">0</span>, </span>
+<span id="cb437-22"><a href="adding-covariates-to-a-linear-model.html#cb437-22"></a>                <span class="dt">color =</span> <span class="st">&quot;black&quot;</span>) <span class="op">+</span></span>
+<span id="cb437-23"><a href="adding-covariates-to-a-linear-model.html#cb437-23"></a><span class="st">  </span><span class="co"># estimate of effect</span></span>
+<span id="cb437-24"><a href="adding-covariates-to-a-linear-model.html#cb437-24"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">size =</span> <span class="dv">3</span>) <span class="op">+</span></span>
+<span id="cb437-25"><a href="adding-covariates-to-a-linear-model.html#cb437-25"></a><span class="st">  </span></span>
+<span id="cb437-26"><a href="adding-covariates-to-a-linear-model.html#cb437-26"></a><span class="st">  </span><span class="co"># draw a line at effect = 0</span></span>
+<span id="cb437-27"><a href="adding-covariates-to-a-linear-model.html#cb437-27"></a><span class="st">  </span><span class="kw">geom_vline</span>(<span class="dt">xintercept =</span> <span class="dv">0</span>, <span class="dt">linetype =</span> <span class="dv">2</span>) <span class="op">+</span></span>
+<span id="cb437-28"><a href="adding-covariates-to-a-linear-model.html#cb437-28"></a><span class="st">  </span></span>
+<span id="cb437-29"><a href="adding-covariates-to-a-linear-model.html#cb437-29"></a><span class="st">  </span><span class="co"># p-value. The y coordinates are set by eye</span></span>
+<span id="cb437-30"><a href="adding-covariates-to-a-linear-model.html#cb437-30"></a><span class="st">  </span><span class="kw">annotate</span>(<span class="dt">geom =</span> <span class="st">&quot;text&quot;</span>,</span>
+<span id="cb437-31"><a href="adding-covariates-to-a-linear-model.html#cb437-31"></a>           <span class="dt">label =</span> m1_pairs<span class="op">$</span>pval_pretty,</span>
+<span id="cb437-32"><a href="adding-covariates-to-a-linear-model.html#cb437-32"></a>           <span class="dt">y =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">3</span>,</span>
+<span id="cb437-33"><a href="adding-covariates-to-a-linear-model.html#cb437-33"></a>           <span class="dt">x =</span> <span class="fl">4.5</span>) <span class="op">+</span></span>
+<span id="cb437-34"><a href="adding-covariates-to-a-linear-model.html#cb437-34"></a><span class="st">  </span></span>
+<span id="cb437-35"><a href="adding-covariates-to-a-linear-model.html#cb437-35"></a><span class="st">  </span><span class="co"># x-axis label and aesthetics</span></span>
+<span id="cb437-36"><a href="adding-covariates-to-a-linear-model.html#cb437-36"></a><span class="st">  </span><span class="kw">xlab</span>(<span class="st">&quot;Effect (mg)&quot;</span>) <span class="op">+</span></span>
+<span id="cb437-37"><a href="adding-covariates-to-a-linear-model.html#cb437-37"></a><span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;Contrast&quot;</span>) <span class="op">+</span></span>
+<span id="cb437-38"><a href="adding-covariates-to-a-linear-model.html#cb437-38"></a><span class="st">  </span><span class="kw">coord_cartesian</span>(<span class="dt">xlim =</span> <span class="kw">c</span>(<span class="op">-</span><span class="dv">8</span>,<span class="fl">5.5</span>)) <span class="op">+</span></span>
+<span id="cb437-39"><a href="adding-covariates-to-a-linear-model.html#cb437-39"></a><span class="st">  </span><span class="kw">scale_x_continuous</span>(<span class="dt">position=</span><span class="st">&quot;top&quot;</span>) <span class="op">+</span></span>
+<span id="cb437-40"><a href="adding-covariates-to-a-linear-model.html#cb437-40"></a><span class="st">  </span></span>
+<span id="cb437-41"><a href="adding-covariates-to-a-linear-model.html#cb437-41"></a><span class="st">  </span><span class="kw">theme_pubr</span>() <span class="op">+</span></span>
+<span id="cb437-42"><a href="adding-covariates-to-a-linear-model.html#cb437-42"></a><span class="st">  </span><span class="co"># theme(axis.title.x = element_blank()) +</span></span>
+<span id="cb437-43"><a href="adding-covariates-to-a-linear-model.html#cb437-43"></a><span class="st">  </span></span>
+<span id="cb437-44"><a href="adding-covariates-to-a-linear-model.html#cb437-44"></a><span class="st">  </span><span class="ot">NULL</span></span>
+<span id="cb437-45"><a href="adding-covariates-to-a-linear-model.html#cb437-45"></a><span class="co"># gg_effect</span></span></code></pre></div>
+<div class="sourceCode" id="cb438"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb438-1"><a href="adding-covariates-to-a-linear-model.html#cb438-1"></a>gg &lt;-<span class="st"> </span><span class="kw">plot_grid</span>(gg_effect,</span>
+<span id="cb438-2"><a href="adding-covariates-to-a-linear-model.html#cb438-2"></a>                gg_response,</span>
+<span id="cb438-3"><a href="adding-covariates-to-a-linear-model.html#cb438-3"></a>                <span class="dt">nrow=</span><span class="dv">2</span>,</span>
+<span id="cb438-4"><a href="adding-covariates-to-a-linear-model.html#cb438-4"></a>                <span class="dt">align =</span> <span class="st">&quot;v&quot;</span>,</span>
+<span id="cb438-5"><a href="adding-covariates-to-a-linear-model.html#cb438-5"></a>                <span class="dt">axis =</span> <span class="st">&quot;rl&quot;</span>,</span>
+<span id="cb438-6"><a href="adding-covariates-to-a-linear-model.html#cb438-6"></a>                <span class="dt">rel_heights =</span> <span class="kw">c</span>(<span class="fl">0.35</span>, <span class="dv">1</span>)</span>
+<span id="cb438-7"><a href="adding-covariates-to-a-linear-model.html#cb438-7"></a>                )</span>
+<span id="cb438-8"><a href="adding-covariates-to-a-linear-model.html#cb438-8"></a>gg</span></code></pre></div>
+<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/unnamed-chunk-243-1.png" width="576" /></p>
 </div>
 </div>
 </div>
