@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Chapter 1 Getting Started – R Projects and R Markdown | Elements of Statistical Modeling for Experimental Biology</title>
+  <title>Chapter 5 Variability and Uncertainty (Standard Deviations, Standard Errors, Confidence Intervals) (#variability) | Elements of Statistical Modeling for Experimental Biology</title>
   <meta name="description" content="A first course in statistical modeling for experimental biology researchers" />
   <meta name="generator" content="bookdown 0.14 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Chapter 1 Getting Started – R Projects and R Markdown | Elements of Statistical Modeling for Experimental Biology" />
+  <meta property="og:title" content="Chapter 5 Variability and Uncertainty (Standard Deviations, Standard Errors, Confidence Intervals) (#variability) | Elements of Statistical Modeling for Experimental Biology" />
   <meta property="og:type" content="book" />
   
   
@@ -16,7 +16,7 @@
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Chapter 1 Getting Started – R Projects and R Markdown | Elements of Statistical Modeling for Experimental Biology" />
+  <meta name="twitter:title" content="Chapter 5 Variability and Uncertainty (Standard Deviations, Standard Errors, Confidence Intervals) (#variability) | Elements of Statistical Modeling for Experimental Biology" />
   
   <meta name="twitter:description" content="A first course in statistical modeling for experimental biology researchers" />
   
@@ -30,8 +30,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="part-i-getting-started.html"/>
-<link rel="next" href="analyzing-experimental-data-with-a-linear-model.html"/>
+<link rel="prev" href="part-iv-some-fundamentals-of-statistical-modeling.html"/>
+<link rel="next" href="p-values.html"/>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -627,251 +627,264 @@ code span.wa { color: #bf0303; } /* Warning */
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="getting-started-r-projects-and-r-markdown" class="section level1">
-<h1><span class="header-section-number">Chapter 1</span> Getting Started – R Projects and R Markdown</h1>
-<p>A typical statistical modeling project will consist of:</p>
+<div id="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals-variability" class="section level1">
+<h1><span class="header-section-number">Chapter 5</span> Variability and Uncertainty (Standard Deviations, Standard Errors, Confidence Intervals) (#variability)</h1>
+<p><strong>Uncertainty</strong> is the stuff of science. A major goal of statistics is measuring uncertainty. What do we mean by uncertainty? Uncertainty is the error in estimating a parameter, such as the mean of a sample, or the difference in means between two experimental treatments, or the predicted response given a certain change in conditions. Uncertainty is measured with a <strong>variance</strong> or its square root, which is a <strong>standard deviation</strong>. The standard deviation of a statistic is also (and more commonly) called a <strong>standard error</strong>.</p>
+<p>Uncertainty emerges because of variability. In any introductory statistics class, students are introduced to two measures of variability, the “standard deviation” and the “standard error.” These terms are absolutely fundamental to statistics – they are the start of everything else. Yet, many biology researchers confuse these terms and certainly, introductory students do too.</p>
+<p>When a research biologist uses the term “standard deviation,” they are probably referring to the sample standard deviation which is a measure of the variability of a sample. When a research biologist uses the term “standard error,” they are probably referring to the standard error of a mean, but it could be the standard error of another statistics, such as a difference between means or a regression slope. An important point to remember and understand is that all standard errors <em>are</em> standard deviations. This will make more sense soon.</p>
+<div id="the-sample-standard-deviation-vs.-the-standard-error-of-the-mean" class="section level2">
+<h2><span class="header-section-number">5.1</span> The sample standard deviation vs. the standard error of the mean</h2>
+<p>A standard deviation is the square root of the sampling variance.</p>
+<div id="sample-standard-deviation" class="section level3">
+<h3><span class="header-section-number">5.1.1</span> Sample standard deviation</h3>
+<p>The sample standard deviation is a measure of the variability of a sample. For example, were we to look at a histological section of skeletal muscle we would see that the diameter of the fibers (the muscle cells) is variable. We could use imaging software to measure the diameter of a sample of 100 cells and get a <strong>distribution</strong> like this</p>
+<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/histogram-1.png" width="576" /></p>
+<p>The mean of this sample is 69.4µm and the standard deviation is 2.8 µm. The standard deviation is the square root of the variance, and so computed by</p>
+<p><span class="math display" id="eq:variance">\[\begin{equation}
+s_y = \sqrt{\frac{\sum_{i=1}^n{(y_i - \overline{y})^2}}{n-1}}
+\tag{5.1}
+\end{equation}\]</span></p>
+<p>Memorize this equation. To understand the logic of this measure of variability, note that <span class="math inline">\(y_i - \overline{y}\)</span> is the <strong>deviation</strong> of the <span class="math inline">\(i\)</span>th value from the sample mean, so the numerator is the sum of squared deviations. The numerator is a sum over <span class="math inline">\(n\)</span> items and the denominator is <span class="math inline">\(n-1\)</span> so the variance is (almost!) an averaged squared deviation. More variable samples will have bigger deviations and, therefore, bigger average squared deviations. Since the standard deviation is the square root of the variance, a standard deviation is the square root of an average squared deviation. This makes it similar in value to the averaged deviation (or average of the absolute values of the deviations since the average deviation is, by definition of a mean, zero).</p>
+<div id="notes-on-the-variance-and-standard-deviation" class="section level4">
+<h4><span class="header-section-number">5.1.1.1</span> Notes on the variance and standard deviation</h4>
 <ol style="list-style-type: decimal">
-<li>importing data from Excel or text (.csv or .txt) files</li>
-<li>cleaning data</li>
-<li>initial exploratory plots</li>
-<li>analysis</li>
-<li>model checking</li>
-<li>generating plots</li>
-<li>generating tables</li>
-<li>writing text to describe the project, the methods, the analysis, and the interpretation of the results (plots and tables)</li>
+<li>Variances are additive but standard deviations are not. This means that the variance of the sum of two independent (uncorrelated) random variables is simply the sum of the variances of each of the variables. This is important for many statistical analyses.</li>
+<li>The units of variance are the square of the original units, which is awkward for interpretation. The units of a standard deviation is the same as that of the original variable, and so is much easier to interpet.</li>
+<li>For variables that are approximately normally distributed, we can map the standard deviation to the quantiles of the distribution. For example, 68% of the values are within one standard deviation of the mean, 95% of the values are within two standard deviations, and 99% of the values are within three standard deviations.</li>
 </ol>
-<p>The best practice for reproducible research is to use as few software tools for these steps as possible. Too many research projects are not reproducible because the data were cleaned in Excel, and then different parts of the data were separately imported into a GUI statistics software for analysis, and then output from the statistics software was transcribed to Excel to make a table. And other parts of the analysis are used to create a plot in some plotting software. And then the tables and plots are pasted into Microsoft Word to create a report. Any change at any step in this process will require the researcher to remember all the downstream parts that are dependent on the change and to re-do an analysis, or a table, or a plot. Or a team member on the project making asks about how a particular variable was transformed and</p>
-<p>R studio encourages best practices by creating a <strong>project folder</strong> that contains all project documents and implementing a version of markdown called R Markdown. An R Markdown document can explicitly link all parts of the workflow so that changes in earlier steps automatically flow into the later steps. At the completion of a project, a researcher can choose “run all” from the menu and the data are read, cleaned, analyzed, plotted, tabled, and put into a report with the text.</p>
-<div id="r-vs-r-studio" class="section level2">
-<h2><span class="header-section-number">1.1</span> R vs R Studio</h2>
-<p>R is a programming language. It runs under the hood. You never see it. To use R, you need another piece of software that provides a <strong>user interface</strong>. The software we will use for this is R Studio. R Studio is a slick (very slick) <strong>graphical user interface</strong> (GUI) for developing R projects.</p>
 </div>
-<div id="download-and-install-r-and-r-studio" class="section level2">
-<h2><span class="header-section-number">1.2</span> Download and install R and R studio</h2>
-<p><a href="https://cran.r-project.org" target="_blank">Download R for your OS</a></p>
-<p><a href="https://www.rstudio.com/products/rstudio/download/" target="_blank">Download R Studio Desktop</a></p>
-<p>If you need help installing R and R studio, here is <a href="https://www.youtube.com/watch?v=ZvPFKfNHBNQ" target="_blank">Andy Field’s Installing R and RStudio video tutorial</a>)</p>
 </div>
-<div id="open-r-studio-and-modify-the-workspace-preference" class="section level2">
-<h2><span class="header-section-number">1.3</span> Open R Studio and modify the workspace preference</h2>
+<div id="standard-error-of-the-mean" class="section level3">
+<h3><span class="header-section-number">5.1.2</span> Standard error of the mean</h3>
+<p>A standard error of a statistic is a measure of the precision of the statistic. The standard error of the mean is a measure of the precision of the estimate of the mean. The standard error of a difference in means is a measure of the precision of the estimate of the difference in means. The smaller the standard error, the more precise the estimate. The standard error of the mean (SEM) is computed as</p>
+<p><span class="math display" id="eq:se">\[\begin{equation}
+SEM = \frac{s_y}{\sqrt{n}}
+\tag{5.2}
+\end{equation}\]</span></p>
+<p>The SEM is often denoted <span class="math inline">\(s_{\bar{y}}\)</span> to indicate that it is a standard deviation of the mean (<span class="math inline">\(\bar{y}\)</span>).</p>
+<div id="the-standard-error-of-the-mean-can-be-thought-of-as-a-standard-deviation-of-an-infinitely-long-column-of-re-sampled-means" class="section level4">
+<h4><span class="header-section-number">5.1.2.1</span> The standard error of the mean can be thought of as a standard deviation of an infinitely long column of re-sampled means</h4>
+<p>In what sense is a standard error a standard deviation? This is kinda weird. If we sample 100 cells in the slide of muscle tissue and compute the mean diameter, how can the mean have a standard deviation? There is only one value!</p>
+<p>To understand how the SEM is a standard deviation, imagine that we sample <span class="math inline">\(n\)</span> values from <span class="math inline">\(N(\mu, \sigma^2)\)</span> (a normal distribution with mean <span class="math inline">\(\mu\)</span> and variance <span class="math inline">\(\sigma^2\)</span>. The mean of our sample is an estimate of <span class="math inline">\(\mu\)</span> the standard deviation of sample is an estimate of <span class="math inline">\(\sigma\)</span>) an infinite number of times and each time, we write down the mean of the new sample. The standard deviation of this infinitely long column of means is the standard error of the mean. Our observed SEM is an estimate of this true value because our observed standard deviation is an estimate of <span class="math inline">\(\sigma\)</span>.</p>
+</div>
+<div id="a-standard-deviation-can-be-computed-for-any-statistic-these-are-all-standard-errors." class="section level4">
+<h4><span class="header-section-number">5.1.2.2</span> A standard deviation can be computed for any statistic – these are all standard errors.</h4>
+<p>The SEM is only one kind of standard error. A standard deviation can be computed for any statistic – these are all standard errors. For some statistics, such as the mean, the standard error can be computed directly using an equation, such as that for the SEM (equation <a href="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals-variability.html#eq:se">(5.2)</a>). For other statistics, a computer intensive method known as the <strong>bootstrap</strong> is necessary to compute a standard error. We will return to the bootstrap in Section <a href="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals-variability.html#bootstrap">5.4</a>.</p>
+</div>
+<div id="notes-on-standard-errors" class="section level4">
+<h4><span class="header-section-number">5.1.2.3</span> Notes on standard errors</h4>
 <ol style="list-style-type: decimal">
-<li>Open R Studio</li>
-<li>Click on R Studio &gt; Preferences to</li>
-<li>Click on General in the left menu</li>
-<li>diable “Restore .RData into workspace at startup”</li>
-<li>Click on the “Save workspace to .RData on exit” popup menu and choose “Never”</li>
+<li>The units of a standard error are the units of the measured variable.</li>
+<li>A standard error is proportional to sample variability (the sample standard deviation, <span class="math inline">\(s_y\)</span>) and inversely proportional to sample size (<span class="math inline">\(n\)</span>). Sample variability is a function of both natural variation (there really is variation in diameter among fibers in the quadriceps muscle) and measurement error (imaging software with higher resolution can measure a diameter with less error). Since the SEM is a measure of the precision of estimating a mean, this means this precision will increase (or the SEM will decrease) if 1) an investigator uses methods that reduce measurement error and 2) an investigator computes the mean from a larger sample.</li>
+<li>This last point (the SEM decreases with sample size) seems obvious when looking at equation <a href="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals-variability.html#eq:se">(5.2)</a>, since <span class="math inline">\(n\)</span> is in the denominator. Of course <span class="math inline">\(n\)</span> is also in the denominator of equation <a href="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals-variability.html#eq:variance">(5.1)</a> for the sample standard deviation but the standard deviation does not decrease as sample size increases. First this wouldn’t make any sense – variability is variability. A sample of 10,000 cell diameters should be no more variable than a sample of 100 cell diameters (think about if you agree with this or not). Second, this should also be obvious from equation <a href="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals-variability.html#eq:variance">(5.1)</a>. The standard deviation is the square root of an average and averages don’t increase with the number of things summed since both the the numerator (a sum) and denominator increase with <span class="math inline">\(n\)</span>.</li>
 </ol>
-<p><img src="images/workspace.png" /><!-- --></p>
-<p>What’s going on here? The workspace contains the values of all the objects created by the R code that you’ve run in the working R session. Nothing good comes from this. You want to start each R session with a clean slate, a blank workspace. This means that when you start a new R session, you will need to re-run all your code chunks to start where you left-off at the close of your last R session. This seems tedious but, be warned, bad things will happen if you save the workspace from the last session and re-load this at startup. Trust me. Just don’t do it.</p>
 </div>
-<div id="if-you-didnt-modify-the-workspace-preferences-from-the-previous-section-go-back-and-do-it" class="section level2">
-<h2><span class="header-section-number">1.4</span> If you didn’t modify the workspace preferences from the previous section, go back and do it</h2>
 </div>
-<div id="r-markdown-in-a-nutshell" class="section level2">
-<h2><span class="header-section-number">1.5</span> R Markdown in a nutshell</h2>
-<p>In this text, we will write code to analyze data using R Markdown. R markdown is a version of Markdown. Markdown is tool for creating a document containing text (like microsoft Word), images, tables, and code that can be output, or <strong>knitted</strong>, to the three modern output formats: html (web pages), pdf (reports and documents), and microsoft word (okay, this isn’t modern but it is widely used).</p>
-<p>The R Markdown, or .Rmd, document contains three components: 1) a YAML header, which specifies formatting and styles for the knitted document, the code “chunks”, which are blocks of code that do something, and the space before and after the code chunks which contains text and any output images or tables from the code chunks.</p>
 </div>
-<div id="install-r-markdown" class="section level2">
-<h2><span class="header-section-number">1.6</span> Install R Markdown</h2>
-<p><a href="https://bookdown.org/yihui/rmarkdown/installation.html#installation" target="_blank">Directions for installing R Markdown</a></p>
-<p>R Markdown can output pdf files. The mechanism for this is to first create a LaTeX (“la-tek”) file. LaTeX is an amazing tool for creating professional pdf documents. You do not need PDF output for this text, but I encourage you to download and install the tinytex distribution, which was created especially for R Markdown in R Studio.</p>
-<p><a href="https://yihui.org/tinytex/">The tinytex distribution is here</a>.</p>
-</div>
-<div id="importing-packages" class="section level2">
-<h2><span class="header-section-number">1.7</span> Importing Packages</h2>
-<p>The R scripts you write will include functions in packages that are not included in Base R. These packages need to be downloaded from an internet server to your computer. You only need to do this once (although you have to redo it each time you update R). But, each time you start a new R session, you will need to load a package using the <code>library()</code> function. Now is a good time to import packages that we will use</p>
-<p>Open R Studio and choose the menu item “Tools” &gt; “Install Packages”. In the “packages” input box, insert the names of packages to install the package. The names can be separated by spaces or commas, for example “data.table, emmeans, ggplot2”. Make sure that “install dependencies” is clicked before you click “Install”. Packages that we will use in this book are</p>
+<div id="using-google-sheets-to-generate-fake-data-to-explore-the-standard-error" class="section level2">
+<h2><span class="header-section-number">5.2</span> Using Google Sheets to generate fake data to explore the standard error</h2>
+<p>In statistics we are interested in estimated parameters of a <strong>population</strong> using measures from a <strong>sample</strong>. The goal in this section is to use Google Sheets (or Microsoft Excel) to use fake data to discover the behavior of sampling and to gain some intuition about uncertainty using standard errors.</p>
+<div id="steps" class="section level3">
+<h3><span class="header-section-number">5.2.1</span> Steps</h3>
 <ol style="list-style-type: decimal">
-<li>Import and wrangling packages</li>
+<li>Open Google Sheets</li>
+<li>In cell A1 type “mu”. mu is the greek letter <span class="math inline">\(\mu\)</span> and is very common notation for the poplation value (the TRUE value!) of the mean of some hypothetical measure. In cell B1, insert some number as the value of <span class="math inline">\(\mu\)</span>. Any number! It can be negative or positive.</li>
+<li>In cell A2 type “sigma”. sigma is the greek letter <span class="math inline">\(\sigma\)</span>. <span class="math inline">\(\sigma^2\)</span> is very common (universal!) notation for the population (TRUE) variance of some measure or parameter. Notice that the true (population) values of the mean and variance are greek letters. This is pretty standard in statistics. In cell B2, insert some positive number (standard deviations are the positive square roots of the variance).</li>
+<li>In cell A8 type the number 1</li>
+<li>In cell A9 insert the equation “=A8 + 1”. What is this equation doing? It is adding the number 1 to to the value in the cell above, so the resulting value should be 2.</li>
+<li>In Cell B8, insert the equation "=normsinv(rand())*$B$2 + $B$1". The first part of the equation creates a random normal variable with mean 0 and standard deviation 1. multiplication and addition transform this to a random normal variable with mean <span class="math inline">\(\mu\)</span> and standard deviation <span class="math inline">\(\sigma\)</span> (the values you set in cells B1 and B2).</li>
+<li>copy cell B8 and paste into cell B9. Now Higlight cells A9:B9 and copy the equations down to row 107. You now have 100 random variables sampled from a infinite population with mean <span class="math inline">\(\mu\)</span> and standard deviation <span class="math inline">\(\sigma\)</span>.</li>
+<li>In cell A4 write “mean 10”. In cell B4 insert the equation “=average(B8:B17)”. The resulting value is the <strong>sample mean</strong> of the first 10 random variables you created. Is the mean close to <span class="math inline">\(\mu\)</span>?</li>
+<li>In cell A5 write “sd 10”. In cell B5 insert the equation “stdev(B8:B17)”. The result is the <strong>sample standard deviation</strong> of the first 10 random variables. Is this close to <span class="math inline">\(\sigma\)</span>?</li>
+<li>In cell A6 write “mean 100”. In cell B6 insert the equation “=average(B8:B107)”. The resulting value is the <strong>sample mean</strong> of the all 100 random variables you created. Is this mean closer to <span class="math inline">\(\mu\)</span> than mean 10?</li>
+<li>In cell A7 write “sd 100”. In cell B7 insert the equation “=stdev(B8:B107)”. The resulting value is the <strong>sample standard deviation</strong> of the all 100 random variables you created. Is this SD closer to <span class="math inline">\(\sigma\)</span> than sd 10?</li>
 </ol>
-<ul>
-<li>devtools – we use this to install packages that are not on CRAN</li>
-<li>here – we use to read from and write to the correct folder</li>
-<li>janitor – we use the function clean_names from this package</li>
-<li>readxl – elegant importing from microsoft Excel spreadsheets</li>
-<li>data.table - improves functionality of data frames</li>
-</ul>
-<ol start="2" style="list-style-type: decimal">
-<li>analysis packages</li>
-</ol>
-<ul>
-<li>emmeans – we use this to compute modeled means and contrasts</li>
-<li>nlme – we use this for gls models</li>
-<li>lme4 – we use this for linear mixed models</li>
-<li>lmerTest – we use this for inference with linear mixed models</li>
-<li>glmmTMB – we use this for generalized linear models</li>
-<li>MASS – we will use glm.nb from this package</li>
-<li>afex – we use this for classic ANOVA</li>
-<li>car – we use this for model checking and for classic ANOVA</li>
-<li>DHARMa – we use this for model checking generlaized linear models</li>
-<li>insight – we use this to learn about models</li>
-</ul>
-<ol start="3" style="list-style-type: decimal">
-<li>graphing packages</li>
-</ol>
-<ul>
-<li>ggplot2 – we use this for plotting</li>
-<li>ggsci – we use this for the color palettes</li>
-<li>ggthemes – we use this for the colorblind palette</li>
-<li>ggpubr – we use this to make ggplots a bit easier</li>
-<li>ggforce – we use this for improved jitter plots</li>
-<li>dabestr – we use this to make several plot types</li>
-<li>cowplot – we use this to combine plots</li>
-</ul>
-<p>Once these are installed, you don’t need to do this again although there will be additional packages that you might install. You simply need to use the <code>library()</code> function at the start of a markdown script.</p>
+<p>The sample standard deviation is a measure of the variability of the sample. The more spread out the sample (the further each value is from the mean), the bigger the sample standard deviation. The sample standard deviation is most often simply known as “The” standard deviation, which is a bit misleading since there are many kinds of standard deviations!</p>
+<p>Remember that your computed mean and standard deviations are estimates computed from a sample. They are estimates of the true values <span class="math inline">\(\mu\)</span> and <span class="math inline">\(\sigma\)</span>. Explore the behavior of the sample mean and standard deviation by re-calculating the spreadsheet. In Excel, a spreadsheet is re-calculated by simultaneously pressing the command and equal key. In Google, command-R recalculates but is painfully slow. Instead, if using Google Sheets, just type the number 1 into a blank cell, and the sheet recalculates quickly. Do it again. And again.</p>
+<p>Each time you re-calculate, a new set of random numbers are generated and the new means and standard deviations are computed. Compare mean 10 and mean 100 each re-calculation. Notice that these estimates are variable. They change with each re-calculation. How variable is mean 10 compared to mean 100? The variability of the estimate of the mean is a measure of <strong>uncertainty</strong> in the estimate. Are we more uncertain with mean 10 or with mean 100? This variability is measured by a standard deviation. This <strong>standard deviation of the mean</strong> is also called the <strong>standard error of the mean</strong>. Many researchers are loose with terms and use “The” standard error to mean the standard error of the mean, even though there are many kinds of standard errors. In general, “standard error”" is abbreviated as “SE.” Sometimes “standard error of the mean” is specifically abbreviated to “SEM.”</p>
+<p>The standard error of the mean is a measure of the precision in estimating the mean. The smaller the value the more precise the estimate. The standard error of the mean <em>is</em> a standard deviation of the mean. This is kinda weird. If we sample a population one time and compute a mean, how can the mean have a standard deviation? There is only one value! And we compute this value using the sample standard deviation: <span class="math inline">\(SEM = \frac{SD}{\sqrt{N}}\)</span>. To understand how the SEM is a standard deviation, Imagine recalculating the spread sheet an infinite number of times and each time, you write down the newly computed mean. The standard error of the mean is the standard deviation of this infinitely long column of means.</p>
 </div>
-<div id="create-an-r-studio-project-for-this-textbook" class="section level2">
-<h2><span class="header-section-number">1.8</span> Create an R Studio Project for this textbook</h2>
+</div>
+<div id="using-r-to-generate-fake-data-to-explore-the-standard-error" class="section level2">
+<h2><span class="header-section-number">5.3</span> Using R to generate fake data to explore the standard error</h2>
+<p>note that I use “standard deviation” to refer to the sample standard deviation and “standard error” to refer to the standard error of the mean (again, we can compute standard errors as a standard deviation of any kind of estimate)</p>
+<div id="part-i" class="section level3">
+<h3><span class="header-section-number">5.3.1</span> part I</h3>
+<p>In the exercise above, you used Google Sheets to generate <span class="math inline">\(p\)</span> columns of fake data. Each column had <span class="math inline">\(n\)</span> elements, so the matrix of fake data was <span class="math inline">\(n \times m\)</span> (it is standard in most fields to specify a matrix as rows by columns). This is <em>much</em> easier to do in R and how much grows exponentially as the size of the matrix grows.</p>
+<p>To start, we just generate a <span class="math inline">\(n \times p\)</span> matrix of normal random numbers.</p>
+<div class="sourceCode" id="cb178"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb178-1"><a href="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals-variability.html#cb178-1"></a><span class="co"># R script to gain some intuition about standard deviation (sd) and standard error (se)</span></span>
+<span id="cb178-2"><a href="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals-variability.html#cb178-2"></a><span class="co"># you will probably need to install ggplot2 using library(ggplot2) </span></span>
+<span id="cb178-3"><a href="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals-variability.html#cb178-3"></a>n &lt;-<span class="st"> </span><span class="dv">6</span> <span class="co"># sample size</span></span>
+<span id="cb178-4"><a href="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals-variability.html#cb178-4"></a>p &lt;-<span class="st"> </span><span class="dv">100</span> <span class="co"># number of columns of fake data to generate</span></span>
+<span id="cb178-5"><a href="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals-variability.html#cb178-5"></a>fake_data &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">rnorm</span>(n<span class="op">*</span>p, <span class="dt">mean=</span><span class="dv">0</span>, <span class="dt">sd=</span><span class="dv">1</span>), <span class="dt">nrow=</span>n, <span class="dt">ncol=</span>p) <span class="co"># create a matrix</span></span></code></pre></div>
+<p>the 3rd line is the cool thing about R. In one line I’m creating a dataset with <span class="math inline">\(n\)</span> rows and <span class="math inline">\(p\)</span> columns. Each column is a sample of the standard normal distribution which by definition has mean zero and standard deviation of 1. But, and this is important, any sample from this distribution will not have exactly mean zero and standard deviation of 1, because it’s a sample, the mean and standard deviation will have some small errror from the truth. The line has two parts to it: first I’m using the function “rnorm” (for random normal) to create a vector of n*m random, normal deviates (draws from the random normal distribution) and then I’m organizing these into a matrix (using the function “matrix”)</p>
+<p>To compute the vector of means, standard deviations, and standard errors for each column of <code>fake_data</code>, use the <code>apply()</code> function.</p>
+<div class="sourceCode" id="cb179"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb179-1"><a href="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals-variability.html#cb179-1"></a>means &lt;-<span class="st"> </span><span class="kw">apply</span>(fake_data,<span class="dv">2</span>,mean) <span class="co"># the apply function is super useful</span></span>
+<span id="cb179-2"><a href="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals-variability.html#cb179-2"></a>sds &lt;-<span class="st"> </span><span class="kw">apply</span>(fake_data,<span class="dv">2</span>,sd)</span>
+<span id="cb179-3"><a href="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals-variability.html#cb179-3"></a>sems &lt;-<span class="st"> </span>sds<span class="op">/</span><span class="kw">sqrt</span>(n)</span></code></pre></div>
+<p><code>apply()</code> is a workhorse in many R scripts and is often used in R scripts in place of a for-loop (see below) because it takes fewer lines of code.</p>
+<p>The SEM is the standard deviation of the mean, so let’s see if the standard deviation of the means is close to the true standard error. We sampled from a normal distribution with SD=1 so the true standard is</p>
+<div class="sourceCode" id="cb180"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb180-1"><a href="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals-variability.html#cb180-1"></a><span class="dv">1</span><span class="op">/</span><span class="kw">sqrt</span>(n)</span></code></pre></div>
+<pre><code>## [1] 0.4082483</code></pre>
+<p>and the standard deviation of the <span class="math inline">\(p\)</span> means is</p>
+<div class="sourceCode" id="cb182"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb182-1"><a href="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals-variability.html#cb182-1"></a><span class="kw">sd</span>(means)</span></code></pre></div>
+<pre><code>## [1] 0.3731974</code></pre>
+<p>Questions</p>
 <ol style="list-style-type: decimal">
-<li>Create a project folder within the Documents folder (Mac OS) or My Documents folder (Windows OS). All files associated with this book will reside inside this folder. The name of the project folder should be something meaningful, such as “Applied Biostatistics” or the name of your class (for students in my Applied Biostatistics class, this folder could be named “BIO_413”).</li>
-<li>Within the project folder, create new folders named
+<li>how close is <code>sd(means)</code> to the true SE?</li>
+<li>change p above to 1000. Now how close is sd(means) to the true SE?</li>
+<li>change p above to 10,000. Now how close is sd(means) to the true SE?</li>
+</ol>
+</div>
+<div id="part-ii---means" class="section level3">
+<h3><span class="header-section-number">5.3.2</span> part II - means</h3>
+<p>This is a visualization of the spread, or variability, of the sampled means</p>
+<div class="sourceCode" id="cb184"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb184-1"><a href="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals-variability.html#cb184-1"></a><span class="kw">qplot</span>(means)</span></code></pre></div>
+<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/unnamed-chunk-96-1.png" width="576" /></p>
+<p>Compute the mean of the means</p>
+<div class="sourceCode" id="cb185"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb185-1"><a href="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals-variability.html#cb185-1"></a><span class="kw">mean</span>(means)</span></code></pre></div>
+<pre><code>## [1] -0.039961</code></pre>
+<p>Questions</p>
 <ol style="list-style-type: decimal">
-<li>“Rmd” – this is where your R markdown files are stored</li>
-<li>“R” – this is where additional R script files are stored</li>
-<li>“data” – this is where data that we download from public archives are stored</li>
-<li>“output” – this is where you will store fake data generated in this class</li>
-<li>“images” – this is where image files are stored</li>
-</ol></li>
-<li>Open R Studio and click the menu item File &gt; New Project…</li>
-<li>Choose “Existing Directory” and navigate to your project folder</li>
-<li>Choose “Create Project”</li>
-<li>Check that a “.Rproj” file is in your project folder</li>
-<li>Download and move the file <a href="https://raw.githubusercontent.com/middleprofessor/applied-biostats/master/R/ggplot_the_model.R">ggplot_the_model.R</a> into the R folder.</li>
+<li>Remember that the true mean is zero. How close, in general, are the sampled means to the true mean. How variable are the means? How is this quantified?</li>
+<li>change n to 100, then replot. Are the means, in general, closer to the true mean? How variable are the means now?</li>
+<li>Is the mean estimated with <span class="math inline">\(n=100\)</span> closer to the truth, in general, then the mean estimated with <span class="math inline">\(n=6\)</span>?</li>
+<li>Redo with <span class="math inline">\(n=10000\)</span></li>
 </ol>
-<div class="figure"><span id="fig:project-organization-image"></span>
-<img src="images/project_organization.png" alt="Project folder with the .Rproj file and all main folders located at the first level of the project"  />
-<p class="caption">
-Figure 1.1: Project folder with the .Rproj file and all main folders located at the first level of the project
-</p>
 </div>
-<p>The project directory should look like that in Figure <a href="getting-started-r-projects-and-r-markdown.html#fig:project-organization-image">1.1</a>. Importantly, the project file (“Applied Biostatistics.Rproj”) and the main folders are all located at the first level within the project folder.</p>
-<p><strong>Bug alert</strong> If your .Rproj file is somewhere else (on the desktop, in the data folder, etc.), bad things will happen.</p>
-</div>
-<div id="working-on-a-project-in-a-nutshell" class="section level2">
-<h2><span class="header-section-number">1.9</span> Working on a project, in a nutshell</h2>
+<div id="part-iii---how-do-sd-and-se-change-as-sample-size-n-increases" class="section level3">
+<h3><span class="header-section-number">5.3.3</span> part III - how do SD and SE change as sample size (n) increases?</h3>
+<div class="sourceCode" id="cb187"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb187-1"><a href="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals-variability.html#cb187-1"></a><span class="kw">mean</span>(sds)</span></code></pre></div>
+<pre><code>## [1] 1.017144</code></pre>
+<p>Questions</p>
 <ol style="list-style-type: decimal">
-<li>Wake up, brush teeth, and open the project by double-clicking the .Rproj icon. Alternatively, open R Studio and then use the File &gt; Open Project to open the project. <strong>The name of the project will at the top-right of the R Studio window.</strong> We <em>always</em> want to work within an open project and the first workflow guarantees this. If we Open R Studio and then open a .Rmd file, we could be working within another project or no project at all. Bad things will happen.</li>
-<li>Run previous code chunks, in order (top to bottom). Write new code in code chunks and run. When we run code, we add R objects to the <strong>workspace</strong>. The workspace contains the values of all the objects created by the R code that has been run in the working session. When I save the .Rmd file, these values are not saved, only the text and code chunks in the R Markdown document. This is a feature, not a bug.</li>
-<li>When we are finished with the session, quit R Studio. If you get a popup window asking if you want to save the workspace, click “No”. Then immediately go back to the section “Open R Studio and modify the workspace preference” above and follow the directions.</li>
+<li>what is the mean of the standard deviations when n=6 (set p=1000)</li>
+<li>what is the mean of the standard deviations when n=100 (set p=1000)</li>
+<li>when n = 1000? (set p=1000)</li>
+<li>when n = 10000? (set p=1000)</li>
+<li>how does the mean of the standard deviations change as n increases (does it get smaller? or stay about the same size)</li>
+<li>repeat the above with SEM</li>
 </ol>
+<div class="sourceCode" id="cb189"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb189-1"><a href="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals-variability.html#cb189-1"></a><span class="kw">mean</span>(sems)</span></code></pre></div>
+<pre><code>## [1] 0.4152472</code></pre>
+<p>Congratulations, you have just done a Monte Carlo simulation!</p>
 </div>
-<div id="create-an-r-markdown-file-for-this-chapter" class="section level2">
-<h2><span class="header-section-number">1.10</span> Create an R Markdown file for this Chapter</h2>
+<div id="part-iv-generating-fake-data-with-for-loops" class="section level3">
+<h3><span class="header-section-number">5.3.4</span> Part IV – Generating fake data with for-loops</h3>
+<p>A <strong>for-loop</strong> is used to iterate a computation.</p>
+<div class="sourceCode" id="cb191"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb191-1"><a href="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals-variability.html#cb191-1"></a>n &lt;-<span class="st"> </span><span class="dv">6</span> <span class="co"># sample size</span></span>
+<span id="cb191-2"><a href="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals-variability.html#cb191-2"></a>n_iter &lt;-<span class="st"> </span><span class="dv">10</span><span class="op">^</span><span class="dv">5</span> <span class="co"># number of iterations of loop (equivalent to p)</span></span>
+<span id="cb191-3"><a href="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals-variability.html#cb191-3"></a>means &lt;-<span class="st"> </span><span class="kw">numeric</span>(n_iter)</span>
+<span id="cb191-4"><a href="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals-variability.html#cb191-4"></a>sds &lt;-<span class="st"> </span><span class="kw">numeric</span>(n_iter)</span>
+<span id="cb191-5"><a href="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals-variability.html#cb191-5"></a>sems &lt;-<span class="st"> </span><span class="kw">numeric</span>(n_iter)</span>
+<span id="cb191-6"><a href="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals-variability.html#cb191-6"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>n_iter){</span>
+<span id="cb191-7"><a href="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals-variability.html#cb191-7"></a>  y &lt;-<span class="st"> </span><span class="kw">rnorm</span>(n) <span class="co"># mean=0 and sd=1 are default so not necessary to specify</span></span>
+<span id="cb191-8"><a href="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals-variability.html#cb191-8"></a>  means[i] &lt;-<span class="st"> </span><span class="kw">mean</span>(y)</span>
+<span id="cb191-9"><a href="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals-variability.html#cb191-9"></a>  sds[i] &lt;-<span class="st"> </span><span class="kw">sd</span>(y)</span>
+<span id="cb191-10"><a href="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals-variability.html#cb191-10"></a>  sems[i] &lt;-<span class="st"> </span><span class="kw">sd</span>(y)<span class="op">/</span><span class="kw">sqrt</span>(n)</span>
+<span id="cb191-11"><a href="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals-variability.html#cb191-11"></a>}</span>
+<span id="cb191-12"><a href="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals-variability.html#cb191-12"></a><span class="kw">sd</span>(means)</span></code></pre></div>
+<pre><code>## [1] 0.4090702</code></pre>
+<div class="sourceCode" id="cb193"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb193-1"><a href="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals-variability.html#cb193-1"></a><span class="kw">mean</span>(sems)</span></code></pre></div>
+<pre><code>## [1] 0.3883867</code></pre>
+<p>Questions</p>
 <ol style="list-style-type: decimal">
-<li>The top-left icon in R Studio is a little plus sign within a green circle. Click this and choose “R Markdown” from the pull-down menu.</li>
-<li>Give the file a meaningful title like “Chapter 1 – Organization”</li>
-<li>Delete all text below the first code chunk, starting with the header “## R Markdown”</li>
+<li>What do <code>sd(means)</code> and <code>mean(sems)</code> converge to as <code>n_iter</code> is increased from 100 to 1000 to 10,000?</li>
+<li>Do they converge to the same number?</li>
+<li>Should they?</li>
+<li>What is the correct number?</li>
 </ol>
-<div id="modify-the-yaml-header" class="section level3">
-<h3><span class="header-section-number">1.10.1</span> Modify the yaml header</h3>
-<p>Replace “output: html_document” in the yaml header with the following in order to creat a table of content (toc) on the left side of the page and to enable code folding</p>
-<pre><code>output:
-  html_document:
-    toc: true
-    toc_float: true
-    code_folding: hide</code></pre>
+<p>Question number 4 is asking what is E(SEM), the “expected standard error of the mean”. There is a very easy formula to compute this. What is it?</p>
 </div>
-<div id="modify-the-setup-chunk" class="section level3">
-<h3><span class="header-section-number">1.10.2</span> Modify the “setup” chunk</h3>
-<p>The setup chunk should look something like this</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="getting-started-r-projects-and-r-markdown.html#cb2-1"></a>knitr<span class="op">::</span>opts_chunk<span class="op">$</span><span class="kw">set</span>(<span class="dt">echo =</span> <span class="ot">TRUE</span>)</span>
-<span id="cb2-2"><a href="getting-started-r-projects-and-r-markdown.html#cb2-2"></a></span>
-<span id="cb2-3"><a href="getting-started-r-projects-and-r-markdown.html#cb2-3"></a><span class="co"># wrangling packages</span></span>
-<span id="cb2-4"><a href="getting-started-r-projects-and-r-markdown.html#cb2-4"></a><span class="kw">library</span>(here)</span>
-<span id="cb2-5"><a href="getting-started-r-projects-and-r-markdown.html#cb2-5"></a><span class="kw">library</span>(janitor)</span>
-<span id="cb2-6"><a href="getting-started-r-projects-and-r-markdown.html#cb2-6"></a><span class="kw">library</span>(readxl)</span>
-<span id="cb2-7"><a href="getting-started-r-projects-and-r-markdown.html#cb2-7"></a><span class="kw">library</span>(data.table)</span>
-<span id="cb2-8"><a href="getting-started-r-projects-and-r-markdown.html#cb2-8"></a></span>
-<span id="cb2-9"><a href="getting-started-r-projects-and-r-markdown.html#cb2-9"></a><span class="co"># analysis packages</span></span>
-<span id="cb2-10"><a href="getting-started-r-projects-and-r-markdown.html#cb2-10"></a><span class="kw">library</span>(MASS) <span class="co"># negative binomial and some other functions</span></span>
-<span id="cb2-11"><a href="getting-started-r-projects-and-r-markdown.html#cb2-11"></a><span class="kw">library</span>(nlme) <span class="co"># gls and some lmm</span></span>
-<span id="cb2-12"><a href="getting-started-r-projects-and-r-markdown.html#cb2-12"></a></span>
-<span id="cb2-13"><a href="getting-started-r-projects-and-r-markdown.html#cb2-13"></a><span class="co"># graphing packages</span></span>
-<span id="cb2-14"><a href="getting-started-r-projects-and-r-markdown.html#cb2-14"></a><span class="kw">library</span>(ggsci) <span class="co"># color palettes</span></span>
-<span id="cb2-15"><a href="getting-started-r-projects-and-r-markdown.html#cb2-15"></a><span class="kw">library</span>(ggpubr) <span class="co"># publication quality plots</span></span>
-<span id="cb2-16"><a href="getting-started-r-projects-and-r-markdown.html#cb2-16"></a><span class="kw">library</span>(ggthemes) <span class="co"># colorblind palette</span></span>
-<span id="cb2-17"><a href="getting-started-r-projects-and-r-markdown.html#cb2-17"></a><span class="kw">library</span>(ggforce) <span class="co"># better jitter</span></span>
-<span id="cb2-18"><a href="getting-started-r-projects-and-r-markdown.html#cb2-18"></a><span class="kw">library</span>(cowplot) <span class="co"># combine plots</span></span>
-<span id="cb2-19"><a href="getting-started-r-projects-and-r-markdown.html#cb2-19"></a></span>
-<span id="cb2-20"><a href="getting-started-r-projects-and-r-markdown.html#cb2-20"></a><span class="co"># Okabe &amp; Ito palette</span></span>
-<span id="cb2-21"><a href="getting-started-r-projects-and-r-markdown.html#cb2-21"></a>pal_okabe_ito &lt;-<span class="st"> </span><span class="kw">colorblind_pal</span>()(<span class="dv">8</span>)[<span class="dv">2</span><span class="op">:</span><span class="dv">8</span>] <span class="co"># ggthemes</span></span>
-<span id="cb2-22"><a href="getting-started-r-projects-and-r-markdown.html#cb2-22"></a></span>
-<span id="cb2-23"><a href="getting-started-r-projects-and-r-markdown.html#cb2-23"></a><span class="co"># use here from the here package</span></span>
-<span id="cb2-24"><a href="getting-started-r-projects-and-r-markdown.html#cb2-24"></a>here &lt;-<span class="st"> </span>here<span class="op">::</span>here</span>
-<span id="cb2-25"><a href="getting-started-r-projects-and-r-markdown.html#cb2-25"></a></span>
-<span id="cb2-26"><a href="getting-started-r-projects-and-r-markdown.html#cb2-26"></a><span class="co"># load functions used by this text written by me</span></span>
-<span id="cb2-27"><a href="getting-started-r-projects-and-r-markdown.html#cb2-27"></a><span class="kw">source</span>(<span class="kw">here</span>(<span class="st">&quot;R/ggplot_the_model.R&quot;</span>))</span>
-<span id="cb2-28"><a href="getting-started-r-projects-and-r-markdown.html#cb2-28"></a></span>
-<span id="cb2-29"><a href="getting-started-r-projects-and-r-markdown.html#cb2-29"></a><span class="co"># use clean_names from the janitor package</span></span>
-<span id="cb2-30"><a href="getting-started-r-projects-and-r-markdown.html#cb2-30"></a>clean_names &lt;-<span class="st"> </span>janitor<span class="op">::</span>clean_names</span>
-<span id="cb2-31"><a href="getting-started-r-projects-and-r-markdown.html#cb2-31"></a></span>
-<span id="cb2-32"><a href="getting-started-r-projects-and-r-markdown.html#cb2-32"></a>data_folder &lt;-<span class="st"> &quot;data&quot;</span></span></code></pre></div>
-<p><code>echo = TRUE</code> tells knitr to display the code within a code chunk when the R markdown file is knitted. <code>knitr::opts_chunk$set(echo = TRUE)</code> sets <code>echo = TRUE</code> for all code chunks in the containing .Rmd file (not all R markdown files in the project!).</p>
-<p><code>pal_okabe_ito &lt;- colorblind_pal()(8)[2:8]</code> assigns the Okabe-Ito colorblind palette to the object <code>pal_okabe_ito</code>. We use this to specify colorblind-safe colors when generating plots.</p>
-<p><code>here &lt;- here::here</code> makes sure that <code>here</code> uses the function from the here package and not some other package. Huh? Let’s back up – R is an open source project and packages are written by independent programmers and scientists and not employees of some central company. When someone develops a package, they create functions that do stuff. Sometimes developers of different packages create functions that have the same name. There is a function name conflict if we load two packages with the same name. Our R session will use the function of the last loaded package as the function assigned to the name. If we want the name to be used with the function in the previously loaded package, then we need to either re-order the library() statements, or simply re-assign the name to the function that we want. This is what <code>here &lt;- here::here</code> does. This script takes the function <code>here</code> from the package “here” and assigns it to the object “here”!.</p>
 </div>
-<div id="create-a-fake-data-chunk" class="section level3">
-<h3><span class="header-section-number">1.10.3</span> Create a “fake-data” chunk</h3>
-<ol start="4" style="list-style-type: decimal">
-<li>Let’s play around with an R Markdown file. Create a new chunk and label it “fake-data”. Insert the following R script and then click the chunk’s run button</li>
+<div id="bootstrap" class="section level2">
+<h2><span class="header-section-number">5.4</span> Bootstrapped standard errors</h2>
+<p>The bootstrap is certainly one of the most valuable tools invented in modern statistics. But, it’s not only a useful tool for applied statistics, it’s a useful tool for understanding statistics. Playing with a parametric bootstrap will almost certainly induce an “aha, so that’s what statisticians mean by …” moment.</p>
+<p>To understand the bootstrap, let’s review a standard error. A <em>parametric</em> standard error of a mean is the <em>expected</em> standard deviation of an infinite number of means. A standard error of any statistic is the <em>expected</em> standard deviation of that statistic. I highlight <em>expected</em> to emphasize that parametric standard errors assume a certain distribution (not necessarily a Normal distribution, although the equation for the SEM in Equation <a href="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals-variability.html#eq:se">(5.2)</a> assumes a normal distribution if the standard deviation is computed as in Equation <a href="#eq:sd">(<strong>??</strong>)</a>).</p>
+<p>A bootstrapped standard error of a statistic is the <strong>empirical</strong> standard deviation of the statistic from a finite number of <em>samples</em>. The basic algorithm for a bootstrap is (here “the statistic” is the mean of the sample)</p>
+<ol style="list-style-type: decimal">
+<li>sample <span class="math inline">\(n\)</span> values from a probability distribution</li>
+<li>compute the mean</li>
+<li>repeat step 1 and 2 many times</li>
+<li>for a bootstrapped standard error, compute the standard deviation of the set of means saved from each iteration of steps 1 and 2.</li>
 </ol>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="getting-started-r-projects-and-r-markdown.html#cb3-1"></a><span class="kw">set.seed</span>(<span class="dv">4</span>)</span>
-<span id="cb3-2"><a href="getting-started-r-projects-and-r-markdown.html#cb3-2"></a>n &lt;-<span class="st"> </span><span class="dv">10</span></span>
-<span id="cb3-3"><a href="getting-started-r-projects-and-r-markdown.html#cb3-3"></a>fake_data &lt;-<span class="st"> </span><span class="kw">data.table</span>(</span>
-<span id="cb3-4"><a href="getting-started-r-projects-and-r-markdown.html#cb3-4"></a>    <span class="dt">treatment =</span> <span class="kw">rep</span>(<span class="kw">c</span>(<span class="st">&quot;cn&quot;</span>, <span class="st">&quot;tr&quot;</span>), <span class="dt">each =</span> n),</span>
-<span id="cb3-5"><a href="getting-started-r-projects-and-r-markdown.html#cb3-5"></a>    <span class="dt">neutrophil_count_exp1 =</span> <span class="kw">rnegbin</span>(n<span class="op">*</span><span class="dv">2</span>, </span>
-<span id="cb3-6"><a href="getting-started-r-projects-and-r-markdown.html#cb3-6"></a>                                    <span class="dt">mu =</span> <span class="kw">rep</span>(<span class="kw">c</span>(<span class="dv">10</span>, <span class="dv">15</span>), <span class="dt">each =</span> n),</span>
-<span id="cb3-7"><a href="getting-started-r-projects-and-r-markdown.html#cb3-7"></a>                                    <span class="dt">theta =</span> <span class="dv">1</span>),</span>
-<span id="cb3-8"><a href="getting-started-r-projects-and-r-markdown.html#cb3-8"></a>    <span class="dt">neutrophil_count_exp2 =</span> <span class="kw">rnegbin</span>(n<span class="op">*</span><span class="dv">2</span>, </span>
-<span id="cb3-9"><a href="getting-started-r-projects-and-r-markdown.html#cb3-9"></a>                                    <span class="dt">mu =</span> <span class="kw">rep</span>(<span class="kw">c</span>(<span class="dv">10</span>, <span class="dv">20</span>), <span class="dt">each =</span> n),</span>
-<span id="cb3-10"><a href="getting-started-r-projects-and-r-markdown.html#cb3-10"></a>                                    <span class="dt">theta =</span> <span class="dv">1</span>)</span>
-<span id="cb3-11"><a href="getting-started-r-projects-and-r-markdown.html#cb3-11"></a>)</span>
-<span id="cb3-12"><a href="getting-started-r-projects-and-r-markdown.html#cb3-12"></a><span class="co"># View(fake_data)</span></span></code></pre></div>
-<p>This chunk creates fake neutrophil counts in two different experiments. The comment (#) sign before <code>View(fake_data)</code> “comments out” the line of code, so it is not run. View the data by highlighting <code>View(fake_data)</code> and choosing “Run selected line(s)” from the Run menu.</p>
-</div>
-<div id="create-a-plot-chunk" class="section level3">
-<h3><span class="header-section-number">1.10.4</span> Create a “plot” chunk</h3>
-<ol start="5" style="list-style-type: decimal">
-<li>Create a new chunk and label it “plot”. Insert the following R script and then click the chunk’s run button</li>
+<p>The probability distribution can come from two sources:</p>
+<ol style="list-style-type: decimal">
+<li>A <strong>parametric bootstrap</strong> uses samples from a parametric probability distribution, such as a Normal distribution or a poisson distribution (remember, these are “parametric” because the distribution is completely described by a set of parameters). A good question is why bother? In general, one would use a parametric bootstrap for a statistic for which there is no formula for the standard error, but the underlying data come from a parametric probability distribution.</li>
+<li>A <strong>non-parametric</strong> bootstrap uses <em>resamples from the data</em>. The data are resampled <em>with replacement</em>. “Resample with replacement” means to sample <span class="math inline">\(n\)</span> times from the full set of observed values. If we were to do this manually, we would i) write down each value of the original sample on its own piece of paper and throw all pieces into a hat. ii) pick a paper from the hat, add its value to sample <span class="math inline">\(i\)</span>, and return the paper to the hat. iii) repeat step ii <span class="math inline">\(n\)</span> times, where <span class="math inline">\(n\)</span> is the original sample size. The new sample contains some values multiple times (papers that were picked out of the hat more than once) and is missing some values (papers that were not picked out in any of the <span class="math inline">\(n\)</span> picks). A good question is, why bother? A non-parametric bootstrap assumes no specific <em>parametric</em> probability distribution but it does assume the distributio of the observed sample is a good approximation of the true population distribution (in which case, the probability of picking a certain value is a good approximation to the true probability).</li>
 </ol>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="getting-started-r-projects-and-r-markdown.html#cb4-1"></a>gg_<span class="dv">1</span> &lt;-<span class="st"> </span><span class="kw">ggstripchart</span>(<span class="dt">data =</span> fake_data,</span>
-<span id="cb4-2"><a href="getting-started-r-projects-and-r-markdown.html#cb4-2"></a>                <span class="dt">x =</span> <span class="st">&quot;treatment&quot;</span>,</span>
-<span id="cb4-3"><a href="getting-started-r-projects-and-r-markdown.html#cb4-3"></a>                <span class="dt">y =</span> <span class="st">&quot;neutrophil_count_exp1&quot;</span>,</span>
-<span id="cb4-4"><a href="getting-started-r-projects-and-r-markdown.html#cb4-4"></a>                <span class="dt">color =</span> <span class="st">&quot;treatment&quot;</span>,</span>
-<span id="cb4-5"><a href="getting-started-r-projects-and-r-markdown.html#cb4-5"></a>                <span class="dt">palette =</span> <span class="st">&quot;jco&quot;</span>,</span>
-<span id="cb4-6"><a href="getting-started-r-projects-and-r-markdown.html#cb4-6"></a>                <span class="dt">add =</span> <span class="st">&quot;mean_se&quot;</span>,</span>
-<span id="cb4-7"><a href="getting-started-r-projects-and-r-markdown.html#cb4-7"></a>                <span class="dt">legend =</span> <span class="st">&quot;none&quot;</span>) <span class="op">+</span></span>
-<span id="cb4-8"><a href="getting-started-r-projects-and-r-markdown.html#cb4-8"></a><span class="st">    </span><span class="kw">ylab</span>(<span class="st">&quot;Neutrophil Count (Exp. 1)&quot;</span>) <span class="op">+</span></span>
-<span id="cb4-9"><a href="getting-started-r-projects-and-r-markdown.html#cb4-9"></a><span class="st">  </span><span class="kw">stat_compare_means</span>(<span class="dt">method =</span> <span class="st">&quot;t.test&quot;</span>,</span>
-<span id="cb4-10"><a href="getting-started-r-projects-and-r-markdown.html#cb4-10"></a>                     <span class="dt">label.y =</span> <span class="dv">50</span>,</span>
-<span id="cb4-11"><a href="getting-started-r-projects-and-r-markdown.html#cb4-11"></a>                     <span class="dt">label =</span> <span class="st">&quot;p.format&quot;</span>) <span class="op">+</span></span>
-<span id="cb4-12"><a href="getting-started-r-projects-and-r-markdown.html#cb4-12"></a><span class="st">    </span><span class="ot">NULL</span></span>
-<span id="cb4-13"><a href="getting-started-r-projects-and-r-markdown.html#cb4-13"></a></span>
-<span id="cb4-14"><a href="getting-started-r-projects-and-r-markdown.html#cb4-14"></a>gg_<span class="dv">2</span>&lt;-<span class="st"> </span><span class="kw">ggstripchart</span>(<span class="dt">data =</span> fake_data,</span>
-<span id="cb4-15"><a href="getting-started-r-projects-and-r-markdown.html#cb4-15"></a>                <span class="dt">x =</span> <span class="st">&quot;treatment&quot;</span>,</span>
-<span id="cb4-16"><a href="getting-started-r-projects-and-r-markdown.html#cb4-16"></a>                <span class="dt">y =</span> <span class="st">&quot;neutrophil_count_exp2&quot;</span>,</span>
-<span id="cb4-17"><a href="getting-started-r-projects-and-r-markdown.html#cb4-17"></a>                <span class="dt">color =</span> <span class="st">&quot;treatment&quot;</span>,</span>
-<span id="cb4-18"><a href="getting-started-r-projects-and-r-markdown.html#cb4-18"></a>                <span class="dt">palette =</span> <span class="st">&quot;jco&quot;</span>,</span>
-<span id="cb4-19"><a href="getting-started-r-projects-and-r-markdown.html#cb4-19"></a>                <span class="dt">add =</span> <span class="st">&quot;mean_se&quot;</span>,</span>
-<span id="cb4-20"><a href="getting-started-r-projects-and-r-markdown.html#cb4-20"></a>                <span class="dt">legend =</span> <span class="st">&quot;none&quot;</span>) <span class="op">+</span></span>
-<span id="cb4-21"><a href="getting-started-r-projects-and-r-markdown.html#cb4-21"></a><span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;Neutrophil Count (Exp 2)&quot;</span>) <span class="op">+</span></span>
-<span id="cb4-22"><a href="getting-started-r-projects-and-r-markdown.html#cb4-22"></a><span class="st">  </span><span class="kw">stat_compare_means</span>(<span class="dt">method =</span> <span class="st">&quot;t.test&quot;</span>,</span>
-<span id="cb4-23"><a href="getting-started-r-projects-and-r-markdown.html#cb4-23"></a>                     <span class="dt">label.y =</span> <span class="dv">65</span>,</span>
-<span id="cb4-24"><a href="getting-started-r-projects-and-r-markdown.html#cb4-24"></a>                     <span class="dt">label =</span> <span class="st">&quot;p.format&quot;</span>) <span class="op">+</span></span>
-<span id="cb4-25"><a href="getting-started-r-projects-and-r-markdown.html#cb4-25"></a><span class="ot">NULL</span></span>
-<span id="cb4-26"><a href="getting-started-r-projects-and-r-markdown.html#cb4-26"></a></span>
-<span id="cb4-27"><a href="getting-started-r-projects-and-r-markdown.html#cb4-27"></a><span class="kw">plot_grid</span>(gg_<span class="dv">1</span>, gg_<span class="dv">2</span>, <span class="dt">labels =</span> <span class="st">&quot;AUTO&quot;</span>)</span></code></pre></div>
-<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/intro-plot-1.png" width="672" /></p>
-<p>Each plot shows the mean count for each group, the standard error of the mean count, and the <em>p</em>-value from a <em>t</em>-test. This statistical analysis and plot are typical of those found in experimental biology journals. This text will teach alterntatives that implement better practices.</p>
-</div>
-<div id="knit" class="section level3">
-<h3><span class="header-section-number">1.10.5</span> Knit</h3>
-<ol start="6" style="list-style-type: decimal">
-<li>Knit to an html file</li>
-<li>If you’ve installed tinytex (or some other LaTeX distribution), knit to a pdf file</li>
-<li>Knit to a word document</li>
+<div id="an-example-of-bootstrapped-standard-errors-using-vole-data" class="section level3">
+<h3><span class="header-section-number">5.4.1</span> An example of bootstrapped standard errors using vole data</h3>
+<p>Let’s use the vole data to explore the bootstrap and “resampling”. The data are archived at Dryad Repository. Use the script in Section <a href="#vole-data"><strong>??</strong></a> to wrangle the data into a usable format.</p>
+<ol style="list-style-type: decimal">
+<li>URL: <a href="https://datadryad.org//resource/doi:10.5061/dryad.31cc4" class="uri">https://datadryad.org//resource/doi:10.5061/dryad.31cc4</a></li>
+<li>file: RSBL-2013-0432 vole data.xlsx</li>
+<li>sheet: COLD VOLES LIFESPAN</li>
 </ol>
+<p>The data are the measured lifespans of the short-tailed field vole (<em>Microtus agrestis</em>) under three different experimental treatments: vitamin E supplementation, vitamin C supplementation, and control (no vitamin supplementation). Vitamins C and E are antioxidants, which are thought to be protective of basic cell function since they bind to the cell-damaging reactive oxygen species that result from cell metabolism.</p>
+<p>Let’s compute the standard error of the mean of the control group lifespan using both a parametric and a nonparametric bootstrap. To implement the algorithm above using easy-to-understand code, I’ll first extract the set of lifespan values for the control group and assign it to its own variable.</p>
+<div class="sourceCode" id="cb195"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb195-1"><a href="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals-variability.html#cb195-1"></a>control_voles &lt;-<span class="st"> </span>vole[treatment<span class="op">==</span><span class="st">&quot;control&quot;</span>, lifespan]</span></code></pre></div>
+<p><code>[treatment=="control", ]</code> indexes the rows (that is, returns the row numbers) that satisfy the condtion <code>treatment = "control"</code>. Or, put another way, it selects the <strong>subset</strong> of rows that contain the value “control” in the column “treatment”. <code>[, lifespan]</code> indexes the column labeled “lifespan”. Combined, these two indices extract the values of the column “lifespan” in the subset of rows that contain the value “control” in the column “treatment”. The resulting vector of values is assigned to the variable “control_voles”.</p>
+<div id="parametric-bootstrap" class="section level4">
+<h4><span class="header-section-number">5.4.1.1</span> parametric bootstrap</h4>
+<div class="sourceCode" id="cb196"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb196-1"><a href="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals-variability.html#cb196-1"></a><span class="co"># we&#39;ll use these as parameters for parametric bootstrap</span></span>
+<span id="cb196-2"><a href="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals-variability.html#cb196-2"></a>n &lt;-<span class="st"> </span><span class="kw">length</span>(control_voles)</span>
+<span id="cb196-3"><a href="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals-variability.html#cb196-3"></a>mu &lt;-<span class="st"> </span><span class="kw">mean</span>(control_voles)</span>
+<span id="cb196-4"><a href="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals-variability.html#cb196-4"></a>sigma &lt;-<span class="st"> </span><span class="kw">sd</span>(control_voles)</span>
+<span id="cb196-5"><a href="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals-variability.html#cb196-5"></a></span>
+<span id="cb196-6"><a href="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals-variability.html#cb196-6"></a>n_iter &lt;-<span class="st"> </span><span class="dv">1000</span> <span class="co"># number of bootstrap iterations, or p</span></span>
+<span id="cb196-7"><a href="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals-variability.html#cb196-7"></a>means &lt;-<span class="st"> </span><span class="kw">numeric</span>(n_iter) <span class="co"># we will save the means each iteration to this</span></span>
+<span id="cb196-8"><a href="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals-variability.html#cb196-8"></a></span>
+<span id="cb196-9"><a href="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals-variability.html#cb196-9"></a><span class="cf">for</span>(iter <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>n_iter){ <span class="co"># this line sets up the number of iterations, p</span></span>
+<span id="cb196-10"><a href="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals-variability.html#cb196-10"></a>  fake_sample &lt;-<span class="st"> </span><span class="kw">rnorm</span>(n, <span class="dt">mean=</span>mu, <span class="dt">sd=</span>sigma)</span>
+<span id="cb196-11"><a href="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals-variability.html#cb196-11"></a>  means[iter] &lt;-<span class="st"> </span><span class="kw">mean</span>(fake_sample)</span>
+<span id="cb196-12"><a href="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals-variability.html#cb196-12"></a>}</span>
+<span id="cb196-13"><a href="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals-variability.html#cb196-13"></a>(se_para_boot &lt;-<span class="st"> </span><span class="kw">sd</span>(means))</span></code></pre></div>
+<pre><code>## [1] 30.49765</code></pre>
+</div>
+<div id="non-parametric-bootstrap" class="section level4">
+<h4><span class="header-section-number">5.4.1.2</span> non-parametric bootstrap</h4>
+<div class="sourceCode" id="cb198"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb198-1"><a href="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals-variability.html#cb198-1"></a>n_iter &lt;-<span class="st"> </span><span class="dv">1000</span> <span class="co"># number of bootstrap iterations, or p</span></span>
+<span id="cb198-2"><a href="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals-variability.html#cb198-2"></a>means &lt;-<span class="st"> </span><span class="kw">numeric</span>(n_iter) <span class="co"># we will save the means each iteration to this</span></span>
+<span id="cb198-3"><a href="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals-variability.html#cb198-3"></a>inc &lt;-<span class="st"> </span><span class="dv">1</span><span class="op">:</span>n <span class="co"># inc indexes the elements to sample. By setting inc to 1:n prior to the loop, the first mean that is computed is the observed mean</span></span>
+<span id="cb198-4"><a href="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals-variability.html#cb198-4"></a><span class="cf">for</span>(iter <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>n_iter){ <span class="co"># this line sets up the number of iterations, p</span></span>
+<span id="cb198-5"><a href="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals-variability.html#cb198-5"></a>  means[iter] &lt;-<span class="st"> </span><span class="kw">mean</span>(control_voles[inc]) <span class="co"># inc is the set of rows to include in the computation of the mean.</span></span>
+<span id="cb198-6"><a href="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals-variability.html#cb198-6"></a>  inc &lt;-<span class="st"> </span><span class="kw">sample</span>(<span class="dv">1</span><span class="op">:</span>n, <span class="dt">replace=</span><span class="ot">TRUE</span>) <span class="co"># re-sample for the next iteration</span></span>
+<span id="cb198-7"><a href="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals-variability.html#cb198-7"></a>}</span>
+<span id="cb198-8"><a href="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals-variability.html#cb198-8"></a>(se_np_boot &lt;-<span class="st"> </span><span class="kw">sd</span>(means))</span></code></pre></div>
+<pre><code>## [1] 32.47356</code></pre>
+<p>The parametric bootstrapped SEM is 30.5. The non-parametric bootstrapped SEM is 32.47. Run these several times to get a sense how much variation there is in the bootstrapped estimate of the SEM given the number of iterations. Compute the <strong>parametric</strong> standard error using equation <a href="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals-variability.html#eq:se">(5.2)</a> and compare to the bootstrapped values.</p>
+</div>
+</div>
+</div>
+<div id="confidence-interval" class="section level2">
+<h2><span class="header-section-number">5.5</span> Confidence Interval</h2>
+<p>Here I introduce a <strong>confidence interval</strong> of a sample mean but the concept is easily generalized to any parameter. The mean of the Control voles is 503.4 and the SE of the mean is 31.61. The SE is used to construct the lower and upper boundary of a “1 - <span class="math inline">\(\alpha\)</span>” confidence interval using <code>lower &lt;- mean(x) + qt(alpha/2, df = n-1)*se(x)</code> and <code>upper &lt;- mean(x) + qt(1-(alpha/2), df = n-1)*se(x)</code>.</p>
+<div class="sourceCode" id="cb200"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb200-1"><a href="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals-variability.html#cb200-1"></a>(lower &lt;-<span class="st"> </span><span class="kw">mean</span>(control_voles) <span class="op">+</span><span class="st"> </span><span class="kw">qt</span>(<span class="fl">0.05</span><span class="op">/</span><span class="dv">2</span>, <span class="dt">df=</span>(n<span class="dv">-1</span>))<span class="op">*</span><span class="kw">sd</span>(control_voles)<span class="op">/</span><span class="kw">sqrt</span>(n))</span></code></pre></div>
+<pre><code>## [1] 440.0464</code></pre>
+<div class="sourceCode" id="cb202"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb202-1"><a href="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals-variability.html#cb202-1"></a>(upper &lt;-<span class="st"> </span><span class="kw">mean</span>(control_voles) <span class="op">+</span><span class="st"> </span><span class="kw">qt</span>(<span class="dv">1</span> <span class="op">-</span><span class="st"> </span><span class="fl">0.05</span><span class="op">/</span><span class="dv">2</span>, <span class="dt">df=</span>(n<span class="dv">-1</span>))<span class="op">*</span><span class="kw">sd</span>(control_voles)<span class="op">/</span><span class="kw">sqrt</span>(n))</span></code></pre></div>
+<pre><code>## [1] 566.7393</code></pre>
+<p>The function <code>qt</code> maps a probability to a <em>t</em>-value – this is the opposite of a <em>t</em> test, which maps a <em>t</em>-value to a probability. Sending <span class="math inline">\(\alpha/2\)</span> and <span class="math inline">\(1 - \alpha/2\)</span> to <code>qt</code> returns the bounds of the confidence interval on a standardized scale. Multiplying these bounds by the standard error of the control vole lifespan pops the bounds onto the scale of the control vole lifespans.</p>
+<p>We can check our manual computation with the linear model</p>
+<div class="sourceCode" id="cb204"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb204-1"><a href="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals-variability.html#cb204-1"></a><span class="kw">confint</span>(<span class="kw">lm</span>(control_voles <span class="op">~</span><span class="st"> </span><span class="dv">1</span>))</span></code></pre></div>
+<pre><code>##                2.5 %   97.5 %
+## (Intercept) 440.0464 566.7393</code></pre>
+<div id="interpretation-of-a-confidence-interval" class="section level3">
+<h3><span class="header-section-number">5.5.1</span> Interpretation of a confidence interval</h3>
+<p>Okay, so what <em>is</em> a confidence interval? A confidence interval of the mean is a measure of the uncertainty in the estimate of the mean. A 95% confidence interval has a 95% probability (in the sense of long-run frequency) of containing the true mean. It is not correct to state that “there is a 95% probability that the true mean lies within the interval”. These sound the same but they are two different probabilities. The first (correct interpretation) is a probability of a procedure – if we re-do this procedure (sample data, compute the mean, and compute a 95% CI), 95% of these CIs will contain the true mean. The second (incorrect interpretation) is a probability that a parameter (<span class="math inline">\(\mu\)</span>, the true mean) lies within some range. The second (incorrect) interepretation of the CI is correct only if we also assume that <em>any</em> value of the mean is equally probable (Greenland xxx), an assumption that is absurd for almost any data.</p>
+<p>Perhaps a more useful interpretation of a confidence interval is, a confidence interval contains the range of true means that are compatible with the data, in the sense that a <span class="math inline">\(t\)</span>-test would not reject the null hypothesis of a difference between the estimate and any value within the interval (this interpretation does not imply anything about the true value) (Greenland xxx). The “compatibility” interpretation is very useful because it implies that values outside of the interval are less compatible with the data.</p>
+<p>Let’s look at the confidence intervals of all three vole groups in light of the “compatibility” interpretation.</p>
+<div class="sourceCode" id="cb206"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb206-1"><a href="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals-variability.html#cb206-1"></a>vole_ci &lt;-<span class="st"> </span>vole[, .(<span class="dt">lifespan =</span> <span class="kw">mean</span>(lifespan),</span>
+<span id="cb206-2"><a href="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals-variability.html#cb206-2"></a>                    <span class="dt">lo =</span> <span class="kw">mean</span>(lifespan) <span class="op">+</span><span class="st"> </span><span class="kw">sd</span>(lifespan)<span class="op">/</span><span class="kw">sqrt</span>(.N)<span class="op">*</span><span class="kw">qt</span>(.<span class="dv">025</span>, (.N<span class="dv">-1</span>)),</span>
+<span id="cb206-3"><a href="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals-variability.html#cb206-3"></a>                    <span class="dt">up =</span> <span class="kw">mean</span>(lifespan) <span class="op">+</span><span class="st"> </span><span class="kw">sd</span>(lifespan)<span class="op">/</span><span class="kw">sqrt</span>(.N)<span class="op">*</span><span class="kw">qt</span>(.<span class="dv">975</span>, (.N<span class="dv">-1</span>)),</span>
+<span id="cb206-4"><a href="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals-variability.html#cb206-4"></a>                    <span class="dt">N =</span> .N),</span>
+<span id="cb206-5"><a href="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals-variability.html#cb206-5"></a>                by =<span class="st"> </span>.(treatment)]</span>
+<span id="cb206-6"><a href="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals-variability.html#cb206-6"></a><span class="kw">ggplot</span>(<span class="dt">data=</span>vole_ci, <span class="kw">aes</span>(<span class="dt">x=</span>treatment, <span class="dt">y=</span>lifespan)) <span class="op">+</span></span>
+<span id="cb206-7"><a href="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals-variability.html#cb206-7"></a><span class="st">  </span><span class="kw">geom_point</span>() <span class="op">+</span></span>
+<span id="cb206-8"><a href="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals-variability.html#cb206-8"></a><span class="st">  </span><span class="kw">geom_errorbar</span>(<span class="kw">aes</span>(<span class="dt">x=</span>treatment, <span class="dt">ymin=</span>lo, <span class="dt">ymax=</span>up), </span>
+<span id="cb206-9"><a href="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals-variability.html#cb206-9"></a>                <span class="dt">width=</span><span class="fl">0.1</span>) <span class="op">+</span></span>
+<span id="cb206-10"><a href="variability-and-uncertainty-standard-deviations-standard-errors-confidence-intervals-variability.html#cb206-10"></a><span class="st">  </span><span class="ot">NULL</span></span></code></pre></div>
+<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/unnamed-chunk-105-1.png" width="576" /></p>
 
 </div>
 </div>
@@ -881,8 +894,8 @@ Figure 1.1: Project folder with the .Rproj file and all main folders located at 
           </div>
         </div>
       </div>
-<a href="part-i-getting-started.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="analyzing-experimental-data-with-a-linear-model.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="part-iv-some-fundamentals-of-statistical-modeling.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="p-values.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -914,7 +927,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/rstudio/bookdown-demo/edit/master/chapters/04-setup.Rmd",
+"link": "https://github.com/rstudio/bookdown-demo/edit/master/chapters/15-uncertainty_sd_and_se.Rmd",
 "text": "Edit"
 },
 "history": {
