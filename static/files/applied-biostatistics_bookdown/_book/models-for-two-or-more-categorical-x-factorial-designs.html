@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Part VI: More than one \(X\) – Multivariable Models | Elements of Statistical Modeling for Experimental Biology</title>
+  <title>Chapter 15 Models for two (or more) categorical \(X\) – Factorial designs | Elements of Statistical Modeling for Experimental Biology</title>
   <meta name="description" content="A first course in statistical modeling for experimental biology researchers" />
   <meta name="generator" content="bookdown 0.14 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Part VI: More than one \(X\) – Multivariable Models | Elements of Statistical Modeling for Experimental Biology" />
+  <meta property="og:title" content="Chapter 15 Models for two (or more) categorical \(X\) – Factorial designs | Elements of Statistical Modeling for Experimental Biology" />
   <meta property="og:type" content="book" />
   
   
@@ -16,7 +16,7 @@
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Part VI: More than one \(X\) – Multivariable Models | Elements of Statistical Modeling for Experimental Biology" />
+  <meta name="twitter:title" content="Chapter 15 Models for two (or more) categorical \(X\) – Factorial designs | Elements of Statistical Modeling for Experimental Biology" />
   
   <meta name="twitter:description" content="A first course in statistical modeling for experimental biology researchers" />
   
@@ -30,8 +30,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="best-practices-issues-in-inference.html"/>
-<link rel="next" href="chapter-covariates.html"/>
+<link rel="prev" href="chapter-covariates.html"/>
+<link rel="next" href="anova-tables.html"/>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -618,17 +618,1740 @@ code span.wa { color: #bf0303; } /* Warning */
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="part-vi-more-than-one-x-multivariable-models" class="section level1 unnumbered">
-<h1>Part VI: More than one <span class="math inline">\(X\)</span> – Multivariable Models</h1>
+<div id="models-for-two-or-more-categorical-x-factorial-designs" class="section level1">
+<h1><span class="header-section-number">Chapter 15</span> Models for two (or more) categorical <span class="math inline">\(X\)</span> – Factorial designs</h1>
+<div id="factorial-experiments" class="section level2">
+<h2><span class="header-section-number">15.1</span> Factorial experiments</h2>
+<p>A factorial experiment is one in which there are two or more factor variables (categorical <span class="math inline">\(X\)</span>) that are <strong>crossed</strong>, resulting in a group for each combination of the levels of each factor. Factorial experiments are used to estimate the <strong>interaction</strong> effect between factors. Interaction effects were introduced in Chapter xxx, Models with a added covariate. Remember the key to interactions – two factors interact when the effect of one factor depends on the level of the other factor. Interactions are ubiquitous, although sometimes they are small enough to ignore with little to no loss of understanding.</p>
+</div>
+<div id="example-1-maize-defense-response" class="section level2">
+<h2><span class="header-section-number">15.2</span> Example 1: Maize defense response</h2>
+<p>This chapter uses data from an experiment measuring the effect of two defense signals on the defense response in Maize plants. In response to herbivory from insects, maize, and other plants, release multiple, chemical signals into the air (chemicals that evaporate into the air are known as volatile compounds). These chemicals signal the plant, and neighboring plants, to secrete anti-herbivory hormones, including abcisic acid and jasmonic acid. The researchers investigated the effects of two volatile compounts, (Z)‐3‐hexenyl acetate (HAC) and Indole, on the defense response both each without the other and in combination.</p>
+<p>The example data come from Figure 1a, which is the effect of HAC and Indole on tissue concentrations of the hormone abcisic acid (ABA). The design is fully crossed with two factors, each with two levels: <span class="math inline">\(hac\)</span>, with levels “HAC-” and “HAC+”, and <span class="math inline">\(indole\)</span>, with levels (“Indole-” and “Indole+”). A good way to visualize the treatment combinations in a crossed design is with a <span class="math inline">\(m \times p\)</span> table showing all combinations of the <span class="math inline">\(m\)</span> levels of factor 1 (<span class="math inline">\(hac\)</span>) against the <span class="math inline">\(p\)</span> levels of factor 2 (<span class="math inline">\(indole\)</span>).</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+</th>
+<th style="text-align:left;">
+HAC-
+</th>
+<th style="text-align:left;">
+HAC+
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Indole-
+</td>
+<td style="text-align:left;">
+Control
+</td>
+<td style="text-align:left;">
+HAC
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Indole+
+</td>
+<td style="text-align:left;">
+Indole
+</td>
+<td style="text-align:left;">
+HAC+Indole
+</td>
+</tr>
+</tbody>
+</table>
+<div id="analysis" class="section level3">
+<h3><span class="header-section-number">15.2.1</span> Analysis</h3>
+<div id="examine-the-data" class="section level4">
+<h4><span class="header-section-number">15.2.1.1</span> Examine the data</h4>
+<div class="sourceCode" id="cb432"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb432-1"><a href="models-for-two-or-more-categorical-x-factorial-designs.html#cb432-1"></a><span class="kw">qplot</span>(<span class="dt">x =</span> treat, <span class="dt">y =</span> aba, <span class="dt">data =</span> fig1)</span></code></pre></div>
+<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/unnamed-chunk-224-1.png" width="576" /></p>
+<p>Too few points for box plot. control variance is small. No obvious implausible points. fit with lm but recognize small n warning for any inference.</p>
+</div>
+<div id="fit-the-model-5" class="section level4">
+<h4><span class="header-section-number">15.2.1.2</span> Fit the model</h4>
+<div class="sourceCode" id="cb433"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb433-1"><a href="models-for-two-or-more-categorical-x-factorial-designs.html#cb433-1"></a>m1 &lt;-<span class="st"> </span><span class="kw">lm</span>(aba <span class="op">~</span><span class="st"> </span>hac <span class="op">*</span><span class="st"> </span>indole, <span class="dt">data =</span> fig1)</span></code></pre></div>
+</div>
+<div id="model-check" class="section level4">
+<h4><span class="header-section-number">15.2.1.3</span> Model check</h4>
+<div class="sourceCode" id="cb434"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb434-1"><a href="models-for-two-or-more-categorical-x-factorial-designs.html#cb434-1"></a><span class="kw">qqPlot</span>(m1, <span class="dt">id =</span> <span class="ot">FALSE</span>)</span></code></pre></div>
+<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/unnamed-chunk-225-1.png" width="576" /></p>
+<p>A plausible sample from a Normal distribution.</p>
+<div class="sourceCode" id="cb435"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb435-1"><a href="models-for-two-or-more-categorical-x-factorial-designs.html#cb435-1"></a><span class="kw">spreadLevelPlot</span>(m1)</span></code></pre></div>
+<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/unnamed-chunk-226-1.png" width="576" /></p>
+<pre><code>## 
+## Suggested power transformation:  -0.7343415</code></pre>
+<p>A bit of increase in variance with mean.</p>
+</div>
+<div id="inference-from-the-model-2" class="section level4">
+<h4><span class="header-section-number">15.2.1.4</span> Inference from the model</h4>
+<div class="sourceCode" id="cb437"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb437-1"><a href="models-for-two-or-more-categorical-x-factorial-designs.html#cb437-1"></a>m1_coef &lt;-<span class="st"> </span><span class="kw">cbind</span>(<span class="kw">coef</span>(<span class="kw">summary</span>(m1)),</span>
+<span id="cb437-2"><a href="models-for-two-or-more-categorical-x-factorial-designs.html#cb437-2"></a>                 <span class="kw">confint</span>(m1))</span>
+<span id="cb437-3"><a href="models-for-two-or-more-categorical-x-factorial-designs.html#cb437-3"></a>knitr<span class="op">::</span><span class="kw">kable</span>(m1_coef, <span class="dt">digits =</span> <span class="dv">3</span>)</span></code></pre></div>
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+</th>
+<th style="text-align:right;">
+Estimate
+</th>
+<th style="text-align:right;">
+Std. Error
+</th>
+<th style="text-align:right;">
+t value
+</th>
+<th style="text-align:right;">
+Pr(&gt;|t|)
+</th>
+<th style="text-align:right;">
+2.5 %
+</th>
+<th style="text-align:right;">
+97.5 %
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+(Intercept)
+</td>
+<td style="text-align:right;">
+19.160
+</td>
+<td style="text-align:right;">
+3.227
+</td>
+<td style="text-align:right;">
+5.938
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+12.320
+</td>
+<td style="text-align:right;">
+26.001
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+hacHAC+
+</td>
+<td style="text-align:right;">
+13.297
+</td>
+<td style="text-align:right;">
+4.563
+</td>
+<td style="text-align:right;">
+2.914
+</td>
+<td style="text-align:right;">
+0.010
+</td>
+<td style="text-align:right;">
+3.623
+</td>
+<td style="text-align:right;">
+22.971
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+indoleIndole+
+</td>
+<td style="text-align:right;">
+8.776
+</td>
+<td style="text-align:right;">
+4.563
+</td>
+<td style="text-align:right;">
+1.923
+</td>
+<td style="text-align:right;">
+0.072
+</td>
+<td style="text-align:right;">
+-0.898
+</td>
+<td style="text-align:right;">
+18.450
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+hacHAC+:indoleIndole+
+</td>
+<td style="text-align:right;">
+12.818
+</td>
+<td style="text-align:right;">
+6.454
+</td>
+<td style="text-align:right;">
+1.986
+</td>
+<td style="text-align:right;">
+0.064
+</td>
+<td style="text-align:right;">
+-0.863
+</td>
+<td style="text-align:right;">
+26.499
+</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode" id="cb438"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb438-1"><a href="models-for-two-or-more-categorical-x-factorial-designs.html#cb438-1"></a>m1_emm &lt;-<span class="st"> </span><span class="kw">emmeans</span>(m1, <span class="dt">specs =</span> <span class="kw">c</span>(<span class="st">&quot;hac&quot;</span>, <span class="st">&quot;indole&quot;</span>))</span>
+<span id="cb438-2"><a href="models-for-two-or-more-categorical-x-factorial-designs.html#cb438-2"></a>knitr<span class="op">::</span><span class="kw">kable</span>(m1_emm, <span class="dt">digits =</span> <span class="dv">2</span>)</span></code></pre></div>
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+hac
+</th>
+<th style="text-align:left;">
+indole
+</th>
+<th style="text-align:right;">
+emmean
+</th>
+<th style="text-align:right;">
+SE
+</th>
+<th style="text-align:right;">
+df
+</th>
+<th style="text-align:right;">
+lower.CL
+</th>
+<th style="text-align:right;">
+upper.CL
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+HAC-
+</td>
+<td style="text-align:left;">
+Indole-
+</td>
+<td style="text-align:right;">
+19.16
+</td>
+<td style="text-align:right;">
+3.23
+</td>
+<td style="text-align:right;">
+16
+</td>
+<td style="text-align:right;">
+12.32
+</td>
+<td style="text-align:right;">
+26.00
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+HAC+
+</td>
+<td style="text-align:left;">
+Indole-
+</td>
+<td style="text-align:right;">
+32.46
+</td>
+<td style="text-align:right;">
+3.23
+</td>
+<td style="text-align:right;">
+16
+</td>
+<td style="text-align:right;">
+25.62
+</td>
+<td style="text-align:right;">
+39.30
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+HAC-
+</td>
+<td style="text-align:left;">
+Indole+
+</td>
+<td style="text-align:right;">
+27.94
+</td>
+<td style="text-align:right;">
+3.23
+</td>
+<td style="text-align:right;">
+16
+</td>
+<td style="text-align:right;">
+21.10
+</td>
+<td style="text-align:right;">
+34.78
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+HAC+
+</td>
+<td style="text-align:left;">
+Indole+
+</td>
+<td style="text-align:right;">
+54.05
+</td>
+<td style="text-align:right;">
+3.23
+</td>
+<td style="text-align:right;">
+16
+</td>
+<td style="text-align:right;">
+47.21
+</td>
+<td style="text-align:right;">
+60.89
+</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode" id="cb439"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb439-1"><a href="models-for-two-or-more-categorical-x-factorial-designs.html#cb439-1"></a>m1_pairs &lt;-<span class="st"> </span><span class="kw">contrast</span>(m1_emm,</span>
+<span id="cb439-2"><a href="models-for-two-or-more-categorical-x-factorial-designs.html#cb439-2"></a>                     <span class="dt">method =</span> <span class="st">&quot;revpairwise&quot;</span>,</span>
+<span id="cb439-3"><a href="models-for-two-or-more-categorical-x-factorial-designs.html#cb439-3"></a>                     <span class="dt">simple =</span> <span class="st">&quot;each&quot;</span>,</span>
+<span id="cb439-4"><a href="models-for-two-or-more-categorical-x-factorial-designs.html#cb439-4"></a>                     <span class="dt">combine =</span> <span class="ot">TRUE</span>,</span>
+<span id="cb439-5"><a href="models-for-two-or-more-categorical-x-factorial-designs.html#cb439-5"></a>                     <span class="dt">adjust =</span> <span class="st">&quot;none&quot;</span>) <span class="op">%&gt;%</span></span>
+<span id="cb439-6"><a href="models-for-two-or-more-categorical-x-factorial-designs.html#cb439-6"></a><span class="st">  </span><span class="kw">summary</span>(<span class="dt">infer =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb439-7"><a href="models-for-two-or-more-categorical-x-factorial-designs.html#cb439-7"></a></span>
+<span id="cb439-8"><a href="models-for-two-or-more-categorical-x-factorial-designs.html#cb439-8"></a>knitr<span class="op">::</span><span class="kw">kable</span>(m1_pairs, <span class="dt">digits =</span> <span class="dv">2</span>)</span></code></pre></div>
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+indole
+</th>
+<th style="text-align:left;">
+hac
+</th>
+<th style="text-align:left;">
+contrast
+</th>
+<th style="text-align:right;">
+estimate
+</th>
+<th style="text-align:right;">
+SE
+</th>
+<th style="text-align:right;">
+df
+</th>
+<th style="text-align:right;">
+lower.CL
+</th>
+<th style="text-align:right;">
+upper.CL
+</th>
+<th style="text-align:right;">
+t.ratio
+</th>
+<th style="text-align:right;">
+p.value
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Indole-
+</td>
+<td style="text-align:left;">
+.
+</td>
+<td style="text-align:left;">
+(HAC+) - (HAC-)
+</td>
+<td style="text-align:right;">
+13.30
+</td>
+<td style="text-align:right;">
+4.56
+</td>
+<td style="text-align:right;">
+16
+</td>
+<td style="text-align:right;">
+3.62
+</td>
+<td style="text-align:right;">
+22.97
+</td>
+<td style="text-align:right;">
+2.91
+</td>
+<td style="text-align:right;">
+0.01
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Indole+
+</td>
+<td style="text-align:left;">
+.
+</td>
+<td style="text-align:left;">
+(HAC+) - (HAC-)
+</td>
+<td style="text-align:right;">
+26.12
+</td>
+<td style="text-align:right;">
+4.56
+</td>
+<td style="text-align:right;">
+16
+</td>
+<td style="text-align:right;">
+16.44
+</td>
+<td style="text-align:right;">
+35.79
+</td>
+<td style="text-align:right;">
+5.72
+</td>
+<td style="text-align:right;">
+0.00
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+.
+</td>
+<td style="text-align:left;">
+HAC-
+</td>
+<td style="text-align:left;">
+(Indole+) - (Indole-)
+</td>
+<td style="text-align:right;">
+8.78
+</td>
+<td style="text-align:right;">
+4.56
+</td>
+<td style="text-align:right;">
+16
+</td>
+<td style="text-align:right;">
+-0.90
+</td>
+<td style="text-align:right;">
+18.45
+</td>
+<td style="text-align:right;">
+1.92
+</td>
+<td style="text-align:right;">
+0.07
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+.
+</td>
+<td style="text-align:left;">
+HAC+
+</td>
+<td style="text-align:left;">
+(Indole+) - (Indole-)
+</td>
+<td style="text-align:right;">
+21.59
+</td>
+<td style="text-align:right;">
+4.56
+</td>
+<td style="text-align:right;">
+16
+</td>
+<td style="text-align:right;">
+11.92
+</td>
+<td style="text-align:right;">
+31.27
+</td>
+<td style="text-align:right;">
+4.73
+</td>
+<td style="text-align:right;">
+0.00
+</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode" id="cb440"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb440-1"><a href="models-for-two-or-more-categorical-x-factorial-designs.html#cb440-1"></a>m1_interaction &lt;-<span class="st"> </span><span class="kw">contrast</span>(m1_emm,</span>
+<span id="cb440-2"><a href="models-for-two-or-more-categorical-x-factorial-designs.html#cb440-2"></a>                           <span class="dt">interaction =</span> <span class="kw">c</span>(<span class="st">&quot;revpairwise&quot;</span>),</span>
+<span id="cb440-3"><a href="models-for-two-or-more-categorical-x-factorial-designs.html#cb440-3"></a>                           <span class="dt">by =</span> <span class="ot">NULL</span>) <span class="op">%&gt;%</span></span>
+<span id="cb440-4"><a href="models-for-two-or-more-categorical-x-factorial-designs.html#cb440-4"></a><span class="st">  </span><span class="kw">summary</span>(<span class="dt">infer =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb440-5"><a href="models-for-two-or-more-categorical-x-factorial-designs.html#cb440-5"></a></span>
+<span id="cb440-6"><a href="models-for-two-or-more-categorical-x-factorial-designs.html#cb440-6"></a>m1_interaction <span class="op">%&gt;%</span></span>
+<span id="cb440-7"><a href="models-for-two-or-more-categorical-x-factorial-designs.html#cb440-7"></a><span class="st">  </span><span class="kw">kable</span>(<span class="dt">digits =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">0</span>,<span class="dv">2</span>,<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>)) <span class="op">%&gt;%</span></span>
+<span id="cb440-8"><a href="models-for-two-or-more-categorical-x-factorial-designs.html#cb440-8"></a><span class="st">  </span><span class="kw">kable_styling</span>()</span></code></pre></div>
+<table class="table" style="margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+hac_revpairwise
+</th>
+<th style="text-align:left;">
+indole_revpairwise
+</th>
+<th style="text-align:right;">
+estimate
+</th>
+<th style="text-align:right;">
+SE
+</th>
+<th style="text-align:right;">
+df
+</th>
+<th style="text-align:right;">
+lower.CL
+</th>
+<th style="text-align:right;">
+upper.CL
+</th>
+<th style="text-align:right;">
+t.ratio
+</th>
+<th style="text-align:right;">
+p.value
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+(HAC+) - (HAC-)
+</td>
+<td style="text-align:left;">
+(Indole+) - (Indole-)
+</td>
+<td style="text-align:right;">
+12.8
+</td>
+<td style="text-align:right;">
+6.45
+</td>
+<td style="text-align:right;">
+16
+</td>
+<td style="text-align:right;">
+-0.86
+</td>
+<td style="text-align:right;">
+26.5
+</td>
+<td style="text-align:right;">
+1.99
+</td>
+<td style="text-align:right;">
+0.064
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="plot-the-model-2" class="section level4">
+<h4><span class="header-section-number">15.2.1.5</span> Plot the model</h4>
+<p>xxx if interested in synergy plot the coefficients! this is what we want. When would we want to plot all simple effects?</p>
+<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/factorial-aba-plot-1.png" width="576" /></p>
+</div>
+</div>
+<div id="a-factorial-model-adds-an-interaction-effect-to-the-coefficients-table" class="section level3">
+<h3><span class="header-section-number">15.2.2</span> A factorial model adds an interaction effect to the coefficients table</h3>
+<p>A factorial design allows a researcher to estimate the interaction between two factors. An interaction is an effect between two variables in a linear model. The interaction effect is the coefficient <span class="math inline">\(beta_3\)</span> in the linear model</p>
+<p><span class="math display" id="eq:factorial-full">\[\begin{equation}
+aba = \beta_0 + \beta_1 hac_{HAC^+} + \beta_2 indole_{Indole^+} + \beta_3 hac_{HAC^+}:indole_{Indole^+} +\varepsilon
+\tag{15.1}
+\end{equation}\]</span></p>
+<p><span class="math inline">\(hac_{HAC^+}\)</span> and <span class="math inline">\(indole_{Indole^+}\)</span> are dummy-coded <strong>indicator variables</strong> indicating group membership. <span class="math inline">\(hac_{HAC^+} : indole_{Indole^+}\)</span> is a dummy-coded variable for the interaction between <span class="math inline">\(hac\)</span> and <span class="math inline">\(indole\)</span>. The value of this variable is the product of the two indicator variables in the interaction (<span class="math inline">\(hac_{HAC^+}\)</span> and <span class="math inline">\(indole_{Indole^+}\)</span>), which can be verified with the model matrix (which here, is computed from the subset of the data that includeds only the first two rows of each treatment combination)</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+</th>
+<th style="text-align:right;">
+(Intercept)
+</th>
+<th style="text-align:right;">
+hacHAC+
+</th>
+<th style="text-align:right;">
+indoleIndole+
+</th>
+<th style="text-align:right;">
+hacHAC+:indoleIndole+
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+2
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+6
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+7
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+11
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+12
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+16
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+17
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+</tbody>
+</table>
+<p>The coefficient table is</p>
+<table>
+<caption>
+<span id="tab:factorial-coef">Table 15.1: </span>Coefficient table of the factorial model
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;">
+</th>
+<th style="text-align:right;">
+Estimate
+</th>
+<th style="text-align:right;">
+Std. Error
+</th>
+<th style="text-align:right;">
+t value
+</th>
+<th style="text-align:right;">
+Pr(&gt;|t|)
+</th>
+<th style="text-align:right;">
+2.5 %
+</th>
+<th style="text-align:right;">
+97.5 %
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+(Intercept)
+</td>
+<td style="text-align:right;">
+19.16
+</td>
+<td style="text-align:right;">
+3.23
+</td>
+<td style="text-align:right;">
+5.9
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+12.32
+</td>
+<td style="text-align:right;">
+26.00
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+hacHAC+
+</td>
+<td style="text-align:right;">
+13.30
+</td>
+<td style="text-align:right;">
+4.56
+</td>
+<td style="text-align:right;">
+2.9
+</td>
+<td style="text-align:right;">
+0.010
+</td>
+<td style="text-align:right;">
+3.62
+</td>
+<td style="text-align:right;">
+22.97
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+indoleIndole+
+</td>
+<td style="text-align:right;">
+8.78
+</td>
+<td style="text-align:right;">
+4.56
+</td>
+<td style="text-align:right;">
+1.9
+</td>
+<td style="text-align:right;">
+0.072
+</td>
+<td style="text-align:right;">
+-0.90
+</td>
+<td style="text-align:right;">
+18.45
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+hacHAC+:indoleIndole+
+</td>
+<td style="text-align:right;">
+12.82
+</td>
+<td style="text-align:right;">
+6.45
+</td>
+<td style="text-align:right;">
+2.0
+</td>
+<td style="text-align:right;">
+0.064
+</td>
+<td style="text-align:right;">
+-0.86
+</td>
+<td style="text-align:right;">
+26.50
+</td>
+</tr>
+</tbody>
+</table>
+<ol style="list-style-type: decimal">
+<li>The Intercept (<span class="math inline">\(b_0\)</span>) is the mean of the reference (HAC-/Indole-) group, and so the mean of the upper left cell (“Control”) in Table <a href="models-for-two-or-more-categorical-x-factorial-designs.html#tab:factorial-coef">15.1</a>.</li>
+<li>The hacHAC+ coefficient (<span class="math inline">\(b_1\)</span>) is the estimate of the added HAC effect relative to the reference, and so is the mean of the lower left cell (“HAC”) minus the mean of the upper left cell (“Control”). Another way of stating this is, it is <strong>the effect of HAC when Indole is at its reference level</strong>.</li>
+<li>The indoleIndole+ coefficient (<span class="math inline">\(b_2\)</span>) is the estimate of the added Indole effect relative to the reference, and so is the mean of the upper right cell (“Indole”) minus the mean of the upper left cell (“Control”). Another way of stating this is, <strong>it is the effect of Indole when HAC is at its reference level</strong>.</li>
+<li>The hacHAC+:indoleIndole+ coefficient (<span class="math inline">\(b_3\)</span>) is the estimate of the <strong>interaction effect</strong>. If we added the HAC effect (<span class="math inline">\(b_1\)</span>) and the Indole effect (<span class="math inline">\(b_2\)</span>) to the Control mean (<span class="math inline">\(b_0\)</span>), we would get the expected mean of the “HAC+Indole” group <strong>if the effects were additive</strong>. The hacHAC+:indoleIndole+ effect (<span class="math inline">\(b_3\)</span>) is the additional bit that we need to get from this additive expectation to the modeled HAC+Indole mean (Figure <a href="#factorial-what-are-coefficients-plot"><strong>??</strong></a>). It is the difference between the mean of the bottom right cell (“HAC+Indole”) and the sum of the coefficients of the other three cells (<span class="math inline">\(b0\)</span>, <span class="math inline">\(b1\)</span>, <span class="math inline">\(b2\)</span>).</li>
+</ol>
+<p>An interaction is a <strong>non-additive effect</strong>. Think about this. Adding HAC alone increases ABA concentration by 13.3 ng per g FW. Adding Indole alone increases ABA concentration by 8.8 ng per g FW. If these effects were purely additive, then adding both HAC and Indole to the Control mean should result in a mean of 19.2 + 13.3 + 8.8 = 41.3 ng per g FW in the HAC+Indole group. The modeled mean is 54.1 ng per g FW. The difference observed - additive is 54.1 - 41.3 = 12.8 ng per g FW. Compare this to the interaction coefficient in the coefficient table.</p>
+<div class="figure"><span id="fig:factorial-what-are-coefficients-plot"></span>
+<img src="Walker-elementary-statistical-modeling-draft_files/figure-html/factorial-what-are-coefficients-plot-1.png" alt="Meaning of coefficients in factorial model. b0 (blue line) is the mean of the reference (Control). b1 (orange line) is the /HAC effect. Numerically, it is the mean of the HAC group minus the mean of the reference. b2 (green line) is the Indole effect. Numerically it is the mean of the Indole group minus the mean of the reference. The expected mean of the HAC+Indole group if HAC and Indole were additive is b0 + b1 + b2 (gray circle). b3 (purple line) is the interaction effect. Numerically, it is the observed mean of the HAC+Indole group minus the expected additive mean (gray circle)" width="576" />
+<p class="caption">
+Figure 15.1: Meaning of coefficients in factorial model. b0 (blue line) is the mean of the reference (Control). b1 (orange line) is the /HAC effect. Numerically, it is the mean of the HAC group minus the mean of the reference. b2 (green line) is the Indole effect. Numerically it is the mean of the Indole group minus the mean of the reference. The expected mean of the HAC+Indole group if HAC and Indole were additive is b0 + b1 + b2 (gray circle). b3 (purple line) is the interaction effect. Numerically, it is the observed mean of the HAC+Indole group minus the expected additive mean (gray circle)
+</p>
+</div>
+</div>
+<div id="the-biological-interpretation-of-an-interaction-effect" class="section level3">
+<h3><span class="header-section-number">15.2.3</span> The biological interpretation of an interaction effect</h3>
+<p>The biological reasons causing interaction effects are highly variable but lets consider how interactions <em>might</em> arise in the context of the ABA defense response to HAC and Indole. Additive effects (no interaction) may occur when combined treatments act independently of each other. This might occur in the Maize ABA response if the signaling path from HAC reception to ABA secretion and Indole reception to ABA secretion occur in different cells or by different signaling pathways and activity in either pathway has no influence on the other. Positive, or <strong>synergistic</strong> interaction effects may occur when combined treatments augment each other’s ability to affect the response. This could occur in the Maize ABA response if an active signaling path from one of the volatile compound to ABA secretion makes the signaling path from the other compound to ABA secretion more sensitive to that compound. Negative, or <strong>antagonistic</strong> interaction effects may occur when combined treatments interfere with each other’s ability to affect the response. This could occur in the Maize ABA response if an active signaling path from one of the volatile compound to ABA secretion inhibits the signaling path from the other compound to ABA secretion. Negative interaction effects could also occur if there is a simple threshold response and all it takes is either the HAC or the Indole signaling pathway to activate the response.</p>
+</div>
+<div id="conditional-and-marginal-means" class="section level3">
+<h3><span class="header-section-number">15.2.4</span> Conditional and marginal means</h3>
+<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<caption>
+<span id="tab:factorial-conditional-means">Table 15.2: </span>Conditional (white background) and marginal (color background) means from full factorial model fit to ABA data
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;">
+</th>
+<th style="text-align:right;">
+HAC-
+</th>
+<th style="text-align:right;">
+HAC+
+</th>
+<th style="text-align:right;">
+mean
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Indole-
+</td>
+<td style="text-align:right;background-color: white !important;">
+19.160
+</td>
+<td style="text-align:right;background-color: white !important;">
+32.458
+</td>
+<td style="text-align:right;background-color: #E69F00 !important;">
+25.809
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Indole+
+</td>
+<td style="text-align:right;background-color: white !important;">
+27.936
+</td>
+<td style="text-align:right;background-color: white !important;">
+54.052
+</td>
+<td style="text-align:right;background-color: #E69F00 !important;">
+40.994
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+mean
+</td>
+<td style="text-align:right;background-color: #56B4E9 !important;">
+23.548
+</td>
+<td style="text-align:right;background-color: #56B4E9 !important;">
+43.255
+</td>
+<td style="text-align:right;background-color: white !important;">
+</td>
+</tr>
+</tbody>
+</table>
+<p>The conditional means from model <a href="models-for-two-or-more-categorical-x-factorial-designs.html#eq:factorial-full">(15.1)</a> are shown in the upper left <span class="math inline">\(2 \times 2\)</span> block (white background) of Table <a href="models-for-two-or-more-categorical-x-factorial-designs.html#tab:factorial-conditional-means">15.2</a>. These means are conditional on the level of <span class="math inline">\(hac\)</span> and <span class="math inline">\(indole\)</span>. The values in the last row and column are the <strong>marginal means</strong>, which are the means of the associated row or column cells (these values are in the margins of the table). More generally, <em>marginal</em> refers to a statistic averaged across multiple levels of another variable. The marginal means of <span class="math inline">\(indole\)</span> (orange background) are the means of the <code>Indole+</code> and <code>Indole-</code> rows. The marginal means of <span class="math inline">\(hac\)</span> (blue background) are the means of the <code>HAC+</code> and <code>HAC-</code> columns.</p>
+</div>
+<div id="simple-conditional-effects" class="section level3">
+<h3><span class="header-section-number">15.2.5</span> Simple (conditional) effects</h3>
+<p>In a factorial experiment with crossed A and B factors, there is an effect of factor A (relative to the reference, or another level of factor A) for each of the <em>p</em> levels of factor B. And, there is an effect of factor B (relative to the reference, or another level of factor B) for each of the <em>m</em> levels of factor A.</p>
+<p>For the maize defense response experiment, there is an Indole effect at <code>hac = HAC-</code> and a different effect at <code>hac = HAC+</code>. Similarly, there is a HAC effect at <code>indole = Indole-</code> and a different effect at <code>indole = Indole+</code>. These effects, or <strong>contrasts</strong> (differences in modeled means), are called the <strong>simple effects</strong>. I prefer <strong>conditional effects</strong>, since the value of the effect is conditional on the level factor of the other factor.</p>
+<table class="table" style="margin-left: auto; margin-right: auto;">
+<caption>
+<span id="tab:unnamed-chunk-231">Table 15.3: </span>Conditional (or “simple”) effects of the factorial model.
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;">
+indole
+</th>
+<th style="text-align:left;">
+hac
+</th>
+<th style="text-align:left;">
+contrast
+</th>
+<th style="text-align:right;">
+estimate
+</th>
+<th style="text-align:right;">
+SE
+</th>
+<th style="text-align:right;">
+df
+</th>
+<th style="text-align:right;">
+t.ratio
+</th>
+<th style="text-align:right;">
+p.value
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Indole-
+</td>
+<td style="text-align:left;">
+.
+</td>
+<td style="text-align:left;">
+(HAC+) - (HAC-)
+</td>
+<td style="text-align:right;">
+13.3
+</td>
+<td style="text-align:right;">
+4.56
+</td>
+<td style="text-align:right;">
+16
+</td>
+<td style="text-align:right;">
+2.9
+</td>
+<td style="text-align:right;">
+0.01015
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Indole+
+</td>
+<td style="text-align:left;">
+.
+</td>
+<td style="text-align:left;">
+(HAC+) - (HAC-)
+</td>
+<td style="text-align:right;">
+26.1
+</td>
+<td style="text-align:right;">
+4.56
+</td>
+<td style="text-align:right;">
+16
+</td>
+<td style="text-align:right;">
+5.7
+</td>
+<td style="text-align:right;">
+0.00003
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+.
+</td>
+<td style="text-align:left;">
+HAC-
+</td>
+<td style="text-align:left;">
+(Indole+) - (Indole-)
+</td>
+<td style="text-align:right;">
+8.8
+</td>
+<td style="text-align:right;">
+4.56
+</td>
+<td style="text-align:right;">
+16
+</td>
+<td style="text-align:right;">
+1.9
+</td>
+<td style="text-align:right;">
+0.07245
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+.
+</td>
+<td style="text-align:left;">
+HAC+
+</td>
+<td style="text-align:left;">
+(Indole+) - (Indole-)
+</td>
+<td style="text-align:right;">
+21.6
+</td>
+<td style="text-align:right;">
+4.56
+</td>
+<td style="text-align:right;">
+16
+</td>
+<td style="text-align:right;">
+4.7
+</td>
+<td style="text-align:right;">
+0.00023
+</td>
+</tr>
+</tbody>
+</table>
+<p>The first two rows are the conditional effects of <span class="math inline">\(hac\)</span> in each of the levels of <span class="math inline">\(Indole\)</span>. The last two rows are the conditional effects of <span class="math inline">\(Indole\)</span> in each of the levels of <span class="math inline">\(hac\)</span>.</p>
+<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<caption>
+<span id="tab:factorial-simple-effects">Table 15.4: </span>Conditonal (“simple”) effects of HAC (orange background) and Indole (blue background) on ABA concentration. The conditional means of each combination of the factor levels are in the cells with the white background. The simple effect is the difference in the means of the associated row or column.
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;">
+</th>
+<th style="text-align:right;">
+HAC-
+</th>
+<th style="text-align:right;">
+HAC+
+</th>
+<th style="text-align:right;">
+simple
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Indole-
+</td>
+<td style="text-align:right;background-color: white !important;">
+19.160
+</td>
+<td style="text-align:right;background-color: white !important;">
+32.458
+</td>
+<td style="text-align:right;background-color: #E69F00 !important;">
+13.297
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Indole+
+</td>
+<td style="text-align:right;background-color: white !important;">
+27.936
+</td>
+<td style="text-align:right;background-color: white !important;">
+54.052
+</td>
+<td style="text-align:right;background-color: #E69F00 !important;">
+26.115
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+simple
+</td>
+<td style="text-align:right;background-color: #56B4E9 !important;">
+8.776
+</td>
+<td style="text-align:right;background-color: #56B4E9 !important;">
+21.594
+</td>
+<td style="text-align:right;background-color: white !important;">
+</td>
+</tr>
+</tbody>
+</table>
+<p>One way to understand conditional effects is by using the <span class="math inline">\(m \times p\)</span> table of treatment combination means (Table <a href="#factorial-simple-effects"><strong>??</strong></a>). The values in the right-side column (orange) are the conditional effects of HAC at each level of Indole. These values are the difference of the means in the associated row. For example, the conditional effect of <span class="math inline">\(hac\)</span> when <code>indole = Indole-</code> is 13.297 (first value in orange column). The values in the bottom row (blue) are the conditional effects of Indole at each level of HAC. These values are the difference of the means in the associated column. For example, the conditional effect of <span class="math inline">\(indole\)</span> when <code>hac = HAC+</code> is 21.594 (second value in blue row). Note that the first conditional effect for each factor has a corresponding row in the table of coefficients of the fit model.</p>
+</div>
+<div id="marginal-effects" class="section level3">
+<h3><span class="header-section-number">15.2.6</span> Marginal effects</h3>
+<p>The average of the conditional effects for a factor are the <strong>marginal effects</strong>, or the <strong>main effects</strong> in ANOVA terminology.</p>
+<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<caption>
+<span id="tab:factorial-main">Table 15.5: </span>Marginal effects of HAC (orange) and Indole (blue) on ABA concentration. Simple effects are in grey cells. The conditional means of each combination of the factor levels are in the white cells.
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;">
+</th>
+<th style="text-align:right;">
+HAC-
+</th>
+<th style="text-align:right;">
+HAC+
+</th>
+<th style="text-align:right;">
+simple
+</th>
+<th style="text-align:right;">
+marginal
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Indole-
+</td>
+<td style="text-align:right;background-color: white !important;">
+19.160
+</td>
+<td style="text-align:right;background-color: white !important;">
+32.458
+</td>
+<td style="text-align:right;background-color: rgba(134, 134, 134, 0.6) !important;">
+13.297
+</td>
+<td style="text-align:right;background-color: white !important;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Indole+
+</td>
+<td style="text-align:right;background-color: white !important;">
+27.936
+</td>
+<td style="text-align:right;background-color: white !important;">
+54.052
+</td>
+<td style="text-align:right;background-color: rgba(134, 134, 134, 0.6) !important;">
+26.115
+</td>
+<td style="text-align:right;background-color: white !important;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+simple
+</td>
+<td style="text-align:right;background-color: rgba(134, 134, 134, 0.6) !important;">
+8.776
+</td>
+<td style="text-align:right;background-color: rgba(134, 134, 134, 0.6) !important;">
+21.594
+</td>
+<td style="text-align:right;background-color: white !important;">
+</td>
+<td style="text-align:right;background-color: #56B4E9 !important;">
+15.185
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+marginal
+</td>
+<td style="text-align:right;background-color: white !important;">
+</td>
+<td style="text-align:right;background-color: white !important;">
+</td>
+<td style="text-align:right;background-color: #E69F00 !important;">
+19.706
+</td>
+<td style="text-align:right;background-color: white !important;">
+</td>
+</tr>
+</tbody>
+</table>
+<div style="background-color:#cccccc; text-align:left; vertical-align: middle; padding:20px 47px;">
+<p>Be careful with reporting marginal effects. In this example, the simple effects of HAC are very different for the <code>Indole-</code> and <code>Indole+</code> treatment levels and the mean of these two effects may not be especially relevant to the question that we are pursuing. If the simple effects of a factor are similar, then it may make more sense to report the marginal effect.</p>
+</div>
+</div>
+<div id="the-additive-model" class="section level3">
+<h3><span class="header-section-number">15.2.7</span> The additive model</h3>
+<p>Marginal effects can be useful for summarizing a general trend, but, like any average, might not be especially meaningful if there is large heterogeneity of the simple effects, which occurs when the interaction effect is large. The maize ABA response is a good example of marginal effects that would be highly misleading to present without further comment.</p>
+<p>If an interaction effect is small, then it can be useful to estimate the effects of the two factors as if the interaction were equal to zero.</p>
+<p><span class="math display" id="eq:factorial-reduced">\[\begin{equation}
+aba = \beta_0 + \beta_1 hac_{HAC^+} + \beta_2 indole_{Indole^+} + \varepsilon
+\tag{15.2}
+\end{equation}\]</span></p>
+<p>This is a <strong>reduced model</strong> because one of the terms has been removed from the model. This particular reduced model is often referred to as the <strong>additive model</strong>, since it excludes the interaction term, which is a <em>product</em> of other terms. In R, this model is</p>
+<div class="sourceCode" id="cb441"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb441-1"><a href="models-for-two-or-more-categorical-x-factorial-designs.html#cb441-1"></a>m2 &lt;-<span class="st"> </span><span class="kw">lm</span>(aba <span class="op">~</span><span class="st"> </span>hac <span class="op">+</span><span class="st"> </span>indole, <span class="dt">data =</span> fig1)</span></code></pre></div>
+<p>The model coefficients of the additive model are</p>
+<table class="table" style="margin-left: auto; margin-right: auto;">
+<caption>
+<span id="tab:factorial-reduced-model">Table 15.6: </span>Model coefficients of additive model.
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;">
+</th>
+<th style="text-align:right;">
+Estimate
+</th>
+<th style="text-align:right;">
+Std. Error
+</th>
+<th style="text-align:right;">
+t value
+</th>
+<th style="text-align:right;">
+Pr(&gt;|t|)
+</th>
+<th style="text-align:right;">
+2.5 %
+</th>
+<th style="text-align:right;">
+97.5 %
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+(Intercept)
+</td>
+<td style="text-align:right;">
+15.96
+</td>
+<td style="text-align:right;">
+3.03
+</td>
+<td style="text-align:right;">
+5.3
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+9.57
+</td>
+<td style="text-align:right;">
+22.34
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+hacHAC+
+</td>
+<td style="text-align:right;">
+19.71
+</td>
+<td style="text-align:right;">
+3.50
+</td>
+<td style="text-align:right;">
+5.6
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+12.33
+</td>
+<td style="text-align:right;">
+27.08
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+indoleIndole+
+</td>
+<td style="text-align:right;">
+15.19
+</td>
+<td style="text-align:right;">
+3.50
+</td>
+<td style="text-align:right;">
+4.3
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+7.81
+</td>
+<td style="text-align:right;">
+22.56
+</td>
+</tr>
+</tbody>
+</table>
+<p>The conditional effects of the reduced model are</p>
+<table class="table" style="margin-left: auto; margin-right: auto;">
+<caption>
+<span id="tab:unnamed-chunk-233">Table 15.7: </span>Conditional effects of additive model.
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;">
+indole
+</th>
+<th style="text-align:left;">
+hac
+</th>
+<th style="text-align:left;">
+contrast
+</th>
+<th style="text-align:right;">
+estimate
+</th>
+<th style="text-align:right;">
+SE
+</th>
+<th style="text-align:right;">
+df
+</th>
+<th style="text-align:right;">
+lower.CL
+</th>
+<th style="text-align:right;">
+upper.CL
+</th>
+<th style="text-align:right;">
+t.ratio
+</th>
+<th style="text-align:right;">
+p.value
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Indole-
+</td>
+<td style="text-align:left;">
+.
+</td>
+<td style="text-align:left;">
+(HAC+) - (HAC-)
+</td>
+<td style="text-align:right;">
+19.70629
+</td>
+<td style="text-align:right;">
+3.5
+</td>
+<td style="text-align:right;">
+17
+</td>
+<td style="text-align:right;">
+12.33
+</td>
+<td style="text-align:right;">
+27.08
+</td>
+<td style="text-align:right;">
+5.64
+</td>
+<td style="text-align:right;">
+0.00003
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Indole+
+</td>
+<td style="text-align:left;">
+.
+</td>
+<td style="text-align:left;">
+(HAC+) - (HAC-)
+</td>
+<td style="text-align:right;">
+19.70629
+</td>
+<td style="text-align:right;">
+3.5
+</td>
+<td style="text-align:right;">
+17
+</td>
+<td style="text-align:right;">
+12.33
+</td>
+<td style="text-align:right;">
+27.08
+</td>
+<td style="text-align:right;">
+5.64
+</td>
+<td style="text-align:right;">
+0.00003
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+.
+</td>
+<td style="text-align:left;">
+HAC-
+</td>
+<td style="text-align:left;">
+(Indole+) - (Indole-)
+</td>
+<td style="text-align:right;">
+15.18518
+</td>
+<td style="text-align:right;">
+3.5
+</td>
+<td style="text-align:right;">
+17
+</td>
+<td style="text-align:right;">
+7.81
+</td>
+<td style="text-align:right;">
+22.56
+</td>
+<td style="text-align:right;">
+4.34
+</td>
+<td style="text-align:right;">
+0.00044
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+.
+</td>
+<td style="text-align:left;">
+HAC+
+</td>
+<td style="text-align:left;">
+(Indole+) - (Indole-)
+</td>
+<td style="text-align:right;">
+15.18518
+</td>
+<td style="text-align:right;">
+3.5
+</td>
+<td style="text-align:right;">
+17
+</td>
+<td style="text-align:right;">
+7.81
+</td>
+<td style="text-align:right;">
+22.56
+</td>
+<td style="text-align:right;">
+4.34
+</td>
+<td style="text-align:right;">
+0.00044
+</td>
+</tr>
+</tbody>
+</table>
+<p>The table shows that, in an additive model, all conditional effects for one factor are the same for each level of the other factor. This makes sense. If the model fit is additive, the interaction effect is set to zero by the model and there cannot be differences in conditional effects among the contrasts at each of the levels of the other factor (otherwise, there would be an interaction). Also note that the conditional effects xxx. Probably a better way of thinking about this is, it doesn’t make sense to compute or discuss conditional effects in an additive model. Instead, an additive model automatically computes marginal effects.</p>
+<p>Compare the table of marginal effects of the additive model to the table of marginal effects of the full model. The estimates are the same but the <em>t</em>-values and <em>p</em>-values differ because of different degrees of freedom (the full model estimates one more parameter, the interaction effect). The estimate is the same only if the design is balanced, which means that each combination of treatment levels has the same sample size <em>n</em>.</p>
+</div>
+<div id="reduce-models-for-the-right-reason" class="section level3">
+<h3><span class="header-section-number">15.2.8</span> Reduce models for the right reason</h3>
+<p>Unless one factor truly has no effect, there will always be an interaction. As stated above, interactions are ubiquitous. If an interaction is small, it can make sense to drop the interaction term and re-fit an additive model to estimate marginal effects in order to present a simplified picture of what is going on, with the recognition that these estimates are smoothing over the heterogenity in conditional (simple) effects that truly exist.</p>
+<p>Aided and abetted by statistics textbooks for biologists, there is a long history of researchers dropping an interaction effect because the interaction <span class="math inline">\(p&gt;0.05\)</span>. Don’t do this. It doesn’t make any sense.</p>
+<ol style="list-style-type: decimal">
+<li>The <span class="math inline">\(p\)</span>-value is an arbitrary dichotomization of a continuous variable. Would it make sense to behave differently if the interaction were <span class="math inline">\(p=0.051\)</span> vs. <span class="math inline">\(p=0.049\)</span>, given that these two p-values are effectively identical?</li>
+<li>A <span class="math inline">\(p\)</span>-value is not evidence that an effect is zero, or “doesn’t exist”, or even that an effect is “trivially small”. This is because <span class="math inline">\(p\)</span>-values are a function of measurement error, sampling error, and sample size, in addition to effect size.</li>
+</ol>
+</div>
+</div>
+<div id="working-in-r-5" class="section level2">
+<h2><span class="header-section-number">15.3</span> Working in R</h2>
+<div id="model-formula" class="section level3">
+<h3><span class="header-section-number">15.3.1</span> Model formula</h3>
+<p>A full-factorial model with two factors is specified in the model formula as <code>y ~ A*B</code> where <span class="math inline">\(texttt{A}\)</span> is the first factor, and <span class="math inline">\(texttt{B}\)</span> is the second factor. R expands this formula to <code>y ~ 1 + A + B + A:B</code> where the colon indicates an interaction (multiplicative) effect.</p>
+<div class="sourceCode" id="cb442"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb442-1"><a href="models-for-two-or-more-categorical-x-factorial-designs.html#cb442-1"></a>m1 &lt;-<span class="st"> </span><span class="kw">lm</span>(aba <span class="op">~</span><span class="st"> </span>hac <span class="op">*</span><span class="st"> </span>indole, <span class="dt">data =</span> fig1)</span>
+<span id="cb442-2"><a href="models-for-two-or-more-categorical-x-factorial-designs.html#cb442-2"></a>m1_coef &lt;-<span class="st"> </span><span class="kw">coef</span>(<span class="kw">summary</span>(m1))</span>
+<span id="cb442-3"><a href="models-for-two-or-more-categorical-x-factorial-designs.html#cb442-3"></a>  </span>
+<span id="cb442-4"><a href="models-for-two-or-more-categorical-x-factorial-designs.html#cb442-4"></a>m1_coef <span class="op">%&gt;%</span></span>
+<span id="cb442-5"><a href="models-for-two-or-more-categorical-x-factorial-designs.html#cb442-5"></a><span class="st">  </span><span class="kw">kable</span>(<span class="dt">digits =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">2</span>,<span class="dv">3</span>))</span></code></pre></div>
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+</th>
+<th style="text-align:right;">
+Estimate
+</th>
+<th style="text-align:right;">
+Std. Error
+</th>
+<th style="text-align:right;">
+t value
+</th>
+<th style="text-align:right;">
+Pr(&gt;|t|)
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+(Intercept)
+</td>
+<td style="text-align:right;">
+19.2
+</td>
+<td style="text-align:right;">
+3.23
+</td>
+<td style="text-align:right;">
+5.94
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+hacHAC+
+</td>
+<td style="text-align:right;">
+13.3
+</td>
+<td style="text-align:right;">
+4.56
+</td>
+<td style="text-align:right;">
+2.91
+</td>
+<td style="text-align:right;">
+0.010
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+indoleIndole+
+</td>
+<td style="text-align:right;">
+8.8
+</td>
+<td style="text-align:right;">
+4.56
+</td>
+<td style="text-align:right;">
+1.92
+</td>
+<td style="text-align:right;">
+0.072
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+hacHAC+:indoleIndole+
+</td>
+<td style="text-align:right;">
+12.8
+</td>
+<td style="text-align:right;">
+6.45
+</td>
+<td style="text-align:right;">
+1.99
+</td>
+<td style="text-align:right;">
+0.064
+</td>
+</tr>
+</tbody>
+</table>
+<p>The additive model is specified by the formula <code>y ~ A + B</code></p>
+<div class="sourceCode" id="cb443"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb443-1"><a href="models-for-two-or-more-categorical-x-factorial-designs.html#cb443-1"></a>m2 &lt;-<span class="st"> </span><span class="kw">lm</span>(aba <span class="op">~</span><span class="st"> </span>hac <span class="op">+</span><span class="st"> </span>indole, <span class="dt">data =</span> fig1)</span>
+<span id="cb443-2"><a href="models-for-two-or-more-categorical-x-factorial-designs.html#cb443-2"></a>m2_coef &lt;-<span class="st"> </span><span class="kw">coef</span>(<span class="kw">summary</span>(m2))</span>
+<span id="cb443-3"><a href="models-for-two-or-more-categorical-x-factorial-designs.html#cb443-3"></a>  </span>
+<span id="cb443-4"><a href="models-for-two-or-more-categorical-x-factorial-designs.html#cb443-4"></a>m2_coef <span class="op">%&gt;%</span></span>
+<span id="cb443-5"><a href="models-for-two-or-more-categorical-x-factorial-designs.html#cb443-5"></a><span class="st">  </span><span class="kw">kable</span>(<span class="dt">digits =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">2</span>,<span class="dv">5</span>))</span></code></pre></div>
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+</th>
+<th style="text-align:right;">
+Estimate
+</th>
+<th style="text-align:right;">
+Std. Error
+</th>
+<th style="text-align:right;">
+t value
+</th>
+<th style="text-align:right;">
+Pr(&gt;|t|)
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+(Intercept)
+</td>
+<td style="text-align:right;">
+16.0
+</td>
+<td style="text-align:right;">
+3.03
+</td>
+<td style="text-align:right;">
+5.27
+</td>
+<td style="text-align:right;">
+0.00006
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+hacHAC+
+</td>
+<td style="text-align:right;">
+19.7
+</td>
+<td style="text-align:right;">
+3.50
+</td>
+<td style="text-align:right;">
+5.64
+</td>
+<td style="text-align:right;">
+0.00003
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+indoleIndole+
+</td>
+<td style="text-align:right;">
+15.2
+</td>
+<td style="text-align:right;">
+3.50
+</td>
+<td style="text-align:right;">
+4.34
+</td>
+<td style="text-align:right;">
+0.00044
+</td>
+</tr>
+</tbody>
+</table>
 
+</div>
+</div>
 </div>
             </section>
 
           </div>
         </div>
       </div>
-<a href="best-practices-issues-in-inference.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="chapter-covariates.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="chapter-covariates.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="anova-tables.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -660,7 +2383,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/rstudio/bookdown-demo/edit/master/chapters/30-part-iv-multivariable.Rmd",
+"link": "https://github.com/rstudio/bookdown-demo/edit/master/chapters/34-factorial.Rmd",
 "text": "Edit"
 },
 "history": {
