@@ -386,10 +386,9 @@ code span.wa { color: #bf0303; } /* Warning */
 <li class="chapter" data-level="10.2.2" data-path="linear-models-with-a-single-categorical-x.html"><a href="linear-models-with-a-single-categorical-x.html#controlling-the-output-in-tables-using-the-coefficient-table-as-an-example"><i class="fa fa-check"></i><b>10.2.2</b> Controlling the output in tables using the coefficient table as an example</a></li>
 <li class="chapter" data-level="10.2.3" data-path="linear-models-with-a-single-categorical-x.html"><a href="linear-models-with-a-single-categorical-x.html#using-the-emmeans-function"><i class="fa fa-check"></i><b>10.2.3</b> Using the emmeans function</a></li>
 <li class="chapter" data-level="10.2.4" data-path="linear-models-with-a-single-categorical-x.html"><a href="linear-models-with-a-single-categorical-x.html#using-the-contrast-function"><i class="fa fa-check"></i><b>10.2.4</b> Using the contrast function</a></li>
-<li class="chapter" data-level="10.2.5" data-path="linear-models-with-a-single-categorical-x.html"><a href="linear-models-with-a-single-categorical-x.html#plotting-models-with-a-single-categorical-x"><i class="fa fa-check"></i><b>10.2.5</b> Plotting models with a single, categorical <span class="math inline">\(X\)</span></a></li>
 </ul></li>
 <li class="chapter" data-level="10.3" data-path="linear-models-with-a-single-categorical-x.html"><a href="linear-models-with-a-single-categorical-x.html#issues-in-inference-in-models-with-a-single-categorical-x"><i class="fa fa-check"></i><b>10.3</b> Issues in inference in models with a single, categorical <span class="math inline">\(X\)</span></a><ul>
-<li class="chapter" data-level="10.3.1" data-path="linear-models-with-a-single-categorical-x.html"><a href="linear-models-with-a-single-categorical-x.html#lack-of-independence"><i class="fa fa-check"></i><b>10.3.1</b> Lack of independence</a></li>
+<li class="chapter" data-level="10.3.1" data-path="linear-models-with-a-single-categorical-x.html"><a href="linear-models-with-a-single-categorical-x.html#lack-of-independence-paired-t-test"><i class="fa fa-check"></i><b>10.3.1</b> Lack of independence (“paired t-test”)</a></li>
 <li class="chapter" data-level="10.3.2" data-path="linear-models-with-a-single-categorical-x.html"><a href="linear-models-with-a-single-categorical-x.html#heterogeneity-of-variances"><i class="fa fa-check"></i><b>10.3.2</b> Heterogeneity of variances</a></li>
 <li class="chapter" data-level="10.3.3" data-path="linear-models-with-a-single-categorical-x.html"><a href="linear-models-with-a-single-categorical-x.html#the-conditional-response-isnt-normal"><i class="fa fa-check"></i><b>10.3.3</b> The conditional response isn’t Normal</a></li>
 <li class="chapter" data-level="10.3.4" data-path="linear-models-with-a-single-categorical-x.html"><a href="linear-models-with-a-single-categorical-x.html#pre-post-designs"><i class="fa fa-check"></i><b>10.3.4</b> Pre-post designs</a></li>
@@ -1746,7 +1745,7 @@ two.sided
 <div class="sourceCode" id="cb308"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb308-1"><a href="linear-models-with-a-single-categorical-x.html#cb308-1"></a><span class="kw">set.seed</span>(<span class="dv">1</span>)</span>
 <span id="cb308-2"><a href="linear-models-with-a-single-categorical-x.html#cb308-2"></a><span class="kw">qqPlot</span>(fig2a_m1)</span></code></pre></div>
 <p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/unnamed-chunk-151-1.png" width="576" /></p>
-<pre><code>## [1]  3 17</code></pre>
+<pre><code>## [1]  3 18</code></pre>
 <p>The Q-Q plot indicates potential issues at the extreme quantiles, what is called “heavy tails”. The two values are the extreme values in the “30 min NE” group. This could be the result of a small sample from a response with a larger variance.</p>
 <div class="sourceCode" id="cb310"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb310-1"><a href="linear-models-with-a-single-categorical-x.html#cb310-1"></a><span class="kw">spreadLevelPlot</span>(fig2a_m1, <span class="dt">id=</span><span class="ot">FALSE</span>)</span></code></pre></div>
 <p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/unnamed-chunk-152-1.png" width="576" /></p>
@@ -2454,7 +2453,7 @@ p.value
 <li>The columns “t.ratio” and “p.value” contains the <em>t</em> and <em>p</em> values of the significance (not hypothesis!) test of the estimate. The <em>t</em>-statistic is the ratio of the estimate to the SE of the estimate (use the console to confirm this given the values in the table). It is a signal (the estimate) to noise (SE of the estimate) ratio. The <em>p</em>-value is the probability of sampling from normal distribution with the observed standard deviation, randomly assigning the sampled values to the three groups (using the original sample sizes for each), fitting the linear model, and observing a <em>t</em>-value as or more extreme than the observed <em>t</em>. A very small <em>p</em>-value is consistent with the experiment “not sampling from distributions with the same mean” – meaning that adding a treatment affects the mean of the distribution. This is the logic used to infer a treatment effect. Unfortunately, it is also consistent with the experiment not approximating other conditions of the model, including non-random assignment, non-independence, non-normal conditional responses, and variance heterogeneity. It is up to the rigorous researcher to be sure that these other model conditions are approximated or “good enough” to use the <em>p</em>-value to infer a treatment effect on the mean.</li>
 </ol>
 </div>
-<div id="t-and-p-from-the-contrasts-table-when-there-are-more-than-two-levels-in-x-are-not-the-same-as-those-from-pairwise-t-tests-among-pairs-of-groups" class="section level4">
+<div id="ttests" class="section level4">
 <h4><span class="header-section-number">10.1.4.4</span> <em>t</em> and <em>p</em> from the contrasts table – when there are more than two levels in <span class="math inline">\(X\)</span> – are not the same as those from pairwise <em>t</em>-tests among pairs of groups</h4>
 <div class="sourceCode" id="cb320"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb320-1"><a href="linear-models-with-a-single-categorical-x.html#cb320-1"></a>fig2a_m1_pairs &lt;-<span class="st"> </span><span class="kw">contrast</span>(fig2a_m1_emm,</span>
 <span id="cb320-2"><a href="linear-models-with-a-single-categorical-x.html#cb320-2"></a>                           <span class="dt">method =</span> <span class="st">&quot;revpairwise&quot;</span>,</span>
@@ -2891,33 +2890,115 @@ NE - Cn
 </table>
 </div>
 </div>
-<div id="plotting-models-with-a-single-categorical-x" class="section level3">
-<h3><span class="header-section-number">10.2.5</span> Plotting models with a single, categorical <span class="math inline">\(X\)</span></h3>
-</div>
 </div>
 <div id="issues-in-inference-in-models-with-a-single-categorical-x" class="section level2">
 <h2><span class="header-section-number">10.3</span> Issues in inference in models with a single, categorical <span class="math inline">\(X\)</span></h2>
-<div id="lack-of-independence" class="section level3">
-<h3><span class="header-section-number">10.3.1</span> Lack of independence</h3>
-<p>The data from the experiment for Figure 1b of the 12,13-diHOME article outlined above are the plasma concentrations of 12,13-diHOME in humans in response to either saline or one-hour cold challenge. The response variable (<span class="math inline">\(\texttt{diHOME}\)</span>) is not independent because</p>
+<div id="lack-of-independence-paired-t-test" class="section level3">
+<h3><span class="header-section-number">10.3.1</span> Lack of independence (“paired t-test”)</h3>
+<p>This is a preview of the chapter “Models with random effects – Blocking and pseudoreplication”</p>
+<p>The data from the experiment for Figure 1b of the 12,13-diHOME article are the plasma concentrations of 12,13-diHOME in humans in response to either saline or one-hour cold challenge. The response variable (<span class="math inline">\(\texttt{diHOME}\)</span>) violates the “independent” sampling assumption for inference because there are two measures of the response in each individual.</p>
+<p>Textbooks that use a “which test?” strategy often point to a paired <em>t</em>-test in place of Student’s <em>t</em>-test if there is a lack of independence between the two groups. The researchers followed this norm and analyzed the data using a paired t-test.</p>
+<p>Here, I show empirically that a paired t-test is a special case of a <em>linear model with an added random factor</em>. The advantage of understanding this is, the linear model with added random factor is infinitely expandable while a paired t-test is limited to the comparison of two means. If you have more than two groups or a factorial design or a covariate, there is no elegant way to expand a paired t-test.</p>
+<p>A good way to think about the model generating the data is</p>
+<p><span class="math display">\[\begin{equation}
+diHome = (\beta_0 + \beta_{0_i}) + \beta_1 treatment\_cold + \varepsilon
+\end{equation}\]</span></p>
+<ol style="list-style-type: decimal">
+<li><span class="math inline">\(\beta_0\)</span> is the expected value of diHome in humans given a saline treatment.</li>
+<li><span class="math inline">\(\beta_{0_i}\)</span> is the expected difference between the expected value of diHome in human <span class="math inline">\(i\)</span> given a saline treatment and the expected value of diHome in humans given a saline treatment. <span class="math inline">\(\beta_{0_i}\)</span> is a kind of <strong>random effect</strong></li>
+<li><span class="math inline">\(\beta_0 + \beta_{0_i}\)</span> is the expected value of diHome in human <span class="math inline">\(i\)</span> given a saline treatment. It is the <strong>random intercept</strong> for human <span class="math inline">\(i\)</span>.</li>
+</ol>
+<div id="fit-a-linear-model-with-added-random-factor" class="section level4">
+<h4><span class="header-section-number">10.3.1.1</span> Fit a linear model with added random factor</h4>
 <div class="sourceCode" id="cb334"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb334-1"><a href="linear-models-with-a-single-categorical-x.html#cb334-1"></a><span class="co"># fit the model</span></span>
-<span id="cb334-2"><a href="linear-models-with-a-single-categorical-x.html#cb334-2"></a>m1 &lt;-<span class="st"> </span><span class="kw">lmer</span>(diHOME <span class="op">~</span><span class="st"> </span>treatment <span class="op">+</span><span class="st"> </span>(<span class="dv">1</span><span class="op">|</span>id), <span class="dt">data =</span> fig1b)</span>
-<span id="cb334-3"><a href="linear-models-with-a-single-categorical-x.html#cb334-3"></a></span>
-<span id="cb334-4"><a href="linear-models-with-a-single-categorical-x.html#cb334-4"></a><span class="co"># estimated marginal means table</span></span>
-<span id="cb334-5"><a href="linear-models-with-a-single-categorical-x.html#cb334-5"></a>m1_emm &lt;-<span class="st"> </span><span class="kw">emmeans</span>(m1, <span class="dt">specs =</span> <span class="st">&quot;treatment&quot;</span>)</span>
-<span id="cb334-6"><a href="linear-models-with-a-single-categorical-x.html#cb334-6"></a></span>
-<span id="cb334-7"><a href="linear-models-with-a-single-categorical-x.html#cb334-7"></a><span class="co"># contrasts table</span></span>
-<span id="cb334-8"><a href="linear-models-with-a-single-categorical-x.html#cb334-8"></a>(m1_pairs &lt;-<span class="st"> </span><span class="kw">contrast</span>(m1_emm,</span>
-<span id="cb334-9"><a href="linear-models-with-a-single-categorical-x.html#cb334-9"></a>                     <span class="dt">method =</span> <span class="st">&quot;revpairwise&quot;</span>) <span class="op">%&gt;%</span></span>
-<span id="cb334-10"><a href="linear-models-with-a-single-categorical-x.html#cb334-10"></a><span class="st">  </span><span class="kw">summary</span>(<span class="dt">infer =</span> <span class="ot">TRUE</span>))</span></code></pre></div>
-<pre><code>##  contrast      estimate     SE df lower.CL upper.CL t.ratio p.value
-##  cold - saline    0.234 0.0549  8    0.108    0.361 4.272   0.0027 
-## 
-## Degrees-of-freedom method: kenward-roger 
-## Confidence level used: 0.95</code></pre>
-<div class="sourceCode" id="cb336"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb336-1"><a href="linear-models-with-a-single-categorical-x.html#cb336-1"></a><span class="kw">t.test</span>(<span class="dt">x =</span> fig1b[treatment <span class="op">==</span><span class="st"> &quot;cold&quot;</span>, diHOME],</span>
-<span id="cb336-2"><a href="linear-models-with-a-single-categorical-x.html#cb336-2"></a>       <span class="dt">y =</span> fig1b[treatment <span class="op">==</span><span class="st"> &quot;saline&quot;</span>, diHOME],</span>
-<span id="cb336-3"><a href="linear-models-with-a-single-categorical-x.html#cb336-3"></a>       <span class="dt">paired =</span> <span class="ot">TRUE</span>)</span></code></pre></div>
+<span id="cb334-2"><a href="linear-models-with-a-single-categorical-x.html#cb334-2"></a>fig1b_m1 &lt;-<span class="st"> </span><span class="kw">lmer</span>(diHOME <span class="op">~</span><span class="st"> </span>treatment <span class="op">+</span><span class="st"> </span>(<span class="dv">1</span><span class="op">|</span>id), <span class="dt">data =</span> fig1b)</span></code></pre></div>
+<ol style="list-style-type: decimal">
+<li>The added random factor is <span class="math inline">\(\texttt{id}\)</span>, which contains the id of the human. <span class="math inline">\(\texttt{id}\)</span> didn’t appear from nowhere, it is a column in the data.table fig1b.</li>
+<li>We are now using the function <code>lmer()</code> from the lme4 package (loaded with package lmerTest)</li>
+<li><code>(1|id)</code> tells <code>lmer</code> to add <span class="math inline">\(\texttt{id}\)</span> as a random intercept.</li>
+<li><span class="math inline">\(\texttt{id}\)</span> is a <strong>random factor</strong>. <span class="math inline">\(\texttt{treatment}\)</span> if a <strong>fixed factor</strong>. Models with both fixed and random factors go by many names. In this text, I use “linear mixed model”.</li>
+</ol>
+</div>
+<div id="inference" class="section level4">
+<h4><span class="header-section-number">10.3.1.2</span> Inference</h4>
+<p>Inference using the linear model with added random factor:</p>
+<div class="sourceCode" id="cb335"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb335-1"><a href="linear-models-with-a-single-categorical-x.html#cb335-1"></a><span class="co"># estimated marginal means table</span></span>
+<span id="cb335-2"><a href="linear-models-with-a-single-categorical-x.html#cb335-2"></a>fig1b_m1_emm &lt;-<span class="st"> </span><span class="kw">emmeans</span>(fig1b_m1, <span class="dt">specs =</span> <span class="st">&quot;treatment&quot;</span>)</span>
+<span id="cb335-3"><a href="linear-models-with-a-single-categorical-x.html#cb335-3"></a></span>
+<span id="cb335-4"><a href="linear-models-with-a-single-categorical-x.html#cb335-4"></a><span class="co"># contrasts table</span></span>
+<span id="cb335-5"><a href="linear-models-with-a-single-categorical-x.html#cb335-5"></a>fig1b_m1_pairs &lt;-<span class="st"> </span><span class="kw">contrast</span>(fig1b_m1_emm,</span>
+<span id="cb335-6"><a href="linear-models-with-a-single-categorical-x.html#cb335-6"></a>                     <span class="dt">method =</span> <span class="st">&quot;revpairwise&quot;</span>) <span class="op">%&gt;%</span></span>
+<span id="cb335-7"><a href="linear-models-with-a-single-categorical-x.html#cb335-7"></a><span class="st">  </span><span class="kw">summary</span>(<span class="dt">infer =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb335-8"><a href="linear-models-with-a-single-categorical-x.html#cb335-8"></a></span>
+<span id="cb335-9"><a href="linear-models-with-a-single-categorical-x.html#cb335-9"></a>fig1b_m1_pairs <span class="op">%&gt;%</span></span>
+<span id="cb335-10"><a href="linear-models-with-a-single-categorical-x.html#cb335-10"></a><span class="st">  </span><span class="kw">kable</span>(<span class="dt">digits =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">5</span>,<span class="dv">5</span>)) <span class="op">%&gt;%</span></span>
+<span id="cb335-11"><a href="linear-models-with-a-single-categorical-x.html#cb335-11"></a><span class="st">  </span><span class="kw">kable_styling</span>()</span></code></pre></div>
+<table class="table" style="margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+contrast
+</th>
+<th style="text-align:right;">
+estimate
+</th>
+<th style="text-align:right;">
+SE
+</th>
+<th style="text-align:right;">
+df
+</th>
+<th style="text-align:right;">
+lower.CL
+</th>
+<th style="text-align:right;">
+upper.CL
+</th>
+<th style="text-align:right;">
+t.ratio
+</th>
+<th style="text-align:right;">
+p.value
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+cold - saline
+</td>
+<td style="text-align:right;">
+0.2
+</td>
+<td style="text-align:right;">
+0.05
+</td>
+<td style="text-align:right;">
+8
+</td>
+<td style="text-align:right;">
+0.1
+</td>
+<td style="text-align:right;">
+0.4
+</td>
+<td style="text-align:right;">
+4.27223
+</td>
+<td style="text-align:right;">
+0.00272
+</td>
+</tr>
+</tbody>
+</table>
+<p>Inference using paired t-test:</p>
+<div class="sourceCode" id="cb336"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb336-1"><a href="linear-models-with-a-single-categorical-x.html#cb336-1"></a>fig1b_ttest &lt;-<span class="st"> </span><span class="kw">t.test</span>(</span>
+<span id="cb336-2"><a href="linear-models-with-a-single-categorical-x.html#cb336-2"></a>  <span class="dt">x =</span> fig1b[treatment <span class="op">==</span><span class="st"> &quot;cold&quot;</span>, diHOME],</span>
+<span id="cb336-3"><a href="linear-models-with-a-single-categorical-x.html#cb336-3"></a>  <span class="dt">y =</span> fig1b[treatment <span class="op">==</span><span class="st"> &quot;saline&quot;</span>, diHOME],</span>
+<span id="cb336-4"><a href="linear-models-with-a-single-categorical-x.html#cb336-4"></a>  <span class="dt">paired =</span> <span class="ot">TRUE</span></span>
+<span id="cb336-5"><a href="linear-models-with-a-single-categorical-x.html#cb336-5"></a>)</span>
+<span id="cb336-6"><a href="linear-models-with-a-single-categorical-x.html#cb336-6"></a></span>
+<span id="cb336-7"><a href="linear-models-with-a-single-categorical-x.html#cb336-7"></a>fig1b_ttest</span></code></pre></div>
 <pre><code>## 
 ##  Paired t-test
 ## 
@@ -2929,6 +3010,159 @@ NE - Cn
 ## sample estimates:
 ## mean of the differences 
 ##               0.2343975</code></pre>
+<p>Notes</p>
+<ol style="list-style-type: decimal">
+<li>The <em>t</em> and <em>p</em> values are the same because the paired <em>t</em>-test is a special case of the linear model.</li>
+</ol>
+</div>
+<div id="an-example-with-more-than-two-groups" class="section level4">
+<h4><span class="header-section-number">10.3.1.3</span> An example with more than two groups</h4>
+<p>Let’s say each mice in the Figure 2A experiment was subjected to all three treatments so that we have three measures per mouse (I don’t know that this isn’t the case and the set up of the archived data is ambiguous). If this were the case, the response would violate the independence assumption.</p>
+<p>The linear model (in regression notation) is</p>
+<p><span class="math display">\[\begin{equation}
+diHome = (\beta_0 + \beta_{0_i}) + \beta_1 treatment\_cold\ + \beta_2 treatment\_NE\ + \varepsilon 
+\end{equation}\]</span></p>
+<div class="sourceCode" id="cb338"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb338-1"><a href="linear-models-with-a-single-categorical-x.html#cb338-1"></a><span class="co"># fit the model</span></span>
+<span id="cb338-2"><a href="linear-models-with-a-single-categorical-x.html#cb338-2"></a>fig2a_m2 &lt;-<span class="st"> </span><span class="kw">lmer</span>(diHOME <span class="op">~</span><span class="st"> </span>treatment <span class="op">+</span><span class="st"> </span>(<span class="dv">1</span><span class="op">|</span>id), <span class="dt">data =</span> fig2a)</span></code></pre></div>
+<ol style="list-style-type: decimal">
+<li>fig2a_m2 is a linear mixed model. fig2a_m2 (above) is a fixed effects model of the same data. Here, we wouldn’t fit both. The researchers know if the response was measured for each treatment for each mouse or if different mice were used for each treatment.</li>
+</ol>
+<p>Inference using the linear model with added random factor:</p>
+<div class="sourceCode" id="cb339"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb339-1"><a href="linear-models-with-a-single-categorical-x.html#cb339-1"></a><span class="co"># estimated marginal means table</span></span>
+<span id="cb339-2"><a href="linear-models-with-a-single-categorical-x.html#cb339-2"></a>fig2a_m2_emm &lt;-<span class="st"> </span><span class="kw">emmeans</span>(fig2a_m2, <span class="dt">specs =</span> <span class="st">&quot;treatment&quot;</span>)</span>
+<span id="cb339-3"><a href="linear-models-with-a-single-categorical-x.html#cb339-3"></a></span>
+<span id="cb339-4"><a href="linear-models-with-a-single-categorical-x.html#cb339-4"></a><span class="co"># contrasts table</span></span>
+<span id="cb339-5"><a href="linear-models-with-a-single-categorical-x.html#cb339-5"></a>fig2a_m2_planned &lt;-<span class="st"> </span><span class="kw">contrast</span>(fig2a_m2_emm,</span>
+<span id="cb339-6"><a href="linear-models-with-a-single-categorical-x.html#cb339-6"></a>                     <span class="dt">method =</span> <span class="st">&quot;trt.vs.ctrl&quot;</span>,</span>
+<span id="cb339-7"><a href="linear-models-with-a-single-categorical-x.html#cb339-7"></a>                     <span class="dt">adjust =</span> <span class="st">&quot;none&quot;</span>) <span class="op">%&gt;%</span></span>
+<span id="cb339-8"><a href="linear-models-with-a-single-categorical-x.html#cb339-8"></a><span class="st">  </span><span class="kw">summary</span>(<span class="dt">infer =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb339-9"><a href="linear-models-with-a-single-categorical-x.html#cb339-9"></a></span>
+<span id="cb339-10"><a href="linear-models-with-a-single-categorical-x.html#cb339-10"></a>fig2a_m2_planned <span class="op">%&gt;%</span></span>
+<span id="cb339-11"><a href="linear-models-with-a-single-categorical-x.html#cb339-11"></a><span class="st">  </span><span class="kw">kable</span>(<span class="dt">digits =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">5</span>,<span class="dv">5</span>)) <span class="op">%&gt;%</span></span>
+<span id="cb339-12"><a href="linear-models-with-a-single-categorical-x.html#cb339-12"></a><span class="st">  </span><span class="kw">kable_styling</span>()</span></code></pre></div>
+<table class="table" style="margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+contrast
+</th>
+<th style="text-align:right;">
+estimate
+</th>
+<th style="text-align:right;">
+SE
+</th>
+<th style="text-align:right;">
+df
+</th>
+<th style="text-align:right;">
+lower.CL
+</th>
+<th style="text-align:right;">
+upper.CL
+</th>
+<th style="text-align:right;">
+t.ratio
+</th>
+<th style="text-align:right;">
+p.value
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+1 hour cold - Control
+</td>
+<td style="text-align:right;">
+8.1
+</td>
+<td style="text-align:right;">
+3.88
+</td>
+<td style="text-align:right;">
+9.4
+</td>
+<td style="text-align:right;">
+-0.6
+</td>
+<td style="text-align:right;">
+16.8
+</td>
+<td style="text-align:right;">
+2.08124
+</td>
+<td style="text-align:right;">
+0.06589
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+30 min NE - Control
+</td>
+<td style="text-align:right;">
+14.8
+</td>
+<td style="text-align:right;">
+3.62
+</td>
+<td style="text-align:right;">
+9.0
+</td>
+<td style="text-align:right;">
+6.6
+</td>
+<td style="text-align:right;">
+23.0
+</td>
+<td style="text-align:right;">
+4.08718
+</td>
+<td style="text-align:right;">
+0.00271
+</td>
+</tr>
+</tbody>
+</table>
+<p>Inference using two paired t-tests:</p>
+<div class="sourceCode" id="cb340"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb340-1"><a href="linear-models-with-a-single-categorical-x.html#cb340-1"></a>fig2a_ttest_cold &lt;-<span class="st"> </span><span class="kw">t.test</span>(</span>
+<span id="cb340-2"><a href="linear-models-with-a-single-categorical-x.html#cb340-2"></a>  <span class="dt">x =</span> fig2a[treatment <span class="op">==</span><span class="st"> &quot;1 hour cold&quot;</span>, diHOME],</span>
+<span id="cb340-3"><a href="linear-models-with-a-single-categorical-x.html#cb340-3"></a>  <span class="dt">y =</span> fig2a[treatment <span class="op">==</span><span class="st"> &quot;Control&quot;</span>, diHOME],</span>
+<span id="cb340-4"><a href="linear-models-with-a-single-categorical-x.html#cb340-4"></a>  <span class="dt">paired =</span> <span class="ot">TRUE</span></span>
+<span id="cb340-5"><a href="linear-models-with-a-single-categorical-x.html#cb340-5"></a>)</span>
+<span id="cb340-6"><a href="linear-models-with-a-single-categorical-x.html#cb340-6"></a>fig2a_ttest_cold</span></code></pre></div>
+<pre><code>## 
+##  Paired t-test
+## 
+## data:  fig2a[treatment == &quot;1 hour cold&quot;, diHOME] and fig2a[treatment == &quot;Control&quot;, diHOME]
+## t = 2.1973, df = 4, p-value = 0.09293
+## alternative hypothesis: true difference in means is not equal to 0
+## 95 percent confidence interval:
+##  -1.925189 16.533005
+## sample estimates:
+## mean of the differences 
+##                7.303908</code></pre>
+<div class="sourceCode" id="cb342"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb342-1"><a href="linear-models-with-a-single-categorical-x.html#cb342-1"></a>fig2a_ttest_ne &lt;-<span class="st"> </span><span class="kw">t.test</span>(</span>
+<span id="cb342-2"><a href="linear-models-with-a-single-categorical-x.html#cb342-2"></a>  <span class="dt">x =</span> fig2a[treatment <span class="op">==</span><span class="st"> &quot;30 min NE&quot;</span>, diHOME],</span>
+<span id="cb342-3"><a href="linear-models-with-a-single-categorical-x.html#cb342-3"></a>  <span class="dt">y =</span> fig2a[treatment <span class="op">==</span><span class="st"> &quot;Control&quot;</span>, diHOME],</span>
+<span id="cb342-4"><a href="linear-models-with-a-single-categorical-x.html#cb342-4"></a>  <span class="dt">paired =</span> <span class="ot">TRUE</span></span>
+<span id="cb342-5"><a href="linear-models-with-a-single-categorical-x.html#cb342-5"></a>)</span>
+<span id="cb342-6"><a href="linear-models-with-a-single-categorical-x.html#cb342-6"></a>fig2a_ttest_ne</span></code></pre></div>
+<pre><code>## 
+##  Paired t-test
+## 
+## data:  fig2a[treatment == &quot;30 min NE&quot;, diHOME] and fig2a[treatment == &quot;Control&quot;, diHOME]
+## t = 3.7564, df = 5, p-value = 0.01321
+## alternative hypothesis: true difference in means is not equal to 0
+## 95 percent confidence interval:
+##   4.670273 24.918436
+## sample estimates:
+## mean of the differences 
+##                14.79435</code></pre>
+<p>Notes
+1. <strong>important</strong> – the <em>t</em>-test for the comparison of “1 hour cold” and “Control” had to throw out one mouse 6 because this mouse is missing the “1 hour cold” measure. The linear mixed model used all the data.
+2. The paired t-test <em>t</em> and <em>p</em> values are not equal to those from the linear mixed model. This is partly because of the missing data (note 1). Even if there were no missing data, these wouldn’t be equal because the linear mixed model using an estimate of <span class="math inline">\(\sigma\)</span> computed from the single model with all three groups to compute the standard errors (See the comparison of t-tests and linear models above).</p>
+</div>
 </div>
 <div id="heterogeneity-of-variances" class="section level3">
 <h3><span class="header-section-number">10.3.2</span> Heterogeneity of variances</h3>
@@ -2940,13 +3174,13 @@ NE - Cn
 </ol>
 <p>The Welch <em>t</em>-test is a special case of a linear model that explicitly models the within-group variance using <strong>generalized least squares</strong> (GLS). The 95% CI of a mean differences and <em>p</em>-values from the fit gls linear model and from Welch’s t-test are the same. Advantages of using a linear modeling strategy is that a researcher uses the model to estimate effects (difference in means) and measures of uncertainty in the effects (standard errors or confidence intervals of the difference). Advantages of specifically using the gls extension of the linear model is that it is it can be easily expanded to analyze more complex designs including 1) more than two treatment groups, 2) more than one factor, and 3) additional covariates.</p>
 <p>Modeling variance heterogenity is the focus of chapter xxx so the account here is brief. Heterogeneity can be modeled using a generalized least squares linear model with the <code>gls</code> function. The <code>weights</code> argument is used to model the variances using each group’s sample variance. In this example, I use the data from the Figure 1b experiment, which can be compared to the analysis of the same data in Example 2 above.</p>
-<div class="sourceCode" id="cb338"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb338-1"><a href="linear-models-with-a-single-categorical-x.html#cb338-1"></a>subdata &lt;-<span class="st"> </span>fig2a[<span class="kw">is.na</span>(diHOME) <span class="op">==</span><span class="st"> </span><span class="ot">FALSE</span>,] <span class="co"># omit rows with missing data</span></span>
-<span id="cb338-2"><a href="linear-models-with-a-single-categorical-x.html#cb338-2"></a>fig2a_m2 &lt;-<span class="st"> </span><span class="kw">gls</span>(diHOME <span class="op">~</span><span class="st"> </span>treatment,</span>
-<span id="cb338-3"><a href="linear-models-with-a-single-categorical-x.html#cb338-3"></a>                <span class="dt">data =</span> subdata,</span>
-<span id="cb338-4"><a href="linear-models-with-a-single-categorical-x.html#cb338-4"></a>                <span class="dt">weights =</span> <span class="kw">varIdent</span>(<span class="dt">form =</span> <span class="op">~</span><span class="st"> </span><span class="dv">1</span> <span class="op">|</span><span class="st"> </span>treatment))</span></code></pre></div>
+<div class="sourceCode" id="cb344"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb344-1"><a href="linear-models-with-a-single-categorical-x.html#cb344-1"></a>subdata &lt;-<span class="st"> </span>fig2a[<span class="kw">is.na</span>(diHOME) <span class="op">==</span><span class="st"> </span><span class="ot">FALSE</span>,] <span class="co"># omit rows with missing data</span></span>
+<span id="cb344-2"><a href="linear-models-with-a-single-categorical-x.html#cb344-2"></a>fig2a_m2 &lt;-<span class="st"> </span><span class="kw">gls</span>(diHOME <span class="op">~</span><span class="st"> </span>treatment,</span>
+<span id="cb344-3"><a href="linear-models-with-a-single-categorical-x.html#cb344-3"></a>                <span class="dt">data =</span> subdata,</span>
+<span id="cb344-4"><a href="linear-models-with-a-single-categorical-x.html#cb344-4"></a>                <span class="dt">weights =</span> <span class="kw">varIdent</span>(<span class="dt">form =</span> <span class="op">~</span><span class="st"> </span><span class="dv">1</span> <span class="op">|</span><span class="st"> </span>treatment))</span></code></pre></div>
 <p>The model fig2a_m2 uses variance computed in each group separately as the estimate of <span class="math inline">\(\sigma^2\)</span> for that group. The coefficient table of the GLS model is</p>
-<div class="sourceCode" id="cb339"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb339-1"><a href="linear-models-with-a-single-categorical-x.html#cb339-1"></a><span class="kw">summary</span>(fig2a_m2) <span class="op">%&gt;%</span></span>
-<span id="cb339-2"><a href="linear-models-with-a-single-categorical-x.html#cb339-2"></a><span class="st">  </span><span class="kw">coef</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb345"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb345-1"><a href="linear-models-with-a-single-categorical-x.html#cb345-1"></a><span class="kw">summary</span>(fig2a_m2) <span class="op">%&gt;%</span></span>
+<span id="cb345-2"><a href="linear-models-with-a-single-categorical-x.html#cb345-2"></a><span class="st">  </span><span class="kw">coef</span>()</span></code></pre></div>
 <pre><code>##                          Value Std.Error   t-value      p-value
 ## (Intercept)          12.023075  1.200139 10.018072 9.134757e-08
 ## treatment1 hour cold  7.140386  3.163467  2.257139 4.050473e-02
@@ -2956,8 +3190,8 @@ NE - Cn
 <li><strong>Important</strong> for reporting <em>p</em>-values. Unlike the linear model modeling homogenous variance, the <em>p</em>-values for the coefficients of <span class="math inline">\(treatment1\;hour\;cold\)</span> and <span class="math inline">\(treatment30\;min\;NE\)</span> are <em>not</em> the same as the <em>p</em>-values of these equivalent contrasts in the contrasts table (see below). The reason is, the computation of the <em>p</em>-value in the two tables use two different degrees of freedom. Report the <em>p</em>-values from the contrast table using the Satterthwaite df.</li>
 </ol>
 <p>The modeled means and contrasts are computed as above for the <code>lm</code> object</p>
-<div class="sourceCode" id="cb341"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb341-1"><a href="linear-models-with-a-single-categorical-x.html#cb341-1"></a>fig2a_m2_emm &lt;-<span class="st"> </span><span class="kw">emmeans</span>(fig2a_m2, <span class="dt">specs=</span><span class="st">&quot;treatment&quot;</span>)</span>
-<span id="cb341-2"><a href="linear-models-with-a-single-categorical-x.html#cb341-2"></a>fig2a_m2_emm</span></code></pre></div>
+<div class="sourceCode" id="cb347"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb347-1"><a href="linear-models-with-a-single-categorical-x.html#cb347-1"></a>fig2a_m2_emm &lt;-<span class="st"> </span><span class="kw">emmeans</span>(fig2a_m2, <span class="dt">specs=</span><span class="st">&quot;treatment&quot;</span>)</span>
+<span id="cb347-2"><a href="linear-models-with-a-single-categorical-x.html#cb347-2"></a>fig2a_m2_emm</span></code></pre></div>
 <pre><code>##  treatment   emmean   SE df lower.CL upper.CL
 ##  Control       12.0 1.20  5     8.94     15.1
 ##  1 hour cold   19.2 2.93  4    11.04     27.3
@@ -2969,11 +3203,11 @@ NE - Cn
 <ol style="list-style-type: decimal">
 <li>The SE of the means in this table are modeled SEs but are equal to the sample SE of the means, because this was specified in the GLS model.</li>
 </ol>
-<div class="sourceCode" id="cb343"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb343-1"><a href="linear-models-with-a-single-categorical-x.html#cb343-1"></a>fig2a_m2_pairs &lt;-<span class="st">  </span><span class="kw">contrast</span>(fig2a_m2_emm,</span>
-<span id="cb343-2"><a href="linear-models-with-a-single-categorical-x.html#cb343-2"></a>                            <span class="dt">method =</span> <span class="st">&quot;revpairwise&quot;</span>,</span>
-<span id="cb343-3"><a href="linear-models-with-a-single-categorical-x.html#cb343-3"></a>                            <span class="dt">adjust =</span> <span class="st">&quot;none&quot;</span>) <span class="op">%&gt;%</span></span>
-<span id="cb343-4"><a href="linear-models-with-a-single-categorical-x.html#cb343-4"></a><span class="st">  </span><span class="kw">summary</span>(<span class="dt">infer =</span> <span class="ot">TRUE</span>)</span>
-<span id="cb343-5"><a href="linear-models-with-a-single-categorical-x.html#cb343-5"></a>fig2a_m2_pairs</span></code></pre></div>
+<div class="sourceCode" id="cb349"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb349-1"><a href="linear-models-with-a-single-categorical-x.html#cb349-1"></a>fig2a_m2_pairs &lt;-<span class="st">  </span><span class="kw">contrast</span>(fig2a_m2_emm,</span>
+<span id="cb349-2"><a href="linear-models-with-a-single-categorical-x.html#cb349-2"></a>                            <span class="dt">method =</span> <span class="st">&quot;revpairwise&quot;</span>,</span>
+<span id="cb349-3"><a href="linear-models-with-a-single-categorical-x.html#cb349-3"></a>                            <span class="dt">adjust =</span> <span class="st">&quot;none&quot;</span>) <span class="op">%&gt;%</span></span>
+<span id="cb349-4"><a href="linear-models-with-a-single-categorical-x.html#cb349-4"></a><span class="st">  </span><span class="kw">summary</span>(<span class="dt">infer =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb349-5"><a href="linear-models-with-a-single-categorical-x.html#cb349-5"></a>fig2a_m2_pairs</span></code></pre></div>
 <pre><code>##  contrast                estimate   SE   df lower.CL upper.CL t.ratio
 ##  1 hour cold - Control       7.14 3.16 5.34   -0.839     15.1 2.257  
 ##  30 min NE - Control        14.79 4.57 5.74    3.490     26.1 3.238  
@@ -2986,24 +3220,24 @@ NE - Cn
 ## Degrees-of-freedom method: satterthwaite 
 ## Confidence level used: 0.95</code></pre>
 <p>Compare this table to the three Welch <em>t</em>-tests of all pairs of treatment levels in the fig2a experiment.</p>
-<div class="sourceCode" id="cb345"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb345-1"><a href="linear-models-with-a-single-categorical-x.html#cb345-1"></a>test1 &lt;-<span class="st"> </span><span class="kw">t.test</span>(fig2a[treatment <span class="op">==</span><span class="st"> &quot;1 hour cold&quot;</span>, diHOME],</span>
-<span id="cb345-2"><a href="linear-models-with-a-single-categorical-x.html#cb345-2"></a>       fig2a[treatment <span class="op">==</span><span class="st"> &quot;Control&quot;</span>, diHOME],</span>
-<span id="cb345-3"><a href="linear-models-with-a-single-categorical-x.html#cb345-3"></a>       <span class="dt">var.equal=</span><span class="ot">FALSE</span>)</span>
-<span id="cb345-4"><a href="linear-models-with-a-single-categorical-x.html#cb345-4"></a></span>
-<span id="cb345-5"><a href="linear-models-with-a-single-categorical-x.html#cb345-5"></a>test2 &lt;-<span class="st"> </span><span class="kw">t.test</span>(fig2a[treatment <span class="op">==</span><span class="st"> &quot;30 min NE&quot;</span>, diHOME],</span>
-<span id="cb345-6"><a href="linear-models-with-a-single-categorical-x.html#cb345-6"></a>       fig2a[treatment <span class="op">==</span><span class="st"> &quot;Control&quot;</span>, diHOME],</span>
-<span id="cb345-7"><a href="linear-models-with-a-single-categorical-x.html#cb345-7"></a>       <span class="dt">var.equal=</span><span class="ot">FALSE</span>)</span>
-<span id="cb345-8"><a href="linear-models-with-a-single-categorical-x.html#cb345-8"></a></span>
-<span id="cb345-9"><a href="linear-models-with-a-single-categorical-x.html#cb345-9"></a>test3 &lt;-<span class="st"> </span><span class="kw">t.test</span>(fig2a[treatment <span class="op">==</span><span class="st"> &quot;30 min NE&quot;</span>, diHOME],</span>
-<span id="cb345-10"><a href="linear-models-with-a-single-categorical-x.html#cb345-10"></a>       fig2a[treatment <span class="op">==</span><span class="st"> &quot;1 hour cold&quot;</span>, diHOME],</span>
-<span id="cb345-11"><a href="linear-models-with-a-single-categorical-x.html#cb345-11"></a>       <span class="dt">var.equal=</span><span class="ot">FALSE</span>)</span>
-<span id="cb345-12"><a href="linear-models-with-a-single-categorical-x.html#cb345-12"></a></span>
-<span id="cb345-13"><a href="linear-models-with-a-single-categorical-x.html#cb345-13"></a>welch_tests &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">t =</span> <span class="kw">c</span>(test1<span class="op">$</span>statistic, test2<span class="op">$</span>statistic, test3<span class="op">$</span>statistic),</span>
-<span id="cb345-14"><a href="linear-models-with-a-single-categorical-x.html#cb345-14"></a>                     <span class="dt">p =</span> <span class="kw">c</span>(test1<span class="op">$</span>p.value, test2<span class="op">$</span>p.value, test3<span class="op">$</span>p.value))</span>
-<span id="cb345-15"><a href="linear-models-with-a-single-categorical-x.html#cb345-15"></a><span class="kw">row.names</span>(welch_tests) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;1 hour cold - Control&quot;</span>, </span>
-<span id="cb345-16"><a href="linear-models-with-a-single-categorical-x.html#cb345-16"></a>                       <span class="st">&quot;30 min NE - Control&quot;</span>,</span>
-<span id="cb345-17"><a href="linear-models-with-a-single-categorical-x.html#cb345-17"></a>                       <span class="st">&quot;30 min NE - 1 hour cold&quot;</span>)</span>
-<span id="cb345-18"><a href="linear-models-with-a-single-categorical-x.html#cb345-18"></a>welch_tests</span></code></pre></div>
+<div class="sourceCode" id="cb351"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb351-1"><a href="linear-models-with-a-single-categorical-x.html#cb351-1"></a>test1 &lt;-<span class="st"> </span><span class="kw">t.test</span>(fig2a[treatment <span class="op">==</span><span class="st"> &quot;1 hour cold&quot;</span>, diHOME],</span>
+<span id="cb351-2"><a href="linear-models-with-a-single-categorical-x.html#cb351-2"></a>       fig2a[treatment <span class="op">==</span><span class="st"> &quot;Control&quot;</span>, diHOME],</span>
+<span id="cb351-3"><a href="linear-models-with-a-single-categorical-x.html#cb351-3"></a>       <span class="dt">var.equal=</span><span class="ot">FALSE</span>)</span>
+<span id="cb351-4"><a href="linear-models-with-a-single-categorical-x.html#cb351-4"></a></span>
+<span id="cb351-5"><a href="linear-models-with-a-single-categorical-x.html#cb351-5"></a>test2 &lt;-<span class="st"> </span><span class="kw">t.test</span>(fig2a[treatment <span class="op">==</span><span class="st"> &quot;30 min NE&quot;</span>, diHOME],</span>
+<span id="cb351-6"><a href="linear-models-with-a-single-categorical-x.html#cb351-6"></a>       fig2a[treatment <span class="op">==</span><span class="st"> &quot;Control&quot;</span>, diHOME],</span>
+<span id="cb351-7"><a href="linear-models-with-a-single-categorical-x.html#cb351-7"></a>       <span class="dt">var.equal=</span><span class="ot">FALSE</span>)</span>
+<span id="cb351-8"><a href="linear-models-with-a-single-categorical-x.html#cb351-8"></a></span>
+<span id="cb351-9"><a href="linear-models-with-a-single-categorical-x.html#cb351-9"></a>test3 &lt;-<span class="st"> </span><span class="kw">t.test</span>(fig2a[treatment <span class="op">==</span><span class="st"> &quot;30 min NE&quot;</span>, diHOME],</span>
+<span id="cb351-10"><a href="linear-models-with-a-single-categorical-x.html#cb351-10"></a>       fig2a[treatment <span class="op">==</span><span class="st"> &quot;1 hour cold&quot;</span>, diHOME],</span>
+<span id="cb351-11"><a href="linear-models-with-a-single-categorical-x.html#cb351-11"></a>       <span class="dt">var.equal=</span><span class="ot">FALSE</span>)</span>
+<span id="cb351-12"><a href="linear-models-with-a-single-categorical-x.html#cb351-12"></a></span>
+<span id="cb351-13"><a href="linear-models-with-a-single-categorical-x.html#cb351-13"></a>welch_tests &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">t =</span> <span class="kw">c</span>(test1<span class="op">$</span>statistic, test2<span class="op">$</span>statistic, test3<span class="op">$</span>statistic),</span>
+<span id="cb351-14"><a href="linear-models-with-a-single-categorical-x.html#cb351-14"></a>                     <span class="dt">p =</span> <span class="kw">c</span>(test1<span class="op">$</span>p.value, test2<span class="op">$</span>p.value, test3<span class="op">$</span>p.value))</span>
+<span id="cb351-15"><a href="linear-models-with-a-single-categorical-x.html#cb351-15"></a><span class="kw">row.names</span>(welch_tests) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;1 hour cold - Control&quot;</span>, </span>
+<span id="cb351-16"><a href="linear-models-with-a-single-categorical-x.html#cb351-16"></a>                       <span class="st">&quot;30 min NE - Control&quot;</span>,</span>
+<span id="cb351-17"><a href="linear-models-with-a-single-categorical-x.html#cb351-17"></a>                       <span class="st">&quot;30 min NE - 1 hour cold&quot;</span>)</span>
+<span id="cb351-18"><a href="linear-models-with-a-single-categorical-x.html#cb351-18"></a>welch_tests</span></code></pre></div>
 <pre><code>##                                t          p
 ## 1 hour cold - Control   2.257139 0.07026220
 ## 30 min NE - Control     3.238158 0.01889041
@@ -3045,56 +3279,56 @@ NE - Cn
 <h2><span class="header-section-number">10.4</span> Hidden Code</h2>
 <div id="importing-and-wrangling-the-fig_3d-data-for-example-1" class="section level3">
 <h3><span class="header-section-number">10.4.1</span> Importing and wrangling the fig_3d data for example 1</h3>
-<div class="sourceCode" id="cb347"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb347-1"><a href="linear-models-with-a-single-categorical-x.html#cb347-1"></a>data_folder &lt;-<span class="st"> &quot;data&quot;</span></span>
-<span id="cb347-2"><a href="linear-models-with-a-single-categorical-x.html#cb347-2"></a>data_from &lt;-<span class="st"> &quot;The cold-induced lipokine 12,13-diHOME promotes fatty acid transport into brown adipose tissue&quot;</span></span></code></pre></div>
-<div class="sourceCode" id="cb348"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb348-1"><a href="linear-models-with-a-single-categorical-x.html#cb348-1"></a><span class="co"># need data_folder and data_from from earlier chunk</span></span>
-<span id="cb348-2"><a href="linear-models-with-a-single-categorical-x.html#cb348-2"></a>file_name &lt;-<span class="st"> &quot;41591_2017_BFnm4297_MOESM3_ESM.xlsx&quot;</span></span>
-<span id="cb348-3"><a href="linear-models-with-a-single-categorical-x.html#cb348-3"></a>file_path &lt;-<span class="st"> </span><span class="kw">here</span>(data_folder, data_from, file_name)</span>
-<span id="cb348-4"><a href="linear-models-with-a-single-categorical-x.html#cb348-4"></a></span>
-<span id="cb348-5"><a href="linear-models-with-a-single-categorical-x.html#cb348-5"></a><span class="co"># ignore the column with animal ID. Based on methods, I am inferring</span></span>
-<span id="cb348-6"><a href="linear-models-with-a-single-categorical-x.html#cb348-6"></a><span class="co"># that the six mice in vehicle group *are different* from the</span></span>
-<span id="cb348-7"><a href="linear-models-with-a-single-categorical-x.html#cb348-7"></a><span class="co"># six mice in the 1213 group.</span></span>
-<span id="cb348-8"><a href="linear-models-with-a-single-categorical-x.html#cb348-8"></a>col_names_3d &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Vehicle&quot;</span>, <span class="st">&quot;1213&quot;</span>)</span>
-<span id="cb348-9"><a href="linear-models-with-a-single-categorical-x.html#cb348-9"></a>treatment_levels &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Vehicle&quot;</span>, <span class="st">&quot;12,13-diHOME&quot;</span>)</span>
-<span id="cb348-10"><a href="linear-models-with-a-single-categorical-x.html#cb348-10"></a>fig_3d &lt;-<span class="st"> </span><span class="kw">read_excel</span>(file_path,</span>
-<span id="cb348-11"><a href="linear-models-with-a-single-categorical-x.html#cb348-11"></a>                     <span class="dt">sheet =</span> <span class="st">&quot;Figure 3d&quot;</span>,</span>
-<span id="cb348-12"><a href="linear-models-with-a-single-categorical-x.html#cb348-12"></a>                     <span class="dt">range =</span> <span class="st">&quot;B3:C9&quot;</span>,</span>
-<span id="cb348-13"><a href="linear-models-with-a-single-categorical-x.html#cb348-13"></a>                     <span class="dt">col_names =</span> <span class="ot">TRUE</span>) <span class="op">%&gt;%</span></span>
-<span id="cb348-14"><a href="linear-models-with-a-single-categorical-x.html#cb348-14"></a><span class="st">  </span><span class="kw">data.table</span>() <span class="op">%&gt;%</span></span>
-<span id="cb348-15"><a href="linear-models-with-a-single-categorical-x.html#cb348-15"></a><span class="st">  </span><span class="kw">melt</span>(<span class="dt">measure.vars =</span> col_names_3d,</span>
-<span id="cb348-16"><a href="linear-models-with-a-single-categorical-x.html#cb348-16"></a>       <span class="dt">variable.name =</span> <span class="st">&quot;treatment&quot;</span>,</span>
-<span id="cb348-17"><a href="linear-models-with-a-single-categorical-x.html#cb348-17"></a>       <span class="dt">value.name =</span> <span class="st">&quot;serum_tg&quot;</span>)</span>
-<span id="cb348-18"><a href="linear-models-with-a-single-categorical-x.html#cb348-18"></a></span>
-<span id="cb348-19"><a href="linear-models-with-a-single-categorical-x.html#cb348-19"></a><span class="co"># change group name of &quot;1213&quot;</span></span>
-<span id="cb348-20"><a href="linear-models-with-a-single-categorical-x.html#cb348-20"></a>fig_3d[treatment <span class="op">==</span><span class="st"> &quot;1213&quot;</span>, treatment <span class="op">:</span><span class="er">=</span><span class="st"> &quot;12,13-diHOME&quot;</span>]</span>
-<span id="cb348-21"><a href="linear-models-with-a-single-categorical-x.html#cb348-21"></a></span>
-<span id="cb348-22"><a href="linear-models-with-a-single-categorical-x.html#cb348-22"></a><span class="co"># make treatment a factor with the order in &quot;treatment_levels&quot;</span></span>
-<span id="cb348-23"><a href="linear-models-with-a-single-categorical-x.html#cb348-23"></a>fig_3d[, treatment <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">factor</span>(treatment, treatment_levels)]</span>
-<span id="cb348-24"><a href="linear-models-with-a-single-categorical-x.html#cb348-24"></a></span>
-<span id="cb348-25"><a href="linear-models-with-a-single-categorical-x.html#cb348-25"></a><span class="co">#View(fig_3d)</span></span></code></pre></div>
+<div class="sourceCode" id="cb353"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb353-1"><a href="linear-models-with-a-single-categorical-x.html#cb353-1"></a>data_folder &lt;-<span class="st"> &quot;data&quot;</span></span>
+<span id="cb353-2"><a href="linear-models-with-a-single-categorical-x.html#cb353-2"></a>data_from &lt;-<span class="st"> &quot;The cold-induced lipokine 12,13-diHOME promotes fatty acid transport into brown adipose tissue&quot;</span></span></code></pre></div>
+<div class="sourceCode" id="cb354"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb354-1"><a href="linear-models-with-a-single-categorical-x.html#cb354-1"></a><span class="co"># need data_folder and data_from from earlier chunk</span></span>
+<span id="cb354-2"><a href="linear-models-with-a-single-categorical-x.html#cb354-2"></a>file_name &lt;-<span class="st"> &quot;41591_2017_BFnm4297_MOESM3_ESM.xlsx&quot;</span></span>
+<span id="cb354-3"><a href="linear-models-with-a-single-categorical-x.html#cb354-3"></a>file_path &lt;-<span class="st"> </span><span class="kw">here</span>(data_folder, data_from, file_name)</span>
+<span id="cb354-4"><a href="linear-models-with-a-single-categorical-x.html#cb354-4"></a></span>
+<span id="cb354-5"><a href="linear-models-with-a-single-categorical-x.html#cb354-5"></a><span class="co"># ignore the column with animal ID. Based on methods, I am inferring</span></span>
+<span id="cb354-6"><a href="linear-models-with-a-single-categorical-x.html#cb354-6"></a><span class="co"># that the six mice in vehicle group *are different* from the</span></span>
+<span id="cb354-7"><a href="linear-models-with-a-single-categorical-x.html#cb354-7"></a><span class="co"># six mice in the 1213 group.</span></span>
+<span id="cb354-8"><a href="linear-models-with-a-single-categorical-x.html#cb354-8"></a>col_names_3d &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Vehicle&quot;</span>, <span class="st">&quot;1213&quot;</span>)</span>
+<span id="cb354-9"><a href="linear-models-with-a-single-categorical-x.html#cb354-9"></a>treatment_levels &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Vehicle&quot;</span>, <span class="st">&quot;12,13-diHOME&quot;</span>)</span>
+<span id="cb354-10"><a href="linear-models-with-a-single-categorical-x.html#cb354-10"></a>fig_3d &lt;-<span class="st"> </span><span class="kw">read_excel</span>(file_path,</span>
+<span id="cb354-11"><a href="linear-models-with-a-single-categorical-x.html#cb354-11"></a>                     <span class="dt">sheet =</span> <span class="st">&quot;Figure 3d&quot;</span>,</span>
+<span id="cb354-12"><a href="linear-models-with-a-single-categorical-x.html#cb354-12"></a>                     <span class="dt">range =</span> <span class="st">&quot;B3:C9&quot;</span>,</span>
+<span id="cb354-13"><a href="linear-models-with-a-single-categorical-x.html#cb354-13"></a>                     <span class="dt">col_names =</span> <span class="ot">TRUE</span>) <span class="op">%&gt;%</span></span>
+<span id="cb354-14"><a href="linear-models-with-a-single-categorical-x.html#cb354-14"></a><span class="st">  </span><span class="kw">data.table</span>() <span class="op">%&gt;%</span></span>
+<span id="cb354-15"><a href="linear-models-with-a-single-categorical-x.html#cb354-15"></a><span class="st">  </span><span class="kw">melt</span>(<span class="dt">measure.vars =</span> col_names_3d,</span>
+<span id="cb354-16"><a href="linear-models-with-a-single-categorical-x.html#cb354-16"></a>       <span class="dt">variable.name =</span> <span class="st">&quot;treatment&quot;</span>,</span>
+<span id="cb354-17"><a href="linear-models-with-a-single-categorical-x.html#cb354-17"></a>       <span class="dt">value.name =</span> <span class="st">&quot;serum_tg&quot;</span>)</span>
+<span id="cb354-18"><a href="linear-models-with-a-single-categorical-x.html#cb354-18"></a></span>
+<span id="cb354-19"><a href="linear-models-with-a-single-categorical-x.html#cb354-19"></a><span class="co"># change group name of &quot;1213&quot;</span></span>
+<span id="cb354-20"><a href="linear-models-with-a-single-categorical-x.html#cb354-20"></a>fig_3d[treatment <span class="op">==</span><span class="st"> &quot;1213&quot;</span>, treatment <span class="op">:</span><span class="er">=</span><span class="st"> &quot;12,13-diHOME&quot;</span>]</span>
+<span id="cb354-21"><a href="linear-models-with-a-single-categorical-x.html#cb354-21"></a></span>
+<span id="cb354-22"><a href="linear-models-with-a-single-categorical-x.html#cb354-22"></a><span class="co"># make treatment a factor with the order in &quot;treatment_levels&quot;</span></span>
+<span id="cb354-23"><a href="linear-models-with-a-single-categorical-x.html#cb354-23"></a>fig_3d[, treatment <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">factor</span>(treatment, treatment_levels)]</span>
+<span id="cb354-24"><a href="linear-models-with-a-single-categorical-x.html#cb354-24"></a></span>
+<span id="cb354-25"><a href="linear-models-with-a-single-categorical-x.html#cb354-25"></a><span class="co">#View(fig_3d)</span></span></code></pre></div>
 </div>
 <div id="importing-and-wrangling-the-fig2a-data-for-example-2" class="section level3">
 <h3><span class="header-section-number">10.4.2</span> Importing and wrangling the fig2a data for example 2</h3>
-<div class="sourceCode" id="cb349"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb349-1"><a href="linear-models-with-a-single-categorical-x.html#cb349-1"></a><span class="co"># need data_folder and data_from from earlier chunk</span></span>
-<span id="cb349-2"><a href="linear-models-with-a-single-categorical-x.html#cb349-2"></a>file_name &lt;-<span class="st"> &quot;41591_2017_BFnm4297_MOESM2_ESM.xlsx&quot;</span></span>
-<span id="cb349-3"><a href="linear-models-with-a-single-categorical-x.html#cb349-3"></a>file_path &lt;-<span class="st"> </span><span class="kw">here</span>(data_folder, data_from, file_name)</span>
-<span id="cb349-4"><a href="linear-models-with-a-single-categorical-x.html#cb349-4"></a></span>
-<span id="cb349-5"><a href="linear-models-with-a-single-categorical-x.html#cb349-5"></a><span class="co"># assuming mice are independent and not same mouse used for all three treatment</span></span>
-<span id="cb349-6"><a href="linear-models-with-a-single-categorical-x.html#cb349-6"></a>melt_col_names &lt;-<span class="st"> </span><span class="kw">paste</span>(<span class="st">&quot;Animal&quot;</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">6</span>)</span>
-<span id="cb349-7"><a href="linear-models-with-a-single-categorical-x.html#cb349-7"></a>fig2a &lt;-<span class="st"> </span><span class="kw">read_excel</span>(file_path,</span>
-<span id="cb349-8"><a href="linear-models-with-a-single-categorical-x.html#cb349-8"></a>                     <span class="dt">sheet =</span> <span class="st">&quot;Fig 2a&quot;</span>,</span>
-<span id="cb349-9"><a href="linear-models-with-a-single-categorical-x.html#cb349-9"></a>                     <span class="dt">range =</span> <span class="st">&quot;A3:G6&quot;</span>,</span>
-<span id="cb349-10"><a href="linear-models-with-a-single-categorical-x.html#cb349-10"></a>                     <span class="dt">col_names =</span> <span class="ot">TRUE</span>) <span class="op">%&gt;%</span></span>
-<span id="cb349-11"><a href="linear-models-with-a-single-categorical-x.html#cb349-11"></a><span class="st">  </span><span class="kw">data.table</span>() <span class="op">%&gt;%</span></span>
-<span id="cb349-12"><a href="linear-models-with-a-single-categorical-x.html#cb349-12"></a><span class="st">  </span><span class="kw">melt</span>(<span class="dt">measure.vars =</span> melt_col_names,</span>
-<span id="cb349-13"><a href="linear-models-with-a-single-categorical-x.html#cb349-13"></a>       <span class="dt">variable.name =</span> <span class="st">&quot;id&quot;</span>,</span>
-<span id="cb349-14"><a href="linear-models-with-a-single-categorical-x.html#cb349-14"></a>       <span class="dt">value.name =</span> <span class="st">&quot;diHOME&quot;</span>) <span class="co"># cannot start a variable with number</span></span>
-<span id="cb349-15"><a href="linear-models-with-a-single-categorical-x.html#cb349-15"></a><span class="kw">setnames</span>(fig2a, <span class="dt">old =</span> <span class="kw">colnames</span>(fig2a)[<span class="dv">1</span>], <span class="dt">new =</span> <span class="st">&quot;treatment&quot;</span>)</span>
-<span id="cb349-16"><a href="linear-models-with-a-single-categorical-x.html#cb349-16"></a></span>
-<span id="cb349-17"><a href="linear-models-with-a-single-categorical-x.html#cb349-17"></a>treatment_order &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Control&quot;</span>, <span class="st">&quot;1 hour cold&quot;</span>, <span class="st">&quot;30 min NE&quot;</span>)</span>
-<span id="cb349-18"><a href="linear-models-with-a-single-categorical-x.html#cb349-18"></a>fig2a[, treatment <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">factor</span>(treatment, treatment_order)] <span class="co"># order levels</span></span>
-<span id="cb349-19"><a href="linear-models-with-a-single-categorical-x.html#cb349-19"></a></span>
-<span id="cb349-20"><a href="linear-models-with-a-single-categorical-x.html#cb349-20"></a><span class="co">#View(fig2a)</span></span></code></pre></div>
+<div class="sourceCode" id="cb355"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb355-1"><a href="linear-models-with-a-single-categorical-x.html#cb355-1"></a><span class="co"># need data_folder and data_from from earlier chunk</span></span>
+<span id="cb355-2"><a href="linear-models-with-a-single-categorical-x.html#cb355-2"></a>file_name &lt;-<span class="st"> &quot;41591_2017_BFnm4297_MOESM2_ESM.xlsx&quot;</span></span>
+<span id="cb355-3"><a href="linear-models-with-a-single-categorical-x.html#cb355-3"></a>file_path &lt;-<span class="st"> </span><span class="kw">here</span>(data_folder, data_from, file_name)</span>
+<span id="cb355-4"><a href="linear-models-with-a-single-categorical-x.html#cb355-4"></a></span>
+<span id="cb355-5"><a href="linear-models-with-a-single-categorical-x.html#cb355-5"></a><span class="co"># assuming mice are independent and not same mouse used for all three treatment</span></span>
+<span id="cb355-6"><a href="linear-models-with-a-single-categorical-x.html#cb355-6"></a>melt_col_names &lt;-<span class="st"> </span><span class="kw">paste</span>(<span class="st">&quot;Animal&quot;</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">6</span>)</span>
+<span id="cb355-7"><a href="linear-models-with-a-single-categorical-x.html#cb355-7"></a>fig2a &lt;-<span class="st"> </span><span class="kw">read_excel</span>(file_path,</span>
+<span id="cb355-8"><a href="linear-models-with-a-single-categorical-x.html#cb355-8"></a>                     <span class="dt">sheet =</span> <span class="st">&quot;Fig 2a&quot;</span>,</span>
+<span id="cb355-9"><a href="linear-models-with-a-single-categorical-x.html#cb355-9"></a>                     <span class="dt">range =</span> <span class="st">&quot;A3:G6&quot;</span>,</span>
+<span id="cb355-10"><a href="linear-models-with-a-single-categorical-x.html#cb355-10"></a>                     <span class="dt">col_names =</span> <span class="ot">TRUE</span>) <span class="op">%&gt;%</span></span>
+<span id="cb355-11"><a href="linear-models-with-a-single-categorical-x.html#cb355-11"></a><span class="st">  </span><span class="kw">data.table</span>() <span class="op">%&gt;%</span></span>
+<span id="cb355-12"><a href="linear-models-with-a-single-categorical-x.html#cb355-12"></a><span class="st">  </span><span class="kw">melt</span>(<span class="dt">measure.vars =</span> melt_col_names,</span>
+<span id="cb355-13"><a href="linear-models-with-a-single-categorical-x.html#cb355-13"></a>       <span class="dt">variable.name =</span> <span class="st">&quot;id&quot;</span>,</span>
+<span id="cb355-14"><a href="linear-models-with-a-single-categorical-x.html#cb355-14"></a>       <span class="dt">value.name =</span> <span class="st">&quot;diHOME&quot;</span>) <span class="co"># cannot start a variable with number</span></span>
+<span id="cb355-15"><a href="linear-models-with-a-single-categorical-x.html#cb355-15"></a><span class="kw">setnames</span>(fig2a, <span class="dt">old =</span> <span class="kw">colnames</span>(fig2a)[<span class="dv">1</span>], <span class="dt">new =</span> <span class="st">&quot;treatment&quot;</span>)</span>
+<span id="cb355-16"><a href="linear-models-with-a-single-categorical-x.html#cb355-16"></a></span>
+<span id="cb355-17"><a href="linear-models-with-a-single-categorical-x.html#cb355-17"></a>treatment_order &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Control&quot;</span>, <span class="st">&quot;1 hour cold&quot;</span>, <span class="st">&quot;30 min NE&quot;</span>)</span>
+<span id="cb355-18"><a href="linear-models-with-a-single-categorical-x.html#cb355-18"></a>fig2a[, treatment <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">factor</span>(treatment, treatment_order)] <span class="co"># order levels</span></span>
+<span id="cb355-19"><a href="linear-models-with-a-single-categorical-x.html#cb355-19"></a></span>
+<span id="cb355-20"><a href="linear-models-with-a-single-categorical-x.html#cb355-20"></a><span class="co">#View(fig2a)</span></span></code></pre></div>
 
 </div>
 </div>
