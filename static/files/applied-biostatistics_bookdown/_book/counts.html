@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Chapter 1 Getting Started – R Projects and R Markdown | Elements of Statistical Modeling for Experimental Biology</title>
+  <title>Chapter 17 Linear models for count data – Generalized Linear Models I | Elements of Statistical Modeling for Experimental Biology</title>
   <meta name="description" content="A first course in statistical modeling for experimental biology researchers" />
   <meta name="generator" content="bookdown 0.14 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Chapter 1 Getting Started – R Projects and R Markdown | Elements of Statistical Modeling for Experimental Biology" />
+  <meta property="og:title" content="Chapter 17 Linear models for count data – Generalized Linear Models I | Elements of Statistical Modeling for Experimental Biology" />
   <meta property="og:type" content="book" />
   
   
@@ -16,7 +16,7 @@
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Chapter 1 Getting Started – R Projects and R Markdown | Elements of Statistical Modeling for Experimental Biology" />
+  <meta name="twitter:title" content="Chapter 17 Linear models for count data – Generalized Linear Models I | Elements of Statistical Modeling for Experimental Biology" />
   
   <meta name="twitter:description" content="A first course in statistical modeling for experimental biology researchers" />
   
@@ -30,8 +30,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="part-i-getting-started.html"/>
-<link rel="next" href="analyzing-experimental-data-with-a-linear-model.html"/>
+<link rel="prev" href="pre-post.html"/>
+<link rel="next" href="gls.html"/>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -553,253 +553,377 @@ code span.wa { color: #bf0303; } /* Warning */
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="getting-started-r-projects-and-r-markdown" class="section level1">
-<h1><span class="header-section-number">Chapter 1</span> Getting Started – R Projects and R Markdown</h1>
-<p>A typical statistical modeling project will consist of:</p>
-<ol style="list-style-type: decimal">
-<li>importing data from Excel or text (.csv or .txt) files</li>
-<li>cleaning data</li>
-<li>initial exploratory plots</li>
-<li>analysis</li>
-<li>model checking</li>
-<li>generating plots</li>
-<li>generating tables</li>
-<li>writing text to describe the project, the methods, the analysis, and the interpretation of the results (plots and tables)</li>
-</ol>
-<p>The best practice for reproducible research is to use as few software tools for these steps as possible. Too many research projects are not reproducible because the data were cleaned in Excel, and then different parts of the data were separately imported into a GUI statistics software for analysis, and then output from the statistics software was transcribed to Excel to make a table. And other parts of the analysis are used to create a plot in some plotting software. And then the tables and plots are pasted into Microsoft Word to create a report. Any change at any step in this process will require the researcher to remember all the downstream parts that are dependent on the change and to re-do an analysis, or a table, or a plot. Or a team member on the project making asks about how a particular variable was transformed and</p>
-<p>R studio encourages best practices by creating a <strong>project folder</strong> that contains all project documents and implementing a version of markdown called R Markdown. An R Markdown document can explicitly link all parts of the workflow so that changes in earlier steps automatically flow into the later steps. At the completion of a project, a researcher can choose “run all” from the menu and the data are read, cleaned, analyzed, plotted, tabled, and put into a report with the text.</p>
-<div id="r-vs-r-studio" class="section level2">
-<h2><span class="header-section-number">1.1</span> R vs R Studio</h2>
-<p>R is a programming language. It runs under the hood. You never see it. To use R, you need another piece of software that provides a <strong>user interface</strong>. The software we will use for this is R Studio. R Studio is a slick (very slick) <strong>graphical user interface</strong> (GUI) for developing R projects.</p>
-</div>
-<div id="download-and-install-r-and-r-studio" class="section level2">
-<h2><span class="header-section-number">1.2</span> Download and install R and R studio</h2>
-<p><a href="https://cran.r-project.org" target="_blank">Download R for your OS</a></p>
-<p><a href="https://www.rstudio.com/products/rstudio/download/" target="_blank">Download R Studio Desktop</a></p>
-<p>If you need help installing R and R studio, here is <a href="https://www.youtube.com/watch?v=ZvPFKfNHBNQ" target="_blank">Andy Field’s Installing R and RStudio video tutorial</a>)</p>
-</div>
-<div id="open-r-studio-and-modify-the-workspace-preference" class="section level2">
-<h2><span class="header-section-number">1.3</span> Open R Studio and modify the workspace preference</h2>
-<ol style="list-style-type: decimal">
-<li>Open R Studio</li>
-<li>Click on R Studio &gt; Preferences to</li>
-<li>Click on General in the left menu</li>
-<li>diable “Restore .RData into workspace at startup”</li>
-<li>Click on the “Save workspace to .RData on exit” popup menu and choose “Never”</li>
-</ol>
-<p><img src="images/workspace.png" /><!-- --></p>
-<p>What’s going on here? The workspace contains the values of all the objects created by the R code that you’ve run in the working R session. Nothing good comes from this. You want to start each R session with a clean slate, a blank workspace. This means that when you start a new R session, you will need to re-run all your code chunks to start where you left-off at the close of your last R session. This seems tedious but, be warned, bad things will happen if you save the workspace from the last session and re-load this at startup. Trust me. Just don’t do it.</p>
-</div>
-<div id="if-you-didnt-modify-the-workspace-preferences-from-the-previous-section-go-back-and-do-it" class="section level2">
-<h2><span class="header-section-number">1.4</span> If you didn’t modify the workspace preferences from the previous section, go back and do it</h2>
-</div>
-<div id="r-markdown-in-a-nutshell" class="section level2">
-<h2><span class="header-section-number">1.5</span> R Markdown in a nutshell</h2>
-<p>In this text, we will write code to analyze data using R Markdown. R markdown is a version of Markdown. Markdown is tool for creating a document containing text (like microsoft Word), images, tables, and code that can be output, or <strong>knitted</strong>, to the three modern output formats: html (web pages), pdf (reports and documents), and microsoft word (okay, this isn’t modern but it is widely used).</p>
-<p>The R Markdown, or .Rmd, document contains three components: 1) a YAML header, which specifies formatting and styles for the knitted document, the code “chunks”, which are blocks of code that do something, and the space before and after the code chunks which contains text and any output images or tables from the code chunks.</p>
-</div>
-<div id="install-r-markdown" class="section level2">
-<h2><span class="header-section-number">1.6</span> Install R Markdown</h2>
-<p><a href="https://bookdown.org/yihui/rmarkdown/installation.html#installation" target="_blank">Directions for installing R Markdown</a></p>
-<p>R Markdown can output pdf files. The mechanism for this is to first create a LaTeX (“la-tek”) file. LaTeX is an amazing tool for creating professional pdf documents. You do not need PDF output for this text, but I encourage you to download and install the tinytex distribution, which was created especially for R Markdown in R Studio.</p>
-<p><a href="https://yihui.org/tinytex/">The tinytex distribution is here</a>.</p>
-</div>
-<div id="importing-packages" class="section level2">
-<h2><span class="header-section-number">1.7</span> Importing Packages</h2>
-<p>The R scripts you write will include functions in packages that are not included in Base R. These packages need to be downloaded from an internet server to your computer. You only need to do this once (although you have to redo it each time you update R). But, each time you start a new R session, you will need to load a package using the <code>library()</code> function. Now is a good time to import packages that we will use</p>
-<p>Open R Studio and choose the menu item “Tools” &gt; “Install Packages”. In the “packages” input box, insert the names of packages to install the package. The names can be separated by spaces or commas, for example “data.table, emmeans, ggplot2”. Make sure that “install dependencies” is clicked before you click “Install”. Packages that we will use in this book are</p>
-<ol style="list-style-type: decimal">
-<li>Import and wrangling packages</li>
-</ol>
-<ul>
-<li>devtools – we use this to install packages that are not on CRAN</li>
-<li>here – we use to read from and write to the correct folder</li>
-<li>janitor – we use the function clean_names from this package</li>
-<li>readxl – elegant importing from microsoft Excel spreadsheets</li>
-<li>data.table - improves functionality of data frames</li>
-</ul>
-<ol start="2" style="list-style-type: decimal">
-<li>analysis packages</li>
-</ol>
-<ul>
-<li>emmeans – we use this to compute modeled means and contrasts</li>
-<li>nlme – we use this for gls models</li>
-<li>lme4 – we use this for linear mixed models</li>
-<li>lmerTest – we use this for inference with linear mixed models</li>
-<li>glmmTMB – we use this for generalized linear models</li>
-<li>MASS – we will use glm.nb from this package</li>
-<li>afex – we use this for classic ANOVA</li>
-<li>car – we use this for model checking and for classic ANOVA</li>
-<li>DHARMa – we use this for model checking generlaized linear models</li>
-<li>insight – we use this to learn about models</li>
-</ul>
-<ol start="3" style="list-style-type: decimal">
-<li>graphing packages</li>
-</ol>
-<ul>
-<li>ggplot2 – we use this for plotting</li>
-<li>ggsci – we use this for the color palettes</li>
-<li>ggthemes – we use this for the colorblind palette</li>
-<li>ggpubr – we use this to make ggplots a bit easier</li>
-<li>ggforce – we use this for improved jitter plots</li>
-<li>dabestr – we use this to make several plot types</li>
-<li>cowplot – we use this to combine plots</li>
-</ul>
-<p>Once these are installed, you don’t need to do this again although there will be additional packages that you might install. You simply need to use the <code>library()</code> function at the start of a markdown script.</p>
-</div>
-<div id="create-an-r-studio-project-for-this-textbook" class="section level2">
-<h2><span class="header-section-number">1.8</span> Create an R Studio Project for this textbook</h2>
-<ol style="list-style-type: decimal">
-<li>Create a project folder within the Documents folder (Mac OS) or My Documents folder (Windows OS). All files associated with this book will reside inside this folder. The name of the project folder should be something meaningful, such as “Applied Biostatistics” or the name of your class (for students in my Applied Biostatistics class, this folder could be named “BIO_413”).</li>
-<li>Within the project folder, create new folders named
-<ol style="list-style-type: decimal">
-<li>“Rmd” – this is where your R markdown files are stored</li>
-<li>“R” – this is where additional R script files are stored</li>
-<li>“data” – this is where data that we download from public archives are stored</li>
-<li>“output” – this is where you will store fake data generated in this class</li>
-<li>“images” – this is where image files are stored</li>
-</ol></li>
-<li>Open R Studio and click the menu item File &gt; New Project…</li>
-<li>Choose “Existing Directory” and navigate to your project folder</li>
-<li>Choose “Create Project”</li>
-<li>Check that a “.Rproj” file is in your project folder</li>
-<li>Download and move the file <a href="https://raw.githubusercontent.com/middleprofessor/applied-biostats/master/R/ggplot_the_model.R">ggplot_the_model.R</a> into the R folder.</li>
-</ol>
-<div class="figure"><span id="fig:project-organization-image"></span>
-<img src="images/project_organization.png" alt="Project folder with the .Rproj file and all main folders located at the first level of the project"  />
+<div id="counts" class="section level1">
+<h1><span class="header-section-number">Chapter 17</span> Linear models for count data – Generalized Linear Models I</h1>
+<p>Biologists frequently count stuff, and design experiments to estimate the effects of different factors on these counts. For example, the effects of environmental mercury on clutch size in a bird, the effects of warming on parasite load in a fish, or the effect of exercise on RNA expression.</p>
+<p>Count data differ from data with normal error in many ways, including 1) counts are discrete, and can be zero or positive integers only, 2) counts tend to bunch up on the small side of the range, creating a distribution with a positive skew, 3) a sample of counts can have an abundance of zeros, and 4) the variance of counts increases with the mean (see Figure <a href="counts.html#fig:glm1-plot1">17.1</a> for some of these properties). Some count data can be approximated by a normal distribution and reasonably modeled with a linear model but more often, count data are modeled with <strong>Poisson distribution</strong> or <strong>negative binomial distribution</strong> using a <strong>generalized linear model</strong> (GLM). Poisson and negative binomial distributions are <strong>discrete probability distributions</strong> with two important properties: 1) the distribution contains only zero and positive integers and 2) the variance is a function of the mean. Back before modern computing and fast processors, count data were often analyzed by either <strong>transforming</strong> the response or by <strong>non-parametric hypothesis tests</strong>. One reason to prefer a statistical modeling approach with a GLM is that we can get interpretable parameter estimates. By contrast, both the analysis of transformed data and non-parametric hypothesis tests are really tools for computing “correct” <span class="math inline">\(p\)</span>-values.</p>
+<div class="figure"><span id="fig:glm1-plot1"></span>
+<img src="Walker-elementary-statistical-modeling-draft_files/figure-html/glm1-plot1-1.png" alt="Histogram of the count of a trematode parasite larvae in Control vs. Infected fish. Fish in the Infected treatment are infected with a tapeworm." width="576" />
 <p class="caption">
-Figure 1.1: Project folder with the .Rproj file and all main folders located at the first level of the project
+Figure 17.1: Histogram of the count of a trematode parasite larvae in Control vs. Infected fish. Fish in the Infected treatment are infected with a tapeworm.
 </p>
 </div>
-<p>The project directory should look like that in Figure <a href="getting-started-r-projects-and-r-markdown.html#fig:project-organization-image">1.1</a>. Importantly, the project file (“Applied Biostatistics.Rproj”) and the main folders are all located at the first level within the project folder.</p>
-<p><strong>Bug alert</strong> If your .Rproj file is somewhere else (on the desktop, in the data folder, etc.), bad things will happen.</p>
-</div>
-<div id="working-on-a-project-in-a-nutshell" class="section level2">
-<h2><span class="header-section-number">1.9</span> Working on a project, in a nutshell</h2>
+<div id="the-generalized-linear-model" class="section level2">
+<h2><span class="header-section-number">17.1</span> The generalized linear model</h2>
+<p>As outlined in section [Assumptions for inference with statistical models] in Chapter 1, a common way that biological researchers think about a response variable is</p>
+<p><span class="math display" id="eq:spec1">\[\begin{align}
+y_i &amp;= \beta_0 + \beta_1 x_i + \varepsilon_i \\
+\varepsilon &amp;\sim N(0, \sigma)
+\tag{17.1}
+\end{align}\]</span></p>
+<p>That is, we can think of a response as the sum of some systematic part and “random errror”, which is a random draw from a normal distribution with mean zero and variance <span class="math inline">\(\sigma^2\)</span>. This way of thinking about the generation of the response is useful for linear models, and model checking linear models, but is not useful for generalized linear models or model checking generalized liner models. For example, if we want to model the number of parasites that have infected a fish using a Poisson distribution, the following is the <strong>wrong</strong> way to think about the statistical model</p>
+<p><span class="math display" id="eq:spec1-poisson">\[\begin{align}
+y_i &amp;= \beta_0 + \beta_1 x_i + \varepsilon_i\\
+\varepsilon &amp;\sim Poisson(\lambda)
+\tag{17.2}
+\end{align}\]</span></p>
+<p>That is, we should not think of a count as the sum of a systematic part and a random draw from a Poisson distribution. Why? Because it is the counts (or the counts conditional on <span class="math inline">\(X\)</span>) that are poisson distributed, not the residuals from the fit model.</p>
+<p>Thinking about the distribution of count data using model <a href="counts.html#eq:spec1-poisson">(17.2)</a> leads to absurd consequences. For example, if we set the mean of the Poisson “error” to zero (like with a normal distribution), then the error term for every observation would <em>have to</em> be zero (because the only way to get a mean of zero with non-negative integers is if every value is zero). Or, if the study is modeling the effect of a treatment on the counts (that is, the <span class="math inline">\(X\)</span> are dummy variables) then <span class="math inline">\(\beta_0\)</span> is the expected mean count of the control (or reference) group. But if we add non-zero Poisson error to this, then the mean of the control group would be larger than <span class="math inline">\(\beta_0\)</span>. This doesn’t make sense. And finally, equation <a href="counts.html#eq:spec1-poisson">(17.2)</a> generates a continuous response, instead of an integer, because <span class="math inline">\(\beta_0\)</span> and <span class="math inline">\(\beta_1\)</span> are continuous.</p>
+<p>A better way to think about the data generation for a linear model, because this naturally leads to the <em>correct</em> way to think about data generation for a generalized linear model, is</p>
+<p><span class="math display" id="eq:lm-spec2">\[\begin{align}
+y_i &amp;\sim N(\mu_i, \sigma)\\
+\mathrm{E}(Y|X) &amp;= \mu\\
+\mu_i &amp;= \beta_0 + \beta_1 x_i
+\tag{17.3}
+\end{align}\]</span></p>
+<p>That is, a response is a random draw from a normal distribution with mean <span class="math inline">\(mu\)</span> (not zero!) and variance <span class="math inline">\(\sigma^2\)</span>. Line 1 is the stochastic part of this specification. Line 3 is the systematic part.</p>
+<p>The specification of a generalized linear model has both stochastic and systematic parts but adds a third part, which is a <strong>link function</strong> connecting the stochastic and systematic parts.</p>
 <ol style="list-style-type: decimal">
-<li>Wake up, brush teeth, and open the project by double-clicking the .Rproj icon. Alternatively, open R Studio and then use the File &gt; Open Project to open the project. <strong>The name of the project will at the top-right of the R Studio window.</strong> We <em>always</em> want to work within an open project and the first workflow guarantees this. If we Open R Studio and then open a .Rmd file, we could be working within another project or no project at all. Bad things will happen.</li>
-<li>Run previous code chunks, in order (top to bottom). Write new code in code chunks and run. When we run code, we add R objects to the <strong>workspace</strong>. The workspace contains the values of all the objects created by the R code that has been run in the working session. When I save the .Rmd file, these values are not saved, only the text and code chunks in the R Markdown document. This is a feature, not a bug.</li>
-<li>When we are finished with the session, quit R Studio. If you get a popup window asking if you want to save the workspace, click “No”. Then immediately go back to the section “Open R Studio and modify the workspace preference” above and follow the directions.</li>
+<li><strong>The stochastic part</strong>, which is a probability distribution from the exponential family (this is sometimes called the “random part”)
+<span class="math display">\[\begin{equation}
+y_i \sim \mathrm{Prob}(\mu_i)
+\end{equation}\]</span></li>
+<li><strong>the systematic part</strong>, which is a linear predictor (I like to think about this as the deterministic part)
+<span class="math display">\[\begin{equation}
+\eta=\mathbf{X}\boldsymbol{\beta}
+\end{equation}\]</span></li>
+<li>a <strong>link function</strong> connecting the two parts
+<span class="math display">\[\begin{equation}
+\eta_i = g(\mu_i)
+\end{equation}\]</span></li>
 </ol>
+<p><span class="math inline">\(\mu\)</span> (the Greek symbol mu) is the conditional mean (or expectation <span class="math inline">\(\mathrm{E}(Y|X)\)</span>) of the response on the <strong>response scale</strong> and <span class="math inline">\(\eta\)</span> (the Greek symbol eta) is the conditional mean of the response on the <strong>link scale</strong>. A GLM models the response with a distribution specified in the stochastic part. The probability distributions introduced in this chapter are the Poisson and Negative Binomial. The natural link function for the Poisson and Negative Binomial is the “log link”, <span class="math inline">\(\eta = log(\mu)\)</span>. More generally, while each distribution has a natural (or, “canonical”) link function, one can use alternatives. Given this definition of a generalized linear model, a linear model is a GLM with a normal distribution and an Identity link (<span class="math inline">\(\eta = \mu\)</span>).</p>
+<p>When modeling counts using the Poisson or negative binomial distributions with a log link, the link scale is linear, and so the effects are additive on the link scale, while the response scale is nonlinear (it is the exponent of the link scale), and so the effects are multiplicative on the response scale. If this doesn’t make sense now, an example is worked out below. The inverse of the link function backtransforms the parameters from the link scale back to the response scale. So, for example, a prediction on the response sale is <span class="math inline">\(\mathrm{exp}(\hat{\eta})\)</span> and a coefficient on the response scale is <span class="math inline">\(\mathrm{exp}(b_j)\)</span>.</p>
 </div>
-<div id="create-an-r-markdown-file-for-this-chapter" class="section level2">
-<h2><span class="header-section-number">1.10</span> Create an R Markdown file for this Chapter</h2>
+<div id="count-data-example-number-of-trematode-worm-larvae-in-eyes-of-threespine-stickleback-fish" class="section level2">
+<h2><span class="header-section-number">17.2</span> Count data example – number of trematode worm larvae in eyes of threespine stickleback fish</h2>
+<p>The example is an experiment measuring the effect of the parasitic tapeworm <em>Schistocephalus solidus</em> infection on the susceptibility of infection from a second parasite, the trematode <em>Diplostomum pseudospathaceum</em>, in the threespine stickleback fish <em>Gasterosteus aculeatus</em><a href="appendix-2-online-resources-for-getting-started-with-statistical-modeling-in-r.html#fn5" class="footnote-ref" id="fnref5"><sup>5</sup></a>. The treatment levels are “Control” (unexposed to the tapeworm), “Uninfected” " (exposed to the tapeworm but uninfected), “Infected LG” (exposed and infected with the low growth population of the tapeworm), and “Infected HG” (exposed and infected with the high growth population of tapeworm). The response is the number of trematode larvae counted in the eyes (right and left combined) of the fish. A histogram of the counts is shown in Figure <a href="counts.html#fig:glm1-plot1">17.1</a> for the control and Infected HG treatment levels.</p>
+<div id="modeling-strategy-1" class="section level3">
+<h3><span class="header-section-number">17.2.1</span> Modeling strategy</h3>
+<div style="background-color:#cccccc; text-align:left; vertical-align: middle; padding:20px 47px;">
+<p><strong>NHST blues</strong> – Students are often encouraged by textbooks, colleagues, or the literature to start the analysis by first “testing” assumptions with hypothesis tests – for example using a Shaprio-Wilks test of normality as a decision rule to decide if to use a parametric test such as a <span class="math inline">\(t\)</span>-test or ANOVA if the null hypothesis of normality is not rejected, or a non-parametric test such as a Mann-Whitney U test if the null hypothesis of normality is rejected. I advise against this, because 1) this pre-test filtering automatically invalidates the <span class="math inline">\(p\)</span>-value of the hypothesis test as it does not adjust for the filtering procedure, 2) real data are only approximately normal and as <span class="math inline">\(n\)</span> increses, a normality test will reject any real dataset, and 3) hypothesis tests are pretty robust to non-normality anyway.</p>
+</div>
+<p>Instead of testing assumptions of a model using formal hypothesis tests <em>before</em> fitting the model, a better strategy is to 1) fit a model, and then do 2) <strong>model checking</strong> using <strong>diagnostic plots</strong>, diagnostic statistics, and simulation.</p>
+<p>With these data, a researcher would typically fit a GLM with a Poisson or negative binomial distribution and log link. Here, I start with a linear model to illustrate the interpretation of diagnostic plots with non-normal data. I use the “linear model” specification (equation <a href="counts.html#eq:spec1">(17.1)</a>) because the diganostic plots for model checking a linear model use the residuals of the fit model.</p>
+<p><span class="math display" id="eq:worm-lm">\[\begin{align}
+Diplo\_intensity_i &amp;= \beta_0 + \beta_1 Uninfected_i + \beta_2 Infected\_LG_i + \beta_3 Infected\_HG_i + \varepsilon_i \\
+\varepsilon &amp;\sim N(0, \sigma)
+\tag{17.4}
+\end{align}\]</span></p>
+</div>
+<div id="checking-the-model-i-a-normal-q-q-plot" class="section level3">
+<h3><span class="header-section-number">17.2.2</span> Checking the model I – a Normal Q-Q plot</h3>
+<p>Figure <a href="counts.html#fig:glm1-plot2">17.2</a>A shows a histogram of the residuals from the fit linear model. The plot shows that the residuals are clumped at the negative end of the range, which suggests that a model with a normally distributed conditional outcome (or normal error) is not well approximated.</p>
+<div class="figure"><span id="fig:glm1-plot2"></span>
+<img src="Walker-elementary-statistical-modeling-draft_files/figure-html/glm1-plot2-1.png" alt="Diagnostic plots of stickleback parasite data. A) Distribution of the residuals of the fit linear model. B) Normal Q-Q plot of the residuals of the fit linear model." width="576" />
+<p class="caption">
+Figure 17.2: Diagnostic plots of stickleback parasite data. A) Distribution of the residuals of the fit linear model. B) Normal Q-Q plot of the residuals of the fit linear model.
+</p>
+</div>
+<p>A better way to investigate this is with the <strong>Normal Q-Q</strong> plot in Figure <a href="counts.html#fig:glm1-plot2">17.2</a>B, which plots the sample quantiles for a variable against their theoretical quantiles. If the conditional outcome approximates a normal distribution, the points should roughly follow the line. Instead, for the worm data, the points are above the line at both ends. At the left (negative) end, this means that we aren’t seeing the most negative values that would be expected (the observed values are more positive than the theoretical values). Remembering that this plot is of residuals, if we think about this as counts, this means that our smallest counts are not as small as we would expect given the mean and a normal distribution. This shouldn’t be surprising – the counts range down to zero and counts cannot be below zero. At the positive end, the sample values are again more positive than the theoretical values. Thinking about this as counts, this means that are largest counts are larger than expected given the mean and a normal distribution. This pattern is exactly what we’d expect of count data, or at least count data that borders zero.</p>
+<div style="background-color:#cccccc; text-align:left; vertical-align: middle; padding:20px 47px;">
+<p><strong>Intuition Pump</strong> – Let’s construct a Normal Q-Q plot. A <strong>quantile</strong> (or percentile) of a vector of numbers is the value of the point at a specified percentage rank. The median is the 50% quantile. The 95% confidence intervals are at the 2.5% and 97.5% quantiles. In a Normal Q-Q plot, we want to plot the quantiles of the residuals against a set of theoretical quantiles.</p>
 <ol style="list-style-type: decimal">
-<li>The top-left icon in R Studio is a little plus sign within a green circle. Click this and choose “R Markdown” from the pull-down menu.</li>
-<li>Give the file a meaningful title like “Chapter 1 – Organization”</li>
-<li>Delete all text below the first code chunk, starting with the header “## R Markdown”</li>
+<li>To get the observed quantiles, rank the residuals of the fit linear model from most negative to most positive – these are your quantiles! For example, if you have <span class="math inline">\(n=145\)</span> residuals, then the 73rd point is the 50% quantile.</li>
+<li>A theoretical quantile from the normal distribution can be constructed using the <code>qnorm</code> function which returns the normal quantiles for a specified vector of percents. Alternatively, one could randomly sample <span class="math inline">\(n\)</span> points using <code>rnorm</code>. These of course will be sampled quantiles so will only approximate the expected theoretical quantiles, but I add this here because we use this method below.</li>
 </ol>
-<div id="modify-the-yaml-header" class="section level3">
-<h3><span class="header-section-number">1.10.1</span> Modify the yaml header</h3>
-<p>Replace “output: html_document” in the yaml header with the following in order to creat a table of content (toc) on the left side of the page and to enable code folding</p>
-<pre><code>output:
-  html_document:
-    toc: true
-    toc_float: true
-    code_folding: hide</code></pre>
+<p>Now simply plot the observed against theoretical quantiles. Often, the <strong>standardized</strong> quantiles are plotted. A standardized variable has a mean of zero and a standard deviation of one and is computed by 1) centering the vector at zero by subtracting the mean from every value, and 2) dividing each value by the standard deviation of the vector. Recognize that because a standard deviation is a function of deviations from the mean, it doesn’t matter which of these operations is done first. A standardized theoretical quantile is specified by <code>qnorm(p, mean = 0, sd = 1)</code>, which is the default.</p>
+<p>Below, I’ve plotted the standardized observed and theoretical quantiles against the vector of percents (from 0 to 100%). This plot also nicely shows how the residuals of the worm data deviate from that expected if these had a normal distribution. The plot nicely shows that the most negative observed quintiles are not as negative as expected given a normal distribution, which again makes sense because this would imply negative counts since the mean is close to zero. And it nicely shows that the most positive observed quantiles are more positive than expected given a normal distribution, again this makes sense in right skewed count data. Finally, the plot nicely shows that the median is less positive than that expected given a normal distribution, which is at the mean (a right skew tends to pull the mean to the right of the median).</p>
+<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/glm1-qqplot-sim-1.png" width="576" /></p>
 </div>
-<div id="modify-the-setup-chunk" class="section level3">
-<h3><span class="header-section-number">1.10.2</span> Modify the “setup” chunk</h3>
-<p>The setup chunk should look something like this</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="getting-started-r-projects-and-r-markdown.html#cb2-1"></a>knitr<span class="op">::</span>opts_chunk<span class="op">$</span><span class="kw">set</span>(<span class="dt">echo =</span> <span class="ot">TRUE</span>)</span>
-<span id="cb2-2"><a href="getting-started-r-projects-and-r-markdown.html#cb2-2"></a></span>
-<span id="cb2-3"><a href="getting-started-r-projects-and-r-markdown.html#cb2-3"></a><span class="co"># wrangling packages</span></span>
-<span id="cb2-4"><a href="getting-started-r-projects-and-r-markdown.html#cb2-4"></a><span class="kw">library</span>(here)</span>
-<span id="cb2-5"><a href="getting-started-r-projects-and-r-markdown.html#cb2-5"></a><span class="kw">library</span>(janitor)</span>
-<span id="cb2-6"><a href="getting-started-r-projects-and-r-markdown.html#cb2-6"></a><span class="kw">library</span>(readxl)</span>
-<span id="cb2-7"><a href="getting-started-r-projects-and-r-markdown.html#cb2-7"></a><span class="kw">library</span>(data.table)</span>
-<span id="cb2-8"><a href="getting-started-r-projects-and-r-markdown.html#cb2-8"></a></span>
-<span id="cb2-9"><a href="getting-started-r-projects-and-r-markdown.html#cb2-9"></a><span class="co"># analysis packages</span></span>
-<span id="cb2-10"><a href="getting-started-r-projects-and-r-markdown.html#cb2-10"></a><span class="kw">library</span>(MASS) <span class="co"># negative binomial and some other functions</span></span>
-<span id="cb2-11"><a href="getting-started-r-projects-and-r-markdown.html#cb2-11"></a><span class="kw">library</span>(nlme) <span class="co"># gls and some lmm</span></span>
-<span id="cb2-12"><a href="getting-started-r-projects-and-r-markdown.html#cb2-12"></a></span>
-<span id="cb2-13"><a href="getting-started-r-projects-and-r-markdown.html#cb2-13"></a><span class="co"># graphing packages</span></span>
-<span id="cb2-14"><a href="getting-started-r-projects-and-r-markdown.html#cb2-14"></a><span class="kw">library</span>(ggsci) <span class="co"># color palettes</span></span>
-<span id="cb2-15"><a href="getting-started-r-projects-and-r-markdown.html#cb2-15"></a><span class="kw">library</span>(ggpubr) <span class="co"># publication quality plots</span></span>
-<span id="cb2-16"><a href="getting-started-r-projects-and-r-markdown.html#cb2-16"></a><span class="kw">library</span>(ggthemes) <span class="co"># colorblind palette</span></span>
-<span id="cb2-17"><a href="getting-started-r-projects-and-r-markdown.html#cb2-17"></a><span class="kw">library</span>(ggforce) <span class="co"># better jitter</span></span>
-<span id="cb2-18"><a href="getting-started-r-projects-and-r-markdown.html#cb2-18"></a><span class="kw">library</span>(cowplot) <span class="co"># combine plots</span></span>
-<span id="cb2-19"><a href="getting-started-r-projects-and-r-markdown.html#cb2-19"></a></span>
-<span id="cb2-20"><a href="getting-started-r-projects-and-r-markdown.html#cb2-20"></a><span class="co"># Okabe &amp; Ito palette</span></span>
-<span id="cb2-21"><a href="getting-started-r-projects-and-r-markdown.html#cb2-21"></a>pal_okabe_ito &lt;-<span class="st"> </span><span class="kw">colorblind_pal</span>()(<span class="dv">8</span>)[<span class="dv">2</span><span class="op">:</span><span class="dv">8</span>] <span class="co"># ggthemes</span></span>
-<span id="cb2-22"><a href="getting-started-r-projects-and-r-markdown.html#cb2-22"></a></span>
-<span id="cb2-23"><a href="getting-started-r-projects-and-r-markdown.html#cb2-23"></a><span class="co"># use here from the here package</span></span>
-<span id="cb2-24"><a href="getting-started-r-projects-and-r-markdown.html#cb2-24"></a>here &lt;-<span class="st"> </span>here<span class="op">::</span>here</span>
-<span id="cb2-25"><a href="getting-started-r-projects-and-r-markdown.html#cb2-25"></a></span>
-<span id="cb2-26"><a href="getting-started-r-projects-and-r-markdown.html#cb2-26"></a><span class="co"># load functions used by this text written by me</span></span>
-<span id="cb2-27"><a href="getting-started-r-projects-and-r-markdown.html#cb2-27"></a><span class="kw">source</span>(<span class="kw">here</span>(<span class="st">&quot;R/ggplot_the_model.R&quot;</span>))</span>
-<span id="cb2-28"><a href="getting-started-r-projects-and-r-markdown.html#cb2-28"></a></span>
-<span id="cb2-29"><a href="getting-started-r-projects-and-r-markdown.html#cb2-29"></a><span class="co"># use clean_names from the janitor package</span></span>
-<span id="cb2-30"><a href="getting-started-r-projects-and-r-markdown.html#cb2-30"></a>clean_names &lt;-<span class="st"> </span>janitor<span class="op">::</span>clean_names</span>
-<span id="cb2-31"><a href="getting-started-r-projects-and-r-markdown.html#cb2-31"></a></span>
-<span id="cb2-32"><a href="getting-started-r-projects-and-r-markdown.html#cb2-32"></a>data_folder &lt;-<span class="st"> &quot;data&quot;</span></span></code></pre></div>
-<p><code>echo = TRUE</code> tells knitr to display the code within a code chunk when the R markdown file is knitted. <code>knitr::opts_chunk$set(echo = TRUE)</code> sets <code>echo = TRUE</code> for all code chunks in the containing .Rmd file (not all R markdown files in the project!).</p>
-<p><code>pal_okabe_ito &lt;- colorblind_pal()(8)[2:8]</code> assigns the Okabe-Ito colorblind palette to the object <code>pal_okabe_ito</code>. We use this to specify colorblind-safe colors when generating plots.</p>
-<p><code>here &lt;- here::here</code> makes sure that <code>here</code> uses the function from the here package and not some other package. Huh? Let’s back up – R is an open source project and packages are written by independent programmers and scientists and not employees of some central company. When someone develops a package, they create functions that do stuff. Sometimes developers of different packages create functions that have the same name. There is a function name conflict if we load two packages with the same name. Our R session will use the function of the last loaded package as the function assigned to the name. If we want the name to be used with the function in the previously loaded package, then we need to either re-order the library() statements, or simply re-assign the name to the function that we want. This is what <code>here &lt;- here::here</code> does. This script takes the function <code>here</code> from the package “here” and assigns it to the object “here”!.</p>
 </div>
-<div id="create-a-fake-data-chunk" class="section level3">
-<h3><span class="header-section-number">1.10.3</span> Create a “fake-data” chunk</h3>
-<ol start="4" style="list-style-type: decimal">
-<li>Let’s play around with an R Markdown file. Create a new chunk and label it “fake-data”. Insert the following R script and then click the chunk’s run button</li>
+<div id="checking-the-model-ii-scale-location-plot-for-checking-homoskedasticity" class="section level3">
+<h3><span class="header-section-number">17.2.3</span> Checking the model II – scale-location plot for checking homoskedasticity</h3>
+<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/glm1-worm-scale-location-1.png" width="576" /></p>
+<p>A linear model also assumes the error has constant variance (that is, the error variance is not a function of the value of <span class="math inline">\(X\)</span>), or homoskedasticity. The fit model can be checked for homoskedasticity using a scale-location plot, which is a scatterplot of the positive square-root of the standardized residuals against the fitted values<a href="appendix-2-online-resources-for-getting-started-with-statistical-modeling-in-r.html#fn6" class="footnote-ref" id="fnref6"><sup>6</sup></a>. If the residuals approximate a normal distribution, then a regression line through the scatter should be close to horizontal. The regression line in the scale-location plot of the fit of the linear model to the worm data shows a distinct increase in the “scale” (the square root of the standardized residuals) with increased fitted value, which is expected of data that are lognormally, Poisson, or negative binomially distributed.</p>
+</div>
+<div id="two-distributions-for-count-data-poisson-and-negative-binomial" class="section level3">
+<h3><span class="header-section-number">17.2.4</span> Two distributions for count data – Poisson and Negative Binomial</h3>
+<p>The pattern in the normal Q-Q plot in Figure <a href="counts.html#fig:glm1-plot2">17.2</a>B should discourage one from modeling the data with a normal distribution and instead model the data with an alternative distribution using a Generalized Linear Model. There is no unique mapping between how data are generated and a specific distribution, so this decision is not as easy as thinking about the data generation mechanism and then simply choosing the “correct” distribution. Section 4.5 in Bolker (xxx) is an excellent summary of how to think about the generating processes for different distributions in the context of ecological data. Since the response in the worm data are counts, we need to choose a distribution that generates integer values, such as the Poisson or the negative binomial.</p>
+<ol style="list-style-type: decimal">
+<li>Poisson – A Poisson distribution is the probability distribution of the number of occurrences of some thing (an egg, a parasite, or a specific mRNA transcript) generated by a process that generates the thing at a constant rate per unit effort (duration or space). This constant rate is <span class="math inline">\(\lambda\)</span>, which is the expectation, so <span class="math inline">\(\mathrm{E}(Y) = \mu = \lambda\)</span>. Because the rate per effort is constant, <em>the variance of a Poisson variable equals the mean</em>, <span class="math inline">\(\sigma^2 = \mu = \lambda\)</span>. Figure <a href="#fig:glm1-poisson"><strong>??</strong></a> shows three samples from a Poisson distribution with <span class="math inline">\(\lambda\)</span> set to 1, 5, and 10. The plots show that, as the mean count (<span class="math inline">\(\lambda\)</span>) moves away from zero, a Poisson distribution 1) becomes less skewed and more closely approximates a normal distribution and 2) has an increasingly low probability of including zero (less than 1% zeros when the mean is 5).</li>
 </ol>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="getting-started-r-projects-and-r-markdown.html#cb3-1"></a><span class="kw">set.seed</span>(<span class="dv">4</span>)</span>
-<span id="cb3-2"><a href="getting-started-r-projects-and-r-markdown.html#cb3-2"></a>n &lt;-<span class="st"> </span><span class="dv">10</span></span>
-<span id="cb3-3"><a href="getting-started-r-projects-and-r-markdown.html#cb3-3"></a>fake_data &lt;-<span class="st"> </span><span class="kw">data.table</span>(</span>
-<span id="cb3-4"><a href="getting-started-r-projects-and-r-markdown.html#cb3-4"></a>    <span class="dt">treatment =</span> <span class="kw">rep</span>(<span class="kw">c</span>(<span class="st">&quot;cn&quot;</span>, <span class="st">&quot;tr&quot;</span>), <span class="dt">each =</span> n),</span>
-<span id="cb3-5"><a href="getting-started-r-projects-and-r-markdown.html#cb3-5"></a>    <span class="dt">neutrophil_count_exp1 =</span> <span class="kw">rnegbin</span>(n<span class="op">*</span><span class="dv">2</span>, </span>
-<span id="cb3-6"><a href="getting-started-r-projects-and-r-markdown.html#cb3-6"></a>                                    <span class="dt">mu =</span> <span class="kw">rep</span>(<span class="kw">c</span>(<span class="dv">10</span>, <span class="dv">15</span>), <span class="dt">each =</span> n),</span>
-<span id="cb3-7"><a href="getting-started-r-projects-and-r-markdown.html#cb3-7"></a>                                    <span class="dt">theta =</span> <span class="dv">1</span>),</span>
-<span id="cb3-8"><a href="getting-started-r-projects-and-r-markdown.html#cb3-8"></a>    <span class="dt">neutrophil_count_exp2 =</span> <span class="kw">rnegbin</span>(n<span class="op">*</span><span class="dv">2</span>, </span>
-<span id="cb3-9"><a href="getting-started-r-projects-and-r-markdown.html#cb3-9"></a>                                    <span class="dt">mu =</span> <span class="kw">rep</span>(<span class="kw">c</span>(<span class="dv">10</span>, <span class="dv">20</span>), <span class="dt">each =</span> n),</span>
-<span id="cb3-10"><a href="getting-started-r-projects-and-r-markdown.html#cb3-10"></a>                                    <span class="dt">theta =</span> <span class="dv">1</span>)</span>
-<span id="cb3-11"><a href="getting-started-r-projects-and-r-markdown.html#cb3-11"></a>)</span>
-<span id="cb3-12"><a href="getting-started-r-projects-and-r-markdown.html#cb3-12"></a><span class="co"># View(fake_data)</span></span></code></pre></div>
-<p>This chunk creates fake neutrophil counts in two different experiments. The comment (#) sign before <code>View(fake_data)</code> “comments out” the line of code, so it is not run. View the data by highlighting <code>View(fake_data)</code> and choosing “Run selected line(s)” from the Run menu.</p>
-</div>
-<div id="create-a-plot-chunk" class="section level3">
-<h3><span class="header-section-number">1.10.4</span> Create a “plot” chunk</h3>
-<ol start="5" style="list-style-type: decimal">
-<li>Create a new chunk and label it “plot”. Insert the following R script and then click the chunk’s run button</li>
+<p>A Poisson distribution, then, is useful for count data in which the conditional variance is close to the conditional mean. Very often, biological count data are not well approximated by a Poisson distribution because the variance is either less than the mean, an example of <strong>underdispersion</strong><a href="appendix-2-online-resources-for-getting-started-with-statistical-modeling-in-r.html#fn7" class="footnote-ref" id="fnref7"><sup>7</sup></a>, or greater than the mean, an example of <strong>overdispersion</strong><a href="appendix-2-online-resources-for-getting-started-with-statistical-modeling-in-r.html#fn8" class="footnote-ref" id="fnref8"><sup>8</sup></a>. A useful distribution for count data with overdispersion is the negative binomial.</p>
+<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/glm1-poisson-1.png" width="576" /></p>
+<ol start="2" style="list-style-type: decimal">
+<li>Negative Binomial – The negative binomial distribution is a discrete probability distribution of the number of successes that occur before a specified number of failures <span class="math inline">\(k\)</span> given a probability <span class="math inline">\(p\)</span> of success. This isn’t a very useful way of thinking about modeling count data in biology. What is useful is that the Negative Binomial distribution can be used simply as way of modeling an “overdispersed” Poisson process. The mean of a negative binomial variable is <span class="math inline">\(\mu = k\frac{p}{1-p}\)</span> and the variance is <span class="math inline">\(\sigma^2 = \mu + \mu^2/k\)</span>. As a method for modeling an overdispersed Poisson variable, <span class="math inline">\(k\)</span> functions as a **dispersion parameter* controlling the amount of overdispersion and can be any real, positive value (not simply a positive integer), including values less than 1.</li>
 </ol>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="getting-started-r-projects-and-r-markdown.html#cb4-1"></a>gg_<span class="dv">1</span> &lt;-<span class="st"> </span><span class="kw">ggstripchart</span>(<span class="dt">data =</span> fake_data,</span>
-<span id="cb4-2"><a href="getting-started-r-projects-and-r-markdown.html#cb4-2"></a>                <span class="dt">x =</span> <span class="st">&quot;treatment&quot;</span>,</span>
-<span id="cb4-3"><a href="getting-started-r-projects-and-r-markdown.html#cb4-3"></a>                <span class="dt">y =</span> <span class="st">&quot;neutrophil_count_exp1&quot;</span>,</span>
-<span id="cb4-4"><a href="getting-started-r-projects-and-r-markdown.html#cb4-4"></a>                <span class="dt">color =</span> <span class="st">&quot;treatment&quot;</span>,</span>
-<span id="cb4-5"><a href="getting-started-r-projects-and-r-markdown.html#cb4-5"></a>                <span class="dt">palette =</span> <span class="st">&quot;jco&quot;</span>,</span>
-<span id="cb4-6"><a href="getting-started-r-projects-and-r-markdown.html#cb4-6"></a>                <span class="dt">add =</span> <span class="st">&quot;mean_se&quot;</span>,</span>
-<span id="cb4-7"><a href="getting-started-r-projects-and-r-markdown.html#cb4-7"></a>                <span class="dt">legend =</span> <span class="st">&quot;none&quot;</span>) <span class="op">+</span></span>
-<span id="cb4-8"><a href="getting-started-r-projects-and-r-markdown.html#cb4-8"></a><span class="st">    </span><span class="kw">ylab</span>(<span class="st">&quot;Neutrophil Count (Exp. 1)&quot;</span>) <span class="op">+</span></span>
-<span id="cb4-9"><a href="getting-started-r-projects-and-r-markdown.html#cb4-9"></a><span class="st">  </span><span class="kw">stat_compare_means</span>(<span class="dt">method =</span> <span class="st">&quot;t.test&quot;</span>,</span>
-<span id="cb4-10"><a href="getting-started-r-projects-and-r-markdown.html#cb4-10"></a>                     <span class="dt">label.y =</span> <span class="dv">50</span>,</span>
-<span id="cb4-11"><a href="getting-started-r-projects-and-r-markdown.html#cb4-11"></a>                     <span class="dt">label =</span> <span class="st">&quot;p.format&quot;</span>) <span class="op">+</span></span>
-<span id="cb4-12"><a href="getting-started-r-projects-and-r-markdown.html#cb4-12"></a><span class="st">    </span><span class="ot">NULL</span></span>
-<span id="cb4-13"><a href="getting-started-r-projects-and-r-markdown.html#cb4-13"></a></span>
-<span id="cb4-14"><a href="getting-started-r-projects-and-r-markdown.html#cb4-14"></a>gg_<span class="dv">2</span>&lt;-<span class="st"> </span><span class="kw">ggstripchart</span>(<span class="dt">data =</span> fake_data,</span>
-<span id="cb4-15"><a href="getting-started-r-projects-and-r-markdown.html#cb4-15"></a>                <span class="dt">x =</span> <span class="st">&quot;treatment&quot;</span>,</span>
-<span id="cb4-16"><a href="getting-started-r-projects-and-r-markdown.html#cb4-16"></a>                <span class="dt">y =</span> <span class="st">&quot;neutrophil_count_exp2&quot;</span>,</span>
-<span id="cb4-17"><a href="getting-started-r-projects-and-r-markdown.html#cb4-17"></a>                <span class="dt">color =</span> <span class="st">&quot;treatment&quot;</span>,</span>
-<span id="cb4-18"><a href="getting-started-r-projects-and-r-markdown.html#cb4-18"></a>                <span class="dt">palette =</span> <span class="st">&quot;jco&quot;</span>,</span>
-<span id="cb4-19"><a href="getting-started-r-projects-and-r-markdown.html#cb4-19"></a>                <span class="dt">add =</span> <span class="st">&quot;mean_se&quot;</span>,</span>
-<span id="cb4-20"><a href="getting-started-r-projects-and-r-markdown.html#cb4-20"></a>                <span class="dt">legend =</span> <span class="st">&quot;none&quot;</span>) <span class="op">+</span></span>
-<span id="cb4-21"><a href="getting-started-r-projects-and-r-markdown.html#cb4-21"></a><span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;Neutrophil Count (Exp 2)&quot;</span>) <span class="op">+</span></span>
-<span id="cb4-22"><a href="getting-started-r-projects-and-r-markdown.html#cb4-22"></a><span class="st">  </span><span class="kw">stat_compare_means</span>(<span class="dt">method =</span> <span class="st">&quot;t.test&quot;</span>,</span>
-<span id="cb4-23"><a href="getting-started-r-projects-and-r-markdown.html#cb4-23"></a>                     <span class="dt">label.y =</span> <span class="dv">65</span>,</span>
-<span id="cb4-24"><a href="getting-started-r-projects-and-r-markdown.html#cb4-24"></a>                     <span class="dt">label =</span> <span class="st">&quot;p.format&quot;</span>) <span class="op">+</span></span>
-<span id="cb4-25"><a href="getting-started-r-projects-and-r-markdown.html#cb4-25"></a><span class="ot">NULL</span></span>
-<span id="cb4-26"><a href="getting-started-r-projects-and-r-markdown.html#cb4-26"></a></span>
-<span id="cb4-27"><a href="getting-started-r-projects-and-r-markdown.html#cb4-27"></a><span class="kw">plot_grid</span>(gg_<span class="dv">1</span>, gg_<span class="dv">2</span>, <span class="dt">labels =</span> <span class="st">&quot;AUTO&quot;</span>)</span></code></pre></div>
-<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/intro-plot-1.png" width="672" /></p>
-<p>Each plot shows the mean count for each group, the standard error of the mean count, and the <em>p</em>-value from a <em>t</em>-test. This statistical analysis and plot are typical of those found in experimental biology journals. This text will teach alterntatives that implement better practices.</p>
 </div>
-<div id="knit" class="section level3">
-<h3><span class="header-section-number">1.10.5</span> Knit</h3>
-<ol start="6" style="list-style-type: decimal">
-<li>Knit to an html file</li>
-<li>If you’ve installed tinytex (or some other LaTeX distribution), knit to a pdf file</li>
-<li>Knit to a word document</li>
+<div id="fitting-a-glm-with-a-poisson-distribution-to-the-worm-data" class="section level3">
+<h3><span class="header-section-number">17.2.5</span> Fitting a GLM with a Poisson distribution to the worm data</h3>
+<p>Let’s fit a GLM with a Poisson distribution to the worm data. The model is</p>
+<p><span class="math display">\[\begin{align}
+Diplo\_intensity_i &amp;\sim Poisson(\mu_i)\\
+\mathrm{E}({Diplo\_intensity|Treatment}) &amp;= \mu\\
+\mu_i &amp;= \mathrm{exp}(\eta_i)\\
+\eta_i &amp;= \beta_0 + \beta_1 Uninfected_i + \beta_2 Infected\_LG_i + \beta_3 Infected\_HG_i
+\end{align}\]</span></p>
+<ol style="list-style-type: decimal">
+<li>The first line of the model is the stochastic part stating the response is modeled as a random Poisson variable with mean and variance <span class="math inline">\(\mu\)</span> (the rate parameter <span class="math inline">\(\lambda\)</span> of the Poisson distribution).</li>
+<li>The second line states the <span class="math inline">\(\mu\)</span> is the conditional mean or conditional expectation</li>
+<li>The third line connects the conditional mean on the link scale (<span class="math inline">\(\eta\)</span>) with the conditional mean on the response scale (<span class="math inline">\(\mu\)</span>)</li>
+<li>The fourth line is the linear predictor, and includes three dummy variables.</li>
 </ol>
+<p>Remember that the conditional mean is the expected/predicted/fitted/modeled value when <span class="math inline">\(X=x_i\)</span>.</p>
+</div>
+<div id="model-checking-fits-to-count-data" class="section level3">
+<h3><span class="header-section-number">17.2.6</span> Model checking fits to count data</h3>
+<p>we use the fit model to check
+1. the overall similarity of observed and theoretical distributions
+2. if the observed distribution is over or under dispersed
+3. if there more zeros than expected by the theoretical distribution. If so, the observed distribution is <strong>zero-inflated</strong></p>
+<div id="model-checking-a-glm-i-the-quantile-residual-q-q-plot" class="section level4">
+<h4><span class="header-section-number">17.2.6.1</span> Model checking a GLM I – the quantile residual Q-Q plot</h4>
+<p>A quantile-quantile (Q-Q) plot is used to check overall similarity of the observed distribution with the distribution that would be expected under the model. An alternative to a Normal Q-Q plot for a GLM fit is a quantile residual Q-Q plot of observed vs. expected <strong>quantile residuals</strong>. The basic algorithm for this is</p>
+<ol style="list-style-type: decimal">
+<li>Use the model parameters to simulate <span class="math inline">\(p\)</span> fake values of the response for each row of the data. This will be a <span class="math inline">\(n \times p\)</span> matrix of fake data where each column is a new, random sample of a population with parameters equal to that estimated for the observed data. For the Poisson, the parameter for each observation will be <span class="math inline">\(\hat{\mu}_i\)</span>, the modeled value of observation <span class="math inline">\(i\)</span>. For the negative binomial, the parameters will be <span class="math inline">\(\hat{\mu}_i\)</span> and the dispersion parameter <span class="math inline">\(k\)</span>, which is the same for all observations.</li>
+<li>For each observation (each row of the matrix of fake data), compute the fraction of simulated values smaller than the observed value of the response variable for that row. This fraction is the observed <strong>quantile residual</strong>, which ranges in value from 0 to 1. If the true data are distribitued as that specified by the model, then quantile residuals will have a uniform distribution.</li>
+<li>Sort the observed quantile residuals from smallest to largest and plot against theoretical quantile residuals from a uniform distribution. One could transform the quantile residuals to standard, normal residuals and then plot using a traditional Normal Q-Q plot but this step isn’t necessary (if reported, a Normal Q-Q plot of transformed quantile residuals might confuse readers who failed to read the fine print).</li>
+</ol>
+<div style="background-color:#cccccc; text-align:left; vertical-align: middle; padding:20px 47px;">
+<p><strong>Misconceivable</strong> – A common misconception is that if the distribution of the response approximates a Poisson distribution, then the residuals of a GLM fit with a Poisson distribution should be normally distributed, which could then be checked with a Normal Q-Q plot, and homoskedastic, which could be checked with a scale-location plot. Neither of these is true because a GLM does not transform the data and, in fact, the model definition does not specify anything about the distribution of an “error” term – there is no <span class="math inline">\(\varepsilon\)</span> in the model defintion above! This is why thinking about the definition of a linear model by specifying an error term with a normal distribution can be confusing and lead to misconceptions when learning GLMs.</p>
+</div>
+<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/glm1-worm-poisson-qr-1.png" width="576" /></p>
+<p>The Q-Q plot using quantile residuals with a Poisson distribution indicates that the counts of <em>Diplostomum</em> larvae in the eyes of the threespine stickleback are not well approximated by a Poisson distribution – there are too many observed values near the ends of the expected tails, indicating the expected values are not spread out enough. This pattern emerges because the observed counts are overdispersed compared to a Poisson distribution.</p>
+</div>
+<div id="model-checking-a-glm-ii-a-dispersion-plot" class="section level4">
+<h4><span class="header-section-number">17.2.6.2</span> Model checking a GLM II – a dispersion plot</h4>
+<p>If observed counts are Poisson distributed, then the <strong>Pearson residuals</strong> (<span class="math inline">\(r_i\)</span>) and the residual degrees of freedom of the fit model (<span class="math inline">\(df\)</span>) can be used to compute a dispersion statistic</p>
+<p><span class="math display">\[\begin{equation}
+\frac{\sum{r_i}}{df}
+\end{equation}\]</span></p>
+<p>that has an expected value of 1. Instead of a formal hypothesis test of this statistic, I use a simulation approach and ask, “if the observed counts are Poisson distributed, what is the expected frequency distribution of this dispersion statistic?” and then use simulation to generate this expected distribution. The algorithm for this is</p>
+<ol style="list-style-type: decimal">
+<li>For each observation <span class="math inline">\(i\)</span>, generate a random Poisson count using <span class="math inline">\(\hat{\mu}\)</span> as the parameter.</li>
+<li>Fit the model and compute the dispersion statistic.</li>
+<li>Repeat 1 and 2 <span class="math inline">\(N_{iter}\)</span> times.</li>
+</ol>
+<p>The plot below shows a histogram of the dispersion statistic computed for 1000 simulations of the worm data. The observed dispersion statistic is 3.4. The expected value is 1.0. The mean of the simulated values is 1.</p>
+<div class="figure"><span id="fig:glm1-worm-poisson-dispersion-plot"></span>
+<img src="Walker-elementary-statistical-modeling-draft_files/figure-html/glm1-worm-poisson-dispersion-plot-1.png" alt="Observed vs. expected dispersion statistic. The observed statistic marked by the red line. The histogram of expected statistics are from 1000 simulations of the observed data." width="576" />
+<p class="caption">
+Figure 17.3: Observed vs. expected dispersion statistic. The observed statistic marked by the red line. The histogram of expected statistics are from 1000 simulations of the observed data.
+</p>
+</div>
+</div>
+</div>
+<div id="fitting-a-glm-with-a-negative-binomial-distribution-to-the-worm-data" class="section level3">
+<h3><span class="header-section-number">17.2.7</span> Fitting a GLM with a Negative Binomial distribution to the worm data</h3>
+<p>The model is</p>
+<p><span class="math display">\[\begin{align}
+Diplo\_intensity &amp;\sim NB(\mu, k)\\
+\mathrm{E}({Diplo\_intensity|Treatment}) &amp;= \mu\\
+\mu &amp;= \mathrm{exp}(\eta)\\
+\eta &amp;= \beta_0 + \beta_1 Uninfected + \beta_2 Infected\_LG + \beta_3 Infected\_HG
+\end{align}\]</span></p>
+<p>This model specifies a negative binomial distribution but otherwise is just like that above specifying a Poisson distribution.</p>
+<div id="model-checking-2" class="section level4">
+<h4><span class="header-section-number">17.2.7.1</span> Model checking</h4>
+<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/glm1-worm-nb-1.png" width="576" /></p>
+<p>A quantile residual Q-Q plot of the GLM model fit with negative binomial distribution is illustrated above. This looks pretty good.</p>
+</div>
+<div id="model-means-and-coefficients" class="section level4">
+<h4><span class="header-section-number">17.2.7.2</span> Model means and coefficients</h4>
+<p>In a Generalized Linear Model of counts using either a Poisson or negative binomial distribution, modeled means, coefficients, and contrasts can be reported either on the link or response scale. Remember, the response scale is a count, while the link scale is a log(count).</p>
+<p>The modeled means on the link scale are</p>
+<pre><code>##  Treatment   emmean     SE  df asymp.LCL asymp.UCL
+##  Control       1.82 0.0804 Inf      1.66      1.98
+##  Uninfected    1.50 0.1093 Inf      1.29      1.72
+##  Infected LG   1.62 0.1362 Inf      1.36      1.89
+##  Infected HG   2.36 0.0714 Inf      2.22      2.50
+## 
+## Results are given on the log (not the response) scale. 
+## Confidence level used: 0.95</code></pre>
+<p>While the means on response scale are</p>
+<pre><code>##  Treatment   response    SE  df asymp.LCL asymp.UCL
+##  Control         6.18 0.497 Inf      5.28      7.24
+##  Uninfected      4.50 0.492 Inf      3.63      5.58
+##  Infected LG     5.07 0.691 Inf      3.89      6.63
+##  Infected HG    10.60 0.757 Inf      9.22     12.20
+## 
+## Confidence level used: 0.95 
+## Intervals are back-transformed from the log scale</code></pre>
+<ol style="list-style-type: decimal">
+<li><p>A mean on the response scale is simply the exponent of the mean on the link scale. For example, the mean of the Control treatment level on the response scale is <span class="math inline">\(\mathrm{exp}(1.821408) = 6.180555\)</span>.</p></li>
+<li><p>The CIs on the link scale are symmetric around the mean but those on the response scale are not. This is a feature, not a bug. Remember that counts are right skewed which means a CI will have a wider right than left interval. Check this!</p></li>
+<li><p>If a plot includes a 1 SE error bar on the response scale, this is technically correct but it encourages the practice of computing CIs using the 2*SE rule of thumb. This rule breaks down for count data with right skewed distributions.</p></li>
+<li><p>Plotting the response scale CIs is both technically correct and makes the 2*SE rule of thumb unnecessary.</p></li>
+</ol>
+<p>The model coefficients on the link scale are</p>
+<pre><code>##  contrast              estimate    SE  df asymp.LCL asymp.UCL z.ratio
+##  Uninfected - Control    -0.317 0.136 Inf    -0.583   -0.0514 -2.339 
+##  Infected LG - Control   -0.197 0.158 Inf    -0.507    0.1126 -1.248 
+##  Infected HG - Control    0.540 0.108 Inf     0.329    0.7504  5.019 
+##  p.value
+##  0.0193 
+##  0.2122 
+##  &lt;.0001 
+## 
+## Results are given on the log (not the response) scale. 
+## Confidence level used: 0.95</code></pre>
+<p>Backtransforming the coefficients (but not the intercept) to the response scale (using <span class="math inline">\(\mathrm{exp}{b_j}\)</span>) results in a <strong>response ratio</strong>.</p>
+<pre><code>##  contrast              ratio     SE  df asymp.LCL asymp.UCL z.ratio
+##  Uninfected / Control  0.728 0.0988 Inf     0.558      0.95 -2.339 
+##  Infected LG / Control 0.821 0.1298 Inf     0.602      1.12 -1.248 
+##  Infected HG / Control 1.715 0.1845 Inf     1.389      2.12  5.019 
+##  p.value
+##  0.0193 
+##  0.2122 
+##  &lt;.0001 
+## 
+## Confidence level used: 0.95 
+## Intervals are back-transformed from the log scale 
+## Tests are performed on the log scale</code></pre>
+<ol style="list-style-type: decimal">
+<li>Note how the emmeans package reports the name of the term as the ratio of the coefficient term to the intercept term (the reference treatment level). Why are the coefficients tranformed to ratios on the response scale? Remember that a coefficient is a difference in conditional means and that <span class="math inline">\(\mathrm{exp}(B-A) = \frac{\mathrm{exp}(B)}{\mathrm{exp}(A)}\)</span>. For a dummy variable as here (say “Infected HG”), the response ratio is</li>
+</ol>
+<p><span class="math display">\[\begin{equation}
+RR_{Infected\_HG} = \frac{\overline{Infected\_HG}}{\overline{Control}}
+\end{equation}\]</span></p>
+<p>which give us the <strong>relative effect</strong> of Infected_HG compared to the Control. Relative effects could be reported as a response ratio in a table, or in the text it could be reported as a percent “Infected HG fish had 71.5% (95%CI: 38.9% - 111.8%) more <em>Diplostomum</em> larvae than Control fish.” Where do these percents come from? The percent effect is <span class="math inline">\(100(RR_j - 1)\)</span> larger than the reference mean if the <span class="math inline">\(RR_j &gt; 1\)</span> or <span class="math inline">\(100(1 - RR_j)\)</span> smaller than the reference mean if the <span class="math inline">\(RR_j &lt; 1\)</span>.</p>
+<ol start="2" style="list-style-type: decimal">
+<li><p>Backtransforming the intercept does not generate a ratio since the intercept on the link scale is not a difference. For the worm analysis, the intercept on the link scale is the mean count of the control group on the link scale and the backtransformed intercept is the mean count of the control group on the response scale.</p></li>
+<li><p>Effects on the response scale are not additive but multiplicative! So, for example, the mean of the Infected HG treatment level on the response scale is <span class="math inline">\(\overline{Control}*RR_{Infected\_HG}\)</span> (remember that with a linear model the mean would be <span class="math inline">\(b_{Control} + b_{Infected\_HG}\)</span>). Check and see if this works.</p></li>
+</ol>
+</div>
+</div>
+</div>
+<div id="working-in-r-6" class="section level2">
+<h2><span class="header-section-number">17.3</span> Working in R</h2>
+<p><strong>Fitting a GLM to count data</strong>. The poisson family is specified with the base R <code>glm()</code> function. For negative binomial, use <code>glm.nb</code> from the MASS package</p>
+<div class="sourceCode" id="cb447"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb447-1"><a href="counts.html#cb447-1"></a><span class="co"># poisson - less likely to fit to real biological data well because of overdispersion</span></span>
+<span id="cb447-2"><a href="counts.html#cb447-2"></a>fit &lt;-<span class="st"> </span><span class="kw">glm</span>(y <span class="op">~</span><span class="st"> </span>treatment, <span class="dt">family =</span> <span class="st">&quot;poisson&quot;</span>, <span class="dt">data =</span> dt)</span>
+<span id="cb447-3"><a href="counts.html#cb447-3"></a></span>
+<span id="cb447-4"><a href="counts.html#cb447-4"></a><span class="co"># two alternatives to overdispersed poisson fit</span></span>
+<span id="cb447-5"><a href="counts.html#cb447-5"></a><span class="co"># quasipoisson</span></span>
+<span id="cb447-6"><a href="counts.html#cb447-6"></a>fit &lt;-<span class="st"> </span><span class="kw">glm</span>(y <span class="op">~</span><span class="st"> </span>treatment, <span class="dt">family =</span> <span class="st">&quot;quasipoisson&quot;</span>, <span class="dt">data=</span>dt)</span>
+<span id="cb447-7"><a href="counts.html#cb447-7"></a><span class="co"># negative binomial - more likely to fit to real biological data well</span></span>
+<span id="cb447-8"><a href="counts.html#cb447-8"></a><span class="co"># note that &quot;family&quot; is not an argument since this function is used only to fit a negative binomial distribution!</span></span>
+<span id="cb447-9"><a href="counts.html#cb447-9"></a>fit &lt;-<span class="st"> </span><span class="kw">glm.nb</span>(y <span class="op">~</span><span class="st"> </span>treatment, <span class="dt">data =</span> dt)</span></code></pre></div>
+<p><strong>Fitting a GLM to a continuous conditional response with right skew</strong>. The Gamma family is specified with the base R <code>glm()</code> function.</p>
+<div class="sourceCode" id="cb448"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb448-1"><a href="counts.html#cb448-1"></a>fit &lt;-<span class="st"> </span><span class="kw">glm</span>(y <span class="op">~</span><span class="st"> </span>treatment, <span class="dt">family =</span> <span class="kw">Gamma</span>(<span class="dt">link =</span> <span class="st">&quot;log&quot;</span>), <span class="dt">data =</span> dt)</span></code></pre></div>
+<p><strong>Fitting a GLM to a binary (success or failure, presence or absence, survived or died) response</strong></p>
+<p>The binomial family is specified with base R <code>glm()</code> function.</p>
+<div class="sourceCode" id="cb449"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb449-1"><a href="counts.html#cb449-1"></a><span class="co"># if the data includes a 0 or 1 for every observation of y</span></span>
+<span id="cb449-2"><a href="counts.html#cb449-2"></a>fit &lt;-<span class="st"> </span><span class="kw">glm</span>(y <span class="op">~</span><span class="st"> </span>treatment, <span class="dt">family =</span> <span class="st">&quot;binomial&quot;</span>, <span class="dt">data =</span> dt)</span>
+<span id="cb449-3"><a href="counts.html#cb449-3"></a></span>
+<span id="cb449-4"><a href="counts.html#cb449-4"></a><span class="co"># if the data includes the frequency of success AND there is a measure of the total n</span></span>
+<span id="cb449-5"><a href="counts.html#cb449-5"></a>dt[ , failure <span class="op">:</span><span class="er">=</span><span class="st"> </span>n <span class="op">-</span><span class="st"> </span>success]</span>
+<span id="cb449-6"><a href="counts.html#cb449-6"></a>fit &lt;-<span class="st"> </span><span class="kw">glm</span>(<span class="kw">cbind</span>(success, failure) <span class="op">~</span><span class="st"> </span>treatment, <span class="dt">family =</span> <span class="st">&quot;binomial&quot;</span>, <span class="dt">data =</span> dt)</span></code></pre></div>
+<p><strong>Fitting Generalized Linear Mixed Models</strong>
+Generalized linear mixed models are fit with <code>glmer</code> from the lmer package.</p>
+<div class="sourceCode" id="cb450"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb450-1"><a href="counts.html#cb450-1"></a><span class="co"># random intercept of factor &quot;id&quot;</span></span>
+<span id="cb450-2"><a href="counts.html#cb450-2"></a>fit &lt;-<span class="st"> </span><span class="kw">glmer</span>(y <span class="op">~</span><span class="st"> </span>treatment <span class="op">+</span><span class="st"> </span>(<span class="dv">1</span><span class="op">|</span>id), <span class="dt">family =</span> <span class="st">&quot;poisson&quot;</span>, <span class="dt">data =</span> dt)</span>
+<span id="cb450-3"><a href="counts.html#cb450-3"></a></span>
+<span id="cb450-4"><a href="counts.html#cb450-4"></a><span class="co"># random intercept and slope of factor &quot;id&quot;</span></span>
+<span id="cb450-5"><a href="counts.html#cb450-5"></a>fit &lt;-<span class="st"> </span><span class="kw">glmer</span>(y <span class="op">~</span><span class="st"> </span>treatment <span class="op">+</span><span class="st"> </span>(treatment<span class="op">|</span>id), <span class="dt">family =</span> <span class="kw">Gamma</span>(<span class="dt">link =</span> <span class="st">&quot;log&quot;</span>), <span class="dt">data =</span> dt)</span>
+<span id="cb450-6"><a href="counts.html#cb450-6"></a></span>
+<span id="cb450-7"><a href="counts.html#cb450-7"></a><span class="co"># Again, negative binomial uses a special function</span></span>
+<span id="cb450-8"><a href="counts.html#cb450-8"></a>fit &lt;-<span class="st"> </span><span class="kw">glmer.nb</span>(y <span class="op">~</span><span class="st"> </span>treatment <span class="op">+</span><span class="st"> </span>(treatment<span class="op">|</span>id), <span class="dt">data =</span> dt)</span></code></pre></div>
+<p>Another good package for GLMMs is <code>glmmTMB</code> from the glmmTMB package</p>
+<div class="sourceCode" id="cb451"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb451-1"><a href="counts.html#cb451-1"></a><span class="co"># negative binomial</span></span>
+<span id="cb451-2"><a href="counts.html#cb451-2"></a>fit &lt;-<span class="st"> </span><span class="kw">glmmTMB</span>(y <span class="op">~</span><span class="st"> </span>treatment <span class="op">+</span><span class="st"> </span>(<span class="dv">1</span><span class="op">|</span>id), <span class="dt">family=</span><span class="st">&quot;nbinom2&quot;</span>, <span class="dt">data =</span> dt)</span>
+<span id="cb451-3"><a href="counts.html#cb451-3"></a></span>
+<span id="cb451-4"><a href="counts.html#cb451-4"></a><span class="co"># nbinom1, the mean variance relationship is that of quasipoisson</span></span>
+<span id="cb451-5"><a href="counts.html#cb451-5"></a>fit &lt;-<span class="st"> </span><span class="kw">glmmTMB</span>(y <span class="op">~</span><span class="st"> </span>treatment <span class="op">+</span><span class="st"> </span>(<span class="dv">1</span><span class="op">|</span>id), <span class="dt">family=</span><span class="st">&quot;nbinom1&quot;</span>, <span class="dt">data =</span> dt)</span></code></pre></div>
+<div id="fitting-a-glm-to-count-data" class="section level3">
+<h3><span class="header-section-number">17.3.1</span> Fitting a GLM to count data</h3>
+<p>Source publication: Benesh, D. P., &amp; Kalbe, M. (2016). Experimental parasite community ecology: intraspecific variation in a large tapeworm affects community assembly. Journal of Animal Ecology, 85(4), 1004-1013.</p>
+<p>Source data URL: <a href="https://datadryad.org/resource/doi:10.5061/dryad.bq8j8" class="uri">https://datadryad.org/resource/doi:10.5061/dryad.bq8j8</a></p>
+<p>Source file: “Lab_exp.csv”</p>
+<p>Poisson fit. A quantile residual Q-Q plot can be generated using the package DHARMa</p>
+<div class="sourceCode" id="cb452"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb452-1"><a href="counts.html#cb452-1"></a>fit.pois &lt;-<span class="st"> </span><span class="kw">glm</span>(Diplo_intensity <span class="op">~</span><span class="st"> </span>Treatment, <span class="dt">family=</span><span class="st">&quot;poisson&quot;</span>, <span class="dt">data=</span>worm)</span>
+<span id="cb452-2"><a href="counts.html#cb452-2"></a></span>
+<span id="cb452-3"><a href="counts.html#cb452-3"></a><span class="co"># from the DHARMa package</span></span>
+<span id="cb452-4"><a href="counts.html#cb452-4"></a>  n_sim &lt;-<span class="st"> </span><span class="dv">250</span></span>
+<span id="cb452-5"><a href="counts.html#cb452-5"></a>  simulationOutput &lt;-<span class="st"> </span><span class="kw">simulateResiduals</span>(<span class="dt">fittedModel =</span> fit.pois, <span class="dt">n =</span> n_sim)</span>
+<span id="cb452-6"><a href="counts.html#cb452-6"></a>  <span class="kw">plot</span>(simulationOutput, <span class="dt">asFactor =</span> F)</span></code></pre></div>
+<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/glm1-working-in-r-1.png" width="576" /></p>
+<p>A plot of the dispersion statistic can be generated using the object returned by the <code>SimulateOutput</code> function but with <code>refit = TRUE</code>, which refits a model each iteration. This refitting isn’t necessary if only the quantiile residuals are needed. The Dharma package does not divide the sum of squared Pearson residuals by the residual degrees of freedom and so the expected value of the statistic is <span class="math inline">\(df\)</span>.</p>
+<div class="sourceCode" id="cb453"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb453-1"><a href="counts.html#cb453-1"></a><span class="co"># from the DHARMa package</span></span>
+<span id="cb453-2"><a href="counts.html#cb453-2"></a>  n_sim &lt;-<span class="st"> </span><span class="dv">250</span></span>
+<span id="cb453-3"><a href="counts.html#cb453-3"></a>  simulationOutput &lt;-<span class="st"> </span><span class="kw">simulateResiduals</span>(<span class="dt">fittedModel=</span>fit.pois, <span class="dt">n=</span>n_sim, <span class="dt">refit=</span><span class="ot">TRUE</span>)</span>
+<span id="cb453-4"><a href="counts.html#cb453-4"></a>  <span class="kw">testDispersion</span>(simulationOutput)</span></code></pre></div>
+<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/unnamed-chunk-225-1.png" width="576" /></p>
+<pre><code>## 
+##  DHARMa nonparametric dispersion test via mean deviance residual
+##  fitted vs. simulated-refitted
+## 
+## data:  simulationOutput
+## dispersion = 3.3788, p-value &lt; 2.2e-16
+## alternative hypothesis: two.sided</code></pre>
+<p>Negative binomial fit.</p>
+<div class="sourceCode" id="cb455"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb455-1"><a href="counts.html#cb455-1"></a>fit.nb &lt;-<span class="st"> </span><span class="kw">glm.nb</span>(Diplo_intensity <span class="op">~</span><span class="st"> </span>Treatment, <span class="dt">data=</span>worm)</span>
+<span id="cb455-2"><a href="counts.html#cb455-2"></a><span class="co"># from the DHARMa package</span></span>
+<span id="cb455-3"><a href="counts.html#cb455-3"></a>  simulationOutput &lt;-<span class="st"> </span><span class="kw">simulateResiduals</span>(<span class="dt">fittedModel =</span> fit.nb, <span class="dt">n =</span> n_sim)</span>
+<span id="cb455-4"><a href="counts.html#cb455-4"></a>  <span class="kw">plot</span>(simulationOutput, <span class="dt">asFactor =</span> F)</span></code></pre></div>
+<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/glm-working-in-r-2-1.png" width="576" /></p>
+<div class="sourceCode" id="cb456"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb456-1"><a href="counts.html#cb456-1"></a><span class="co"># link scale</span></span>
+<span id="cb456-2"><a href="counts.html#cb456-2"></a>emm &lt;-<span class="st"> </span><span class="kw">emmeans</span>(fit.nb, <span class="dt">specs=</span><span class="st">&quot;Treatment&quot;</span>)</span>
+<span id="cb456-3"><a href="counts.html#cb456-3"></a>emm</span></code></pre></div>
+<pre><code>##  Treatment   emmean     SE  df asymp.LCL asymp.UCL
+##  Control       1.82 0.0804 Inf      1.66      1.98
+##  Uninfected    1.50 0.1093 Inf      1.29      1.72
+##  Infected LG   1.62 0.1362 Inf      1.36      1.89
+##  Infected HG   2.36 0.0714 Inf      2.22      2.50
+## 
+## Results are given on the log (not the response) scale. 
+## Confidence level used: 0.95</code></pre>
+<div class="sourceCode" id="cb458"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb458-1"><a href="counts.html#cb458-1"></a><span class="kw">summary</span>(<span class="kw">contrast</span>(emm, <span class="dt">method=</span><span class="st">&quot;trt.vs.ctrl&quot;</span>, <span class="dt">adjust=</span><span class="st">&quot;none&quot;</span>), <span class="dt">infer=</span><span class="kw">c</span>(<span class="ot">TRUE</span>, <span class="ot">TRUE</span>))</span></code></pre></div>
+<pre><code>##  contrast              estimate    SE  df asymp.LCL asymp.UCL z.ratio
+##  Uninfected - Control    -0.317 0.136 Inf    -0.583   -0.0514 -2.339 
+##  Infected LG - Control   -0.197 0.158 Inf    -0.507    0.1126 -1.248 
+##  Infected HG - Control    0.540 0.108 Inf     0.329    0.7504  5.019 
+##  p.value
+##  0.0193 
+##  0.2122 
+##  &lt;.0001 
+## 
+## Results are given on the log (not the response) scale. 
+## Confidence level used: 0.95</code></pre>
+<div class="sourceCode" id="cb460"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb460-1"><a href="counts.html#cb460-1"></a><span class="co"># response scale</span></span>
+<span id="cb460-2"><a href="counts.html#cb460-2"></a>emm.response &lt;-<span class="st"> </span><span class="kw">emmeans</span>(fit.nb, <span class="dt">specs=</span><span class="st">&quot;Treatment&quot;</span>, <span class="dt">type=</span><span class="st">&quot;response&quot;</span>)</span>
+<span id="cb460-3"><a href="counts.html#cb460-3"></a><span class="kw">summary</span>(<span class="kw">contrast</span>(emm, <span class="dt">method=</span><span class="st">&quot;trt.vs.ctrl&quot;</span>, <span class="dt">adjust=</span><span class="st">&quot;none&quot;</span>, <span class="dt">type=</span><span class="st">&quot;response&quot;</span>), <span class="dt">infer=</span><span class="kw">c</span>(<span class="ot">TRUE</span>, <span class="ot">TRUE</span>))</span></code></pre></div>
+<pre><code>##  contrast              ratio     SE  df asymp.LCL asymp.UCL z.ratio
+##  Uninfected / Control  0.728 0.0988 Inf     0.558      0.95 -2.339 
+##  Infected LG / Control 0.821 0.1298 Inf     0.602      1.12 -1.248 
+##  Infected HG / Control 1.715 0.1845 Inf     1.389      2.12  5.019 
+##  p.value
+##  0.0193 
+##  0.2122 
+##  &lt;.0001 
+## 
+## Confidence level used: 0.95 
+## Intervals are back-transformed from the log scale 
+## Tests are performed on the log scale</code></pre>
+</div>
+<div id="fitting-a-generalized-linear-mixed-model-glmm-to-count-data" class="section level3">
+<h3><span class="header-section-number">17.3.2</span> Fitting a generalized linear mixed model (GLMM) to count data</h3>
+</div>
+<div id="fitting-a-generalized-linear-model-to-continouus-data" class="section level3">
+<h3><span class="header-section-number">17.3.3</span> Fitting a generalized linear model to continouus data</h3>
+</div>
+</div>
+<div id="problems-1" class="section level2">
+<h2><span class="header-section-number">17.4</span> Problems</h2>
+<p>Analyze the data that went into Fig 6B of Tena, A., Pekas, A., Cano, D., Wäckers, F. L., &amp; Urbaneja, A. (2015). Sugar provisioning maximizes the biocontrol service of parasitoids. Journal of Applied Ecology, 52(3), 795-804.</p>
+<ol style="list-style-type: decimal">
+<li>Compute contrasts and CIs among all pairs of all three treatment levels</li>
+<li>Make a better plot like 6b including 1) use the modeled mean instead of the simple group mean and 2) use the modeled CI of the mean instead of the SE computed within each group independently.</li>
+</ol>
+<p>source URL: <a href="https://datadryad.org/resource/doi:10.5061/dryad.bj001" class="uri">https://datadryad.org/resource/doi:10.5061/dryad.bj001</a></p>
+<p>source file: “4_Parastism_Fig_6.csv”</p>
 
-</div>
 </div>
 </div>
             </section>
@@ -807,8 +931,8 @@ Figure 1.1: Project folder with the .Rproj file and all main folders located at 
           </div>
         </div>
       </div>
-<a href="part-i-getting-started.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="analyzing-experimental-data-with-a-linear-model.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="pre-post.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="gls.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -840,7 +964,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/rstudio/bookdown-demo/edit/master/chapters/04-setup.Rmd",
+"link": "https://github.com/rstudio/bookdown-demo/edit/master/chapters/60-glm01-counts.Rmd",
 "text": "Edit"
 },
 "history": {

@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Chapter 16 ANOVA Tables | Elements of Statistical Modeling for Experimental Biology</title>
+  <title>Chapter 18 Models with random effects – Blocking and pseudoreplication | Elements of Statistical Modeling for Experimental Biology</title>
   <meta name="description" content="A first course in statistical modeling for experimental biology researchers" />
   <meta name="generator" content="bookdown 0.14 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Chapter 16 ANOVA Tables | Elements of Statistical Modeling for Experimental Biology" />
+  <meta property="og:title" content="Chapter 18 Models with random effects – Blocking and pseudoreplication | Elements of Statistical Modeling for Experimental Biology" />
   <meta property="og:type" content="book" />
   
   
@@ -16,7 +16,7 @@
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Chapter 16 ANOVA Tables | Elements of Statistical Modeling for Experimental Biology" />
+  <meta name="twitter:title" content="Chapter 18 Models with random effects – Blocking and pseudoreplication | Elements of Statistical Modeling for Experimental Biology" />
   
   <meta name="twitter:description" content="A first course in statistical modeling for experimental biology researchers" />
   
@@ -30,8 +30,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="models-for-two-or-more-categorical-x-factorial-designs.html"/>
-<link rel="next" href="predictive-models.html"/>
+<link rel="prev" href="part-vii-expanding-the-linear-model.html"/>
+<link rel="next" href="models-for-longitudinal-experiments-i-pre-post-designs.html"/>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -617,1637 +617,1091 @@ code span.wa { color: #bf0303; } /* Warning */
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="anova-tables" class="section level1">
-<h1><span class="header-section-number">Chapter 16</span> ANOVA Tables</h1>
-<p>Treatment effects are most often analyzed using ANOVA, which is short for “Analysis of Variance”. This is somewhat of an odd name for a method to test for treatments effects - what do differences in means have to do with an analyis of variance? The name makes sense in light of the decomposition of the total variance into a model variance and the residual variance (chapter xxx). If there are differences among the means, then the total variance is increased because of variation among groups.</p>
-<p>The engine underneath modern ANOVA is a linear model. If the model has a single categorical factor, the ANOVA is <strong>one-way</strong>. If the model has two categorical factors it is a two-way ANOVA. If the model has a single categorical factor and one continuous factor it is an ANCOVA, short for <strong>analysis of covariance</strong> (next chapter). More complex experimental designs classically analyzed with ANOVA are nested, split-plot, latin-square, and many others.</p>
-<div id="summary-of-usage" class="section level2">
-<h2><span class="header-section-number">16.1</span> Summary of usage</h2>
-<p>If you choose to report an ANOVA, also report the effects and their uncertainty in some way, either the model coefficients or contrasts.</p>
+<div id="lmm" class="section level1">
+<h1><span class="header-section-number">Chapter 18</span> Models with random effects – Blocking and pseudoreplication</h1>
+<div id="random-effects" class="section level2">
+<h2><span class="header-section-number">18.1</span> Random effects</h2>
+<p>Researchers often collect data in batches, for example</p>
 <ol style="list-style-type: decimal">
-<li>ANOVA generates a table with one row for each term in the linear model. A term is a factor or a covariate or an interaction. For a two-way factorial ANOVA, these terms are the two main effects and the interaction effect.</li>
-<li>The ANOVA generates an <span class="math inline">\(F\)</span> and <span class="math inline">\(p\)</span>-value for the whole model and for each term in the ANOVA table.</li>
-<li>The <span class="math inline">\(p\)</span>-value of an interaction term is often used as a decision rule to interpret the main effects. If <span class="math inline">\(p \le 0.05\)</span> then do not interpret the main effects but instead examine the condition (“simple”) effects. If <span class="math inline">\(p &gt; 0.05\)</span>, then interpret the main effects. Regardless, this sort of decision rule is itself controversial, and for good reason.</li>
-<li>If the main effects are to be interpreted, some statisticians advocate re-fitting the model without the interaction effect, others advocate interpreting the main effects with the interaction term in the model. This only matters if the design is unbalanced (see below).</li>
-<li>Regardles of any decision, always plot the data using a Harrell plot or interaction plot to understand and communicate the magnitude and pattern of interaction.</li>
-<li>For factors with more than two levels, the <span class="math inline">\(p\)</span>-value is often used as a decision rule to dissect the factor with post-hoc tests, such as Tukey HSD.</li>
-<li>A design is balanced if all the cells have the same number of replicates. A design is unbalanced if one or more of the cells has a different number of replicates. Unbalanced designs make it necessary to make decisions, none of which are perfect, and all of which are controversial. Some statisticians have even advocated randomly excluding data until the design is back in balance. Don’t do this.</li>
-<li>There are multiple ways to decompose the sum of squares. I highlight the major three: Type I (sequential), Type II (partial sequential), and Type III. Most statistics software and introductory statistics books default to Type III and, consequently, many researchers are unaware that Types I and II exist. R’s default is Type I, and this can make a difference if the design is unbalanced. This is <em>not</em> a rare error in publications.</li>
-<li>Because R defaults to Type I sum of squares, the <span class="math inline">\(p\)</span>-value of a factor depends on the order of the factors in the model if the design is unbalanced. This is a feature, not a bug.</li>
-<li>ANOVA based on type II sum of squares do not depend on factor order if the design is unbalanced, but it does assume that the interaction is zero.</li>
-<li>ANOVA based on type III sum of squares do not depend on order if the design is unbalanced and does not assume the interaction is zero.</li>
-<li>If the design is balanced, Type I, II, and III sum of squares generate the same ANOVA table. And the ANOVA table of just the main effects is the same as the ANOVA table that includes the interaction term. None of this is true when the design is unbalanced, However, the decision to use type II or type III is very controversial.</li>
+<li>An ecologist interested in the effects of insectivorous birds on tree seedling performance in a forest stake out ten 1 m<span class="math inline">\(^2\)</span> plots and use a wire-mesh cage to cover half of each plot.<a href="appendix-2-online-resources-for-getting-started-with-statistical-modeling-in-r.html#fn5" class="footnote-ref" id="fnref5"><sup>5</sup></a> The cage allows insect herbivores into the seedlings inside but excludes insectivorous birds that eat the insects from the seedlings. In every plot, five seedlings are planted within the exclosure and five outside of the exclosure. At the end of the experiment, the total leaf mass is measured on each seedling. Small, uncontrolled, environmental factors (including soil factors and density of insectivorous birds) will differ between plots but will be common to all seedlings within a plot and we would expect a common response to this uncontrolled variation on top of the differential response to each treatment. As a consequence, the ten measures of leaf mass within a plot are not independent.</li>
+<li>A nutrition researcher wants to compare the effect of glucose vs. fructose on glucose metabolism in humans. Ten individuals are recruited. Each individual has blood insulin measured 60 minutes after a noon meal over six successive days. The meal alternates between high glucose and high fructose on each day. Each individual has three measures under high glucose treatment and three measures under high fructose treatment. Small, uncontrolled, environmental factors (including metabolic variation, other meals, activity levels) will differ between the individuals but be common within an individual and we would expect a common response to this uncontrolled variation on top of the differential response to each treatment. As a consequence, the six measures of insulin within an individual are not independent.</li>
+<li>An ecologist wants to measure the effect of an invasive plant on the reproduction of a native plant. They stake-out ten, 2 m<span class="math inline">\(^2\)</span> plots in a forest and divide each plot into four quadrants, with each quadrant assigned a different treatment: control, activated carbon (a procedural control), extract from the invasive plant’s leaves, and both activated carbon and extract from the invasive plant’s leaves. The response is seedling count. Small, uncontrolled, environmental factors (including soil, drainage, and light) will differ between plots but will be common to all four quadrants within a plot and we would expect a common response to this uncontrolled variation on top of the differential response to each treatment. As a consequence, the four sets of counts within a plot are not independent.</li>
+<li>A physiologist has skeletal muscle cells growing in 5 control cultures, and 5 treated cultures. The <span class="math inline">\(Y\)</span> variable is cell diameter, which is measured in 10 cells per culture. Small, uncontrolled, environmental factors (including chemical) will differ between cultures but will be common to all cells within a culture and we would expect a common response to this uncontrolled variation on top of the differential response to each treatment. As a consequence, the ten measures of diameter within a culture are not independent.</li>
+<li>A behavioral biologist wants to measure the effect of a predator fish on the preferred feeding location (open water or vegetation) of a prey fish. Ten tanks are set up with equal amounts of vegetated and unvegetated area. One-third of each tank is screened off to house a predator fish, which are added to five of the tanks. Ten prey fish are added to each tank. The response is minutes spent foraging in the open water as a fraction of total time foraging, which is measured in each fish in each tank. Small, uncontrolled, environmental factors (including temperature, water chemistry, light, and fish behavior) will differ between the tanks but be common within tanks and we would expect a common response to this uncontrolled variation on top of the differential response to each treatment. As a consequence, the ten measures of foraging of each fish within a tank are not independent.</li>
+<li>A microbiologist wants to measure the effect of the microbiome on autism-spectrum-disorder(ASD)-like behavior in mice<a href="appendix-2-online-resources-for-getting-started-with-statistical-modeling-in-r.html#fn6" class="footnote-ref" id="fnref6"><sup>6</sup></a>. Intestinal microbobial communities from five humans with ASD and five humans without ASD are transferred to germ-free mice via fecal transplant. Each human donor is used to colonize three mice. The response is time socializing in a direct social interaction. Uncontrolled features of each microbial community (species composition and proportions) will differ among human donors but will be the same within human donors and we would expect a common response to this uncontrolled variation in addition to any differential response to ASD-associated microbiota. As a consequence, the measures of behavior in the three mice within a donor group are not independent.</li>
 </ol>
+<p>The batches – plots in experiment 1, individuals in experiment 2, plots in experiment 3, cultures in experiment 4, tanks in experiment 5, and mice in experiment 6 – are the experimental units, meaning that it is at this level that the experimenter is controlling the conditions. In each of these studies, there is systematic variation at two levels: among treatments due to treatment effects and among batches due to <strong>batch effects</strong>. This among-batch variation is the <strong>random effect</strong>. An assumption of modeling random effects is that the batches (plots/individuals/cultures/tanks/donor) are a random sample of the batches that could have been sampled. This is often not strictly true as batches are often <strong>convenience samples</strong>.</p>
+<p>The multiple measures within a batch are <strong>subsamples</strong> but are often called <strong>repeated measures</strong> if the batch is an individual (experiment 2 is an example). If multiple measures within a treatment level within a batch (that is, within a <span class="math inline">\(batch \times treatment\)</span> combination) are taken over time, the data are <strong>longitudinal</strong>. Not infrequently, subsamples within a treatment within a batch are called “replicates”, but this can be confusing because the treatments are replicated at the level of the batch and not at the level of the subsamples within a treatment by batch combination. The batches are the independent experimental units. The subsamples within a batch are not replicates.</p>
+<p>The variation among batches/lack of independence within batches has different consequences on the uncertainty of the estimate of a treatment effect. The batches in experiments 1-3 are similar in that each contains all treatment levels. In these, the researcher is interested in the treatment effect but not the variation due to differences among the batches. The batches are nuissance factors that add additional variance to the response, with the consequence that estimates of treatment effects are less precise, unless the variance due to the batches is explicitly modeled. In experiments like 1-3, the batches are known as <strong>blocks</strong>. Including block structure in the design is known as <strong>blocking</strong>. Adding a blocking factor to a statistical mode is used to increase the precision of an estimated treatment effect.</p>
+<p>Experiments 1 and 2 are examples of a <strong>randomized complete block with subsampling</strong> design. “Complete” means that each block has all treatment levels or combinations of levels if there is more than one factor. <em>The subsampling is not replication</em>. The replicates are the blocks, because <em>it was at this level that treatment assignment was randomized</em>. Experiment 3 is an example of a <strong>randomized complete block</strong> design. The blocks are complete but there is only one measure of the response per treatment.</p>
+<p>The batches in experiments 4-6 are similar in that treatment is randomized <em>to</em> batch, so each batch contains only a single treatment level. In these <strong>segregated</strong> experimental designs, the variation among batches that arises from non-treatment related differences among batches <strong>confounds</strong> the variation among batches due to a true treatment effect. An extreme example of this would be experiment 4 (muscle cell cultures) with only a single culture with control conditions and a single culture with treatment conditions. Imagine 1) the true effect of the treatment is zero and 2) an unmeasured growth factor that happens to be more concentrated in the treatment culture at the beginning of the experiment. At the end of the experiment the cells in the treatment culture have an average diameter twice that of that in the control culture. The researcher is fooled into thinking that the treatment caused the increased growth. Again, the replicates are at the level of the cultures, because it was at this level that treatment assignment was randomized. This means the researcher has a single replicate (or, <span class="math inline">\(n=1\)</span>) in each treatment level, regardless of the number of cells that are measured within each culture. A statistical analysis that uses the subsampling within a replicate as the sample size is an example of <strong>pseudoreplication</strong> (Hurlbert 1984 xxx).</p>
 </div>
-<div id="example-a-one-way-anova-using-the-vole-data" class="section level2">
-<h2><span class="header-section-number">16.2</span> Example: a one-way ANOVA using the vole data</h2>
-<p>The vole data has a single factor (“treatment”) with three levels (“control”, “vitamin_E”, “vitamin_C”). In statistics textbooks that emphasize hypothesis testing, the “Which test should I use” flowchart would guide a researcher given this design to a single classification, or one-way ANOVA, since a t-test can only compare two levels but an ANOVA can compare more than two levels. There are better ways to think about what ANOVA is doing, but okay.</p>
-<p>Here is an ANOVA table of the vole data:</p>
+<div id="random-effects-in-statistical-models" class="section level2">
+<h2><span class="header-section-number">18.2</span> Random effects in statistical models</h2>
+<p>In all of the above examples, the researcher is interested in the treatment effect but not the variation due to differences among the blocks. The blocks are nuissance factors that add additional variance to the response, with the consequence that estimates of treatment effects are less precise, unless the variance due to the blocks is explicitly modeled. Including block structure in the design and in the statistical model is known as <strong>blocking</strong>. A natural way to think about the block factor is as a <strong>random effect</strong>, meaning that plots in experiment 1 or the mice in experiment 3 are simply random samples from a population of plots or mice. Modeling this using the residual-error specification looks like</p>
+<p><span class="math display" id="eq:lmm-spec1">\[\begin{equation}
+y_{ij} = (\beta_{0} + \beta_{0j}) + (\beta_{1} + \beta_{1j}) x_i + \varepsilon_i 
+\tag{18.1}
+\end{equation}\]</span></p>
+<p>where <span class="math inline">\(i\)</span> indexes the observation and <span class="math inline">\(j\)</span> indexes the block (culture, plot, mouse, etc). The intercept parameter <span class="math inline">\(\beta_{0j}\)</span> is a <strong>random intercept</strong> and the slope parameter <span class="math inline">\(\beta_{1j}\)</span> is a <strong>random slope</strong>. The intercept for observation <em>i</em> (that is, its expected value when <span class="math inline">\(X=0\)</span>) has a <strong>fixed</strong> component (<span class="math inline">\(\beta_0\)</span>) that is common to all observations and a random component (<span class="math inline">\(\beta_{0j}\)</span>) that is common within a block but differs among blocks (see table below). In the above equation, I’ve used parentheses to show how these combine into the random intercept that is unique for each block. Similarly, the random slope (treatment effect) has a fixed part (<span class="math inline">\(\beta_1\)</span>) that is common to all observations and a random component (<span class="math inline">\(\beta_{1j}\)</span>) that is common within a block but differs among blocks (see table below). Again, these are collected within a pair of parentheses in the equation above.</p>
 <table>
+<caption>
+<span id="tab:lmm-table">Table 18.1: </span>The linear mixed model specified above estimates a fixed intercept and fixed slope (treatment effect) that are common to all observations and a random intercept and random slope for each block, each of which is common among observations within a block but differ among observations in different blocks.
+</caption>
 <thead>
 <tr>
+<th style="text-align:right;">
+block
+</th>
 <th style="text-align:left;">
+<span class="math inline">\(b_0\)</span>
 </th>
-<th style="text-align:right;">
-Df
+<th style="text-align:left;">
+<span class="math inline">\(b_{0j}\)</span>
 </th>
-<th style="text-align:right;">
-Sum Sq
+<th style="text-align:left;">
+<span class="math inline">\(b_1\)</span>
 </th>
-<th style="text-align:right;">
-Mean Sq
-</th>
-<th style="text-align:right;">
-F value
-</th>
-<th style="text-align:right;">
-Pr(&gt;F)
+<th style="text-align:left;">
+<span class="math inline">\(b_{1j}\)</span>
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;">
-treatment
+<td style="text-align:right;">
+1
 </td>
+<td style="text-align:left;">
+<span class="math inline">\(b_0\)</span>
+</td>
+<td style="text-align:left;">
+<span class="math inline">\(b_{0,j=1}\)</span>
+</td>
+<td style="text-align:left;">
+<span class="math inline">\(b_1\)</span>
+</td>
+<td style="text-align:left;">
+<span class="math inline">\(b_{1,j=1}\)</span>
+</td>
+</tr>
+<tr>
 <td style="text-align:right;">
 2
 </td>
-<td style="text-align:right;">
-248446
+<td style="text-align:left;">
+<span class="math inline">\(b_0\)</span>
 </td>
-<td style="text-align:right;">
-124223.0
+<td style="text-align:left;">
+<span class="math inline">\(b_{0,j=2}\)</span>
 </td>
-<td style="text-align:right;">
-2.95
+<td style="text-align:left;">
+<span class="math inline">\(b_1\)</span>
 </td>
-<td style="text-align:right;">
-0.057
+<td style="text-align:left;">
+<span class="math inline">\(b_{1,j=2}\)</span>
 </td>
 </tr>
 <tr>
+<td style="text-align:right;">
+3
+</td>
 <td style="text-align:left;">
-Residuals
+<span class="math inline">\(b_0\)</span>
 </td>
-<td style="text-align:right;">
-93
+<td style="text-align:left;">
+<span class="math inline">\(b_{0,j=3}\)</span>
 </td>
-<td style="text-align:right;">
-3912751
+<td style="text-align:left;">
+<span class="math inline">\(b_1\)</span>
 </td>
-<td style="text-align:right;">
-42072.6
+<td style="text-align:left;">
+<span class="math inline">\(b_{1,j=3}\)</span>
 </td>
+</tr>
+<tr>
 <td style="text-align:right;">
+4
 </td>
+<td style="text-align:left;">
+<span class="math inline">\(b_0\)</span>
+</td>
+<td style="text-align:left;">
+<span class="math inline">\(b_{0,j=4}\)</span>
+</td>
+<td style="text-align:left;">
+<span class="math inline">\(b_1\)</span>
+</td>
+<td style="text-align:left;">
+<span class="math inline">\(b_{1,j=4}\)</span>
+</td>
+</tr>
+<tr>
 <td style="text-align:right;">
+5
+</td>
+<td style="text-align:left;">
+<span class="math inline">\(b_0\)</span>
+</td>
+<td style="text-align:left;">
+<span class="math inline">\(b_{0,j=5}\)</span>
+</td>
+<td style="text-align:left;">
+<span class="math inline">\(b_1\)</span>
+</td>
+<td style="text-align:left;">
+<span class="math inline">\(b_{1,j=5}\)</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:left;">
+<span class="math inline">\(b_0\)</span>
+</td>
+<td style="text-align:left;">
+<span class="math inline">\(b_{0,j=6}\)</span>
+</td>
+<td style="text-align:left;">
+<span class="math inline">\(b_1\)</span>
+</td>
+<td style="text-align:left;">
+<span class="math inline">\(b_{1,j=6}\)</span>
 </td>
 </tr>
 </tbody>
 </table>
-<p>I’ll explain all the parts of the ANOVA table later, but for now, focus on the <span class="math inline">\(p\)</span>-value, which is that most researchers want out of the table. What null hypothesis does this <span class="math inline">\(p\)</span>-value test? The p-value gives the probability of the observed <span class="math inline">\(F\)</span> or larger <span class="math inline">\(F\)</span>, if the null were true. The null hypothesis models the data as if they were sampled from a single, normal distribution and randomly assigned to different groups. Thus the null hypotheis includes the equality of the means among factor levels. In the vole data, the single treatment factor has three levels and a small <span class="math inline">\(p\)</span>-value could occur because of a difference in means between the vitamin_E treatment and control, or between the vitamin_C treatment and control, or between the two vitamin treatments. The <span class="math inline">\(p\)</span>-value or ANOVA table doesn’t indicate what is different, only that the observed <span class="math inline">\(F\)</span> is unexpectedly large if the null were true. As a consequence, researchers typically interpret a low <span class="math inline">\(p\)</span>-value in an ANOVA table as evidence of “an effect” of the term but have to use additional tools to dissect this effect. The typical additional tools are either <strong>planned comparisons</strong>, which are contrasts among a subset of a priori identified treatment levels (or groups of levels) or unplanned comparisons (“post-hoc” tests) among all pairs of levels.</p>
-<p>The <span class="math inline">\(p\)</span>-value in the ANOVA table acts as a decision rule: if <span class="math inline">\(p &lt; 0.05\)</span> then it is okay to further dissect the factor with planned comparisons or post-hoc tests because the significant <span class="math inline">\(p\)</span> “protects” the type I error of further comparisons. I’m not fond of using <span class="math inline">\(p\)</span>-values for these sorts of decision rules.</p>
+<p>Linear mixed models are called “mixed models” because they are a mix of fixed and random factors. Another useful way to specify this model is to think about it hierarchically, using</p>
+<p><span class="math display" id="eq:lmm-spec2">\[\begin{align}
+y_{ij} &amp;= \beta_{0j} + \beta_{1j}x_i + \varepsilon_i \\
+\varepsilon_i &amp;\sim N(0, \sigma) \\
+\beta_{0j} &amp;= \beta_{0} + N(0, \sigma_{0}) \\
+\beta_{1j} &amp;= \beta_{1} + N(0, \sigma_{1})
+\tag{18.2}
+\end{align}\]</span></p>
+<p>The first line states that the response is a function of a block-specific intercept and a block specific slope plus some error that is unique to each observation. The third and fourth lines state that these block-specific effects are themselves a function of a common effect and a random term that is unique to each block. That is, we have a hierarchical or multi-level structure to the model. Line 1 is the top level and the effects that are specified in line 1 are a function of effects at a second, lower level, which are specified in lines 3 and 4. Because of this structure, linear mixed models are sometimes called hierarchical or multi-level models.</p>
+<p>Finally, it’s useful to think how to specify a linear mixed model using the random-draw specification, as this leads naturally to generalized linear mixed models, or GLMMs.</p>
+<p><span class="math display" id="eq:lmm-spec3">\[\begin{align}
+y_{ij} &amp;\sim N(\mu_{ij}, \sigma) \\
+\mu_{ij} &amp;=\beta_{0j} + \beta_{1j}x_i \\
+\beta_{0j} &amp;\sim N(\beta_0, \sigma_0) \\
+\beta_{1j} &amp;\sim N(\beta_1, \sigma_1)
+\tag{18.3}
+\end{align}\]</span></p>
 </div>
-<div id="example-a-two-way-anova-using-the-urchin-data" class="section level2">
-<h2><span class="header-section-number">16.3</span> Example: a two-way ANOVA using the urchin data</h2>
-<p>Let’s use the urchin data from the previous chapter xxx to explore the ANOVA table, which is what is typically reported. The experiment has two factors (<span class="math inline">\(Temp\)</span> and <span class="math inline">\(CO2\)</span>), each with two levels. Here is the linear model</p>
-<p><span class="math display">\[\begin{equation}
-Resp = \beta_0 + \beta_1 Temp + \beta_2 CO2 + \beta_3 TempCO2 + \varepsilon
+<div id="linear-mixed-models-are-flexible" class="section level2">
+<h2><span class="header-section-number">18.3</span> Linear mixed models are flexible</h2>
+<p>The linear mixed model in Equation <a href="lmm.html#eq:lmm-spec1">(18.1)</a> specifies both a random intercept and a random slope but a researcher might limit the random effect to the intercept only, or less commonly, the slope only. Excluding the random slope from Equation <a href="lmm.html#eq:lmm-spec1">(18.1)</a> results in the model</p>
+<p><span class="math display" id="eq:lmm-spec1b">\[\begin{equation}
+y_{ij} = (\beta_{0} + \beta_{0j}) + \beta_{1}x_i + \varepsilon_i 
+\tag{18.4}
 \end{equation}\]</span></p>
-<p>In order to understand factorial ANOVA (or any ANOVA with multiple factors), it is useful to know the difference between <strong>conditional means</strong> and <strong>marginal means</strong></p>
-<pre><code>##          CO2-  CO2+ Temp-mm
-## Temp-   8.233 7.917   8.075
-## Temp+  12.743 9.742  11.243
-## CO2-mm 10.488 8.829   9.659</code></pre>
-<p>In the table above, the upper, left <span class="math inline">\(2 \times 2\)</span> grid of cells are the conditional means, which are the means of each group, where a group is a specific combination of factor levels. The first two values of the third row are the marginal means for CO2. The first (10.488) is the mean of the two means when CO2=CO2-. This can be written as <span class="math inline">\(\mathrm{E}(Resp|CO2-)\)</span>. The second (8.829) is the mean of the two means when CO2=CO2+, or <span class="math inline">\(\mathrm{E}(Resp|CO2+)\)</span>. The first two elements of the third column are the marginal means for Temp. These are <span class="math inline">\(\mathrm{E}(Resp|Temp-)\)</span> and <span class="math inline">\(\mathrm{E}(Resp|Temp+)\)</span>. The bottom right value (9.659) is the grand mean.</p>
-<p>A <strong>conditional effect</strong> is a difference between conditional means. For example the conditional effect of <span class="math inline">\(Temp\)</span> <em>conditional on</em> CO2=CO2- is <span class="math inline">\(12.743-8.233\)</span>. A <strong>marginal effect</strong> is a difference in marginal means within a factor, for example the marginal effect of <span class="math inline">\(Temp\)</span> is <span class="math inline">\(11.243 - 8.075\)</span>.</p>
-<p>Here is the ANOVA table of the urchin data</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:left;">
-</th>
-<th style="text-align:right;">
-Df
-</th>
-<th style="text-align:right;">
-Sum Sq
-</th>
-<th style="text-align:right;">
-Mean Sq
-</th>
-<th style="text-align:right;">
-F value
-</th>
-<th style="text-align:right;">
-Pr(&gt;F)
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-Temp
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-60.2
-</td>
-<td style="text-align:right;">
-60.2
-</td>
-<td style="text-align:right;">
-19.1
-</td>
-<td style="text-align:right;">
-0.0003
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-CO2
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-16.5
-</td>
-<td style="text-align:right;">
-16.5
-</td>
-<td style="text-align:right;">
-5.2
-</td>
-<td style="text-align:right;">
-0.0332
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Temp:CO2
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-10.8
-</td>
-<td style="text-align:right;">
-10.8
-</td>
-<td style="text-align:right;">
-3.4
-</td>
-<td style="text-align:right;">
-0.0791
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Residuals
-</td>
-<td style="text-align:right;">
-20
-</td>
-<td style="text-align:right;">
-63.2
-</td>
-<td style="text-align:right;">
-3.2
-</td>
-<td style="text-align:right;">
-</td>
-<td style="text-align:right;">
-</td>
-</tr>
-</tbody>
-</table>
-<p>This ANOVA table uses what are called Type 3 sum of squares, which is <em>NOT</em> the default in R but is the default in many other statistics software and is, therefore, the <em>only</em> type of ANOVA that many researchers know (and, many researchers are unaware that there are multiple types of ANOVA table). Understanding these differences is important, at least if one is reporting ANOVA tables. I’ll return to the importance of this later.</p>
-<div id="how-to-read-an-anova-table" class="section level3">
-<h3><span class="header-section-number">16.3.1</span> How to read an ANOVA table</h3>
-<p>An ANOVA table has a row for each term in the underlying linear model – each of these adds a component of variance to the total, and a row for the residual variance (this residual variance row is frequently excluded from the published table). The urchin model has three terms (one level of <span class="math inline">\(Temp\)</span>, one level of <span class="math inline">\(CO2\)</span>, and one interaction). The statistics for each term are</p>
-<ol style="list-style-type: decimal">
-<li><strong>Degrees of Freedom</strong> (df) – If the term is a factor, the df will equal the number of levels (<span class="math inline">\(k\)</span>) for the factor minus 1. Think of it this way: the contribution of the variance due to a factor is a function of the variability of the <span class="math inline">\(k\)</span> level means around the grand mean. How many degrees of independent variation do these level means have, given that we know the grand mean? The answer is <span class="math inline">\(k-1\)</span> – once the values of <span class="math inline">\(k-1\)</span> level means are written down, the <span class="math inline">\(k\)</span>th level mean has no freedom to vary; its value has to be <span class="math inline">\(k\bar{\bar{Y}} - \sum_i^{k-1}{Y_i}\)</span>. For an interaction term, the df is the product of the df of each of the factors in the interaction.</li>
-<li><strong>Sum of Squares</strong> – the sum of squared differences between the modeled value and the grand mean. In addition to a sum of squares for each term, a <strong>residual mean square</strong> is computed as the sum of squared differences between the measured and modeled values.</li>
-<li><strong>Mean Square</strong> – The sum of squares divided by the df (this is a “mean” with df acting as the number of things that were summed).</li>
-<li><strong>F-ratio</strong> – the Mean Square of the term dived by the residual mean square.</li>
-<li><strong>p-value</strong> – the p-value for the F-ratio. F is compared to an F-distribution, which is a distribution of F-ratios under the null.</li>
-</ol>
-<div id="each-row-in-the-table-tests-a-null-hypothesis" class="section level4">
-<h4><span class="header-section-number">16.3.1.1</span> Each row in the table tests a null hypothesis</h4>
-<p>The row for each term in an ANOVA table tests a null hypothesis. In order to understand the null hypotheses, I need to define a few more terms</p>
-<p>For the ANOVA table above, which uses Type 3 sum of squares, the probabilities are</p>
-<ol style="list-style-type: decimal">
-<li>Temp – <span class="math inline">\(p = \mathrm{prob}(F \ge F_o|CO2, Temp:CO2)\)</span>. The null is no difference in means conditional on the level of CO2 and Temp:CO2. This is equivalent to no difference between the grand mean and the marginal mean of Temp+, or</li>
-</ol>
+<p>We might use a random-intercept-only model if we think that features of the block would effect the mean response among blocks but not effect the difference in treatment level (or treatment effect) among blocks. For example, differences in the immune systems among the individual mice in experiment 3 might effect growth in both the wild-type and engineered strains of staph but won’t effect the difference in growth between wild-type and engineered strains from one mouse to another.</p>
+<div style="background-color:#cccccc; text-align:left; vertical-align: middle; padding:20px 47px;">
+<p><strong>Not more than you should know</strong> – For more complex mixed models, matrix algebra makes the specification of the model much more manageable than the scalar algebra in <a href="#lmm-spec1b"><strong>??</strong></a>.</p>
 <p><span class="math display">\[\begin{equation}
-b_1 = \overline{\overline{Resp}} - \mathrm{E}(Resp|Temp^+)
+\mathbf{y} = \mathbf{X}\boldsymbol{\beta} + \mathbf{Zu} + \boldsymbol{\varepsilon}
 \end{equation}\]</span></p>
-<ol start="2" style="list-style-type: decimal">
-<li>CO2– <span class="math inline">\(p = \mathrm{prob}(F \ge F_o|Temp, Temp:CO2)\)</span>. The null is no difference in means conditional on the level of Temp and Temp:CO2. This is equivalent to no difference between the grand mean and the marginal mean of CO2+, or</li>
-</ol>
-<p><span class="math display">\[\begin{equation}
-b_2 = \overline{\overline{Resp}} - \mathrm{E}(Resp|CO2^+)
-\end{equation}\]</span></p>
-<ol start="3" style="list-style-type: decimal">
-<li>Temp:CO2 – <span class="math inline">\(p = \mathrm{prob}(F \ge F_o|Temp, CO2)\)</span>. The null is no difference in means conditional on the level of Temp and CO2. This is equivalent to the difference between the conditional mean of Temp+/CO2+ and the expected conditional mean of Temp+/CO2+ if there were no interaction.</li>
-</ol>
-<p><span class="math display">\[\begin{equation}
-b_3 = \mathrm{E}(Resp|Temp^+, CO2^+) - (\overline{\overline{Resp}} - b_1 - b_2)
-\end{equation}\]</span></p>
-<p>As noted in the equations, these three differences are the coefficients of the linear model behind the ANOVA. Here is the coefficient table</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:left;">
-</th>
-<th style="text-align:right;">
-Estimate
-</th>
-<th style="text-align:right;">
-Std. Error
-</th>
-<th style="text-align:right;">
-t value
-</th>
-<th style="text-align:right;">
-Pr(&gt;|t|)
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-(Intercept)
-</td>
-<td style="text-align:right;">
-9.66
-</td>
-<td style="text-align:right;">
-0.36
-</td>
-<td style="text-align:right;">
-26.6
-</td>
-<td style="text-align:right;">
-0.00000
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Temp1
-</td>
-<td style="text-align:right;">
--1.58
-</td>
-<td style="text-align:right;">
-0.36
-</td>
-<td style="text-align:right;">
--4.4
-</td>
-<td style="text-align:right;">
-0.00030
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-CO21
-</td>
-<td style="text-align:right;">
-0.83
-</td>
-<td style="text-align:right;">
-0.36
-</td>
-<td style="text-align:right;">
-2.3
-</td>
-<td style="text-align:right;">
-0.03325
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Temp1:CO21
-</td>
-<td style="text-align:right;">
--0.67
-</td>
-<td style="text-align:right;">
-0.36
-</td>
-<td style="text-align:right;">
--1.9
-</td>
-<td style="text-align:right;">
-0.07910
-</td>
-</tr>
-</tbody>
-</table>
-<p>In ANOVA with type 3 sum of squares, the dummy variables are coded using effect coding, which differs from the dummy coding introduced in chapter xxx. The consequence is that the <strong>grand mean</strong> (the mean of <span class="math inline">\(Resp\)</span> across all values) is now the “reference” value. The intercept in this table, then, is the grand mean. The coefficients are <em>differences from the grand mean</em>, as described above.</p>
-<p>Use the table of conditional and marginal effects above to check that the coefficients equal the differences in the equations above. Also not that the <span class="math inline">\(p\)</span>-values for the effects in the coefficient table equals the <span class="math inline">\(p\)</span>-values in the ANOVA table.</p>
-<p>It is important to note that this table differs from the coefficient table with dummy coding because that reference is the mean of Temp-/CO2- and not the grand mean.</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:left;">
-</th>
-<th style="text-align:right;">
-Estimate
-</th>
-<th style="text-align:right;">
-Std. Error
-</th>
-<th style="text-align:right;">
-t value
-</th>
-<th style="text-align:right;">
-Pr(&gt;|t|)
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-(Intercept)
-</td>
-<td style="text-align:right;">
-8.23
-</td>
-<td style="text-align:right;">
-0.73
-</td>
-<td style="text-align:right;">
-11.3
-</td>
-<td style="text-align:right;">
-0.00000
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-TempTemp+
-</td>
-<td style="text-align:right;">
-4.51
-</td>
-<td style="text-align:right;">
-1.03
-</td>
-<td style="text-align:right;">
-4.4
-</td>
-<td style="text-align:right;">
-0.00028
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-CO2CO2+
-</td>
-<td style="text-align:right;">
--0.32
-</td>
-<td style="text-align:right;">
-1.03
-</td>
-<td style="text-align:right;">
--0.3
-</td>
-<td style="text-align:right;">
-0.76081
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-TempTemp+:CO2CO2+
-</td>
-<td style="text-align:right;">
--2.68
-</td>
-<td style="text-align:right;">
-1.45
-</td>
-<td style="text-align:right;">
--1.9
-</td>
-<td style="text-align:right;">
-0.07910
-</td>
-</tr>
-</tbody>
-</table>
-<p>Importantly, note that <span class="math inline">\(p\)</span>-values for <span class="math inline">\(b_1\)</span> (the Temp effect) and <span class="math inline">\(b_2\)</span> differ between the two tables. This is because the <span class="math inline">\(t\)</span>-value tests different hypotheses! In the coefficient table with effect coding (that behind the ANOVA with type 3 sums of squares), the <span class="math inline">\(p\)</span>-value tests marginal effects and so is a function of both marginal means within a factor. By contrast, in the coefficient table with dummy coding, the <span class="math inline">\(p\)</span>-value tests conditional effects, and so is only a function of the conditional means when the other factor is at its reference level (right? The coefficient <span class="math inline">\(b_1\)</span> in the dummy coded coefficient table is the effect of only increasing <span class="math inline">\(Temp\)</span> – <span class="math inline">\(CO2\)</span> is left at its reference level). For the interaction effect, the coefficient differs between the effects coded model and the dummy coded model (because different reference means) but the <span class="math inline">\(p\)</span>-value ultimately tests the same hypothesis (non-additive effects of the factors) and so the <span class="math inline">\(t\)</span> and <span class="math inline">\(p\)</span> values are the same.</p>
+<p>where <span class="math inline">\(\mathbf{y}\)</span> is the vector of the response, <span class="math inline">\(\mathbf{X}\boldsymbol{\beta}\)</span> is the linear predictor of fixed effects and <span class="math inline">\(\mathbf{Zu}\)</span> is the linear predictor of random effects. <span class="math inline">\(\mathbf{X}\)</span> is the model matrix for the fixed effects and <span class="math inline">\(\boldsymbol{\beta}\)</span> is the vector of fixed-effect terms (the fixed part of the intercept (<span class="math inline">\(\beta_0\)</span>), including the fixed-effect coefficients for each of the</p>
 </div>
-<div id="what-to-do-after-anova" class="section level4">
-<h4><span class="header-section-number">16.3.1.2</span> What to do after ANOVA?</h4>
-<p>Researchers frequently report ANOVA statistics (<span class="math inline">\(F\)</span> and <span class="math inline">\(p\)</span> values) for factorial models in a way that suggests that they misunderstand the hypotheses tested. It probably doesn’t help that there is a long-standing debate among statisticians about the most sensible strategy for interpreting factorial ANOVA results. And it doesn’t help that the default ANOVA table in R can suggest a very different interpretation than the default ANOVA table in some other software packages.</p>
-<p>Here are three strategies for interpreting a factorial ANOVA table that uses Type III sum of squares. All strategies use <span class="math inline">\(p\)</span>-values to make a series of decision rules. In the first strategy, which is a type of model simplification or model selection, a researcher starts with the interactions at the bottom of the ANOVA table and works up, eliminating terms with <span class="math inline">\(p &gt; 0.05\)</span> and re-fitting the reduced model before interpreting main effects. In the second strategy, the researcher uses the original ANOVA table that includes all terms to interpret main effects.</p>
-<p><strong>Strategy 1</strong></p>
-<ol style="list-style-type: decimal">
-<li>is interaction <em>p</em> &lt; 0.05?
-<ol style="list-style-type: lower-alpha">
-<li>if yes, then do NOT test main effects. Show a graph to show pattern of conditional effects. Test conditional effects if this is of interest.</li>
-<li>if no, then refit model without the interaction and test main effects – This now is equivalent to ANOVA using Type II sum of squares.
-<ol start="2" style="list-style-type: decimal">
-<li>is main effect <em>p</em> &lt; 0.05$?
-<ol style="list-style-type: lower-alpha">
-<li>if yes, then keep in model</li>
-<li>if no, then refit model without that main effect</li>
-</ol></li>
-</ol></li>
-</ol></li>
-</ol>
-<p><strong>Strategy 2</strong></p>
-<ol start="2" style="list-style-type: decimal">
-<li>is interaction <em>p</em> &lt; 0.05?
-<ol style="list-style-type: lower-alpha">
-<li>if yes, then do NOT test main effects. Show a graph to show pattern of conditional effects. Test conditional effects if this is of interest.</li>
-<li>if no, then use the same table as the test of the main effects. This is interpreting the main effects with the interaction term in the model. This is the logic of ANOVA using type III sum of squares.</li>
-</ol></li>
-</ol>
-<p><strong>Strategy 3</strong></p>
-<ol start="3" style="list-style-type: decimal">
-<li>is interaction <em>p</em> &lt; 0.05?
-<ol style="list-style-type: lower-alpha">
-<li>if yes, then look at interaction plot to determine if it makes sense test main effects. For example, if CO2+ had obviously lower <span class="math inline">\(Resp\)</span> at both levels of <span class="math inline">\(Temp\)</span>, even if one was much lower (ie. interactaction), then some people would say that the test of the main effect is meaningful. Test conditional effects if this is of interest.</li>
-<li>if no, then use the same table as the test of the main effects</li>
-</ol></li>
-</ol>
-<p>In general, statisticians advise against strategy 3 (interpreting main effects in the presence of interaction) – its not wrong, its just that a main effect has an awkward interpretation if there is an interaction. Of course this is true if there is <em>any</em> interaction term in the model, not just a statistically significant term. The controversy is more, if the interaction <span class="math inline">\(p\)</span> is not significant, then do we implement stategy 1 (refit model excluding interaction to test main effects) or strategy 2 (use full factorial anova table to test main effects).</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:left;">
-</th>
-<th style="text-align:right;">
-Df
-</th>
-<th style="text-align:right;">
-Sum Sq
-</th>
-<th style="text-align:right;">
-Mean Sq
-</th>
-<th style="text-align:right;">
-F value
-</th>
-<th style="text-align:right;">
-Pr(&gt;F)
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-Temp
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-45.2
-</td>
-<td style="text-align:right;">
-45.2
-</td>
-<td style="text-align:right;">
-14.5
-</td>
-<td style="text-align:right;">
-0.0011
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-CO2
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-4.1
-</td>
-<td style="text-align:right;">
-4.1
-</td>
-<td style="text-align:right;">
-1.3
-</td>
-<td style="text-align:right;">
-0.2630
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Temp:CO2
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-14.8
-</td>
-<td style="text-align:right;">
-14.8
-</td>
-<td style="text-align:right;">
-4.8
-</td>
-<td style="text-align:right;">
-0.0413
-</td>
-</tr>
-</tbody>
-</table>
-<p>then one shouldn’t report the ANOVA results using something like “Temperature had a significant effect on metabolism (<span class="math inline">\(F_{1,20} = 14.5\)</span>, <span class="math inline">\(p=0.001\)</span>). There was no effect of CO2 on metabolism (<span class="math inline">\(F_{1,20} = 4.1\)</span>, <span class="math inline">\(p=0.26\)</span>)”. There was a significant interaction effect between Temperature and CO2 on metabolism (<span class="math inline">\(F_{1,20} = 14.8\)</span>, <span class="math inline">\(p=0.04\)</span>)". If one accepts that the small interaction <span class="math inline">\(p\)</span>-value is evidence of an interaction effect then this interpretation of the main factors makes no sense, as the first two results imply that the interaction effect is zero (or, that there is a constant effect of <span class="math inline">\(Temp\)</span> or <span class="math inline">\(CO2\)</span> across both levels of the other factor), which is then contradicted by the third result.</p>
-<p>More specifically, if one is using a <span class="math inline">\(p\)</span>-value to guide decision making, then a significant interaction <span class="math inline">\(p\)</span> indicates that there is no single “main” effect of a factor. Instead, the effect of <span class="math inline">\(Temp\)</span> is conditional on the level of <span class="math inline">\(CO2\)</span>, and the effect of <span class="math inline">\(CO2\)</span> is conditional on the level of <span class="math inline">\(Temp\)</span>. This is easily seen in the interaction plot, where the effect of <span class="math inline">\(Temp\)</span> is large when <span class="math inline">\(CO2\)</span> is high but much smaller when <span class="math inline">\(CO2\)</span> is low. Indeed, the effect of <span class="math inline">\(Temp\)</span> at the low CO2 is 0.16.</p>
-<p>Instead of interpreting the factors as constant effects, A better strategy is to compare the <strong>conditional effects</strong>, that is, the effects of <span class="math inline">\(Temp\)</span> within each level of <span class="math inline">\(CO2\)</span> and the effects of <span class="math inline">\(CO2\)</span> within each level of <span class="math inline">\(Temp\)</span> (conditional effects are sometimes called the “simple effects”).</p>
-<p>The controversy arises in what to do after an ANOVA if the interaction effect has a non-significant <span class="math inline">\(p\)</span>-value. At this point, I am punting instead of explaining the basis for the controversy, because ultimately I think the major problem with both strategies is the use of null hypothesis significance testing to make analysis decisions.</p>
-<p>In fact, the entire reason that I use the urchin data as the example for factorial ANOVA is because it beautifully illustrates the absurdity of the interaction <span class="math inline">\(p\)</span>-value decision rule. Why should we interpret the results of the ANOVA when the interaction <span class="math inline">\(p\)</span> is 0.079 differently than when the interaction <span class="math inline">\(p\)</span> is 0.04? Remember, the <span class="math inline">\(p\)</span>-value is a “sample” statistic (in the sense that it is entirely a function of the sampled data) and in conditions of low power (which is likely, but not necessarily, true for the urchin data given n=6), a <span class="math inline">\(p\)</span>-value is highly variable.</p>
-<p>There are several problems with this approach. 1) a <span class="math inline">\(p\)</span>-value is not evidence of “no effect”, 2) the power to test interaction effects is small relative to that for the main effects (this is a general rule, not something specific to these data), 3) the interaction SS accounts for about 7.2<span class="math inline">\(\%\)</span> of the total SS, which doesn’t seem inconsequential, and 4) the interaction <span class="math inline">\(p\)</span>-value is small enough to raise a red flag, and, most importantly, 5) the confidence interval of the interaction effect indicates that the large, negative values of the interaction are <em>as consistent with the data</em> as trivially small values (or a value of zero). But the CI is not in an ANOVA table and many researchers fail to report it. These five points suggest that this experiment be replicated, with a larger sample size, to get a better estimate of the interaction effect. The problem of course is that experiments are rarely replicated, except in biomedical research.</p>
-<p>The absurdity of the <span class="math inline">\(p\)</span>-value decision rule strategy for interpretation of effects after an ANOVA is highlighted by comparing the forest plot of model coefficients of the real and fake urchin data. It would be absurd to use an ANOVA table to interpret these patterns as radically different (one without an interaction and constant main effects, the other with an interactioni and conditional effects).</p>
-<div class="figure"><span id="fig:urchin-anova-ggplot"></span>
-<img src="Walker-elementary-statistical-modeling-draft_files/figure-html/urchin-anova-ggplot-1.png" alt="Forest plots (the upper part of a Harrell plot) of the actual and fake urchin data. A) Real urchin data. The interaction effect is not significant ($p=0.079$). B) Fake urchin data. The interaction effect is significant ($p=0.04$)." width="576" />
+</div>
+<div id="blocking" class="section level2">
+<h2><span class="header-section-number">18.4</span> Blocking</h2>
+<div id="visualing-variation-due-to-blocks" class="section level3">
+<h3><span class="header-section-number">18.4.1</span> Visualing variation due to blocks</h3>
+<p>To visualize random effects due to block, Let’s create fake data that look something like experiment 1, with a single factor with two treatment levels, <span class="math inline">\(k=10\)</span> blocks, and <span class="math inline">\(n=3\)</span> measures for each treatment level within each block. This is a randomized complete block design with subsampling and has a total of <span class="math inline">\(N=2 \times k \times n\)</span> measures of <span class="math inline">\(Y\)</span> (and rows of the data.table).</p>
+<div class="figure"><span id="fig:lmm1-blocking-fig"></span>
+<img src="Walker-elementary-statistical-modeling-draft_files/figure-html/lmm1-blocking-fig-1.png" alt="Visualizing random effects. A) The response in the two treatment levels. B) The same data but separated by block. The blue line is at the control mean and the yellow line is at the treated mean. The black dots are the mean response within a block." width="576" />
 <p class="caption">
-Figure 16.1: Forest plots (the upper part of a Harrell plot) of the actual and fake urchin data. A) Real urchin data. The interaction effect is not significant (<span class="math inline">\(p=0.079\)</span>). B) Fake urchin data. The interaction effect is significant (<span class="math inline">\(p=0.04\)</span>).
+Figure 18.1: Visualizing random effects. A) The response in the two treatment levels. B) The same data but separated by block. The blue line is at the control mean and the yellow line is at the treated mean. The black dots are the mean response within a block.
 </p>
 </div>
+<p>Figure <a href="lmm.html#fig:lmm1-blocking-fig">18.1</a>A shows the response as a function of treatment. The responses are nicely symmetric around the treatment means (the blue and yellow lines). A linear model (and generalized linear models, more generally) assumes that a response, conditional on the <span class="math inline">\(X\)</span>, are independent. Figure <a href="lmm.html#fig:lmm1-blocking-fig">18.1</a>B shows how this assumption is violated for the simulated data. That pattern of residuals within a block around the treatment means does not look at all random. Instead, there is a distinct pattern within a block for the points to cluster either below the treatment means or above the treatment means. In blocks a, b, g, and i, all or most of the responses are below their treatment mean (for example in block b, all the yellow points are below the yellow line and two of three blue points are below the blue line). In blocks d, e, f, and j, all or most of the responses are above their treatment mean (for example, in block e, all three yellow points are above the yellow line and all three blue points are above the blue line). In other words, the responses within a block covary together. For a linear model, this is known as <strong>correlated error</strong>.</p>
 </div>
-</div>
-<div id="how-to-read-anova-results-reported-in-the-text" class="section level3">
-<h3><span class="header-section-number">16.3.2</span> How to read ANOVA results reported in the text</h3>
-<p>ANOVA results are often reported in the text of a results section, using something like “Temperature had a significant effect on metabolism (<span class="math inline">\(F_{1,20} = 14.5\)</span>, <span class="math inline">\(p=0.001\)</span>). There was no effect of CO2 on metabolism (<span class="math inline">\(F_{1,20} = 4.1\)</span>, <span class="math inline">\(p=0.26\)</span>)”. The subscripts of the <span class="math inline">\(F\)</span> statistic are the numerator and denominator degrees of freedom (df) of the <span class="math inline">\(F\)</span>-value (These df are a column in the ANOVA table. The denomintor df may not appear in the table if it is the residual df and the row for the residual term was not reported). Sometimes I find the reported df are not consistent with the description of the design and analysis, which means the data were not analyzed as stated.</p>
-</div>
-<div id="better-practice-estimates-and-their-uncertainty" class="section level3">
-<h3><span class="header-section-number">16.3.3</span> Better practice – estimates and their uncertainty</h3>
-<p>As emphasized in the previous chapter, the decision to include or exclude an interaction effect in the model should not be based on a <span class="math inline">\(p\)</span>-value but on the goals of the model.</p>
+<div id="blocking-increases-precision-of-point-estimates" class="section level3">
+<h3><span class="header-section-number">18.4.2</span> Blocking increases precision of point estimates</h3>
+<p>Block effects are differences in expected mean response among blocks due to unmeasured factors that are shared within blocks but not among blocks. A classical linear model fails to model this component of the total variance in the response, and as a consequence, this block-specific variance is part of the error variance. One way to think about this is by moving the random intercept and random slope components of equation <a href="lmm.html#eq:lmm-spec1">(18.1)</a> to the right and combining it with the observation-specific (or “conditional”) error (<span class="math inline">\(\varepsilon_i\)</span>)</p>
+<p><span class="math display" id="eq:lmm-spec1b">\[\begin{equation}
+y_{ij} = \beta_{0} + \beta_{1} x_i + (\beta_{0j} + \beta_{1j} + \varepsilon_i)
+\tag{18.4}
+\end{equation}\]</span></p>
+<p>A linear mixed model estimates the random effects parameters, so the residual from observation <span class="math inline">\(i\)</span> is <span class="math inline">\(\varepsilon_i\)</span>. A linear model does not estimate the random effects parameters, so the residual of observation <span class="math inline">\(i\)</span> from a linear model is <span class="math inline">\(\beta_{0j} + \beta_{1j} + \varepsilon_i\)</span>. Consequently, the error variance from a linear model is larger than the error variance from a linear mixed model fit to the same data. The consequence of this on inference depends on the variance of the random effects relative to the variance of the observation-specific error and on the subsample size. If the variance due to random effects is relatively big and subsample size is relatively small, then a linear mixed model estimates treatment effects with much more precision (and <em>p</em>-values will be smaller).</p>
+<p>This increased precision is seen in the coefficient table of three models fit to the fake data in Figure <a href="lmm.html#fig:lmm1-blocking-fig">18.1</a>.</p>
+A linear model fit to all data
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+term
+</th>
+<th style="text-align:right;">
+estimate
+</th>
+<th style="text-align:right;">
+std.error
+</th>
+<th style="text-align:right;">
+statistic
+</th>
+<th style="text-align:right;">
+p.value
+</th>
+<th style="text-align:right;">
+conf.low
+</th>
+<th style="text-align:right;">
+conf.high
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+TreatmentTr
+</td>
+<td style="text-align:right;">
+0.62441
+</td>
+<td style="text-align:right;">
+0.3566
+</td>
+<td style="text-align:right;">
+1.75
+</td>
+<td style="text-align:right;">
+0.085
+</td>
+<td style="text-align:right;">
+-0.089
+</td>
+<td style="text-align:right;">
+1.338
+</td>
+</tr>
+</tbody>
+</table>
+A linear model fit to the means of each treatment level with each block
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+term
+</th>
+<th style="text-align:right;">
+estimate
+</th>
+<th style="text-align:right;">
+std.error
+</th>
+<th style="text-align:right;">
+statistic
+</th>
+<th style="text-align:right;">
+p.value
+</th>
+<th style="text-align:right;">
+conf.low
+</th>
+<th style="text-align:right;">
+conf.high
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+TreatmentTr
+</td>
+<td style="text-align:right;">
+0.62441
+</td>
+<td style="text-align:right;">
+0.54713
+</td>
+<td style="text-align:right;">
+1.14
+</td>
+<td style="text-align:right;">
+0.269
+</td>
+<td style="text-align:right;">
+-0.525
+</td>
+<td style="text-align:right;">
+1.774
+</td>
+</tr>
+</tbody>
+</table>
+A linear mixed model with both a random intercept and random slope fit to all data
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+term
+</th>
+<th style="text-align:right;">
+estimate
+</th>
+<th style="text-align:right;">
+std.error
+</th>
+<th style="text-align:right;">
+statistic
+</th>
+<th style="text-align:right;">
+df
+</th>
+<th style="text-align:right;">
+p.value
+</th>
+<th style="text-align:right;">
+conf.low
+</th>
+<th style="text-align:right;">
+conf.high
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+TreatmentTr
+</td>
+<td style="text-align:right;">
+0.62441
+</td>
+<td style="text-align:right;">
+0.26995
+</td>
+<td style="text-align:right;">
+2.31
+</td>
+<td style="text-align:right;">
+9
+</td>
+<td style="text-align:right;">
+0.046
+</td>
+<td style="text-align:right;">
+0.095
+</td>
+<td style="text-align:right;">
+1.154
+</td>
+</tr>
+</tbody>
+</table>
+<p>Note that the estimates of treatment effect do not differ among models. What does differ is the estimated standard error of the treatment effect, which is 24% smaller in the linear mixed model relative to that in the linear model, and 51% smaller in the linear mixed model relative to that in the linear model fit to the block means. This difference in SE propogates to the confidence intervals and <em>p</em>-values.</p>
+<p>Let’s explore this a wee bit more systematically using a simple, Monte Carlo simulation experiment. 5000 fake data sets were generated. Each data set simulated an experiment with a single treatment factor with two levels (“control” and “treatment”). The design is a randomized complete block with subsampling. There are 8 blocks and 3 subsamples in each treatment level per block. The treatment effect (<span class="math inline">\(\beta_1\)</span>) is 1. The observation-specific (or “within-block”) variance (<span class="math inline">\(\sigma^2_{varepsilon}\)</span>) is 1. The (“among-block”) variance of the random intercept (<span class="math inline">\(\sigma^2_{\beta_0j}\)</span>) is 1 – the same as the the within-block variance. The variance variance of the random slope (<span class="math inline">\(\sigma^2_{\beta_1j}\)</span>), which is due to a variable response of the treatment among blocks, is <span class="math inline">\(0.1^2\)</span>).</p>
+<p>The following three models were fit to all 5000 data sets</p>
 <ol style="list-style-type: decimal">
-<li><p>If the goal is the interaction (because a scientific model predicts one, or because this is biology and everything is conditional), then estimate the interaction effect (as a coefficient of the model!) and its uncertainty, including a CI and <span class="math inline">\(p\)</span>-value. There is no controversy on how to estimate this effect and its uncertainty. The coefficient will be different between dummy and effect coded models but this is okay because they have different specific interpretations but the same general interpretation. Use a Harrel plot with the coefficients (including the interaction coefficient) to show this estimate and uncertainty.</p></li>
-<li><p>If the goal is to estimate constant main effects, then exclude the interaction effect from the model and report the main effects (again, as coefficients from the model or contrasts if other pairwise effects are desired) with their uncertainty. Use an interaction plot (or bottom part of the harrell plot) to justify forcing the interaction to zero (for example the interaction effect adds little to the total sum of squares or the interpretation of a single main effect or two (or more) conditional effects would be the same. Use a Harrel plot that excludes the interaction term to show these main effects and uncertainty.</p></li>
-<li><p>And if a researcher is interested in the effects of the factors but there is strong evidence for a non-trivial interaction, then report the conditional effects (as contrasts) with their uncertainty. Use a Harrel plot that includes the interaction term to show these conditional effects and uncertainty. If there is an obvious interaction, it probably doesn’t make sense to interpret the main effects, contrary to what some people argue. If there is a positive effect of factor A across all levels of factor B, we don’t really need a <span class="math inline">\(p\)</span>-value to test that the average of these positive effects is significant. This doesn’t add value to the plot and any conditional effects that are reported.</p></li>
+<li>a linear model fit to all data, ignoring blocks (violating the independence assumption)</li>
+<li>a linear model fit to the treatment means of the blocks (valid, but throwing out data)</li>
+<li>a linear mixed model that models the random intercept<a href="appendix-2-online-resources-for-getting-started-with-statistical-modeling-in-r.html#fn7" class="footnote-ref" id="fnref7"><sup>7</sup></a>.</li>
 </ol>
-<p>Notice that an ANOVA table has no role in this recommendation.</p>
-</div>
-</div>
-<div id="unbalanced-designs" class="section level2">
-<h2><span class="header-section-number">16.4</span> Unbalanced designs</h2>
-<p>My recommendation above is to not bother with ANOVA, but to simply compute the contrasts of interest using the linear model. But if you really want to use ANOVA, you should be aware that <strong>if the design is unbalanced, factor order matters in the default R anova function</strong> and that I routinely find published ANOVA tables that report statistics (<span class="math inline">\(F\)</span> and <span class="math inline">\(p\)</span> values) that are not what the authors think they are.</p>
-<p>An <strong>unbalanced</strong> design is one in which the number of replicates differs among the cell. The urchin data is balanced because there are six replicates in each cell. If the respirometer broke before taking the respiratory measures of the final tank, the design would be unbalanced, one of the cells would have only five replicates.</p>
-<p>Let’s look at the effect of row order on the statistics of the urchin data using R’s default anova function.</p>
+<p>From each fit, I saved the 95% confidence interval of the treatment effect and the <em>p</em>-value. The median width of the confidence interval and the power, which is the relative frequency of <em>p</em>-values less than 0.05. The simulation was re-run using the same parameters except setting the treatment effect (<span class="math inline">\(\beta_1\)</span>) to 0. In this new simulation, the relative frequency of <em>p</em>-values less than 0.05 is the Type I error.</p>
 <table>
 <thead>
 <tr>
 <th style="text-align:left;">
+Model
 </th>
 <th style="text-align:right;">
-Df
+CI width
 </th>
 <th style="text-align:right;">
-Sum Sq
+Power
 </th>
 <th style="text-align:right;">
-Mean Sq
-</th>
-<th style="text-align:right;">
-F value
-</th>
-<th style="text-align:right;">
-Pr(&gt;F)
+Type I
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td style="text-align:left;">
-Temp
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-60.20
-</td>
-<td style="text-align:right;">
-60.20
-</td>
-<td style="text-align:right;">
-19.06
-</td>
-<td style="text-align:right;">
-0.00030
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-CO2
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-16.52
-</td>
-<td style="text-align:right;">
-16.52
-</td>
-<td style="text-align:right;">
-5.23
-</td>
-<td style="text-align:right;">
-0.03325
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Temp:CO2
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-10.81
-</td>
-<td style="text-align:right;">
-10.81
-</td>
-<td style="text-align:right;">
-3.42
-</td>
-<td style="text-align:right;">
-0.07910
-</td>
-</tr>
-</tbody>
-</table>
-<table>
-<thead>
-<tr>
-<th style="text-align:left;">
-</th>
-<th style="text-align:right;">
-Df
-</th>
-<th style="text-align:right;">
-Sum Sq
-</th>
-<th style="text-align:right;">
-Mean Sq
-</th>
-<th style="text-align:right;">
-F value
-</th>
-<th style="text-align:right;">
-Pr(&gt;F)
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-CO2
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-16.52
-</td>
-<td style="text-align:right;">
-16.52
-</td>
-<td style="text-align:right;">
-5.23
-</td>
-<td style="text-align:right;">
-0.03325
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Temp
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-60.20
-</td>
-<td style="text-align:right;">
-60.20
-</td>
-<td style="text-align:right;">
-19.06
-</td>
-<td style="text-align:right;">
-0.00030
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-CO2:Temp
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-10.81
-</td>
-<td style="text-align:right;">
-10.81
-</td>
-<td style="text-align:right;">
-3.42
-</td>
-<td style="text-align:right;">
-0.07910
-</td>
-</tr>
-</tbody>
-</table>
-<p>Now let’s unbalance the data, by removing three random replicates (these may be both in one cell or spread across cells. First, here is the number of replicates in each cell:</p>
-<pre><code>##        
-##         CO2- CO2+
-##   Temp-    6    4
-##   Temp+    6    5</code></pre>
-<p>And here are the two tables with the order of Temp and CO2 reversed in the model</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:left;">
-</th>
-<th style="text-align:right;">
-Df
-</th>
-<th style="text-align:right;">
-Sum Sq
-</th>
-<th style="text-align:right;">
-Mean Sq
-</th>
-<th style="text-align:right;">
-F value
-</th>
-<th style="text-align:right;">
-Pr(&gt;F)
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-Temp
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-62.25
-</td>
-<td style="text-align:right;">
-62.25
-</td>
-<td style="text-align:right;">
-18.44
-</td>
-<td style="text-align:right;">
-0.00049
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-CO2
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-21.49
-</td>
-<td style="text-align:right;">
-21.49
-</td>
-<td style="text-align:right;">
-6.36
-</td>
-<td style="text-align:right;">
-0.02190
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Temp:CO2
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-6.38
-</td>
-<td style="text-align:right;">
-6.38
-</td>
-<td style="text-align:right;">
-1.89
-</td>
-<td style="text-align:right;">
-0.18720
-</td>
-</tr>
-</tbody>
-</table>
-<table>
-<thead>
-<tr>
-<th style="text-align:left;">
-</th>
-<th style="text-align:right;">
-Df
-</th>
-<th style="text-align:right;">
-Sum Sq
-</th>
-<th style="text-align:right;">
-Mean Sq
-</th>
-<th style="text-align:right;">
-F value
-</th>
-<th style="text-align:right;">
-Pr(&gt;F)
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-CO2
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-17.59
-</td>
-<td style="text-align:right;">
-17.59
-</td>
-<td style="text-align:right;">
-5.21
-</td>
-<td style="text-align:right;">
-0.03561
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Temp
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-66.14
-</td>
-<td style="text-align:right;">
-66.14
-</td>
-<td style="text-align:right;">
-19.59
-</td>
-<td style="text-align:right;">
-0.00037
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-CO2:Temp
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-6.38
-</td>
-<td style="text-align:right;">
-6.38
-</td>
-<td style="text-align:right;">
-1.89
-</td>
-<td style="text-align:right;">
-0.18720
-</td>
-</tr>
-</tbody>
-</table>
-<p>Several observations are important.</p>
 <ol style="list-style-type: decimal">
-<li>the statistics for the last row, which is the interaction, does not change.</li>
-<li>if these data were analyzed in the software package JMP, or SAS, or SSPS then <strong>order wouldn’t matter</strong>. Here is what the tables would look like</li>
-</ol>
-<table>
-<thead>
-<tr>
-<th style="text-align:left;">
-</th>
-<th style="text-align:right;">
-Sum Sq
-</th>
-<th style="text-align:right;">
-Df
-</th>
-<th style="text-align:right;">
-F value
-</th>
-<th style="text-align:right;">
-Pr(&gt;F)
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-Temp
+<li>lm
 </td>
 <td style="text-align:right;">
-58.77
+1.58
 </td>
 <td style="text-align:right;">
-1
+0.75
 </td>
 <td style="text-align:right;">
-17.41
-</td>
-<td style="text-align:right;">
-0.00064
+0.012
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-CO2
+<ol start="2" style="list-style-type: decimal">
+<li>lm of means
 </td>
 <td style="text-align:right;">
-19.93
+2.39
 </td>
 <td style="text-align:right;">
-1
+0.31
 </td>
 <td style="text-align:right;">
-5.90
-</td>
-<td style="text-align:right;">
-0.02648
+0.002
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-Temp:CO2
-</td>
-<td style="text-align:right;">
-6.38
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-1.89
-</td>
-<td style="text-align:right;">
-0.18720
-</td>
-</tr>
-</tbody>
-</table>
-<table>
-<thead>
-<tr>
-<th style="text-align:left;">
-</th>
-<th style="text-align:right;">
-Sum Sq
-</th>
-<th style="text-align:right;">
-Df
-</th>
-<th style="text-align:right;">
-F value
-</th>
-<th style="text-align:right;">
-Pr(&gt;F)
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-CO2
-</td>
-<td style="text-align:right;">
-19.93
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-5.90
-</td>
-<td style="text-align:right;">
-0.02648
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Temp
-</td>
-<td style="text-align:right;">
-58.77
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-17.41
-</td>
-<td style="text-align:right;">
-0.00064
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-CO2:Temp
-</td>
-<td style="text-align:right;">
-6.38
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-1.89
-</td>
-<td style="text-align:right;">
-0.18720
-</td>
-</tr>
-</tbody>
-</table>
 <ol start="3" style="list-style-type: decimal">
-<li>Order does not change the statistics in the coefficient table, even for unbalanced data:</li>
+<li>lmm b0j
+</td>
+<td style="text-align:right;">
+1.16
+</td>
+<td style="text-align:right;">
+0.92
+</td>
+<td style="text-align:right;">
+0.051
+</td>
+</tr>
+</tbody>
+</table></li>
+</ol></li>
+</ol></li>
 </ol>
+<p>For data similar to that simulated, the linear mixed model using a blocking factor has much more power than the linear model ignoring block (and ignoring the lack of independence) or the linear model comparing the treatment level means of the blocks. This lost power in the two linear models is due to the conservative Type I error rate (extreme in the case of the linear model of the group means). One take-home lesson here is, don’t throw away perfectly good data if the design of the experiment includes a blocking factor!</p>
+</div>
+</div>
+<div id="pseudoreplication" class="section level2">
+<h2><span class="header-section-number">18.5</span> Pseudoreplication</h2>
+<div id="visualizing-pseduoreplication" class="section level3">
+<h3><span class="header-section-number">18.5.1</span> Visualizing pseduoreplication</h3>
+<p>Subsamples from batches are not replicates. Inference from a model fit to subsampled observations without modeling the batches is called pseudoreplication, a term famously coined by Hurlbert (1984). For data from a randomized complete block design, ignoring the batches in the model will typically result in larger standard errors, wider confidence intervals, and too conservative <em>p</em>-values. In a segregated experiment, with only a single treatment level per batch (like that in experiments 4-6 above), ignoring the lack of independence in the model has the opposite effect. Standard errors are too small. Confidence intervals are too narrow. <em>P</em>-values are too liberal. Type I error is inflated. Let’s visualize a pseudoreplicated data set like this.</p>
+<div class="figure"><span id="fig:lmm1-pseudoreplication-fig"></span>
+<img src="Walker-elementary-statistical-modeling-draft_files/figure-html/lmm1-pseudoreplication-fig-1.png" alt="A data set in which treatment and batch are confounded because there is only one treatment level per batch." width="576" />
+<p class="caption">
+Figure 18.2: A data set in which treatment and batch are confounded because there is only one treatment level per batch.
+</p>
+</div>
+<p>This consequence of pseudoreplication when batch and treatment are confounded is seen in the coefficient table of four models fit to the fake data in Figure <a href="lmm.html#fig:lmm1-pseudoreplication-fig">18.2</a>.</p>
+<p><strong>A linear model fit to all data (pseudoreplication)</strong></p>
 <table>
 <thead>
 <tr>
 <th style="text-align:left;">
+term
 </th>
 <th style="text-align:right;">
-Estimate
+estimate
 </th>
 <th style="text-align:right;">
-Std. Error
+std.error
 </th>
 <th style="text-align:right;">
-t value
+statistic
 </th>
 <th style="text-align:right;">
-Pr(&gt;|t|)
+p.value
+</th>
+<th style="text-align:right;">
+conf.low
+</th>
+<th style="text-align:right;">
+conf.high
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td style="text-align:left;">
-(Intercept)
+TreatmentTr
 </td>
 <td style="text-align:right;">
-9.50
+0.7175
 </td>
 <td style="text-align:right;">
-0.407
+0.31278
 </td>
 <td style="text-align:right;">
-23.367
+2.29
 </td>
 <td style="text-align:right;">
-0.0000
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Temp1
+0.025
 </td>
 <td style="text-align:right;">
--1.70
+0.091
 </td>
 <td style="text-align:right;">
-0.407
-</td>
-<td style="text-align:right;">
--4.172
-</td>
-<td style="text-align:right;">
-0.0006
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-CO21
-</td>
-<td style="text-align:right;">
-0.99
-</td>
-<td style="text-align:right;">
-0.407
-</td>
-<td style="text-align:right;">
-2.430
-</td>
-<td style="text-align:right;">
-0.0265
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Temp1:CO21
-</td>
-<td style="text-align:right;">
--0.56
-</td>
-<td style="text-align:right;">
-0.407
-</td>
-<td style="text-align:right;">
--1.374
-</td>
-<td style="text-align:right;">
-0.1872
+1.344
 </td>
 </tr>
 </tbody>
 </table>
+<p><strong>A linear model fit the batch means</strong></p>
 <table>
 <thead>
 <tr>
 <th style="text-align:left;">
+term
 </th>
 <th style="text-align:right;">
-Estimate
+estimate
 </th>
 <th style="text-align:right;">
-Std. Error
+std.error
 </th>
 <th style="text-align:right;">
-t value
+statistic
 </th>
 <th style="text-align:right;">
-Pr(&gt;|t|)
+p.value
+</th>
+<th style="text-align:right;">
+conf.low
+</th>
+<th style="text-align:right;">
+conf.high
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td style="text-align:left;">
-(Intercept)
+TreatmentTr
 </td>
 <td style="text-align:right;">
-9.50
+0.7175
 </td>
 <td style="text-align:right;">
-0.407
+0.51803
 </td>
 <td style="text-align:right;">
-23.367
+1.39
 </td>
 <td style="text-align:right;">
-0.0000
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-CO21
+0.238
 </td>
 <td style="text-align:right;">
-0.99
+-0.721
 </td>
 <td style="text-align:right;">
-0.407
-</td>
-<td style="text-align:right;">
-2.430
-</td>
-<td style="text-align:right;">
-0.0265
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Temp1
-</td>
-<td style="text-align:right;">
--1.70
-</td>
-<td style="text-align:right;">
-0.407
-</td>
-<td style="text-align:right;">
--4.172
-</td>
-<td style="text-align:right;">
-0.0006
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-CO21:Temp1
-</td>
-<td style="text-align:right;">
--0.56
-</td>
-<td style="text-align:right;">
-0.407
-</td>
-<td style="text-align:right;">
--1.374
-</td>
-<td style="text-align:right;">
-0.1872
+2.156
 </td>
 </tr>
 </tbody>
 </table>
-<div id="what-is-going-on-in-unbalanced-anova-type-i-ii-iii-sum-of-squares" class="section level3">
-<h3><span class="header-section-number">16.4.1</span> What is going on in unbalanced ANOVA? – Type I, II, III sum of squares</h3>
-<p><strong>Type I sum of squares</strong>. Here is the (default) ANOVA table using Type I sum of squares for the urchin data with the three missing rows.</p>
+<strong>A linear mixed model with both random intercept and random slope.</strong>
 <table>
 <thead>
 <tr>
 <th style="text-align:left;">
+term
 </th>
 <th style="text-align:right;">
-Df
+estimate
 </th>
 <th style="text-align:right;">
-Sum Sq
+std.error
 </th>
 <th style="text-align:right;">
-Mean Sq
+statistic
 </th>
 <th style="text-align:right;">
-F value
+df
 </th>
 <th style="text-align:right;">
-Pr(&gt;F)
+p.value
+</th>
+<th style="text-align:right;">
+conf.low
+</th>
+<th style="text-align:right;">
+conf.high
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td style="text-align:left;">
-Temp
+TreatmentTr
 </td>
 <td style="text-align:right;">
-1
+0.7175
 </td>
 <td style="text-align:right;">
-62.248
+0.51797
 </td>
 <td style="text-align:right;">
-62.248
+1.39
 </td>
 <td style="text-align:right;">
-18.4
+3.32
 </td>
 <td style="text-align:right;">
-0.0005
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-CO2
+0.252
 </td>
 <td style="text-align:right;">
-1
+-0.298
 </td>
 <td style="text-align:right;">
-21.488
-</td>
-<td style="text-align:right;">
-21.488
-</td>
-<td style="text-align:right;">
-6.4
-</td>
-<td style="text-align:right;">
-0.0219
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Temp:CO2
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-6.377
-</td>
-<td style="text-align:right;">
-6.377
-</td>
-<td style="text-align:right;">
-1.9
-</td>
-<td style="text-align:right;">
-0.1872
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Residuals
-</td>
-<td style="text-align:right;">
-17
-</td>
-<td style="text-align:right;">
-57.399
-</td>
-<td style="text-align:right;">
-3.376
-</td>
-<td style="text-align:right;">
-</td>
-<td style="text-align:right;">
+1.733
 </td>
 </tr>
 </tbody>
 </table>
-<p>The default coding of dummy variables in R’s <code>lm</code> function is dummy coding, which is the coding used for Type I or <strong>Sequential Sum of Squares</strong>. The hypothesis tested by each row in the ANOVA table using Type I sum of squares is the effect of that row’s term conditional on all terms before it in the model (or above it in the table) and ignoring all terms after it in the model (or below it in the table).</p>
+<p><strong>A linear mixed model with random intercept</strong></p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+term
+</th>
+<th style="text-align:right;">
+estimate
+</th>
+<th style="text-align:right;">
+std.error
+</th>
+<th style="text-align:right;">
+statistic
+</th>
+<th style="text-align:right;">
+df
+</th>
+<th style="text-align:right;">
+p.value
+</th>
+<th style="text-align:right;">
+conf.low
+</th>
+<th style="text-align:right;">
+conf.high
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+TreatmentTr
+</td>
+<td style="text-align:right;">
+0.7175
+</td>
+<td style="text-align:right;">
+0.51803
+</td>
+<td style="text-align:right;">
+1.39
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+0.238
+</td>
+<td style="text-align:right;">
+-0.298
+</td>
+<td style="text-align:right;">
+1.733
+</td>
+</tr>
+</tbody>
+</table>
+<p>As with the blocked design, all models compute the same estimate of the treatment effect. But in contrast to the blocked design, in this confounded design, the standard error of the treatment effect is smaller in the linear model of all data than that of the linear mixed models. This increased precision is an illusion because the model fails to account for the lack of independence within the batches.</p>
+<p>One interesting result to note is the equivalence of the standard error, test statistic, <em>p</em>-value, and confidence intervals of the linear model on the batch means and the linear mixed model with a random intercept (but no random slope) only. The two are equivalent. Murtaugh (xxx) has argued that with this kind of design, it is much simpler to the analyst, and to your audience, to simply use the linear model on the batch means. This raises the question, why bother with subsampling within batch? One answer is, subsampling increases the precision of the batch mean, and therefore, the precision of the treatment effect. That said, <em>the precision of a treatment effect is increased more efficiently by adding more replicates (more batches), not more subsamples</em>.</p>
+<p>Let’s explore the consequence of pseudoreplication with a confounded with a Monte Carlo simulation experiment. 5000 fake data sets were generated. Each data set simulated an experiment with a single treatment factor with two levels (“control” and “treatment”). The design is treatment level randomized to batch (only one treatment level per batch). There are 8 batches and 3 subsamples in each batch. The treatment effect (<span class="math inline">\(\beta_1\)</span>) is zero. The observation-specific (or “within-block”) variance (<span class="math inline">\(\sigma^2_{varepsilon}\)</span>) is 1. The (“among-block”) variance of the random intercept (<span class="math inline">\(\sigma^2_{\beta_0j}\)</span>) is 1 – the same as the the within-block variance. The variance variance of the random slope (<span class="math inline">\(\sigma^2_{\beta_1j}\)</span>), which is due to a variable response of the treatment among blocks, is <span class="math inline">\(0.1^2\)</span>).</p>
+<p>Because the effect is zero, the frequency of <em>p</em>-values less than 0.05 is the type I error. The same three models fit to the simulated blocked data are fit to these data. I don’t simulate an effect in order to compute power (at that effect size) because the increased power in the linear model of all data is, again, an illusion. It only comes at the cost of strongly elevated Type I error.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+Model
+</th>
+<th style="text-align:right;">
+CI width
+</th>
+<th style="text-align:right;">
+Type I
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
 <ol style="list-style-type: decimal">
-<li><p>The hypothesis tested by the <span class="math inline">\(p\)</span>-value for <span class="math inline">\(Temp\)</span> is the same as if <span class="math inline">\(Temp\)</span> were the only term in the model (other than the intercept). That is, the means are estimated for each level of <span class="math inline">\(Temp\)</span> ignoring the fact that half the replicates within each level of <span class="math inline">\(Temp\)</span> experienced low <span class="math inline">\(CO2\)</span> and half experienced high <span class="math inline">\(CO2\)</span></p></li>
-<li><p>The hypothesis tested by the <span class="math inline">\(p\)</span>-value for <span class="math inline">\(CO2\)</span> is conditional on <span class="math inline">\(Temp\)</span>. That is, the difference in metabolism between <span class="math inline">\(CO2+\)</span> and <span class="math inline">\(CO2-\)</span> when <span class="math inline">\(Temp\)</span> is “held constant” (or for all cases where <span class="math inline">\(Temp\)</span> takes the same value). This is equivalent to the hypothesis that the difference in the marginal means of CO2 is zero.</p></li>
-<li><p>The hypothesis tested by the <span class="math inline">\(p\)</span>-value for the interaction is conditional on all other terms and nothing is ignored.</p></li>
+<li>lm
+</td>
+<td style="text-align:right;">
+2.22
+</td>
+<td style="text-align:right;">
+0.18
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<ol start="2" style="list-style-type: decimal">
+<li>lm of means
+</td>
+<td style="text-align:right;">
+3.80
+</td>
+<td style="text-align:right;">
+0.05
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<ol start="3" style="list-style-type: decimal">
+<li>lmm b0j
+</td>
+<td style="text-align:right;">
+3.80
+</td>
+<td style="text-align:right;">
+0.05
+</td>
+</tr>
+</tbody>
+</table></li>
+</ol></li>
+</ol></li>
 </ol>
-<p><strong>Type II sum of squares</strong>. Here is the ANOVA table using Type II sum of squares for the urchin data with missing values. The interaction term is excluded from the linear model, because type II sum of squares are used to estimate main effects ignoring the interaction (so this would make sense only if a plot of the effects suggested a small interaction relative to the main effects). The sum of squares for the main effects would be the same if the interaction were included but the residual df, and thus the F and P-values would differ.</p>
+<p>When treatment level is randomized <em>to</em> batch, the type I error rate of a linear model fit to all data (and ignoring the lack of independence) is highly inflated. Don’t do this.</p>
+</div>
+</div>
+<div id="mapping-nhst-to-estimation-a-paired-t-test-is-a-special-case-of-a-linear-mixed-model" class="section level2">
+<h2><span class="header-section-number">18.6</span> Mapping NHST to estimation: A paired t-test is a special case of a linear mixed model</h2>
+<p>Specifically, a <strong>paired t-test</strong> is equivalent to a linear mixed model with a single factor with two treatment levels, <span class="math inline">\(k\)</span> blocks, and a single measure of each treatment level within each block. A good example is the wild type vs. engineered staph count in mice in experiment 3 above. A linear mixed model is much more flexible than a paired <em>t</em>-test because it allows a researcher to add treatment levels, additional factors, and covariates to the model. In addition, a linear mixed model can handle missing data.</p>
+<p>Here is fake data similar in design to experiment 3 with a single factor with two treatment levels and both levels applied to the same experimental unit.</p>
+<div class="sourceCode" id="cb460"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb460-1"><a href="lmm.html#cb460-1"></a><span class="kw">set.seed</span>(<span class="dv">2</span>)</span>
+<span id="cb460-2"><a href="lmm.html#cb460-2"></a>n &lt;-<span class="st"> </span><span class="dv">10</span> <span class="co"># number of mice (blocks)</span></span>
+<span id="cb460-3"><a href="lmm.html#cb460-3"></a>x &lt;-<span class="st"> </span><span class="kw">rep</span>(<span class="kw">c</span>(<span class="st">&quot;WT&quot;</span>,<span class="st">&quot;Tr&quot;</span>), <span class="dt">each=</span>n) <span class="co"># treatments</span></span>
+<span id="cb460-4"><a href="lmm.html#cb460-4"></a>id &lt;-<span class="st"> </span><span class="kw">rep</span>(letters[<span class="dv">1</span><span class="op">:</span>n], <span class="dv">2</span>) <span class="co"># block id</span></span>
+<span id="cb460-5"><a href="lmm.html#cb460-5"></a>y &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="kw">rnorm</span>(n, <span class="dt">mean=</span><span class="dv">10</span>), <span class="kw">rnorm</span>(n, <span class="dt">mean=</span><span class="dv">11</span>))</span>
+<span id="cb460-6"><a href="lmm.html#cb460-6"></a>fake_data &lt;-<span class="st"> </span><span class="kw">data.table</span>(<span class="dt">Y=</span>y, <span class="dt">X=</span>x, <span class="dt">ID=</span>id)</span></code></pre></div>
+<p>The <em>t</em>-test <em>p</em>-value is</p>
+<div class="sourceCode" id="cb461"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb461-1"><a href="lmm.html#cb461-1"></a><span class="kw">t.test</span>(Y<span class="op">~</span>X, <span class="dt">data=</span>fake_data, <span class="dt">paired=</span><span class="ot">TRUE</span>)<span class="op">$</span>p.value</span></code></pre></div>
+<pre><code>## [1] 0.05336815</code></pre>
+<p>and the coefficient table of the fixed effect in the linear mixed model is</p>
+<div class="sourceCode" id="cb463"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb463-1"><a href="lmm.html#cb463-1"></a><span class="kw">coef</span>(<span class="kw">summary</span>(<span class="kw">lme</span>(Y<span class="op">~</span>X, <span class="dt">random =</span> <span class="op">~</span><span class="dv">1</span><span class="op">|</span>ID, <span class="dt">correlation=</span><span class="kw">corCompSymm</span>(<span class="dt">form=</span><span class="op">~</span><span class="dv">1</span><span class="op">|</span>ID), <span class="dt">data=</span>fake_data)))</span></code></pre></div>
+<pre><code>##                  Value Std.Error DF   t-value      p-value
+## (Intercept) 11.1797704 0.3438775  9 32.510914 1.212113e-10
+## XWT         -0.9686188 0.4358740  9 -2.222245 5.336815e-02</code></pre>
+</div>
+<div id="advanced-topic-linear-mixed-models-shrink-coefficients-by-partial-pooling" class="section level2">
+<h2><span class="header-section-number">18.7</span> Advanced topic – Linear mixed models shrink coefficients by partial pooling</h2>
+<p>In experiment 1 above, there are 10 sites (maybe different woodlots). In each plot, five seedlings are planted inside a cage and five outside the cage. The cage excludes insectivorous birds but not herbivorous insects. The researchers are investigating how birds affect plant growth indirectly – by eating insects that feed on the plants. The response is total leaf area in each seedling.</p>
+<p>Let’s say we want to know the treatment effect in each of these sites. There are several ways of estimating this.</p>
+<ol style="list-style-type: decimal">
+<li><p>Fit <span class="math inline">\(k\)</span> separate models, one for each site. The intercept (control mean) and slope (treatment effect) parameters for each site are estimated independently from all other sites. Consequently, the model parameters are computed using <strong>no pooling</strong>. For the estimation of the <span class="math inline">\(\beta\)</span> terms, this is equivalent to a single, factorial linear model with <span class="math inline">\(Site\)</span> modeled as a <strong>fixed effect</strong> (this is not true for the estimate of the standard errors of these terms since these are computed from the residual sum of squares of the model. For balanced data, all of the “intercept” or “slope” terms will have the same SE in the factorial analysis but differ among the <span class="math inline">\(k\)</span> independent analyses).</p></li>
+<li><p>Fit a linear model to all the data combined as if these were from a single site, and assign the intercept and treatment effect paramters to all sites. The model parameters are computed using <strong>complete pooling</strong>.</p></li>
+<li><p>Fit a linear mixed model to all the data, using site as a random factor to estimate both random intercepts and slopes. Similar to the no-pooling analysis, there will be different intercept (control mean) and slope (treatment effect) estimates for each site, but unlike the no-pooling analysis, these estimates are computed by combining information from the other sites. The information used to estimate parameters in a linear mixed model is somewhere in between no pooling and complete pooling and is sometimes called <strong>partial pooling</strong>.</p></li>
+</ol>
+<p>The consequence of partial pooling in a linear mixed model is that site intercepts (control means) are pulled toward the single intercept in the complete-pooling analysis and the site slopes (treatment effects) are pulled toward the single slope in the complete-pooling analysis. This has the consequence that the <strong>differences</strong> in parameter estimates among sites are shrunk toward zero. A consequence of this shrinkage is that the variance of the intercept estimates or of the slope estimates is smaller than that in the no-pooling analysis. Figure <a href="lmm.html#fig:lmm-partialpooling">18.3</a> shows this shrinkage effect using fake data simulating the seedling experiment.</p>
+<div class="figure"><span id="fig:lmm-partialpooling"></span>
+<img src="Walker-elementary-statistical-modeling-draft_files/figure-html/lmm-partialpooling-1.png" alt="Shrinkage estimates of the treatment effect in a linear mixed model. The grey line is the estimate using complete pooling (so there is only one estimate which is assigned to each site). In general, the partial-pooling (linear mixed model) estimates (yellow) are generally closer to the complete pooling estimate than the no-pooling (separate linear models) estimates (blue). More specifically, if the no-pooling estimate is far from the complete pooling estimate, the partial pooling estimate is *much* closer to the complete pooling estimate. The consequence of partial pooling is that the differences among the estimates are shrunk toward zero." width="576" />
+<p class="caption">
+Figure 18.3: Shrinkage estimates of the treatment effect in a linear mixed model. The grey line is the estimate using complete pooling (so there is only one estimate which is assigned to each site). In general, the partial-pooling (linear mixed model) estimates (yellow) are generally closer to the complete pooling estimate than the no-pooling (separate linear models) estimates (blue). More specifically, if the no-pooling estimate is far from the complete pooling estimate, the partial pooling estimate is <em>much</em> closer to the complete pooling estimate. The consequence of partial pooling is that the differences among the estimates are shrunk toward zero.
+</p>
+</div>
+<p>The linear mixed model estimates of the treatment effects for each site are a type of <strong>shrinkage estimate</strong> and a linear mixed model is one kind of <strong>shrinkage estimator</strong>. Shrinkage estimates have fascinating properties:</p>
+<ol style="list-style-type: decimal">
+<li>the variance of shrinkage estimates is less than that of ordinary least squares estimates (no-pooling, or using the block as a fixed factor)</li>
+<li>shrinkage estimates are <strong>biased</strong> but the OLS estimates are not. This means that the expected value of a coefficient from the linear mixed model <em>does not equal</em> the true (parameter) value! Or, more formally, <span class="math inline">\(\mathrm{E}(b_j) \ne \beta_j\)</span>.</li>
+<li>the <strong>mean square error</strong> of shrinkage estimates will be smaller than that for OLS estimates.</li>
+</ol>
+<p>The first property was discussed above and shown in Figure <a href="lmm.html#fig:lmm-partialpooling">18.3</a>. The second property raises the question, if we want to estimate the treatment effects within each site, why would we ever want to use <span class="math inline">\(Site\)</span> as a random instead of fixed effect? The answer is the third property, which can be summarized as, “if we were to replicate the experiment many times, the shrinkage estimates will be, on average, less wrong (or closer to the true value) than the OLS estimates, where”wrong" is the absolute deviation from the true value."</p>
+<p>When shrinkage estimators were first discovered, the third property surprised stasticians. The third property has profound consequences. Consider a scenario where researchers want to compare the performance of a new expression vector to that of an existing expression vector on protein production using <em>E. coli</em>. The researchers have ten different <em>E. coli</em> strains and are interested in strain-specific effects because they will choose the three strains with the largest effects for further testing. The researchers measure the response of each strain five times.</p>
 <table>
+<caption>
+<span id="tab:lmm-fish-passage">Table 18.2: </span>Effect of new expression vector on protein production in ten strains of <em>E. coli</em> using a fixed effect factorial model and linear mixed model.
+</caption>
 <thead>
 <tr>
 <th style="text-align:left;">
+Strain
 </th>
 <th style="text-align:right;">
-Df
+<span class="math inline">\(\beta_{1j}\)</span>
 </th>
 <th style="text-align:right;">
-Sum Sq
+fixed <span class="math inline">\(b_{1j}\)</span>
 </th>
 <th style="text-align:right;">
-Mean Sq
-</th>
-<th style="text-align:right;">
-F value
-</th>
-<th style="text-align:right;">
-Pr(&gt;F)
+random <span class="math inline">\(b_{1j}\)</span>
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td style="text-align:left;">
-Temp
+a
 </td>
 <td style="text-align:right;">
-1
+0.91
 </td>
 <td style="text-align:right;">
-66.145
+1.07
 </td>
 <td style="text-align:right;">
-66.145
-</td>
-<td style="text-align:right;">
-18.7
-</td>
-<td style="text-align:right;">
-0.0004
+0.98
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-CO2
+b
 </td>
 <td style="text-align:right;">
-1
+0.87
 </td>
 <td style="text-align:right;">
-21.488
+0.94
 </td>
 <td style="text-align:right;">
-21.488
-</td>
-<td style="text-align:right;">
-6.1
-</td>
-<td style="text-align:right;">
-0.0241
+0.85
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-Residuals
+c
 </td>
 <td style="text-align:right;">
-18
+0.90
 </td>
 <td style="text-align:right;">
-63.776
+-1.03
 </td>
 <td style="text-align:right;">
-3.543
+0.30
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+d
 </td>
 <td style="text-align:right;">
+0.81
 </td>
 <td style="text-align:right;">
+0.64
+</td>
+<td style="text-align:right;">
+0.63
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+e
+</td>
+<td style="text-align:right;">
+1.09
+</td>
+<td style="text-align:right;">
+1.00
+</td>
+<td style="text-align:right;">
+1.07
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+f
+</td>
+<td style="text-align:right;">
+0.62
+</td>
+<td style="text-align:right;">
+0.91
+</td>
+<td style="text-align:right;">
+1.14
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+g
+</td>
+<td style="text-align:right;">
+1.33
+</td>
+<td style="text-align:right;">
+2.26
+</td>
+<td style="text-align:right;">
+1.36
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+h
+</td>
+<td style="text-align:right;">
+1.27
+</td>
+<td style="text-align:right;">
+1.48
+</td>
+<td style="text-align:right;">
+0.96
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+i
+</td>
+<td style="text-align:right;">
+1.61
+</td>
+<td style="text-align:right;">
+0.57
+</td>
+<td style="text-align:right;">
+1.13
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+j
+</td>
+<td style="text-align:right;">
+0.89
+</td>
+<td style="text-align:right;">
+1.50
+</td>
+<td style="text-align:right;">
+0.93
 </td>
 </tr>
 </tbody>
 </table>
-<p>The hypothesis tested by each row in the ANOVA table using Type II sum of squares is the effect of that row’s term conditional on all terms <em>at the same level or below</em> but ignoring all terms at a higher level in the model (or below it in the table). For example, the hypothesis test for a factor is conditioned on other factors but ignores interaction terms among the factors. Consequently, these hypotheses tested are</p>
+<p>The table above shows the true strain-specific effect and both the fixed (OLS) and random (LMM) effect estimates. The largest OLS estimate is 70% larger than the true effect and the strain with the largest true effect is not among the top three biggest OLS estimates (its ranking is 9/10). By contrast, the LMM estimates are closer to the true effects and the top strain is among the three largest LMM estimates.</p>
+<p>These results are specific to these fake data but more generally,
+1) the largest OLS estimates are inflated (larger error from the true effect), relative to the largest LMM estimates
+2) overall, the LMM estimates will be closer than the OLS estimates to the true effects</p>
+<p>To understand this, rank order the treatment effects for each strain. An individual strain’s position in this rank is the sum of the true effect for that strain and some random error. Because OLS, relative to shrinkage estimates, have greater variance in the estimate (that is, the random error component is bigger), the biggest effects estimated by OLS are more likely to be big because of the error component, compared to shrinkage estimates.</p>
+<div style="background-color:#cccccc; text-align:left; vertical-align: middle; padding:20px 47px;">
+<p><strong>Not more than you want to know</strong> – Shrinkage estimators are not only useful when we are interested in block-specific effects but are also useful for estimating effects when there are <strong>multiple responses</strong>. For example, consider a researcher interested in measuring the effects of some exercise treatment on gene expression in adipose cells. The researcher measures expression levels in 10,000 genes. Given the typical content in undergraduate biostatics courses, a researcher would probably model these responses using 10,000 <em>t</em>-tests, or equivalently, 10,000 separate linear models. If the tests were ranked by <span class="math inline">\(p\)</span>-value or absolute effect size, many of the genes with largest absolute effect would be there because of a large error component and many of the largest effects would be massively overinflated. Re-imagining the design as a single, linear mixed model with each gene modeled as a block would lead to a rank order in which the biggest measured effects more closely approximate the true effects.</p>
+</div>
+</div>
+<div id="working-in-r-7" class="section level2">
+<h2><span class="header-section-number">18.8</span> Working in R</h2>
+<p>The major function for working with linear mixed models is <code>lmer()</code> from the lme4 package. An older, and still sometimes used and useful function is <code>lme()</code> from the nlme package. The authors of the lme4 package argue that the df in a linear mixed model are too approximate for a useful <span class="math inline">\(p\)</span>-value and, consequently, the <code>lme</code> function does not return a <span class="math inline">\(p\)</span>-value. Many biological researchers want a <span class="math inline">\(p\)</span>-value and typically use the <code>lmerTest</code> package to get this.</p>
+<p><strong>Specifying a linear mixed model using <code>lme</code></strong>. The random factor is in the column “block”. To conform to some packages that use lme4 objects, any variable used to model a random effect should be converted to type <code>factor</code>.</p>
 <ol style="list-style-type: decimal">
-<li><p>The hypothesis tested by the <span class="math inline">\(p\)</span>-value for <span class="math inline">\(Temp\)</span> is conditional on <span class="math inline">\(CO2\)</span>. This is the same hypothesis that would occur using Type I sum of squares but placing <span class="math inline">\(Temp\)</span> second in the model, after <span class="math inline">\(CO2\)</span> (and it is in fact how I computed it for the table).</p></li>
-<li><p>The hypothesis tested by the <span class="math inline">\(p\)</span>-value for <span class="math inline">\(CO2\)</span> is conditional on <span class="math inline">\(Temp\)</span>. This is exactly the hypothesis for <span class="math inline">\(CO2\)</span> using the Type I sum of squares above.</p></li>
+<li>add a random intercept using <code>y ~ treatment + (1|block)</code>. This adds a random intercept for each level of treatment.</li>
+<li>add a random slope and intercept using <code>y ~ treatment + (treatment|block)</code>. This adds a random intercept for each level of treatment and a random slope for each level of treatment.</li>
 </ol>
-<p><strong>Type III sum of squares</strong>. Here is the ANOVA table using Type III sum of squares for the urchin data for missing data. The interaction term is excluded from the linear model, and advocates of using Type III sum of squares explicitly want this in the model.</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:left;">
-</th>
-<th style="text-align:right;">
-Sum Sq
-</th>
-<th style="text-align:right;">
-Df
-</th>
-<th style="text-align:right;">
-F value
-</th>
-<th style="text-align:right;">
-Pr(&gt;F)
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-Temp
-</td>
-<td style="text-align:right;">
-58.770
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-17.406
-</td>
-<td style="text-align:right;">
-0.0006
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-CO2
-</td>
-<td style="text-align:right;">
-19.935
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-5.904
-</td>
-<td style="text-align:right;">
-0.0265
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Temp:CO2
-</td>
-<td style="text-align:right;">
-6.377
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-1.889
-</td>
-<td style="text-align:right;">
-0.1872
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Residuals
-</td>
-<td style="text-align:right;">
-57.399
-</td>
-<td style="text-align:right;">
-17
-</td>
-<td style="text-align:right;">
-</td>
-<td style="text-align:right;">
-</td>
-</tr>
-</tbody>
-</table>
-<p>The hypothesis tested by each row in the ANOVA table using Type III sum of squares is the effect of that row’s term conditional on all terms in the model.</p>
-<ol style="list-style-type: decimal">
-<li><p>The hypothesis tested by the <span class="math inline">\(p\)</span>-value for <span class="math inline">\(Temp\)</span> is conditional on <span class="math inline">\(CO2\)</span> and <span class="math inline">\(Temp:CO2\)</span>.</p></li>
-<li><p>The hypothesis tested by the <span class="math inline">\(p\)</span>-value for <span class="math inline">\(CO2\)</span> is conditional on <span class="math inline">\(Temp\)</span> and <span class="math inline">\(Temp:CO2\)</span>.</p></li>
-<li><p>The hypothesis tested by the <span class="math inline">\(p\)</span>-value for <span class="math inline">\(Temp:CO2\)</span> is conditional on <span class="math inline">\(Temp\)</span> and <span class="math inline">\(CO2\)</span>. This is the same for Type I sum of squares (and Type II, if the interaction term were included)</p></li>
-</ol>
-</div>
-<div id="back-to-interpretation-of-main-effects" class="section level3">
-<h3><span class="header-section-number">16.4.2</span> Back to interpretation of main effects</h3>
-</div>
-<div id="the-anova-tables-for-type-i-ii-and-iii-sum-of-squares-are-the-same-if-the-design-is-balanced." class="section level3">
-<h3><span class="header-section-number">16.4.3</span> The anova tables for Type I, II, and III sum of squares are the same if the design is balanced.</h3>
-</div>
-</div>
-<div id="working-in-r-6" class="section level2">
-<h2><span class="header-section-number">16.5</span> Working in R</h2>
-<div id="type-i-sum-of-squares-in-r" class="section level3">
-<h3><span class="header-section-number">16.5.1</span> Type I sum of squares in R</h3>
-<p>The base R function <code>anova()</code> computes the ANOVA table using Type I sum of squares for any fit model object, such as that returned by <code>lm</code>. Here is a script for the urchin data. I first create unbalanced data by deleting the first row that is the control row.</p>
-<div class="sourceCode" id="cb452"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb452-1"><a href="anova-tables.html#cb452-1"></a>cn_rows &lt;-<span class="st"> </span><span class="kw">which</span>(urchin[, Temp]<span class="op">==</span><span class="st">&quot;Temp-&quot;</span> <span class="op">&amp;</span><span class="st"> </span>urchin[, CO2]<span class="op">==</span><span class="st">&quot;CO2-&quot;</span>) <span class="co"># gives the rows of the controls</span></span>
-<span id="cb452-2"><a href="anova-tables.html#cb452-2"></a>urchin_unbalanced &lt;-<span class="st"> </span>urchin[<span class="op">-</span>cn_rows[<span class="dv">1</span>],] <span class="co"># deletes the row that is in first element of cn_rows</span></span>
-<span id="cb452-3"><a href="anova-tables.html#cb452-3"></a>urchin.t1 &lt;-<span class="st"> </span><span class="kw">lm</span>(Resp <span class="op">~</span><span class="st"> </span>Temp<span class="op">*</span>CO2, <span class="dt">data=</span>urchin_unbalanced)</span>
-<span id="cb452-4"><a href="anova-tables.html#cb452-4"></a><span class="kw">anova</span>(urchin.t1)</span></code></pre></div>
-<pre><code>## Analysis of Variance Table
+<p>A message that might appear is “boundary (singular) fit: see ?isSingular”. This does not mean there is a problem with the fit model.</p>
+<p>A warning that “Model failed to converge with 1 negative eigenvalue” does mean there is a problem. A solution is to simplify the model by, for example, removing a random slope.</p>
+<div id="coral-data" class="section level3">
+<h3><span class="header-section-number">18.8.1</span> coral data</h3>
+<p><strong>Source</strong> Zill, J. A., Gil, M. A., &amp; Osenberg, C. W. (2017). When environmental factors become stressors: interactive effects of vermetid gastropods and sedimentation on corals. Biology letters, 13(3), 20160957.</p>
+<p><strong>Dryad source</strong> <a href="https://datadryad.org/resource/doi:10.5061/dryad.p59n8" class="uri">https://datadryad.org/resource/doi:10.5061/dryad.p59n8</a></p>
+<p><strong>file name</strong> “VermetidSedimentData_ZillGilOsenberg_DRYAD.xlsx”</p>
+<div class="sourceCode" id="cb465"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb465-1"><a href="lmm.html#cb465-1"></a>folder &lt;-<span class="st"> &quot;Data from When environmental factors become stressors- interactive effects of vermetid gastropods and sedimentation on corals&quot;</span></span>
+<span id="cb465-2"><a href="lmm.html#cb465-2"></a>fn &lt;-<span class="st"> &quot;VermetidSedimentData_ZillGilOsenberg_DRYAD.xlsx&quot;</span></span>
+<span id="cb465-3"><a href="lmm.html#cb465-3"></a>sheet_i &lt;-<span class="st"> &quot;Coral Growth Rate Data&quot;</span></span>
+<span id="cb465-4"><a href="lmm.html#cb465-4"></a>file_path &lt;-<span class="st"> </span><span class="kw">here</span>(data_path, folder, fn)</span>
+<span id="cb465-5"><a href="lmm.html#cb465-5"></a>coral &lt;-<span class="st"> </span><span class="kw">read_excel</span>(file_path, <span class="dt">sheet=</span>sheet_i) <span class="op">%&gt;%</span></span>
+<span id="cb465-6"><a href="lmm.html#cb465-6"></a><span class="st">  </span><span class="kw">clean_names</span>() <span class="op">%&gt;%</span></span>
+<span id="cb465-7"><a href="lmm.html#cb465-7"></a><span class="st">  </span><span class="kw">data.table</span>()</span>
+<span id="cb465-8"><a href="lmm.html#cb465-8"></a>coral[, vermetids<span class="op">:</span><span class="er">=</span><span class="kw">factor</span>(vermetids)]</span>
+<span id="cb465-9"><a href="lmm.html#cb465-9"></a>coral[, sediment<span class="op">:</span><span class="er">=</span><span class="kw">factor</span>(sediment)]</span>
+<span id="cb465-10"><a href="lmm.html#cb465-10"></a></span>
+<span id="cb465-11"><a href="lmm.html#cb465-11"></a><span class="co"># recode levels of factors since 0 and 1</span></span>
+<span id="cb465-12"><a href="lmm.html#cb465-12"></a>coral[, vermetids <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">fct_recode</span>(vermetids,</span>
+<span id="cb465-13"><a href="lmm.html#cb465-13"></a>                                <span class="dt">absent =</span> <span class="st">&quot;0&quot;</span>,</span>
+<span id="cb465-14"><a href="lmm.html#cb465-14"></a>                                <span class="dt">present =</span> <span class="st">&quot;1&quot;</span>)]</span>
+<span id="cb465-15"><a href="lmm.html#cb465-15"></a>coral[, sediment <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">fct_recode</span>(sediment,</span>
+<span id="cb465-16"><a href="lmm.html#cb465-16"></a>                                <span class="dt">control =</span> <span class="st">&quot;0&quot;</span>,</span>
+<span id="cb465-17"><a href="lmm.html#cb465-17"></a>                                <span class="dt">addition =</span> <span class="st">&quot;1&quot;</span>)]</span></code></pre></div>
+<div id="fitting-models" class="section level4">
+<h4><span class="header-section-number">18.8.1.1</span> Fitting models</h4>
+<div class="sourceCode" id="cb466"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb466-1"><a href="lmm.html#cb466-1"></a><span class="co"># to reproduce the results</span></span>
+<span id="cb466-2"><a href="lmm.html#cb466-2"></a><span class="co"># observation 2 should be excluded from the analysis</span></span>
+<span id="cb466-3"><a href="lmm.html#cb466-3"></a>inc &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">3</span><span class="op">:</span><span class="kw">nrow</span>(coral))</span>
+<span id="cb466-4"><a href="lmm.html#cb466-4"></a></span>
+<span id="cb466-5"><a href="lmm.html#cb466-5"></a><span class="co"># random intercept only</span></span>
+<span id="cb466-6"><a href="lmm.html#cb466-6"></a>m1 &lt;-<span class="st"> </span><span class="kw">lmer</span>(growth_rate <span class="op">~</span><span class="st"> </span>vermetids<span class="op">*</span>sediment <span class="op">+</span><span class="st"> </span>(<span class="dv">1</span><span class="op">|</span>block), <span class="dt">data=</span>coral[inc])</span>
+<span id="cb466-7"><a href="lmm.html#cb466-7"></a><span class="co"># random intercept and slope</span></span>
+<span id="cb466-8"><a href="lmm.html#cb466-8"></a>m2 &lt;-<span class="st"> </span><span class="kw">lmer</span>(growth_rate <span class="op">~</span><span class="st"> </span>vermetids<span class="op">*</span>sediment <span class="op">+</span><span class="st"> </span>(vermetids<span class="op">|</span>block) <span class="op">+</span><span class="st"> </span>(sediment<span class="op">|</span>block), <span class="dt">data=</span>coral[inc])</span>
+<span id="cb466-9"><a href="lmm.html#cb466-9"></a><span class="co"># to include the interaction as a random effect we&#39;d need subsampling within each factorial treatment combination</span></span></code></pre></div>
+<p>The conditional effects of m1 are</p>
+<div class="sourceCode" id="cb467"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb467-1"><a href="lmm.html#cb467-1"></a><span class="co"># results using lmer fit</span></span>
+<span id="cb467-2"><a href="lmm.html#cb467-2"></a>fit.emm &lt;-<span class="st"> </span><span class="kw">emmeans</span>(m1, <span class="dt">specs=</span><span class="kw">c</span>(<span class="st">&quot;vermetids&quot;</span>, <span class="st">&quot;sediment&quot;</span>))</span>
+<span id="cb467-3"><a href="lmm.html#cb467-3"></a><span class="kw">summary</span>(<span class="kw">contrast</span>(fit.emm, </span>
+<span id="cb467-4"><a href="lmm.html#cb467-4"></a>                 <span class="dt">method =</span> <span class="st">&quot;revpairwise&quot;</span>, </span>
+<span id="cb467-5"><a href="lmm.html#cb467-5"></a>                 <span class="dt">simple =</span> <span class="st">&quot;each&quot;</span>,</span>
+<span id="cb467-6"><a href="lmm.html#cb467-6"></a>                 <span class="dt">combine =</span> <span class="ot">TRUE</span>,</span>
+<span id="cb467-7"><a href="lmm.html#cb467-7"></a>                 <span class="dt">adjust=</span><span class="st">&quot;none&quot;</span>),</span>
+<span id="cb467-8"><a href="lmm.html#cb467-8"></a>        <span class="dt">infer=</span><span class="kw">c</span>(<span class="ot">TRUE</span>, <span class="ot">TRUE</span>))</span></code></pre></div>
+<pre><code>##  sediment vermetids contrast           estimate    SE   df lower.CL
+##  control  .         present - absent    0.00466 0.209 23.0   -0.428
+##  addition .         present - absent   -0.76889 0.217 23.6   -1.217
+##  .        absent    addition - control  0.28520 0.217 23.6   -0.163
+##  .        present   addition - control -0.48834 0.209 23.0   -0.921
+##  upper.CL t.ratio p.value
+##    0.4373  0.022  0.9824 
+##   -0.3211 -3.547  0.0017 
+##    0.7330  1.316  0.2009 
+##   -0.0557 -2.335  0.0286 
 ## 
-## Response: Resp
-##           Df Sum Sq Mean Sq F value    Pr(&gt;F)    
-## Temp       1 55.696  55.696 16.9244 0.0005907 ***
-## CO2        1 18.411  18.411  5.5946 0.0288072 *  
-## Temp:CO2   1  9.204   9.204  2.7970 0.1108298    
-## Residuals 19 62.527   3.291                      
-## ---
-## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
-</div>
-<div id="type-ii-and-iii-sum-of-squares" class="section level3">
-<h3><span class="header-section-number">16.5.2</span> Type II and III Sum of Squares</h3>
-<p>Type II sum of squares can be computed manually simply by fitting the model twice, once with the factors ordered one way and then with the factors ordered the opposite way. The car package has the function <code>Anova</code> that specifically outputs Type II and Type III ANOVA tables.</p>
-<p>Type II sum of squares can be fit with the interaction in the model, and this generates the Type II sum of squares for the main terms but the residual is wrong for the <span class="math inline">\(F\)</span>-ratio because it is the residual from the full model and Type II assumes the interaction effect is zero. So, if one wants an ANOVA table with a <span class="math inline">\(F\)</span> and <span class="math inline">\(p\)</span> that reflect this, then the interaction should be dropped from the model.</p>
-<div class="sourceCode" id="cb454"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb454-1"><a href="anova-tables.html#cb454-1"></a>urchin.t2 &lt;-<span class="st"> </span><span class="kw">lm</span>(Resp <span class="op">~</span><span class="st"> </span>Temp<span class="op">*</span>CO2, <span class="dt">data=</span>urchin_unbalanced)</span>
-<span id="cb454-2"><a href="anova-tables.html#cb454-2"></a><span class="kw">Anova</span>(urchin.t2, <span class="dt">type=</span><span class="st">&quot;2&quot;</span>)</span></code></pre></div>
-<pre><code>## Anova Table (Type II tests)
+## Degrees-of-freedom method: kenward-roger 
+## Confidence level used: 0.95</code></pre>
+<p>There is no “correct” way to compute the degrees of freedom for inferential statistics (SE, CIs, <em>p</em>-values). Two common choices are “Kenward-Roger” and “Satterthwaite”. There is little empirical reason to vastly prefer one over the other (they each seem to perform a wee bit bitter under different conditions).</p>
+<p>In <code>emmeans</code>, the Kenward-Roger degrees of freedom are the default. For Satterthwaite, use the <code>lmer.df</code> argument:</p>
+<div class="sourceCode" id="cb469"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb469-1"><a href="lmm.html#cb469-1"></a>fit.emm &lt;-<span class="st"> </span><span class="kw">emmeans</span>(m1, </span>
+<span id="cb469-2"><a href="lmm.html#cb469-2"></a>                   <span class="dt">specs=</span><span class="kw">c</span>(<span class="st">&quot;vermetids&quot;</span>, <span class="st">&quot;sediment&quot;</span>),</span>
+<span id="cb469-3"><a href="lmm.html#cb469-3"></a>                   <span class="dt">lmer.df =</span> <span class="st">&quot;satterthwaite&quot;</span>)</span>
+<span id="cb469-4"><a href="lmm.html#cb469-4"></a><span class="kw">summary</span>(<span class="kw">contrast</span>(fit.emm, </span>
+<span id="cb469-5"><a href="lmm.html#cb469-5"></a>                 <span class="dt">method =</span> <span class="st">&quot;revpairwise&quot;</span>, </span>
+<span id="cb469-6"><a href="lmm.html#cb469-6"></a>                 <span class="dt">simple =</span> <span class="st">&quot;each&quot;</span>,</span>
+<span id="cb469-7"><a href="lmm.html#cb469-7"></a>                 <span class="dt">combine =</span> <span class="ot">TRUE</span>,</span>
+<span id="cb469-8"><a href="lmm.html#cb469-8"></a>                 <span class="dt">adjust=</span><span class="st">&quot;none&quot;</span>),</span>
+<span id="cb469-9"><a href="lmm.html#cb469-9"></a>        <span class="dt">infer=</span><span class="kw">c</span>(<span class="ot">TRUE</span>, <span class="ot">TRUE</span>))</span></code></pre></div>
+<pre><code>##  sediment vermetids contrast           estimate    SE   df lower.CL
+##  control  .         present - absent    0.00466 0.209 22.9   -0.428
+##  addition .         present - absent   -0.76889 0.216 23.5   -1.215
+##  .        absent    addition - control  0.28520 0.216 23.5   -0.161
+##  .        present   addition - control -0.48834 0.209 22.9   -0.921
+##  upper.CL t.ratio p.value
+##    0.4374  0.022  0.9824 
+##   -0.3226 -3.559  0.0016 
+##    0.7315  1.320  0.1994 
+##   -0.0556 -2.335  0.0287 
 ## 
-## Response: Resp
-##           Sum Sq Df F value    Pr(&gt;F)    
-## Temp      52.711  1 16.0173 0.0007624 ***
-## CO2       18.411  1  5.5946 0.0288072 *  
-## Temp:CO2   9.204  1  2.7970 0.1108298    
-## Residuals 62.527 19                      
-## ---
-## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
-<div class="sourceCode" id="cb456"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb456-1"><a href="anova-tables.html#cb456-1"></a>urchin.t2 &lt;-<span class="st"> </span><span class="kw">lm</span>(Resp <span class="op">~</span><span class="st"> </span>Temp <span class="op">+</span><span class="st"> </span>CO2, <span class="dt">data=</span>urchin_unbalanced)</span>
-<span id="cb456-2"><a href="anova-tables.html#cb456-2"></a><span class="kw">Anova</span>(urchin.t2, <span class="dt">type=</span><span class="st">&quot;2&quot;</span>)</span></code></pre></div>
-<pre><code>## Anova Table (Type II tests)
-## 
-## Response: Resp
-##           Sum Sq Df F value   Pr(&gt;F)   
-## Temp      52.711  1 14.6968 0.001038 **
-## CO2       18.411  1  5.1333 0.034725 * 
-## Residuals 71.731 20                    
-## ---
-## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
-<p>To get type III sum of squares, we need to specify effects coding for the model matrix. The safest way to do this is something like this</p>
-<div class="sourceCode" id="cb458"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb458-1"><a href="anova-tables.html#cb458-1"></a>con3 &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">Temp=</span>contr.sum, <span class="dt">CO2=</span>contr.sum) <span class="co"># change the contrasts coding for the model matrix</span></span>
-<span id="cb458-2"><a href="anova-tables.html#cb458-2"></a>urchin.t3 &lt;-<span class="st"> </span><span class="kw">lm</span>(Resp <span class="op">~</span><span class="st"> </span>Temp<span class="op">*</span>CO2, <span class="dt">data=</span>urchin_unbalanced, <span class="dt">contrasts=</span>con3)</span>
-<span id="cb458-3"><a href="anova-tables.html#cb458-3"></a><span class="kw">Anova</span>(urchin.t3, <span class="dt">type=</span><span class="st">&quot;3&quot;</span>)</span></code></pre></div>
-<pre><code>## Anova Table (Type III tests)
-## 
-## Response: Resp
-##              Sum Sq Df  F value    Pr(&gt;F)    
-## (Intercept) 2148.60  1 652.8939 3.559e-16 ***
-## Temp          54.71  1  16.6241 0.0006422 ***
-## CO2           17.15  1   5.2119 0.0341221 *  
-## Temp:CO2       9.20  1   2.7970 0.1108298    
-## Residuals     62.53 19                       
-## ---
-## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+## Degrees-of-freedom method: satterthwaite 
+## Confidence level used: 0.95</code></pre>
+<p>If you want to compute the coefficient table or an ANOVA, lmer does not output test statistics. To get test statistics, you have to load the library “lmerTest” (which automatically loads “lme4”). With <code>lmerTest</code>, the Satterthwaite degrees of freedom are the default. For Kenward-Roger, use the <code>ddf</code> argument in either <code>summary()</code> (for the coefficients) or <code>anova()</code> (for ANOVA).</p>
+<div class="sourceCode" id="cb471"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb471-1"><a href="lmm.html#cb471-1"></a><span class="kw">coef</span>(<span class="kw">summary</span>(m1)) <span class="co"># default is Satterthwaite</span></span></code></pre></div>
+<pre><code>##                                       Estimate Std. Error       df
+## (Intercept)                        1.268411111  0.1541680 30.42768
+## vermetidspresent                   0.004655556  0.2091398 22.94243
+## sedimentaddition                   0.285202305  0.2160126 23.53130
+## vermetidspresent:sedimentaddition -0.773546750  0.3006674 23.24638
+##                                       t value     Pr(&gt;|t|)
+## (Intercept)                        8.22745788 3.129900e-09
+## vermetidspresent                   0.02226049 9.824326e-01
+## sedimentaddition                   1.32030428 1.994327e-01
+## vermetidspresent:sedimentaddition -2.57276556 1.693404e-02</code></pre>
+<div class="sourceCode" id="cb473"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb473-1"><a href="lmm.html#cb473-1"></a><span class="kw">coef</span>(<span class="kw">summary</span>(m1, <span class="dt">ddf=</span><span class="st">&quot;Kenward-Roger&quot;</span>))</span></code></pre></div>
+<pre><code>##                                       Estimate Std. Error       df
+## (Intercept)                        1.268411111  0.1541680 30.43671
+## vermetidspresent                   0.004655556  0.2091398 23.03604
+## sedimentaddition                   0.285202305  0.2167687 23.62024
+## vermetidspresent:sedimentaddition -0.773546750  0.3012111 23.33762
+##                                       t value     Pr(&gt;|t|)
+## (Intercept)                        8.22745788 3.122797e-09
+## vermetidspresent                   0.02226049 9.824319e-01
+## sedimentaddition                   1.31569876 2.009032e-01
+## vermetidspresent:sedimentaddition -2.56812158 1.708128e-02</code></pre>
+<p>Compare the output from emmeans and <code>coef(summary())</code> using the different methods for computing the df.</p>
 
+</div>
 </div>
 </div>
 </div>
@@ -2256,8 +1710,8 @@ Residuals
           </div>
         </div>
       </div>
-<a href="models-for-two-or-more-categorical-x-factorial-designs.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="predictive-models.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="part-vii-expanding-the-linear-model.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="models-for-longitudinal-experiments-i-pre-post-designs.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -2289,7 +1743,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/rstudio/bookdown-demo/edit/master/chapters/42-anova.Rmd",
+"link": "https://github.com/rstudio/bookdown-demo/edit/master/chapters/55-lmm01-blocking.Rmd",
 "text": "Edit"
 },
 "history": {

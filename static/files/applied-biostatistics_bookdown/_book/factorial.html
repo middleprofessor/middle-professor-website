@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Chapter 1 Getting Started – R Projects and R Markdown | Elements of Statistical Modeling for Experimental Biology</title>
+  <title>Chapter 15 Linear models with two categorical \(X\) – Factorial designs (“two-way ANOVA”) | Elements of Statistical Modeling for Experimental Biology</title>
   <meta name="description" content="A first course in statistical modeling for experimental biology researchers" />
   <meta name="generator" content="bookdown 0.14 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Chapter 1 Getting Started – R Projects and R Markdown | Elements of Statistical Modeling for Experimental Biology" />
+  <meta property="og:title" content="Chapter 15 Linear models with two categorical \(X\) – Factorial designs (“two-way ANOVA”) | Elements of Statistical Modeling for Experimental Biology" />
   <meta property="og:type" content="book" />
   
   
@@ -16,7 +16,7 @@
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Chapter 1 Getting Started – R Projects and R Markdown | Elements of Statistical Modeling for Experimental Biology" />
+  <meta name="twitter:title" content="Chapter 15 Linear models with two categorical \(X\) – Factorial designs (“two-way ANOVA”) | Elements of Statistical Modeling for Experimental Biology" />
   
   <meta name="twitter:description" content="A first course in statistical modeling for experimental biology researchers" />
   
@@ -30,8 +30,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="part-i-getting-started.html"/>
-<link rel="next" href="analyzing-experimental-data-with-a-linear-model.html"/>
+<link rel="prev" href="covariates.html"/>
+<link rel="next" href="part-vii-expanding-the-linear-model.html"/>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -553,251 +553,1729 @@ code span.wa { color: #bf0303; } /* Warning */
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="getting-started-r-projects-and-r-markdown" class="section level1">
-<h1><span class="header-section-number">Chapter 1</span> Getting Started – R Projects and R Markdown</h1>
-<p>A typical statistical modeling project will consist of:</p>
+<div id="factorial" class="section level1">
+<h1><span class="header-section-number">Chapter 15</span> Linear models with two categorical <span class="math inline">\(X\)</span> – Factorial designs (“two-way ANOVA”)</h1>
+<div id="factorial-experiments" class="section level2">
+<h2><span class="header-section-number">15.1</span> Factorial experiments</h2>
+<p>A factorial experiment is one in which there are two or more factor variables (categorical <span class="math inline">\(X\)</span>) that are <strong>crossed</strong>, resulting in a group for each combination of the levels of each factor. Factorial experiments are used to estimate the <strong>interaction</strong> effect between factors. Interaction effects were introduced in Chapter xxx, Models with a added covariate. Remember the key to interactions – two factors interact when the effect of one factor depends on the level of the other factor. Interactions are ubiquitous, although sometimes they are small enough to ignore with little to no loss of understanding.</p>
+</div>
+<div id="example-1-maize-defense-response" class="section level2">
+<h2><span class="header-section-number">15.2</span> Example 1: Maize defense response</h2>
+<p>This chapter uses data from an experiment measuring the effect of two defense signals on the defense response in Maize plants. In response to herbivory from insects, maize, and other plants, release multiple, chemical signals into the air (chemicals that evaporate into the air are known as volatile compounds). These chemicals signal the plant, and neighboring plants, to secrete anti-herbivory hormones, including abcisic acid and jasmonic acid. The researchers investigated the effects of two volatile compounts, (Z)‐3‐hexenyl acetate (HAC) and Indole, on the defense response both each without the other and in combination.</p>
+<p>The example data come from Figure 1a, which is the effect of HAC and Indole on tissue concentrations of the hormone abcisic acid (ABA). The design is fully crossed with two factors, each with two levels: <span class="math inline">\(hac\)</span>, with levels “HAC-” and “HAC+”, and <span class="math inline">\(indole\)</span>, with levels (“Indole-” and “Indole+”). A good way to visualize the treatment combinations in a crossed design is with a <span class="math inline">\(m \times p\)</span> table showing all combinations of the <span class="math inline">\(m\)</span> levels of factor 1 (<span class="math inline">\(hac\)</span>) against the <span class="math inline">\(p\)</span> levels of factor 2 (<span class="math inline">\(indole\)</span>).</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+</th>
+<th style="text-align:left;">
+HAC-
+</th>
+<th style="text-align:left;">
+HAC+
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Indole-
+</td>
+<td style="text-align:left;">
+Control
+</td>
+<td style="text-align:left;">
+HAC
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Indole+
+</td>
+<td style="text-align:left;">
+Indole
+</td>
+<td style="text-align:left;">
+HAC+Indole
+</td>
+</tr>
+</tbody>
+</table>
+<div id="analysis" class="section level3">
+<h3><span class="header-section-number">15.2.1</span> Analysis</h3>
+<div id="examine-the-data" class="section level4">
+<h4><span class="header-section-number">15.2.1.1</span> Examine the data</h4>
+<div class="sourceCode" id="cb417"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb417-1"><a href="factorial.html#cb417-1"></a><span class="kw">qplot</span>(<span class="dt">x =</span> treat, <span class="dt">y =</span> aba, <span class="dt">data =</span> fig1)</span></code></pre></div>
+<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/unnamed-chunk-209-1.png" width="576" /></p>
+<p>Too few points for box plot. control variance is small. No obvious implausible points. fit with lm but recognize small n warning for any inference.</p>
+</div>
+<div id="fit-the-model-4" class="section level4">
+<h4><span class="header-section-number">15.2.1.2</span> Fit the model</h4>
+<div class="sourceCode" id="cb418"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb418-1"><a href="factorial.html#cb418-1"></a>m1 &lt;-<span class="st"> </span><span class="kw">lm</span>(aba <span class="op">~</span><span class="st"> </span>hac <span class="op">*</span><span class="st"> </span>indole, <span class="dt">data =</span> fig1)</span></code></pre></div>
+</div>
+<div id="model-check" class="section level4">
+<h4><span class="header-section-number">15.2.1.3</span> Model check</h4>
+<div class="sourceCode" id="cb419"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb419-1"><a href="factorial.html#cb419-1"></a><span class="kw">qqPlot</span>(m1, <span class="dt">id =</span> <span class="ot">FALSE</span>)</span></code></pre></div>
+<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/unnamed-chunk-210-1.png" width="576" /></p>
+<p>A plausible sample from a Normal distribution.</p>
+<div class="sourceCode" id="cb420"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb420-1"><a href="factorial.html#cb420-1"></a><span class="kw">spreadLevelPlot</span>(m1)</span></code></pre></div>
+<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/unnamed-chunk-211-1.png" width="576" /></p>
+<pre><code>## 
+## Suggested power transformation:  -0.7343415</code></pre>
+<p>A bit of increase in variance with mean.</p>
+</div>
+<div id="inference-from-the-model-2" class="section level4">
+<h4><span class="header-section-number">15.2.1.4</span> Inference from the model</h4>
+<div class="sourceCode" id="cb422"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb422-1"><a href="factorial.html#cb422-1"></a>m1_coef &lt;-<span class="st"> </span><span class="kw">cbind</span>(<span class="kw">coef</span>(<span class="kw">summary</span>(m1)),</span>
+<span id="cb422-2"><a href="factorial.html#cb422-2"></a>                 <span class="kw">confint</span>(m1))</span>
+<span id="cb422-3"><a href="factorial.html#cb422-3"></a>knitr<span class="op">::</span><span class="kw">kable</span>(m1_coef, <span class="dt">digits =</span> <span class="dv">3</span>)</span></code></pre></div>
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+</th>
+<th style="text-align:right;">
+Estimate
+</th>
+<th style="text-align:right;">
+Std. Error
+</th>
+<th style="text-align:right;">
+t value
+</th>
+<th style="text-align:right;">
+Pr(&gt;|t|)
+</th>
+<th style="text-align:right;">
+2.5 %
+</th>
+<th style="text-align:right;">
+97.5 %
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+(Intercept)
+</td>
+<td style="text-align:right;">
+33.401
+</td>
+<td style="text-align:right;">
+1.613
+</td>
+<td style="text-align:right;">
+20.702
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+29.981
+</td>
+<td style="text-align:right;">
+36.822
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+hac1
+</td>
+<td style="text-align:right;">
+-9.853
+</td>
+<td style="text-align:right;">
+1.613
+</td>
+<td style="text-align:right;">
+-6.107
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+-13.273
+</td>
+<td style="text-align:right;">
+-6.433
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+indole1
+</td>
+<td style="text-align:right;">
+-7.593
+</td>
+<td style="text-align:right;">
+1.613
+</td>
+<td style="text-align:right;">
+-4.706
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+-11.013
+</td>
+<td style="text-align:right;">
+-4.172
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+hac1:indole1
+</td>
+<td style="text-align:right;">
+3.205
+</td>
+<td style="text-align:right;">
+1.613
+</td>
+<td style="text-align:right;">
+1.986
+</td>
+<td style="text-align:right;">
+0.064
+</td>
+<td style="text-align:right;">
+-0.216
+</td>
+<td style="text-align:right;">
+6.625
+</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode" id="cb423"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb423-1"><a href="factorial.html#cb423-1"></a>m1_emm &lt;-<span class="st"> </span><span class="kw">emmeans</span>(m1, <span class="dt">specs =</span> <span class="kw">c</span>(<span class="st">&quot;hac&quot;</span>, <span class="st">&quot;indole&quot;</span>))</span>
+<span id="cb423-2"><a href="factorial.html#cb423-2"></a>knitr<span class="op">::</span><span class="kw">kable</span>(m1_emm, <span class="dt">digits =</span> <span class="dv">2</span>)</span></code></pre></div>
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+hac
+</th>
+<th style="text-align:left;">
+indole
+</th>
+<th style="text-align:right;">
+emmean
+</th>
+<th style="text-align:right;">
+SE
+</th>
+<th style="text-align:right;">
+df
+</th>
+<th style="text-align:right;">
+lower.CL
+</th>
+<th style="text-align:right;">
+upper.CL
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+HAC-
+</td>
+<td style="text-align:left;">
+Indole-
+</td>
+<td style="text-align:right;">
+19.16
+</td>
+<td style="text-align:right;">
+3.23
+</td>
+<td style="text-align:right;">
+16
+</td>
+<td style="text-align:right;">
+12.32
+</td>
+<td style="text-align:right;">
+26.00
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+HAC+
+</td>
+<td style="text-align:left;">
+Indole-
+</td>
+<td style="text-align:right;">
+32.46
+</td>
+<td style="text-align:right;">
+3.23
+</td>
+<td style="text-align:right;">
+16
+</td>
+<td style="text-align:right;">
+25.62
+</td>
+<td style="text-align:right;">
+39.30
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+HAC-
+</td>
+<td style="text-align:left;">
+Indole+
+</td>
+<td style="text-align:right;">
+27.94
+</td>
+<td style="text-align:right;">
+3.23
+</td>
+<td style="text-align:right;">
+16
+</td>
+<td style="text-align:right;">
+21.10
+</td>
+<td style="text-align:right;">
+34.78
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+HAC+
+</td>
+<td style="text-align:left;">
+Indole+
+</td>
+<td style="text-align:right;">
+54.05
+</td>
+<td style="text-align:right;">
+3.23
+</td>
+<td style="text-align:right;">
+16
+</td>
+<td style="text-align:right;">
+47.21
+</td>
+<td style="text-align:right;">
+60.89
+</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode" id="cb424"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb424-1"><a href="factorial.html#cb424-1"></a>m1_pairs &lt;-<span class="st"> </span><span class="kw">contrast</span>(m1_emm,</span>
+<span id="cb424-2"><a href="factorial.html#cb424-2"></a>                     <span class="dt">method =</span> <span class="st">&quot;revpairwise&quot;</span>,</span>
+<span id="cb424-3"><a href="factorial.html#cb424-3"></a>                     <span class="dt">simple =</span> <span class="st">&quot;each&quot;</span>,</span>
+<span id="cb424-4"><a href="factorial.html#cb424-4"></a>                     <span class="dt">combine =</span> <span class="ot">TRUE</span>,</span>
+<span id="cb424-5"><a href="factorial.html#cb424-5"></a>                     <span class="dt">adjust =</span> <span class="st">&quot;none&quot;</span>) <span class="op">%&gt;%</span></span>
+<span id="cb424-6"><a href="factorial.html#cb424-6"></a><span class="st">  </span><span class="kw">summary</span>(<span class="dt">infer =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb424-7"><a href="factorial.html#cb424-7"></a></span>
+<span id="cb424-8"><a href="factorial.html#cb424-8"></a>knitr<span class="op">::</span><span class="kw">kable</span>(m1_pairs, <span class="dt">digits =</span> <span class="dv">2</span>)</span></code></pre></div>
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+indole
+</th>
+<th style="text-align:left;">
+hac
+</th>
+<th style="text-align:left;">
+contrast
+</th>
+<th style="text-align:right;">
+estimate
+</th>
+<th style="text-align:right;">
+SE
+</th>
+<th style="text-align:right;">
+df
+</th>
+<th style="text-align:right;">
+lower.CL
+</th>
+<th style="text-align:right;">
+upper.CL
+</th>
+<th style="text-align:right;">
+t.ratio
+</th>
+<th style="text-align:right;">
+p.value
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Indole-
+</td>
+<td style="text-align:left;">
+.
+</td>
+<td style="text-align:left;">
+(HAC+) - (HAC-)
+</td>
+<td style="text-align:right;">
+13.30
+</td>
+<td style="text-align:right;">
+4.56
+</td>
+<td style="text-align:right;">
+16
+</td>
+<td style="text-align:right;">
+3.62
+</td>
+<td style="text-align:right;">
+22.97
+</td>
+<td style="text-align:right;">
+2.91
+</td>
+<td style="text-align:right;">
+0.01
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Indole+
+</td>
+<td style="text-align:left;">
+.
+</td>
+<td style="text-align:left;">
+(HAC+) - (HAC-)
+</td>
+<td style="text-align:right;">
+26.12
+</td>
+<td style="text-align:right;">
+4.56
+</td>
+<td style="text-align:right;">
+16
+</td>
+<td style="text-align:right;">
+16.44
+</td>
+<td style="text-align:right;">
+35.79
+</td>
+<td style="text-align:right;">
+5.72
+</td>
+<td style="text-align:right;">
+0.00
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+.
+</td>
+<td style="text-align:left;">
+HAC-
+</td>
+<td style="text-align:left;">
+(Indole+) - (Indole-)
+</td>
+<td style="text-align:right;">
+8.78
+</td>
+<td style="text-align:right;">
+4.56
+</td>
+<td style="text-align:right;">
+16
+</td>
+<td style="text-align:right;">
+-0.90
+</td>
+<td style="text-align:right;">
+18.45
+</td>
+<td style="text-align:right;">
+1.92
+</td>
+<td style="text-align:right;">
+0.07
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+.
+</td>
+<td style="text-align:left;">
+HAC+
+</td>
+<td style="text-align:left;">
+(Indole+) - (Indole-)
+</td>
+<td style="text-align:right;">
+21.59
+</td>
+<td style="text-align:right;">
+4.56
+</td>
+<td style="text-align:right;">
+16
+</td>
+<td style="text-align:right;">
+11.92
+</td>
+<td style="text-align:right;">
+31.27
+</td>
+<td style="text-align:right;">
+4.73
+</td>
+<td style="text-align:right;">
+0.00
+</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode" id="cb425"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb425-1"><a href="factorial.html#cb425-1"></a>m1_interaction &lt;-<span class="st"> </span><span class="kw">contrast</span>(m1_emm,</span>
+<span id="cb425-2"><a href="factorial.html#cb425-2"></a>                           <span class="dt">interaction =</span> <span class="kw">c</span>(<span class="st">&quot;revpairwise&quot;</span>),</span>
+<span id="cb425-3"><a href="factorial.html#cb425-3"></a>                           <span class="dt">by =</span> <span class="ot">NULL</span>) <span class="op">%&gt;%</span></span>
+<span id="cb425-4"><a href="factorial.html#cb425-4"></a><span class="st">  </span><span class="kw">summary</span>(<span class="dt">infer =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb425-5"><a href="factorial.html#cb425-5"></a></span>
+<span id="cb425-6"><a href="factorial.html#cb425-6"></a>m1_interaction <span class="op">%&gt;%</span></span>
+<span id="cb425-7"><a href="factorial.html#cb425-7"></a><span class="st">  </span><span class="kw">kable</span>(<span class="dt">digits =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">0</span>,<span class="dv">2</span>,<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>)) <span class="op">%&gt;%</span></span>
+<span id="cb425-8"><a href="factorial.html#cb425-8"></a><span class="st">  </span><span class="kw">kable_styling</span>()</span></code></pre></div>
+<table class="table" style="margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+hac_revpairwise
+</th>
+<th style="text-align:left;">
+indole_revpairwise
+</th>
+<th style="text-align:right;">
+estimate
+</th>
+<th style="text-align:right;">
+SE
+</th>
+<th style="text-align:right;">
+df
+</th>
+<th style="text-align:right;">
+lower.CL
+</th>
+<th style="text-align:right;">
+upper.CL
+</th>
+<th style="text-align:right;">
+t.ratio
+</th>
+<th style="text-align:right;">
+p.value
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+(HAC+) - (HAC-)
+</td>
+<td style="text-align:left;">
+(Indole+) - (Indole-)
+</td>
+<td style="text-align:right;">
+12.8
+</td>
+<td style="text-align:right;">
+6.45
+</td>
+<td style="text-align:right;">
+16
+</td>
+<td style="text-align:right;">
+-0.86
+</td>
+<td style="text-align:right;">
+26.5
+</td>
+<td style="text-align:right;">
+1.99
+</td>
+<td style="text-align:right;">
+0.064
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="plot-the-model-2" class="section level4">
+<h4><span class="header-section-number">15.2.1.5</span> Plot the model</h4>
+<p>xxx if interested in synergy plot the coefficients! this is what we want. When would we want to plot all simple effects?</p>
+<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/factorial-aba-plot-1.png" width="576" /></p>
+</div>
+</div>
+<div id="a-factorial-model-adds-an-interaction-effect-to-the-coefficients-table" class="section level3">
+<h3><span class="header-section-number">15.2.2</span> A factorial model adds an interaction effect to the coefficients table</h3>
+<p>A factorial design allows a researcher to estimate the interaction between two factors. An interaction is an effect between two variables in a linear model. The interaction effect is the coefficient <span class="math inline">\(beta_3\)</span> in the linear model</p>
+<p><span class="math display" id="eq:factorial-full">\[\begin{equation}
+aba = \beta_0 + \beta_1 hac_{HAC^+} + \beta_2 indole_{Indole^+} + \beta_3 hac_{HAC^+}:indole_{Indole^+} +\varepsilon
+\tag{15.1}
+\end{equation}\]</span></p>
+<p><span class="math inline">\(hac_{HAC^+}\)</span> and <span class="math inline">\(indole_{Indole^+}\)</span> are dummy-coded <strong>indicator variables</strong> indicating group membership. <span class="math inline">\(hac_{HAC^+} : indole_{Indole^+}\)</span> is a dummy-coded variable for the interaction between <span class="math inline">\(hac\)</span> and <span class="math inline">\(indole\)</span>. The value of this variable is the product of the two indicator variables in the interaction (<span class="math inline">\(hac_{HAC^+}\)</span> and <span class="math inline">\(indole_{Indole^+}\)</span>), which can be verified with the model matrix (which here, is computed from the subset of the data that includeds only the first two rows of each treatment combination)</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+</th>
+<th style="text-align:right;">
+(Intercept)
+</th>
+<th style="text-align:right;">
+hac1
+</th>
+<th style="text-align:right;">
+indole1
+</th>
+<th style="text-align:right;">
+hac1:indole1
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+2
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+6
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+-1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+-1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+7
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+-1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+-1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+11
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+-1
+</td>
+<td style="text-align:right;">
+-1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+12
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+-1
+</td>
+<td style="text-align:right;">
+-1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+16
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+-1
+</td>
+<td style="text-align:right;">
+-1
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+17
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+-1
+</td>
+<td style="text-align:right;">
+-1
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+</tbody>
+</table>
+<p>The coefficient table is</p>
+<table>
+<caption>
+<span id="tab:factorial-coef">Table 15.1: </span>Coefficient table of the factorial model
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;">
+</th>
+<th style="text-align:right;">
+Estimate
+</th>
+<th style="text-align:right;">
+Std. Error
+</th>
+<th style="text-align:right;">
+t value
+</th>
+<th style="text-align:right;">
+Pr(&gt;|t|)
+</th>
+<th style="text-align:right;">
+2.5 %
+</th>
+<th style="text-align:right;">
+97.5 %
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+(Intercept)
+</td>
+<td style="text-align:right;">
+33.40
+</td>
+<td style="text-align:right;">
+1.61
+</td>
+<td style="text-align:right;">
+20.7
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+29.98
+</td>
+<td style="text-align:right;">
+36.82
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+hac1
+</td>
+<td style="text-align:right;">
+-9.85
+</td>
+<td style="text-align:right;">
+1.61
+</td>
+<td style="text-align:right;">
+-6.1
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+-13.27
+</td>
+<td style="text-align:right;">
+-6.43
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+indole1
+</td>
+<td style="text-align:right;">
+-7.59
+</td>
+<td style="text-align:right;">
+1.61
+</td>
+<td style="text-align:right;">
+-4.7
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+-11.01
+</td>
+<td style="text-align:right;">
+-4.17
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+hac1:indole1
+</td>
+<td style="text-align:right;">
+3.20
+</td>
+<td style="text-align:right;">
+1.61
+</td>
+<td style="text-align:right;">
+2.0
+</td>
+<td style="text-align:right;">
+0.064
+</td>
+<td style="text-align:right;">
+-0.22
+</td>
+<td style="text-align:right;">
+6.62
+</td>
+</tr>
+</tbody>
+</table>
 <ol style="list-style-type: decimal">
-<li>importing data from Excel or text (.csv or .txt) files</li>
-<li>cleaning data</li>
-<li>initial exploratory plots</li>
-<li>analysis</li>
-<li>model checking</li>
-<li>generating plots</li>
-<li>generating tables</li>
-<li>writing text to describe the project, the methods, the analysis, and the interpretation of the results (plots and tables)</li>
+<li>The Intercept (<span class="math inline">\(b_0\)</span>) is the mean of the reference (HAC-/Indole-) group, and so the mean of the upper left cell (“Control”) in Table <a href="factorial.html#tab:factorial-coef">15.1</a>.</li>
+<li>The hacHAC+ coefficient (<span class="math inline">\(b_1\)</span>) is the estimate of the added HAC effect relative to the reference, and so is the mean of the lower left cell (“HAC”) minus the mean of the upper left cell (“Control”). Another way of stating this is, it is <strong>the effect of HAC when Indole is at its reference level</strong>.</li>
+<li>The indoleIndole+ coefficient (<span class="math inline">\(b_2\)</span>) is the estimate of the added Indole effect relative to the reference, and so is the mean of the upper right cell (“Indole”) minus the mean of the upper left cell (“Control”). Another way of stating this is, <strong>it is the effect of Indole when HAC is at its reference level</strong>.</li>
+<li>The hacHAC+:indoleIndole+ coefficient (<span class="math inline">\(b_3\)</span>) is the estimate of the <strong>interaction effect</strong>. If we added the HAC effect (<span class="math inline">\(b_1\)</span>) and the Indole effect (<span class="math inline">\(b_2\)</span>) to the Control mean (<span class="math inline">\(b_0\)</span>), we would get the expected mean of the “HAC+Indole” group <strong>if the effects were additive</strong>. The hacHAC+:indoleIndole+ effect (<span class="math inline">\(b_3\)</span>) is the additional bit that we need to get from this additive expectation to the modeled HAC+Indole mean (Figure <a href="#factorial-what-are-coefficients-plot"><strong>??</strong></a>). It is the difference between the mean of the bottom right cell (“HAC+Indole”) and the sum of the coefficients of the other three cells (<span class="math inline">\(b0\)</span>, <span class="math inline">\(b1\)</span>, <span class="math inline">\(b2\)</span>).</li>
 </ol>
-<p>The best practice for reproducible research is to use as few software tools for these steps as possible. Too many research projects are not reproducible because the data were cleaned in Excel, and then different parts of the data were separately imported into a GUI statistics software for analysis, and then output from the statistics software was transcribed to Excel to make a table. And other parts of the analysis are used to create a plot in some plotting software. And then the tables and plots are pasted into Microsoft Word to create a report. Any change at any step in this process will require the researcher to remember all the downstream parts that are dependent on the change and to re-do an analysis, or a table, or a plot. Or a team member on the project making asks about how a particular variable was transformed and</p>
-<p>R studio encourages best practices by creating a <strong>project folder</strong> that contains all project documents and implementing a version of markdown called R Markdown. An R Markdown document can explicitly link all parts of the workflow so that changes in earlier steps automatically flow into the later steps. At the completion of a project, a researcher can choose “run all” from the menu and the data are read, cleaned, analyzed, plotted, tabled, and put into a report with the text.</p>
-<div id="r-vs-r-studio" class="section level2">
-<h2><span class="header-section-number">1.1</span> R vs R Studio</h2>
-<p>R is a programming language. It runs under the hood. You never see it. To use R, you need another piece of software that provides a <strong>user interface</strong>. The software we will use for this is R Studio. R Studio is a slick (very slick) <strong>graphical user interface</strong> (GUI) for developing R projects.</p>
-</div>
-<div id="download-and-install-r-and-r-studio" class="section level2">
-<h2><span class="header-section-number">1.2</span> Download and install R and R studio</h2>
-<p><a href="https://cran.r-project.org" target="_blank">Download R for your OS</a></p>
-<p><a href="https://www.rstudio.com/products/rstudio/download/" target="_blank">Download R Studio Desktop</a></p>
-<p>If you need help installing R and R studio, here is <a href="https://www.youtube.com/watch?v=ZvPFKfNHBNQ" target="_blank">Andy Field’s Installing R and RStudio video tutorial</a>)</p>
-</div>
-<div id="open-r-studio-and-modify-the-workspace-preference" class="section level2">
-<h2><span class="header-section-number">1.3</span> Open R Studio and modify the workspace preference</h2>
-<ol style="list-style-type: decimal">
-<li>Open R Studio</li>
-<li>Click on R Studio &gt; Preferences to</li>
-<li>Click on General in the left menu</li>
-<li>diable “Restore .RData into workspace at startup”</li>
-<li>Click on the “Save workspace to .RData on exit” popup menu and choose “Never”</li>
-</ol>
-<p><img src="images/workspace.png" /><!-- --></p>
-<p>What’s going on here? The workspace contains the values of all the objects created by the R code that you’ve run in the working R session. Nothing good comes from this. You want to start each R session with a clean slate, a blank workspace. This means that when you start a new R session, you will need to re-run all your code chunks to start where you left-off at the close of your last R session. This seems tedious but, be warned, bad things will happen if you save the workspace from the last session and re-load this at startup. Trust me. Just don’t do it.</p>
-</div>
-<div id="if-you-didnt-modify-the-workspace-preferences-from-the-previous-section-go-back-and-do-it" class="section level2">
-<h2><span class="header-section-number">1.4</span> If you didn’t modify the workspace preferences from the previous section, go back and do it</h2>
-</div>
-<div id="r-markdown-in-a-nutshell" class="section level2">
-<h2><span class="header-section-number">1.5</span> R Markdown in a nutshell</h2>
-<p>In this text, we will write code to analyze data using R Markdown. R markdown is a version of Markdown. Markdown is tool for creating a document containing text (like microsoft Word), images, tables, and code that can be output, or <strong>knitted</strong>, to the three modern output formats: html (web pages), pdf (reports and documents), and microsoft word (okay, this isn’t modern but it is widely used).</p>
-<p>The R Markdown, or .Rmd, document contains three components: 1) a YAML header, which specifies formatting and styles for the knitted document, the code “chunks”, which are blocks of code that do something, and the space before and after the code chunks which contains text and any output images or tables from the code chunks.</p>
-</div>
-<div id="install-r-markdown" class="section level2">
-<h2><span class="header-section-number">1.6</span> Install R Markdown</h2>
-<p><a href="https://bookdown.org/yihui/rmarkdown/installation.html#installation" target="_blank">Directions for installing R Markdown</a></p>
-<p>R Markdown can output pdf files. The mechanism for this is to first create a LaTeX (“la-tek”) file. LaTeX is an amazing tool for creating professional pdf documents. You do not need PDF output for this text, but I encourage you to download and install the tinytex distribution, which was created especially for R Markdown in R Studio.</p>
-<p><a href="https://yihui.org/tinytex/">The tinytex distribution is here</a>.</p>
-</div>
-<div id="importing-packages" class="section level2">
-<h2><span class="header-section-number">1.7</span> Importing Packages</h2>
-<p>The R scripts you write will include functions in packages that are not included in Base R. These packages need to be downloaded from an internet server to your computer. You only need to do this once (although you have to redo it each time you update R). But, each time you start a new R session, you will need to load a package using the <code>library()</code> function. Now is a good time to import packages that we will use</p>
-<p>Open R Studio and choose the menu item “Tools” &gt; “Install Packages”. In the “packages” input box, insert the names of packages to install the package. The names can be separated by spaces or commas, for example “data.table, emmeans, ggplot2”. Make sure that “install dependencies” is clicked before you click “Install”. Packages that we will use in this book are</p>
-<ol style="list-style-type: decimal">
-<li>Import and wrangling packages</li>
-</ol>
-<ul>
-<li>devtools – we use this to install packages that are not on CRAN</li>
-<li>here – we use to read from and write to the correct folder</li>
-<li>janitor – we use the function clean_names from this package</li>
-<li>readxl – elegant importing from microsoft Excel spreadsheets</li>
-<li>data.table - improves functionality of data frames</li>
-</ul>
-<ol start="2" style="list-style-type: decimal">
-<li>analysis packages</li>
-</ol>
-<ul>
-<li>emmeans – we use this to compute modeled means and contrasts</li>
-<li>nlme – we use this for gls models</li>
-<li>lme4 – we use this for linear mixed models</li>
-<li>lmerTest – we use this for inference with linear mixed models</li>
-<li>glmmTMB – we use this for generalized linear models</li>
-<li>MASS – we will use glm.nb from this package</li>
-<li>afex – we use this for classic ANOVA</li>
-<li>car – we use this for model checking and for classic ANOVA</li>
-<li>DHARMa – we use this for model checking generlaized linear models</li>
-<li>insight – we use this to learn about models</li>
-</ul>
-<ol start="3" style="list-style-type: decimal">
-<li>graphing packages</li>
-</ol>
-<ul>
-<li>ggplot2 – we use this for plotting</li>
-<li>ggsci – we use this for the color palettes</li>
-<li>ggthemes – we use this for the colorblind palette</li>
-<li>ggpubr – we use this to make ggplots a bit easier</li>
-<li>ggforce – we use this for improved jitter plots</li>
-<li>dabestr – we use this to make several plot types</li>
-<li>cowplot – we use this to combine plots</li>
-</ul>
-<p>Once these are installed, you don’t need to do this again although there will be additional packages that you might install. You simply need to use the <code>library()</code> function at the start of a markdown script.</p>
-</div>
-<div id="create-an-r-studio-project-for-this-textbook" class="section level2">
-<h2><span class="header-section-number">1.8</span> Create an R Studio Project for this textbook</h2>
-<ol style="list-style-type: decimal">
-<li>Create a project folder within the Documents folder (Mac OS) or My Documents folder (Windows OS). All files associated with this book will reside inside this folder. The name of the project folder should be something meaningful, such as “Applied Biostatistics” or the name of your class (for students in my Applied Biostatistics class, this folder could be named “BIO_413”).</li>
-<li>Within the project folder, create new folders named
-<ol style="list-style-type: decimal">
-<li>“Rmd” – this is where your R markdown files are stored</li>
-<li>“R” – this is where additional R script files are stored</li>
-<li>“data” – this is where data that we download from public archives are stored</li>
-<li>“output” – this is where you will store fake data generated in this class</li>
-<li>“images” – this is where image files are stored</li>
-</ol></li>
-<li>Open R Studio and click the menu item File &gt; New Project…</li>
-<li>Choose “Existing Directory” and navigate to your project folder</li>
-<li>Choose “Create Project”</li>
-<li>Check that a “.Rproj” file is in your project folder</li>
-<li>Download and move the file <a href="https://raw.githubusercontent.com/middleprofessor/applied-biostats/master/R/ggplot_the_model.R">ggplot_the_model.R</a> into the R folder.</li>
-</ol>
-<div class="figure"><span id="fig:project-organization-image"></span>
-<img src="images/project_organization.png" alt="Project folder with the .Rproj file and all main folders located at the first level of the project"  />
+<p>An interaction is a <strong>non-additive effect</strong>. Think about this. Adding HAC alone increases ABA concentration by 13.3 ng per g FW. Adding Indole alone increases ABA concentration by 8.8 ng per g FW. If these effects were purely additive, then adding both HAC and Indole to the Control mean should result in a mean of 19.2 + 13.3 + 8.8 = 41.3 ng per g FW in the HAC+Indole group. The modeled mean is 54.1 ng per g FW. The difference observed - additive is 54.1 - 41.3 = 12.8 ng per g FW. Compare this to the interaction coefficient in the coefficient table.</p>
+<div class="figure"><span id="fig:factorial-what-are-coefficients-plot"></span>
+<img src="Walker-elementary-statistical-modeling-draft_files/figure-html/factorial-what-are-coefficients-plot-1.png" alt="Meaning of coefficients in factorial model. b0 (blue line) is the mean of the reference (Control). b1 (orange line) is the /HAC effect. Numerically, it is the mean of the HAC group minus the mean of the reference. b2 (green line) is the Indole effect. Numerically it is the mean of the Indole group minus the mean of the reference. The expected mean of the HAC+Indole group if HAC and Indole were additive is b0 + b1 + b2 (gray circle). b3 (purple line) is the interaction effect. Numerically, it is the observed mean of the HAC+Indole group minus the expected additive mean (gray circle)" width="576" />
 <p class="caption">
-Figure 1.1: Project folder with the .Rproj file and all main folders located at the first level of the project
+Figure 15.1: Meaning of coefficients in factorial model. b0 (blue line) is the mean of the reference (Control). b1 (orange line) is the /HAC effect. Numerically, it is the mean of the HAC group minus the mean of the reference. b2 (green line) is the Indole effect. Numerically it is the mean of the Indole group minus the mean of the reference. The expected mean of the HAC+Indole group if HAC and Indole were additive is b0 + b1 + b2 (gray circle). b3 (purple line) is the interaction effect. Numerically, it is the observed mean of the HAC+Indole group minus the expected additive mean (gray circle)
 </p>
 </div>
-<p>The project directory should look like that in Figure <a href="getting-started-r-projects-and-r-markdown.html#fig:project-organization-image">1.1</a>. Importantly, the project file (“Applied Biostatistics.Rproj”) and the main folders are all located at the first level within the project folder.</p>
-<p><strong>Bug alert</strong> If your .Rproj file is somewhere else (on the desktop, in the data folder, etc.), bad things will happen.</p>
 </div>
-<div id="working-on-a-project-in-a-nutshell" class="section level2">
-<h2><span class="header-section-number">1.9</span> Working on a project, in a nutshell</h2>
+<div id="the-biological-interpretation-of-an-interaction-effect" class="section level3">
+<h3><span class="header-section-number">15.2.3</span> The biological interpretation of an interaction effect</h3>
+<p>The biological reasons causing interaction effects are highly variable but lets consider how interactions <em>might</em> arise in the context of the ABA defense response to HAC and Indole. Additive effects (no interaction) may occur when combined treatments act independently of each other. This might occur in the Maize ABA response if the signaling path from HAC reception to ABA secretion and Indole reception to ABA secretion occur in different cells or by different signaling pathways and activity in either pathway has no influence on the other. Positive, or <strong>synergistic</strong> interaction effects may occur when combined treatments augment each other’s ability to affect the response. This could occur in the Maize ABA response if an active signaling path from one of the volatile compound to ABA secretion makes the signaling path from the other compound to ABA secretion more sensitive to that compound. Negative, or <strong>antagonistic</strong> interaction effects may occur when combined treatments interfere with each other’s ability to affect the response. This could occur in the Maize ABA response if an active signaling path from one of the volatile compound to ABA secretion inhibits the signaling path from the other compound to ABA secretion. Negative interaction effects could also occur if there is a simple threshold response and all it takes is either the HAC or the Indole signaling pathway to activate the response.</p>
+</div>
+<div id="conditional-and-marginal-means" class="section level3">
+<h3><span class="header-section-number">15.2.4</span> Conditional and marginal means</h3>
+<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<caption>
+<span id="tab:factorial-conditional-means">Table 15.2: </span>Conditional (white background) and marginal (color background) means from full factorial model fit to ABA data
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;">
+</th>
+<th style="text-align:right;">
+HAC-
+</th>
+<th style="text-align:right;">
+HAC+
+</th>
+<th style="text-align:right;">
+mean
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Indole-
+</td>
+<td style="text-align:right;background-color: white !important;">
+19.160
+</td>
+<td style="text-align:right;background-color: white !important;">
+32.458
+</td>
+<td style="text-align:right;background-color: #E69F00 !important;">
+25.809
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Indole+
+</td>
+<td style="text-align:right;background-color: white !important;">
+27.936
+</td>
+<td style="text-align:right;background-color: white !important;">
+54.052
+</td>
+<td style="text-align:right;background-color: #E69F00 !important;">
+40.994
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+mean
+</td>
+<td style="text-align:right;background-color: #56B4E9 !important;">
+23.548
+</td>
+<td style="text-align:right;background-color: #56B4E9 !important;">
+43.255
+</td>
+<td style="text-align:right;background-color: white !important;">
+</td>
+</tr>
+</tbody>
+</table>
+<p>The conditional means from model <a href="factorial.html#eq:factorial-full">(15.1)</a> are shown in the upper left <span class="math inline">\(2 \times 2\)</span> block (white background) of Table <a href="factorial.html#tab:factorial-conditional-means">15.2</a>. These means are conditional on the level of <span class="math inline">\(hac\)</span> and <span class="math inline">\(indole\)</span>. The values in the last row and column are the <strong>marginal means</strong>, which are the means of the associated row or column cells (these values are in the margins of the table). More generally, <em>marginal</em> refers to a statistic averaged across multiple levels of another variable. The marginal means of <span class="math inline">\(indole\)</span> (orange background) are the means of the <code>Indole+</code> and <code>Indole-</code> rows. The marginal means of <span class="math inline">\(hac\)</span> (blue background) are the means of the <code>HAC+</code> and <code>HAC-</code> columns.</p>
+</div>
+<div id="simple-conditional-effects" class="section level3">
+<h3><span class="header-section-number">15.2.5</span> Simple (conditional) effects</h3>
+<p>In a factorial experiment with crossed A and B factors, there is an effect of factor A (relative to the reference, or another level of factor A) for each of the <em>p</em> levels of factor B. And, there is an effect of factor B (relative to the reference, or another level of factor B) for each of the <em>m</em> levels of factor A.</p>
+<p>For the maize defense response experiment, there is an Indole effect at <code>hac = HAC-</code> and a different effect at <code>hac = HAC+</code>. Similarly, there is a HAC effect at <code>indole = Indole-</code> and a different effect at <code>indole = Indole+</code>. These effects, or <strong>contrasts</strong> (differences in modeled means), are called the <strong>simple effects</strong>. I prefer <strong>conditional effects</strong>, since the value of the effect is conditional on the level factor of the other factor.</p>
+<table class="table" style="margin-left: auto; margin-right: auto;">
+<caption>
+<span id="tab:unnamed-chunk-216">Table 15.3: </span>Conditional (or “simple”) effects of the factorial model.
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;">
+indole
+</th>
+<th style="text-align:left;">
+hac
+</th>
+<th style="text-align:left;">
+contrast
+</th>
+<th style="text-align:right;">
+estimate
+</th>
+<th style="text-align:right;">
+SE
+</th>
+<th style="text-align:right;">
+df
+</th>
+<th style="text-align:right;">
+t.ratio
+</th>
+<th style="text-align:right;">
+p.value
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Indole-
+</td>
+<td style="text-align:left;">
+.
+</td>
+<td style="text-align:left;">
+(HAC+) - (HAC-)
+</td>
+<td style="text-align:right;">
+13.3
+</td>
+<td style="text-align:right;">
+4.56
+</td>
+<td style="text-align:right;">
+16
+</td>
+<td style="text-align:right;">
+2.9
+</td>
+<td style="text-align:right;">
+0.01015
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Indole+
+</td>
+<td style="text-align:left;">
+.
+</td>
+<td style="text-align:left;">
+(HAC+) - (HAC-)
+</td>
+<td style="text-align:right;">
+26.1
+</td>
+<td style="text-align:right;">
+4.56
+</td>
+<td style="text-align:right;">
+16
+</td>
+<td style="text-align:right;">
+5.7
+</td>
+<td style="text-align:right;">
+0.00003
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+.
+</td>
+<td style="text-align:left;">
+HAC-
+</td>
+<td style="text-align:left;">
+(Indole+) - (Indole-)
+</td>
+<td style="text-align:right;">
+8.8
+</td>
+<td style="text-align:right;">
+4.56
+</td>
+<td style="text-align:right;">
+16
+</td>
+<td style="text-align:right;">
+1.9
+</td>
+<td style="text-align:right;">
+0.07245
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+.
+</td>
+<td style="text-align:left;">
+HAC+
+</td>
+<td style="text-align:left;">
+(Indole+) - (Indole-)
+</td>
+<td style="text-align:right;">
+21.6
+</td>
+<td style="text-align:right;">
+4.56
+</td>
+<td style="text-align:right;">
+16
+</td>
+<td style="text-align:right;">
+4.7
+</td>
+<td style="text-align:right;">
+0.00023
+</td>
+</tr>
+</tbody>
+</table>
+<p>The first two rows are the conditional effects of <span class="math inline">\(hac\)</span> in each of the levels of <span class="math inline">\(Indole\)</span>. The last two rows are the conditional effects of <span class="math inline">\(Indole\)</span> in each of the levels of <span class="math inline">\(hac\)</span>.</p>
+<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<caption>
+<span id="tab:factorial-simple-effects">Table 15.4: </span>Conditonal (“simple”) effects of HAC (orange background) and Indole (blue background) on ABA concentration. The conditional means of each combination of the factor levels are in the cells with the white background. The simple effect is the difference in the means of the associated row or column.
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;">
+</th>
+<th style="text-align:right;">
+HAC-
+</th>
+<th style="text-align:right;">
+HAC+
+</th>
+<th style="text-align:right;">
+simple
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Indole-
+</td>
+<td style="text-align:right;background-color: white !important;">
+19.160
+</td>
+<td style="text-align:right;background-color: white !important;">
+32.458
+</td>
+<td style="text-align:right;background-color: #E69F00 !important;">
+13.297
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Indole+
+</td>
+<td style="text-align:right;background-color: white !important;">
+27.936
+</td>
+<td style="text-align:right;background-color: white !important;">
+54.052
+</td>
+<td style="text-align:right;background-color: #E69F00 !important;">
+26.115
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+simple
+</td>
+<td style="text-align:right;background-color: #56B4E9 !important;">
+8.776
+</td>
+<td style="text-align:right;background-color: #56B4E9 !important;">
+21.594
+</td>
+<td style="text-align:right;background-color: white !important;">
+</td>
+</tr>
+</tbody>
+</table>
+<p>One way to understand conditional effects is by using the <span class="math inline">\(m \times p\)</span> table of treatment combination means (Table <a href="#factorial-simple-effects"><strong>??</strong></a>). The values in the right-side column (orange) are the conditional effects of HAC at each level of Indole. These values are the difference of the means in the associated row. For example, the conditional effect of <span class="math inline">\(hac\)</span> when <code>indole = Indole-</code> is 13.297 (first value in orange column). The values in the bottom row (blue) are the conditional effects of Indole at each level of HAC. These values are the difference of the means in the associated column. For example, the conditional effect of <span class="math inline">\(indole\)</span> when <code>hac = HAC+</code> is 21.594 (second value in blue row). Note that the first conditional effect for each factor has a corresponding row in the table of coefficients of the fit model.</p>
+</div>
+<div id="marginal-effects" class="section level3">
+<h3><span class="header-section-number">15.2.6</span> Marginal effects</h3>
+<p>The average of the conditional effects for a factor are the <strong>marginal effects</strong>, or the <strong>main effects</strong> in ANOVA terminology.</p>
+<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<caption>
+<span id="tab:factorial-main">Table 15.5: </span>Marginal effects of HAC (orange) and Indole (blue) on ABA concentration. Simple effects are in grey cells. The conditional means of each combination of the factor levels are in the white cells.
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;">
+</th>
+<th style="text-align:right;">
+HAC-
+</th>
+<th style="text-align:right;">
+HAC+
+</th>
+<th style="text-align:right;">
+simple
+</th>
+<th style="text-align:right;">
+marginal
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Indole-
+</td>
+<td style="text-align:right;background-color: white !important;">
+19.160
+</td>
+<td style="text-align:right;background-color: white !important;">
+32.458
+</td>
+<td style="text-align:right;background-color: rgba(134, 134, 134, 0.6) !important;">
+13.297
+</td>
+<td style="text-align:right;background-color: white !important;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Indole+
+</td>
+<td style="text-align:right;background-color: white !important;">
+27.936
+</td>
+<td style="text-align:right;background-color: white !important;">
+54.052
+</td>
+<td style="text-align:right;background-color: rgba(134, 134, 134, 0.6) !important;">
+26.115
+</td>
+<td style="text-align:right;background-color: white !important;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+simple
+</td>
+<td style="text-align:right;background-color: rgba(134, 134, 134, 0.6) !important;">
+8.776
+</td>
+<td style="text-align:right;background-color: rgba(134, 134, 134, 0.6) !important;">
+21.594
+</td>
+<td style="text-align:right;background-color: white !important;">
+</td>
+<td style="text-align:right;background-color: #56B4E9 !important;">
+15.185
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+marginal
+</td>
+<td style="text-align:right;background-color: white !important;">
+</td>
+<td style="text-align:right;background-color: white !important;">
+</td>
+<td style="text-align:right;background-color: #E69F00 !important;">
+19.706
+</td>
+<td style="text-align:right;background-color: white !important;">
+</td>
+</tr>
+</tbody>
+</table>
+<div style="background-color:#cccccc; text-align:left; vertical-align: middle; padding:20px 47px;">
+<p>Be careful with reporting marginal effects. In this example, the simple effects of HAC are very different for the <code>Indole-</code> and <code>Indole+</code> treatment levels and the mean of these two effects may not be especially relevant to the question that we are pursuing. If the simple effects of a factor are similar, then it may make more sense to report the marginal effect.</p>
+</div>
+</div>
+<div id="the-additive-model" class="section level3">
+<h3><span class="header-section-number">15.2.7</span> The additive model</h3>
+<p>Marginal effects can be useful for summarizing a general trend, but, like any average, might not be especially meaningful if there is large heterogeneity of the simple effects, which occurs when the interaction effect is large. The maize ABA response is a good example of marginal effects that would be highly misleading to present without further comment.</p>
+<p>If an interaction effect is small, then it can be useful to estimate the effects of the two factors as if the interaction were equal to zero.</p>
+<p><span class="math display" id="eq:factorial-reduced">\[\begin{equation}
+aba = \beta_0 + \beta_1 hac_{HAC^+} + \beta_2 indole_{Indole^+} + \varepsilon
+\tag{15.2}
+\end{equation}\]</span></p>
+<p>This is a <strong>reduced model</strong> because one of the terms has been removed from the model. This particular reduced model is often referred to as the <strong>additive model</strong>, since it excludes the interaction term, which is a <em>product</em> of other terms. In R, this model is</p>
+<div class="sourceCode" id="cb426"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb426-1"><a href="factorial.html#cb426-1"></a>m2 &lt;-<span class="st"> </span><span class="kw">lm</span>(aba <span class="op">~</span><span class="st"> </span>hac <span class="op">+</span><span class="st"> </span>indole, <span class="dt">data =</span> fig1)</span></code></pre></div>
+<p>The model coefficients of the additive model are</p>
+<table class="table" style="margin-left: auto; margin-right: auto;">
+<caption>
+<span id="tab:factorial-reduced-model">Table 15.6: </span>Model coefficients of additive model.
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;">
+</th>
+<th style="text-align:right;">
+Estimate
+</th>
+<th style="text-align:right;">
+Std. Error
+</th>
+<th style="text-align:right;">
+t value
+</th>
+<th style="text-align:right;">
+Pr(&gt;|t|)
+</th>
+<th style="text-align:right;">
+2.5 %
+</th>
+<th style="text-align:right;">
+97.5 %
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+(Intercept)
+</td>
+<td style="text-align:right;">
+33.40
+</td>
+<td style="text-align:right;">
+1.75
+</td>
+<td style="text-align:right;">
+19.1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+29.71
+</td>
+<td style="text-align:right;">
+37.09
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+hac1
+</td>
+<td style="text-align:right;">
+-9.85
+</td>
+<td style="text-align:right;">
+1.75
+</td>
+<td style="text-align:right;">
+-5.6
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+-13.54
+</td>
+<td style="text-align:right;">
+-6.17
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+indole1
+</td>
+<td style="text-align:right;">
+-7.59
+</td>
+<td style="text-align:right;">
+1.75
+</td>
+<td style="text-align:right;">
+-4.3
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+-11.28
+</td>
+<td style="text-align:right;">
+-3.91
+</td>
+</tr>
+</tbody>
+</table>
+<p>The conditional effects of the reduced model are</p>
+<table class="table" style="margin-left: auto; margin-right: auto;">
+<caption>
+<span id="tab:unnamed-chunk-218">Table 15.7: </span>Conditional effects of additive model.
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;">
+indole
+</th>
+<th style="text-align:left;">
+hac
+</th>
+<th style="text-align:left;">
+contrast
+</th>
+<th style="text-align:right;">
+estimate
+</th>
+<th style="text-align:right;">
+SE
+</th>
+<th style="text-align:right;">
+df
+</th>
+<th style="text-align:right;">
+lower.CL
+</th>
+<th style="text-align:right;">
+upper.CL
+</th>
+<th style="text-align:right;">
+t.ratio
+</th>
+<th style="text-align:right;">
+p.value
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Indole-
+</td>
+<td style="text-align:left;">
+.
+</td>
+<td style="text-align:left;">
+(HAC+) - (HAC-)
+</td>
+<td style="text-align:right;">
+19.70629
+</td>
+<td style="text-align:right;">
+3.5
+</td>
+<td style="text-align:right;">
+17
+</td>
+<td style="text-align:right;">
+12.33
+</td>
+<td style="text-align:right;">
+27.08
+</td>
+<td style="text-align:right;">
+5.64
+</td>
+<td style="text-align:right;">
+0.00003
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Indole+
+</td>
+<td style="text-align:left;">
+.
+</td>
+<td style="text-align:left;">
+(HAC+) - (HAC-)
+</td>
+<td style="text-align:right;">
+19.70629
+</td>
+<td style="text-align:right;">
+3.5
+</td>
+<td style="text-align:right;">
+17
+</td>
+<td style="text-align:right;">
+12.33
+</td>
+<td style="text-align:right;">
+27.08
+</td>
+<td style="text-align:right;">
+5.64
+</td>
+<td style="text-align:right;">
+0.00003
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+.
+</td>
+<td style="text-align:left;">
+HAC-
+</td>
+<td style="text-align:left;">
+(Indole+) - (Indole-)
+</td>
+<td style="text-align:right;">
+15.18518
+</td>
+<td style="text-align:right;">
+3.5
+</td>
+<td style="text-align:right;">
+17
+</td>
+<td style="text-align:right;">
+7.81
+</td>
+<td style="text-align:right;">
+22.56
+</td>
+<td style="text-align:right;">
+4.34
+</td>
+<td style="text-align:right;">
+0.00044
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+.
+</td>
+<td style="text-align:left;">
+HAC+
+</td>
+<td style="text-align:left;">
+(Indole+) - (Indole-)
+</td>
+<td style="text-align:right;">
+15.18518
+</td>
+<td style="text-align:right;">
+3.5
+</td>
+<td style="text-align:right;">
+17
+</td>
+<td style="text-align:right;">
+7.81
+</td>
+<td style="text-align:right;">
+22.56
+</td>
+<td style="text-align:right;">
+4.34
+</td>
+<td style="text-align:right;">
+0.00044
+</td>
+</tr>
+</tbody>
+</table>
+<p>The table shows that, in an additive model, all conditional effects for one factor are the same for each level of the other factor. This makes sense. If the model fit is additive, the interaction effect is set to zero by the model and there cannot be differences in conditional effects among the contrasts at each of the levels of the other factor (otherwise, there would be an interaction). Also note that the conditional effects xxx. Probably a better way of thinking about this is, it doesn’t make sense to compute or discuss conditional effects in an additive model. Instead, an additive model automatically computes marginal effects.</p>
+<p>Compare the table of marginal effects of the additive model to the table of marginal effects of the full model. The estimates are the same but the <em>t</em>-values and <em>p</em>-values differ because of different degrees of freedom (the full model estimates one more parameter, the interaction effect). The estimate is the same only if the design is balanced, which means that each combination of treatment levels has the same sample size <em>n</em>.</p>
+</div>
+<div id="reduce-models-for-the-right-reason" class="section level3">
+<h3><span class="header-section-number">15.2.8</span> Reduce models for the right reason</h3>
+<p>Unless one factor truly has no effect, there will always be an interaction. As stated above, interactions are ubiquitous. If an interaction is small, it can make sense to drop the interaction term and re-fit an additive model to estimate marginal effects in order to present a simplified picture of what is going on, with the recognition that these estimates are smoothing over the heterogenity in conditional (simple) effects that truly exist.</p>
+<p>Aided and abetted by statistics textbooks for biologists, there is a long history of researchers dropping an interaction effect because the interaction <span class="math inline">\(p&gt;0.05\)</span>. Don’t do this. It doesn’t make any sense.</p>
 <ol style="list-style-type: decimal">
-<li>Wake up, brush teeth, and open the project by double-clicking the .Rproj icon. Alternatively, open R Studio and then use the File &gt; Open Project to open the project. <strong>The name of the project will at the top-right of the R Studio window.</strong> We <em>always</em> want to work within an open project and the first workflow guarantees this. If we Open R Studio and then open a .Rmd file, we could be working within another project or no project at all. Bad things will happen.</li>
-<li>Run previous code chunks, in order (top to bottom). Write new code in code chunks and run. When we run code, we add R objects to the <strong>workspace</strong>. The workspace contains the values of all the objects created by the R code that has been run in the working session. When I save the .Rmd file, these values are not saved, only the text and code chunks in the R Markdown document. This is a feature, not a bug.</li>
-<li>When we are finished with the session, quit R Studio. If you get a popup window asking if you want to save the workspace, click “No”. Then immediately go back to the section “Open R Studio and modify the workspace preference” above and follow the directions.</li>
+<li>The <span class="math inline">\(p\)</span>-value is an arbitrary dichotomization of a continuous variable. Would it make sense to behave differently if the interaction were <span class="math inline">\(p=0.051\)</span> vs. <span class="math inline">\(p=0.049\)</span>, given that these two p-values are effectively identical?</li>
+<li>A <span class="math inline">\(p\)</span>-value is not evidence that an effect is zero, or “doesn’t exist”, or even that an effect is “trivially small”. This is because <span class="math inline">\(p\)</span>-values are a function of measurement error, sampling error, and sample size, in addition to effect size.</li>
 </ol>
 </div>
-<div id="create-an-r-markdown-file-for-this-chapter" class="section level2">
-<h2><span class="header-section-number">1.10</span> Create an R Markdown file for this Chapter</h2>
-<ol style="list-style-type: decimal">
-<li>The top-left icon in R Studio is a little plus sign within a green circle. Click this and choose “R Markdown” from the pull-down menu.</li>
-<li>Give the file a meaningful title like “Chapter 1 – Organization”</li>
-<li>Delete all text below the first code chunk, starting with the header “## R Markdown”</li>
-</ol>
-<div id="modify-the-yaml-header" class="section level3">
-<h3><span class="header-section-number">1.10.1</span> Modify the yaml header</h3>
-<p>Replace “output: html_document” in the yaml header with the following in order to creat a table of content (toc) on the left side of the page and to enable code folding</p>
-<pre><code>output:
-  html_document:
-    toc: true
-    toc_float: true
-    code_folding: hide</code></pre>
 </div>
-<div id="modify-the-setup-chunk" class="section level3">
-<h3><span class="header-section-number">1.10.2</span> Modify the “setup” chunk</h3>
-<p>The setup chunk should look something like this</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="getting-started-r-projects-and-r-markdown.html#cb2-1"></a>knitr<span class="op">::</span>opts_chunk<span class="op">$</span><span class="kw">set</span>(<span class="dt">echo =</span> <span class="ot">TRUE</span>)</span>
-<span id="cb2-2"><a href="getting-started-r-projects-and-r-markdown.html#cb2-2"></a></span>
-<span id="cb2-3"><a href="getting-started-r-projects-and-r-markdown.html#cb2-3"></a><span class="co"># wrangling packages</span></span>
-<span id="cb2-4"><a href="getting-started-r-projects-and-r-markdown.html#cb2-4"></a><span class="kw">library</span>(here)</span>
-<span id="cb2-5"><a href="getting-started-r-projects-and-r-markdown.html#cb2-5"></a><span class="kw">library</span>(janitor)</span>
-<span id="cb2-6"><a href="getting-started-r-projects-and-r-markdown.html#cb2-6"></a><span class="kw">library</span>(readxl)</span>
-<span id="cb2-7"><a href="getting-started-r-projects-and-r-markdown.html#cb2-7"></a><span class="kw">library</span>(data.table)</span>
-<span id="cb2-8"><a href="getting-started-r-projects-and-r-markdown.html#cb2-8"></a></span>
-<span id="cb2-9"><a href="getting-started-r-projects-and-r-markdown.html#cb2-9"></a><span class="co"># analysis packages</span></span>
-<span id="cb2-10"><a href="getting-started-r-projects-and-r-markdown.html#cb2-10"></a><span class="kw">library</span>(MASS) <span class="co"># negative binomial and some other functions</span></span>
-<span id="cb2-11"><a href="getting-started-r-projects-and-r-markdown.html#cb2-11"></a><span class="kw">library</span>(nlme) <span class="co"># gls and some lmm</span></span>
-<span id="cb2-12"><a href="getting-started-r-projects-and-r-markdown.html#cb2-12"></a></span>
-<span id="cb2-13"><a href="getting-started-r-projects-and-r-markdown.html#cb2-13"></a><span class="co"># graphing packages</span></span>
-<span id="cb2-14"><a href="getting-started-r-projects-and-r-markdown.html#cb2-14"></a><span class="kw">library</span>(ggsci) <span class="co"># color palettes</span></span>
-<span id="cb2-15"><a href="getting-started-r-projects-and-r-markdown.html#cb2-15"></a><span class="kw">library</span>(ggpubr) <span class="co"># publication quality plots</span></span>
-<span id="cb2-16"><a href="getting-started-r-projects-and-r-markdown.html#cb2-16"></a><span class="kw">library</span>(ggthemes) <span class="co"># colorblind palette</span></span>
-<span id="cb2-17"><a href="getting-started-r-projects-and-r-markdown.html#cb2-17"></a><span class="kw">library</span>(ggforce) <span class="co"># better jitter</span></span>
-<span id="cb2-18"><a href="getting-started-r-projects-and-r-markdown.html#cb2-18"></a><span class="kw">library</span>(cowplot) <span class="co"># combine plots</span></span>
-<span id="cb2-19"><a href="getting-started-r-projects-and-r-markdown.html#cb2-19"></a></span>
-<span id="cb2-20"><a href="getting-started-r-projects-and-r-markdown.html#cb2-20"></a><span class="co"># Okabe &amp; Ito palette</span></span>
-<span id="cb2-21"><a href="getting-started-r-projects-and-r-markdown.html#cb2-21"></a>pal_okabe_ito &lt;-<span class="st"> </span><span class="kw">colorblind_pal</span>()(<span class="dv">8</span>)[<span class="dv">2</span><span class="op">:</span><span class="dv">8</span>] <span class="co"># ggthemes</span></span>
-<span id="cb2-22"><a href="getting-started-r-projects-and-r-markdown.html#cb2-22"></a></span>
-<span id="cb2-23"><a href="getting-started-r-projects-and-r-markdown.html#cb2-23"></a><span class="co"># use here from the here package</span></span>
-<span id="cb2-24"><a href="getting-started-r-projects-and-r-markdown.html#cb2-24"></a>here &lt;-<span class="st"> </span>here<span class="op">::</span>here</span>
-<span id="cb2-25"><a href="getting-started-r-projects-and-r-markdown.html#cb2-25"></a></span>
-<span id="cb2-26"><a href="getting-started-r-projects-and-r-markdown.html#cb2-26"></a><span class="co"># load functions used by this text written by me</span></span>
-<span id="cb2-27"><a href="getting-started-r-projects-and-r-markdown.html#cb2-27"></a><span class="kw">source</span>(<span class="kw">here</span>(<span class="st">&quot;R/ggplot_the_model.R&quot;</span>))</span>
-<span id="cb2-28"><a href="getting-started-r-projects-and-r-markdown.html#cb2-28"></a></span>
-<span id="cb2-29"><a href="getting-started-r-projects-and-r-markdown.html#cb2-29"></a><span class="co"># use clean_names from the janitor package</span></span>
-<span id="cb2-30"><a href="getting-started-r-projects-and-r-markdown.html#cb2-30"></a>clean_names &lt;-<span class="st"> </span>janitor<span class="op">::</span>clean_names</span>
-<span id="cb2-31"><a href="getting-started-r-projects-and-r-markdown.html#cb2-31"></a></span>
-<span id="cb2-32"><a href="getting-started-r-projects-and-r-markdown.html#cb2-32"></a>data_folder &lt;-<span class="st"> &quot;data&quot;</span></span></code></pre></div>
-<p><code>echo = TRUE</code> tells knitr to display the code within a code chunk when the R markdown file is knitted. <code>knitr::opts_chunk$set(echo = TRUE)</code> sets <code>echo = TRUE</code> for all code chunks in the containing .Rmd file (not all R markdown files in the project!).</p>
-<p><code>pal_okabe_ito &lt;- colorblind_pal()(8)[2:8]</code> assigns the Okabe-Ito colorblind palette to the object <code>pal_okabe_ito</code>. We use this to specify colorblind-safe colors when generating plots.</p>
-<p><code>here &lt;- here::here</code> makes sure that <code>here</code> uses the function from the here package and not some other package. Huh? Let’s back up – R is an open source project and packages are written by independent programmers and scientists and not employees of some central company. When someone develops a package, they create functions that do stuff. Sometimes developers of different packages create functions that have the same name. There is a function name conflict if we load two packages with the same name. Our R session will use the function of the last loaded package as the function assigned to the name. If we want the name to be used with the function in the previously loaded package, then we need to either re-order the library() statements, or simply re-assign the name to the function that we want. This is what <code>here &lt;- here::here</code> does. This script takes the function <code>here</code> from the package “here” and assigns it to the object “here”!.</p>
-</div>
-<div id="create-a-fake-data-chunk" class="section level3">
-<h3><span class="header-section-number">1.10.3</span> Create a “fake-data” chunk</h3>
-<ol start="4" style="list-style-type: decimal">
-<li>Let’s play around with an R Markdown file. Create a new chunk and label it “fake-data”. Insert the following R script and then click the chunk’s run button</li>
-</ol>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="getting-started-r-projects-and-r-markdown.html#cb3-1"></a><span class="kw">set.seed</span>(<span class="dv">4</span>)</span>
-<span id="cb3-2"><a href="getting-started-r-projects-and-r-markdown.html#cb3-2"></a>n &lt;-<span class="st"> </span><span class="dv">10</span></span>
-<span id="cb3-3"><a href="getting-started-r-projects-and-r-markdown.html#cb3-3"></a>fake_data &lt;-<span class="st"> </span><span class="kw">data.table</span>(</span>
-<span id="cb3-4"><a href="getting-started-r-projects-and-r-markdown.html#cb3-4"></a>    <span class="dt">treatment =</span> <span class="kw">rep</span>(<span class="kw">c</span>(<span class="st">&quot;cn&quot;</span>, <span class="st">&quot;tr&quot;</span>), <span class="dt">each =</span> n),</span>
-<span id="cb3-5"><a href="getting-started-r-projects-and-r-markdown.html#cb3-5"></a>    <span class="dt">neutrophil_count_exp1 =</span> <span class="kw">rnegbin</span>(n<span class="op">*</span><span class="dv">2</span>, </span>
-<span id="cb3-6"><a href="getting-started-r-projects-and-r-markdown.html#cb3-6"></a>                                    <span class="dt">mu =</span> <span class="kw">rep</span>(<span class="kw">c</span>(<span class="dv">10</span>, <span class="dv">15</span>), <span class="dt">each =</span> n),</span>
-<span id="cb3-7"><a href="getting-started-r-projects-and-r-markdown.html#cb3-7"></a>                                    <span class="dt">theta =</span> <span class="dv">1</span>),</span>
-<span id="cb3-8"><a href="getting-started-r-projects-and-r-markdown.html#cb3-8"></a>    <span class="dt">neutrophil_count_exp2 =</span> <span class="kw">rnegbin</span>(n<span class="op">*</span><span class="dv">2</span>, </span>
-<span id="cb3-9"><a href="getting-started-r-projects-and-r-markdown.html#cb3-9"></a>                                    <span class="dt">mu =</span> <span class="kw">rep</span>(<span class="kw">c</span>(<span class="dv">10</span>, <span class="dv">20</span>), <span class="dt">each =</span> n),</span>
-<span id="cb3-10"><a href="getting-started-r-projects-and-r-markdown.html#cb3-10"></a>                                    <span class="dt">theta =</span> <span class="dv">1</span>)</span>
-<span id="cb3-11"><a href="getting-started-r-projects-and-r-markdown.html#cb3-11"></a>)</span>
-<span id="cb3-12"><a href="getting-started-r-projects-and-r-markdown.html#cb3-12"></a><span class="co"># View(fake_data)</span></span></code></pre></div>
-<p>This chunk creates fake neutrophil counts in two different experiments. The comment (#) sign before <code>View(fake_data)</code> “comments out” the line of code, so it is not run. View the data by highlighting <code>View(fake_data)</code> and choosing “Run selected line(s)” from the Run menu.</p>
-</div>
-<div id="create-a-plot-chunk" class="section level3">
-<h3><span class="header-section-number">1.10.4</span> Create a “plot” chunk</h3>
-<ol start="5" style="list-style-type: decimal">
-<li>Create a new chunk and label it “plot”. Insert the following R script and then click the chunk’s run button</li>
-</ol>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="getting-started-r-projects-and-r-markdown.html#cb4-1"></a>gg_<span class="dv">1</span> &lt;-<span class="st"> </span><span class="kw">ggstripchart</span>(<span class="dt">data =</span> fake_data,</span>
-<span id="cb4-2"><a href="getting-started-r-projects-and-r-markdown.html#cb4-2"></a>                <span class="dt">x =</span> <span class="st">&quot;treatment&quot;</span>,</span>
-<span id="cb4-3"><a href="getting-started-r-projects-and-r-markdown.html#cb4-3"></a>                <span class="dt">y =</span> <span class="st">&quot;neutrophil_count_exp1&quot;</span>,</span>
-<span id="cb4-4"><a href="getting-started-r-projects-and-r-markdown.html#cb4-4"></a>                <span class="dt">color =</span> <span class="st">&quot;treatment&quot;</span>,</span>
-<span id="cb4-5"><a href="getting-started-r-projects-and-r-markdown.html#cb4-5"></a>                <span class="dt">palette =</span> <span class="st">&quot;jco&quot;</span>,</span>
-<span id="cb4-6"><a href="getting-started-r-projects-and-r-markdown.html#cb4-6"></a>                <span class="dt">add =</span> <span class="st">&quot;mean_se&quot;</span>,</span>
-<span id="cb4-7"><a href="getting-started-r-projects-and-r-markdown.html#cb4-7"></a>                <span class="dt">legend =</span> <span class="st">&quot;none&quot;</span>) <span class="op">+</span></span>
-<span id="cb4-8"><a href="getting-started-r-projects-and-r-markdown.html#cb4-8"></a><span class="st">    </span><span class="kw">ylab</span>(<span class="st">&quot;Neutrophil Count (Exp. 1)&quot;</span>) <span class="op">+</span></span>
-<span id="cb4-9"><a href="getting-started-r-projects-and-r-markdown.html#cb4-9"></a><span class="st">  </span><span class="kw">stat_compare_means</span>(<span class="dt">method =</span> <span class="st">&quot;t.test&quot;</span>,</span>
-<span id="cb4-10"><a href="getting-started-r-projects-and-r-markdown.html#cb4-10"></a>                     <span class="dt">label.y =</span> <span class="dv">50</span>,</span>
-<span id="cb4-11"><a href="getting-started-r-projects-and-r-markdown.html#cb4-11"></a>                     <span class="dt">label =</span> <span class="st">&quot;p.format&quot;</span>) <span class="op">+</span></span>
-<span id="cb4-12"><a href="getting-started-r-projects-and-r-markdown.html#cb4-12"></a><span class="st">    </span><span class="ot">NULL</span></span>
-<span id="cb4-13"><a href="getting-started-r-projects-and-r-markdown.html#cb4-13"></a></span>
-<span id="cb4-14"><a href="getting-started-r-projects-and-r-markdown.html#cb4-14"></a>gg_<span class="dv">2</span>&lt;-<span class="st"> </span><span class="kw">ggstripchart</span>(<span class="dt">data =</span> fake_data,</span>
-<span id="cb4-15"><a href="getting-started-r-projects-and-r-markdown.html#cb4-15"></a>                <span class="dt">x =</span> <span class="st">&quot;treatment&quot;</span>,</span>
-<span id="cb4-16"><a href="getting-started-r-projects-and-r-markdown.html#cb4-16"></a>                <span class="dt">y =</span> <span class="st">&quot;neutrophil_count_exp2&quot;</span>,</span>
-<span id="cb4-17"><a href="getting-started-r-projects-and-r-markdown.html#cb4-17"></a>                <span class="dt">color =</span> <span class="st">&quot;treatment&quot;</span>,</span>
-<span id="cb4-18"><a href="getting-started-r-projects-and-r-markdown.html#cb4-18"></a>                <span class="dt">palette =</span> <span class="st">&quot;jco&quot;</span>,</span>
-<span id="cb4-19"><a href="getting-started-r-projects-and-r-markdown.html#cb4-19"></a>                <span class="dt">add =</span> <span class="st">&quot;mean_se&quot;</span>,</span>
-<span id="cb4-20"><a href="getting-started-r-projects-and-r-markdown.html#cb4-20"></a>                <span class="dt">legend =</span> <span class="st">&quot;none&quot;</span>) <span class="op">+</span></span>
-<span id="cb4-21"><a href="getting-started-r-projects-and-r-markdown.html#cb4-21"></a><span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;Neutrophil Count (Exp 2)&quot;</span>) <span class="op">+</span></span>
-<span id="cb4-22"><a href="getting-started-r-projects-and-r-markdown.html#cb4-22"></a><span class="st">  </span><span class="kw">stat_compare_means</span>(<span class="dt">method =</span> <span class="st">&quot;t.test&quot;</span>,</span>
-<span id="cb4-23"><a href="getting-started-r-projects-and-r-markdown.html#cb4-23"></a>                     <span class="dt">label.y =</span> <span class="dv">65</span>,</span>
-<span id="cb4-24"><a href="getting-started-r-projects-and-r-markdown.html#cb4-24"></a>                     <span class="dt">label =</span> <span class="st">&quot;p.format&quot;</span>) <span class="op">+</span></span>
-<span id="cb4-25"><a href="getting-started-r-projects-and-r-markdown.html#cb4-25"></a><span class="ot">NULL</span></span>
-<span id="cb4-26"><a href="getting-started-r-projects-and-r-markdown.html#cb4-26"></a></span>
-<span id="cb4-27"><a href="getting-started-r-projects-and-r-markdown.html#cb4-27"></a><span class="kw">plot_grid</span>(gg_<span class="dv">1</span>, gg_<span class="dv">2</span>, <span class="dt">labels =</span> <span class="st">&quot;AUTO&quot;</span>)</span></code></pre></div>
-<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/intro-plot-1.png" width="672" /></p>
-<p>Each plot shows the mean count for each group, the standard error of the mean count, and the <em>p</em>-value from a <em>t</em>-test. This statistical analysis and plot are typical of those found in experimental biology journals. This text will teach alterntatives that implement better practices.</p>
-</div>
-<div id="knit" class="section level3">
-<h3><span class="header-section-number">1.10.5</span> Knit</h3>
-<ol start="6" style="list-style-type: decimal">
-<li>Knit to an html file</li>
-<li>If you’ve installed tinytex (or some other LaTeX distribution), knit to a pdf file</li>
-<li>Knit to a word document</li>
-</ol>
+<div id="working-in-r-4" class="section level2">
+<h2><span class="header-section-number">15.3</span> Working in R</h2>
+<div id="model-formula" class="section level3">
+<h3><span class="header-section-number">15.3.1</span> Model formula</h3>
+<p>A full-factorial model with two factors is specified in the model formula as <code>y ~ A*B</code> where <span class="math inline">\(texttt{A}\)</span> is the first factor, and <span class="math inline">\(texttt{B}\)</span> is the second factor. R expands this formula to <code>y ~ 1 + A + B + A:B</code> where the colon indicates an interaction (multiplicative) effect.</p>
+<div class="sourceCode" id="cb427"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb427-1"><a href="factorial.html#cb427-1"></a>m1 &lt;-<span class="st"> </span><span class="kw">lm</span>(aba <span class="op">~</span><span class="st"> </span>hac <span class="op">*</span><span class="st"> </span>indole, <span class="dt">data =</span> fig1)</span>
+<span id="cb427-2"><a href="factorial.html#cb427-2"></a>m1_coef &lt;-<span class="st"> </span><span class="kw">coef</span>(<span class="kw">summary</span>(m1))</span>
+<span id="cb427-3"><a href="factorial.html#cb427-3"></a>  </span>
+<span id="cb427-4"><a href="factorial.html#cb427-4"></a>m1_coef <span class="op">%&gt;%</span></span>
+<span id="cb427-5"><a href="factorial.html#cb427-5"></a><span class="st">  </span><span class="kw">kable</span>(<span class="dt">digits =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">2</span>,<span class="dv">3</span>))</span></code></pre></div>
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+</th>
+<th style="text-align:right;">
+Estimate
+</th>
+<th style="text-align:right;">
+Std. Error
+</th>
+<th style="text-align:right;">
+t value
+</th>
+<th style="text-align:right;">
+Pr(&gt;|t|)
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+(Intercept)
+</td>
+<td style="text-align:right;">
+33.4
+</td>
+<td style="text-align:right;">
+1.61
+</td>
+<td style="text-align:right;">
+20.70
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+hac1
+</td>
+<td style="text-align:right;">
+-9.9
+</td>
+<td style="text-align:right;">
+1.61
+</td>
+<td style="text-align:right;">
+-6.11
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+indole1
+</td>
+<td style="text-align:right;">
+-7.6
+</td>
+<td style="text-align:right;">
+1.61
+</td>
+<td style="text-align:right;">
+-4.71
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+hac1:indole1
+</td>
+<td style="text-align:right;">
+3.2
+</td>
+<td style="text-align:right;">
+1.61
+</td>
+<td style="text-align:right;">
+1.99
+</td>
+<td style="text-align:right;">
+0.064
+</td>
+</tr>
+</tbody>
+</table>
+<p>The additive model is specified by the formula <code>y ~ A + B</code></p>
+<div class="sourceCode" id="cb428"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb428-1"><a href="factorial.html#cb428-1"></a>m2 &lt;-<span class="st"> </span><span class="kw">lm</span>(aba <span class="op">~</span><span class="st"> </span>hac <span class="op">+</span><span class="st"> </span>indole, <span class="dt">data =</span> fig1)</span>
+<span id="cb428-2"><a href="factorial.html#cb428-2"></a>m2_coef &lt;-<span class="st"> </span><span class="kw">coef</span>(<span class="kw">summary</span>(m2))</span>
+<span id="cb428-3"><a href="factorial.html#cb428-3"></a>  </span>
+<span id="cb428-4"><a href="factorial.html#cb428-4"></a>m2_coef <span class="op">%&gt;%</span></span>
+<span id="cb428-5"><a href="factorial.html#cb428-5"></a><span class="st">  </span><span class="kw">kable</span>(<span class="dt">digits =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">2</span>,<span class="dv">5</span>))</span></code></pre></div>
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+</th>
+<th style="text-align:right;">
+Estimate
+</th>
+<th style="text-align:right;">
+Std. Error
+</th>
+<th style="text-align:right;">
+t value
+</th>
+<th style="text-align:right;">
+Pr(&gt;|t|)
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+(Intercept)
+</td>
+<td style="text-align:right;">
+33.4
+</td>
+<td style="text-align:right;">
+1.75
+</td>
+<td style="text-align:right;">
+19.11
+</td>
+<td style="text-align:right;">
+0.00000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+hac1
+</td>
+<td style="text-align:right;">
+-9.9
+</td>
+<td style="text-align:right;">
+1.75
+</td>
+<td style="text-align:right;">
+-5.64
+</td>
+<td style="text-align:right;">
+0.00003
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+indole1
+</td>
+<td style="text-align:right;">
+-7.6
+</td>
+<td style="text-align:right;">
+1.75
+</td>
+<td style="text-align:right;">
+-4.34
+</td>
+<td style="text-align:right;">
+0.00044
+</td>
+</tr>
+</tbody>
+</table>
 
 </div>
 </div>
@@ -807,8 +2285,8 @@ Figure 1.1: Project folder with the .Rproj file and all main folders located at 
           </div>
         </div>
       </div>
-<a href="part-i-getting-started.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="analyzing-experimental-data-with-a-linear-model.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="covariates.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="part-vii-expanding-the-linear-model.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -840,7 +2318,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/rstudio/bookdown-demo/edit/master/chapters/04-setup.Rmd",
+"link": "https://github.com/rstudio/bookdown-demo/edit/master/chapters/34-factorial.Rmd",
 "text": "Edit"
 },
 "history": {
