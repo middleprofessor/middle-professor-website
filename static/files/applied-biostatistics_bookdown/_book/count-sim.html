@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Chapter 17 Linear models for count data – Generalized Linear Models I | Elements of Statistical Modeling for Experimental Biology</title>
+  <title>Chapter 19 Simulations – Count data (alternatives to a t-test) | Elements of Statistical Modeling for Experimental Biology</title>
   <meta name="description" content="A first course in statistical modeling for experimental biology researchers" />
   <meta name="generator" content="bookdown 0.14 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Chapter 17 Linear models for count data – Generalized Linear Models I | Elements of Statistical Modeling for Experimental Biology" />
+  <meta property="og:title" content="Chapter 19 Simulations – Count data (alternatives to a t-test) | Elements of Statistical Modeling for Experimental Biology" />
   <meta property="og:type" content="book" />
   
   
@@ -16,7 +16,7 @@
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Chapter 17 Linear models for count data – Generalized Linear Models I | Elements of Statistical Modeling for Experimental Biology" />
+  <meta name="twitter:title" content="Chapter 19 Simulations – Count data (alternatives to a t-test) | Elements of Statistical Modeling for Experimental Biology" />
   
   <meta name="twitter:description" content="A first course in statistical modeling for experimental biology researchers" />
   
@@ -30,8 +30,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="pre-post.html"/>
-<link rel="next" href="gls.html"/>
+<link rel="prev" href="gls.html"/>
+<link rel="next" href="appendix-1-getting-started-with-r.html"/>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -571,376 +571,993 @@ code span.wa { color: #bf0303; } /* Warning */
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="counts" class="section level1">
-<h1><span class="header-section-number">Chapter 17</span> Linear models for count data – Generalized Linear Models I</h1>
-<p>Biologists frequently count stuff, and design experiments to estimate the effects of different factors on these counts. For example, the effects of environmental mercury on clutch size in a bird, the effects of warming on parasite load in a fish, or the effect of exercise on RNA expression.</p>
-<p>Count data differ from data with normal error in many ways, including 1) counts are discrete, and can be zero or positive integers only, 2) counts tend to bunch up on the small side of the range, creating a distribution with a positive skew, 3) a sample of counts can have an abundance of zeros, and 4) the variance of counts increases with the mean (see Figure <a href="counts.html#fig:glm1-plot1">17.1</a> for some of these properties). Some count data can be approximated by a normal distribution and reasonably modeled with a linear model but more often, count data are modeled with <strong>Poisson distribution</strong> or <strong>negative binomial distribution</strong> using a <strong>generalized linear model</strong> (GLM). Poisson and negative binomial distributions are <strong>discrete probability distributions</strong> with two important properties: 1) the distribution contains only zero and positive integers and 2) the variance is a function of the mean. Back before modern computing and fast processors, count data were often analyzed by either <strong>transforming</strong> the response or by <strong>non-parametric hypothesis tests</strong>. One reason to prefer a statistical modeling approach with a GLM is that we can get interpretable parameter estimates. By contrast, both the analysis of transformed data and non-parametric hypothesis tests are really tools for computing “correct” <span class="math inline">\(p\)</span>-values.</p>
-<div class="figure"><span id="fig:glm1-plot1"></span>
-<img src="Walker-elementary-statistical-modeling-draft_files/figure-html/glm1-plot1-1.png" alt="Histogram of the count of a trematode parasite larvae in Control vs. Infected fish. Fish in the Infected treatment are infected with a tapeworm." width="576" />
-<p class="caption">
-Figure 17.1: Histogram of the count of a trematode parasite larvae in Control vs. Infected fish. Fish in the Infected treatment are infected with a tapeworm.
-</p>
+<div id="count-sim" class="section level1">
+<h1><span class="header-section-number">Chapter 19</span> Simulations – Count data (alternatives to a t-test)</h1>
+<div class="sourceCode" id="cb465"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb465-1"><a href="count-sim.html#cb465-1"></a><span class="kw">library</span>(here)</span>
+<span id="cb465-2"><a href="count-sim.html#cb465-2"></a><span class="kw">library</span>(data.table)</span>
+<span id="cb465-3"><a href="count-sim.html#cb465-3"></a><span class="kw">library</span>(readxl)</span>
+<span id="cb465-4"><a href="count-sim.html#cb465-4"></a></span>
+<span id="cb465-5"><a href="count-sim.html#cb465-5"></a><span class="kw">library</span>(MASS)</span>
+<span id="cb465-6"><a href="count-sim.html#cb465-6"></a><span class="kw">library</span>(lmPerm)</span>
+<span id="cb465-7"><a href="count-sim.html#cb465-7"></a><span class="kw">library</span>(nlme)</span>
+<span id="cb465-8"><a href="count-sim.html#cb465-8"></a><span class="kw">library</span>(glmmTMB)</span>
+<span id="cb465-9"><a href="count-sim.html#cb465-9"></a><span class="kw">library</span>(emmeans)</span>
+<span id="cb465-10"><a href="count-sim.html#cb465-10"></a></span>
+<span id="cb465-11"><a href="count-sim.html#cb465-11"></a><span class="kw">library</span>(knitr)</span>
+<span id="cb465-12"><a href="count-sim.html#cb465-12"></a><span class="kw">library</span>(kableExtra)</span>
+<span id="cb465-13"><a href="count-sim.html#cb465-13"></a></span>
+<span id="cb465-14"><a href="count-sim.html#cb465-14"></a>here &lt;-<span class="st"> </span>here<span class="op">::</span>here</span></code></pre></div>
+<div id="use-data-similar-to-figure-6f-from-example-1" class="section level2">
+<h2><span class="header-section-number">19.1</span> Use data similar to Figure 6f from Example 1</h2>
+<p>The simulated data are modeled to look like the <a href="violations.html#violations-6f">Figure 6f</a> data used in Example 1 of the Violations chapter.</p>
+<div class="sourceCode" id="cb466"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb466-1"><a href="count-sim.html#cb466-1"></a>data_folder &lt;-<span class="st"> &quot;data&quot;</span></span>
+<span id="cb466-2"><a href="count-sim.html#cb466-2"></a>data_from &lt;-<span class="st"> &quot;Exercise reduces inflammatory cell production and cardiovascular inflammation via instruction of hematopoietic progenitor cells&quot;</span></span>
+<span id="cb466-3"><a href="count-sim.html#cb466-3"></a>file_name &lt;-<span class="st"> &quot;41591_2019_633_MOESM8_ESM.xlsx&quot;</span></span>
+<span id="cb466-4"><a href="count-sim.html#cb466-4"></a>file_path &lt;-<span class="st"> </span><span class="kw">here</span>(data_folder, data_from, file_name)</span>
+<span id="cb466-5"><a href="count-sim.html#cb466-5"></a></span>
+<span id="cb466-6"><a href="count-sim.html#cb466-6"></a><span class="co"># assuming mice are independent and not same mouse used for all three treatment</span></span>
+<span id="cb466-7"><a href="count-sim.html#cb466-7"></a>melt_col_names &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Sedentary&quot;</span>, <span class="st">&quot;Exercise&quot;</span>)</span>
+<span id="cb466-8"><a href="count-sim.html#cb466-8"></a>fig6f &lt;-<span class="st"> </span><span class="kw">read_excel</span>(file_path,</span>
+<span id="cb466-9"><a href="count-sim.html#cb466-9"></a>                     <span class="dt">sheet =</span> <span class="st">&quot;Figure 6f&quot;</span>,</span>
+<span id="cb466-10"><a href="count-sim.html#cb466-10"></a>                     <span class="dt">range =</span> <span class="st">&quot;A7:B29&quot;</span>,</span>
+<span id="cb466-11"><a href="count-sim.html#cb466-11"></a>                     <span class="dt">col_names =</span> <span class="ot">TRUE</span>) <span class="op">%&gt;%</span></span>
+<span id="cb466-12"><a href="count-sim.html#cb466-12"></a><span class="st">  </span><span class="kw">data.table</span>() <span class="op">%&gt;%</span></span>
+<span id="cb466-13"><a href="count-sim.html#cb466-13"></a><span class="st">  </span><span class="kw">melt</span>(<span class="dt">measure.vars =</span> melt_col_names,</span>
+<span id="cb466-14"><a href="count-sim.html#cb466-14"></a>       <span class="dt">variable.name =</span> <span class="st">&quot;treatment&quot;</span>,</span>
+<span id="cb466-15"><a href="count-sim.html#cb466-15"></a>       <span class="dt">value.name =</span> <span class="st">&quot;neutrophils&quot;</span>) <span class="op">%&gt;%</span></span>
+<span id="cb466-16"><a href="count-sim.html#cb466-16"></a><span class="st">  </span><span class="kw">na.omit</span>() <span class="co"># danger!</span></span>
+<span id="cb466-17"><a href="count-sim.html#cb466-17"></a></span>
+<span id="cb466-18"><a href="count-sim.html#cb466-18"></a>treatment_levels &lt;-<span class="st"> </span>melt_col_names</span>
+<span id="cb466-19"><a href="count-sim.html#cb466-19"></a>fig6f[, treatment <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">factor</span>(treatment,</span>
+<span id="cb466-20"><a href="count-sim.html#cb466-20"></a>                            <span class="dt">levels =</span> treatment_levels)]</span>
+<span id="cb466-21"><a href="count-sim.html#cb466-21"></a></span>
+<span id="cb466-22"><a href="count-sim.html#cb466-22"></a><span class="co"># neutrophils is count/10^6</span></span>
+<span id="cb466-23"><a href="count-sim.html#cb466-23"></a>fig6f[, neutrophil_count <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">round</span>(neutrophils<span class="op">*</span><span class="dv">10</span><span class="op">^</span><span class="dv">6</span>, <span class="dv">0</span>)]</span>
+<span id="cb466-24"><a href="count-sim.html#cb466-24"></a></span>
+<span id="cb466-25"><a href="count-sim.html#cb466-25"></a><span class="co"># fig6f[1, neutrophil_count]</span></span>
+<span id="cb466-26"><a href="count-sim.html#cb466-26"></a><span class="co">#View(fig6f)</span></span></code></pre></div>
+<div class="sourceCode" id="cb467"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb467-1"><a href="count-sim.html#cb467-1"></a>m1 &lt;-<span class="st"> </span><span class="kw">glmmTMB</span>(neutrophil_count <span class="op">~</span><span class="st"> </span>treatment,</span>
+<span id="cb467-2"><a href="count-sim.html#cb467-2"></a>              <span class="dt">data =</span> fig6f,</span>
+<span id="cb467-3"><a href="count-sim.html#cb467-3"></a>              <span class="dt">family =</span> <span class="kw">nbinom2</span>(<span class="dt">link =</span> <span class="st">&quot;log&quot;</span>))</span>
+<span id="cb467-4"><a href="count-sim.html#cb467-4"></a>mu_cn_obs &lt;-<span class="st"> </span><span class="kw">exp</span>(<span class="kw">coef</span>(<span class="kw">summary</span>(m1))<span class="op">$</span>cond[<span class="st">&quot;(Intercept)&quot;</span>, <span class="st">&quot;Estimate&quot;</span>])</span>
+<span id="cb467-5"><a href="count-sim.html#cb467-5"></a>theta_obs &lt;-<span class="st"> </span><span class="kw">sigma</span>(m1) <span class="op">%&gt;%</span></span>
+<span id="cb467-6"><a href="count-sim.html#cb467-6"></a><span class="st">  </span><span class="kw">round</span>(<span class="dv">1</span>)</span>
+<span id="cb467-7"><a href="count-sim.html#cb467-7"></a></span>
+<span id="cb467-8"><a href="count-sim.html#cb467-8"></a><span class="co"># compare with glm.nb, which is used for the simulation</span></span>
+<span id="cb467-9"><a href="count-sim.html#cb467-9"></a>m2 &lt;-<span class="st"> </span><span class="kw">glm.nb</span>(neutrophil_count <span class="op">~</span><span class="st"> </span>treatment,</span>
+<span id="cb467-10"><a href="count-sim.html#cb467-10"></a>              <span class="dt">data =</span> fig6f)</span>
+<span id="cb467-11"><a href="count-sim.html#cb467-11"></a>mu_cn_obs</span></code></pre></div>
+<pre><code>## [1] 2793837</code></pre>
+<div class="sourceCode" id="cb469"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb469-1"><a href="count-sim.html#cb469-1"></a>m2<span class="op">$</span>theta</span></code></pre></div>
+<pre><code>## [1] 6.607988</code></pre>
 </div>
-<div id="the-generalized-linear-model" class="section level2">
-<h2><span class="header-section-number">17.1</span> The generalized linear model</h2>
-<p>As outlined in section [Assumptions for inference with statistical models] in Chapter 1, a common way that biological researchers think about a response variable is</p>
-<p><span class="math display" id="eq:spec1">\[\begin{align}
-y_i &amp;= \beta_0 + \beta_1 x_i + \varepsilon_i \\
-\varepsilon &amp;\sim N(0, \sigma)
-\tag{17.1}
-\end{align}\]</span></p>
-<p>That is, we can think of a response as the sum of some systematic part and “random errror”, which is a random draw from a normal distribution with mean zero and variance <span class="math inline">\(\sigma^2\)</span>. This way of thinking about the generation of the response is useful for linear models, and model checking linear models, but is not useful for generalized linear models or model checking generalized liner models. For example, if we want to model the number of parasites that have infected a fish using a Poisson distribution, the following is the <strong>wrong</strong> way to think about the statistical model</p>
-<p><span class="math display" id="eq:spec1-poisson">\[\begin{align}
-y_i &amp;= \beta_0 + \beta_1 x_i + \varepsilon_i\\
-\varepsilon &amp;\sim Poisson(\lambda)
-\tag{17.2}
-\end{align}\]</span></p>
-<p>That is, we should not think of a count as the sum of a systematic part and a random draw from a Poisson distribution. Why? Because it is the counts (or the counts conditional on <span class="math inline">\(X\)</span>) that are poisson distributed, not the residuals from the fit model.</p>
-<p>Thinking about the distribution of count data using model <a href="counts.html#eq:spec1-poisson">(17.2)</a> leads to absurd consequences. For example, if we set the mean of the Poisson “error” to zero (like with a normal distribution), then the error term for every observation would <em>have to</em> be zero (because the only way to get a mean of zero with non-negative integers is if every value is zero). Or, if the study is modeling the effect of a treatment on the counts (that is, the <span class="math inline">\(X\)</span> are dummy variables) then <span class="math inline">\(\beta_0\)</span> is the expected mean count of the control (or reference) group. But if we add non-zero Poisson error to this, then the mean of the control group would be larger than <span class="math inline">\(\beta_0\)</span>. This doesn’t make sense. And finally, equation <a href="counts.html#eq:spec1-poisson">(17.2)</a> generates a continuous response, instead of an integer, because <span class="math inline">\(\beta_0\)</span> and <span class="math inline">\(\beta_1\)</span> are continuous.</p>
-<p>A better way to think about the data generation for a linear model, because this naturally leads to the <em>correct</em> way to think about data generation for a generalized linear model, is</p>
-<p><span class="math display" id="eq:lm-spec2">\[\begin{align}
-y_i &amp;\sim N(\mu_i, \sigma)\\
-\mathrm{E}(Y|X) &amp;= \mu\\
-\mu_i &amp;= \beta_0 + \beta_1 x_i
-\tag{17.3}
-\end{align}\]</span></p>
-<p>That is, a response is a random draw from a normal distribution with mean <span class="math inline">\(mu\)</span> (not zero!) and variance <span class="math inline">\(\sigma^2\)</span>. Line 1 is the stochastic part of this specification. Line 3 is the systematic part.</p>
-<p>The specification of a generalized linear model has both stochastic and systematic parts but adds a third part, which is a <strong>link function</strong> connecting the stochastic and systematic parts.</p>
-<ol style="list-style-type: decimal">
-<li><strong>The stochastic part</strong>, which is a probability distribution from the exponential family (this is sometimes called the “random part”)
-<span class="math display">\[\begin{equation}
-y_i \sim \mathrm{Prob}(\mu_i)
-\end{equation}\]</span></li>
-<li><strong>the systematic part</strong>, which is a linear predictor (I like to think about this as the deterministic part)
-<span class="math display">\[\begin{equation}
-\eta=\mathbf{X}\boldsymbol{\beta}
-\end{equation}\]</span></li>
-<li>a <strong>link function</strong> connecting the two parts
-<span class="math display">\[\begin{equation}
-\eta_i = g(\mu_i)
-\end{equation}\]</span></li>
-</ol>
-<p><span class="math inline">\(\mu\)</span> (the Greek symbol mu) is the conditional mean (or expectation <span class="math inline">\(\mathrm{E}(Y|X)\)</span>) of the response on the <strong>response scale</strong> and <span class="math inline">\(\eta\)</span> (the Greek symbol eta) is the conditional mean of the response on the <strong>link scale</strong>. A GLM models the response with a distribution specified in the stochastic part. The probability distributions introduced in this chapter are the Poisson and Negative Binomial. The natural link function for the Poisson and Negative Binomial is the “log link”, <span class="math inline">\(\eta = log(\mu)\)</span>. More generally, while each distribution has a natural (or, “canonical”) link function, one can use alternatives. Given this definition of a generalized linear model, a linear model is a GLM with a normal distribution and an Identity link (<span class="math inline">\(\eta = \mu\)</span>).</p>
-<p>When modeling counts using the Poisson or negative binomial distributions with a log link, the link scale is linear, and so the effects are additive on the link scale, while the response scale is nonlinear (it is the exponent of the link scale), and so the effects are multiplicative on the response scale. If this doesn’t make sense now, an example is worked out below. The inverse of the link function backtransforms the parameters from the link scale back to the response scale. So, for example, a prediction on the response sale is <span class="math inline">\(\mathrm{exp}(\hat{\eta})\)</span> and a coefficient on the response scale is <span class="math inline">\(\mathrm{exp}(b_j)\)</span>.</p>
+<div id="functions" class="section level2">
+<h2><span class="header-section-number">19.2</span> Functions</h2>
+<div class="sourceCode" id="cb471"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb471-1"><a href="count-sim.html#cb471-1"></a>simulator &lt;-<span class="st"> </span><span class="cf">function</span>(<span class="dt">n_sim =</span> <span class="dv">1000</span>,</span>
+<span id="cb471-2"><a href="count-sim.html#cb471-2"></a>                      <span class="dt">n_levels =</span> <span class="kw">c</span>(<span class="dv">10</span>, <span class="dv">10</span>),</span>
+<span id="cb471-3"><a href="count-sim.html#cb471-3"></a>                      <span class="dt">treatment_levels =</span> <span class="kw">c</span>(<span class="st">&quot;cn&quot;</span>, <span class="st">&quot;tr&quot;</span>),</span>
+<span id="cb471-4"><a href="count-sim.html#cb471-4"></a>                      <span class="dt">mu_levels =</span> <span class="kw">c</span>(<span class="dv">10</span>, <span class="dv">10</span>),</span>
+<span id="cb471-5"><a href="count-sim.html#cb471-5"></a>                      <span class="dt">theta_levels =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">1</span>),</span>
+<span id="cb471-6"><a href="count-sim.html#cb471-6"></a>                      <span class="dt">sigma_levels =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">1</span>),</span>
+<span id="cb471-7"><a href="count-sim.html#cb471-7"></a>                      <span class="dt">normal =</span> <span class="ot">FALSE</span>,</span>
+<span id="cb471-8"><a href="count-sim.html#cb471-8"></a>                      <span class="dt">seed =</span> <span class="dv">1</span>){</span>
+<span id="cb471-9"><a href="count-sim.html#cb471-9"></a>  </span>
+<span id="cb471-10"><a href="count-sim.html#cb471-10"></a>  <span class="kw">set.seed</span>(seed)</span>
+<span id="cb471-11"><a href="count-sim.html#cb471-11"></a>  </span>
+<span id="cb471-12"><a href="count-sim.html#cb471-12"></a>  N &lt;-<span class="st"> </span><span class="kw">sum</span>(n_levels)</span>
+<span id="cb471-13"><a href="count-sim.html#cb471-13"></a>  </span>
+<span id="cb471-14"><a href="count-sim.html#cb471-14"></a>  mu_sim &lt;-<span class="st"> </span><span class="kw">rep</span>(mu_levels, n_levels)</span>
+<span id="cb471-15"><a href="count-sim.html#cb471-15"></a>  theta_sim &lt;-<span class="st"> </span><span class="kw">rep</span>(theta_levels, n_levels)</span>
+<span id="cb471-16"><a href="count-sim.html#cb471-16"></a>  sigma_sim &lt;-<span class="st"> </span><span class="kw">rep</span>(sigma_levels, n_levels)</span>
+<span id="cb471-17"><a href="count-sim.html#cb471-17"></a>  </span>
+<span id="cb471-18"><a href="count-sim.html#cb471-18"></a>  method_list &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;lm&quot;</span>, <span class="st">&quot;gls&quot;</span>, <span class="st">&quot;glm_nb&quot;</span>, <span class="st">&quot;glm_qp&quot;</span>, <span class="st">&quot;lmp&quot;</span>, <span class="st">&quot;mww&quot;</span>)</span>
+<span id="cb471-19"><a href="count-sim.html#cb471-19"></a>  p_values &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">as.numeric</span>(<span class="ot">NA</span>),</span>
+<span id="cb471-20"><a href="count-sim.html#cb471-20"></a>                     <span class="dt">nrow =</span> n_sim,</span>
+<span id="cb471-21"><a href="count-sim.html#cb471-21"></a>                     <span class="dt">ncol =</span> <span class="kw">length</span>(method_list)) <span class="op">%&gt;%</span></span>
+<span id="cb471-22"><a href="count-sim.html#cb471-22"></a><span class="st">    </span><span class="kw">data.table</span>()</span>
+<span id="cb471-23"><a href="count-sim.html#cb471-23"></a>  <span class="kw">colnames</span>(p_values) &lt;-<span class="st"> </span>method_list</span>
+<span id="cb471-24"><a href="count-sim.html#cb471-24"></a>  </span>
+<span id="cb471-25"><a href="count-sim.html#cb471-25"></a>  fake_counts &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">as.numeric</span>(<span class="ot">NA</span>),</span>
+<span id="cb471-26"><a href="count-sim.html#cb471-26"></a>                        <span class="dt">nrow =</span> N,</span>
+<span id="cb471-27"><a href="count-sim.html#cb471-27"></a>                        <span class="dt">ncol =</span> n_sim)</span>
+<span id="cb471-28"><a href="count-sim.html#cb471-28"></a>  </span>
+<span id="cb471-29"><a href="count-sim.html#cb471-29"></a>  <span class="cf">if</span>(normal <span class="op">==</span><span class="st"> </span><span class="ot">TRUE</span>){</span>
+<span id="cb471-30"><a href="count-sim.html#cb471-30"></a>    <span class="cf">for</span>(j <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>n_sim){</span>
+<span id="cb471-31"><a href="count-sim.html#cb471-31"></a>      fake_counts[, j] &lt;-<span class="st"> </span><span class="kw">rnorm</span>(N,</span>
+<span id="cb471-32"><a href="count-sim.html#cb471-32"></a>                                <span class="dt">mean =</span> mu_sim,</span>
+<span id="cb471-33"><a href="count-sim.html#cb471-33"></a>                                <span class="dt">sd =</span> sigma_sim) <span class="op">%&gt;%</span></span>
+<span id="cb471-34"><a href="count-sim.html#cb471-34"></a><span class="st">        </span><span class="kw">round</span>(<span class="dv">0</span>)</span>
+<span id="cb471-35"><a href="count-sim.html#cb471-35"></a>    }</span>
+<span id="cb471-36"><a href="count-sim.html#cb471-36"></a>  }<span class="cf">else</span>{</span>
+<span id="cb471-37"><a href="count-sim.html#cb471-37"></a>    <span class="cf">for</span>(j <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>n_sim){</span>
+<span id="cb471-38"><a href="count-sim.html#cb471-38"></a>      fake_counts[, j] &lt;-<span class="st"> </span><span class="kw">rnegbin</span>(N,</span>
+<span id="cb471-39"><a href="count-sim.html#cb471-39"></a>                                  <span class="dt">mu =</span> mu_sim,</span>
+<span id="cb471-40"><a href="count-sim.html#cb471-40"></a>                                  <span class="dt">theta =</span> theta_sim)</span>
+<span id="cb471-41"><a href="count-sim.html#cb471-41"></a>    }</span>
+<span id="cb471-42"><a href="count-sim.html#cb471-42"></a>  }</span>
+<span id="cb471-43"><a href="count-sim.html#cb471-43"></a>  </span>
+<span id="cb471-44"><a href="count-sim.html#cb471-44"></a>  <span class="cf">for</span>(j <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>n_sim){</span>
+<span id="cb471-45"><a href="count-sim.html#cb471-45"></a>    fake_data[, count <span class="op">:</span><span class="er">=</span><span class="st"> </span>fake_counts[,j]]</span>
+<span id="cb471-46"><a href="count-sim.html#cb471-46"></a>    m1 &lt;-<span class="st"> </span><span class="kw">lm</span>(count <span class="op">~</span><span class="st"> </span>treatment, <span class="dt">data =</span> fake_data)</span>
+<span id="cb471-47"><a href="count-sim.html#cb471-47"></a>    m2 &lt;-<span class="st"> </span><span class="kw">gls</span>(count <span class="op">~</span><span class="st"> </span>treatment,</span>
+<span id="cb471-48"><a href="count-sim.html#cb471-48"></a>              <span class="dt">data =</span> fake_data,</span>
+<span id="cb471-49"><a href="count-sim.html#cb471-49"></a>              <span class="dt">weights =</span> <span class="kw">varIdent</span>(<span class="dt">form =</span> <span class="op">~</span><span class="st"> </span><span class="dv">1</span> <span class="op">|</span><span class="st"> </span>treatment))</span>
+<span id="cb471-50"><a href="count-sim.html#cb471-50"></a>    m2_pairs &lt;-<span class="st"> </span><span class="kw">contrast</span>(<span class="kw">emmeans</span>(m2, <span class="dt">specs =</span> <span class="st">&quot;treatment&quot;</span>),</span>
+<span id="cb471-51"><a href="count-sim.html#cb471-51"></a>                         <span class="dt">method =</span> <span class="st">&quot;revpairwise&quot;</span>) <span class="op">%&gt;%</span></span>
+<span id="cb471-52"><a href="count-sim.html#cb471-52"></a><span class="st">      </span><span class="kw">summary</span>()</span>
+<span id="cb471-53"><a href="count-sim.html#cb471-53"></a>    m3 &lt;-<span class="st"> </span><span class="kw">glm.nb</span>(count <span class="op">~</span><span class="st"> </span>treatment, <span class="dt">data =</span> fake_data)</span>
+<span id="cb471-54"><a href="count-sim.html#cb471-54"></a>    m4 &lt;-<span class="st"> </span><span class="kw">glm</span>(count <span class="op">~</span><span class="st"> </span>treatment,</span>
+<span id="cb471-55"><a href="count-sim.html#cb471-55"></a>                 <span class="dt">data =</span> fake_data,</span>
+<span id="cb471-56"><a href="count-sim.html#cb471-56"></a>                 <span class="dt">family =</span> quasipoisson)</span>
+<span id="cb471-57"><a href="count-sim.html#cb471-57"></a>    <span class="co"># m3 &lt;- glmmTMB(count ~ treatment,</span></span>
+<span id="cb471-58"><a href="count-sim.html#cb471-58"></a>    <span class="co">#                data = fake_data,</span></span>
+<span id="cb471-59"><a href="count-sim.html#cb471-59"></a>    <span class="co">#                family = nbinom2(link = &quot;log&quot;))$cond</span></span>
+<span id="cb471-60"><a href="count-sim.html#cb471-60"></a>    <span class="co"># m4 &lt;- glmmTMB(count ~ treatment,</span></span>
+<span id="cb471-61"><a href="count-sim.html#cb471-61"></a>    <span class="co">#                data = fake_data,</span></span>
+<span id="cb471-62"><a href="count-sim.html#cb471-62"></a>    <span class="co">#                family = nbinom1(link = &quot;log&quot;))$cond</span></span>
+<span id="cb471-63"><a href="count-sim.html#cb471-63"></a>    m5 &lt;-<span class="st"> </span><span class="kw">lmp</span>(count <span class="op">~</span><span class="st"> </span>treatment,</span>
+<span id="cb471-64"><a href="count-sim.html#cb471-64"></a>              <span class="dt">data =</span> fake_data,</span>
+<span id="cb471-65"><a href="count-sim.html#cb471-65"></a>              <span class="dt">perm =</span> <span class="st">&quot;Exact&quot;</span>,</span>
+<span id="cb471-66"><a href="count-sim.html#cb471-66"></a>              <span class="dt">settings =</span> <span class="ot">FALSE</span>)</span>
+<span id="cb471-67"><a href="count-sim.html#cb471-67"></a>    m6 &lt;-<span class="st"> </span><span class="kw">wilcox.test</span>(count <span class="op">~</span><span class="st"> </span>treatment,</span>
+<span id="cb471-68"><a href="count-sim.html#cb471-68"></a>                      <span class="dt">data =</span> fake_data) </span>
+<span id="cb471-69"><a href="count-sim.html#cb471-69"></a>    p_values[j, lm <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">coef</span>(<span class="kw">summary</span>(m1))[<span class="dv">2</span>, <span class="st">&quot;Pr(&gt;|t|)&quot;</span>]]</span>
+<span id="cb471-70"><a href="count-sim.html#cb471-70"></a>    p_values[j, gls <span class="op">:</span><span class="er">=</span><span class="st"> </span>m2_pairs[<span class="dv">1</span>, <span class="st">&quot;p.value&quot;</span>]]</span>
+<span id="cb471-71"><a href="count-sim.html#cb471-71"></a>    p_values[j, glm_nb <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">coef</span>(<span class="kw">summary</span>(m3))[<span class="dv">2</span>, <span class="st">&quot;Pr(&gt;|z|)&quot;</span>]]</span>
+<span id="cb471-72"><a href="count-sim.html#cb471-72"></a>    p_values[j, glm_qp <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">coef</span>(<span class="kw">summary</span>(m4))[<span class="dv">2</span>, <span class="st">&quot;Pr(&gt;|t|)&quot;</span>]]</span>
+<span id="cb471-73"><a href="count-sim.html#cb471-73"></a>    p_values[j, lmp <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">coef</span>(<span class="kw">summary</span>(m5))[<span class="dv">2</span>, <span class="st">&quot;Pr(Prob)&quot;</span>]]</span>
+<span id="cb471-74"><a href="count-sim.html#cb471-74"></a>    p_values[j, mww <span class="op">:</span><span class="er">=</span><span class="st"> </span>m6<span class="op">$</span>p.value]</span>
+<span id="cb471-75"><a href="count-sim.html#cb471-75"></a>  }</span>
+<span id="cb471-76"><a href="count-sim.html#cb471-76"></a>  </span>
+<span id="cb471-77"><a href="count-sim.html#cb471-77"></a>  <span class="kw">return</span>(p_values)</span>
+<span id="cb471-78"><a href="count-sim.html#cb471-78"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb472"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb472-1"><a href="count-sim.html#cb472-1"></a>binder &lt;-<span class="st"> </span><span class="cf">function</span>(</span>
+<span id="cb472-2"><a href="count-sim.html#cb472-2"></a>  p_values,</span>
+<span id="cb472-3"><a href="count-sim.html#cb472-3"></a>  sim_res,</span>
+<span id="cb472-4"><a href="count-sim.html#cb472-4"></a>  sim_i,</span>
+<span id="cb472-5"><a href="count-sim.html#cb472-5"></a>  n_levels_sim,</span>
+<span id="cb472-6"><a href="count-sim.html#cb472-6"></a>  mu_levels_sim,</span>
+<span id="cb472-7"><a href="count-sim.html#cb472-7"></a>  theta_levels_sim,</span>
+<span id="cb472-8"><a href="count-sim.html#cb472-8"></a>  sigma_levels_sim,</span>
+<span id="cb472-9"><a href="count-sim.html#cb472-9"></a>  normal_sim){</span>
+<span id="cb472-10"><a href="count-sim.html#cb472-10"></a>  </span>
+<span id="cb472-11"><a href="count-sim.html#cb472-11"></a>  sim_table &lt;-<span class="st"> </span><span class="kw">data.table</span>(</span>
+<span id="cb472-12"><a href="count-sim.html#cb472-12"></a>    <span class="dt">sim =</span> sim_i,</span>
+<span id="cb472-13"><a href="count-sim.html#cb472-13"></a>    <span class="dt">n_sim =</span> n_sim_i,</span>
+<span id="cb472-14"><a href="count-sim.html#cb472-14"></a>    <span class="dt">n1 =</span> n_levels_sim[<span class="dv">1</span>],</span>
+<span id="cb472-15"><a href="count-sim.html#cb472-15"></a>    <span class="dt">n2 =</span> n_levels_sim[<span class="dv">2</span>],</span>
+<span id="cb472-16"><a href="count-sim.html#cb472-16"></a>    <span class="dt">n =</span> <span class="kw">ifelse</span>(n_levels_sim[<span class="dv">1</span>] <span class="op">==</span><span class="st"> </span>n_levels_sim[<span class="dv">2</span>],</span>
+<span id="cb472-17"><a href="count-sim.html#cb472-17"></a>               <span class="st">&quot;=&quot;</span>,</span>
+<span id="cb472-18"><a href="count-sim.html#cb472-18"></a>               <span class="st">&quot;!=&quot;</span>),</span>
+<span id="cb472-19"><a href="count-sim.html#cb472-19"></a>    <span class="dt">mu1 =</span> mu_levels_sim[<span class="dv">1</span>],</span>
+<span id="cb472-20"><a href="count-sim.html#cb472-20"></a>    <span class="dt">mu2 =</span> mu_levels_sim[<span class="dv">2</span>],</span>
+<span id="cb472-21"><a href="count-sim.html#cb472-21"></a>    <span class="dt">type =</span> <span class="kw">ifelse</span>(mu_levels_sim[<span class="dv">1</span>] <span class="op">==</span><span class="st"> </span>mu_levels_sim[<span class="dv">2</span>],</span>
+<span id="cb472-22"><a href="count-sim.html#cb472-22"></a>                  <span class="st">&quot;type 1&quot;</span>,</span>
+<span id="cb472-23"><a href="count-sim.html#cb472-23"></a>                  <span class="st">&quot;power&quot;</span>),</span>
+<span id="cb472-24"><a href="count-sim.html#cb472-24"></a>    <span class="dt">theta1 =</span> theta_levels_sim[<span class="dv">1</span>],</span>
+<span id="cb472-25"><a href="count-sim.html#cb472-25"></a>    <span class="dt">theta2 =</span> theta_levels_sim[<span class="dv">2</span>],</span>
+<span id="cb472-26"><a href="count-sim.html#cb472-26"></a>    <span class="dt">sigma1 =</span> sigma_levels_sim[<span class="dv">1</span>],</span>
+<span id="cb472-27"><a href="count-sim.html#cb472-27"></a>    <span class="dt">sigma1 =</span> sigma_levels_sim[<span class="dv">2</span>],</span>
+<span id="cb472-28"><a href="count-sim.html#cb472-28"></a>    <span class="dt">normal =</span> normal_sim,</span>
+<span id="cb472-29"><a href="count-sim.html#cb472-29"></a>    sim_res    </span>
+<span id="cb472-30"><a href="count-sim.html#cb472-30"></a>  )</span>
+<span id="cb472-31"><a href="count-sim.html#cb472-31"></a>  </span>
+<span id="cb472-32"><a href="count-sim.html#cb472-32"></a>  p_values &lt;-<span class="st"> </span><span class="kw">rbind</span>(p_values, sim_table)</span>
+<span id="cb472-33"><a href="count-sim.html#cb472-33"></a>  <span class="kw">return</span>(p_values)</span>
+<span id="cb472-34"><a href="count-sim.html#cb472-34"></a>}</span></code></pre></div>
 </div>
-<div id="count-data-example-number-of-trematode-worm-larvae-in-eyes-of-threespine-stickleback-fish" class="section level2">
-<h2><span class="header-section-number">17.2</span> Count data example – number of trematode worm larvae in eyes of threespine stickleback fish</h2>
-<p>The example is an experiment measuring the effect of the parasitic tapeworm <em>Schistocephalus solidus</em> infection on the susceptibility of infection from a second parasite, the trematode <em>Diplostomum pseudospathaceum</em>, in the threespine stickleback fish <em>Gasterosteus aculeatus</em><a href="appendix-2-online-resources-for-getting-started-with-statistical-modeling-in-r.html#fn5" class="footnote-ref" id="fnref5"><sup>5</sup></a>. The treatment levels are “Control” (unexposed to the tapeworm), “Uninfected” " (exposed to the tapeworm but uninfected), “Infected LG” (exposed and infected with the low growth population of the tapeworm), and “Infected HG” (exposed and infected with the high growth population of tapeworm). The response is the number of trematode larvae counted in the eyes (right and left combined) of the fish. A histogram of the counts is shown in Figure <a href="counts.html#fig:glm1-plot1">17.1</a> for the control and Infected HG treatment levels.</p>
-<div id="modeling-strategy-1" class="section level3">
-<h3><span class="header-section-number">17.2.1</span> Modeling strategy</h3>
-<div style="background-color:#cccccc; text-align:left; vertical-align: middle; padding:20px 47px;">
-<p><strong>NHST blues</strong> – Students are often encouraged by textbooks, colleagues, or the literature to start the analysis by first “testing” assumptions with hypothesis tests – for example using a Shaprio-Wilks test of normality as a decision rule to decide if to use a parametric test such as a <span class="math inline">\(t\)</span>-test or ANOVA if the null hypothesis of normality is not rejected, or a non-parametric test such as a Mann-Whitney U test if the null hypothesis of normality is rejected. I advise against this, because 1) this pre-test filtering automatically invalidates the <span class="math inline">\(p\)</span>-value of the hypothesis test as it does not adjust for the filtering procedure, 2) real data are only approximately normal and as <span class="math inline">\(n\)</span> increses, a normality test will reject any real dataset, and 3) hypothesis tests are pretty robust to non-normality anyway.</p>
+<div id="simulations" class="section level2">
+<h2><span class="header-section-number">19.3</span> Simulations</h2>
+<div class="sourceCode" id="cb473"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb473-1"><a href="count-sim.html#cb473-1"></a>do_it &lt;-<span class="st"> </span><span class="ot">FALSE</span></span>
+<span id="cb473-2"><a href="count-sim.html#cb473-2"></a>p_values &lt;-<span class="st"> </span><span class="kw">data.table</span>(<span class="ot">NULL</span>)</span>
+<span id="cb473-3"><a href="count-sim.html#cb473-3"></a>sim_i &lt;-<span class="st"> </span><span class="dv">0</span></span>
+<span id="cb473-4"><a href="count-sim.html#cb473-4"></a>n_sim_i =<span class="st"> </span><span class="dv">4000</span></span></code></pre></div>
+<div id="type-i-pseudo-normal-distribution" class="section level3">
+<h3><span class="header-section-number">19.3.1</span> Type I, Pseudo-Normal distribution</h3>
+<div class="sourceCode" id="cb474"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb474-1"><a href="count-sim.html#cb474-1"></a>sim_i &lt;-<span class="st"> </span>sim_i <span class="op">+</span><span class="st"> </span><span class="dv">1</span></span>
+<span id="cb474-2"><a href="count-sim.html#cb474-2"></a>n_levels_sim &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">10</span>, <span class="dv">10</span>)</span>
+<span id="cb474-3"><a href="count-sim.html#cb474-3"></a>mu_levels_sim &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">1000</span>, <span class="dv">1000</span>)</span>
+<span id="cb474-4"><a href="count-sim.html#cb474-4"></a>theta_levels_sim &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="ot">NA</span>, <span class="ot">NA</span>) <span class="co"># not used</span></span>
+<span id="cb474-5"><a href="count-sim.html#cb474-5"></a>sigma_levels_sim &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">100</span>, <span class="dv">100</span>)</span>
+<span id="cb474-6"><a href="count-sim.html#cb474-6"></a>normal_sim &lt;-<span class="st"> </span><span class="ot">TRUE</span></span>
+<span id="cb474-7"><a href="count-sim.html#cb474-7"></a><span class="cf">if</span>(do_it <span class="op">==</span><span class="st"> </span><span class="ot">TRUE</span>){</span>
+<span id="cb474-8"><a href="count-sim.html#cb474-8"></a>  sim_res &lt;-<span class="st"> </span><span class="kw">simulator</span>(</span>
+<span id="cb474-9"><a href="count-sim.html#cb474-9"></a>    <span class="dt">n_sim =</span> n_sim_i,</span>
+<span id="cb474-10"><a href="count-sim.html#cb474-10"></a>    <span class="dt">n_levels =</span> n_levels_sim,</span>
+<span id="cb474-11"><a href="count-sim.html#cb474-11"></a>    <span class="dt">mu_levels =</span> mu_levels_sim,</span>
+<span id="cb474-12"><a href="count-sim.html#cb474-12"></a>    <span class="dt">theta_levels =</span> theta_levels_sim, <span class="co"># not used</span></span>
+<span id="cb474-13"><a href="count-sim.html#cb474-13"></a>    <span class="dt">sigma_levels =</span> sigma_levels_sim,</span>
+<span id="cb474-14"><a href="count-sim.html#cb474-14"></a>    <span class="dt">normal =</span> normal_sim</span>
+<span id="cb474-15"><a href="count-sim.html#cb474-15"></a>  )</span>
+<span id="cb474-16"><a href="count-sim.html#cb474-16"></a>  p_values &lt;-<span class="st"> </span><span class="kw">binder</span>(p_values,</span>
+<span id="cb474-17"><a href="count-sim.html#cb474-17"></a>                     sim_res,</span>
+<span id="cb474-18"><a href="count-sim.html#cb474-18"></a>                     sim_i,</span>
+<span id="cb474-19"><a href="count-sim.html#cb474-19"></a>                     n_levels_sim,</span>
+<span id="cb474-20"><a href="count-sim.html#cb474-20"></a>                     mu_levels_sim,</span>
+<span id="cb474-21"><a href="count-sim.html#cb474-21"></a>                     theta_levels_sim,</span>
+<span id="cb474-22"><a href="count-sim.html#cb474-22"></a>                     sigma_levels_sim,</span>
+<span id="cb474-23"><a href="count-sim.html#cb474-23"></a>                     normal_sim)</span>
+<span id="cb474-24"><a href="count-sim.html#cb474-24"></a><span class="co">#  apply(sim_res, 2, function(x) sum(x &lt; 0.05)/n_sim_i)</span></span>
+<span id="cb474-25"><a href="count-sim.html#cb474-25"></a>}</span></code></pre></div>
 </div>
-<p>Instead of testing assumptions of a model using formal hypothesis tests <em>before</em> fitting the model, a better strategy is to 1) fit a model, and then do 2) <strong>model checking</strong> using <strong>diagnostic plots</strong>, diagnostic statistics, and simulation.</p>
-<p>With these data, a researcher would typically fit a GLM with a Poisson or negative binomial distribution and log link. Here, I start with a linear model to illustrate the interpretation of diagnostic plots with non-normal data. I use the “linear model” specification (equation <a href="counts.html#eq:spec1">(17.1)</a>) because the diganostic plots for model checking a linear model use the residuals of the fit model.</p>
-<p><span class="math display" id="eq:worm-lm">\[\begin{align}
-Diplo\_intensity_i &amp;= \beta_0 + \beta_1 Uninfected_i + \beta_2 Infected\_LG_i + \beta_3 Infected\_HG_i + \varepsilon_i \\
-\varepsilon &amp;\sim N(0, \sigma)
-\tag{17.4}
-\end{align}\]</span></p>
+<div id="type-i-neg-binom-equal-n" class="section level3">
+<h3><span class="header-section-number">19.3.2</span> Type I, neg binom, equal n</h3>
+<div class="sourceCode" id="cb475"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb475-1"><a href="count-sim.html#cb475-1"></a>sim_i &lt;-<span class="st"> </span>sim_i <span class="op">+</span><span class="st"> </span><span class="dv">1</span></span>
+<span id="cb475-2"><a href="count-sim.html#cb475-2"></a>n_levels_sim &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">10</span>, <span class="dv">10</span>)</span>
+<span id="cb475-3"><a href="count-sim.html#cb475-3"></a>mu_levels_sim &lt;-<span class="st"> </span><span class="kw">c</span>(mu_cn_obs, mu_cn_obs)</span>
+<span id="cb475-4"><a href="count-sim.html#cb475-4"></a>theta_levels_sim &lt;-<span class="st"> </span><span class="kw">c</span>(theta_obs, theta_obs)</span>
+<span id="cb475-5"><a href="count-sim.html#cb475-5"></a>sigma_levels_sim &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="ot">NA</span>, <span class="ot">NA</span>) <span class="co"># not used</span></span>
+<span id="cb475-6"><a href="count-sim.html#cb475-6"></a>normal_sim &lt;-<span class="st"> </span><span class="ot">FALSE</span></span>
+<span id="cb475-7"><a href="count-sim.html#cb475-7"></a></span>
+<span id="cb475-8"><a href="count-sim.html#cb475-8"></a><span class="co"># fake_data has to be global for emmeans to run inside </span></span>
+<span id="cb475-9"><a href="count-sim.html#cb475-9"></a><span class="co"># a function</span></span>
+<span id="cb475-10"><a href="count-sim.html#cb475-10"></a>treatment_levels &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;cn&quot;</span>, <span class="st">&quot;tr&quot;</span>)</span>
+<span id="cb475-11"><a href="count-sim.html#cb475-11"></a>fake_data &lt;-<span class="st"> </span><span class="kw">data.table</span>(</span>
+<span id="cb475-12"><a href="count-sim.html#cb475-12"></a>  <span class="dt">treatment =</span> <span class="kw">factor</span>(<span class="kw">rep</span>(treatment_levels, n_levels_sim),</span>
+<span id="cb475-13"><a href="count-sim.html#cb475-13"></a>                     <span class="dt">levels =</span> treatment_levels)</span>
+<span id="cb475-14"><a href="count-sim.html#cb475-14"></a>)</span>
+<span id="cb475-15"><a href="count-sim.html#cb475-15"></a></span>
+<span id="cb475-16"><a href="count-sim.html#cb475-16"></a><span class="cf">if</span>(do_it <span class="op">==</span><span class="st"> </span><span class="ot">TRUE</span>){</span>
+<span id="cb475-17"><a href="count-sim.html#cb475-17"></a>  sim_res &lt;-<span class="st"> </span><span class="kw">simulator</span>(</span>
+<span id="cb475-18"><a href="count-sim.html#cb475-18"></a>    <span class="dt">n_sim =</span> n_sim_i,</span>
+<span id="cb475-19"><a href="count-sim.html#cb475-19"></a>    <span class="dt">n_levels =</span> n_levels_sim,</span>
+<span id="cb475-20"><a href="count-sim.html#cb475-20"></a>    <span class="dt">mu_levels =</span> mu_levels_sim,</span>
+<span id="cb475-21"><a href="count-sim.html#cb475-21"></a>    <span class="dt">theta_levels =</span> theta_levels_sim, <span class="co"># not used</span></span>
+<span id="cb475-22"><a href="count-sim.html#cb475-22"></a>    <span class="dt">sigma_levels =</span> sigma_levels_sim,</span>
+<span id="cb475-23"><a href="count-sim.html#cb475-23"></a>    <span class="dt">normal =</span> normal_sim</span>
+<span id="cb475-24"><a href="count-sim.html#cb475-24"></a>  )</span>
+<span id="cb475-25"><a href="count-sim.html#cb475-25"></a>  p_values &lt;-<span class="st"> </span><span class="kw">binder</span>(p_values,</span>
+<span id="cb475-26"><a href="count-sim.html#cb475-26"></a>                     sim_res,</span>
+<span id="cb475-27"><a href="count-sim.html#cb475-27"></a>                     sim_i,</span>
+<span id="cb475-28"><a href="count-sim.html#cb475-28"></a>                     n_levels_sim,</span>
+<span id="cb475-29"><a href="count-sim.html#cb475-29"></a>                     mu_levels_sim,</span>
+<span id="cb475-30"><a href="count-sim.html#cb475-30"></a>                     theta_levels_sim,</span>
+<span id="cb475-31"><a href="count-sim.html#cb475-31"></a>                     sigma_levels_sim,</span>
+<span id="cb475-32"><a href="count-sim.html#cb475-32"></a>                     normal_sim)</span>
+<span id="cb475-33"><a href="count-sim.html#cb475-33"></a><span class="co">#  apply(sim_res, 2, function(x) sum(x &lt; 0.05)/n_sim_i)</span></span>
+<span id="cb475-34"><a href="count-sim.html#cb475-34"></a>}</span></code></pre></div>
 </div>
-<div id="checking-the-model-i-a-normal-q-q-plot" class="section level3">
-<h3><span class="header-section-number">17.2.2</span> Checking the model I – a Normal Q-Q plot</h3>
-<p>Figure <a href="counts.html#fig:glm1-plot2">17.2</a>A shows a histogram of the residuals from the fit linear model. The plot shows that the residuals are clumped at the negative end of the range, which suggests that a model with a normally distributed conditional outcome (or normal error) is not well approximated.</p>
-<div class="figure"><span id="fig:glm1-plot2"></span>
-<img src="Walker-elementary-statistical-modeling-draft_files/figure-html/glm1-plot2-1.png" alt="Diagnostic plots of stickleback parasite data. A) Distribution of the residuals of the fit linear model. B) Normal Q-Q plot of the residuals of the fit linear model." width="576" />
-<p class="caption">
-Figure 17.2: Diagnostic plots of stickleback parasite data. A) Distribution of the residuals of the fit linear model. B) Normal Q-Q plot of the residuals of the fit linear model.
-</p>
+<div id="type-i-neg-binom-equal-n-small-theta" class="section level3">
+<h3><span class="header-section-number">19.3.3</span> Type I, neg binom, equal n, small theta</h3>
+<div class="sourceCode" id="cb476"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb476-1"><a href="count-sim.html#cb476-1"></a>sim_i &lt;-<span class="st"> </span>sim_i <span class="op">+</span><span class="st"> </span><span class="dv">1</span></span>
+<span id="cb476-2"><a href="count-sim.html#cb476-2"></a>n_levels_sim &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">10</span>, <span class="dv">10</span>)</span>
+<span id="cb476-3"><a href="count-sim.html#cb476-3"></a>mu_levels_sim &lt;-<span class="st"> </span><span class="kw">c</span>(mu_cn_obs, mu_cn_obs)</span>
+<span id="cb476-4"><a href="count-sim.html#cb476-4"></a>theta_levels_sim &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">1</span>)</span>
+<span id="cb476-5"><a href="count-sim.html#cb476-5"></a>sigma_levels_sim &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="ot">NA</span>, <span class="ot">NA</span>) <span class="co"># not used</span></span>
+<span id="cb476-6"><a href="count-sim.html#cb476-6"></a>normal_sim &lt;-<span class="st"> </span><span class="ot">FALSE</span></span>
+<span id="cb476-7"><a href="count-sim.html#cb476-7"></a></span>
+<span id="cb476-8"><a href="count-sim.html#cb476-8"></a><span class="co"># fake_data has to be global for emmeans to run inside </span></span>
+<span id="cb476-9"><a href="count-sim.html#cb476-9"></a><span class="co"># a function</span></span>
+<span id="cb476-10"><a href="count-sim.html#cb476-10"></a>treatment_levels &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;cn&quot;</span>, <span class="st">&quot;tr&quot;</span>)</span>
+<span id="cb476-11"><a href="count-sim.html#cb476-11"></a>fake_data &lt;-<span class="st"> </span><span class="kw">data.table</span>(</span>
+<span id="cb476-12"><a href="count-sim.html#cb476-12"></a>  <span class="dt">treatment =</span> <span class="kw">factor</span>(<span class="kw">rep</span>(treatment_levels, n_levels_sim),</span>
+<span id="cb476-13"><a href="count-sim.html#cb476-13"></a>                     <span class="dt">levels =</span> treatment_levels)</span>
+<span id="cb476-14"><a href="count-sim.html#cb476-14"></a>)</span>
+<span id="cb476-15"><a href="count-sim.html#cb476-15"></a></span>
+<span id="cb476-16"><a href="count-sim.html#cb476-16"></a><span class="cf">if</span>(do_it <span class="op">==</span><span class="st"> </span><span class="ot">TRUE</span>){</span>
+<span id="cb476-17"><a href="count-sim.html#cb476-17"></a>  sim_res &lt;-<span class="st"> </span><span class="kw">simulator</span>(</span>
+<span id="cb476-18"><a href="count-sim.html#cb476-18"></a>    <span class="dt">n_sim =</span> n_sim_i,</span>
+<span id="cb476-19"><a href="count-sim.html#cb476-19"></a>    <span class="dt">n_levels =</span> n_levels_sim,</span>
+<span id="cb476-20"><a href="count-sim.html#cb476-20"></a>    <span class="dt">mu_levels =</span> mu_levels_sim,</span>
+<span id="cb476-21"><a href="count-sim.html#cb476-21"></a>    <span class="dt">theta_levels =</span> theta_levels_sim, <span class="co"># not used</span></span>
+<span id="cb476-22"><a href="count-sim.html#cb476-22"></a>    <span class="dt">sigma_levels =</span> sigma_levels_sim,</span>
+<span id="cb476-23"><a href="count-sim.html#cb476-23"></a>    <span class="dt">normal =</span> normal_sim</span>
+<span id="cb476-24"><a href="count-sim.html#cb476-24"></a>  )</span>
+<span id="cb476-25"><a href="count-sim.html#cb476-25"></a>  p_values &lt;-<span class="st"> </span><span class="kw">binder</span>(p_values,</span>
+<span id="cb476-26"><a href="count-sim.html#cb476-26"></a>                     sim_res,</span>
+<span id="cb476-27"><a href="count-sim.html#cb476-27"></a>                     sim_i,</span>
+<span id="cb476-28"><a href="count-sim.html#cb476-28"></a>                     n_levels_sim,</span>
+<span id="cb476-29"><a href="count-sim.html#cb476-29"></a>                     mu_levels_sim,</span>
+<span id="cb476-30"><a href="count-sim.html#cb476-30"></a>                     theta_levels_sim,</span>
+<span id="cb476-31"><a href="count-sim.html#cb476-31"></a>                     sigma_levels_sim,</span>
+<span id="cb476-32"><a href="count-sim.html#cb476-32"></a>                     normal_sim)</span>
+<span id="cb476-33"><a href="count-sim.html#cb476-33"></a><span class="co">#  apply(sim_res, 2, function(x) sum(x &lt; 0.05)/n_sim_i)</span></span>
+<span id="cb476-34"><a href="count-sim.html#cb476-34"></a>}</span></code></pre></div>
 </div>
-<p>A better way to investigate this is with the <strong>Normal Q-Q</strong> plot in Figure <a href="counts.html#fig:glm1-plot2">17.2</a>B, which plots the sample quantiles for a variable against their theoretical quantiles. If the conditional outcome approximates a normal distribution, the points should roughly follow the line. Instead, for the worm data, the points are above the line at both ends. At the left (negative) end, this means that we aren’t seeing the most negative values that would be expected (the observed values are more positive than the theoretical values). Remembering that this plot is of residuals, if we think about this as counts, this means that our smallest counts are not as small as we would expect given the mean and a normal distribution. This shouldn’t be surprising – the counts range down to zero and counts cannot be below zero. At the positive end, the sample values are again more positive than the theoretical values. Thinking about this as counts, this means that are largest counts are larger than expected given the mean and a normal distribution. This pattern is exactly what we’d expect of count data, or at least count data that borders zero.</p>
-<div style="background-color:#cccccc; text-align:left; vertical-align: middle; padding:20px 47px;">
-<p><strong>Intuition Pump</strong> – Let’s construct a Normal Q-Q plot. A <strong>quantile</strong> (or percentile) of a vector of numbers is the value of the point at a specified percentage rank. The median is the 50% quantile. The 95% confidence intervals are at the 2.5% and 97.5% quantiles. In a Normal Q-Q plot, we want to plot the quantiles of the residuals against a set of theoretical quantiles.</p>
-<ol style="list-style-type: decimal">
-<li>To get the observed quantiles, rank the residuals of the fit linear model from most negative to most positive – these are your quantiles! For example, if you have <span class="math inline">\(n=145\)</span> residuals, then the 73rd point is the 50% quantile.</li>
-<li>A theoretical quantile from the normal distribution can be constructed using the <code>qnorm</code> function which returns the normal quantiles for a specified vector of percents. Alternatively, one could randomly sample <span class="math inline">\(n\)</span> points using <code>rnorm</code>. These of course will be sampled quantiles so will only approximate the expected theoretical quantiles, but I add this here because we use this method below.</li>
-</ol>
-<p>Now simply plot the observed against theoretical quantiles. Often, the <strong>standardized</strong> quantiles are plotted. A standardized variable has a mean of zero and a standard deviation of one and is computed by 1) centering the vector at zero by subtracting the mean from every value, and 2) dividing each value by the standard deviation of the vector. Recognize that because a standard deviation is a function of deviations from the mean, it doesn’t matter which of these operations is done first. A standardized theoretical quantile is specified by <code>qnorm(p, mean = 0, sd = 1)</code>, which is the default.</p>
-<p>Below, I’ve plotted the standardized observed and theoretical quantiles against the vector of percents (from 0 to 100%). This plot also nicely shows how the residuals of the worm data deviate from that expected if these had a normal distribution. The plot nicely shows that the most negative observed quintiles are not as negative as expected given a normal distribution, which again makes sense because this would imply negative counts since the mean is close to zero. And it nicely shows that the most positive observed quantiles are more positive than expected given a normal distribution, again this makes sense in right skewed count data. Finally, the plot nicely shows that the median is less positive than that expected given a normal distribution, which is at the mean (a right skew tends to pull the mean to the right of the median).</p>
-<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/glm1-qqplot-sim-1.png" width="576" /></p>
+<div id="type-i-neg-binom-unequal-n" class="section level3">
+<h3><span class="header-section-number">19.3.4</span> Type I, neg binom, unequal n</h3>
+<div class="sourceCode" id="cb477"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb477-1"><a href="count-sim.html#cb477-1"></a>sim_i &lt;-<span class="st"> </span>sim_i <span class="op">+</span><span class="st"> </span><span class="dv">1</span></span>
+<span id="cb477-2"><a href="count-sim.html#cb477-2"></a>n_levels_sim &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">12</span>, <span class="dv">8</span>)</span>
+<span id="cb477-3"><a href="count-sim.html#cb477-3"></a>mu_levels_sim &lt;-<span class="st"> </span><span class="kw">c</span>(mu_cn_obs, mu_cn_obs)</span>
+<span id="cb477-4"><a href="count-sim.html#cb477-4"></a>theta_levels_sim &lt;-<span class="st"> </span><span class="kw">c</span>(theta_obs, theta_obs)</span>
+<span id="cb477-5"><a href="count-sim.html#cb477-5"></a>sigma_levels_sim &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="ot">NA</span>, <span class="ot">NA</span>) <span class="co"># not used</span></span>
+<span id="cb477-6"><a href="count-sim.html#cb477-6"></a>normal_sim &lt;-<span class="st"> </span><span class="ot">FALSE</span></span>
+<span id="cb477-7"><a href="count-sim.html#cb477-7"></a></span>
+<span id="cb477-8"><a href="count-sim.html#cb477-8"></a><span class="co"># fake_data has to be global for emmeans to run inside </span></span>
+<span id="cb477-9"><a href="count-sim.html#cb477-9"></a><span class="co"># a function</span></span>
+<span id="cb477-10"><a href="count-sim.html#cb477-10"></a>treatment_levels &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;cn&quot;</span>, <span class="st">&quot;tr&quot;</span>)</span>
+<span id="cb477-11"><a href="count-sim.html#cb477-11"></a>fake_data &lt;-<span class="st"> </span><span class="kw">data.table</span>(</span>
+<span id="cb477-12"><a href="count-sim.html#cb477-12"></a>  <span class="dt">treatment =</span> <span class="kw">factor</span>(<span class="kw">rep</span>(treatment_levels, n_levels_sim),</span>
+<span id="cb477-13"><a href="count-sim.html#cb477-13"></a>                     <span class="dt">levels =</span> treatment_levels)</span>
+<span id="cb477-14"><a href="count-sim.html#cb477-14"></a>)</span>
+<span id="cb477-15"><a href="count-sim.html#cb477-15"></a></span>
+<span id="cb477-16"><a href="count-sim.html#cb477-16"></a><span class="cf">if</span>(do_it <span class="op">==</span><span class="st"> </span><span class="ot">TRUE</span>){</span>
+<span id="cb477-17"><a href="count-sim.html#cb477-17"></a>  sim_res &lt;-<span class="st"> </span><span class="kw">simulator</span>(</span>
+<span id="cb477-18"><a href="count-sim.html#cb477-18"></a>    <span class="dt">n_sim =</span> n_sim_i,</span>
+<span id="cb477-19"><a href="count-sim.html#cb477-19"></a>    <span class="dt">n_levels =</span> n_levels_sim,</span>
+<span id="cb477-20"><a href="count-sim.html#cb477-20"></a>    <span class="dt">mu_levels =</span> mu_levels_sim,</span>
+<span id="cb477-21"><a href="count-sim.html#cb477-21"></a>    <span class="dt">theta_levels =</span> theta_levels_sim, <span class="co"># not used</span></span>
+<span id="cb477-22"><a href="count-sim.html#cb477-22"></a>    <span class="dt">sigma_levels =</span> sigma_levels_sim,</span>
+<span id="cb477-23"><a href="count-sim.html#cb477-23"></a>    <span class="dt">normal =</span> normal_sim</span>
+<span id="cb477-24"><a href="count-sim.html#cb477-24"></a>  )</span>
+<span id="cb477-25"><a href="count-sim.html#cb477-25"></a>  p_values &lt;-<span class="st"> </span><span class="kw">binder</span>(p_values,</span>
+<span id="cb477-26"><a href="count-sim.html#cb477-26"></a>                     sim_res,</span>
+<span id="cb477-27"><a href="count-sim.html#cb477-27"></a>                     sim_i,</span>
+<span id="cb477-28"><a href="count-sim.html#cb477-28"></a>                     n_levels_sim,</span>
+<span id="cb477-29"><a href="count-sim.html#cb477-29"></a>                     mu_levels_sim,</span>
+<span id="cb477-30"><a href="count-sim.html#cb477-30"></a>                     theta_levels_sim,</span>
+<span id="cb477-31"><a href="count-sim.html#cb477-31"></a>                     sigma_levels_sim,</span>
+<span id="cb477-32"><a href="count-sim.html#cb477-32"></a>                     normal_sim)</span>
+<span id="cb477-33"><a href="count-sim.html#cb477-33"></a><span class="co">#  apply(sim_res, 2, function(x) sum(x &lt; 0.05)/n_sim_i)</span></span>
+<span id="cb477-34"><a href="count-sim.html#cb477-34"></a>}</span></code></pre></div>
+</div>
+<div id="power-pseudo-normal-distribution-equal-n" class="section level3">
+<h3><span class="header-section-number">19.3.5</span> Power, Pseudo-Normal distribution, equal n</h3>
+<div class="sourceCode" id="cb478"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb478-1"><a href="count-sim.html#cb478-1"></a>sim_i &lt;-<span class="st"> </span>sim_i <span class="op">+</span><span class="st"> </span><span class="dv">1</span></span>
+<span id="cb478-2"><a href="count-sim.html#cb478-2"></a>n_levels_sim &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">10</span>, <span class="dv">10</span>)</span>
+<span id="cb478-3"><a href="count-sim.html#cb478-3"></a>mu_levels_sim &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">1000</span>, <span class="dv">1100</span>)</span>
+<span id="cb478-4"><a href="count-sim.html#cb478-4"></a>theta_levels_sim &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="ot">NA</span>, <span class="ot">NA</span>) <span class="co"># not used</span></span>
+<span id="cb478-5"><a href="count-sim.html#cb478-5"></a>sigma_levels_sim &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">100</span>, <span class="dv">100</span>)</span>
+<span id="cb478-6"><a href="count-sim.html#cb478-6"></a>normal_sim &lt;-<span class="st"> </span><span class="ot">TRUE</span></span>
+<span id="cb478-7"><a href="count-sim.html#cb478-7"></a></span>
+<span id="cb478-8"><a href="count-sim.html#cb478-8"></a><span class="co"># fake_data has to be global for emmeans to run inside </span></span>
+<span id="cb478-9"><a href="count-sim.html#cb478-9"></a><span class="co"># a function</span></span>
+<span id="cb478-10"><a href="count-sim.html#cb478-10"></a>treatment_levels &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;cn&quot;</span>, <span class="st">&quot;tr&quot;</span>)</span>
+<span id="cb478-11"><a href="count-sim.html#cb478-11"></a>fake_data &lt;-<span class="st"> </span><span class="kw">data.table</span>(</span>
+<span id="cb478-12"><a href="count-sim.html#cb478-12"></a>  <span class="dt">treatment =</span> <span class="kw">factor</span>(<span class="kw">rep</span>(treatment_levels, n_levels_sim),</span>
+<span id="cb478-13"><a href="count-sim.html#cb478-13"></a>                     <span class="dt">levels =</span> treatment_levels)</span>
+<span id="cb478-14"><a href="count-sim.html#cb478-14"></a>)</span>
+<span id="cb478-15"><a href="count-sim.html#cb478-15"></a></span>
+<span id="cb478-16"><a href="count-sim.html#cb478-16"></a><span class="cf">if</span>(do_it <span class="op">==</span><span class="st"> </span><span class="ot">TRUE</span>){</span>
+<span id="cb478-17"><a href="count-sim.html#cb478-17"></a>  sim_res &lt;-<span class="st"> </span><span class="kw">simulator</span>(</span>
+<span id="cb478-18"><a href="count-sim.html#cb478-18"></a>    <span class="dt">n_sim =</span> n_sim_i,</span>
+<span id="cb478-19"><a href="count-sim.html#cb478-19"></a>    <span class="dt">n_levels =</span> n_levels_sim,</span>
+<span id="cb478-20"><a href="count-sim.html#cb478-20"></a>    <span class="dt">mu_levels =</span> mu_levels_sim,</span>
+<span id="cb478-21"><a href="count-sim.html#cb478-21"></a>    <span class="dt">theta_levels =</span> theta_levels_sim, <span class="co"># not used</span></span>
+<span id="cb478-22"><a href="count-sim.html#cb478-22"></a>    <span class="dt">sigma_levels =</span> sigma_levels_sim,</span>
+<span id="cb478-23"><a href="count-sim.html#cb478-23"></a>    <span class="dt">normal =</span> normal_sim</span>
+<span id="cb478-24"><a href="count-sim.html#cb478-24"></a>  )</span>
+<span id="cb478-25"><a href="count-sim.html#cb478-25"></a>  p_values &lt;-<span class="st"> </span><span class="kw">binder</span>(p_values,</span>
+<span id="cb478-26"><a href="count-sim.html#cb478-26"></a>                     sim_res,</span>
+<span id="cb478-27"><a href="count-sim.html#cb478-27"></a>                     sim_i,</span>
+<span id="cb478-28"><a href="count-sim.html#cb478-28"></a>                     n_levels_sim,</span>
+<span id="cb478-29"><a href="count-sim.html#cb478-29"></a>                     mu_levels_sim,</span>
+<span id="cb478-30"><a href="count-sim.html#cb478-30"></a>                     theta_levels_sim,</span>
+<span id="cb478-31"><a href="count-sim.html#cb478-31"></a>                     sigma_levels_sim,</span>
+<span id="cb478-32"><a href="count-sim.html#cb478-32"></a>                     normal_sim)</span>
+<span id="cb478-33"><a href="count-sim.html#cb478-33"></a>  </span>
+<span id="cb478-34"><a href="count-sim.html#cb478-34"></a><span class="co">#  apply(sim_res, 2, function(x) sum(x &lt; 0.05)/n_sim_i)</span></span>
+<span id="cb478-35"><a href="count-sim.html#cb478-35"></a>}</span></code></pre></div>
+</div>
+<div id="power-neg-binom-equal-n" class="section level3">
+<h3><span class="header-section-number">19.3.6</span> Power, neg binom, equal n</h3>
+<div class="sourceCode" id="cb479"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb479-1"><a href="count-sim.html#cb479-1"></a>sim_i &lt;-<span class="st"> </span>sim_i <span class="op">+</span><span class="st"> </span><span class="dv">1</span></span>
+<span id="cb479-2"><a href="count-sim.html#cb479-2"></a>n_levels_sim &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">10</span>, <span class="dv">10</span>)</span>
+<span id="cb479-3"><a href="count-sim.html#cb479-3"></a>mu_levels_sim &lt;-<span class="st"> </span><span class="kw">c</span>(mu_cn_obs, mu_cn_obs<span class="op">*</span>.<span class="dv">7</span>)</span>
+<span id="cb479-4"><a href="count-sim.html#cb479-4"></a>theta_levels_sim &lt;-<span class="st"> </span><span class="kw">c</span>(theta_obs, theta_obs)</span>
+<span id="cb479-5"><a href="count-sim.html#cb479-5"></a>sigma_levels_sim &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="ot">NA</span>, <span class="ot">NA</span>) <span class="co"># not used</span></span>
+<span id="cb479-6"><a href="count-sim.html#cb479-6"></a>normal_sim &lt;-<span class="st"> </span><span class="ot">FALSE</span></span>
+<span id="cb479-7"><a href="count-sim.html#cb479-7"></a></span>
+<span id="cb479-8"><a href="count-sim.html#cb479-8"></a><span class="co"># fake_data has to be global for emmeans to run inside </span></span>
+<span id="cb479-9"><a href="count-sim.html#cb479-9"></a><span class="co"># a function</span></span>
+<span id="cb479-10"><a href="count-sim.html#cb479-10"></a>treatment_levels &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;cn&quot;</span>, <span class="st">&quot;tr&quot;</span>)</span>
+<span id="cb479-11"><a href="count-sim.html#cb479-11"></a>fake_data &lt;-<span class="st"> </span><span class="kw">data.table</span>(</span>
+<span id="cb479-12"><a href="count-sim.html#cb479-12"></a>  <span class="dt">treatment =</span> <span class="kw">factor</span>(<span class="kw">rep</span>(treatment_levels, n_levels_sim),</span>
+<span id="cb479-13"><a href="count-sim.html#cb479-13"></a>                     <span class="dt">levels =</span> treatment_levels)</span>
+<span id="cb479-14"><a href="count-sim.html#cb479-14"></a>)</span>
+<span id="cb479-15"><a href="count-sim.html#cb479-15"></a></span>
+<span id="cb479-16"><a href="count-sim.html#cb479-16"></a><span class="cf">if</span>(do_it <span class="op">==</span><span class="st"> </span><span class="ot">TRUE</span>){</span>
+<span id="cb479-17"><a href="count-sim.html#cb479-17"></a>  sim_res &lt;-<span class="st"> </span><span class="kw">simulator</span>(</span>
+<span id="cb479-18"><a href="count-sim.html#cb479-18"></a>    <span class="dt">n_sim =</span> n_sim_i,</span>
+<span id="cb479-19"><a href="count-sim.html#cb479-19"></a>    <span class="dt">n_levels =</span> n_levels_sim,</span>
+<span id="cb479-20"><a href="count-sim.html#cb479-20"></a>    <span class="dt">mu_levels =</span> mu_levels_sim,</span>
+<span id="cb479-21"><a href="count-sim.html#cb479-21"></a>    <span class="dt">theta_levels =</span> theta_levels_sim, <span class="co"># not used</span></span>
+<span id="cb479-22"><a href="count-sim.html#cb479-22"></a>    <span class="dt">sigma_levels =</span> sigma_levels_sim,</span>
+<span id="cb479-23"><a href="count-sim.html#cb479-23"></a>    <span class="dt">normal =</span> normal_sim</span>
+<span id="cb479-24"><a href="count-sim.html#cb479-24"></a>  )</span>
+<span id="cb479-25"><a href="count-sim.html#cb479-25"></a>  p_values &lt;-<span class="st"> </span><span class="kw">binder</span>(p_values,</span>
+<span id="cb479-26"><a href="count-sim.html#cb479-26"></a>                     sim_res,</span>
+<span id="cb479-27"><a href="count-sim.html#cb479-27"></a>                     sim_i,</span>
+<span id="cb479-28"><a href="count-sim.html#cb479-28"></a>                     n_levels_sim,</span>
+<span id="cb479-29"><a href="count-sim.html#cb479-29"></a>                     mu_levels_sim,</span>
+<span id="cb479-30"><a href="count-sim.html#cb479-30"></a>                     theta_levels_sim,</span>
+<span id="cb479-31"><a href="count-sim.html#cb479-31"></a>                     sigma_levels_sim,</span>
+<span id="cb479-32"><a href="count-sim.html#cb479-32"></a>                     normal_sim)</span>
+<span id="cb479-33"><a href="count-sim.html#cb479-33"></a><span class="co">#  apply(sim_res, 2, function(x) sum(x &lt; 0.05)/n_sim_i)</span></span>
+<span id="cb479-34"><a href="count-sim.html#cb479-34"></a>}</span></code></pre></div>
+</div>
+<div id="power-neg-binom-small-theta" class="section level3">
+<h3><span class="header-section-number">19.3.7</span> Power, neg binom, small theta</h3>
+<div class="sourceCode" id="cb480"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb480-1"><a href="count-sim.html#cb480-1"></a>sim_i &lt;-<span class="st"> </span>sim_i <span class="op">+</span><span class="st"> </span><span class="dv">1</span></span>
+<span id="cb480-2"><a href="count-sim.html#cb480-2"></a>n_levels_sim &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">10</span>, <span class="dv">10</span>)</span>
+<span id="cb480-3"><a href="count-sim.html#cb480-3"></a>mu_levels_sim &lt;-<span class="st"> </span><span class="kw">c</span>(mu_cn_obs, mu_cn_obs<span class="op">*</span>.<span class="dv">7</span>)</span>
+<span id="cb480-4"><a href="count-sim.html#cb480-4"></a>theta_levels_sim &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">1</span>)</span>
+<span id="cb480-5"><a href="count-sim.html#cb480-5"></a>sigma_levels_sim &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="ot">NA</span>, <span class="ot">NA</span>) <span class="co"># not used</span></span>
+<span id="cb480-6"><a href="count-sim.html#cb480-6"></a>normal_sim &lt;-<span class="st"> </span><span class="ot">FALSE</span></span>
+<span id="cb480-7"><a href="count-sim.html#cb480-7"></a></span>
+<span id="cb480-8"><a href="count-sim.html#cb480-8"></a><span class="co"># fake_data has to be global for emmeans to run inside </span></span>
+<span id="cb480-9"><a href="count-sim.html#cb480-9"></a><span class="co"># a function</span></span>
+<span id="cb480-10"><a href="count-sim.html#cb480-10"></a>treatment_levels &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;cn&quot;</span>, <span class="st">&quot;tr&quot;</span>)</span>
+<span id="cb480-11"><a href="count-sim.html#cb480-11"></a>fake_data &lt;-<span class="st"> </span><span class="kw">data.table</span>(</span>
+<span id="cb480-12"><a href="count-sim.html#cb480-12"></a>  <span class="dt">treatment =</span> <span class="kw">factor</span>(<span class="kw">rep</span>(treatment_levels, n_levels_sim),</span>
+<span id="cb480-13"><a href="count-sim.html#cb480-13"></a>                     <span class="dt">levels =</span> treatment_levels)</span>
+<span id="cb480-14"><a href="count-sim.html#cb480-14"></a>)</span>
+<span id="cb480-15"><a href="count-sim.html#cb480-15"></a></span>
+<span id="cb480-16"><a href="count-sim.html#cb480-16"></a><span class="cf">if</span>(do_it <span class="op">==</span><span class="st"> </span><span class="ot">TRUE</span>){</span>
+<span id="cb480-17"><a href="count-sim.html#cb480-17"></a>  sim_res &lt;-<span class="st"> </span><span class="kw">simulator</span>(</span>
+<span id="cb480-18"><a href="count-sim.html#cb480-18"></a>    <span class="dt">n_sim =</span> n_sim_i,</span>
+<span id="cb480-19"><a href="count-sim.html#cb480-19"></a>    <span class="dt">n_levels =</span> n_levels_sim,</span>
+<span id="cb480-20"><a href="count-sim.html#cb480-20"></a>    <span class="dt">mu_levels =</span> mu_levels_sim,</span>
+<span id="cb480-21"><a href="count-sim.html#cb480-21"></a>    <span class="dt">theta_levels =</span> theta_levels_sim, <span class="co"># not used</span></span>
+<span id="cb480-22"><a href="count-sim.html#cb480-22"></a>    <span class="dt">sigma_levels =</span> sigma_levels_sim,</span>
+<span id="cb480-23"><a href="count-sim.html#cb480-23"></a>    <span class="dt">normal =</span> normal_sim</span>
+<span id="cb480-24"><a href="count-sim.html#cb480-24"></a>  )</span>
+<span id="cb480-25"><a href="count-sim.html#cb480-25"></a>  p_values &lt;-<span class="st"> </span><span class="kw">binder</span>(p_values,</span>
+<span id="cb480-26"><a href="count-sim.html#cb480-26"></a>                     sim_res,</span>
+<span id="cb480-27"><a href="count-sim.html#cb480-27"></a>                     sim_i,</span>
+<span id="cb480-28"><a href="count-sim.html#cb480-28"></a>                     n_levels_sim,</span>
+<span id="cb480-29"><a href="count-sim.html#cb480-29"></a>                     mu_levels_sim,</span>
+<span id="cb480-30"><a href="count-sim.html#cb480-30"></a>                     theta_levels_sim,</span>
+<span id="cb480-31"><a href="count-sim.html#cb480-31"></a>                     sigma_levels_sim,</span>
+<span id="cb480-32"><a href="count-sim.html#cb480-32"></a>                     normal_sim)</span>
+<span id="cb480-33"><a href="count-sim.html#cb480-33"></a><span class="co">#  apply(sim_res, 2, function(x) sum(x &lt; 0.05)/n_sim_i)</span></span>
+<span id="cb480-34"><a href="count-sim.html#cb480-34"></a>}</span></code></pre></div>
+</div>
+<div id="power-neg-binom-unequal-n" class="section level3">
+<h3><span class="header-section-number">19.3.8</span> Power, neg binom, unequal n</h3>
+<div class="sourceCode" id="cb481"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb481-1"><a href="count-sim.html#cb481-1"></a>sim_i &lt;-<span class="st"> </span>sim_i <span class="op">+</span><span class="st"> </span><span class="dv">1</span></span>
+<span id="cb481-2"><a href="count-sim.html#cb481-2"></a>n_levels_sim &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">12</span>, <span class="dv">8</span>)</span>
+<span id="cb481-3"><a href="count-sim.html#cb481-3"></a>mu_levels_sim &lt;-<span class="st"> </span><span class="kw">c</span>(mu_cn_obs, mu_cn_obs<span class="op">*</span>.<span class="dv">7</span>)</span>
+<span id="cb481-4"><a href="count-sim.html#cb481-4"></a>theta_levels_sim &lt;-<span class="st"> </span><span class="kw">c</span>(theta_obs, theta_obs)</span>
+<span id="cb481-5"><a href="count-sim.html#cb481-5"></a>sigma_levels_sim &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="ot">NA</span>, <span class="ot">NA</span>) <span class="co"># not used</span></span>
+<span id="cb481-6"><a href="count-sim.html#cb481-6"></a>normal_sim &lt;-<span class="st"> </span><span class="ot">FALSE</span></span>
+<span id="cb481-7"><a href="count-sim.html#cb481-7"></a></span>
+<span id="cb481-8"><a href="count-sim.html#cb481-8"></a><span class="co"># fake_data has to be global for emmeans to run inside </span></span>
+<span id="cb481-9"><a href="count-sim.html#cb481-9"></a><span class="co"># a function</span></span>
+<span id="cb481-10"><a href="count-sim.html#cb481-10"></a>treatment_levels &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;cn&quot;</span>, <span class="st">&quot;tr&quot;</span>)</span>
+<span id="cb481-11"><a href="count-sim.html#cb481-11"></a>fake_data &lt;-<span class="st"> </span><span class="kw">data.table</span>(</span>
+<span id="cb481-12"><a href="count-sim.html#cb481-12"></a>  <span class="dt">treatment =</span> <span class="kw">factor</span>(<span class="kw">rep</span>(treatment_levels, n_levels_sim),</span>
+<span id="cb481-13"><a href="count-sim.html#cb481-13"></a>                     <span class="dt">levels =</span> treatment_levels)</span>
+<span id="cb481-14"><a href="count-sim.html#cb481-14"></a>)</span>
+<span id="cb481-15"><a href="count-sim.html#cb481-15"></a></span>
+<span id="cb481-16"><a href="count-sim.html#cb481-16"></a><span class="cf">if</span>(do_it <span class="op">==</span><span class="st"> </span><span class="ot">TRUE</span>){</span>
+<span id="cb481-17"><a href="count-sim.html#cb481-17"></a>  sim_res &lt;-<span class="st"> </span><span class="kw">simulator</span>(</span>
+<span id="cb481-18"><a href="count-sim.html#cb481-18"></a>    <span class="dt">n_sim =</span> n_sim_i,</span>
+<span id="cb481-19"><a href="count-sim.html#cb481-19"></a>    <span class="dt">n_levels =</span> n_levels_sim,</span>
+<span id="cb481-20"><a href="count-sim.html#cb481-20"></a>    <span class="dt">mu_levels =</span> mu_levels_sim,</span>
+<span id="cb481-21"><a href="count-sim.html#cb481-21"></a>    <span class="dt">theta_levels =</span> theta_levels_sim, <span class="co"># not used</span></span>
+<span id="cb481-22"><a href="count-sim.html#cb481-22"></a>    <span class="dt">sigma_levels =</span> sigma_levels_sim,</span>
+<span id="cb481-23"><a href="count-sim.html#cb481-23"></a>    <span class="dt">normal =</span> normal_sim</span>
+<span id="cb481-24"><a href="count-sim.html#cb481-24"></a>  )</span>
+<span id="cb481-25"><a href="count-sim.html#cb481-25"></a>  p_values &lt;-<span class="st"> </span><span class="kw">binder</span>(p_values,</span>
+<span id="cb481-26"><a href="count-sim.html#cb481-26"></a>                     sim_res,</span>
+<span id="cb481-27"><a href="count-sim.html#cb481-27"></a>                     sim_i,</span>
+<span id="cb481-28"><a href="count-sim.html#cb481-28"></a>                     n_levels_sim,</span>
+<span id="cb481-29"><a href="count-sim.html#cb481-29"></a>                     mu_levels_sim,</span>
+<span id="cb481-30"><a href="count-sim.html#cb481-30"></a>                     theta_levels_sim,</span>
+<span id="cb481-31"><a href="count-sim.html#cb481-31"></a>                     sigma_levels_sim,</span>
+<span id="cb481-32"><a href="count-sim.html#cb481-32"></a>                     normal_sim)</span>
+<span id="cb481-33"><a href="count-sim.html#cb481-33"></a><span class="co">#  apply(sim_res, 2, function(x) sum(x &lt; 0.05)/n_sim_i)</span></span>
+<span id="cb481-34"><a href="count-sim.html#cb481-34"></a>}</span></code></pre></div>
+</div>
+<div id="power-neg-binom-unequal-n-unequal-theta" class="section level3">
+<h3><span class="header-section-number">19.3.9</span> Power, neg binom, unequal n, unequal theta</h3>
+<p>What if the treatment affects the variance and the mean?</p>
+<div class="sourceCode" id="cb482"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb482-1"><a href="count-sim.html#cb482-1"></a>sim_i &lt;-<span class="st"> </span>sim_i <span class="op">+</span><span class="st"> </span><span class="dv">1</span></span>
+<span id="cb482-2"><a href="count-sim.html#cb482-2"></a>n_levels_sim &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">12</span>, <span class="dv">8</span>)</span>
+<span id="cb482-3"><a href="count-sim.html#cb482-3"></a>mu_levels_sim &lt;-<span class="st"> </span><span class="kw">c</span>(mu_cn_obs, mu_cn_obs<span class="op">*</span>.<span class="dv">7</span>)</span>
+<span id="cb482-4"><a href="count-sim.html#cb482-4"></a>theta_levels_sim &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span>, theta_obs)</span>
+<span id="cb482-5"><a href="count-sim.html#cb482-5"></a>sigma_levels_sim &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="ot">NA</span>, <span class="ot">NA</span>) <span class="co"># not used</span></span>
+<span id="cb482-6"><a href="count-sim.html#cb482-6"></a>normal_sim &lt;-<span class="st"> </span><span class="ot">FALSE</span></span>
+<span id="cb482-7"><a href="count-sim.html#cb482-7"></a></span>
+<span id="cb482-8"><a href="count-sim.html#cb482-8"></a><span class="co"># fake_data has to be global for emmeans to run inside </span></span>
+<span id="cb482-9"><a href="count-sim.html#cb482-9"></a><span class="co"># a function</span></span>
+<span id="cb482-10"><a href="count-sim.html#cb482-10"></a>treatment_levels &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;cn&quot;</span>, <span class="st">&quot;tr&quot;</span>)</span>
+<span id="cb482-11"><a href="count-sim.html#cb482-11"></a>fake_data &lt;-<span class="st"> </span><span class="kw">data.table</span>(</span>
+<span id="cb482-12"><a href="count-sim.html#cb482-12"></a>  <span class="dt">treatment =</span> <span class="kw">factor</span>(<span class="kw">rep</span>(treatment_levels, n_levels_sim),</span>
+<span id="cb482-13"><a href="count-sim.html#cb482-13"></a>                     <span class="dt">levels =</span> treatment_levels)</span>
+<span id="cb482-14"><a href="count-sim.html#cb482-14"></a>)</span>
+<span id="cb482-15"><a href="count-sim.html#cb482-15"></a></span>
+<span id="cb482-16"><a href="count-sim.html#cb482-16"></a><span class="cf">if</span>(do_it <span class="op">==</span><span class="st"> </span><span class="ot">TRUE</span>){</span>
+<span id="cb482-17"><a href="count-sim.html#cb482-17"></a>  sim_res &lt;-<span class="st"> </span><span class="kw">simulator</span>(</span>
+<span id="cb482-18"><a href="count-sim.html#cb482-18"></a>    <span class="dt">n_sim =</span> n_sim_i,</span>
+<span id="cb482-19"><a href="count-sim.html#cb482-19"></a>    <span class="dt">n_levels =</span> n_levels_sim,</span>
+<span id="cb482-20"><a href="count-sim.html#cb482-20"></a>    <span class="dt">mu_levels =</span> mu_levels_sim,</span>
+<span id="cb482-21"><a href="count-sim.html#cb482-21"></a>    <span class="dt">theta_levels =</span> theta_levels_sim, <span class="co"># not used</span></span>
+<span id="cb482-22"><a href="count-sim.html#cb482-22"></a>    <span class="dt">sigma_levels =</span> sigma_levels_sim,</span>
+<span id="cb482-23"><a href="count-sim.html#cb482-23"></a>    <span class="dt">normal =</span> normal_sim</span>
+<span id="cb482-24"><a href="count-sim.html#cb482-24"></a>  )</span>
+<span id="cb482-25"><a href="count-sim.html#cb482-25"></a>  p_values &lt;-<span class="st"> </span><span class="kw">binder</span>(p_values,</span>
+<span id="cb482-26"><a href="count-sim.html#cb482-26"></a>                     sim_res,</span>
+<span id="cb482-27"><a href="count-sim.html#cb482-27"></a>                     sim_i,</span>
+<span id="cb482-28"><a href="count-sim.html#cb482-28"></a>                     n_levels_sim,</span>
+<span id="cb482-29"><a href="count-sim.html#cb482-29"></a>                     mu_levels_sim,</span>
+<span id="cb482-30"><a href="count-sim.html#cb482-30"></a>                     theta_levels_sim,</span>
+<span id="cb482-31"><a href="count-sim.html#cb482-31"></a>                     sigma_levels_sim,</span>
+<span id="cb482-32"><a href="count-sim.html#cb482-32"></a>                     normal_sim)</span>
+<span id="cb482-33"><a href="count-sim.html#cb482-33"></a><span class="co">#  apply(sim_res, 2, function(x) sum(x &lt; 0.05)/n_sim_i)</span></span>
+<span id="cb482-34"><a href="count-sim.html#cb482-34"></a>}</span></code></pre></div>
+</div>
+<div id="type-1-neg-binom-equal-n-unequal-theta" class="section level3">
+<h3><span class="header-section-number">19.3.10</span> Type 1, neg binom, equal n, unequal theta</h3>
+<p>What if the treatment affects the variance but not the mean?</p>
+<div class="sourceCode" id="cb483"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb483-1"><a href="count-sim.html#cb483-1"></a>sim_i &lt;-<span class="st"> </span>sim_i <span class="op">+</span><span class="st"> </span><span class="dv">1</span></span>
+<span id="cb483-2"><a href="count-sim.html#cb483-2"></a>n_levels_sim &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">12</span>, <span class="dv">8</span>)</span>
+<span id="cb483-3"><a href="count-sim.html#cb483-3"></a>mu_levels_sim &lt;-<span class="st"> </span><span class="kw">c</span>(mu_cn_obs, mu_cn_obs)</span>
+<span id="cb483-4"><a href="count-sim.html#cb483-4"></a>theta_levels_sim &lt;-<span class="st"> </span><span class="kw">c</span>(theta_obs, <span class="dv">1</span>)</span>
+<span id="cb483-5"><a href="count-sim.html#cb483-5"></a>sigma_levels_sim &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="ot">NA</span>, <span class="ot">NA</span>) <span class="co"># not used</span></span>
+<span id="cb483-6"><a href="count-sim.html#cb483-6"></a>normal_sim &lt;-<span class="st"> </span><span class="ot">FALSE</span></span>
+<span id="cb483-7"><a href="count-sim.html#cb483-7"></a></span>
+<span id="cb483-8"><a href="count-sim.html#cb483-8"></a><span class="co"># fake_data has to be global for emmeans to run inside </span></span>
+<span id="cb483-9"><a href="count-sim.html#cb483-9"></a><span class="co"># a function</span></span>
+<span id="cb483-10"><a href="count-sim.html#cb483-10"></a>treatment_levels &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;cn&quot;</span>, <span class="st">&quot;tr&quot;</span>)</span>
+<span id="cb483-11"><a href="count-sim.html#cb483-11"></a>fake_data &lt;-<span class="st"> </span><span class="kw">data.table</span>(</span>
+<span id="cb483-12"><a href="count-sim.html#cb483-12"></a>  <span class="dt">treatment =</span> <span class="kw">factor</span>(<span class="kw">rep</span>(treatment_levels, n_levels_sim),</span>
+<span id="cb483-13"><a href="count-sim.html#cb483-13"></a>                     <span class="dt">levels =</span> treatment_levels)</span>
+<span id="cb483-14"><a href="count-sim.html#cb483-14"></a>)</span>
+<span id="cb483-15"><a href="count-sim.html#cb483-15"></a></span>
+<span id="cb483-16"><a href="count-sim.html#cb483-16"></a><span class="cf">if</span>(do_it <span class="op">==</span><span class="st"> </span><span class="ot">TRUE</span>){</span>
+<span id="cb483-17"><a href="count-sim.html#cb483-17"></a>  sim_res &lt;-<span class="st"> </span><span class="kw">simulator</span>(</span>
+<span id="cb483-18"><a href="count-sim.html#cb483-18"></a>    <span class="dt">n_sim =</span> n_sim_i,</span>
+<span id="cb483-19"><a href="count-sim.html#cb483-19"></a>    <span class="dt">n_levels =</span> n_levels_sim,</span>
+<span id="cb483-20"><a href="count-sim.html#cb483-20"></a>    <span class="dt">mu_levels =</span> mu_levels_sim,</span>
+<span id="cb483-21"><a href="count-sim.html#cb483-21"></a>    <span class="dt">theta_levels =</span> theta_levels_sim, <span class="co"># not used</span></span>
+<span id="cb483-22"><a href="count-sim.html#cb483-22"></a>    <span class="dt">sigma_levels =</span> sigma_levels_sim,</span>
+<span id="cb483-23"><a href="count-sim.html#cb483-23"></a>    <span class="dt">normal =</span> normal_sim</span>
+<span id="cb483-24"><a href="count-sim.html#cb483-24"></a>  )</span>
+<span id="cb483-25"><a href="count-sim.html#cb483-25"></a>  p_values &lt;-<span class="st"> </span><span class="kw">binder</span>(p_values,</span>
+<span id="cb483-26"><a href="count-sim.html#cb483-26"></a>                     sim_res,</span>
+<span id="cb483-27"><a href="count-sim.html#cb483-27"></a>                     sim_i,</span>
+<span id="cb483-28"><a href="count-sim.html#cb483-28"></a>                     n_levels_sim,</span>
+<span id="cb483-29"><a href="count-sim.html#cb483-29"></a>                     mu_levels_sim,</span>
+<span id="cb483-30"><a href="count-sim.html#cb483-30"></a>                     theta_levels_sim,</span>
+<span id="cb483-31"><a href="count-sim.html#cb483-31"></a>                     sigma_levels_sim,</span>
+<span id="cb483-32"><a href="count-sim.html#cb483-32"></a>                     normal_sim)</span>
+<span id="cb483-33"><a href="count-sim.html#cb483-33"></a><span class="co">#  apply(sim_res, 2, function(x) sum(x &lt; 0.05)/n_sim_i)</span></span>
+<span id="cb483-34"><a href="count-sim.html#cb483-34"></a>}</span></code></pre></div>
 </div>
 </div>
-<div id="checking-the-model-ii-scale-location-plot-for-checking-homoskedasticity" class="section level3">
-<h3><span class="header-section-number">17.2.3</span> Checking the model II – scale-location plot for checking homoskedasticity</h3>
-<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/glm1-worm-scale-location-1.png" width="576" /></p>
-<p>A linear model also assumes the error has constant variance (that is, the error variance is not a function of the value of <span class="math inline">\(X\)</span>), or homoskedasticity. The fit model can be checked for homoskedasticity using a scale-location plot, which is a scatterplot of the positive square-root of the standardized residuals against the fitted values<a href="appendix-2-online-resources-for-getting-started-with-statistical-modeling-in-r.html#fn6" class="footnote-ref" id="fnref6"><sup>6</sup></a>. If the residuals approximate a normal distribution, then a regression line through the scatter should be close to horizontal. The regression line in the scale-location plot of the fit of the linear model to the worm data shows a distinct increase in the “scale” (the square root of the standardized residuals) with increased fitted value, which is expected of data that are lognormally, Poisson, or negative binomially distributed.</p>
+<div id="save-it-read-it" class="section level2">
+<h2><span class="header-section-number">19.4</span> Save it, Read it</h2>
+<div class="sourceCode" id="cb484"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb484-1"><a href="count-sim.html#cb484-1"></a>sim_data_folder &lt;-<span class="st"> &quot;sim_data&quot;</span></span>
+<span id="cb484-2"><a href="count-sim.html#cb484-2"></a>sim_fn &lt;-<span class="st"> &quot;counts_t_test_alternative.Rds&quot;</span></span>
+<span id="cb484-3"><a href="count-sim.html#cb484-3"></a>sim_path &lt;-<span class="st"> </span><span class="kw">here</span>(sim_data_folder, sim_fn)</span>
+<span id="cb484-4"><a href="count-sim.html#cb484-4"></a><span class="cf">if</span>(do_it <span class="op">==</span><span class="st"> </span><span class="ot">TRUE</span>){</span>
+<span id="cb484-5"><a href="count-sim.html#cb484-5"></a>  <span class="kw">saveRDS</span>(p_values, sim_path)</span>
+<span id="cb484-6"><a href="count-sim.html#cb484-6"></a>}<span class="cf">else</span>{</span>
+<span id="cb484-7"><a href="count-sim.html#cb484-7"></a>  p_values &lt;-<span class="st"> </span><span class="kw">readRDS</span>(sim_path)</span>
+<span id="cb484-8"><a href="count-sim.html#cb484-8"></a>}</span></code></pre></div>
 </div>
-<div id="two-distributions-for-count-data-poisson-and-negative-binomial" class="section level3">
-<h3><span class="header-section-number">17.2.4</span> Two distributions for count data – Poisson and Negative Binomial</h3>
-<p>The pattern in the normal Q-Q plot in Figure <a href="counts.html#fig:glm1-plot2">17.2</a>B should discourage one from modeling the data with a normal distribution and instead model the data with an alternative distribution using a Generalized Linear Model. There is no unique mapping between how data are generated and a specific distribution, so this decision is not as easy as thinking about the data generation mechanism and then simply choosing the “correct” distribution. Section 4.5 in Bolker (xxx) is an excellent summary of how to think about the generating processes for different distributions in the context of ecological data. Since the response in the worm data are counts, we need to choose a distribution that generates integer values, such as the Poisson or the negative binomial.</p>
-<ol style="list-style-type: decimal">
-<li>Poisson – A Poisson distribution is the probability distribution of the number of occurrences of some thing (an egg, a parasite, or a specific mRNA transcript) generated by a process that generates the thing at a constant rate per unit effort (duration or space). This constant rate is <span class="math inline">\(\lambda\)</span>, which is the expectation, so <span class="math inline">\(\mathrm{E}(Y) = \mu = \lambda\)</span>. Because the rate per effort is constant, <em>the variance of a Poisson variable equals the mean</em>, <span class="math inline">\(\sigma^2 = \mu = \lambda\)</span>. Figure <a href="#fig:glm1-poisson"><strong>??</strong></a> shows three samples from a Poisson distribution with <span class="math inline">\(\lambda\)</span> set to 1, 5, and 10. The plots show that, as the mean count (<span class="math inline">\(\lambda\)</span>) moves away from zero, a Poisson distribution 1) becomes less skewed and more closely approximates a normal distribution and 2) has an increasingly low probability of including zero (less than 1% zeros when the mean is 5).</li>
-</ol>
-<p>A Poisson distribution, then, is useful for count data in which the conditional variance is close to the conditional mean. Very often, biological count data are not well approximated by a Poisson distribution because the variance is either less than the mean, an example of <strong>underdispersion</strong><a href="appendix-2-online-resources-for-getting-started-with-statistical-modeling-in-r.html#fn7" class="footnote-ref" id="fnref7"><sup>7</sup></a>, or greater than the mean, an example of <strong>overdispersion</strong><a href="appendix-2-online-resources-for-getting-started-with-statistical-modeling-in-r.html#fn8" class="footnote-ref" id="fnref8"><sup>8</sup></a>. A useful distribution for count data with overdispersion is the negative binomial.</p>
-<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/glm1-poisson-1.png" width="576" /></p>
-<ol start="2" style="list-style-type: decimal">
-<li>Negative Binomial – The negative binomial distribution is a discrete probability distribution of the number of successes that occur before a specified number of failures <span class="math inline">\(k\)</span> given a probability <span class="math inline">\(p\)</span> of success. This isn’t a very useful way of thinking about modeling count data in biology. What is useful is that the Negative Binomial distribution can be used simply as way of modeling an “overdispersed” Poisson process. The mean of a negative binomial variable is <span class="math inline">\(\mu = k\frac{p}{1-p}\)</span> and the variance is <span class="math inline">\(\sigma^2 = \mu + \mu^2/k\)</span>. As a method for modeling an overdispersed Poisson variable, <span class="math inline">\(k\)</span> functions as a **dispersion parameter* controlling the amount of overdispersion and can be any real, positive value (not simply a positive integer), including values less than 1.</li>
-</ol>
-</div>
-<div id="fitting-a-glm-with-a-poisson-distribution-to-the-worm-data" class="section level3">
-<h3><span class="header-section-number">17.2.5</span> Fitting a GLM with a Poisson distribution to the worm data</h3>
-<p>Let’s fit a GLM with a Poisson distribution to the worm data. The model is</p>
-<p><span class="math display">\[\begin{align}
-Diplo\_intensity_i &amp;\sim Poisson(\mu_i)\\
-\mathrm{E}({Diplo\_intensity|Treatment}) &amp;= \mu\\
-\mu_i &amp;= \mathrm{exp}(\eta_i)\\
-\eta_i &amp;= \beta_0 + \beta_1 Uninfected_i + \beta_2 Infected\_LG_i + \beta_3 Infected\_HG_i
-\end{align}\]</span></p>
-<ol style="list-style-type: decimal">
-<li>The first line of the model is the stochastic part stating the response is modeled as a random Poisson variable with mean and variance <span class="math inline">\(\mu\)</span> (the rate parameter <span class="math inline">\(\lambda\)</span> of the Poisson distribution).</li>
-<li>The second line states the <span class="math inline">\(\mu\)</span> is the conditional mean or conditional expectation</li>
-<li>The third line connects the conditional mean on the link scale (<span class="math inline">\(\eta\)</span>) with the conditional mean on the response scale (<span class="math inline">\(\mu\)</span>)</li>
-<li>The fourth line is the linear predictor, and includes three dummy variables.</li>
-</ol>
-<p>Remember that the conditional mean is the expected/predicted/fitted/modeled value when <span class="math inline">\(X=x_i\)</span>.</p>
-</div>
-<div id="model-checking-fits-to-count-data" class="section level3">
-<h3><span class="header-section-number">17.2.6</span> Model checking fits to count data</h3>
-<p>we use the fit model to check
-1. the overall similarity of observed and theoretical distributions
-2. if the observed distribution is over or under dispersed
-3. if there more zeros than expected by the theoretical distribution. If so, the observed distribution is <strong>zero-inflated</strong></p>
-<div id="model-checking-a-glm-i-the-quantile-residual-q-q-plot" class="section level4">
-<h4><span class="header-section-number">17.2.6.1</span> Model checking a GLM I – the quantile residual Q-Q plot</h4>
-<p>A quantile-quantile (Q-Q) plot is used to check overall similarity of the observed distribution with the distribution that would be expected under the model. An alternative to a Normal Q-Q plot for a GLM fit is a quantile residual Q-Q plot of observed vs. expected <strong>quantile residuals</strong>. The basic algorithm for this is</p>
-<ol style="list-style-type: decimal">
-<li>Use the model parameters to simulate <span class="math inline">\(p\)</span> fake values of the response for each row of the data. This will be a <span class="math inline">\(n \times p\)</span> matrix of fake data where each column is a new, random sample of a population with parameters equal to that estimated for the observed data. For the Poisson, the parameter for each observation will be <span class="math inline">\(\hat{\mu}_i\)</span>, the modeled value of observation <span class="math inline">\(i\)</span>. For the negative binomial, the parameters will be <span class="math inline">\(\hat{\mu}_i\)</span> and the dispersion parameter <span class="math inline">\(k\)</span>, which is the same for all observations.</li>
-<li>For each observation (each row of the matrix of fake data), compute the fraction of simulated values smaller than the observed value of the response variable for that row. This fraction is the observed <strong>quantile residual</strong>, which ranges in value from 0 to 1. If the true data are distribitued as that specified by the model, then quantile residuals will have a uniform distribution.</li>
-<li>Sort the observed quantile residuals from smallest to largest and plot against theoretical quantile residuals from a uniform distribution. One could transform the quantile residuals to standard, normal residuals and then plot using a traditional Normal Q-Q plot but this step isn’t necessary (if reported, a Normal Q-Q plot of transformed quantile residuals might confuse readers who failed to read the fine print).</li>
-</ol>
-<div style="background-color:#cccccc; text-align:left; vertical-align: middle; padding:20px 47px;">
-<p><strong>Misconceivable</strong> – A common misconception is that if the distribution of the response approximates a Poisson distribution, then the residuals of a GLM fit with a Poisson distribution should be normally distributed, which could then be checked with a Normal Q-Q plot, and homoskedastic, which could be checked with a scale-location plot. Neither of these is true because a GLM does not transform the data and, in fact, the model definition does not specify anything about the distribution of an “error” term – there is no <span class="math inline">\(\varepsilon\)</span> in the model defintion above! This is why thinking about the definition of a linear model by specifying an error term with a normal distribution can be confusing and lead to misconceptions when learning GLMs.</p>
-</div>
-<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/glm1-worm-poisson-qr-1.png" width="576" /></p>
-<p>The Q-Q plot using quantile residuals with a Poisson distribution indicates that the counts of <em>Diplostomum</em> larvae in the eyes of the threespine stickleback are not well approximated by a Poisson distribution – there are too many observed values near the ends of the expected tails, indicating the expected values are not spread out enough. This pattern emerges because the observed counts are overdispersed compared to a Poisson distribution.</p>
-</div>
-<div id="model-checking-a-glm-ii-a-dispersion-plot" class="section level4">
-<h4><span class="header-section-number">17.2.6.2</span> Model checking a GLM II – a dispersion plot</h4>
-<p>If observed counts are Poisson distributed, then the <strong>Pearson residuals</strong> (<span class="math inline">\(r_i\)</span>) and the residual degrees of freedom of the fit model (<span class="math inline">\(df\)</span>) can be used to compute a dispersion statistic</p>
-<p><span class="math display">\[\begin{equation}
-\frac{\sum{r_i}}{df}
-\end{equation}\]</span></p>
-<p>that has an expected value of 1. Instead of a formal hypothesis test of this statistic, I use a simulation approach and ask, “if the observed counts are Poisson distributed, what is the expected frequency distribution of this dispersion statistic?” and then use simulation to generate this expected distribution. The algorithm for this is</p>
-<ol style="list-style-type: decimal">
-<li>For each observation <span class="math inline">\(i\)</span>, generate a random Poisson count using <span class="math inline">\(\hat{\mu}\)</span> as the parameter.</li>
-<li>Fit the model and compute the dispersion statistic.</li>
-<li>Repeat 1 and 2 <span class="math inline">\(N_{iter}\)</span> times.</li>
-</ol>
-<p>The plot below shows a histogram of the dispersion statistic computed for 1000 simulations of the worm data. The observed dispersion statistic is 3.4. The expected value is 1.0. The mean of the simulated values is 1.</p>
-<div class="figure"><span id="fig:glm1-worm-poisson-dispersion-plot"></span>
-<img src="Walker-elementary-statistical-modeling-draft_files/figure-html/glm1-worm-poisson-dispersion-plot-1.png" alt="Observed vs. expected dispersion statistic. The observed statistic marked by the red line. The histogram of expected statistics are from 1000 simulations of the observed data." width="576" />
-<p class="caption">
-Figure 17.3: Observed vs. expected dispersion statistic. The observed statistic marked by the red line. The histogram of expected statistics are from 1000 simulations of the observed data.
-</p>
-</div>
-</div>
-</div>
-<div id="fitting-a-glm-with-a-negative-binomial-distribution-to-the-worm-data" class="section level3">
-<h3><span class="header-section-number">17.2.7</span> Fitting a GLM with a Negative Binomial distribution to the worm data</h3>
-<p>The model is</p>
-<p><span class="math display">\[\begin{align}
-Diplo\_intensity &amp;\sim NB(\mu, k)\\
-\mathrm{E}({Diplo\_intensity|Treatment}) &amp;= \mu\\
-\mu &amp;= \mathrm{exp}(\eta)\\
-\eta &amp;= \beta_0 + \beta_1 Uninfected + \beta_2 Infected\_LG + \beta_3 Infected\_HG
-\end{align}\]</span></p>
-<p>This model specifies a negative binomial distribution but otherwise is just like that above specifying a Poisson distribution.</p>
-<div id="model-checking-2" class="section level4">
-<h4><span class="header-section-number">17.2.7.1</span> Model checking</h4>
-<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/glm1-worm-nb-1.png" width="576" /></p>
-<p>A quantile residual Q-Q plot of the GLM model fit with negative binomial distribution is illustrated above. This looks pretty good.</p>
-</div>
-<div id="model-means-and-coefficients" class="section level4">
-<h4><span class="header-section-number">17.2.7.2</span> Model means and coefficients</h4>
-<p>In a Generalized Linear Model of counts using either a Poisson or negative binomial distribution, modeled means, coefficients, and contrasts can be reported either on the link or response scale. Remember, the response scale is a count, while the link scale is a log(count).</p>
-<p>The modeled means on the link scale are</p>
-<pre><code>##  Treatment   emmean     SE  df asymp.LCL asymp.UCL
-##  Control       1.82 0.0804 Inf      1.66      1.98
-##  Uninfected    1.50 0.1093 Inf      1.29      1.72
-##  Infected LG   1.62 0.1362 Inf      1.36      1.89
-##  Infected HG   2.36 0.0714 Inf      2.22      2.50
-## 
-## Results are given on the log (not the response) scale. 
-## Confidence level used: 0.95</code></pre>
-<p>While the means on response scale are</p>
-<pre><code>##  Treatment   response    SE  df asymp.LCL asymp.UCL
-##  Control         6.18 0.497 Inf      5.28      7.24
-##  Uninfected      4.50 0.492 Inf      3.63      5.58
-##  Infected LG     5.07 0.691 Inf      3.89      6.63
-##  Infected HG    10.60 0.757 Inf      9.22     12.20
-## 
-## Confidence level used: 0.95 
-## Intervals are back-transformed from the log scale</code></pre>
-<ol style="list-style-type: decimal">
-<li><p>A mean on the response scale is simply the exponent of the mean on the link scale. For example, the mean of the Control treatment level on the response scale is <span class="math inline">\(\mathrm{exp}(1.821408) = 6.180555\)</span>.</p></li>
-<li><p>The CIs on the link scale are symmetric around the mean but those on the response scale are not. This is a feature, not a bug. Remember that counts are right skewed which means a CI will have a wider right than left interval. Check this!</p></li>
-<li><p>If a plot includes a 1 SE error bar on the response scale, this is technically correct but it encourages the practice of computing CIs using the 2*SE rule of thumb. This rule breaks down for count data with right skewed distributions.</p></li>
-<li><p>Plotting the response scale CIs is both technically correct and makes the 2*SE rule of thumb unnecessary.</p></li>
-</ol>
-<p>The model coefficients on the link scale are</p>
-<pre><code>##  contrast              estimate    SE  df asymp.LCL asymp.UCL z.ratio
-##  Uninfected - Control    -0.317 0.136 Inf    -0.583   -0.0514 -2.339 
-##  Infected LG - Control   -0.197 0.158 Inf    -0.507    0.1126 -1.248 
-##  Infected HG - Control    0.540 0.108 Inf     0.329    0.7504  5.019 
-##  p.value
-##  0.0193 
-##  0.2122 
-##  &lt;.0001 
-## 
-## Results are given on the log (not the response) scale. 
-## Confidence level used: 0.95</code></pre>
-<p>Backtransforming the coefficients (but not the intercept) to the response scale (using <span class="math inline">\(\mathrm{exp}{b_j}\)</span>) results in a <strong>response ratio</strong>.</p>
-<pre><code>##  contrast              ratio     SE  df asymp.LCL asymp.UCL z.ratio
-##  Uninfected / Control  0.728 0.0988 Inf     0.558      0.95 -2.339 
-##  Infected LG / Control 0.821 0.1298 Inf     0.602      1.12 -1.248 
-##  Infected HG / Control 1.715 0.1845 Inf     1.389      2.12  5.019 
-##  p.value
-##  0.0193 
-##  0.2122 
-##  &lt;.0001 
-## 
-## Confidence level used: 0.95 
-## Intervals are back-transformed from the log scale 
-## Tests are performed on the log scale</code></pre>
-<ol style="list-style-type: decimal">
-<li>Note how the emmeans package reports the name of the term as the ratio of the coefficient term to the intercept term (the reference treatment level). Why are the coefficients tranformed to ratios on the response scale? Remember that a coefficient is a difference in conditional means and that <span class="math inline">\(\mathrm{exp}(B-A) = \frac{\mathrm{exp}(B)}{\mathrm{exp}(A)}\)</span>. For a dummy variable as here (say “Infected HG”), the response ratio is</li>
-</ol>
-<p><span class="math display">\[\begin{equation}
-RR_{Infected\_HG} = \frac{\overline{Infected\_HG}}{\overline{Control}}
-\end{equation}\]</span></p>
-<p>which give us the <strong>relative effect</strong> of Infected_HG compared to the Control. Relative effects could be reported as a response ratio in a table, or in the text it could be reported as a percent “Infected HG fish had 71.5% (95%CI: 38.9% - 111.8%) more <em>Diplostomum</em> larvae than Control fish.” Where do these percents come from? The percent effect is <span class="math inline">\(100(RR_j - 1)\)</span> larger than the reference mean if the <span class="math inline">\(RR_j &gt; 1\)</span> or <span class="math inline">\(100(1 - RR_j)\)</span> smaller than the reference mean if the <span class="math inline">\(RR_j &lt; 1\)</span>.</p>
-<ol start="2" style="list-style-type: decimal">
-<li><p>Backtransforming the intercept does not generate a ratio since the intercept on the link scale is not a difference. For the worm analysis, the intercept on the link scale is the mean count of the control group on the link scale and the backtransformed intercept is the mean count of the control group on the response scale.</p></li>
-<li><p>Effects on the response scale are not additive but multiplicative! So, for example, the mean of the Infected HG treatment level on the response scale is <span class="math inline">\(\overline{Control}*RR_{Infected\_HG}\)</span> (remember that with a linear model the mean would be <span class="math inline">\(b_{Control} + b_{Infected\_HG}\)</span>). Check and see if this works.</p></li>
-</ol>
-</div>
-</div>
-</div>
-<div id="working-in-r-6" class="section level2">
-<h2><span class="header-section-number">17.3</span> Working in R</h2>
-<p><strong>Fitting a GLM to count data</strong>. The poisson family is specified with the base R <code>glm()</code> function. For negative binomial, use <code>glm.nb</code> from the MASS package</p>
-<div class="sourceCode" id="cb450"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb450-1"><a href="counts.html#cb450-1"></a><span class="co"># poisson - less likely to fit to real biological data well because of overdispersion</span></span>
-<span id="cb450-2"><a href="counts.html#cb450-2"></a>fit &lt;-<span class="st"> </span><span class="kw">glm</span>(y <span class="op">~</span><span class="st"> </span>treatment, <span class="dt">family =</span> <span class="st">&quot;poisson&quot;</span>, <span class="dt">data =</span> dt)</span>
-<span id="cb450-3"><a href="counts.html#cb450-3"></a></span>
-<span id="cb450-4"><a href="counts.html#cb450-4"></a><span class="co"># two alternatives to overdispersed poisson fit</span></span>
-<span id="cb450-5"><a href="counts.html#cb450-5"></a><span class="co"># quasipoisson</span></span>
-<span id="cb450-6"><a href="counts.html#cb450-6"></a>fit &lt;-<span class="st"> </span><span class="kw">glm</span>(y <span class="op">~</span><span class="st"> </span>treatment, <span class="dt">family =</span> <span class="st">&quot;quasipoisson&quot;</span>, <span class="dt">data=</span>dt)</span>
-<span id="cb450-7"><a href="counts.html#cb450-7"></a><span class="co"># negative binomial - more likely to fit to real biological data well</span></span>
-<span id="cb450-8"><a href="counts.html#cb450-8"></a><span class="co"># note that &quot;family&quot; is not an argument since this function is used only to fit a negative binomial distribution!</span></span>
-<span id="cb450-9"><a href="counts.html#cb450-9"></a>fit &lt;-<span class="st"> </span><span class="kw">glm.nb</span>(y <span class="op">~</span><span class="st"> </span>treatment, <span class="dt">data =</span> dt)</span></code></pre></div>
-<p><strong>Fitting a GLM to a continuous conditional response with right skew</strong>. The Gamma family is specified with the base R <code>glm()</code> function.</p>
-<div class="sourceCode" id="cb451"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb451-1"><a href="counts.html#cb451-1"></a>fit &lt;-<span class="st"> </span><span class="kw">glm</span>(y <span class="op">~</span><span class="st"> </span>treatment, <span class="dt">family =</span> <span class="kw">Gamma</span>(<span class="dt">link =</span> <span class="st">&quot;log&quot;</span>), <span class="dt">data =</span> dt)</span></code></pre></div>
-<p><strong>Fitting a GLM to a binary (success or failure, presence or absence, survived or died) response</strong></p>
-<p>The binomial family is specified with base R <code>glm()</code> function.</p>
-<div class="sourceCode" id="cb452"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb452-1"><a href="counts.html#cb452-1"></a><span class="co"># if the data includes a 0 or 1 for every observation of y</span></span>
-<span id="cb452-2"><a href="counts.html#cb452-2"></a>fit &lt;-<span class="st"> </span><span class="kw">glm</span>(y <span class="op">~</span><span class="st"> </span>treatment, <span class="dt">family =</span> <span class="st">&quot;binomial&quot;</span>, <span class="dt">data =</span> dt)</span>
-<span id="cb452-3"><a href="counts.html#cb452-3"></a></span>
-<span id="cb452-4"><a href="counts.html#cb452-4"></a><span class="co"># if the data includes the frequency of success AND there is a measure of the total n</span></span>
-<span id="cb452-5"><a href="counts.html#cb452-5"></a>dt[ , failure <span class="op">:</span><span class="er">=</span><span class="st"> </span>n <span class="op">-</span><span class="st"> </span>success]</span>
-<span id="cb452-6"><a href="counts.html#cb452-6"></a>fit &lt;-<span class="st"> </span><span class="kw">glm</span>(<span class="kw">cbind</span>(success, failure) <span class="op">~</span><span class="st"> </span>treatment, <span class="dt">family =</span> <span class="st">&quot;binomial&quot;</span>, <span class="dt">data =</span> dt)</span></code></pre></div>
-<p><strong>Fitting Generalized Linear Mixed Models</strong>
-Generalized linear mixed models are fit with <code>glmer</code> from the lmer package.</p>
-<div class="sourceCode" id="cb453"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb453-1"><a href="counts.html#cb453-1"></a><span class="co"># random intercept of factor &quot;id&quot;</span></span>
-<span id="cb453-2"><a href="counts.html#cb453-2"></a>fit &lt;-<span class="st"> </span><span class="kw">glmer</span>(y <span class="op">~</span><span class="st"> </span>treatment <span class="op">+</span><span class="st"> </span>(<span class="dv">1</span><span class="op">|</span>id), <span class="dt">family =</span> <span class="st">&quot;poisson&quot;</span>, <span class="dt">data =</span> dt)</span>
-<span id="cb453-3"><a href="counts.html#cb453-3"></a></span>
-<span id="cb453-4"><a href="counts.html#cb453-4"></a><span class="co"># random intercept and slope of factor &quot;id&quot;</span></span>
-<span id="cb453-5"><a href="counts.html#cb453-5"></a>fit &lt;-<span class="st"> </span><span class="kw">glmer</span>(y <span class="op">~</span><span class="st"> </span>treatment <span class="op">+</span><span class="st"> </span>(treatment<span class="op">|</span>id), <span class="dt">family =</span> <span class="kw">Gamma</span>(<span class="dt">link =</span> <span class="st">&quot;log&quot;</span>), <span class="dt">data =</span> dt)</span>
-<span id="cb453-6"><a href="counts.html#cb453-6"></a></span>
-<span id="cb453-7"><a href="counts.html#cb453-7"></a><span class="co"># Again, negative binomial uses a special function</span></span>
-<span id="cb453-8"><a href="counts.html#cb453-8"></a>fit &lt;-<span class="st"> </span><span class="kw">glmer.nb</span>(y <span class="op">~</span><span class="st"> </span>treatment <span class="op">+</span><span class="st"> </span>(treatment<span class="op">|</span>id), <span class="dt">data =</span> dt)</span></code></pre></div>
-<p>Another good package for GLMMs is <code>glmmTMB</code> from the glmmTMB package</p>
-<div class="sourceCode" id="cb454"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb454-1"><a href="counts.html#cb454-1"></a><span class="co"># negative binomial</span></span>
-<span id="cb454-2"><a href="counts.html#cb454-2"></a>fit &lt;-<span class="st"> </span><span class="kw">glmmTMB</span>(y <span class="op">~</span><span class="st"> </span>treatment <span class="op">+</span><span class="st"> </span>(<span class="dv">1</span><span class="op">|</span>id), <span class="dt">family=</span><span class="st">&quot;nbinom2&quot;</span>, <span class="dt">data =</span> dt)</span>
-<span id="cb454-3"><a href="counts.html#cb454-3"></a></span>
-<span id="cb454-4"><a href="counts.html#cb454-4"></a><span class="co"># nbinom1, the mean variance relationship is that of quasipoisson</span></span>
-<span id="cb454-5"><a href="counts.html#cb454-5"></a>fit &lt;-<span class="st"> </span><span class="kw">glmmTMB</span>(y <span class="op">~</span><span class="st"> </span>treatment <span class="op">+</span><span class="st"> </span>(<span class="dv">1</span><span class="op">|</span>id), <span class="dt">family=</span><span class="st">&quot;nbinom1&quot;</span>, <span class="dt">data =</span> dt)</span></code></pre></div>
-<div id="fitting-a-glm-to-count-data" class="section level3">
-<h3><span class="header-section-number">17.3.1</span> Fitting a GLM to count data</h3>
-<p>Source publication: Benesh, D. P., &amp; Kalbe, M. (2016). Experimental parasite community ecology: intraspecific variation in a large tapeworm affects community assembly. Journal of Animal Ecology, 85(4), 1004-1013.</p>
-<p>Source data URL: <a href="https://datadryad.org/resource/doi:10.5061/dryad.bq8j8" class="uri">https://datadryad.org/resource/doi:10.5061/dryad.bq8j8</a></p>
-<p>Source file: “Lab_exp.csv”</p>
-<p>Poisson fit. A quantile residual Q-Q plot can be generated using the package DHARMa</p>
-<div class="sourceCode" id="cb455"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb455-1"><a href="counts.html#cb455-1"></a>fit.pois &lt;-<span class="st"> </span><span class="kw">glm</span>(Diplo_intensity <span class="op">~</span><span class="st"> </span>Treatment, <span class="dt">family=</span><span class="st">&quot;poisson&quot;</span>, <span class="dt">data=</span>worm)</span>
-<span id="cb455-2"><a href="counts.html#cb455-2"></a></span>
-<span id="cb455-3"><a href="counts.html#cb455-3"></a><span class="co"># from the DHARMa package</span></span>
-<span id="cb455-4"><a href="counts.html#cb455-4"></a>  n_sim &lt;-<span class="st"> </span><span class="dv">250</span></span>
-<span id="cb455-5"><a href="counts.html#cb455-5"></a>  simulationOutput &lt;-<span class="st"> </span><span class="kw">simulateResiduals</span>(<span class="dt">fittedModel =</span> fit.pois, <span class="dt">n =</span> n_sim)</span>
-<span id="cb455-6"><a href="counts.html#cb455-6"></a>  <span class="kw">plot</span>(simulationOutput, <span class="dt">asFactor =</span> F)</span></code></pre></div>
-<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/glm1-working-in-r-1.png" width="576" /></p>
-<p>A plot of the dispersion statistic can be generated using the object returned by the <code>SimulateOutput</code> function but with <code>refit = TRUE</code>, which refits a model each iteration. This refitting isn’t necessary if only the quantiile residuals are needed. The Dharma package does not divide the sum of squared Pearson residuals by the residual degrees of freedom and so the expected value of the statistic is <span class="math inline">\(df\)</span>.</p>
-<div class="sourceCode" id="cb456"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb456-1"><a href="counts.html#cb456-1"></a><span class="co"># from the DHARMa package</span></span>
-<span id="cb456-2"><a href="counts.html#cb456-2"></a>  n_sim &lt;-<span class="st"> </span><span class="dv">250</span></span>
-<span id="cb456-3"><a href="counts.html#cb456-3"></a>  simulationOutput &lt;-<span class="st"> </span><span class="kw">simulateResiduals</span>(<span class="dt">fittedModel=</span>fit.pois, <span class="dt">n=</span>n_sim, <span class="dt">refit=</span><span class="ot">TRUE</span>)</span>
-<span id="cb456-4"><a href="counts.html#cb456-4"></a>  <span class="kw">testDispersion</span>(simulationOutput)</span></code></pre></div>
-<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/unnamed-chunk-222-1.png" width="576" /></p>
-<pre><code>## 
-##  DHARMa nonparametric dispersion test via mean deviance residual
-##  fitted vs. simulated-refitted
-## 
-## data:  simulationOutput
-## dispersion = 3.3788, p-value &lt; 2.2e-16
-## alternative hypothesis: two.sided</code></pre>
-<p>Negative binomial fit.</p>
-<div class="sourceCode" id="cb458"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb458-1"><a href="counts.html#cb458-1"></a>fit.nb &lt;-<span class="st"> </span><span class="kw">glm.nb</span>(Diplo_intensity <span class="op">~</span><span class="st"> </span>Treatment, <span class="dt">data=</span>worm)</span>
-<span id="cb458-2"><a href="counts.html#cb458-2"></a><span class="co"># from the DHARMa package</span></span>
-<span id="cb458-3"><a href="counts.html#cb458-3"></a>  simulationOutput &lt;-<span class="st"> </span><span class="kw">simulateResiduals</span>(<span class="dt">fittedModel =</span> fit.nb, <span class="dt">n =</span> n_sim)</span>
-<span id="cb458-4"><a href="counts.html#cb458-4"></a>  <span class="kw">plot</span>(simulationOutput, <span class="dt">asFactor =</span> F)</span></code></pre></div>
-<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/glm-working-in-r-2-1.png" width="576" /></p>
-<div class="sourceCode" id="cb459"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb459-1"><a href="counts.html#cb459-1"></a><span class="co"># link scale</span></span>
-<span id="cb459-2"><a href="counts.html#cb459-2"></a>emm &lt;-<span class="st"> </span><span class="kw">emmeans</span>(fit.nb, <span class="dt">specs=</span><span class="st">&quot;Treatment&quot;</span>)</span>
-<span id="cb459-3"><a href="counts.html#cb459-3"></a>emm</span></code></pre></div>
-<pre><code>##  Treatment   emmean     SE  df asymp.LCL asymp.UCL
-##  Control       1.82 0.0804 Inf      1.66      1.98
-##  Uninfected    1.50 0.1093 Inf      1.29      1.72
-##  Infected LG   1.62 0.1362 Inf      1.36      1.89
-##  Infected HG   2.36 0.0714 Inf      2.22      2.50
-## 
-## Results are given on the log (not the response) scale. 
-## Confidence level used: 0.95</code></pre>
-<div class="sourceCode" id="cb461"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb461-1"><a href="counts.html#cb461-1"></a><span class="kw">summary</span>(<span class="kw">contrast</span>(emm, <span class="dt">method=</span><span class="st">&quot;trt.vs.ctrl&quot;</span>, <span class="dt">adjust=</span><span class="st">&quot;none&quot;</span>), <span class="dt">infer=</span><span class="kw">c</span>(<span class="ot">TRUE</span>, <span class="ot">TRUE</span>))</span></code></pre></div>
-<pre><code>##  contrast              estimate    SE  df asymp.LCL asymp.UCL z.ratio
-##  Uninfected - Control    -0.317 0.136 Inf    -0.583   -0.0514 -2.339 
-##  Infected LG - Control   -0.197 0.158 Inf    -0.507    0.1126 -1.248 
-##  Infected HG - Control    0.540 0.108 Inf     0.329    0.7504  5.019 
-##  p.value
-##  0.0193 
-##  0.2122 
-##  &lt;.0001 
-## 
-## Results are given on the log (not the response) scale. 
-## Confidence level used: 0.95</code></pre>
-<div class="sourceCode" id="cb463"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb463-1"><a href="counts.html#cb463-1"></a><span class="co"># response scale</span></span>
-<span id="cb463-2"><a href="counts.html#cb463-2"></a>emm.response &lt;-<span class="st"> </span><span class="kw">emmeans</span>(fit.nb, <span class="dt">specs=</span><span class="st">&quot;Treatment&quot;</span>, <span class="dt">type=</span><span class="st">&quot;response&quot;</span>)</span>
-<span id="cb463-3"><a href="counts.html#cb463-3"></a><span class="kw">summary</span>(<span class="kw">contrast</span>(emm, <span class="dt">method=</span><span class="st">&quot;trt.vs.ctrl&quot;</span>, <span class="dt">adjust=</span><span class="st">&quot;none&quot;</span>, <span class="dt">type=</span><span class="st">&quot;response&quot;</span>), <span class="dt">infer=</span><span class="kw">c</span>(<span class="ot">TRUE</span>, <span class="ot">TRUE</span>))</span></code></pre></div>
-<pre><code>##  contrast              ratio     SE  df asymp.LCL asymp.UCL z.ratio
-##  Uninfected / Control  0.728 0.0988 Inf     0.558      0.95 -2.339 
-##  Infected LG / Control 0.821 0.1298 Inf     0.602      1.12 -1.248 
-##  Infected HG / Control 1.715 0.1845 Inf     1.389      2.12  5.019 
-##  p.value
-##  0.0193 
-##  0.2122 
-##  &lt;.0001 
-## 
-## Confidence level used: 0.95 
-## Intervals are back-transformed from the log scale 
-## Tests are performed on the log scale</code></pre>
-</div>
-<div id="fitting-a-generalized-linear-mixed-model-glmm-to-count-data" class="section level3">
-<h3><span class="header-section-number">17.3.2</span> Fitting a generalized linear mixed model (GLMM) to count data</h3>
-</div>
-<div id="fitting-a-generalized-linear-model-to-continouus-data" class="section level3">
-<h3><span class="header-section-number">17.3.3</span> Fitting a generalized linear model to continouus data</h3>
-</div>
-</div>
-<div id="problems-1" class="section level2">
-<h2><span class="header-section-number">17.4</span> Problems</h2>
-<p>Analyze the data that went into Fig 6B of Tena, A., Pekas, A., Cano, D., Wäckers, F. L., &amp; Urbaneja, A. (2015). Sugar provisioning maximizes the biocontrol service of parasitoids. Journal of Applied Ecology, 52(3), 795-804.</p>
-<ol style="list-style-type: decimal">
-<li>Compute contrasts and CIs among all pairs of all three treatment levels</li>
-<li>Make a better plot like 6b including 1) use the modeled mean instead of the simple group mean and 2) use the modeled CI of the mean instead of the SE computed within each group independently.</li>
-</ol>
-<p>source URL: <a href="https://datadryad.org/resource/doi:10.5061/dryad.bj001" class="uri">https://datadryad.org/resource/doi:10.5061/dryad.bj001</a></p>
-<p>source file: “4_Parastism_Fig_6.csv”</p>
+<div id="analysis-1" class="section level2">
+<h2><span class="header-section-number">19.5</span> Analysis</h2>
+<div class="sourceCode" id="cb485"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb485-1"><a href="count-sim.html#cb485-1"></a>method_list &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;lm&quot;</span>, <span class="st">&quot;gls&quot;</span>, <span class="st">&quot;glm_nb&quot;</span>, <span class="st">&quot;glm_qp&quot;</span>, <span class="st">&quot;lmp&quot;</span>, <span class="st">&quot;mww&quot;</span>)</span>
+<span id="cb485-2"><a href="count-sim.html#cb485-2"></a></span>
+<span id="cb485-3"><a href="count-sim.html#cb485-3"></a>p_values[, <span class="kw">lapply</span>(.SD,</span>
+<span id="cb485-4"><a href="count-sim.html#cb485-4"></a>                  <span class="cf">function</span>(x) <span class="kw">sum</span>(x <span class="op">&lt;</span><span class="st"> </span><span class="fl">0.05</span>)<span class="op">/</span><span class="kw">mean</span>(n_sim)),</span>
+<span id="cb485-5"><a href="count-sim.html#cb485-5"></a>         .SDcols =<span class="st"> </span>method_list,</span>
+<span id="cb485-6"><a href="count-sim.html#cb485-6"></a>         by =<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;sim&quot;</span>, <span class="st">&quot;normal&quot;</span>,<span class="st">&quot;type&quot;</span>, <span class="st">&quot;n&quot;</span>, <span class="st">&quot;theta1&quot;</span>, <span class="st">&quot;theta2&quot;</span>)] <span class="op">%&gt;%</span></span>
+<span id="cb485-7"><a href="count-sim.html#cb485-7"></a><span class="st">  </span><span class="kw">kable</span>(<span class="dt">digits =</span> <span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">2</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">3</span>,<span class="dv">3</span>,<span class="dv">3</span>,<span class="dv">3</span>,<span class="dv">3</span>)) <span class="op">%&gt;%</span></span>
+<span id="cb485-8"><a href="count-sim.html#cb485-8"></a><span class="st">  </span><span class="kw">kable_styling</span>()</span></code></pre></div>
+<table class="table" style="margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:right;">
+sim
+</th>
+<th style="text-align:left;">
+normal
+</th>
+<th style="text-align:left;">
+type
+</th>
+<th style="text-align:left;">
+n
+</th>
+<th style="text-align:right;">
+theta1
+</th>
+<th style="text-align:right;">
+theta2
+</th>
+<th style="text-align:right;">
+lm
+</th>
+<th style="text-align:right;">
+gls
+</th>
+<th style="text-align:right;">
+glm_nb
+</th>
+<th style="text-align:right;">
+glm_qp
+</th>
+<th style="text-align:right;">
+lmp
+</th>
+<th style="text-align:right;">
+mww
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+type 1
+</td>
+<td style="text-align:left;">
+=
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+0.053
+</td>
+<td style="text-align:right;">
+0.050
+</td>
+<td style="text-align:right;">
+0.076
+</td>
+<td style="text-align:right;">
+0.052
+</td>
+<td style="text-align:right;">
+0.053
+</td>
+<td style="text-align:right;">
+0.046
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+type 1
+</td>
+<td style="text-align:left;">
+=
+</td>
+<td style="text-align:right;">
+6.6
+</td>
+<td style="text-align:right;">
+6.6
+</td>
+<td style="text-align:right;">
+0.043
+</td>
+<td style="text-align:right;">
+0.041
+</td>
+<td style="text-align:right;">
+0.075
+</td>
+<td style="text-align:right;">
+0.044
+</td>
+<td style="text-align:right;">
+0.046
+</td>
+<td style="text-align:right;">
+0.039
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+type 1
+</td>
+<td style="text-align:left;">
+=
+</td>
+<td style="text-align:right;">
+1.0
+</td>
+<td style="text-align:right;">
+1.0
+</td>
+<td style="text-align:right;">
+0.039
+</td>
+<td style="text-align:right;">
+0.034
+</td>
+<td style="text-align:right;">
+0.075
+</td>
+<td style="text-align:right;">
+0.046
+</td>
+<td style="text-align:right;">
+0.046
+</td>
+<td style="text-align:right;">
+0.041
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+type 1
+</td>
+<td style="text-align:left;">
+!=
+</td>
+<td style="text-align:right;">
+6.6
+</td>
+<td style="text-align:right;">
+6.6
+</td>
+<td style="text-align:right;">
+0.047
+</td>
+<td style="text-align:right;">
+0.049
+</td>
+<td style="text-align:right;">
+0.080
+</td>
+<td style="text-align:right;">
+0.048
+</td>
+<td style="text-align:right;">
+0.050
+</td>
+<td style="text-align:right;">
+0.046
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+power
+</td>
+<td style="text-align:left;">
+=
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+0.573
+</td>
+<td style="text-align:right;">
+0.567
+</td>
+<td style="text-align:right;">
+0.653
+</td>
+<td style="text-align:right;">
+0.572
+</td>
+<td style="text-align:right;">
+0.570
+</td>
+<td style="text-align:right;">
+0.528
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+power
+</td>
+<td style="text-align:left;">
+=
+</td>
+<td style="text-align:right;">
+6.6
+</td>
+<td style="text-align:right;">
+6.6
+</td>
+<td style="text-align:right;">
+0.488
+</td>
+<td style="text-align:right;">
+0.476
+</td>
+<td style="text-align:right;">
+0.590
+</td>
+<td style="text-align:right;">
+0.494
+</td>
+<td style="text-align:right;">
+0.499
+</td>
+<td style="text-align:right;">
+0.440
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+7
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+power
+</td>
+<td style="text-align:left;">
+=
+</td>
+<td style="text-align:right;">
+1.0
+</td>
+<td style="text-align:right;">
+1.0
+</td>
+<td style="text-align:right;">
+0.096
+</td>
+<td style="text-align:right;">
+0.082
+</td>
+<td style="text-align:right;">
+0.171
+</td>
+<td style="text-align:right;">
+0.113
+</td>
+<td style="text-align:right;">
+0.114
+</td>
+<td style="text-align:right;">
+0.088
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+8
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+power
+</td>
+<td style="text-align:left;">
+!=
+</td>
+<td style="text-align:right;">
+6.6
+</td>
+<td style="text-align:right;">
+6.6
+</td>
+<td style="text-align:right;">
+0.442
+</td>
+<td style="text-align:right;">
+0.501
+</td>
+<td style="text-align:right;">
+0.578
+</td>
+<td style="text-align:right;">
+0.452
+</td>
+<td style="text-align:right;">
+0.444
+</td>
+<td style="text-align:right;">
+0.438
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+9
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+power
+</td>
+<td style="text-align:left;">
+!=
+</td>
+<td style="text-align:right;">
+1.0
+</td>
+<td style="text-align:right;">
+6.6
+</td>
+<td style="text-align:right;">
+0.034
+</td>
+<td style="text-align:right;">
+0.082
+</td>
+<td style="text-align:right;">
+0.144
+</td>
+<td style="text-align:right;">
+0.054
+</td>
+<td style="text-align:right;">
+0.041
+</td>
+<td style="text-align:right;">
+0.045
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+type 1
+</td>
+<td style="text-align:left;">
+!=
+</td>
+<td style="text-align:right;">
+6.6
+</td>
+<td style="text-align:right;">
+1.0
+</td>
+<td style="text-align:right;">
+0.127
+</td>
+<td style="text-align:right;">
+0.103
+</td>
+<td style="text-align:right;">
+0.139
+</td>
+<td style="text-align:right;">
+0.116
+</td>
+<td style="text-align:right;">
+0.132
+</td>
+<td style="text-align:right;">
+0.144
+</td>
+</tr>
+</tbody>
+</table>
 
 </div>
 </div>
@@ -949,8 +1566,8 @@ Generalized linear mixed models are fit with <code>glmer</code> from the lmer pa
           </div>
         </div>
       </div>
-<a href="pre-post.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="gls.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="gls.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="appendix-1-getting-started-with-r.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -982,7 +1599,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/rstudio/bookdown-demo/edit/master/chapters/60-glm01-counts.Rmd",
+"link": "https://github.com/rstudio/bookdown-demo/edit/master/simulations/simulation-glm-counts.Rmd",
 "text": "Edit"
 },
 "history": {
