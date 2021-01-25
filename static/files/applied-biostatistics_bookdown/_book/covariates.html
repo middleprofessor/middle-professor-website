@@ -697,8 +697,8 @@ area\_of\_necrosis = \beta_0 + \beta_1 area\_at\_risk + \beta_2 treatment_{myrio
 \tag{14.5}
 \end{equation}\]</span></p>
 <p>The model includes parameters for the effects of area at risk (<span class="math inline">\(\beta_1\)</span>), the myriosin treatment (<span class="math inline">\(\beta_2\)</span>) and the myriosin + DoxSa treatment (<span class="math inline">\(\beta_3\)</span>). I explain the interpretation of these effects in “Interpretation of the model coefficients” below.</p>
-<div class="sourceCode" id="cb386"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb386-1"><a href="covariates.html#cb386-1"></a>fig4h_m1 &lt;-<span class="st"> </span><span class="kw">lm</span>(area_of_necrosis <span class="op">~</span><span class="st"> </span>area_at_risk <span class="op">+</span><span class="st"> </span>treatment,</span>
-<span id="cb386-2"><a href="covariates.html#cb386-2"></a>               <span class="dt">data =</span> fig4h)</span></code></pre></div>
+<div class="sourceCode" id="cb387"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb387-1"><a href="covariates.html#cb387-1"></a>fig4h_m1 &lt;-<span class="st"> </span><span class="kw">lm</span>(area_of_necrosis <span class="op">~</span><span class="st"> </span>area_at_risk <span class="op">+</span><span class="st"> </span>treatment,</span>
+<span id="cb387-2"><a href="covariates.html#cb387-2"></a>               <span class="dt">data =</span> fig4h)</span></code></pre></div>
 </div>
 <div id="plot-the-model-1" class="section level3">
 <h3><span class="header-section-number">14.2.2</span> Plot the model</h3>
@@ -711,9 +711,9 @@ Figure 14.5: The effect of treatment on area of necrosis, adjusted for area of r
 </div>
 <div id="interpretation-of-the-model-coefficients" class="section level3">
 <h3><span class="header-section-number">14.2.3</span> Interpretation of the model coefficients</h3>
-<div class="sourceCode" id="cb387"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb387-1"><a href="covariates.html#cb387-1"></a>fig4h_m1_coef &lt;-<span class="st"> </span><span class="kw">cbind</span>(<span class="kw">coef</span>(<span class="kw">summary</span>(fig4h_m1)),</span>
-<span id="cb387-2"><a href="covariates.html#cb387-2"></a>      <span class="kw">confint</span>(fig4h_m1))</span>
-<span id="cb387-3"><a href="covariates.html#cb387-3"></a><span class="kw">signif</span>(fig4h_m1_coef, <span class="dt">digits =</span> <span class="dv">3</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb388"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb388-1"><a href="covariates.html#cb388-1"></a>fig4h_m1_coef &lt;-<span class="st"> </span><span class="kw">cbind</span>(<span class="kw">coef</span>(<span class="kw">summary</span>(fig4h_m1)),</span>
+<span id="cb388-2"><a href="covariates.html#cb388-2"></a>      <span class="kw">confint</span>(fig4h_m1))</span>
+<span id="cb388-3"><a href="covariates.html#cb388-3"></a><span class="kw">signif</span>(fig4h_m1_coef, <span class="dt">digits =</span> <span class="dv">3</span>)</span></code></pre></div>
 <pre><code>##              Estimate Std. Error t value Pr(&gt;|t|)   2.5 % 97.5 %
 ## (Intercept)    -5.980     2.1400   -2.79 8.85e-03 -10.300 -1.610
 ## area_at_risk    0.453     0.0587    7.73 8.28e-09   0.334  0.573
@@ -738,8 +738,8 @@ b_2 = \mathrm{E}(area\_of\_necrosis|treatment = &quot;Myriocin&quot;, X = x) - \
 </div>
 <div id="interpretation-of-the-estimated-marginal-means" class="section level3">
 <h3><span class="header-section-number">14.2.5</span> Interpretation of the estimated marginal means</h3>
-<div class="sourceCode" id="cb389"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb389-1"><a href="covariates.html#cb389-1"></a>fig4h_m1_emm &lt;-<span class="st"> </span><span class="kw">emmeans</span>(fig4h_m1, <span class="dt">specs =</span> <span class="st">&quot;treatment&quot;</span>)</span>
-<span id="cb389-2"><a href="covariates.html#cb389-2"></a>fig4h_m1_emm</span></code></pre></div>
+<div class="sourceCode" id="cb390"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb390-1"><a href="covariates.html#cb390-1"></a>fig4h_m1_emm &lt;-<span class="st"> </span><span class="kw">emmeans</span>(fig4h_m1, <span class="dt">specs =</span> <span class="st">&quot;treatment&quot;</span>)</span>
+<span id="cb390-2"><a href="covariates.html#cb390-2"></a>fig4h_m1_emm</span></code></pre></div>
 <pre><code>##  treatment        emmean    SE df lower.CL upper.CL
 ##  Vehicle           11.98 0.839 32     10.3     13.7
 ##  Myriocin           8.87 0.916 32      7.0     10.7
@@ -750,11 +750,11 @@ b_2 = \mathrm{E}(area\_of\_necrosis|treatment = &quot;Myriocin&quot;, X = x) - \
 </div>
 <div id="interpretation-of-the-contrasts" class="section level3">
 <h3><span class="header-section-number">14.2.6</span> Interpretation of the contrasts</h3>
-<div class="sourceCode" id="cb391"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb391-1"><a href="covariates.html#cb391-1"></a>fig4h_m1_pairs &lt;-<span class="st"> </span><span class="kw">contrast</span>(fig4h_m1_emm,</span>
-<span id="cb391-2"><a href="covariates.html#cb391-2"></a>                           <span class="dt">method =</span> <span class="st">&quot;revpairwise&quot;</span>,</span>
-<span id="cb391-3"><a href="covariates.html#cb391-3"></a>                           <span class="dt">adjust =</span> <span class="st">&quot;none&quot;</span>) <span class="op">%&gt;%</span></span>
-<span id="cb391-4"><a href="covariates.html#cb391-4"></a><span class="st">  </span><span class="kw">summary</span>(<span class="dt">infer =</span> <span class="ot">TRUE</span>)</span>
-<span id="cb391-5"><a href="covariates.html#cb391-5"></a>fig4h_m1_pairs</span></code></pre></div>
+<div class="sourceCode" id="cb392"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb392-1"><a href="covariates.html#cb392-1"></a>fig4h_m1_pairs &lt;-<span class="st"> </span><span class="kw">contrast</span>(fig4h_m1_emm,</span>
+<span id="cb392-2"><a href="covariates.html#cb392-2"></a>                           <span class="dt">method =</span> <span class="st">&quot;revpairwise&quot;</span>,</span>
+<span id="cb392-3"><a href="covariates.html#cb392-3"></a>                           <span class="dt">adjust =</span> <span class="st">&quot;none&quot;</span>) <span class="op">%&gt;%</span></span>
+<span id="cb392-4"><a href="covariates.html#cb392-4"></a><span class="st">  </span><span class="kw">summary</span>(<span class="dt">infer =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb392-5"><a href="covariates.html#cb392-5"></a>fig4h_m1_pairs</span></code></pre></div>
 <pre><code>##  contrast                      estimate   SE df lower.CL upper.CL t.ratio
 ##  Myriocin - Vehicle             -3.1139 1.23 32    -5.62   -0.611 -2.534 
 ##  (Myriocin + DoxSa) - Vehicle   -3.1485 1.37 32    -5.93   -0.367 -2.306 
@@ -793,9 +793,9 @@ area\_of\_necrosis = \beta_0 &amp;+ \beta_1 area\_at\_risk + \beta_2 treatment_{
 \end{align}\]</span></p>
 <p>In addition to the effects of the myriosin (<span class="math inline">\(\beta_2\)</span>) and the myriosin + DoxSa (<span class="math inline">\(\beta_3\)</span>) treatments of Model <span class="math inline">\(\mathcal{M}_1\)</span>, Model <span class="math inline">\(\mathcal{M}_2\)</span> includes coefficients for two <strong>interaction effects</strong>, the interaction between myriosin and area at risk (<span class="math inline">\(\beta_4\)</span>) and the interaction between myriosin + DoxSa and area at risk (<span class="math inline">\(\beta_4\)</span>). The parameters <span class="math inline">\(\beta_1\)</span> and <span class="math inline">\(\beta_2\)</span> are <strong>additive effects</strong> because they are linear (additive) “in the <span class="math inline">\(X\)</span>” variables. The parameters <span class="math inline">\(\beta_3\)</span> and <span class="math inline">\(\beta_4\)</span> are <strong>non-additive effects</strong> because they are not linear “in the <span class="math inline">\(X\)</span>” variables – these effects are coefficients of an <span class="math inline">\(X\)</span> that is the product of two variables. You can see this in the model equation but I explain this further below.</p>
 <p>For the goals of the researchers in the heart necrosis study, we specifically would not want to model the interaction. Nevertheless, we would want to plot the interaction effect during the “Step 2: examine the data” phase of analysis to be sure that an additive model is a reasonable model given the data.</p>
-<div class="sourceCode" id="cb394"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb394-1"><a href="covariates.html#cb394-1"></a><span class="co"># see working in R to understand this model formula</span></span>
-<span id="cb394-2"><a href="covariates.html#cb394-2"></a>fig4h_m2 &lt;-<span class="st"> </span><span class="kw">lm</span>(area_of_necrosis <span class="op">~</span><span class="st"> </span>area_at_risk<span class="op">*</span>treatment,</span>
-<span id="cb394-3"><a href="covariates.html#cb394-3"></a>               <span class="dt">data =</span> fig4h)</span></code></pre></div>
+<div class="sourceCode" id="cb395"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb395-1"><a href="covariates.html#cb395-1"></a><span class="co"># see working in R to understand this model formula</span></span>
+<span id="cb395-2"><a href="covariates.html#cb395-2"></a>fig4h_m2 &lt;-<span class="st"> </span><span class="kw">lm</span>(area_of_necrosis <span class="op">~</span><span class="st"> </span>area_at_risk<span class="op">*</span>treatment,</span>
+<span id="cb395-3"><a href="covariates.html#cb395-3"></a>               <span class="dt">data =</span> fig4h)</span></code></pre></div>
 </div>
 <div id="plot-the-model-with-interaction-effect" class="section level3">
 <h3><span class="header-section-number">14.3.2</span> Plot the model with interaction effect</h3>
@@ -808,9 +808,9 @@ Figure 14.6: The effect of treatment on area of necrosis, adjusted for area of r
 </div>
 <div id="interpretation-of-the-model-coefficients-1" class="section level3">
 <h3><span class="header-section-number">14.3.3</span> Interpretation of the model coefficients</h3>
-<div class="sourceCode" id="cb395"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb395-1"><a href="covariates.html#cb395-1"></a>fig4h_m2_coef &lt;-<span class="st"> </span><span class="kw">cbind</span>(<span class="kw">coef</span>(<span class="kw">summary</span>(fig4h_m2)),</span>
-<span id="cb395-2"><a href="covariates.html#cb395-2"></a>      <span class="kw">confint</span>(fig4h_m2))</span>
-<span id="cb395-3"><a href="covariates.html#cb395-3"></a><span class="kw">round</span>(fig4h_m2_coef[,<span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>)], <span class="dt">digits =</span> <span class="dv">2</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb396"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb396-1"><a href="covariates.html#cb396-1"></a>fig4h_m2_coef &lt;-<span class="st"> </span><span class="kw">cbind</span>(<span class="kw">coef</span>(<span class="kw">summary</span>(fig4h_m2)),</span>
+<span id="cb396-2"><a href="covariates.html#cb396-2"></a>      <span class="kw">confint</span>(fig4h_m2))</span>
+<span id="cb396-3"><a href="covariates.html#cb396-3"></a><span class="kw">round</span>(fig4h_m2_coef[,<span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>)], <span class="dt">digits =</span> <span class="dv">2</span>)</span></code></pre></div>
 <pre><code>##                         Estimate Std. Error
 ## (Intercept)                -5.31       2.18
 ## area_at_risk                0.43       0.06
@@ -844,81 +844,81 @@ Figure 14.6: The effect of treatment on area of necrosis, adjusted for area of r
 <h2><span class="header-section-number">14.5</span> Working in R</h2>
 <div id="importing-the-heart-necrosis-data" class="section level3">
 <h3><span class="header-section-number">14.5.1</span> Importing the heart necrosis data</h3>
-<div class="sourceCode" id="cb397"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb397-1"><a href="covariates.html#cb397-1"></a>data_folder &lt;-<span class="st"> &quot;data&quot;</span></span>
-<span id="cb397-2"><a href="covariates.html#cb397-2"></a>data_from &lt;-<span class="st"> &quot;1-Deoxydihydroceramide causes anoxic death by impairing chaperonin-mediated protein folding&quot;</span></span>
-<span id="cb397-3"><a href="covariates.html#cb397-3"></a>file_name &lt;-<span class="st"> &quot;42255_2019_123_MOESM7_ESM.xlsx&quot;</span></span>
-<span id="cb397-4"><a href="covariates.html#cb397-4"></a>file_path &lt;-<span class="st"> </span><span class="kw">here</span>(data_folder, data_from, file_name)</span>
-<span id="cb397-5"><a href="covariates.html#cb397-5"></a>  </span>
-<span id="cb397-6"><a href="covariates.html#cb397-6"></a>sheet_i &lt;-<span class="st"> &quot;Figure 4h&quot;</span></span>
-<span id="cb397-7"><a href="covariates.html#cb397-7"></a>fig4h_<span class="dv">1</span> &lt;-<span class="st"> </span><span class="kw">read_excel</span>(file_path,</span>
-<span id="cb397-8"><a href="covariates.html#cb397-8"></a>                         <span class="dt">sheet =</span> sheet_i,</span>
-<span id="cb397-9"><a href="covariates.html#cb397-9"></a>                         <span class="dt">range =</span> <span class="st">&quot;A5:B19&quot;</span>,</span>
-<span id="cb397-10"><a href="covariates.html#cb397-10"></a>                         <span class="dt">col_names =</span> <span class="ot">TRUE</span>) <span class="op">%&gt;%</span></span>
-<span id="cb397-11"><a href="covariates.html#cb397-11"></a><span class="st">  </span><span class="kw">clean_names</span>() <span class="op">%&gt;%</span></span>
-<span id="cb397-12"><a href="covariates.html#cb397-12"></a><span class="st">  </span><span class="kw">data.table</span>()</span>
-<span id="cb397-13"><a href="covariates.html#cb397-13"></a>fig4h_<span class="dv">2</span> &lt;-<span class="st"> </span><span class="kw">read_excel</span>(file_path,</span>
-<span id="cb397-14"><a href="covariates.html#cb397-14"></a>                         <span class="dt">sheet =</span> sheet_i,</span>
-<span id="cb397-15"><a href="covariates.html#cb397-15"></a>                         <span class="dt">range =</span> <span class="st">&quot;D5:E17&quot;</span>,</span>
-<span id="cb397-16"><a href="covariates.html#cb397-16"></a>                         <span class="dt">col_names =</span> <span class="ot">TRUE</span>) <span class="op">%&gt;%</span></span>
-<span id="cb397-17"><a href="covariates.html#cb397-17"></a><span class="st">  </span><span class="kw">clean_names</span>() <span class="op">%&gt;%</span></span>
-<span id="cb397-18"><a href="covariates.html#cb397-18"></a><span class="st">  </span><span class="kw">data.table</span>()</span>
-<span id="cb397-19"><a href="covariates.html#cb397-19"></a>fig4h_<span class="dv">3</span> &lt;-<span class="st"> </span><span class="kw">read_excel</span>(file_path,</span>
-<span id="cb397-20"><a href="covariates.html#cb397-20"></a>                         <span class="dt">sheet =</span> sheet_i,</span>
-<span id="cb397-21"><a href="covariates.html#cb397-21"></a>                         <span class="dt">range =</span> <span class="st">&quot;G5:H15&quot;</span>,</span>
-<span id="cb397-22"><a href="covariates.html#cb397-22"></a>                         <span class="dt">col_names =</span> <span class="ot">TRUE</span>) <span class="op">%&gt;%</span></span>
-<span id="cb397-23"><a href="covariates.html#cb397-23"></a><span class="st">  </span><span class="kw">clean_names</span>() <span class="op">%&gt;%</span></span>
-<span id="cb397-24"><a href="covariates.html#cb397-24"></a><span class="st">  </span><span class="kw">data.table</span>()</span>
-<span id="cb397-25"><a href="covariates.html#cb397-25"></a></span>
-<span id="cb397-26"><a href="covariates.html#cb397-26"></a>fig4h &lt;-<span class="st"> </span><span class="kw">rbind</span>(<span class="kw">data.table</span>(<span class="dt">treatment =</span> <span class="st">&quot;Vehicle&quot;</span>, fig4h_<span class="dv">1</span>),</span>
-<span id="cb397-27"><a href="covariates.html#cb397-27"></a>                    <span class="kw">data.table</span>(<span class="dt">treatment =</span> <span class="st">&quot;Myriocin&quot;</span>, fig4h_<span class="dv">2</span>),</span>
-<span id="cb397-28"><a href="covariates.html#cb397-28"></a>                    <span class="kw">data.table</span>(<span class="dt">treatment =</span> <span class="st">&quot;Myriocin + DoxSa&quot;</span>, fig4h_<span class="dv">3</span>))</span>
-<span id="cb397-29"><a href="covariates.html#cb397-29"></a></span>
-<span id="cb397-30"><a href="covariates.html#cb397-30"></a>treatment_levels &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Vehicle&quot;</span>, <span class="st">&quot;Myriocin&quot;</span>, <span class="st">&quot;Myriocin + DoxSa&quot;</span>)</span>
-<span id="cb397-31"><a href="covariates.html#cb397-31"></a>fig4h[, treatment <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">factor</span>(treatment, <span class="dt">levels =</span> treatment_levels)]</span></code></pre></div>
+<div class="sourceCode" id="cb398"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb398-1"><a href="covariates.html#cb398-1"></a>data_folder &lt;-<span class="st"> &quot;data&quot;</span></span>
+<span id="cb398-2"><a href="covariates.html#cb398-2"></a>data_from &lt;-<span class="st"> &quot;1-Deoxydihydroceramide causes anoxic death by impairing chaperonin-mediated protein folding&quot;</span></span>
+<span id="cb398-3"><a href="covariates.html#cb398-3"></a>file_name &lt;-<span class="st"> &quot;42255_2019_123_MOESM7_ESM.xlsx&quot;</span></span>
+<span id="cb398-4"><a href="covariates.html#cb398-4"></a>file_path &lt;-<span class="st"> </span><span class="kw">here</span>(data_folder, data_from, file_name)</span>
+<span id="cb398-5"><a href="covariates.html#cb398-5"></a>  </span>
+<span id="cb398-6"><a href="covariates.html#cb398-6"></a>sheet_i &lt;-<span class="st"> &quot;Figure 4h&quot;</span></span>
+<span id="cb398-7"><a href="covariates.html#cb398-7"></a>fig4h_<span class="dv">1</span> &lt;-<span class="st"> </span><span class="kw">read_excel</span>(file_path,</span>
+<span id="cb398-8"><a href="covariates.html#cb398-8"></a>                         <span class="dt">sheet =</span> sheet_i,</span>
+<span id="cb398-9"><a href="covariates.html#cb398-9"></a>                         <span class="dt">range =</span> <span class="st">&quot;A5:B19&quot;</span>,</span>
+<span id="cb398-10"><a href="covariates.html#cb398-10"></a>                         <span class="dt">col_names =</span> <span class="ot">TRUE</span>) <span class="op">%&gt;%</span></span>
+<span id="cb398-11"><a href="covariates.html#cb398-11"></a><span class="st">  </span><span class="kw">clean_names</span>() <span class="op">%&gt;%</span></span>
+<span id="cb398-12"><a href="covariates.html#cb398-12"></a><span class="st">  </span><span class="kw">data.table</span>()</span>
+<span id="cb398-13"><a href="covariates.html#cb398-13"></a>fig4h_<span class="dv">2</span> &lt;-<span class="st"> </span><span class="kw">read_excel</span>(file_path,</span>
+<span id="cb398-14"><a href="covariates.html#cb398-14"></a>                         <span class="dt">sheet =</span> sheet_i,</span>
+<span id="cb398-15"><a href="covariates.html#cb398-15"></a>                         <span class="dt">range =</span> <span class="st">&quot;D5:E17&quot;</span>,</span>
+<span id="cb398-16"><a href="covariates.html#cb398-16"></a>                         <span class="dt">col_names =</span> <span class="ot">TRUE</span>) <span class="op">%&gt;%</span></span>
+<span id="cb398-17"><a href="covariates.html#cb398-17"></a><span class="st">  </span><span class="kw">clean_names</span>() <span class="op">%&gt;%</span></span>
+<span id="cb398-18"><a href="covariates.html#cb398-18"></a><span class="st">  </span><span class="kw">data.table</span>()</span>
+<span id="cb398-19"><a href="covariates.html#cb398-19"></a>fig4h_<span class="dv">3</span> &lt;-<span class="st"> </span><span class="kw">read_excel</span>(file_path,</span>
+<span id="cb398-20"><a href="covariates.html#cb398-20"></a>                         <span class="dt">sheet =</span> sheet_i,</span>
+<span id="cb398-21"><a href="covariates.html#cb398-21"></a>                         <span class="dt">range =</span> <span class="st">&quot;G5:H15&quot;</span>,</span>
+<span id="cb398-22"><a href="covariates.html#cb398-22"></a>                         <span class="dt">col_names =</span> <span class="ot">TRUE</span>) <span class="op">%&gt;%</span></span>
+<span id="cb398-23"><a href="covariates.html#cb398-23"></a><span class="st">  </span><span class="kw">clean_names</span>() <span class="op">%&gt;%</span></span>
+<span id="cb398-24"><a href="covariates.html#cb398-24"></a><span class="st">  </span><span class="kw">data.table</span>()</span>
+<span id="cb398-25"><a href="covariates.html#cb398-25"></a></span>
+<span id="cb398-26"><a href="covariates.html#cb398-26"></a>fig4h &lt;-<span class="st"> </span><span class="kw">rbind</span>(<span class="kw">data.table</span>(<span class="dt">treatment =</span> <span class="st">&quot;Vehicle&quot;</span>, fig4h_<span class="dv">1</span>),</span>
+<span id="cb398-27"><a href="covariates.html#cb398-27"></a>                    <span class="kw">data.table</span>(<span class="dt">treatment =</span> <span class="st">&quot;Myriocin&quot;</span>, fig4h_<span class="dv">2</span>),</span>
+<span id="cb398-28"><a href="covariates.html#cb398-28"></a>                    <span class="kw">data.table</span>(<span class="dt">treatment =</span> <span class="st">&quot;Myriocin + DoxSa&quot;</span>, fig4h_<span class="dv">3</span>))</span>
+<span id="cb398-29"><a href="covariates.html#cb398-29"></a></span>
+<span id="cb398-30"><a href="covariates.html#cb398-30"></a>treatment_levels &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Vehicle&quot;</span>, <span class="st">&quot;Myriocin&quot;</span>, <span class="st">&quot;Myriocin + DoxSa&quot;</span>)</span>
+<span id="cb398-31"><a href="covariates.html#cb398-31"></a>fig4h[, treatment <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">factor</span>(treatment, <span class="dt">levels =</span> treatment_levels)]</span></code></pre></div>
 </div>
 <div id="fitting-the-model" class="section level3">
 <h3><span class="header-section-number">14.5.2</span> Fitting the model</h3>
 <p>For an additive model, add the covariate to the model formula using the <code>+</code> operator. The order of the variables doesn’t matter (the right-hand-side of the model formula could be <code>treatment + area_at_risk</code>).</p>
-<div class="sourceCode" id="cb398"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb398-1"><a href="covariates.html#cb398-1"></a>m1 &lt;-<span class="st"> </span><span class="kw">lm</span>(area_of_necrosis <span class="op">~</span><span class="st"> </span>area_at_risk <span class="op">+</span><span class="st"> </span>treatment, <span class="dt">data =</span> fig4h)</span></code></pre></div>
+<div class="sourceCode" id="cb399"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb399-1"><a href="covariates.html#cb399-1"></a>m1 &lt;-<span class="st"> </span><span class="kw">lm</span>(area_of_necrosis <span class="op">~</span><span class="st"> </span>area_at_risk <span class="op">+</span><span class="st"> </span>treatment, <span class="dt">data =</span> fig4h)</span></code></pre></div>
 <p>For an nonadditive model with interactions, add the covariate to the model formula using the <code>*</code> operator. <code>~ area_at_risk * treatment</code> is a shortcut to the full model formula, which is <code>1 + area_at_risk + treatment + area_at_risk * treatment</code>. R expands the short formula to the full formula automatically. Again, the order of the variables doesn’t matter (the right-hand-side of the model formula could be <code>treatment * area_at_risk</code>).</p>
-<div class="sourceCode" id="cb399"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb399-1"><a href="covariates.html#cb399-1"></a>m2 &lt;-<span class="st"> </span><span class="kw">lm</span>(area_of_necrosis <span class="op">~</span><span class="st"> </span>area_at_risk <span class="op">*</span><span class="st"> </span>treatment, <span class="dt">data =</span> fig4h)</span></code></pre></div>
+<div class="sourceCode" id="cb400"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb400-1"><a href="covariates.html#cb400-1"></a>m2 &lt;-<span class="st"> </span><span class="kw">lm</span>(area_of_necrosis <span class="op">~</span><span class="st"> </span>area_at_risk <span class="op">*</span><span class="st"> </span>treatment, <span class="dt">data =</span> fig4h)</span></code></pre></div>
 </div>
 <div id="using-the-emmeans-function-1" class="section level3">
 <h3><span class="header-section-number">14.5.3</span> Using the emmeans function</h3>
-<div class="sourceCode" id="cb400"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb400-1"><a href="covariates.html#cb400-1"></a>m1_emm &lt;-<span class="st"> </span><span class="kw">emmeans</span>(m1,</span>
-<span id="cb400-2"><a href="covariates.html#cb400-2"></a>        <span class="dt">specs =</span> <span class="kw">c</span>(<span class="st">&quot;treatment&quot;</span>))</span>
-<span id="cb400-3"><a href="covariates.html#cb400-3"></a>m1_emm</span></code></pre></div>
+<div class="sourceCode" id="cb401"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb401-1"><a href="covariates.html#cb401-1"></a>m1_emm &lt;-<span class="st"> </span><span class="kw">emmeans</span>(m1,</span>
+<span id="cb401-2"><a href="covariates.html#cb401-2"></a>        <span class="dt">specs =</span> <span class="kw">c</span>(<span class="st">&quot;treatment&quot;</span>))</span>
+<span id="cb401-3"><a href="covariates.html#cb401-3"></a>m1_emm</span></code></pre></div>
 <pre><code>##  treatment        emmean    SE df lower.CL upper.CL
 ##  Vehicle           11.98 0.839 32     10.3     13.7
 ##  Myriocin           8.87 0.916 32      7.0     10.7
 ##  Myriocin + DoxSa   8.83 1.045 32      6.7     11.0
 ## 
 ## Confidence level used: 0.95</code></pre>
-<div class="sourceCode" id="cb402"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb402-1"><a href="covariates.html#cb402-1"></a>m1_emm &lt;-<span class="st"> </span><span class="kw">emmeans</span>(m1,</span>
-<span id="cb402-2"><a href="covariates.html#cb402-2"></a>        <span class="dt">specs =</span> <span class="kw">c</span>(<span class="st">&quot;area_at_risk&quot;</span>, <span class="st">&quot;treatment&quot;</span>))</span>
-<span id="cb402-3"><a href="covariates.html#cb402-3"></a>m1_emm</span></code></pre></div>
+<div class="sourceCode" id="cb403"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb403-1"><a href="covariates.html#cb403-1"></a>m1_emm &lt;-<span class="st"> </span><span class="kw">emmeans</span>(m1,</span>
+<span id="cb403-2"><a href="covariates.html#cb403-2"></a>        <span class="dt">specs =</span> <span class="kw">c</span>(<span class="st">&quot;area_at_risk&quot;</span>, <span class="st">&quot;treatment&quot;</span>))</span>
+<span id="cb403-3"><a href="covariates.html#cb403-3"></a>m1_emm</span></code></pre></div>
 <pre><code>##  area_at_risk treatment        emmean    SE df lower.CL upper.CL
 ##            35 Vehicle           11.98 0.839 32     10.3     13.7
 ##            35 Myriocin           8.87 0.916 32      7.0     10.7
 ##            35 Myriocin + DoxSa   8.83 1.045 32      6.7     11.0
 ## 
 ## Confidence level used: 0.95</code></pre>
-<div class="sourceCode" id="cb404"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb404-1"><a href="covariates.html#cb404-1"></a><span class="co"># recenter emms at the mean of the vehicle group</span></span>
-<span id="cb404-2"><a href="covariates.html#cb404-2"></a></span>
-<span id="cb404-3"><a href="covariates.html#cb404-3"></a>vehicle_mean_x &lt;-<span class="st"> </span><span class="kw">mean</span>(fig4h[treatment <span class="op">==</span><span class="st"> &quot;Vehicle&quot;</span>,</span>
-<span id="cb404-4"><a href="covariates.html#cb404-4"></a>                         area_at_risk])</span>
-<span id="cb404-5"><a href="covariates.html#cb404-5"></a>m1_emm_<span class="dv">2</span> &lt;-<span class="st"> </span><span class="kw">emmeans</span>(m1,</span>
-<span id="cb404-6"><a href="covariates.html#cb404-6"></a>                    <span class="dt">specs =</span> <span class="kw">c</span>(<span class="st">&quot;area_at_risk&quot;</span>,<span class="st">&quot;treatment&quot;</span>),</span>
-<span id="cb404-7"><a href="covariates.html#cb404-7"></a>                    <span class="dt">at =</span> <span class="kw">list</span>(<span class="dt">area_at_risk =</span> vehicle_mean_x))</span>
-<span id="cb404-8"><a href="covariates.html#cb404-8"></a>m1_emm_<span class="dv">2</span></span></code></pre></div>
+<div class="sourceCode" id="cb405"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb405-1"><a href="covariates.html#cb405-1"></a><span class="co"># recenter emms at the mean of the vehicle group</span></span>
+<span id="cb405-2"><a href="covariates.html#cb405-2"></a></span>
+<span id="cb405-3"><a href="covariates.html#cb405-3"></a>vehicle_mean_x &lt;-<span class="st"> </span><span class="kw">mean</span>(fig4h[treatment <span class="op">==</span><span class="st"> &quot;Vehicle&quot;</span>,</span>
+<span id="cb405-4"><a href="covariates.html#cb405-4"></a>                         area_at_risk])</span>
+<span id="cb405-5"><a href="covariates.html#cb405-5"></a>m1_emm_<span class="dv">2</span> &lt;-<span class="st"> </span><span class="kw">emmeans</span>(m1,</span>
+<span id="cb405-6"><a href="covariates.html#cb405-6"></a>                    <span class="dt">specs =</span> <span class="kw">c</span>(<span class="st">&quot;area_at_risk&quot;</span>,<span class="st">&quot;treatment&quot;</span>),</span>
+<span id="cb405-7"><a href="covariates.html#cb405-7"></a>                    <span class="dt">at =</span> <span class="kw">list</span>(<span class="dt">area_at_risk =</span> vehicle_mean_x))</span>
+<span id="cb405-8"><a href="covariates.html#cb405-8"></a>m1_emm_<span class="dv">2</span></span></code></pre></div>
 <pre><code>##  area_at_risk treatment        emmean    SE df lower.CL upper.CL
 ##          33.3 Vehicle           11.21 0.833 32     9.51    12.90
 ##          33.3 Myriocin           8.09 0.903 32     6.25     9.93
 ##          33.3 Myriocin + DoxSa   8.06 1.082 32     5.85    10.26
 ## 
 ## Confidence level used: 0.95</code></pre>
-<div class="sourceCode" id="cb406"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb406-1"><a href="covariates.html#cb406-1"></a>fig4h[, .(<span class="dt">mean =</span> <span class="kw">mean</span>(area_of_necrosis)),</span>
-<span id="cb406-2"><a href="covariates.html#cb406-2"></a>      by =<span class="st"> </span>treatment]</span></code></pre></div>
+<div class="sourceCode" id="cb407"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb407-1"><a href="covariates.html#cb407-1"></a>fig4h[, .(<span class="dt">mean =</span> <span class="kw">mean</span>(area_of_necrosis)),</span>
+<span id="cb407-2"><a href="covariates.html#cb407-2"></a>      by =<span class="st"> </span>treatment]</span></code></pre></div>
 <pre><code>##           treatment      mean
 ## 1:          Vehicle 11.206580
 ## 2:         Myriocin  7.546081
@@ -934,7 +934,7 @@ Figure 14.6: The effect of treatment on area of necrosis, adjusted for area of r
 <li>Many websites show code that changes the default coding in the R session. I strongly caution against this. If you don’t change it back, then you are likely to misinterpret coefficients in later analyses (see point 2).</li>
 </ol>
 <p>For additive models, use Type II sum of squares (Type III will give same results),</p>
-<div class="sourceCode" id="cb408"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb408-1"><a href="covariates.html#cb408-1"></a><span class="kw">Anova</span>(m1_aov, <span class="dt">type =</span> <span class="dv">2</span>) <span class="co"># be sure to use the correct model!</span></span></code></pre></div>
+<div class="sourceCode" id="cb409"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb409-1"><a href="covariates.html#cb409-1"></a><span class="kw">Anova</span>(m1_aov, <span class="dt">type =</span> <span class="dv">2</span>) <span class="co"># be sure to use the correct model!</span></span></code></pre></div>
 <pre><code>## Anova Table (Type II tests)
 ## 
 ## Response: area_of_necrosis
@@ -950,14 +950,14 @@ Figure 14.6: The effect of treatment on area of necrosis, adjusted for area of r
 <li>The interpretation of the main effects is problematic, at best. This is discussed more in the ANOVA chapter.</li>
 <li>Some statisticians recommend using Type III sums of squares. The effect of $treatment* has a very specific interpretation with Type III – it is the effect when the covariate = 0. This can be biologically relevant if the covariate data is re-centered.</li>
 </ol>
-<div class="sourceCode" id="cb410"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb410-1"><a href="covariates.html#cb410-1"></a><span class="co"># for coefficients</span></span>
-<span id="cb410-2"><a href="covariates.html#cb410-2"></a>m2 &lt;-<span class="st"> </span><span class="kw">lm</span>(area_of_necrosis <span class="op">~</span><span class="st"> </span>treatment <span class="op">*</span><span class="st"> </span>area_at_risk,</span>
-<span id="cb410-3"><a href="covariates.html#cb410-3"></a>         <span class="dt">data =</span> fig4h)</span>
-<span id="cb410-4"><a href="covariates.html#cb410-4"></a><span class="co"># for anova</span></span>
-<span id="cb410-5"><a href="covariates.html#cb410-5"></a>m2_aov &lt;-<span class="st"> </span><span class="kw">lm</span>(area_of_necrosis <span class="op">~</span><span class="st"> </span>treatment <span class="op">*</span><span class="st"> </span>area_at_risk,</span>
-<span id="cb410-6"><a href="covariates.html#cb410-6"></a>         <span class="dt">data =</span> fig4h,</span>
-<span id="cb410-7"><a href="covariates.html#cb410-7"></a>         <span class="dt">contrasts =</span> <span class="kw">list</span>(<span class="dt">treatment =</span> contr.sum))</span></code></pre></div>
-<div class="sourceCode" id="cb411"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb411-1"><a href="covariates.html#cb411-1"></a><span class="kw">Anova</span>(m2_aov, <span class="dt">type =</span> <span class="dv">2</span>) <span class="co"># be sure to use the correct model!</span></span></code></pre></div>
+<div class="sourceCode" id="cb411"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb411-1"><a href="covariates.html#cb411-1"></a><span class="co"># for coefficients</span></span>
+<span id="cb411-2"><a href="covariates.html#cb411-2"></a>m2 &lt;-<span class="st"> </span><span class="kw">lm</span>(area_of_necrosis <span class="op">~</span><span class="st"> </span>treatment <span class="op">*</span><span class="st"> </span>area_at_risk,</span>
+<span id="cb411-3"><a href="covariates.html#cb411-3"></a>         <span class="dt">data =</span> fig4h)</span>
+<span id="cb411-4"><a href="covariates.html#cb411-4"></a><span class="co"># for anova</span></span>
+<span id="cb411-5"><a href="covariates.html#cb411-5"></a>m2_aov &lt;-<span class="st"> </span><span class="kw">lm</span>(area_of_necrosis <span class="op">~</span><span class="st"> </span>treatment <span class="op">*</span><span class="st"> </span>area_at_risk,</span>
+<span id="cb411-6"><a href="covariates.html#cb411-6"></a>         <span class="dt">data =</span> fig4h,</span>
+<span id="cb411-7"><a href="covariates.html#cb411-7"></a>         <span class="dt">contrasts =</span> <span class="kw">list</span>(<span class="dt">treatment =</span> contr.sum))</span></code></pre></div>
+<div class="sourceCode" id="cb412"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb412-1"><a href="covariates.html#cb412-1"></a><span class="kw">Anova</span>(m2_aov, <span class="dt">type =</span> <span class="dv">2</span>) <span class="co"># be sure to use the correct model!</span></span></code></pre></div>
 <pre><code>## Anova Table (Type II tests)
 ## 
 ## Response: area_of_necrosis
@@ -968,7 +968,7 @@ Figure 14.6: The effect of treatment on area of necrosis, adjusted for area of r
 ## Residuals              283.75 30                      
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
-<div class="sourceCode" id="cb413"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb413-1"><a href="covariates.html#cb413-1"></a><span class="kw">Anova</span>(m2_aov, <span class="dt">type =</span> <span class="dv">3</span>) <span class="co"># be sure to use the correct model!</span></span></code></pre></div>
+<div class="sourceCode" id="cb414"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb414-1"><a href="covariates.html#cb414-1"></a><span class="kw">Anova</span>(m2_aov, <span class="dt">type =</span> <span class="dv">3</span>) <span class="co"># be sure to use the correct model!</span></span></code></pre></div>
 <pre><code>## Anova Table (Type III tests)
 ## 
 ## Response: area_of_necrosis
@@ -986,131 +986,131 @@ Figure 14.6: The effect of treatment on area of necrosis, adjusted for area of r
 <div id="using-ggpubr" class="section level4">
 <h4><span class="header-section-number">14.5.5.1</span> Using ggpubr</h4>
 <p>ggpubr will only plot the model with interactions.</p>
-<div class="sourceCode" id="cb415"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb415-1"><a href="covariates.html#cb415-1"></a><span class="kw">ggscatter</span>(<span class="dt">data =</span> fig4h,</span>
-<span id="cb415-2"><a href="covariates.html#cb415-2"></a>          <span class="dt">x =</span> <span class="st">&quot;area_at_risk&quot;</span>,</span>
-<span id="cb415-3"><a href="covariates.html#cb415-3"></a>          <span class="dt">y =</span> <span class="st">&quot;area_of_necrosis&quot;</span>,</span>
-<span id="cb415-4"><a href="covariates.html#cb415-4"></a>          <span class="dt">color =</span> <span class="st">&quot;treatment&quot;</span>,</span>
-<span id="cb415-5"><a href="covariates.html#cb415-5"></a>          <span class="dt">add =</span> <span class="st">&quot;reg.line&quot;</span>,</span>
-<span id="cb415-6"><a href="covariates.html#cb415-6"></a>          <span class="dt">ylab =</span> <span class="st">&quot;Area of necrosis (mg)&quot;</span>,</span>
-<span id="cb415-7"><a href="covariates.html#cb415-7"></a>          <span class="dt">xlab =</span> <span class="st">&quot;Area at risk (mg)&quot;</span>,</span>
-<span id="cb415-8"><a href="covariates.html#cb415-8"></a>          <span class="dt">palette =</span> pal_okabe_ito</span>
-<span id="cb415-9"><a href="covariates.html#cb415-9"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb416"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb416-1"><a href="covariates.html#cb416-1"></a><span class="kw">ggscatter</span>(<span class="dt">data =</span> fig4h,</span>
+<span id="cb416-2"><a href="covariates.html#cb416-2"></a>          <span class="dt">x =</span> <span class="st">&quot;area_at_risk&quot;</span>,</span>
+<span id="cb416-3"><a href="covariates.html#cb416-3"></a>          <span class="dt">y =</span> <span class="st">&quot;area_of_necrosis&quot;</span>,</span>
+<span id="cb416-4"><a href="covariates.html#cb416-4"></a>          <span class="dt">color =</span> <span class="st">&quot;treatment&quot;</span>,</span>
+<span id="cb416-5"><a href="covariates.html#cb416-5"></a>          <span class="dt">add =</span> <span class="st">&quot;reg.line&quot;</span>,</span>
+<span id="cb416-6"><a href="covariates.html#cb416-6"></a>          <span class="dt">ylab =</span> <span class="st">&quot;Area of necrosis (mg)&quot;</span>,</span>
+<span id="cb416-7"><a href="covariates.html#cb416-7"></a>          <span class="dt">xlab =</span> <span class="st">&quot;Area at risk (mg)&quot;</span>,</span>
+<span id="cb416-8"><a href="covariates.html#cb416-8"></a>          <span class="dt">palette =</span> pal_okabe_ito</span>
+<span id="cb416-9"><a href="covariates.html#cb416-9"></a>)</span></code></pre></div>
 <p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/unnamed-chunk-201-1.png" width="576" /></p>
 </div>
 <div id="ggplot2" class="section level4">
 <h4><span class="header-section-number">14.5.5.2</span> ggplot2</h4>
-<div class="sourceCode" id="cb416"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb416-1"><a href="covariates.html#cb416-1"></a><span class="co"># pal_batlow &lt;- scico(n, alpha = NULL, begin = 0, end = 1, direction = 1, palette = &quot;batlow&quot;)</span></span>
-<span id="cb416-2"><a href="covariates.html#cb416-2"></a></span>
-<span id="cb416-3"><a href="covariates.html#cb416-3"></a>m1 &lt;-<span class="st"> </span><span class="kw">lm</span>(area_of_necrosis <span class="op">~</span><span class="st"> </span>area_at_risk <span class="op">+</span><span class="st"> </span>treatment,</span>
-<span id="cb416-4"><a href="covariates.html#cb416-4"></a>         <span class="dt">data =</span> fig4h)</span>
-<span id="cb416-5"><a href="covariates.html#cb416-5"></a></span>
-<span id="cb416-6"><a href="covariates.html#cb416-6"></a>gg &lt;-<span class="st"> </span><span class="kw">ggplot</span>(fig4h, </span>
-<span id="cb416-7"><a href="covariates.html#cb416-7"></a>             <span class="kw">aes</span>(<span class="dt">x =</span> area_at_risk,</span>
-<span id="cb416-8"><a href="covariates.html#cb416-8"></a>                 <span class="dt">y =</span> area_of_necrosis,</span>
-<span id="cb416-9"><a href="covariates.html#cb416-9"></a>                 <span class="dt">color =</span> treatment)) <span class="op">+</span></span>
-<span id="cb416-10"><a href="covariates.html#cb416-10"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">color=</span>treatment)) <span class="op">+</span></span>
-<span id="cb416-11"><a href="covariates.html#cb416-11"></a><span class="st">  </span><span class="kw">geom_smooth</span>(<span class="dt">method =</span> <span class="st">&quot;lm&quot;</span>,</span>
-<span id="cb416-12"><a href="covariates.html#cb416-12"></a>              <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">y =</span> <span class="kw">predict</span>(m1, fig4h))) <span class="op">+</span></span>
-<span id="cb416-13"><a href="covariates.html#cb416-13"></a><span class="st">  </span><span class="kw">scale_color_manual</span>(<span class="dt">values =</span> pal_okabe_ito,</span>
-<span id="cb416-14"><a href="covariates.html#cb416-14"></a>                     <span class="dt">name =</span> <span class="ot">NULL</span>) <span class="op">+</span></span>
-<span id="cb416-15"><a href="covariates.html#cb416-15"></a><span class="st">  </span><span class="co"># scale_color_manual(values = pal_batlow,</span></span>
-<span id="cb416-16"><a href="covariates.html#cb416-16"></a><span class="st">  </span><span class="co">#   name = NULL) +</span></span>
-<span id="cb416-17"><a href="covariates.html#cb416-17"></a><span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;Area of necrosis (mg)&quot;</span>) <span class="op">+</span></span>
-<span id="cb416-18"><a href="covariates.html#cb416-18"></a><span class="st">  </span><span class="kw">xlab</span>(<span class="st">&quot;Area at risk (mg)&quot;</span>) <span class="op">+</span></span>
-<span id="cb416-19"><a href="covariates.html#cb416-19"></a><span class="st">  </span><span class="kw">theme_pander</span>() <span class="op">+</span></span>
-<span id="cb416-20"><a href="covariates.html#cb416-20"></a><span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position=</span><span class="st">&quot;bottom&quot;</span>) <span class="op">+</span></span>
-<span id="cb416-21"><a href="covariates.html#cb416-21"></a><span class="st">  </span><span class="ot">NULL</span></span>
-<span id="cb416-22"><a href="covariates.html#cb416-22"></a>gg</span></code></pre></div>
+<div class="sourceCode" id="cb417"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb417-1"><a href="covariates.html#cb417-1"></a><span class="co"># pal_batlow &lt;- scico(n, alpha = NULL, begin = 0, end = 1, direction = 1, palette = &quot;batlow&quot;)</span></span>
+<span id="cb417-2"><a href="covariates.html#cb417-2"></a></span>
+<span id="cb417-3"><a href="covariates.html#cb417-3"></a>m1 &lt;-<span class="st"> </span><span class="kw">lm</span>(area_of_necrosis <span class="op">~</span><span class="st"> </span>area_at_risk <span class="op">+</span><span class="st"> </span>treatment,</span>
+<span id="cb417-4"><a href="covariates.html#cb417-4"></a>         <span class="dt">data =</span> fig4h)</span>
+<span id="cb417-5"><a href="covariates.html#cb417-5"></a></span>
+<span id="cb417-6"><a href="covariates.html#cb417-6"></a>gg &lt;-<span class="st"> </span><span class="kw">ggplot</span>(fig4h, </span>
+<span id="cb417-7"><a href="covariates.html#cb417-7"></a>             <span class="kw">aes</span>(<span class="dt">x =</span> area_at_risk,</span>
+<span id="cb417-8"><a href="covariates.html#cb417-8"></a>                 <span class="dt">y =</span> area_of_necrosis,</span>
+<span id="cb417-9"><a href="covariates.html#cb417-9"></a>                 <span class="dt">color =</span> treatment)) <span class="op">+</span></span>
+<span id="cb417-10"><a href="covariates.html#cb417-10"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">color=</span>treatment)) <span class="op">+</span></span>
+<span id="cb417-11"><a href="covariates.html#cb417-11"></a><span class="st">  </span><span class="kw">geom_smooth</span>(<span class="dt">method =</span> <span class="st">&quot;lm&quot;</span>,</span>
+<span id="cb417-12"><a href="covariates.html#cb417-12"></a>              <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">y =</span> <span class="kw">predict</span>(m1, fig4h))) <span class="op">+</span></span>
+<span id="cb417-13"><a href="covariates.html#cb417-13"></a><span class="st">  </span><span class="kw">scale_color_manual</span>(<span class="dt">values =</span> pal_okabe_ito,</span>
+<span id="cb417-14"><a href="covariates.html#cb417-14"></a>                     <span class="dt">name =</span> <span class="ot">NULL</span>) <span class="op">+</span></span>
+<span id="cb417-15"><a href="covariates.html#cb417-15"></a><span class="st">  </span><span class="co"># scale_color_manual(values = pal_batlow,</span></span>
+<span id="cb417-16"><a href="covariates.html#cb417-16"></a><span class="st">  </span><span class="co">#   name = NULL) +</span></span>
+<span id="cb417-17"><a href="covariates.html#cb417-17"></a><span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;Area of necrosis (mg)&quot;</span>) <span class="op">+</span></span>
+<span id="cb417-18"><a href="covariates.html#cb417-18"></a><span class="st">  </span><span class="kw">xlab</span>(<span class="st">&quot;Area at risk (mg)&quot;</span>) <span class="op">+</span></span>
+<span id="cb417-19"><a href="covariates.html#cb417-19"></a><span class="st">  </span><span class="kw">theme_pander</span>() <span class="op">+</span></span>
+<span id="cb417-20"><a href="covariates.html#cb417-20"></a><span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position=</span><span class="st">&quot;bottom&quot;</span>) <span class="op">+</span></span>
+<span id="cb417-21"><a href="covariates.html#cb417-21"></a><span class="st">  </span><span class="ot">NULL</span></span>
+<span id="cb417-22"><a href="covariates.html#cb417-22"></a>gg</span></code></pre></div>
 <p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/unnamed-chunk-202-1.png" width="576" /></p>
 </div>
 <div id="a-response-effects-plot-using-ggplot2" class="section level4">
 <h4><span class="header-section-number">14.5.5.3</span> A response-effects plot using ggplot2</h4>
-<div class="sourceCode" id="cb417"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb417-1"><a href="covariates.html#cb417-1"></a>m1 &lt;-<span class="st"> </span><span class="kw">lm</span>(area_of_necrosis <span class="op">~</span><span class="st"> </span>area_at_risk <span class="op">+</span><span class="st"> </span>treatment, <span class="dt">data =</span> fig4h)</span>
-<span id="cb417-2"><a href="covariates.html#cb417-2"></a>b &lt;-<span class="st"> </span><span class="kw">coef</span>(m1)</span>
-<span id="cb417-3"><a href="covariates.html#cb417-3"></a></span>
-<span id="cb417-4"><a href="covariates.html#cb417-4"></a>groups &lt;-<span class="st"> </span><span class="kw">levels</span>(fig4h<span class="op">$</span>treatment)</span>
-<span id="cb417-5"><a href="covariates.html#cb417-5"></a>line_data &lt;-<span class="st"> </span>fig4h[, .(<span class="dt">min_x =</span> <span class="kw">min</span>(area_at_risk),</span>
-<span id="cb417-6"><a href="covariates.html#cb417-6"></a>                       <span class="dt">max_x =</span> <span class="kw">max</span>(area_at_risk)), by =<span class="st"> </span>treatment]</span>
-<span id="cb417-7"><a href="covariates.html#cb417-7"></a>line_data[, dummy1 <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">ifelse</span>(treatment <span class="op">==</span><span class="st"> &quot;Myriocin&quot;</span>, <span class="dv">1</span>, <span class="dv">0</span>)]</span>
-<span id="cb417-8"><a href="covariates.html#cb417-8"></a>line_data[, dummy2 <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">ifelse</span>(treatment <span class="op">==</span><span class="st"> &quot;Myriocin + DoxSa&quot;</span>, <span class="dv">1</span>, <span class="dv">0</span>)]</span>
-<span id="cb417-9"><a href="covariates.html#cb417-9"></a></span>
-<span id="cb417-10"><a href="covariates.html#cb417-10"></a>line_data[, y_min <span class="op">:</span><span class="er">=</span><span class="st"> </span>b[<span class="dv">1</span>] <span class="op">+</span><span class="st"> </span>b[<span class="dv">2</span>]<span class="op">*</span>min_x <span class="op">+</span><span class="st"> </span>b[<span class="dv">3</span>]<span class="op">*</span>dummy1 <span class="op">+</span><span class="st"> </span>b[<span class="dv">4</span>]<span class="op">*</span>dummy2]</span>
-<span id="cb417-11"><a href="covariates.html#cb417-11"></a>line_data[, y_max <span class="op">:</span><span class="er">=</span><span class="st"> </span>b[<span class="dv">1</span>] <span class="op">+</span><span class="st"> </span>b[<span class="dv">2</span>]<span class="op">*</span>max_x <span class="op">+</span><span class="st"> </span>b[<span class="dv">3</span>]<span class="op">*</span>dummy1 <span class="op">+</span><span class="st"> </span>b[<span class="dv">4</span>]<span class="op">*</span>dummy2]</span>
-<span id="cb417-12"><a href="covariates.html#cb417-12"></a></span>
-<span id="cb417-13"><a href="covariates.html#cb417-13"></a>gg_response &lt;-<span class="st"> </span><span class="kw">ggplot</span>(<span class="dt">data =</span> fig4h,</span>
-<span id="cb417-14"><a href="covariates.html#cb417-14"></a>                      <span class="kw">aes</span>(<span class="dt">x =</span> area_at_risk,</span>
-<span id="cb417-15"><a href="covariates.html#cb417-15"></a>                          <span class="dt">y =</span> area_of_necrosis,</span>
-<span id="cb417-16"><a href="covariates.html#cb417-16"></a>                          <span class="dt">color =</span> treatment)) <span class="op">+</span></span>
-<span id="cb417-17"><a href="covariates.html#cb417-17"></a><span class="st">  </span><span class="co"># points</span></span>
-<span id="cb417-18"><a href="covariates.html#cb417-18"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">size =</span> <span class="dv">2</span>) <span class="op">+</span></span>
-<span id="cb417-19"><a href="covariates.html#cb417-19"></a><span class="st">  </span></span>
-<span id="cb417-20"><a href="covariates.html#cb417-20"></a><span class="st">  </span><span class="kw">geom_segment</span>(<span class="dt">data =</span> line_data,</span>
-<span id="cb417-21"><a href="covariates.html#cb417-21"></a>               <span class="kw">aes</span>(<span class="dt">x =</span> min_x,</span>
-<span id="cb417-22"><a href="covariates.html#cb417-22"></a>                   <span class="dt">y =</span> y_min,</span>
-<span id="cb417-23"><a href="covariates.html#cb417-23"></a>                   <span class="dt">xend =</span> max_x,</span>
-<span id="cb417-24"><a href="covariates.html#cb417-24"></a>                   <span class="dt">yend =</span> y_max)) <span class="op">+</span></span>
-<span id="cb417-25"><a href="covariates.html#cb417-25"></a><span class="st">  </span><span class="kw">scale_color_manual</span>(<span class="dt">values =</span> pal_okabe_ito,</span>
-<span id="cb417-26"><a href="covariates.html#cb417-26"></a>                     <span class="dt">name =</span> <span class="ot">NULL</span>) <span class="op">+</span></span>
-<span id="cb417-27"><a href="covariates.html#cb417-27"></a><span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;Area of necrosis (mg)&quot;</span>) <span class="op">+</span></span>
-<span id="cb417-28"><a href="covariates.html#cb417-28"></a><span class="st">  </span><span class="kw">xlab</span>(<span class="st">&quot;Area at risk (mg)&quot;</span>) <span class="op">+</span></span>
-<span id="cb417-29"><a href="covariates.html#cb417-29"></a><span class="st">  </span><span class="kw">theme_pubr</span>() <span class="op">+</span></span>
-<span id="cb417-30"><a href="covariates.html#cb417-30"></a><span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position=</span><span class="st">&quot;bottom&quot;</span>) <span class="op">+</span></span>
-<span id="cb417-31"><a href="covariates.html#cb417-31"></a></span>
-<span id="cb417-32"><a href="covariates.html#cb417-32"></a><span class="st">  </span><span class="ot">NULL</span></span>
-<span id="cb417-33"><a href="covariates.html#cb417-33"></a><span class="co">#gg_response</span></span></code></pre></div>
-<div class="sourceCode" id="cb418"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb418-1"><a href="covariates.html#cb418-1"></a>m1_emm &lt;-<span class="st"> </span><span class="kw">emmeans</span>(m1, <span class="dt">specs =</span> <span class="st">&quot;treatment&quot;</span>)</span>
-<span id="cb418-2"><a href="covariates.html#cb418-2"></a>m1_pairs &lt;-<span class="st"> </span><span class="kw">contrast</span>(m1_emm,</span>
-<span id="cb418-3"><a href="covariates.html#cb418-3"></a>                     <span class="dt">method =</span> <span class="st">&quot;revpairwise&quot;</span>,</span>
-<span id="cb418-4"><a href="covariates.html#cb418-4"></a>                     <span class="dt">adjust =</span> <span class="st">&quot;none&quot;</span>) <span class="op">%&gt;%</span></span>
-<span id="cb418-5"><a href="covariates.html#cb418-5"></a><span class="st">  </span><span class="kw">summary</span>(<span class="dt">infer =</span> <span class="ot">TRUE</span>) <span class="op">%&gt;%</span></span>
-<span id="cb418-6"><a href="covariates.html#cb418-6"></a><span class="st">  </span><span class="kw">data.table</span>()</span>
-<span id="cb418-7"><a href="covariates.html#cb418-7"></a><span class="co"># pvalString is from package lazyWeave</span></span>
-<span id="cb418-8"><a href="covariates.html#cb418-8"></a>m1_pairs[ , p_pretty <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">pvalString</span>(p.value)]</span>
-<span id="cb418-9"><a href="covariates.html#cb418-9"></a><span class="co"># also create a column with &quot;p-val: &quot;</span></span>
-<span id="cb418-10"><a href="covariates.html#cb418-10"></a>m1_pairs[ , pval_pretty <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">paste</span>(<span class="st">&quot;p = &quot;</span>, p_pretty)]</span>
-<span id="cb418-11"><a href="covariates.html#cb418-11"></a></span>
-<span id="cb418-12"><a href="covariates.html#cb418-12"></a>contrast_order &lt;-<span class="st"> </span>m1_pairs[, contrast]</span>
-<span id="cb418-13"><a href="covariates.html#cb418-13"></a>m1_pairs[, contrast <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">factor</span>(contrast, contrast_order)]</span>
-<span id="cb418-14"><a href="covariates.html#cb418-14"></a></span>
-<span id="cb418-15"><a href="covariates.html#cb418-15"></a>gg_effect &lt;-<span class="st"> </span><span class="kw">ggplot</span>(<span class="dt">data =</span> m1_pairs, </span>
-<span id="cb418-16"><a href="covariates.html#cb418-16"></a>                    <span class="kw">aes</span>(<span class="dt">y =</span> contrast,</span>
-<span id="cb418-17"><a href="covariates.html#cb418-17"></a>                        <span class="dt">x =</span> estimate)) <span class="op">+</span></span>
-<span id="cb418-18"><a href="covariates.html#cb418-18"></a><span class="st">  </span><span class="co"># confidence level of effect</span></span>
-<span id="cb418-19"><a href="covariates.html#cb418-19"></a><span class="st">  </span><span class="kw">geom_errorbar</span>(<span class="kw">aes</span>(<span class="dt">xmin =</span> lower.CL, </span>
-<span id="cb418-20"><a href="covariates.html#cb418-20"></a>                    <span class="dt">xmax =</span> upper.CL),</span>
-<span id="cb418-21"><a href="covariates.html#cb418-21"></a>                <span class="dt">width =</span> <span class="dv">0</span>, </span>
-<span id="cb418-22"><a href="covariates.html#cb418-22"></a>                <span class="dt">color =</span> <span class="st">&quot;black&quot;</span>) <span class="op">+</span></span>
-<span id="cb418-23"><a href="covariates.html#cb418-23"></a><span class="st">  </span><span class="co"># estimate of effect</span></span>
-<span id="cb418-24"><a href="covariates.html#cb418-24"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">size =</span> <span class="dv">3</span>) <span class="op">+</span></span>
-<span id="cb418-25"><a href="covariates.html#cb418-25"></a><span class="st">  </span></span>
-<span id="cb418-26"><a href="covariates.html#cb418-26"></a><span class="st">  </span><span class="co"># draw a line at effect = 0</span></span>
-<span id="cb418-27"><a href="covariates.html#cb418-27"></a><span class="st">  </span><span class="kw">geom_vline</span>(<span class="dt">xintercept =</span> <span class="dv">0</span>, <span class="dt">linetype =</span> <span class="dv">2</span>) <span class="op">+</span></span>
-<span id="cb418-28"><a href="covariates.html#cb418-28"></a><span class="st">  </span></span>
-<span id="cb418-29"><a href="covariates.html#cb418-29"></a><span class="st">  </span><span class="co"># p-value. The y coordinates are set by eye</span></span>
-<span id="cb418-30"><a href="covariates.html#cb418-30"></a><span class="st">  </span><span class="kw">annotate</span>(<span class="dt">geom =</span> <span class="st">&quot;text&quot;</span>,</span>
-<span id="cb418-31"><a href="covariates.html#cb418-31"></a>           <span class="dt">label =</span> m1_pairs<span class="op">$</span>pval_pretty,</span>
-<span id="cb418-32"><a href="covariates.html#cb418-32"></a>           <span class="dt">y =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">3</span>,</span>
-<span id="cb418-33"><a href="covariates.html#cb418-33"></a>           <span class="dt">x =</span> <span class="fl">4.5</span>) <span class="op">+</span></span>
-<span id="cb418-34"><a href="covariates.html#cb418-34"></a><span class="st">  </span></span>
-<span id="cb418-35"><a href="covariates.html#cb418-35"></a><span class="st">  </span><span class="co"># x-axis label and aesthetics</span></span>
-<span id="cb418-36"><a href="covariates.html#cb418-36"></a><span class="st">  </span><span class="kw">xlab</span>(<span class="st">&quot;Effect (mg)&quot;</span>) <span class="op">+</span></span>
-<span id="cb418-37"><a href="covariates.html#cb418-37"></a><span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;Contrast&quot;</span>) <span class="op">+</span></span>
-<span id="cb418-38"><a href="covariates.html#cb418-38"></a><span class="st">  </span><span class="kw">coord_cartesian</span>(<span class="dt">xlim =</span> <span class="kw">c</span>(<span class="op">-</span><span class="dv">8</span>,<span class="fl">5.5</span>)) <span class="op">+</span></span>
-<span id="cb418-39"><a href="covariates.html#cb418-39"></a><span class="st">  </span><span class="kw">scale_x_continuous</span>(<span class="dt">position=</span><span class="st">&quot;top&quot;</span>) <span class="op">+</span></span>
-<span id="cb418-40"><a href="covariates.html#cb418-40"></a><span class="st">  </span></span>
-<span id="cb418-41"><a href="covariates.html#cb418-41"></a><span class="st">  </span><span class="kw">theme_pubr</span>() <span class="op">+</span></span>
-<span id="cb418-42"><a href="covariates.html#cb418-42"></a><span class="st">  </span><span class="co"># theme(axis.title.x = element_blank()) +</span></span>
-<span id="cb418-43"><a href="covariates.html#cb418-43"></a><span class="st">  </span></span>
-<span id="cb418-44"><a href="covariates.html#cb418-44"></a><span class="st">  </span><span class="ot">NULL</span></span>
-<span id="cb418-45"><a href="covariates.html#cb418-45"></a><span class="co"># gg_effect</span></span></code></pre></div>
-<div class="sourceCode" id="cb419"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb419-1"><a href="covariates.html#cb419-1"></a>gg &lt;-<span class="st"> </span><span class="kw">plot_grid</span>(gg_effect,</span>
-<span id="cb419-2"><a href="covariates.html#cb419-2"></a>                gg_response,</span>
-<span id="cb419-3"><a href="covariates.html#cb419-3"></a>                <span class="dt">nrow=</span><span class="dv">2</span>,</span>
-<span id="cb419-4"><a href="covariates.html#cb419-4"></a>                <span class="dt">align =</span> <span class="st">&quot;v&quot;</span>,</span>
-<span id="cb419-5"><a href="covariates.html#cb419-5"></a>                <span class="dt">axis =</span> <span class="st">&quot;rl&quot;</span>,</span>
-<span id="cb419-6"><a href="covariates.html#cb419-6"></a>                <span class="dt">rel_heights =</span> <span class="kw">c</span>(<span class="fl">0.35</span>, <span class="dv">1</span>)</span>
-<span id="cb419-7"><a href="covariates.html#cb419-7"></a>                )</span>
-<span id="cb419-8"><a href="covariates.html#cb419-8"></a>gg</span></code></pre></div>
+<div class="sourceCode" id="cb418"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb418-1"><a href="covariates.html#cb418-1"></a>m1 &lt;-<span class="st"> </span><span class="kw">lm</span>(area_of_necrosis <span class="op">~</span><span class="st"> </span>area_at_risk <span class="op">+</span><span class="st"> </span>treatment, <span class="dt">data =</span> fig4h)</span>
+<span id="cb418-2"><a href="covariates.html#cb418-2"></a>b &lt;-<span class="st"> </span><span class="kw">coef</span>(m1)</span>
+<span id="cb418-3"><a href="covariates.html#cb418-3"></a></span>
+<span id="cb418-4"><a href="covariates.html#cb418-4"></a>groups &lt;-<span class="st"> </span><span class="kw">levels</span>(fig4h<span class="op">$</span>treatment)</span>
+<span id="cb418-5"><a href="covariates.html#cb418-5"></a>line_data &lt;-<span class="st"> </span>fig4h[, .(<span class="dt">min_x =</span> <span class="kw">min</span>(area_at_risk),</span>
+<span id="cb418-6"><a href="covariates.html#cb418-6"></a>                       <span class="dt">max_x =</span> <span class="kw">max</span>(area_at_risk)), by =<span class="st"> </span>treatment]</span>
+<span id="cb418-7"><a href="covariates.html#cb418-7"></a>line_data[, dummy1 <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">ifelse</span>(treatment <span class="op">==</span><span class="st"> &quot;Myriocin&quot;</span>, <span class="dv">1</span>, <span class="dv">0</span>)]</span>
+<span id="cb418-8"><a href="covariates.html#cb418-8"></a>line_data[, dummy2 <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">ifelse</span>(treatment <span class="op">==</span><span class="st"> &quot;Myriocin + DoxSa&quot;</span>, <span class="dv">1</span>, <span class="dv">0</span>)]</span>
+<span id="cb418-9"><a href="covariates.html#cb418-9"></a></span>
+<span id="cb418-10"><a href="covariates.html#cb418-10"></a>line_data[, y_min <span class="op">:</span><span class="er">=</span><span class="st"> </span>b[<span class="dv">1</span>] <span class="op">+</span><span class="st"> </span>b[<span class="dv">2</span>]<span class="op">*</span>min_x <span class="op">+</span><span class="st"> </span>b[<span class="dv">3</span>]<span class="op">*</span>dummy1 <span class="op">+</span><span class="st"> </span>b[<span class="dv">4</span>]<span class="op">*</span>dummy2]</span>
+<span id="cb418-11"><a href="covariates.html#cb418-11"></a>line_data[, y_max <span class="op">:</span><span class="er">=</span><span class="st"> </span>b[<span class="dv">1</span>] <span class="op">+</span><span class="st"> </span>b[<span class="dv">2</span>]<span class="op">*</span>max_x <span class="op">+</span><span class="st"> </span>b[<span class="dv">3</span>]<span class="op">*</span>dummy1 <span class="op">+</span><span class="st"> </span>b[<span class="dv">4</span>]<span class="op">*</span>dummy2]</span>
+<span id="cb418-12"><a href="covariates.html#cb418-12"></a></span>
+<span id="cb418-13"><a href="covariates.html#cb418-13"></a>gg_response &lt;-<span class="st"> </span><span class="kw">ggplot</span>(<span class="dt">data =</span> fig4h,</span>
+<span id="cb418-14"><a href="covariates.html#cb418-14"></a>                      <span class="kw">aes</span>(<span class="dt">x =</span> area_at_risk,</span>
+<span id="cb418-15"><a href="covariates.html#cb418-15"></a>                          <span class="dt">y =</span> area_of_necrosis,</span>
+<span id="cb418-16"><a href="covariates.html#cb418-16"></a>                          <span class="dt">color =</span> treatment)) <span class="op">+</span></span>
+<span id="cb418-17"><a href="covariates.html#cb418-17"></a><span class="st">  </span><span class="co"># points</span></span>
+<span id="cb418-18"><a href="covariates.html#cb418-18"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">size =</span> <span class="dv">2</span>) <span class="op">+</span></span>
+<span id="cb418-19"><a href="covariates.html#cb418-19"></a><span class="st">  </span></span>
+<span id="cb418-20"><a href="covariates.html#cb418-20"></a><span class="st">  </span><span class="kw">geom_segment</span>(<span class="dt">data =</span> line_data,</span>
+<span id="cb418-21"><a href="covariates.html#cb418-21"></a>               <span class="kw">aes</span>(<span class="dt">x =</span> min_x,</span>
+<span id="cb418-22"><a href="covariates.html#cb418-22"></a>                   <span class="dt">y =</span> y_min,</span>
+<span id="cb418-23"><a href="covariates.html#cb418-23"></a>                   <span class="dt">xend =</span> max_x,</span>
+<span id="cb418-24"><a href="covariates.html#cb418-24"></a>                   <span class="dt">yend =</span> y_max)) <span class="op">+</span></span>
+<span id="cb418-25"><a href="covariates.html#cb418-25"></a><span class="st">  </span><span class="kw">scale_color_manual</span>(<span class="dt">values =</span> pal_okabe_ito,</span>
+<span id="cb418-26"><a href="covariates.html#cb418-26"></a>                     <span class="dt">name =</span> <span class="ot">NULL</span>) <span class="op">+</span></span>
+<span id="cb418-27"><a href="covariates.html#cb418-27"></a><span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;Area of necrosis (mg)&quot;</span>) <span class="op">+</span></span>
+<span id="cb418-28"><a href="covariates.html#cb418-28"></a><span class="st">  </span><span class="kw">xlab</span>(<span class="st">&quot;Area at risk (mg)&quot;</span>) <span class="op">+</span></span>
+<span id="cb418-29"><a href="covariates.html#cb418-29"></a><span class="st">  </span><span class="kw">theme_pubr</span>() <span class="op">+</span></span>
+<span id="cb418-30"><a href="covariates.html#cb418-30"></a><span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position=</span><span class="st">&quot;bottom&quot;</span>) <span class="op">+</span></span>
+<span id="cb418-31"><a href="covariates.html#cb418-31"></a></span>
+<span id="cb418-32"><a href="covariates.html#cb418-32"></a><span class="st">  </span><span class="ot">NULL</span></span>
+<span id="cb418-33"><a href="covariates.html#cb418-33"></a><span class="co">#gg_response</span></span></code></pre></div>
+<div class="sourceCode" id="cb419"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb419-1"><a href="covariates.html#cb419-1"></a>m1_emm &lt;-<span class="st"> </span><span class="kw">emmeans</span>(m1, <span class="dt">specs =</span> <span class="st">&quot;treatment&quot;</span>)</span>
+<span id="cb419-2"><a href="covariates.html#cb419-2"></a>m1_pairs &lt;-<span class="st"> </span><span class="kw">contrast</span>(m1_emm,</span>
+<span id="cb419-3"><a href="covariates.html#cb419-3"></a>                     <span class="dt">method =</span> <span class="st">&quot;revpairwise&quot;</span>,</span>
+<span id="cb419-4"><a href="covariates.html#cb419-4"></a>                     <span class="dt">adjust =</span> <span class="st">&quot;none&quot;</span>) <span class="op">%&gt;%</span></span>
+<span id="cb419-5"><a href="covariates.html#cb419-5"></a><span class="st">  </span><span class="kw">summary</span>(<span class="dt">infer =</span> <span class="ot">TRUE</span>) <span class="op">%&gt;%</span></span>
+<span id="cb419-6"><a href="covariates.html#cb419-6"></a><span class="st">  </span><span class="kw">data.table</span>()</span>
+<span id="cb419-7"><a href="covariates.html#cb419-7"></a><span class="co"># pvalString is from package lazyWeave</span></span>
+<span id="cb419-8"><a href="covariates.html#cb419-8"></a>m1_pairs[ , p_pretty <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">pvalString</span>(p.value)]</span>
+<span id="cb419-9"><a href="covariates.html#cb419-9"></a><span class="co"># also create a column with &quot;p-val: &quot;</span></span>
+<span id="cb419-10"><a href="covariates.html#cb419-10"></a>m1_pairs[ , pval_pretty <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">paste</span>(<span class="st">&quot;p = &quot;</span>, p_pretty)]</span>
+<span id="cb419-11"><a href="covariates.html#cb419-11"></a></span>
+<span id="cb419-12"><a href="covariates.html#cb419-12"></a>contrast_order &lt;-<span class="st"> </span>m1_pairs[, contrast]</span>
+<span id="cb419-13"><a href="covariates.html#cb419-13"></a>m1_pairs[, contrast <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">factor</span>(contrast, contrast_order)]</span>
+<span id="cb419-14"><a href="covariates.html#cb419-14"></a></span>
+<span id="cb419-15"><a href="covariates.html#cb419-15"></a>gg_effect &lt;-<span class="st"> </span><span class="kw">ggplot</span>(<span class="dt">data =</span> m1_pairs, </span>
+<span id="cb419-16"><a href="covariates.html#cb419-16"></a>                    <span class="kw">aes</span>(<span class="dt">y =</span> contrast,</span>
+<span id="cb419-17"><a href="covariates.html#cb419-17"></a>                        <span class="dt">x =</span> estimate)) <span class="op">+</span></span>
+<span id="cb419-18"><a href="covariates.html#cb419-18"></a><span class="st">  </span><span class="co"># confidence level of effect</span></span>
+<span id="cb419-19"><a href="covariates.html#cb419-19"></a><span class="st">  </span><span class="kw">geom_errorbar</span>(<span class="kw">aes</span>(<span class="dt">xmin =</span> lower.CL, </span>
+<span id="cb419-20"><a href="covariates.html#cb419-20"></a>                    <span class="dt">xmax =</span> upper.CL),</span>
+<span id="cb419-21"><a href="covariates.html#cb419-21"></a>                <span class="dt">width =</span> <span class="dv">0</span>, </span>
+<span id="cb419-22"><a href="covariates.html#cb419-22"></a>                <span class="dt">color =</span> <span class="st">&quot;black&quot;</span>) <span class="op">+</span></span>
+<span id="cb419-23"><a href="covariates.html#cb419-23"></a><span class="st">  </span><span class="co"># estimate of effect</span></span>
+<span id="cb419-24"><a href="covariates.html#cb419-24"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">size =</span> <span class="dv">3</span>) <span class="op">+</span></span>
+<span id="cb419-25"><a href="covariates.html#cb419-25"></a><span class="st">  </span></span>
+<span id="cb419-26"><a href="covariates.html#cb419-26"></a><span class="st">  </span><span class="co"># draw a line at effect = 0</span></span>
+<span id="cb419-27"><a href="covariates.html#cb419-27"></a><span class="st">  </span><span class="kw">geom_vline</span>(<span class="dt">xintercept =</span> <span class="dv">0</span>, <span class="dt">linetype =</span> <span class="dv">2</span>) <span class="op">+</span></span>
+<span id="cb419-28"><a href="covariates.html#cb419-28"></a><span class="st">  </span></span>
+<span id="cb419-29"><a href="covariates.html#cb419-29"></a><span class="st">  </span><span class="co"># p-value. The y coordinates are set by eye</span></span>
+<span id="cb419-30"><a href="covariates.html#cb419-30"></a><span class="st">  </span><span class="kw">annotate</span>(<span class="dt">geom =</span> <span class="st">&quot;text&quot;</span>,</span>
+<span id="cb419-31"><a href="covariates.html#cb419-31"></a>           <span class="dt">label =</span> m1_pairs<span class="op">$</span>pval_pretty,</span>
+<span id="cb419-32"><a href="covariates.html#cb419-32"></a>           <span class="dt">y =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">3</span>,</span>
+<span id="cb419-33"><a href="covariates.html#cb419-33"></a>           <span class="dt">x =</span> <span class="fl">4.5</span>) <span class="op">+</span></span>
+<span id="cb419-34"><a href="covariates.html#cb419-34"></a><span class="st">  </span></span>
+<span id="cb419-35"><a href="covariates.html#cb419-35"></a><span class="st">  </span><span class="co"># x-axis label and aesthetics</span></span>
+<span id="cb419-36"><a href="covariates.html#cb419-36"></a><span class="st">  </span><span class="kw">xlab</span>(<span class="st">&quot;Effect (mg)&quot;</span>) <span class="op">+</span></span>
+<span id="cb419-37"><a href="covariates.html#cb419-37"></a><span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;Contrast&quot;</span>) <span class="op">+</span></span>
+<span id="cb419-38"><a href="covariates.html#cb419-38"></a><span class="st">  </span><span class="kw">coord_cartesian</span>(<span class="dt">xlim =</span> <span class="kw">c</span>(<span class="op">-</span><span class="dv">8</span>,<span class="fl">5.5</span>)) <span class="op">+</span></span>
+<span id="cb419-39"><a href="covariates.html#cb419-39"></a><span class="st">  </span><span class="kw">scale_x_continuous</span>(<span class="dt">position=</span><span class="st">&quot;top&quot;</span>) <span class="op">+</span></span>
+<span id="cb419-40"><a href="covariates.html#cb419-40"></a><span class="st">  </span></span>
+<span id="cb419-41"><a href="covariates.html#cb419-41"></a><span class="st">  </span><span class="kw">theme_pubr</span>() <span class="op">+</span></span>
+<span id="cb419-42"><a href="covariates.html#cb419-42"></a><span class="st">  </span><span class="co"># theme(axis.title.x = element_blank()) +</span></span>
+<span id="cb419-43"><a href="covariates.html#cb419-43"></a><span class="st">  </span></span>
+<span id="cb419-44"><a href="covariates.html#cb419-44"></a><span class="st">  </span><span class="ot">NULL</span></span>
+<span id="cb419-45"><a href="covariates.html#cb419-45"></a><span class="co"># gg_effect</span></span></code></pre></div>
+<div class="sourceCode" id="cb420"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb420-1"><a href="covariates.html#cb420-1"></a>gg &lt;-<span class="st"> </span><span class="kw">plot_grid</span>(gg_effect,</span>
+<span id="cb420-2"><a href="covariates.html#cb420-2"></a>                gg_response,</span>
+<span id="cb420-3"><a href="covariates.html#cb420-3"></a>                <span class="dt">nrow=</span><span class="dv">2</span>,</span>
+<span id="cb420-4"><a href="covariates.html#cb420-4"></a>                <span class="dt">align =</span> <span class="st">&quot;v&quot;</span>,</span>
+<span id="cb420-5"><a href="covariates.html#cb420-5"></a>                <span class="dt">axis =</span> <span class="st">&quot;rl&quot;</span>,</span>
+<span id="cb420-6"><a href="covariates.html#cb420-6"></a>                <span class="dt">rel_heights =</span> <span class="kw">c</span>(<span class="fl">0.35</span>, <span class="dv">1</span>)</span>
+<span id="cb420-7"><a href="covariates.html#cb420-7"></a>                )</span>
+<span id="cb420-8"><a href="covariates.html#cb420-8"></a>gg</span></code></pre></div>
 <p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/unnamed-chunk-205-1.png" width="576" /></p>
 </div>
 </div>
