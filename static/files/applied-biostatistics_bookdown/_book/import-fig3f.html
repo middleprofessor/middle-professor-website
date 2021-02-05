@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Chapter 19 Linear models with heterogenous variance | Elements of Statistical Modeling for Experimental Biology</title>
+  <title>Chapter 14 Import fig3f | Elements of Statistical Modeling for Experimental Biology</title>
   <meta name="description" content="A first course in statistical modeling for experimental biology researchers" />
   <meta name="generator" content="bookdown 0.14 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Chapter 19 Linear models with heterogenous variance | Elements of Statistical Modeling for Experimental Biology" />
+  <meta property="og:title" content="Chapter 14 Import fig3f | Elements of Statistical Modeling for Experimental Biology" />
   <meta property="og:type" content="book" />
   
   
@@ -16,7 +16,7 @@
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Chapter 19 Linear models with heterogenous variance | Elements of Statistical Modeling for Experimental Biology" />
+  <meta name="twitter:title" content="Chapter 14 Import fig3f | Elements of Statistical Modeling for Experimental Biology" />
   
   <meta name="twitter:description" content="A first course in statistical modeling for experimental biology researchers" />
   
@@ -30,8 +30,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="counts.html"/>
-<link rel="next" href="count-sim.html"/>
+<link rel="prev" href="issues.html"/>
+<link rel="next" href="part-vi-more-than-one-x-multivariable-models.html"/>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -587,8 +587,53 @@ code span.wa { color: #bf0303; } /* Warning */
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="gls" class="section level1">
-<h1><span class="header-section-number">Chapter 19</span> Linear models with heterogenous variance</h1>
+<div id="import-fig3f" class="section level1">
+<h1><span class="header-section-number">Chapter 14</span> Import fig3f</h1>
+<div class="sourceCode" id="cb412"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb412-1"><a href="import-fig3f.html#cb412-1"></a>data_from &lt;-<span class="st"> &quot;Innervation of thermogenic adipose tissue via a calsyntenin 3β–S100b axis&quot;</span></span>
+<span id="cb412-2"><a href="import-fig3f.html#cb412-2"></a>file_name &lt;-<span class="st"> &quot;41586_2019_1156_MOESM5_ESM.xlsx&quot;</span></span>
+<span id="cb412-3"><a href="import-fig3f.html#cb412-3"></a>file_path &lt;-<span class="st"> </span><span class="kw">here</span>(data_folder, data_from, file_name)</span>
+<span id="cb412-4"><a href="import-fig3f.html#cb412-4"></a></span>
+<span id="cb412-5"><a href="import-fig3f.html#cb412-5"></a>fig3f_wide &lt;-<span class="st"> </span><span class="kw">read_excel</span>(file_path,</span>
+<span id="cb412-6"><a href="import-fig3f.html#cb412-6"></a>                    <span class="dt">sheet =</span> <span class="st">&quot;Figure 3f&quot;</span>,</span>
+<span id="cb412-7"><a href="import-fig3f.html#cb412-7"></a>                    <span class="dt">range =</span> <span class="st">&quot;H2:M15&quot;</span>,</span>
+<span id="cb412-8"><a href="import-fig3f.html#cb412-8"></a>                    <span class="dt">col_names =</span> <span class="ot">FALSE</span>) <span class="op">%&gt;%</span></span>
+<span id="cb412-9"><a href="import-fig3f.html#cb412-9"></a><span class="st">  </span><span class="kw">data.table</span>()</span>
+<span id="cb412-10"><a href="import-fig3f.html#cb412-10"></a></span>
+<span id="cb412-11"><a href="import-fig3f.html#cb412-11"></a>time_cols &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">30</span>, <span class="dv">60</span>, <span class="dv">90</span>, <span class="dv">120</span>)</span>
+<span id="cb412-12"><a href="import-fig3f.html#cb412-12"></a><span class="kw">setnames</span>(fig3f_wide,</span>
+<span id="cb412-13"><a href="import-fig3f.html#cb412-13"></a>         <span class="dt">old =</span> <span class="kw">names</span>(fig3f_wide),</span>
+<span id="cb412-14"><a href="import-fig3f.html#cb412-14"></a>         <span class="dt">new =</span> <span class="kw">c</span>(<span class="st">&quot;id&quot;</span>, </span>
+<span id="cb412-15"><a href="import-fig3f.html#cb412-15"></a>                 <span class="kw">paste0</span>(<span class="st">&quot;time_&quot;</span>, time_cols)))</span>
+<span id="cb412-16"><a href="import-fig3f.html#cb412-16"></a></span>
+<span id="cb412-17"><a href="import-fig3f.html#cb412-17"></a>treatment_levels &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;WT&quot;</span>, <span class="st">&quot;KO&quot;</span>)</span>
+<span id="cb412-18"><a href="import-fig3f.html#cb412-18"></a>fig3f_wide[, treatment <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">factor</span>(<span class="kw">substr</span>(id, <span class="dv">1</span>, <span class="dv">2</span>),</span>
+<span id="cb412-19"><a href="import-fig3f.html#cb412-19"></a>                                 treatment_levels)]</span>
+<span id="cb412-20"><a href="import-fig3f.html#cb412-20"></a></span>
+<span id="cb412-21"><a href="import-fig3f.html#cb412-21"></a>fig3f_wide[, glucose_<span class="dv">0</span> <span class="op">:</span><span class="er">=</span><span class="st"> </span>time_<span class="dv">0</span>]</span>
+<span id="cb412-22"><a href="import-fig3f.html#cb412-22"></a></span>
+<span id="cb412-23"><a href="import-fig3f.html#cb412-23"></a>times &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">30</span>, <span class="dv">60</span>, <span class="dv">90</span>, <span class="dv">120</span>)</span>
+<span id="cb412-24"><a href="import-fig3f.html#cb412-24"></a>n_times &lt;-<span class="st"> </span><span class="kw">length</span>(times)</span>
+<span id="cb412-25"><a href="import-fig3f.html#cb412-25"></a>period_full &lt;-<span class="st"> </span>times[n_times] <span class="op">-</span><span class="st"> </span>times[<span class="dv">1</span>]</span>
+<span id="cb412-26"><a href="import-fig3f.html#cb412-26"></a>period_post &lt;-<span class="st"> </span>times[n_times] <span class="op">-</span><span class="st"> </span>times[<span class="dv">2</span>]</span>
+<span id="cb412-27"><a href="import-fig3f.html#cb412-27"></a></span>
+<span id="cb412-28"><a href="import-fig3f.html#cb412-28"></a>time_cols &lt;-<span class="st"> </span><span class="kw">paste0</span>(<span class="st">&quot;time_&quot;</span>, times)</span>
+<span id="cb412-29"><a href="import-fig3f.html#cb412-29"></a>Y &lt;-<span class="st"> </span>fig3f_wide[, .SD, .SDcols =<span class="st"> </span>time_cols] <span class="op">%&gt;%</span></span>
+<span id="cb412-30"><a href="import-fig3f.html#cb412-30"></a><span class="st">  </span><span class="kw">as.matrix</span>()</span>
+<span id="cb412-31"><a href="import-fig3f.html#cb412-31"></a></span>
+<span id="cb412-32"><a href="import-fig3f.html#cb412-32"></a><span class="co"># auc</span></span>
+<span id="cb412-33"><a href="import-fig3f.html#cb412-33"></a>fig3f_wide[, auc <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">apply</span>(Y, <span class="dv">1</span>, trap.rule, <span class="dt">x =</span> times)]</span>
+<span id="cb412-34"><a href="import-fig3f.html#cb412-34"></a></span>
+<span id="cb412-35"><a href="import-fig3f.html#cb412-35"></a><span class="co"># mean response over full period</span></span>
+<span id="cb412-36"><a href="import-fig3f.html#cb412-36"></a>fig3f_wide[, glucose_gtt_post <span class="op">:</span><span class="er">=</span><span class="st"> </span>auc<span class="op">/</span>period_full]</span>
+<span id="cb412-37"><a href="import-fig3f.html#cb412-37"></a></span>
+<span id="cb412-38"><a href="import-fig3f.html#cb412-38"></a><span class="co"># auc of the change. Equal to iauc of le Floch</span></span>
+<span id="cb412-39"><a href="import-fig3f.html#cb412-39"></a>fig3f_wide[, iauc <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">apply</span>(Y <span class="op">-</span><span class="st"> </span>Y[,<span class="dv">1</span>], <span class="dv">1</span>, trap.rule, <span class="dt">x =</span> times)]</span>
+<span id="cb412-40"><a href="import-fig3f.html#cb412-40"></a></span>
+<span id="cb412-41"><a href="import-fig3f.html#cb412-41"></a><span class="co"># mean change over full period</span></span>
+<span id="cb412-42"><a href="import-fig3f.html#cb412-42"></a>fig3f_wide[, glucose_gtt_change <span class="op">:</span><span class="er">=</span><span class="st"> </span>iauc<span class="op">/</span>period_full]</span>
+<span id="cb412-43"><a href="import-fig3f.html#cb412-43"></a></span>
+<span id="cb412-44"><a href="import-fig3f.html#cb412-44"></a><span class="co"># View(fig3f_wide)</span></span></code></pre></div>
+<p>**convert fig3f to long format for LMM</p>
 
 </div>
             </section>
@@ -596,8 +641,8 @@ code span.wa { color: #bf0303; } /* Warning */
           </div>
         </div>
       </div>
-<a href="counts.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="count-sim.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="issues.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="part-vi-more-than-one-x-multivariable-models.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -629,7 +674,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/rstudio/bookdown-demo/edit/master/chapters/70-gls.Rmd",
+"link": "https://github.com/rstudio/bookdown-demo/edit/master/chapters/29-issues.Rmd",
 "text": "Edit"
 },
 "history": {
