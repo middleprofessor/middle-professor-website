@@ -3138,23 +3138,23 @@ Residuals
 <li>Background: The default model matrix in the <code>lm</code> function uses dummy (or treatment) coding. For a Type 3 SS ANOVA (the kind that matches that in Graphpad Prism or JMP), we need to tell <code>lm</code> to use sum (or deviation) coding.</li>
 <li>Many online sites give you code to change this using</li>
 </ol>
-<div class="sourceCode" id="cb339"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb339-1"><a href="oneway.html#cb339-1" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">contrasts =</span> <span class="fu">c</span>(<span class="st">&quot;contr.sum&quot;</span>, <span class="st">&quot;contr.poly&quot;</span>))</span></code></pre></div>
+<p><code>options(contrasts = c("contr.sum", "contr.poly"))</code></p>
 <p>If you’re reading this book, you almost certainly don’t want to do this because this code resets how R computes coefficients of linear models and SS of ANOVA tables. This will effect all future analysis until the contrasts are set to something else or a new R session is started.
 4. The best practice method for changing the contrasts in the model matrix is using the <code>contrasts</code> argument within the <code>lm</code> function, as in the code above to fit <code>m1_type3</code>. This is the safest practice because this sets the contrasts only for this specific fit.
 5. The coefficients of <code>m1_type3</code> will be different from <code>m1</code>. The intercept will be the grand mean and the coefficients of the non-reference levels (the effects) will be their deviations from the grand mean. I don’t find this definition of “effects” very useful for most experiments in biology.
 6. The contrasts (differences in the means among pairs of groups) in the contrast table will be the same, regardless of the contrast coding.</p>
 <p><strong>base R aov and anova</strong></p>
-<div class="sourceCode" id="cb340"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb340-1"><a href="oneway.html#cb340-1" aria-hidden="true" tabindex="-1"></a>m1_aov <span class="ot">&lt;-</span> <span class="fu">aov</span>(diHOME <span class="sc">~</span> treatment, <span class="at">data =</span> fig2a)</span>
-<span id="cb340-2"><a href="oneway.html#cb340-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m1_aov)</span></code></pre></div>
+<div class="sourceCode" id="cb339"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb339-1"><a href="oneway.html#cb339-1" aria-hidden="true" tabindex="-1"></a>m1_aov <span class="ot">&lt;-</span> <span class="fu">aov</span>(diHOME <span class="sc">~</span> treatment, <span class="at">data =</span> fig2a)</span>
+<span id="cb339-2"><a href="oneway.html#cb339-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m1_aov)</span></code></pre></div>
 <pre><code>##             Df Sum Sq Mean Sq F value Pr(&gt;F)  
 ## treatment    2  656.9   328.4   5.765 0.0149 *
 ## Residuals   14  797.5    57.0                 
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 1 observation deleted due to missingness</code></pre>
-<div class="sourceCode" id="cb342"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb342-1"><a href="oneway.html#cb342-1" aria-hidden="true" tabindex="-1"></a><span class="co"># same as m1 in the Example 2 section</span></span>
-<span id="cb342-2"><a href="oneway.html#cb342-2" aria-hidden="true" tabindex="-1"></a>m1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(diHOME <span class="sc">~</span> treatment, <span class="at">data =</span> fig2a)</span>
-<span id="cb342-3"><a href="oneway.html#cb342-3" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(m1)</span></code></pre></div>
+<div class="sourceCode" id="cb341"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb341-1"><a href="oneway.html#cb341-1" aria-hidden="true" tabindex="-1"></a><span class="co"># same as m1 in the Example 2 section</span></span>
+<span id="cb341-2"><a href="oneway.html#cb341-2" aria-hidden="true" tabindex="-1"></a>m1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(diHOME <span class="sc">~</span> treatment, <span class="at">data =</span> fig2a)</span>
+<span id="cb341-3"><a href="oneway.html#cb341-3" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(m1)</span></code></pre></div>
 <pre><code>## Analysis of Variance Table
 ## 
 ## Response: diHOME
@@ -3175,56 +3175,56 @@ Residuals
 <h2><span class="header-section-number">10.3</span> Hidden Code</h2>
 <div id="importing-and-wrangling-the-fig_3d-data-for-example-1" class="section level3" number="10.3.1">
 <h3><span class="header-section-number">10.3.1</span> Importing and wrangling the fig_3d data for example 1</h3>
-<div class="sourceCode" id="cb344"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb344-1"><a href="oneway.html#cb344-1" aria-hidden="true" tabindex="-1"></a>data_folder <span class="ot">&lt;-</span> <span class="st">&quot;data&quot;</span></span>
-<span id="cb344-2"><a href="oneway.html#cb344-2" aria-hidden="true" tabindex="-1"></a>data_from <span class="ot">&lt;-</span> <span class="st">&quot;The cold-induced lipokine 12,13-diHOME promotes fatty acid transport into brown adipose tissue&quot;</span></span></code></pre></div>
-<div class="sourceCode" id="cb345"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb345-1"><a href="oneway.html#cb345-1" aria-hidden="true" tabindex="-1"></a><span class="co"># need data_folder and data_from from earlier chunk</span></span>
-<span id="cb345-2"><a href="oneway.html#cb345-2" aria-hidden="true" tabindex="-1"></a>file_name <span class="ot">&lt;-</span> <span class="st">&quot;41591_2017_BFnm4297_MOESM3_ESM.xlsx&quot;</span></span>
-<span id="cb345-3"><a href="oneway.html#cb345-3" aria-hidden="true" tabindex="-1"></a>file_path <span class="ot">&lt;-</span> <span class="fu">here</span>(data_folder, data_from, file_name)</span>
-<span id="cb345-4"><a href="oneway.html#cb345-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb345-5"><a href="oneway.html#cb345-5" aria-hidden="true" tabindex="-1"></a><span class="co"># ignore the column with animal ID. Based on methods, I am inferring</span></span>
-<span id="cb345-6"><a href="oneway.html#cb345-6" aria-hidden="true" tabindex="-1"></a><span class="co"># that the six mice in vehicle group *are different* from the</span></span>
-<span id="cb345-7"><a href="oneway.html#cb345-7" aria-hidden="true" tabindex="-1"></a><span class="co"># six mice in the 1213 group.</span></span>
-<span id="cb345-8"><a href="oneway.html#cb345-8" aria-hidden="true" tabindex="-1"></a>col_names_3d <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;Vehicle&quot;</span>, <span class="st">&quot;1213&quot;</span>)</span>
-<span id="cb345-9"><a href="oneway.html#cb345-9" aria-hidden="true" tabindex="-1"></a>treatment_levels <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;Vehicle&quot;</span>, <span class="st">&quot;12,13-diHOME&quot;</span>)</span>
-<span id="cb345-10"><a href="oneway.html#cb345-10" aria-hidden="true" tabindex="-1"></a>fig_3d <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(file_path,</span>
-<span id="cb345-11"><a href="oneway.html#cb345-11" aria-hidden="true" tabindex="-1"></a>                     <span class="at">sheet =</span> <span class="st">&quot;Figure 3d&quot;</span>,</span>
-<span id="cb345-12"><a href="oneway.html#cb345-12" aria-hidden="true" tabindex="-1"></a>                     <span class="at">range =</span> <span class="st">&quot;B3:C9&quot;</span>,</span>
-<span id="cb345-13"><a href="oneway.html#cb345-13" aria-hidden="true" tabindex="-1"></a>                     <span class="at">col_names =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb345-14"><a href="oneway.html#cb345-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.table</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb345-15"><a href="oneway.html#cb345-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">melt</span>(<span class="at">measure.vars =</span> col_names_3d,</span>
-<span id="cb345-16"><a href="oneway.html#cb345-16" aria-hidden="true" tabindex="-1"></a>       <span class="at">variable.name =</span> <span class="st">&quot;treatment&quot;</span>,</span>
-<span id="cb345-17"><a href="oneway.html#cb345-17" aria-hidden="true" tabindex="-1"></a>       <span class="at">value.name =</span> <span class="st">&quot;serum_tg&quot;</span>)</span>
-<span id="cb345-18"><a href="oneway.html#cb345-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb345-19"><a href="oneway.html#cb345-19" aria-hidden="true" tabindex="-1"></a><span class="co"># change group name of &quot;1213&quot;</span></span>
-<span id="cb345-20"><a href="oneway.html#cb345-20" aria-hidden="true" tabindex="-1"></a>fig_3d[treatment <span class="sc">==</span> <span class="st">&quot;1213&quot;</span>, treatment <span class="sc">:</span><span class="er">=</span> <span class="st">&quot;12,13-diHOME&quot;</span>]</span>
-<span id="cb345-21"><a href="oneway.html#cb345-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb345-22"><a href="oneway.html#cb345-22" aria-hidden="true" tabindex="-1"></a><span class="co"># make treatment a factor with the order in &quot;treatment_levels&quot;</span></span>
-<span id="cb345-23"><a href="oneway.html#cb345-23" aria-hidden="true" tabindex="-1"></a>fig_3d[, treatment <span class="sc">:</span><span class="er">=</span> <span class="fu">factor</span>(treatment, treatment_levels)]</span>
-<span id="cb345-24"><a href="oneway.html#cb345-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb345-25"><a href="oneway.html#cb345-25" aria-hidden="true" tabindex="-1"></a><span class="co">#View(fig_3d)</span></span></code></pre></div>
+<div class="sourceCode" id="cb343"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb343-1"><a href="oneway.html#cb343-1" aria-hidden="true" tabindex="-1"></a>data_folder <span class="ot">&lt;-</span> <span class="st">&quot;data&quot;</span></span>
+<span id="cb343-2"><a href="oneway.html#cb343-2" aria-hidden="true" tabindex="-1"></a>data_from <span class="ot">&lt;-</span> <span class="st">&quot;The cold-induced lipokine 12,13-diHOME promotes fatty acid transport into brown adipose tissue&quot;</span></span></code></pre></div>
+<div class="sourceCode" id="cb344"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb344-1"><a href="oneway.html#cb344-1" aria-hidden="true" tabindex="-1"></a><span class="co"># need data_folder and data_from from earlier chunk</span></span>
+<span id="cb344-2"><a href="oneway.html#cb344-2" aria-hidden="true" tabindex="-1"></a>file_name <span class="ot">&lt;-</span> <span class="st">&quot;41591_2017_BFnm4297_MOESM3_ESM.xlsx&quot;</span></span>
+<span id="cb344-3"><a href="oneway.html#cb344-3" aria-hidden="true" tabindex="-1"></a>file_path <span class="ot">&lt;-</span> <span class="fu">here</span>(data_folder, data_from, file_name)</span>
+<span id="cb344-4"><a href="oneway.html#cb344-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb344-5"><a href="oneway.html#cb344-5" aria-hidden="true" tabindex="-1"></a><span class="co"># ignore the column with animal ID. Based on methods, I am inferring</span></span>
+<span id="cb344-6"><a href="oneway.html#cb344-6" aria-hidden="true" tabindex="-1"></a><span class="co"># that the six mice in vehicle group *are different* from the</span></span>
+<span id="cb344-7"><a href="oneway.html#cb344-7" aria-hidden="true" tabindex="-1"></a><span class="co"># six mice in the 1213 group.</span></span>
+<span id="cb344-8"><a href="oneway.html#cb344-8" aria-hidden="true" tabindex="-1"></a>col_names_3d <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;Vehicle&quot;</span>, <span class="st">&quot;1213&quot;</span>)</span>
+<span id="cb344-9"><a href="oneway.html#cb344-9" aria-hidden="true" tabindex="-1"></a>treatment_levels <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;Vehicle&quot;</span>, <span class="st">&quot;12,13-diHOME&quot;</span>)</span>
+<span id="cb344-10"><a href="oneway.html#cb344-10" aria-hidden="true" tabindex="-1"></a>fig_3d <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(file_path,</span>
+<span id="cb344-11"><a href="oneway.html#cb344-11" aria-hidden="true" tabindex="-1"></a>                     <span class="at">sheet =</span> <span class="st">&quot;Figure 3d&quot;</span>,</span>
+<span id="cb344-12"><a href="oneway.html#cb344-12" aria-hidden="true" tabindex="-1"></a>                     <span class="at">range =</span> <span class="st">&quot;B3:C9&quot;</span>,</span>
+<span id="cb344-13"><a href="oneway.html#cb344-13" aria-hidden="true" tabindex="-1"></a>                     <span class="at">col_names =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb344-14"><a href="oneway.html#cb344-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.table</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb344-15"><a href="oneway.html#cb344-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">melt</span>(<span class="at">measure.vars =</span> col_names_3d,</span>
+<span id="cb344-16"><a href="oneway.html#cb344-16" aria-hidden="true" tabindex="-1"></a>       <span class="at">variable.name =</span> <span class="st">&quot;treatment&quot;</span>,</span>
+<span id="cb344-17"><a href="oneway.html#cb344-17" aria-hidden="true" tabindex="-1"></a>       <span class="at">value.name =</span> <span class="st">&quot;serum_tg&quot;</span>)</span>
+<span id="cb344-18"><a href="oneway.html#cb344-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb344-19"><a href="oneway.html#cb344-19" aria-hidden="true" tabindex="-1"></a><span class="co"># change group name of &quot;1213&quot;</span></span>
+<span id="cb344-20"><a href="oneway.html#cb344-20" aria-hidden="true" tabindex="-1"></a>fig_3d[treatment <span class="sc">==</span> <span class="st">&quot;1213&quot;</span>, treatment <span class="sc">:</span><span class="er">=</span> <span class="st">&quot;12,13-diHOME&quot;</span>]</span>
+<span id="cb344-21"><a href="oneway.html#cb344-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb344-22"><a href="oneway.html#cb344-22" aria-hidden="true" tabindex="-1"></a><span class="co"># make treatment a factor with the order in &quot;treatment_levels&quot;</span></span>
+<span id="cb344-23"><a href="oneway.html#cb344-23" aria-hidden="true" tabindex="-1"></a>fig_3d[, treatment <span class="sc">:</span><span class="er">=</span> <span class="fu">factor</span>(treatment, treatment_levels)]</span>
+<span id="cb344-24"><a href="oneway.html#cb344-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb344-25"><a href="oneway.html#cb344-25" aria-hidden="true" tabindex="-1"></a><span class="co">#View(fig_3d)</span></span></code></pre></div>
 </div>
 <div id="importing-and-wrangling-the-fig2a-data-for-example-2" class="section level3" number="10.3.2">
 <h3><span class="header-section-number">10.3.2</span> Importing and wrangling the fig2a data for example 2</h3>
-<div class="sourceCode" id="cb346"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb346-1"><a href="oneway.html#cb346-1" aria-hidden="true" tabindex="-1"></a><span class="co"># need data_folder and data_from from earlier chunk</span></span>
-<span id="cb346-2"><a href="oneway.html#cb346-2" aria-hidden="true" tabindex="-1"></a>file_name <span class="ot">&lt;-</span> <span class="st">&quot;41591_2017_BFnm4297_MOESM2_ESM.xlsx&quot;</span></span>
-<span id="cb346-3"><a href="oneway.html#cb346-3" aria-hidden="true" tabindex="-1"></a>file_path <span class="ot">&lt;-</span> <span class="fu">here</span>(data_folder, data_from, file_name)</span>
-<span id="cb346-4"><a href="oneway.html#cb346-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb346-5"><a href="oneway.html#cb346-5" aria-hidden="true" tabindex="-1"></a><span class="co"># assuming mice are independent and not same mouse used for all three treatment</span></span>
-<span id="cb346-6"><a href="oneway.html#cb346-6" aria-hidden="true" tabindex="-1"></a>melt_col_names <span class="ot">&lt;-</span> <span class="fu">paste</span>(<span class="st">&quot;Animal&quot;</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>)</span>
-<span id="cb346-7"><a href="oneway.html#cb346-7" aria-hidden="true" tabindex="-1"></a>fig2a <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(file_path,</span>
-<span id="cb346-8"><a href="oneway.html#cb346-8" aria-hidden="true" tabindex="-1"></a>                     <span class="at">sheet =</span> <span class="st">&quot;Fig 2a&quot;</span>,</span>
-<span id="cb346-9"><a href="oneway.html#cb346-9" aria-hidden="true" tabindex="-1"></a>                     <span class="at">range =</span> <span class="st">&quot;A3:G6&quot;</span>,</span>
-<span id="cb346-10"><a href="oneway.html#cb346-10" aria-hidden="true" tabindex="-1"></a>                     <span class="at">col_names =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb346-11"><a href="oneway.html#cb346-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.table</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb346-12"><a href="oneway.html#cb346-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">melt</span>(<span class="at">measure.vars =</span> melt_col_names,</span>
-<span id="cb346-13"><a href="oneway.html#cb346-13" aria-hidden="true" tabindex="-1"></a>       <span class="at">variable.name =</span> <span class="st">&quot;id&quot;</span>,</span>
-<span id="cb346-14"><a href="oneway.html#cb346-14" aria-hidden="true" tabindex="-1"></a>       <span class="at">value.name =</span> <span class="st">&quot;diHOME&quot;</span>) <span class="co"># cannot start a variable with number</span></span>
-<span id="cb346-15"><a href="oneway.html#cb346-15" aria-hidden="true" tabindex="-1"></a><span class="fu">setnames</span>(fig2a, <span class="at">old =</span> <span class="fu">colnames</span>(fig2a)[<span class="dv">1</span>], <span class="at">new =</span> <span class="st">&quot;treatment&quot;</span>)</span>
-<span id="cb346-16"><a href="oneway.html#cb346-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb346-17"><a href="oneway.html#cb346-17" aria-hidden="true" tabindex="-1"></a>treatment_order <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;Control&quot;</span>, <span class="st">&quot;1 hour cold&quot;</span>, <span class="st">&quot;30 min NE&quot;</span>)</span>
-<span id="cb346-18"><a href="oneway.html#cb346-18" aria-hidden="true" tabindex="-1"></a>fig2a[, treatment <span class="sc">:</span><span class="er">=</span> <span class="fu">factor</span>(treatment, treatment_order)] <span class="co"># order levels</span></span>
-<span id="cb346-19"><a href="oneway.html#cb346-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb346-20"><a href="oneway.html#cb346-20" aria-hidden="true" tabindex="-1"></a><span class="co">#View(fig2a)</span></span></code></pre></div>
+<div class="sourceCode" id="cb345"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb345-1"><a href="oneway.html#cb345-1" aria-hidden="true" tabindex="-1"></a><span class="co"># need data_folder and data_from from earlier chunk</span></span>
+<span id="cb345-2"><a href="oneway.html#cb345-2" aria-hidden="true" tabindex="-1"></a>file_name <span class="ot">&lt;-</span> <span class="st">&quot;41591_2017_BFnm4297_MOESM2_ESM.xlsx&quot;</span></span>
+<span id="cb345-3"><a href="oneway.html#cb345-3" aria-hidden="true" tabindex="-1"></a>file_path <span class="ot">&lt;-</span> <span class="fu">here</span>(data_folder, data_from, file_name)</span>
+<span id="cb345-4"><a href="oneway.html#cb345-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb345-5"><a href="oneway.html#cb345-5" aria-hidden="true" tabindex="-1"></a><span class="co"># assuming mice are independent and not same mouse used for all three treatment</span></span>
+<span id="cb345-6"><a href="oneway.html#cb345-6" aria-hidden="true" tabindex="-1"></a>melt_col_names <span class="ot">&lt;-</span> <span class="fu">paste</span>(<span class="st">&quot;Animal&quot;</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>)</span>
+<span id="cb345-7"><a href="oneway.html#cb345-7" aria-hidden="true" tabindex="-1"></a>fig2a <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(file_path,</span>
+<span id="cb345-8"><a href="oneway.html#cb345-8" aria-hidden="true" tabindex="-1"></a>                     <span class="at">sheet =</span> <span class="st">&quot;Fig 2a&quot;</span>,</span>
+<span id="cb345-9"><a href="oneway.html#cb345-9" aria-hidden="true" tabindex="-1"></a>                     <span class="at">range =</span> <span class="st">&quot;A3:G6&quot;</span>,</span>
+<span id="cb345-10"><a href="oneway.html#cb345-10" aria-hidden="true" tabindex="-1"></a>                     <span class="at">col_names =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb345-11"><a href="oneway.html#cb345-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.table</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb345-12"><a href="oneway.html#cb345-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">melt</span>(<span class="at">measure.vars =</span> melt_col_names,</span>
+<span id="cb345-13"><a href="oneway.html#cb345-13" aria-hidden="true" tabindex="-1"></a>       <span class="at">variable.name =</span> <span class="st">&quot;id&quot;</span>,</span>
+<span id="cb345-14"><a href="oneway.html#cb345-14" aria-hidden="true" tabindex="-1"></a>       <span class="at">value.name =</span> <span class="st">&quot;diHOME&quot;</span>) <span class="co"># cannot start a variable with number</span></span>
+<span id="cb345-15"><a href="oneway.html#cb345-15" aria-hidden="true" tabindex="-1"></a><span class="fu">setnames</span>(fig2a, <span class="at">old =</span> <span class="fu">colnames</span>(fig2a)[<span class="dv">1</span>], <span class="at">new =</span> <span class="st">&quot;treatment&quot;</span>)</span>
+<span id="cb345-16"><a href="oneway.html#cb345-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb345-17"><a href="oneway.html#cb345-17" aria-hidden="true" tabindex="-1"></a>treatment_order <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;Control&quot;</span>, <span class="st">&quot;1 hour cold&quot;</span>, <span class="st">&quot;30 min NE&quot;</span>)</span>
+<span id="cb345-18"><a href="oneway.html#cb345-18" aria-hidden="true" tabindex="-1"></a>fig2a[, treatment <span class="sc">:</span><span class="er">=</span> <span class="fu">factor</span>(treatment, treatment_order)] <span class="co"># order levels</span></span>
+<span id="cb345-19"><a href="oneway.html#cb345-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb345-20"><a href="oneway.html#cb345-20" aria-hidden="true" tabindex="-1"></a><span class="co">#View(fig2a)</span></span></code></pre></div>
 
 </div>
 </div>
