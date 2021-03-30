@@ -152,6 +152,7 @@ code span.wa { color: #bf0303; } /* Warning */
 <li class="chapter" data-level="0.1" data-path="index.html"><a href="index.html#math"><i class="fa fa-check"></i><b>0.1</b> Math</a></li>
 <li class="chapter" data-level="0.2" data-path="index.html"><a href="index.html#r-and-programming"><i class="fa fa-check"></i><b>0.2</b> R and programming</a></li>
 </ul></li>
+<li class="chapter" data-level="" data-path="models.html"><a href="models.html"><i class="fa fa-check"></i>Models</a></li>
 <li class="chapter" data-level="" data-path="part-i-getting-started.html"><a href="part-i-getting-started.html"><i class="fa fa-check"></i>Part I: Getting Started</a></li>
 <li class="chapter" data-level="1" data-path="getting-started-r-projects-and-r-markdown.html"><a href="getting-started-r-projects-and-r-markdown.html"><i class="fa fa-check"></i><b>1</b> Getting Started – R Projects and R Markdown</a>
 <ul>
@@ -1371,14 +1372,14 @@ MAE
 <p>Inference from model <a href="regression.html#eq:continuous-x-m1">(9.2)</a> assumes the data were sampled from a normal distribution. To check this, use a quantile-quantile or <strong>Q-Q plot</strong>. The <code>qqPlot</code> function from the car package generates a more useful plot than that from Base R.</p>
 <div class="sourceCode" id="cb263"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb263-1"><a href="regression.html#cb263-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
 <span id="cb263-2"><a href="regression.html#cb263-2" aria-hidden="true" tabindex="-1"></a><span class="fu">qqPlot</span>(m1, <span class="at">id=</span><span class="cn">FALSE</span>)</span></code></pre></div>
-<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/unnamed-chunk-123-1.png" width="576" /></p>
+<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/unnamed-chunk-125-1.png" width="576" /></p>
 <p>Approximately normal residuals will track the solid line and stay largely within the boundaries marked by the dashed lines. The residuals from m1 fit to the green-down data track the solid line and remain within the dashed lines, indicating adequate model fit.</p>
 <div style="background-color:#cccccc; text-align:left; vertical-align: middle; padding:20px 47px;">
 <p>Note that a formal test of normality is often recommended. Formal tests do not add value above a diagnostic check. Robustness of inference (for example, a <em>p</em>-value) is a function of the type and degree of “non-normalness,” not of a p-value. For a small sample, there is not much power to test for normality, so samples from non-normal distributions pass the test (<span class="math inline">\(p &gt; 0.05\)</span>) and are deemed “normal.” For large samples, samples from distributions that deviate slightly from normal fail the test (<span class="math inline">\(p &lt; 0.05\)</span>) and are deemed “not normal.” Inference with many non-normal samples with large <span class="math inline">\(n\)</span> are very robust (meaning infernece is not likely to fool you with randomness).</p>
 </div>
 <p>Inference from model <a href="regression.html#eq:continuous-x-m1">(9.2)</a> assumes homogeneity of the response conditional on <span class="math inline">\(X\)</span>. For a continuous <span class="math inline">\(X\)</span>, this means the residuals should have approximately equal variance at low, mid, and high values of <span class="math inline">\(X\)</span> (and everywhere in between). One can visually inspect the spread of points in the <span class="math inline">\(Y\)</span> direction across the groups for categorical <span class="math inline">\(X\)</span> or along the <em>X</em>-axis for continuous <span class="math inline">\(X\)</span>. A useful method for checking how residual variance changes (usually increases) with the conditional mean of <span class="math inline">\(Y\)</span> is a <strong>spread-location plot</strong>. The <code>spreadLevelPlot(m1)</code> function from the car package is useful.</p>
 <div class="sourceCode" id="cb264"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb264-1"><a href="regression.html#cb264-1" aria-hidden="true" tabindex="-1"></a><span class="fu">spreadLevelPlot</span>(m1)</span></code></pre></div>
-<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/unnamed-chunk-124-1.png" width="576" /></p>
+<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/unnamed-chunk-126-1.png" width="576" /></p>
 <pre><code>## 
 ## Suggested power transformation:  0.6721303</code></pre>
 <p>The dashed blue line shows linear trends while the magenta line shows non-linear trends. For the green-down data, the dashed line is very flat while the magenta-line shows what looks like random fluctations. Taken together, the two lines indicate adequate model fit.</p>
@@ -1389,7 +1390,7 @@ MAE
 <h4><span class="header-section-number">9.2.5.1</span> Quick plot</h4>
 <p><code>qplot</code> from the ggplot package is useful for initial examinations of the data</p>
 <div class="sourceCode" id="cb266"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb266-1"><a href="regression.html#cb266-1" aria-hidden="true" tabindex="-1"></a><span class="fu">qplot</span>(<span class="at">x =</span> temperature, <span class="at">y =</span> transition_date, <span class="at">data =</span> fig2c) <span class="sc">+</span> <span class="fu">geom_smooth</span>()</span></code></pre></div>
-<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/unnamed-chunk-125-1.png" width="576" /></p>
+<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/unnamed-chunk-127-1.png" width="576" /></p>
 <p>Some variations of this quick plot to explore include</p>
 <ol style="list-style-type: decimal">
 <li>use <code>geom_smooth(method = "lm")</code></li>
@@ -1404,7 +1405,7 @@ MAE
 <span id="cb267-4"><a href="regression.html#cb267-4" aria-hidden="true" tabindex="-1"></a>          <span class="at">add =</span> <span class="st">&quot;reg.line&quot;</span>,</span>
 <span id="cb267-5"><a href="regression.html#cb267-5" aria-hidden="true" tabindex="-1"></a>          <span class="at">xlab =</span> <span class="st">&quot;Added Temperature (°C)&quot;</span>,</span>
 <span id="cb267-6"><a href="regression.html#cb267-6" aria-hidden="true" tabindex="-1"></a>          <span class="at">ylab =</span> <span class="st">&quot;Day of Green-down (DOY)&quot;</span>)</span></code></pre></div>
-<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/unnamed-chunk-126-1.png" width="576" /></p>
+<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/unnamed-chunk-128-1.png" width="576" /></p>
 <p>It take only a little more effort to add useful modifications.</p>
 <div class="sourceCode" id="cb268"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb268-1"><a href="regression.html#cb268-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggscatter</span>(<span class="at">data =</span> fig2c,</span>
 <span id="cb268-2"><a href="regression.html#cb268-2" aria-hidden="true" tabindex="-1"></a>          <span class="at">x =</span> <span class="st">&quot;temperature&quot;</span>,</span>
@@ -1427,7 +1428,7 @@ MAE
 <span id="cb268-19"><a href="regression.html#cb268-19" aria-hidden="true" tabindex="-1"></a>           <span class="at">label.y =</span> <span class="dv">335</span>) <span class="sc">+</span></span>
 <span id="cb268-20"><a href="regression.html#cb268-20" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb268-21"><a href="regression.html#cb268-21" aria-hidden="true" tabindex="-1"></a>  <span class="cn">NULL</span></span></code></pre></div>
-<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/unnamed-chunk-127-1.png" width="576" /></p>
+<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/unnamed-chunk-129-1.png" width="576" /></p>
 <p>Notes</p>
 <ol class="example" style="list-style-type: decimal">
 <li>The interval shown is the 95% confidence interval of the expected values, which is what we want to communicate with the experimental green-down data. Were we to want to use this as a prediction model, we would want the 95% prediction interval. I’m not sure that ggpubr can plot a prediction interval. To see how I plotted the prediction interval in Figure <a href="#fig:continuous-x-pred-fig"><strong>??</strong></a> above, see the Hidden Code section below.</li>
@@ -1449,7 +1450,7 @@ MAE
 <span id="cb269-11"><a href="regression.html#cb269-11" aria-hidden="true" tabindex="-1"></a>          <span class="at">conf.int =</span> <span class="cn">TRUE</span>,</span>
 <span id="cb269-12"><a href="regression.html#cb269-12" aria-hidden="true" tabindex="-1"></a>          <span class="at">xlab =</span> <span class="st">&quot;Added Temperature (°C)&quot;</span>,</span>
 <span id="cb269-13"><a href="regression.html#cb269-13" aria-hidden="true" tabindex="-1"></a>          <span class="at">ylab =</span> <span class="st">&quot;Day of Green-down (DOY)&quot;</span>)</span></code></pre></div>
-<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/unnamed-chunk-128-1.png" width="576" /></p>
+<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/unnamed-chunk-130-1.png" width="576" /></p>
 </div>
 <div id="ggplots" class="section level4" number="9.2.5.3">
 <h4><span class="header-section-number">9.2.5.3</span> ggplots</h4>
@@ -1924,7 +1925,7 @@ Estimate
 <span id="cb292-10"><a href="regression.html#cb292-10" aria-hidden="true" tabindex="-1"></a><span class="fu">ggscatter</span>(<span class="at">data =</span> <span class="fu">data.table</span>(<span class="at">x=</span>x, <span class="at">y=</span>y), <span class="at">x =</span> <span class="st">&quot;x&quot;</span>, <span class="at">y =</span> <span class="st">&quot;y&quot;</span>,</span>
 <span id="cb292-11"><a href="regression.html#cb292-11" aria-hidden="true" tabindex="-1"></a>          <span class="at">add =</span> <span class="st">&quot;reg.line&quot;</span>) <span class="sc">+</span></span>
 <span id="cb292-12"><a href="regression.html#cb292-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="at">label =</span> <span class="fu">paste</span>(slope,se,r,r2,<span class="at">sep=</span><span class="st">&quot;;  &quot;</span>))</span></code></pre></div>
-<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/unnamed-chunk-138-1.png" width="576" /></p>
+<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/unnamed-chunk-140-1.png" width="576" /></p>
 
 </div>
 </div>
