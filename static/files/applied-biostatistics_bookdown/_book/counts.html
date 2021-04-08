@@ -689,10 +689,12 @@ code span.wa { color: #bf0303; } /* Warning */
 <li class="chapter" data-level="16.3.3" data-path="lmm.html"><a href="lmm.html#lmm-exp5c-m1"><i class="fa fa-check"></i><b>16.3.3</b> Model fit and inference</a></li>
 <li class="chapter" data-level="16.3.4" data-path="lmm.html"><a href="lmm.html#why-we-care-about-modeling-batch-in-exp5c"><i class="fa fa-check"></i><b>16.3.4</b> Why we care about modeling batch in exp5c</a></li>
 <li class="chapter" data-level="16.3.5" data-path="lmm.html"><a href="lmm.html#the-linear-mixed-model-exp5c_m1-adds-two-random-intercepts"><i class="fa fa-check"></i><b>16.3.5</b> The linear mixed model exp5c_m1 adds two random intercepts</a></li>
-<li class="chapter" data-level="16.3.6" data-path="lmm.html"><a href="lmm.html#the-coefficients-of-the-linear-mixed-model-with-random-intercept"><i class="fa fa-check"></i><b>16.3.6</b> The coefficients of the linear mixed model with random intercept</a></li>
-<li class="chapter" data-level="16.3.7" data-path="lmm.html"><a href="lmm.html#lmm-exp5c-alt"><i class="fa fa-check"></i><b>16.3.7</b> Alternative models for exp5c</a></li>
-<li class="chapter" data-level="16.3.8" data-path="lmm.html"><a href="lmm.html#paired-t-tests-and-repeated-measures-anova-are-special-cases-of-linear-mixed-models-1"><i class="fa fa-check"></i><b>16.3.8</b> Paired t-tests and repeated measures ANOVA are special cases of linear mixed models</a></li>
-<li class="chapter" data-level="16.3.9" data-path="lmm.html"><a href="lmm.html#modeling-textttdonor-as-a-fixed-effect"><i class="fa fa-check"></i><b>16.3.9</b> Modeling <span class="math inline">\(\texttt{donor}\)</span> as a fixed effect</a></li>
+<li class="chapter" data-level="16.3.6" data-path="lmm.html"><a href="lmm.html#the-fixed-effect-coefficients-of-model-exp5c_m1"><i class="fa fa-check"></i><b>16.3.6</b> The fixed effect coefficients of model exp5c_m1</a></li>
+<li class="chapter" data-level="16.3.7" data-path="lmm.html"><a href="lmm.html#the-random-effect-coefficients-of-model-exp5c_m1"><i class="fa fa-check"></i><b>16.3.7</b> The random effect coefficients of model exp5c_m1</a></li>
+<li class="chapter" data-level="16.3.8" data-path="lmm.html"><a href="lmm.html#lmm-exp5c-alt"><i class="fa fa-check"></i><b>16.3.8</b> Alternative models for exp5c</a></li>
+<li class="chapter" data-level="16.3.9" data-path="lmm.html"><a href="lmm.html#lmm-rmanova-5c"><i class="fa fa-check"></i><b>16.3.9</b> Classical (“univariate model”) repeated measures ANOVA</a></li>
+<li class="chapter" data-level="16.3.10" data-path="lmm.html"><a href="lmm.html#lmm-rmanova-5c-multi"><i class="fa fa-check"></i><b>16.3.10</b> “Multivariate model” repeated measures ANOVA of exp5c</a></li>
+<li class="chapter" data-level="16.3.11" data-path="lmm.html"><a href="lmm.html#modeling-textttdonor-as-a-fixed-effect"><i class="fa fa-check"></i><b>16.3.11</b> Modeling <span class="math inline">\(\texttt{donor}\)</span> as a fixed effect</a></li>
 </ul></li>
 <li class="chapter" data-level="16.4" data-path="lmm.html"><a href="lmm.html#exp1g"><i class="fa fa-check"></i><b>16.4</b> Example 4 – Experiments with subsampling replication (exp1g)</a>
 <ul>
@@ -1061,60 +1063,60 @@ RR_{Infected\_HG} = \frac{\overline{Infected\_HG}}{\overline{Control}}
 <div id="working-in-r-7" class="section level2" number="18.3">
 <h2><span class="header-section-number">18.3</span> Working in R</h2>
 <p><strong>Fitting a GLM to count data</strong>. The poisson family is specified with the base R <code>glm()</code> function. For negative binomial, use <code>glm.nb</code> from the MASS package</p>
-<div class="sourceCode" id="cb650"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb650-1"><a href="counts.html#cb650-1" aria-hidden="true" tabindex="-1"></a><span class="co"># poisson - less likely to fit to real biological data well because of overdispersion</span></span>
-<span id="cb650-2"><a href="counts.html#cb650-2" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">glm</span>(y <span class="sc">~</span> treatment, <span class="at">family =</span> <span class="st">&quot;poisson&quot;</span>, <span class="at">data =</span> dt)</span>
-<span id="cb650-3"><a href="counts.html#cb650-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb650-4"><a href="counts.html#cb650-4" aria-hidden="true" tabindex="-1"></a><span class="co"># two alternatives to overdispersed poisson fit</span></span>
-<span id="cb650-5"><a href="counts.html#cb650-5" aria-hidden="true" tabindex="-1"></a><span class="co"># quasipoisson</span></span>
-<span id="cb650-6"><a href="counts.html#cb650-6" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">glm</span>(y <span class="sc">~</span> treatment, <span class="at">family =</span> <span class="st">&quot;quasipoisson&quot;</span>, <span class="at">data=</span>dt)</span>
-<span id="cb650-7"><a href="counts.html#cb650-7" aria-hidden="true" tabindex="-1"></a><span class="co"># negative binomial - more likely to fit to real biological data well</span></span>
-<span id="cb650-8"><a href="counts.html#cb650-8" aria-hidden="true" tabindex="-1"></a><span class="co"># note that &quot;family&quot; is not an argument since this function is used only to fit a negative binomial distribution!</span></span>
-<span id="cb650-9"><a href="counts.html#cb650-9" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">glm.nb</span>(y <span class="sc">~</span> treatment, <span class="at">data =</span> dt)</span></code></pre></div>
+<div class="sourceCode" id="cb633"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb633-1"><a href="counts.html#cb633-1" aria-hidden="true" tabindex="-1"></a><span class="co"># poisson - less likely to fit to real biological data well because of overdispersion</span></span>
+<span id="cb633-2"><a href="counts.html#cb633-2" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">glm</span>(y <span class="sc">~</span> treatment, <span class="at">family =</span> <span class="st">&quot;poisson&quot;</span>, <span class="at">data =</span> dt)</span>
+<span id="cb633-3"><a href="counts.html#cb633-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb633-4"><a href="counts.html#cb633-4" aria-hidden="true" tabindex="-1"></a><span class="co"># two alternatives to overdispersed poisson fit</span></span>
+<span id="cb633-5"><a href="counts.html#cb633-5" aria-hidden="true" tabindex="-1"></a><span class="co"># quasipoisson</span></span>
+<span id="cb633-6"><a href="counts.html#cb633-6" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">glm</span>(y <span class="sc">~</span> treatment, <span class="at">family =</span> <span class="st">&quot;quasipoisson&quot;</span>, <span class="at">data=</span>dt)</span>
+<span id="cb633-7"><a href="counts.html#cb633-7" aria-hidden="true" tabindex="-1"></a><span class="co"># negative binomial - more likely to fit to real biological data well</span></span>
+<span id="cb633-8"><a href="counts.html#cb633-8" aria-hidden="true" tabindex="-1"></a><span class="co"># note that &quot;family&quot; is not an argument since this function is used only to fit a negative binomial distribution!</span></span>
+<span id="cb633-9"><a href="counts.html#cb633-9" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">glm.nb</span>(y <span class="sc">~</span> treatment, <span class="at">data =</span> dt)</span></code></pre></div>
 <p><strong>Fitting a GLM to a continuous conditional response with right skew</strong>. The Gamma family is specified with the base R <code>glm()</code> function.</p>
-<div class="sourceCode" id="cb651"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb651-1"><a href="counts.html#cb651-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">glm</span>(y <span class="sc">~</span> treatment, <span class="at">family =</span> <span class="fu">Gamma</span>(<span class="at">link =</span> <span class="st">&quot;log&quot;</span>), <span class="at">data =</span> dt)</span></code></pre></div>
+<div class="sourceCode" id="cb634"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb634-1"><a href="counts.html#cb634-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">glm</span>(y <span class="sc">~</span> treatment, <span class="at">family =</span> <span class="fu">Gamma</span>(<span class="at">link =</span> <span class="st">&quot;log&quot;</span>), <span class="at">data =</span> dt)</span></code></pre></div>
 <p><strong>Fitting a GLM to a binary (success or failure, presence or absence, survived or died) response</strong></p>
 <p>The binomial family is specified with base R <code>glm()</code> function.</p>
-<div class="sourceCode" id="cb652"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb652-1"><a href="counts.html#cb652-1" aria-hidden="true" tabindex="-1"></a><span class="co"># if the data includes a 0 or 1 for every observation of y</span></span>
-<span id="cb652-2"><a href="counts.html#cb652-2" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">glm</span>(y <span class="sc">~</span> treatment, <span class="at">family =</span> <span class="st">&quot;binomial&quot;</span>, <span class="at">data =</span> dt)</span>
-<span id="cb652-3"><a href="counts.html#cb652-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb652-4"><a href="counts.html#cb652-4" aria-hidden="true" tabindex="-1"></a><span class="co"># if the data includes the frequency of success AND there is a measure of the total n</span></span>
-<span id="cb652-5"><a href="counts.html#cb652-5" aria-hidden="true" tabindex="-1"></a>dt[ , failure <span class="sc">:</span><span class="er">=</span> n <span class="sc">-</span> success]</span>
-<span id="cb652-6"><a href="counts.html#cb652-6" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">glm</span>(<span class="fu">cbind</span>(success, failure) <span class="sc">~</span> treatment, <span class="at">family =</span> <span class="st">&quot;binomial&quot;</span>, <span class="at">data =</span> dt)</span></code></pre></div>
+<div class="sourceCode" id="cb635"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb635-1"><a href="counts.html#cb635-1" aria-hidden="true" tabindex="-1"></a><span class="co"># if the data includes a 0 or 1 for every observation of y</span></span>
+<span id="cb635-2"><a href="counts.html#cb635-2" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">glm</span>(y <span class="sc">~</span> treatment, <span class="at">family =</span> <span class="st">&quot;binomial&quot;</span>, <span class="at">data =</span> dt)</span>
+<span id="cb635-3"><a href="counts.html#cb635-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb635-4"><a href="counts.html#cb635-4" aria-hidden="true" tabindex="-1"></a><span class="co"># if the data includes the frequency of success AND there is a measure of the total n</span></span>
+<span id="cb635-5"><a href="counts.html#cb635-5" aria-hidden="true" tabindex="-1"></a>dt[ , failure <span class="sc">:</span><span class="er">=</span> n <span class="sc">-</span> success]</span>
+<span id="cb635-6"><a href="counts.html#cb635-6" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">glm</span>(<span class="fu">cbind</span>(success, failure) <span class="sc">~</span> treatment, <span class="at">family =</span> <span class="st">&quot;binomial&quot;</span>, <span class="at">data =</span> dt)</span></code></pre></div>
 <p><strong>Fitting Generalized Linear Mixed Models</strong>
 Generalized linear mixed models are fit with <code>glmer</code> from the lmer package.</p>
-<div class="sourceCode" id="cb653"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb653-1"><a href="counts.html#cb653-1" aria-hidden="true" tabindex="-1"></a><span class="co"># random intercept of factor &quot;id&quot;</span></span>
-<span id="cb653-2"><a href="counts.html#cb653-2" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">glmer</span>(y <span class="sc">~</span> treatment <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>id), <span class="at">family =</span> <span class="st">&quot;poisson&quot;</span>, <span class="at">data =</span> dt)</span>
-<span id="cb653-3"><a href="counts.html#cb653-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb653-4"><a href="counts.html#cb653-4" aria-hidden="true" tabindex="-1"></a><span class="co"># random intercept and slope of factor &quot;id&quot;</span></span>
-<span id="cb653-5"><a href="counts.html#cb653-5" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">glmer</span>(y <span class="sc">~</span> treatment <span class="sc">+</span> (treatment<span class="sc">|</span>id), <span class="at">family =</span> <span class="fu">Gamma</span>(<span class="at">link =</span> <span class="st">&quot;log&quot;</span>), <span class="at">data =</span> dt)</span>
-<span id="cb653-6"><a href="counts.html#cb653-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb653-7"><a href="counts.html#cb653-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Again, negative binomial uses a special function</span></span>
-<span id="cb653-8"><a href="counts.html#cb653-8" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">glmer.nb</span>(y <span class="sc">~</span> treatment <span class="sc">+</span> (treatment<span class="sc">|</span>id), <span class="at">data =</span> dt)</span></code></pre></div>
+<div class="sourceCode" id="cb636"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb636-1"><a href="counts.html#cb636-1" aria-hidden="true" tabindex="-1"></a><span class="co"># random intercept of factor &quot;id&quot;</span></span>
+<span id="cb636-2"><a href="counts.html#cb636-2" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">glmer</span>(y <span class="sc">~</span> treatment <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>id), <span class="at">family =</span> <span class="st">&quot;poisson&quot;</span>, <span class="at">data =</span> dt)</span>
+<span id="cb636-3"><a href="counts.html#cb636-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb636-4"><a href="counts.html#cb636-4" aria-hidden="true" tabindex="-1"></a><span class="co"># random intercept and slope of factor &quot;id&quot;</span></span>
+<span id="cb636-5"><a href="counts.html#cb636-5" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">glmer</span>(y <span class="sc">~</span> treatment <span class="sc">+</span> (treatment<span class="sc">|</span>id), <span class="at">family =</span> <span class="fu">Gamma</span>(<span class="at">link =</span> <span class="st">&quot;log&quot;</span>), <span class="at">data =</span> dt)</span>
+<span id="cb636-6"><a href="counts.html#cb636-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb636-7"><a href="counts.html#cb636-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Again, negative binomial uses a special function</span></span>
+<span id="cb636-8"><a href="counts.html#cb636-8" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">glmer.nb</span>(y <span class="sc">~</span> treatment <span class="sc">+</span> (treatment<span class="sc">|</span>id), <span class="at">data =</span> dt)</span></code></pre></div>
 <p>Another good package for GLMMs is <code>glmmTMB</code> from the glmmTMB package</p>
-<div class="sourceCode" id="cb654"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb654-1"><a href="counts.html#cb654-1" aria-hidden="true" tabindex="-1"></a><span class="co"># negative binomial</span></span>
-<span id="cb654-2"><a href="counts.html#cb654-2" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">glmmTMB</span>(y <span class="sc">~</span> treatment <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>id), <span class="at">family=</span><span class="st">&quot;nbinom2&quot;</span>, <span class="at">data =</span> dt)</span>
-<span id="cb654-3"><a href="counts.html#cb654-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb654-4"><a href="counts.html#cb654-4" aria-hidden="true" tabindex="-1"></a><span class="co"># nbinom1, the mean variance relationship is that of quasipoisson</span></span>
-<span id="cb654-5"><a href="counts.html#cb654-5" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">glmmTMB</span>(y <span class="sc">~</span> treatment <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>id), <span class="at">family=</span><span class="st">&quot;nbinom1&quot;</span>, <span class="at">data =</span> dt)</span></code></pre></div>
+<div class="sourceCode" id="cb637"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb637-1"><a href="counts.html#cb637-1" aria-hidden="true" tabindex="-1"></a><span class="co"># negative binomial</span></span>
+<span id="cb637-2"><a href="counts.html#cb637-2" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">glmmTMB</span>(y <span class="sc">~</span> treatment <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>id), <span class="at">family=</span><span class="st">&quot;nbinom2&quot;</span>, <span class="at">data =</span> dt)</span>
+<span id="cb637-3"><a href="counts.html#cb637-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb637-4"><a href="counts.html#cb637-4" aria-hidden="true" tabindex="-1"></a><span class="co"># nbinom1, the mean variance relationship is that of quasipoisson</span></span>
+<span id="cb637-5"><a href="counts.html#cb637-5" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">glmmTMB</span>(y <span class="sc">~</span> treatment <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>id), <span class="at">family=</span><span class="st">&quot;nbinom1&quot;</span>, <span class="at">data =</span> dt)</span></code></pre></div>
 <div id="fitting-a-glm-to-count-data" class="section level3" number="18.3.1">
 <h3><span class="header-section-number">18.3.1</span> Fitting a GLM to count data</h3>
 <p>Source publication: Benesh, D. P., &amp; Kalbe, M. (2016). Experimental parasite community ecology: intraspecific variation in a large tapeworm affects community assembly. Journal of Animal Ecology, 85(4), 1004-1013.</p>
 <p>Source data URL: <a href="https://datadryad.org/resource/doi:10.5061/dryad.bq8j8" class="uri">https://datadryad.org/resource/doi:10.5061/dryad.bq8j8</a></p>
 <p>Source file: “Lab_exp.csv”</p>
 <p>Poisson fit. A quantile residual Q-Q plot can be generated using the package DHARMa</p>
-<div class="sourceCode" id="cb655"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb655-1"><a href="counts.html#cb655-1" aria-hidden="true" tabindex="-1"></a>fit.pois <span class="ot">&lt;-</span> <span class="fu">glm</span>(Diplo_intensity <span class="sc">~</span> Treatment, <span class="at">family=</span><span class="st">&quot;poisson&quot;</span>, <span class="at">data=</span>worm)</span>
-<span id="cb655-2"><a href="counts.html#cb655-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb655-3"><a href="counts.html#cb655-3" aria-hidden="true" tabindex="-1"></a><span class="co"># from the DHARMa package</span></span>
-<span id="cb655-4"><a href="counts.html#cb655-4" aria-hidden="true" tabindex="-1"></a>  n_sim <span class="ot">&lt;-</span> <span class="dv">250</span></span>
-<span id="cb655-5"><a href="counts.html#cb655-5" aria-hidden="true" tabindex="-1"></a>  simulationOutput <span class="ot">&lt;-</span> <span class="fu">simulateResiduals</span>(<span class="at">fittedModel =</span> fit.pois, <span class="at">n =</span> n_sim)</span>
-<span id="cb655-6"><a href="counts.html#cb655-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot</span>(simulationOutput, <span class="at">asFactor =</span> F)</span></code></pre></div>
+<div class="sourceCode" id="cb638"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb638-1"><a href="counts.html#cb638-1" aria-hidden="true" tabindex="-1"></a>fit.pois <span class="ot">&lt;-</span> <span class="fu">glm</span>(Diplo_intensity <span class="sc">~</span> Treatment, <span class="at">family=</span><span class="st">&quot;poisson&quot;</span>, <span class="at">data=</span>worm)</span>
+<span id="cb638-2"><a href="counts.html#cb638-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb638-3"><a href="counts.html#cb638-3" aria-hidden="true" tabindex="-1"></a><span class="co"># from the DHARMa package</span></span>
+<span id="cb638-4"><a href="counts.html#cb638-4" aria-hidden="true" tabindex="-1"></a>  n_sim <span class="ot">&lt;-</span> <span class="dv">250</span></span>
+<span id="cb638-5"><a href="counts.html#cb638-5" aria-hidden="true" tabindex="-1"></a>  simulationOutput <span class="ot">&lt;-</span> <span class="fu">simulateResiduals</span>(<span class="at">fittedModel =</span> fit.pois, <span class="at">n =</span> n_sim)</span>
+<span id="cb638-6"><a href="counts.html#cb638-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot</span>(simulationOutput, <span class="at">asFactor =</span> F)</span></code></pre></div>
 <p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/glm1-working-in-r-1.png" width="576" /></p>
 <p>A plot of the dispersion statistic can be generated using the object returned by the <code>SimulateOutput</code> function but with <code>refit = TRUE</code>, which refits a model each iteration. This refitting isn’t necessary if only the quantiile residuals are needed. The Dharma package does not divide the sum of squared Pearson residuals by the residual degrees of freedom and so the expected value of the statistic is <span class="math inline">\(df\)</span>.</p>
-<div class="sourceCode" id="cb656"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb656-1"><a href="counts.html#cb656-1" aria-hidden="true" tabindex="-1"></a><span class="co"># from the DHARMa package</span></span>
-<span id="cb656-2"><a href="counts.html#cb656-2" aria-hidden="true" tabindex="-1"></a>  n_sim <span class="ot">&lt;-</span> <span class="dv">250</span></span>
-<span id="cb656-3"><a href="counts.html#cb656-3" aria-hidden="true" tabindex="-1"></a>  simulationOutput <span class="ot">&lt;-</span> <span class="fu">simulateResiduals</span>(<span class="at">fittedModel=</span>fit.pois, <span class="at">n=</span>n_sim, <span class="at">refit=</span><span class="cn">TRUE</span>)</span>
-<span id="cb656-4"><a href="counts.html#cb656-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">testDispersion</span>(simulationOutput)</span></code></pre></div>
-<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/unnamed-chunk-259-1.png" width="576" /></p>
+<div class="sourceCode" id="cb639"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb639-1"><a href="counts.html#cb639-1" aria-hidden="true" tabindex="-1"></a><span class="co"># from the DHARMa package</span></span>
+<span id="cb639-2"><a href="counts.html#cb639-2" aria-hidden="true" tabindex="-1"></a>  n_sim <span class="ot">&lt;-</span> <span class="dv">250</span></span>
+<span id="cb639-3"><a href="counts.html#cb639-3" aria-hidden="true" tabindex="-1"></a>  simulationOutput <span class="ot">&lt;-</span> <span class="fu">simulateResiduals</span>(<span class="at">fittedModel=</span>fit.pois, <span class="at">n=</span>n_sim, <span class="at">refit=</span><span class="cn">TRUE</span>)</span>
+<span id="cb639-4"><a href="counts.html#cb639-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">testDispersion</span>(simulationOutput)</span></code></pre></div>
+<p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/unnamed-chunk-256-1.png" width="576" /></p>
 <pre><code>## 
 ##  DHARMa nonparametric dispersion test via mean deviance residual fitted
 ##  vs. simulated-refitted
@@ -1123,14 +1125,14 @@ Generalized linear mixed models are fit with <code>glmer</code> from the lmer pa
 ## dispersion = 3.3788, p-value &lt; 2.2e-16
 ## alternative hypothesis: two.sided</code></pre>
 <p>Negative binomial fit.</p>
-<div class="sourceCode" id="cb658"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb658-1"><a href="counts.html#cb658-1" aria-hidden="true" tabindex="-1"></a>fit.nb <span class="ot">&lt;-</span> <span class="fu">glm.nb</span>(Diplo_intensity <span class="sc">~</span> Treatment, <span class="at">data=</span>worm)</span>
-<span id="cb658-2"><a href="counts.html#cb658-2" aria-hidden="true" tabindex="-1"></a><span class="co"># from the DHARMa package</span></span>
-<span id="cb658-3"><a href="counts.html#cb658-3" aria-hidden="true" tabindex="-1"></a>  simulationOutput <span class="ot">&lt;-</span> <span class="fu">simulateResiduals</span>(<span class="at">fittedModel =</span> fit.nb, <span class="at">n =</span> n_sim)</span>
-<span id="cb658-4"><a href="counts.html#cb658-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot</span>(simulationOutput, <span class="at">asFactor =</span> F)</span></code></pre></div>
+<div class="sourceCode" id="cb641"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb641-1"><a href="counts.html#cb641-1" aria-hidden="true" tabindex="-1"></a>fit.nb <span class="ot">&lt;-</span> <span class="fu">glm.nb</span>(Diplo_intensity <span class="sc">~</span> Treatment, <span class="at">data=</span>worm)</span>
+<span id="cb641-2"><a href="counts.html#cb641-2" aria-hidden="true" tabindex="-1"></a><span class="co"># from the DHARMa package</span></span>
+<span id="cb641-3"><a href="counts.html#cb641-3" aria-hidden="true" tabindex="-1"></a>  simulationOutput <span class="ot">&lt;-</span> <span class="fu">simulateResiduals</span>(<span class="at">fittedModel =</span> fit.nb, <span class="at">n =</span> n_sim)</span>
+<span id="cb641-4"><a href="counts.html#cb641-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot</span>(simulationOutput, <span class="at">asFactor =</span> F)</span></code></pre></div>
 <p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/glm-working-in-r-2-1.png" width="576" /></p>
-<div class="sourceCode" id="cb659"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb659-1"><a href="counts.html#cb659-1" aria-hidden="true" tabindex="-1"></a><span class="co"># link scale</span></span>
-<span id="cb659-2"><a href="counts.html#cb659-2" aria-hidden="true" tabindex="-1"></a>emm <span class="ot">&lt;-</span> <span class="fu">emmeans</span>(fit.nb, <span class="at">specs=</span><span class="st">&quot;Treatment&quot;</span>)</span>
-<span id="cb659-3"><a href="counts.html#cb659-3" aria-hidden="true" tabindex="-1"></a>emm</span></code></pre></div>
+<div class="sourceCode" id="cb642"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb642-1"><a href="counts.html#cb642-1" aria-hidden="true" tabindex="-1"></a><span class="co"># link scale</span></span>
+<span id="cb642-2"><a href="counts.html#cb642-2" aria-hidden="true" tabindex="-1"></a>emm <span class="ot">&lt;-</span> <span class="fu">emmeans</span>(fit.nb, <span class="at">specs=</span><span class="st">&quot;Treatment&quot;</span>)</span>
+<span id="cb642-3"><a href="counts.html#cb642-3" aria-hidden="true" tabindex="-1"></a>emm</span></code></pre></div>
 <pre><code>##  Treatment   emmean     SE  df asymp.LCL asymp.UCL
 ##  Control       1.82 0.0804 Inf      1.66      1.98
 ##  Uninfected    1.50 0.1093 Inf      1.29      1.72
@@ -1139,7 +1141,7 @@ Generalized linear mixed models are fit with <code>glmer</code> from the lmer pa
 ## 
 ## Results are given on the log (not the response) scale. 
 ## Confidence level used: 0.95</code></pre>
-<div class="sourceCode" id="cb661"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb661-1"><a href="counts.html#cb661-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">contrast</span>(emm, <span class="at">method=</span><span class="st">&quot;trt.vs.ctrl&quot;</span>, <span class="at">adjust=</span><span class="st">&quot;none&quot;</span>), <span class="at">infer=</span><span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">TRUE</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb644"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb644-1"><a href="counts.html#cb644-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">contrast</span>(emm, <span class="at">method=</span><span class="st">&quot;trt.vs.ctrl&quot;</span>, <span class="at">adjust=</span><span class="st">&quot;none&quot;</span>), <span class="at">infer=</span><span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">TRUE</span>))</span></code></pre></div>
 <pre><code>##  contrast              estimate    SE  df asymp.LCL asymp.UCL z.ratio p.value
 ##  Uninfected - Control    -0.317 0.136 Inf    -0.583   -0.0514 -2.339  0.0193 
 ##  Infected LG - Control   -0.197 0.158 Inf    -0.507    0.1126 -1.248  0.2122 
@@ -1147,9 +1149,9 @@ Generalized linear mixed models are fit with <code>glmer</code> from the lmer pa
 ## 
 ## Results are given on the log (not the response) scale. 
 ## Confidence level used: 0.95</code></pre>
-<div class="sourceCode" id="cb663"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb663-1"><a href="counts.html#cb663-1" aria-hidden="true" tabindex="-1"></a><span class="co"># response scale</span></span>
-<span id="cb663-2"><a href="counts.html#cb663-2" aria-hidden="true" tabindex="-1"></a>emm.response <span class="ot">&lt;-</span> <span class="fu">emmeans</span>(fit.nb, <span class="at">specs=</span><span class="st">&quot;Treatment&quot;</span>, <span class="at">type=</span><span class="st">&quot;response&quot;</span>)</span>
-<span id="cb663-3"><a href="counts.html#cb663-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">contrast</span>(emm, <span class="at">method=</span><span class="st">&quot;trt.vs.ctrl&quot;</span>, <span class="at">adjust=</span><span class="st">&quot;none&quot;</span>, <span class="at">type=</span><span class="st">&quot;response&quot;</span>), <span class="at">infer=</span><span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">TRUE</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb646"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb646-1"><a href="counts.html#cb646-1" aria-hidden="true" tabindex="-1"></a><span class="co"># response scale</span></span>
+<span id="cb646-2"><a href="counts.html#cb646-2" aria-hidden="true" tabindex="-1"></a>emm.response <span class="ot">&lt;-</span> <span class="fu">emmeans</span>(fit.nb, <span class="at">specs=</span><span class="st">&quot;Treatment&quot;</span>, <span class="at">type=</span><span class="st">&quot;response&quot;</span>)</span>
+<span id="cb646-3"><a href="counts.html#cb646-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">contrast</span>(emm, <span class="at">method=</span><span class="st">&quot;trt.vs.ctrl&quot;</span>, <span class="at">adjust=</span><span class="st">&quot;none&quot;</span>, <span class="at">type=</span><span class="st">&quot;response&quot;</span>), <span class="at">infer=</span><span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">TRUE</span>))</span></code></pre></div>
 <pre><code>##  contrast              ratio     SE  df asymp.LCL asymp.UCL z.ratio p.value
 ##  Uninfected / Control  0.728 0.0988 Inf     0.558      0.95 -2.339  0.0193 
 ##  Infected LG / Control 0.821 0.1298 Inf     0.602      1.12 -1.248  0.2122 
