@@ -664,7 +664,12 @@ code span.wa { color: #bf0303; } /* Warning */
 <li class="chapter" data-level="16.1.7" data-path="lmm.html"><a href="lmm.html#lmm-varcorr"><i class="fa fa-check"></i><b>16.1.7</b> The correlation among random intercepts and slopes</a></li>
 <li class="chapter" data-level="16.1.8" data-path="lmm.html"><a href="lmm.html#clustered-residuals-create-heterogeneity-among-treatments"><i class="fa fa-check"></i><b>16.1.8</b> Clustered residuals create heterogeneity among treatments</a></li>
 <li class="chapter" data-level="16.1.9" data-path="lmm.html"><a href="lmm.html#linear-mixed-models-are-flexible"><i class="fa fa-check"></i><b>16.1.9</b> Linear mixed models are flexible</a></li>
-<li class="chapter" data-level="16.1.10" data-path="lmm.html"><a href="lmm.html#pseudoreplication"><i class="fa fa-check"></i><b>16.1.10</b> Pseudoreplication</a></li>
+<li class="chapter" data-level="16.1.10" data-path="lmm.html"><a href="lmm.html#a-random-intercept-only-model"><i class="fa fa-check"></i><b>16.1.10</b> A random intercept only model</a></li>
+<li class="chapter" data-level="16.1.11" data-path="lmm.html"><a href="lmm.html#a-model-including-an-interaction-intercept"><i class="fa fa-check"></i><b>16.1.11</b> A model including an interaction intercept</a></li>
+<li class="chapter" data-level="16.1.12" data-path="lmm.html"><a href="lmm.html#lmm-demo-aic"><i class="fa fa-check"></i><b>16.1.12</b> AIC and model selection – which model to report?</a></li>
+<li class="chapter" data-level="16.1.13" data-path="lmm.html"><a href="lmm.html#the-specification-of-random-effects-matters"><i class="fa fa-check"></i><b>16.1.13</b> The specification of random effects matters</a></li>
+<li class="chapter" data-level="16.1.14" data-path="lmm.html"><a href="lmm.html#mixed-effect-and-repeated-measures-anova"><i class="fa fa-check"></i><b>16.1.14</b> Mixed Effect and Repeated Measures ANOVA</a></li>
+<li class="chapter" data-level="16.1.15" data-path="lmm.html"><a href="lmm.html#pseudoreplication"><i class="fa fa-check"></i><b>16.1.15</b> Pseudoreplication</a></li>
 </ul></li>
 <li class="chapter" data-level="16.2" data-path="lmm.html"><a href="lmm.html#example-2-experiments-without-subsampling-replication-exp6g"><i class="fa fa-check"></i><b>16.2</b> Example 2 – experiments without subsampling replication (exp6g)</a>
 <ul>
@@ -706,6 +711,8 @@ code span.wa { color: #bf0303; } /* Warning */
 <li class="chapter" data-level="16.4.6" data-path="lmm.html"><a href="lmm.html#alternaplot-the-model-2"><i class="fa fa-check"></i><b>16.4.6</b> Alternaplot the model</a></li>
 <li class="chapter" data-level="16.4.7" data-path="lmm.html"><a href="lmm.html#understanding-the-alternative-models"><i class="fa fa-check"></i><b>16.4.7</b> Understanding the alternative models</a></li>
 <li class="chapter" data-level="16.4.8" data-path="lmm.html"><a href="lmm.html#the-varcorr-matrix-of-models-exp1g_m1a-and-exp1g_m1b"><i class="fa fa-check"></i><b>16.4.8</b> The VarCorr matrix of models exp1g_m1a and exp1g_m1b</a></li>
+<li class="chapter" data-level="16.4.9" data-path="lmm.html"><a href="lmm.html#fixed-effect-models-and-pseudoreplication"><i class="fa fa-check"></i><b>16.4.9</b> Fixed effect models and pseudoreplication</a></li>
+<li class="chapter" data-level="16.4.10" data-path="lmm.html"><a href="lmm.html#mixed-effect-anova"><i class="fa fa-check"></i><b>16.4.10</b> Mixed effect ANOVA</a></li>
 </ul></li>
 <li class="chapter" data-level="16.5" data-path="lmm.html"><a href="lmm.html#working-in-r-5"><i class="fa fa-check"></i><b>16.5</b> Working in R</a>
 <ul>
@@ -820,7 +827,7 @@ code span.wa { color: #bf0303; } /* Warning */
 <div id="header">
 <h1 class="title">Elements of Statistical Modeling for Experimental Biology</h1>
 <p class="author"><em>Copyright 2018 Jeffrey A. Walker</em></p>
-<p class="date"><em>Draft: 2021-04-09</em></p>
+<p class="date"><em>Draft: 2021-04-12</em></p>
 </div>
 <div id="preface" class="section level1 unnumbered">
 <h1>Preface</h1>
@@ -829,8 +836,8 @@ code span.wa { color: #bf0303; } /* Warning */
 <p>This book is an introduction to the statistical analysis of data from biological experiments with a focus on the estimation of treatment effects and measures of the uncertainty of theses estimates. Instead of a flowchart of “which statistical test,” this book emphasizes a <strong>regression modeling</strong> approach using linear models and extensions of linear models.</p>
 <p>“What what? In my previous class I learned that regression was for data with a continuous independent variable and that <em>t</em>-tests and ANOVA were for data with categorical independent variables.” No! This misconception has roots in the history of regression vs. ANOVA and is reinforced by how introductory biostatistics textbooks, and their instructors, <em>choose</em> to teach statistics. In this class, you were probably taught to follow a flowchart strategy – something like</p>
 <div class="figure"><span id="fig:flowchart"></span>
-<div id="htmlwidget-ecfef0ad99797a5eab10" style="width:672px;height:933.333333333333px;" class="DiagrammeR html-widget"></div>
-<script type="application/json" data-for="htmlwidget-ecfef0ad99797a5eab10">{"x":{"diagram":"\ngraph TB\n    a[I want to compare group means] --> b{How many groups?}\n    b --> c((only 2))\n    b --> d((more then 2))\n    c --> e{are my data normal?}\n    e --> f((yes))\n    e --> g((no))\n    f --> h{are samples in group 1<br>independent of those in<br>group 2?}\n    h --> i((yes))\n    h --> j((no))\n    i --> k[independent sample t-test]\n    j --> l[paired t-test]\n\n"},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-66b60498cd2078eb20df" style="width:672px;height:933.333333333333px;" class="DiagrammeR html-widget"></div>
+<script type="application/json" data-for="htmlwidget-66b60498cd2078eb20df">{"x":{"diagram":"\ngraph TB\n    a[I want to compare group means] --> b{How many groups?}\n    b --> c((only 2))\n    b --> d((more then 2))\n    c --> e{are my data normal?}\n    e --> f((yes))\n    e --> g((no))\n    f --> h{are samples in group 1<br>independent of those in<br>group 2?}\n    h --> i((yes))\n    h --> j((no))\n    i --> k[independent sample t-test]\n    j --> l[paired t-test]\n\n"},"evals":[],"jsHooks":[]}</script>
 <p class="caption">
 Figure 0.1: A small flow chart demo of the flowchart strategy of statistical analysis. This chart covers a very small subset of potential paths that could be built from an introductory biostatistics textbook.
 </p>
