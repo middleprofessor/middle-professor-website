@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Chapter 16 Models with random factors – Blocking and pseudoreplication | Elements of Statistical Modeling for Experimental Biology</title>
+  <title>Chapter 16 Models with random factors – linear mixed models | Elements of Statistical Modeling for Experimental Biology</title>
   <meta name="description" content="A first course in statistical modeling for experimental biology researchers" />
   <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Chapter 16 Models with random factors – Blocking and pseudoreplication | Elements of Statistical Modeling for Experimental Biology" />
+  <meta property="og:title" content="Chapter 16 Models with random factors – linear mixed models | Elements of Statistical Modeling for Experimental Biology" />
   <meta property="og:type" content="book" />
   
   
@@ -16,7 +16,7 @@
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Chapter 16 Models with random factors – Blocking and pseudoreplication | Elements of Statistical Modeling for Experimental Biology" />
+  <meta name="twitter:title" content="Chapter 16 Models with random factors – linear mixed models | Elements of Statistical Modeling for Experimental Biology" />
   
   <meta name="twitter:description" content="A first course in statistical modeling for experimental biology researchers" />
   
@@ -650,9 +650,8 @@ code span.wa { color: #bf0303; } /* Warning */
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="part-vii-expanding-the-linear-model.html"><a href="part-vii-expanding-the-linear-model.html"><i class="fa fa-check"></i>Part VII – Expanding the Linear Model</a></li>
-<li class="chapter" data-level="16" data-path="lmm.html"><a href="lmm.html"><i class="fa fa-check"></i><b>16</b> Models with random factors – Blocking and pseudoreplication</a>
+<li class="chapter" data-level="16" data-path="lmm.html"><a href="lmm.html"><i class="fa fa-check"></i><b>16</b> Models with random factors – linear mixed models</a>
 <ul>
-<li class="chapter" data-level="16.0.1" data-path="lmm.html"><a href="lmm.html#many-measurement-in-experimental-bench-biology-are-batched"><i class="fa fa-check"></i><b>16.0.1</b> Many measurement in experimental bench biology are batched</a></li>
 <li class="chapter" data-level="16.1" data-path="lmm.html"><a href="lmm.html#example-1-a-random-intercepts-and-slopes-explainer-exp1g"><i class="fa fa-check"></i><b>16.1</b> Example 1 – A random intercepts and slopes explainer (exp1g)</a>
 <ul>
 <li class="chapter" data-level="16.1.1" data-path="lmm.html"><a href="lmm.html#batched-measurements-result-in-clustered-residuals"><i class="fa fa-check"></i><b>16.1.1</b> Batched measurements result in clustered residuals</a></li>
@@ -825,9 +824,7 @@ code span.wa { color: #bf0303; } /* Warning */
 
             <section class="normal" id="section-">
 <div id="lmm" class="section level1" number="16">
-<h1><span class="header-section-number">Chapter 16</span> Models with random factors – Blocking and pseudoreplication</h1>
-<div id="many-measurement-in-experimental-bench-biology-are-batched" class="section level3" number="16.0.1">
-<h3><span class="header-section-number">16.0.1</span> Many measurement in experimental bench biology are batched</h3>
+<h1><span class="header-section-number">Chapter 16</span> Models with random factors – linear mixed models</h1>
 <p>This chapter is about linear models of which a <strong>paired t-test</strong> and <strong>repeated measures ANOVA</strong> are special cases. Both paired <em>t</em>-tests and repeated measures ANOVA involve experiments in which the response was measured multiple times on the same thing – maybe the left and right side of a mouse, multiple mice with cell from the same donor, or a mouse over multiple weeks. Most data in experimental biology is composed of subsets – or <strong>batches</strong> – of data that were measured from the “same thing.” Batched data results in <strong>correlated error</strong> that muddles statistical inference unless the correlated error is modeled. In some designs, modeling the correlated error increases precision and power, and ultimately decreases false discovery. In other designs, failure to model the correlated error results in incorrectly high precision and incorrectly low <em>p</em>-values, leading to increased rates of false discovery. I think it’s fair to infer from the experimental biology literature, that experimental biologists don’t recognize the ubiquitousness of batched data and correlated error. This is probably the biggest issue in inference in the field (far more of an issue than say, a <em>t</em>-test on non-normal data).</p>
 <p>What do I mean by “batch” and how can correlated error both increase and decrease false discovery? Consider these experiments:</p>
 <ol style="list-style-type: decimal">
@@ -847,7 +844,6 @@ code span.wa { color: #bf0303; } /* Warning */
 <p>Batches that contain at least two treatment combinations are known as <strong>blocks</strong>. A block that contains all treatment combinations is a <strong>complete block</strong>. A block that contains fewer than all combinations is an <strong>incomplete block</strong>. Including block structure in the design is known as <strong>blocking</strong>. Adding a blocking factor to a statistical model is used to increase the precision of an estimated treatment effect. Experiment 1 is an example of a <strong>randomized complete block</strong> design. “Complete” means that each block has all treatment levels or combinations of levels if there is more than one factor.</p>
 <p>In Experiment 2, there are multiple measures per mouse and the design is a <strong>randomized complete block with subsampling</strong>. The subsampling is not the kind of replication that can be used to infer the among treatment effect because the treatment assignment was not at the level of the subsamples. The <strong>treatment replicates</strong> (the cage) are the blocks, because <em>it was at this level that treatment assignment was randomized</em>. Nevertheless, there are inference advantages to subsampling if modeled, But, a statistical analysis of all measures from a subsampled design without modeling the correlated error due to the subsampling is a kind of <a href="https://en.wikipedia.org/wiki/Pseudoreplication" target="_blank">pseudoreplication</a>. Pseudoreplication results in incorrectly small standard errors and <em>p</em>-values and increased rates of false discovery.</p>
 <p>In Experiment 3, the treatment is randomized <em>to</em> batch, so each batch contains only a single treatment level. In these <strong>segregated</strong> experimental designs, the variation among batches that arises from non-treatment related differences among batches <strong>confounds</strong> the variation among batches due to a true treatment effect. An extreme example of this would be an experiment with only a single cage with control conditions and a single cage with treatment conditions. Imagine 1) the true effect of the treatment is zero and 2) an aggressive mouse in the control cage stimulates the stress response in the other mice and this stress response has a large effect on the value of the response variable measured by the researchers. The researcher is fooled into thinking that the treatment caused the difference in the response. Again, mice are subsampled replicates while treatment replicates are at the level of the cage, because it was at this level that treatment assignment was randomized. This means the researcher has a single, treatment replicate (or, <span class="math inline">\(n=1\)</span>), regardless of the number of mice (subsamples) in each cage. A statistical analysis of all measures from a subsampled design without modeling the correlated error due to the subsampling is a kind of <a href="https://en.wikipedia.org/wiki/Pseudoreplication" target="_blank">pseudoreplication</a>. Pseudoreplication results in incorrectly small standard errors and <em>p</em>-values and increased rates of false discovery.</p>
-</div>
 <div id="example-1-a-random-intercepts-and-slopes-explainer-exp1g" class="section level2" number="16.1">
 <h2><span class="header-section-number">16.1</span> Example 1 – A random intercepts and slopes explainer (exp1g)</h2>
 <p>To introduce linear mixed models, I’m using data from <a href="lmm.html#exp1g">Experiment 1g</a> below. The design is <span class="math inline">\(2 \times 2\)</span> factorial with 4-5 mice per treatment combination. To simplify the explanation of <strong>random intercepts</strong> and <strong>random slopes</strong> in linear models with added random factors (<strong>linear mixed models</strong>), I flatten the analysis to a single treatment factor (<span class="math inline">\(\texttt{treatment}\)</span>) with four levels (“Control,” “Tr1,” “Tr2,” "Tr3). The response is percent germinal centers (<span class="math inline">\(\texttt{gc}\)</span>) in <a href="https://en.wikipedia.org/wiki/Lymphatic_system#Secondary_lymphoid_organs" target="_blank">secondary lymphoid tissue</a>. The experiment was replicated 4 times. Each replication is a batch. This batch information is in the variable <span class="math inline">\(\texttt{experiment_id}\)</span>. Further detail isn’t necessary at this point.</p>
