@@ -371,7 +371,7 @@ code span.wa { color: #bf0303; } /* Warning */
 <li class="chapter" data-level="" data-path="part-v-introduction-to-linear-models.html"><a href="part-v-introduction-to-linear-models.html"><i class="fa fa-check"></i>Part V: Introduction to Linear Models</a></li>
 <li class="chapter" data-level="10" data-path="an-introduction-to-linear-models.html"><a href="an-introduction-to-linear-models.html"><i class="fa fa-check"></i><b>10</b> An introduction to linear models</a>
 <ul>
-<li class="chapter" data-level="10.1" data-path="an-introduction-to-linear-models.html"><a href="an-introduction-to-linear-models.html#two-specifications-of-a-linear-model"><i class="fa fa-check"></i><b>10.1</b> Two specifications of a linear model</a>
+<li class="chapter" data-level="10.1" data-path="an-introduction-to-linear-models.html"><a href="an-introduction-to-linear-models.html#lm-specifications"><i class="fa fa-check"></i><b>10.1</b> Two specifications of a linear model</a>
 <ul>
 <li class="chapter" data-level="10.1.1" data-path="an-introduction-to-linear-models.html"><a href="an-introduction-to-linear-models.html#the-error-draw-specification"><i class="fa fa-check"></i><b>10.1.1</b> The “error draw” specification</a></li>
 <li class="chapter" data-level="10.1.2" data-path="an-introduction-to-linear-models.html"><a href="an-introduction-to-linear-models.html#the-conditional-draw-specification"><i class="fa fa-check"></i><b>10.1.2</b> The “conditional draw” specification</a></li>
@@ -714,8 +714,9 @@ code span.wa { color: #bf0303; } /* Warning */
 <li class="chapter" data-level="18.4.6" data-path="lmm.html"><a href="lmm.html#alternaplot-the-model-2"><i class="fa fa-check"></i><b>18.4.6</b> Alternaplot the model</a></li>
 <li class="chapter" data-level="18.4.7" data-path="lmm.html"><a href="lmm.html#understanding-the-alternative-models"><i class="fa fa-check"></i><b>18.4.7</b> Understanding the alternative models</a></li>
 <li class="chapter" data-level="18.4.8" data-path="lmm.html"><a href="lmm.html#the-varcorr-matrix-of-models-exp1g_m1a-and-exp1g_m1b"><i class="fa fa-check"></i><b>18.4.8</b> The VarCorr matrix of models exp1g_m1a and exp1g_m1b</a></li>
-<li class="chapter" data-level="18.4.9" data-path="lmm.html"><a href="lmm.html#fixed-effect-models-and-pseudoreplication"><i class="fa fa-check"></i><b>18.4.9</b> Fixed effect models and pseudoreplication</a></li>
-<li class="chapter" data-level="18.4.10" data-path="lmm.html"><a href="lmm.html#mixed-effect-anova"><i class="fa fa-check"></i><b>18.4.10</b> Mixed effect ANOVA</a></li>
+<li class="chapter" data-level="18.4.9" data-path="lmm.html"><a href="lmm.html#a"><i class="fa fa-check"></i><b>18.4.9</b> A</a></li>
+<li class="chapter" data-level="18.4.10" data-path="lmm.html"><a href="lmm.html#fixed-effect-models-and-pseudoreplication"><i class="fa fa-check"></i><b>18.4.10</b> Fixed effect models and pseudoreplication</a></li>
+<li class="chapter" data-level="18.4.11" data-path="lmm.html"><a href="lmm.html#mixed-effect-anova"><i class="fa fa-check"></i><b>18.4.11</b> Mixed effect ANOVA</a></li>
 </ul></li>
 <li class="chapter" data-level="18.5" data-path="lmm.html"><a href="lmm.html#working-in-r-5"><i class="fa fa-check"></i><b>18.5</b> Working in R</a>
 <ul>
@@ -829,7 +830,7 @@ code span.wa { color: #bf0303; } /* Warning */
             <section class="normal" id="section-">
 <div id="lmm" class="section level1" number="18">
 <h1><span class="header-section-number">Chapter 18</span> Models with random factors – linear mixed models</h1>
-<p>This chapter is about linear models of which a <strong>paired t-test</strong> and <strong>repeated measures ANOVA</strong> are special cases. Both paired <em>t</em>-tests and repeated measures ANOVA involve experiments in which the response was measured multiple times on the same thing – maybe the left and right side of a mouse, multiple mice with cell from the same donor, or a mouse over multiple weeks. Most data in experimental biology is composed of subsets – or <strong>batches</strong> – of data that were measured from the “same thing.” Batched data results in <strong>correlated error</strong> that muddles statistical inference unless the correlated error is modeled. In some designs, modeling the correlated error increases precision and power, and ultimately decreases false discovery. In other designs, failure to model the correlated error results in incorrectly high precision and incorrectly low <em>p</em>-values, leading to increased rates of false discovery. I think it’s fair to infer from the experimental biology literature, that experimental biologists don’t recognize the ubiquitousness of batched data and correlated error. This is probably the biggest issue in inference in the field (far more of an issue than say, a <em>t</em>-test on non-normal data).</p>
+<p>This chapter is about linear models with added random factors, or <strong>linear mixed models</strong>. In classical hypothesis testing, a <strong>paired t-test</strong>, <strong>repeated measures ANOVA</strong>, and <strong>mixed-effect ANOVA</strong> are equivalent to specific cases of linear mixed models. Linear mixed models are for analyzing data composed of subsets – or <strong>batches</strong> – of data that were measured from the “same thing.” Batched data results in <strong>correlated error</strong> that muddles statistical inference unless the correlated error is modeled, explicitly or implicitly. In some designs, modeling the correlated error increases precision and power, and ultimately decreases false discovery. In other designs, failure to model the correlated error results in incorrectly high precision and incorrectly low <em>p</em>-values, leading to increased rates of false discovery. I think it’s fair to infer from the experimental biology literature, that experimental biologists don’t recognize the ubiquitousness of batched data and correlated error. This is probably the biggest issue in inference in the field (far more of an issue than say, a <em>t</em>-test on non-normal data).</p>
 <p>What do I mean by “batch” and how can correlated error both increase and decrease false discovery? Consider these experiments:</p>
 <ol style="list-style-type: decimal">
 <li>The experiment in Figure <a href="#fig:lmm-biological-replicates"><strong>??</strong></a> is a factorial design with two factors, <span class="math inline">\(\texttt{genotype}\)</span> and <span class="math inline">\(\texttt{treatment}\)</span>, each with two levels. One mice of each treatment combination is randomly assigned to a cage. There are five replicates of each cage. The five replicate mice per treatment combination are <strong>biological replicates</strong>. Each cage is a batch. Each cage has a unique set of factors that contribute to the error variance of the measure of the response. Each cage shares a cage-specific history of temperature, humidity, food, light, interactions with animal facilities staff and behavioral interactions among the mice. All response measures within a cage share the component of the error variance unique to that cage and, as a consequence, the error (residuals) within a cage are more similar to each other than they are to the residuals between cages.</li>
@@ -845,7 +846,7 @@ code span.wa { color: #bf0303; } /* Warning */
 <p><img src="images/lmm-pseudoreplication.png" width="63%" /></p>
 <p>In each of these experiments, there is systematic variation at multiple levels: among treatments due to treatment effects and among batches due to <strong>batch effects</strong>. Batches come in lots of flavors, including experiment, cage, flask, plate, slide, donor, and individual. The among-batch variation is the <strong>random effect</strong>. An assumption of modeling random effects is that the batches are a random sample of the batches that could have been sampled. This is often not strictly true as batches are often <strong>convenience samples</strong> (example: the human donors of the Type 2 diabetes beta cells are those that were in the hospital).</p>
 <p>The variation among batches/lack of independence within batches has different consequences on the uncertainty of the estimate of a treatment effect. The batches in Experiment 1 contain all treatment combinations. The researcher is interested in the treatment effect but not the variation due to differences among the batches. The batches are nuissance factors that add additional variance to the response, with the consequence that estimates of treatment effects are less precise, unless the variance due to the batches is explicitly modeled. <strong>Modeling a batch that contains some or all treatment combinations will increase precision and power</strong>.</p>
-<p>Batches that contain at least two treatment combinations are known as <strong>blocks</strong>. A block that contains all treatment combinations is a <strong>complete block</strong>. A block that contains fewer than all combinations is an <strong>incomplete block</strong>. Including block structure in the design is known as <strong>blocking</strong>. Adding a blocking factor to a statistical model is used to increase the precision of an estimated treatment effect. Experiment 1 is an example of a <strong>randomized complete block</strong> design. “Complete” means that each block has all treatment levels or combinations of levels if there is more than one factor.</p>
+<p>Batches that contain at least two treatment combinations are known as <strong>blocks</strong>. A block that contains all treatment combinations is a <strong>complete block</strong>. A block that contains fewer than all combinations is an <strong>incomplete block</strong>. Including block structure in the design is known as <strong>blocking</strong>. Adding a blocking factor to a statistical model is used to increase the precision of an estimated treatment effect. Experiment 1 is an example of a <strong>randomized complete block</strong> design.</p>
 <p>In Experiment 2, there are multiple measures per mouse and the design is a <strong>randomized complete block with subsampling</strong>. The subsampling is not the kind of replication that can be used to infer the among treatment effect because the treatment assignment was not at the level of the subsamples. The <strong>treatment replicates</strong> (the cage) are the blocks, because <em>it was at this level that treatment assignment was randomized</em>. Nevertheless, there are inference advantages to subsampling if modeled, But, a statistical analysis of all measures from a subsampled design without modeling the correlated error due to the subsampling is a kind of <a href="https://en.wikipedia.org/wiki/Pseudoreplication" target="_blank">pseudoreplication</a>. Pseudoreplication results in incorrectly small standard errors and <em>p</em>-values and increased rates of false discovery.</p>
 <p>In Experiment 3, the treatment is randomized <em>to</em> batch, so each batch contains only a single treatment level. In these <strong>segregated</strong> experimental designs, the variation among batches that arises from non-treatment related differences among batches <strong>confounds</strong> the variation among batches due to a true treatment effect. An extreme example of this would be an experiment with only a single cage with control conditions and a single cage with treatment conditions. Imagine 1) the true effect of the treatment is zero and 2) an aggressive mouse in the control cage stimulates the stress response in the other mice and this stress response has a large effect on the value of the response variable measured by the researchers. The researcher is fooled into thinking that the treatment caused the difference in the response. Again, mice are subsampled replicates while treatment replicates are at the level of the cage, because it was at this level that treatment assignment was randomized. This means the researcher has a single, treatment replicate (or, <span class="math inline">\(n=1\)</span>), regardless of the number of mice (subsamples) in each cage. A statistical analysis of all measures from a subsampled design without modeling the correlated error due to the subsampling is a kind of <a href="https://en.wikipedia.org/wiki/Pseudoreplication" target="_blank">pseudoreplication</a>. Pseudoreplication results in incorrectly small standard errors and <em>p</em>-values and increased rates of false discovery.</p>
 <div id="lmm-demo" class="section level2" number="18.1">
@@ -3676,7 +3677,9 @@ treatmentPost_CNO
 <div id="example-3-factorial-experiments-and-no-subsampling-replicates-exp5c" class="section level2" number="18.3">
 <h2><span class="header-section-number">18.3</span> Example 3 – Factorial experiments and no subsampling replicates (exp5c)</h2>
 <p>Example 3 is similar to example 2 in that there is no subsampling replication and we cannot add random slopes to the linear mixed model. Example 3 differs in that the design is factorial – there are two, crossed fixed factors. Consequently, there are several alternative models with different sets of random intercepts. The reported model includes two random intercepts, one of which models differences in batch effects among treatment levels (treatment by batch interactions). This <strong>interaction intercept</strong> is an alternative to random slope for modeling treatment by batch interactions.</p>
-<p>source: <a href="https://www.nature.com/articles/s41467-019-13869-w" target="_blank">Transcriptomic profiling of skeletal muscle adaptations to exercise and inactivity</a></p>
+<p><a href="https://www.nature.com/articles/s41467-019-13869-w" target="_blank">Transcriptomic profiling of skeletal muscle adaptations to exercise and inactivity</a></p>
+<p>Source figure: <a href="https://www.nature.com/articles/s41467-019-13869-w#Fig5" target="_blank">Fig. 5c</a></p>
+<p>Source data: <a href="https://www.nature.com/articles/s41467-019-13869-w#Sec27" target="_blank">Source Data Fig. 5</a></p>
 <div id="understand-the-data-1" class="section level3" number="18.3.1">
 <h3><span class="header-section-number">18.3.1</span> Understand the data</h3>
 <p>The data for Example 1 are from Figure 5c. Six muscle source cells were used to start six independent cultures. Cells from each culture were treated with either a negative control (“Scr”) or a siRNA (“siNR4A3”) that “silences” expression of the NR4A3 gene product by <a href="https://en.wikipedia.org/wiki/Small_interfering_RNA" target="_blank">cleaving the mRNA</a>. Glucose uptake in the two cell types was measured at rest (“Basal”) and during electrical pulse stimulation (“EPS”).</p>
@@ -6005,9 +6008,17 @@ Interaction
 <div id="lmm-example4" class="section level2" number="18.4">
 <h2><span class="header-section-number">18.4</span> Example 4 – Experiments with subsampling replication (exp1g)</h2>
 <p>This example is from a design with batches (independent experiments) that contain all treatment levels of a single factor <em>and</em> subsampling replication. These data were used to introduce linear mixed models in Example 1. The design of the experiment is <span class="math inline">\(2 \times 2\)</span> factorial. Example 1 flattened the analysis to simplify explanation of random intercepts and random slopes. Here, the data are analyzed with a factorial model.</p>
+<p><a href="https://www.nature.com/articles/s41586-019-1873-0" target="_blank">A GPR174–CCL21 module imparts sexual dimorphism to humoral immunity</a></p>
+<p><a href="https://pubmed.ncbi.nlm.nih.gov/31875850/" target="_blank">Public source</a></p>
+<p>Source figure: <a href="https://www.nature.com/articles/s41586-019-1873-0/figures/1" target="_blank">Fig. 1g</a></p>
+<p>Source data: <a href="https://www.nature.com/articles/s41586-019-1873-0#MOESM3" target="_blank">Source Data Fig. 1</a></p>
 <div id="understand-the-data-2" class="section level3" number="18.4.1">
 <h3><span class="header-section-number">18.4.1</span> Understand the data</h3>
-<p><a href="https://link.springer.com/protocol/10.1007%2F978-1-4939-0320-7_23">bone marrow transplant</a></p>
+<p>The researchers in this paper are interested in discovering mechanisms causing the lower <a href="https://en.wikipedia.org/wiki/Humoral_immunity" target="_blank">antibody-mediated immune response</a> in males relative to females. The data in Fig. 1 are from a set of experiments on mice to investigate how the G-protein coupled receptor protein GPR174 regulates formation of the <a href="https://en.wikipedia.org/wiki/Germinal_center" target="_blank">B-cell germinal center in secondary lymph tissue</a>. GPR174 is a X-linked gene.</p>
+<p><strong>Response variable</strong> <span class="math inline">\(\texttt{gc}\)</span> – germinal center size (%). The units are the percent of cells expressing germinal center markers.</p>
+<p><strong>Factor 1</strong> – <span class="math inline">\(\texttt{sex}\)</span> (“M,” “F”). Male (“M”) is the reference level.</p>
+<p><strong>Factor 2</strong> – <span class="math inline">\(\texttt{chromosome}\)</span> (“Gpr174+,” “Gpr174-”). “Gpr174-” is a GPR174 knockout. The wildtype (“Gpr174+”) condition is the reference level.</p>
+<p><strong>Design</strong> – <span class="math inline">\(2 \times 2\)</span>, that is, two crossed factors each with two levels. This results in four groups, each with a unique combination of the levels from each factor. “M Gpr174+” is the control. “M Gpr174+” is the knockout genotype in males (“knockout added”). “F Gpr174+” is the wildtype female (“X chromosome added”). “F Gpr174-” is the knockout female (“knockout and X chromosome added.”</p>
 </div>
 <div id="examine-the-data-2" class="section level3" number="18.4.2">
 <h3><span class="header-section-number">18.4.2</span> Examine the data</h3>
@@ -6020,40 +6031,40 @@ Interaction
 </div>
 <div id="fit-the-model-9" class="section level3" number="18.4.3">
 <h3><span class="header-section-number">18.4.3</span> Fit the model</h3>
-<div class="sourceCode" id="cb580"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb580-1"><a href="lmm.html#cb580-1" aria-hidden="true" tabindex="-1"></a><span class="co"># three slope variances</span></span>
-<span id="cb580-2"><a href="lmm.html#cb580-2" aria-hidden="true" tabindex="-1"></a>exp1g_m1a <span class="ot">&lt;-</span> <span class="fu">lmer</span>(gc <span class="sc">~</span> sex <span class="sc">*</span> genotype <span class="sc">+</span></span>
-<span id="cb580-3"><a href="lmm.html#cb580-3" aria-hidden="true" tabindex="-1"></a>                   (sex <span class="sc">*</span> genotype <span class="sc">|</span> experiment_id),</span>
+<div class="sourceCode" id="cb580"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb580-1"><a href="lmm.html#cb580-1" aria-hidden="true" tabindex="-1"></a><span class="co"># three slope parameters</span></span>
+<span id="cb580-2"><a href="lmm.html#cb580-2" aria-hidden="true" tabindex="-1"></a>exp1g_m1a <span class="ot">&lt;-</span> <span class="fu">lmer</span>(gc <span class="sc">~</span> genotype <span class="sc">*</span> sex <span class="sc">+</span></span>
+<span id="cb580-3"><a href="lmm.html#cb580-3" aria-hidden="true" tabindex="-1"></a>                   (genotype <span class="sc">*</span> sex <span class="sc">|</span> experiment_id),</span>
 <span id="cb580-4"><a href="lmm.html#cb580-4" aria-hidden="true" tabindex="-1"></a>                 <span class="at">data =</span> exp1g)</span>
 <span id="cb580-5"><a href="lmm.html#cb580-5" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb580-6"><a href="lmm.html#cb580-6" aria-hidden="true" tabindex="-1"></a><span class="fu">VarCorr</span>(exp1g_m1a) <span class="co"># looks fine</span></span></code></pre></div>
 <pre><code>##  Groups        Name                 Std.Dev. Corr                
-##  experiment_id (Intercept)          1.77107                      
-##                sexF                 2.90230   0.458              
-##                genotypeGpr174-      0.96415  -0.025  0.876       
-##                sexF:genotypeGpr174- 1.35653  -0.302 -0.693 -0.647
-##  Residual                           1.93134</code></pre>
-<div class="sourceCode" id="cb582"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb582-1"><a href="lmm.html#cb582-1" aria-hidden="true" tabindex="-1"></a><span class="co"># one slope variance but capturing all treatment combinations</span></span>
-<span id="cb582-2"><a href="lmm.html#cb582-2" aria-hidden="true" tabindex="-1"></a>exp1g_m1b <span class="ot">&lt;-</span> <span class="fu">lmer</span>(gc <span class="sc">~</span> sex <span class="sc">*</span> genotype <span class="sc">+</span></span>
+##  experiment_id (Intercept)          1.77082                      
+##                genotypeGpr174-      0.96192  -0.023              
+##                sexF                 2.90154   0.459  0.878       
+##                genotypeGpr174-:sexF 1.33169  -0.314 -0.625 -0.706
+##  Residual                           1.93155</code></pre>
+<div class="sourceCode" id="cb582"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb582-1"><a href="lmm.html#cb582-1" aria-hidden="true" tabindex="-1"></a><span class="co"># one slope parameter but capturing all treatment combinations</span></span>
+<span id="cb582-2"><a href="lmm.html#cb582-2" aria-hidden="true" tabindex="-1"></a>exp1g_m1b <span class="ot">&lt;-</span> <span class="fu">lmer</span>(gc <span class="sc">~</span> genotype <span class="sc">*</span> sex <span class="sc">+</span></span>
 <span id="cb582-3"><a href="lmm.html#cb582-3" aria-hidden="true" tabindex="-1"></a>                   (treatment <span class="sc">|</span> experiment_id),</span>
 <span id="cb582-4"><a href="lmm.html#cb582-4" aria-hidden="true" tabindex="-1"></a>                 <span class="at">data =</span> exp1g)</span>
 <span id="cb582-5"><a href="lmm.html#cb582-5" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb582-6"><a href="lmm.html#cb582-6" aria-hidden="true" tabindex="-1"></a><span class="co"># intercept interactions</span></span>
-<span id="cb582-7"><a href="lmm.html#cb582-7" aria-hidden="true" tabindex="-1"></a>exp1g_m1c <span class="ot">&lt;-</span> <span class="fu">lmer</span>(gc <span class="sc">~</span> sex <span class="sc">*</span> genotype <span class="sc">+</span></span>
+<span id="cb582-7"><a href="lmm.html#cb582-7" aria-hidden="true" tabindex="-1"></a>exp1g_m1c <span class="ot">&lt;-</span> <span class="fu">lmer</span>(gc <span class="sc">~</span> genotype <span class="sc">*</span> sex <span class="sc">+</span></span>
 <span id="cb582-8"><a href="lmm.html#cb582-8" aria-hidden="true" tabindex="-1"></a>                   (<span class="dv">1</span> <span class="sc">|</span> experiment_id) <span class="sc">+</span></span>
-<span id="cb582-9"><a href="lmm.html#cb582-9" aria-hidden="true" tabindex="-1"></a>                    (<span class="dv">1</span> <span class="sc">|</span> experiment_id<span class="sc">:</span>sex) <span class="sc">+</span></span>
-<span id="cb582-10"><a href="lmm.html#cb582-10" aria-hidden="true" tabindex="-1"></a>                    (<span class="dv">1</span> <span class="sc">|</span> experiment_id<span class="sc">:</span>genotype) <span class="sc">+</span></span>
-<span id="cb582-11"><a href="lmm.html#cb582-11" aria-hidden="true" tabindex="-1"></a>                    (<span class="dv">1</span> <span class="sc">|</span> experiment_id<span class="sc">:</span>sex<span class="sc">:</span>genotype),</span>
+<span id="cb582-9"><a href="lmm.html#cb582-9" aria-hidden="true" tabindex="-1"></a>                    (<span class="dv">1</span> <span class="sc">|</span> experiment_id<span class="sc">:</span>genotype) <span class="sc">+</span></span>
+<span id="cb582-10"><a href="lmm.html#cb582-10" aria-hidden="true" tabindex="-1"></a>                    (<span class="dv">1</span> <span class="sc">|</span> experiment_id<span class="sc">:</span>sex) <span class="sc">+</span></span>
+<span id="cb582-11"><a href="lmm.html#cb582-11" aria-hidden="true" tabindex="-1"></a>                    (<span class="dv">1</span> <span class="sc">|</span> experiment_id<span class="sc">:</span>genotype<span class="sc">:</span>sex),</span>
 <span id="cb582-12"><a href="lmm.html#cb582-12" aria-hidden="true" tabindex="-1"></a>                 <span class="at">data =</span> exp1g)</span>
 <span id="cb582-13"><a href="lmm.html#cb582-13" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb582-14"><a href="lmm.html#cb582-14" aria-hidden="true" tabindex="-1"></a><span class="fu">VarCorr</span>(exp1g_m1c) <span class="co"># id:genotype is low</span></span></code></pre></div>
 <pre><code>##  Groups                     Name        Std.Dev. 
-##  experiment_id:sex:genotype (Intercept) 0.4046670
-##  experiment_id:genotype     (Intercept) 0.0001216
+##  experiment_id:genotype:sex (Intercept) 0.4046670
 ##  experiment_id:sex          (Intercept) 1.6927499
+##  experiment_id:genotype     (Intercept) 0.0001216
 ##  experiment_id              (Intercept) 2.5487069
 ##  Residual                               1.9792428</code></pre>
 <div class="sourceCode" id="cb584"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb584-1"><a href="lmm.html#cb584-1" aria-hidden="true" tabindex="-1"></a><span class="co"># drop id:genotype which has low variance</span></span>
-<span id="cb584-2"><a href="lmm.html#cb584-2" aria-hidden="true" tabindex="-1"></a>exp1g_m1d <span class="ot">&lt;-</span> <span class="fu">lmer</span>(gc <span class="sc">~</span> sex <span class="sc">*</span> genotype <span class="sc">+</span></span>
+<span id="cb584-2"><a href="lmm.html#cb584-2" aria-hidden="true" tabindex="-1"></a>exp1g_m1d <span class="ot">&lt;-</span> <span class="fu">lmer</span>(gc <span class="sc">~</span> genotype <span class="sc">*</span> sex <span class="sc">+</span></span>
 <span id="cb584-3"><a href="lmm.html#cb584-3" aria-hidden="true" tabindex="-1"></a>                   (<span class="dv">1</span> <span class="sc">|</span> experiment_id) <span class="sc">+</span></span>
 <span id="cb584-4"><a href="lmm.html#cb584-4" aria-hidden="true" tabindex="-1"></a>                    (<span class="dv">1</span> <span class="sc">|</span> experiment_id<span class="sc">:</span>sex) <span class="sc">+</span></span>
 <span id="cb584-5"><a href="lmm.html#cb584-5" aria-hidden="true" tabindex="-1"></a>                    (<span class="dv">1</span> <span class="sc">|</span> experiment_id<span class="sc">:</span>sex<span class="sc">:</span>genotype),</span>
@@ -6061,18 +6072,19 @@ Interaction
 <span id="cb584-7"><a href="lmm.html#cb584-7" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb584-8"><a href="lmm.html#cb584-8" aria-hidden="true" tabindex="-1"></a><span class="fu">AIC</span>(exp1g_m1a, exp1g_m1b, exp1g_m1c, exp1g_m1d)</span></code></pre></div>
 <pre><code>##           df      AIC
-## exp1g_m1a 15 344.1529
+## exp1g_m1a 15 344.1579
 ## exp1g_m1b 15 344.1529
 ## exp1g_m1c  9 337.7602
 ## exp1g_m1d  8 335.7602</code></pre>
-<div class="sourceCode" id="cb586"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb586-1"><a href="lmm.html#cb586-1" aria-hidden="true" tabindex="-1"></a><span class="co"># go with exp1g_m1a for purpose of illustrating the random slopes</span></span>
-<span id="cb586-2"><a href="lmm.html#cb586-2" aria-hidden="true" tabindex="-1"></a><span class="co"># otherwise go with exp1g_m1c.</span></span>
-<span id="cb586-3"><a href="lmm.html#cb586-3" aria-hidden="true" tabindex="-1"></a>exp1g_m1 <span class="ot">&lt;-</span> exp1g_m1a</span></code></pre></div>
+<div class="sourceCode" id="cb586"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb586-1"><a href="lmm.html#cb586-1" aria-hidden="true" tabindex="-1"></a><span class="co"># go with exp1g_m1d.</span></span>
+<span id="cb586-2"><a href="lmm.html#cb586-2" aria-hidden="true" tabindex="-1"></a>exp1g_m1 <span class="ot">&lt;-</span> exp1g_m1d</span></code></pre></div>
 </div>
 <div id="inference-from-the-model-6" class="section level3" number="18.4.4">
 <h3><span class="header-section-number">18.4.4</span> Inference from the model</h3>
 <div class="sourceCode" id="cb587"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb587-1"><a href="lmm.html#cb587-1" aria-hidden="true" tabindex="-1"></a>exp1g_m1_coef <span class="ot">&lt;-</span> <span class="fu">coef</span>(<span class="fu">summary</span>(exp1g_m1))</span></code></pre></div>
-<div class="sourceCode" id="cb588"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb588-1"><a href="lmm.html#cb588-1" aria-hidden="true" tabindex="-1"></a>exp1g_m1_emm <span class="ot">&lt;-</span> <span class="fu">emmeans</span>(exp1g_m1, <span class="at">specs =</span> <span class="fu">c</span>(<span class="st">&quot;sex&quot;</span>, <span class="st">&quot;genotype&quot;</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb588"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb588-1"><a href="lmm.html#cb588-1" aria-hidden="true" tabindex="-1"></a><span class="co"># order of factors reversed in specs because I want sex to be</span></span>
+<span id="cb588-2"><a href="lmm.html#cb588-2" aria-hidden="true" tabindex="-1"></a><span class="co"># main x-axis variable in plot</span></span>
+<span id="cb588-3"><a href="lmm.html#cb588-3" aria-hidden="true" tabindex="-1"></a>exp1g_m1_emm <span class="ot">&lt;-</span> <span class="fu">emmeans</span>(exp1g_m1, <span class="at">specs =</span> <span class="fu">c</span>(<span class="st">&quot;sex&quot;</span>, <span class="st">&quot;genotype&quot;</span>))</span></code></pre></div>
 <div class="sourceCode" id="cb589"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb589-1"><a href="lmm.html#cb589-1" aria-hidden="true" tabindex="-1"></a><span class="co"># exp1g_m1_emm # print in console to get row numbers</span></span>
 <span id="cb589-2"><a href="lmm.html#cb589-2" aria-hidden="true" tabindex="-1"></a><span class="co"># set the mean as the row number from the emmeans table</span></span>
 <span id="cb589-3"><a href="lmm.html#cb589-3" aria-hidden="true" tabindex="-1"></a>wt_m <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>)</span>
@@ -6130,25 +6142,25 @@ p.value
 KO/M - WT/M
 </td>
 <td style="text-align:right;">
-2.54
+2.57
 </td>
 <td style="text-align:right;">
-0.804
+0.714
 </td>
 <td style="text-align:right;">
-2.978
+5.784
 </td>
 <td style="text-align:right;">
--0.03
+0.81
 </td>
 <td style="text-align:right;">
-5.11
+4.33
 </td>
 <td style="text-align:right;">
-3.16
+3.60
 </td>
 <td style="text-align:right;">
-0.051
+0.012
 </td>
 </tr>
 <tr>
@@ -6156,25 +6168,25 @@ KO/M - WT/M
 KO/F - WT/F
 </td>
 <td style="text-align:right;">
--2.76
+-2.74
 </td>
 <td style="text-align:right;">
-0.833
+0.722
 </td>
 <td style="text-align:right;">
-2.985
+6.100
 </td>
 <td style="text-align:right;">
--5.42
+-4.50
 </td>
 <td style="text-align:right;">
--0.10
+-0.98
 </td>
 <td style="text-align:right;">
--3.32
+-3.79
 </td>
 <td style="text-align:right;">
-0.046
+0.009
 </td>
 </tr>
 <tr>
@@ -6185,26 +6197,30 @@ Interaction
 -5.30
 </td>
 <td style="text-align:right;">
-1.140
+1.016
 </td>
 <td style="text-align:right;">
-2.982
+5.942
 </td>
 <td style="text-align:right;">
--8.94
+-7.80
 </td>
 <td style="text-align:right;">
--1.66
+-2.81
 </td>
 <td style="text-align:right;">
--4.65
+-5.22
 </td>
 <td style="text-align:right;">
-0.019
+0.002
 </td>
 </tr>
 </tbody>
 </table>
+<p>Notes</p>
+<ol style="list-style-type: decimal">
+<li>The direction of the estimated effect is opposite in males and females</li>
+</ol>
 </div>
 <div id="plot-the-model-5" class="section level3" number="18.4.5">
 <h3><span class="header-section-number">18.4.5</span> Plot the model</h3>
@@ -6270,55 +6286,56 @@ Figure 18.13: Dashed gray line is expected additive mean of Gpr174- F
 </div>
 <div id="understanding-the-alternative-models" class="section level3" number="18.4.7">
 <h3><span class="header-section-number">18.4.7</span> Understanding the alternative models</h3>
-<div class="sourceCode" id="cb592"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb592-1"><a href="lmm.html#cb592-1" aria-hidden="true" tabindex="-1"></a>exp1g_m1a <span class="ot">&lt;-</span> <span class="fu">lmer</span>(gc <span class="sc">~</span> sex <span class="sc">*</span> genotype <span class="sc">+</span></span>
-<span id="cb592-2"><a href="lmm.html#cb592-2" aria-hidden="true" tabindex="-1"></a>                   (sex <span class="sc">*</span> genotype <span class="sc">|</span> experiment_id),</span>
+<div class="sourceCode" id="cb592"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb592-1"><a href="lmm.html#cb592-1" aria-hidden="true" tabindex="-1"></a>exp1g_m1a <span class="ot">&lt;-</span> <span class="fu">lmer</span>(gc <span class="sc">~</span> genotype <span class="sc">*</span> sex <span class="sc">+</span></span>
+<span id="cb592-2"><a href="lmm.html#cb592-2" aria-hidden="true" tabindex="-1"></a>                   (genotype <span class="sc">*</span> sex <span class="sc">|</span> experiment_id),</span>
 <span id="cb592-3"><a href="lmm.html#cb592-3" aria-hidden="true" tabindex="-1"></a>                 <span class="at">data =</span> exp1g)</span>
 <span id="cb592-4"><a href="lmm.html#cb592-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb592-5"><a href="lmm.html#cb592-5" aria-hidden="true" tabindex="-1"></a>exp1g_m1b <span class="ot">&lt;-</span> <span class="fu">lmer</span>(gc <span class="sc">~</span> sex <span class="sc">*</span> genotype <span class="sc">+</span></span>
+<span id="cb592-5"><a href="lmm.html#cb592-5" aria-hidden="true" tabindex="-1"></a>exp1g_m1b <span class="ot">&lt;-</span> <span class="fu">lmer</span>(gc <span class="sc">~</span> genotype <span class="sc">*</span> sex <span class="sc">+</span></span>
 <span id="cb592-6"><a href="lmm.html#cb592-6" aria-hidden="true" tabindex="-1"></a>                   (treatment <span class="sc">|</span> experiment_id),</span>
 <span id="cb592-7"><a href="lmm.html#cb592-7" aria-hidden="true" tabindex="-1"></a>                 <span class="at">data =</span> exp1g)</span>
 <span id="cb592-8"><a href="lmm.html#cb592-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb592-9"><a href="lmm.html#cb592-9" aria-hidden="true" tabindex="-1"></a>exp1g_m1c <span class="ot">&lt;-</span> <span class="fu">lmer</span>(gc <span class="sc">~</span> sex <span class="sc">*</span> genotype <span class="sc">+</span></span>
+<span id="cb592-9"><a href="lmm.html#cb592-9" aria-hidden="true" tabindex="-1"></a>exp1g_m1c <span class="ot">&lt;-</span> <span class="fu">lmer</span>(gc <span class="sc">~</span> genotype <span class="sc">*</span> sex <span class="sc">+</span></span>
 <span id="cb592-10"><a href="lmm.html#cb592-10" aria-hidden="true" tabindex="-1"></a>                   (<span class="dv">1</span> <span class="sc">|</span> experiment_id) <span class="sc">+</span></span>
-<span id="cb592-11"><a href="lmm.html#cb592-11" aria-hidden="true" tabindex="-1"></a>                    (<span class="dv">1</span> <span class="sc">|</span> experiment_id<span class="sc">:</span>sex) <span class="sc">+</span></span>
-<span id="cb592-12"><a href="lmm.html#cb592-12" aria-hidden="true" tabindex="-1"></a>                    (<span class="dv">1</span> <span class="sc">|</span> experiment_id<span class="sc">:</span>genotype) <span class="sc">+</span></span>
-<span id="cb592-13"><a href="lmm.html#cb592-13" aria-hidden="true" tabindex="-1"></a>                    (<span class="dv">1</span> <span class="sc">|</span> experiment_id<span class="sc">:</span>sex<span class="sc">:</span>genotype),</span>
+<span id="cb592-11"><a href="lmm.html#cb592-11" aria-hidden="true" tabindex="-1"></a>                    (<span class="dv">1</span> <span class="sc">|</span> experiment_id<span class="sc">:</span>genotype) <span class="sc">+</span></span>
+<span id="cb592-12"><a href="lmm.html#cb592-12" aria-hidden="true" tabindex="-1"></a>                    (<span class="dv">1</span> <span class="sc">|</span> experiment_id<span class="sc">:</span>sex) <span class="sc">+</span></span>
+<span id="cb592-13"><a href="lmm.html#cb592-13" aria-hidden="true" tabindex="-1"></a>                    (<span class="dv">1</span> <span class="sc">|</span> experiment_id<span class="sc">:</span>genotype<span class="sc">:</span>sex),</span>
 <span id="cb592-14"><a href="lmm.html#cb592-14" aria-hidden="true" tabindex="-1"></a>                 <span class="at">data =</span> exp1g)</span>
 <span id="cb592-15"><a href="lmm.html#cb592-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb592-16"><a href="lmm.html#cb592-16" aria-hidden="true" tabindex="-1"></a>exp1g_m1d <span class="ot">&lt;-</span> <span class="fu">lmer</span>(gc <span class="sc">~</span> sex <span class="sc">*</span> genotype <span class="sc">+</span></span>
+<span id="cb592-16"><a href="lmm.html#cb592-16" aria-hidden="true" tabindex="-1"></a>exp1g_m1d <span class="ot">&lt;-</span> <span class="fu">lmer</span>(gc <span class="sc">~</span> genotype <span class="sc">*</span> sex <span class="sc">+</span></span>
 <span id="cb592-17"><a href="lmm.html#cb592-17" aria-hidden="true" tabindex="-1"></a>                   (<span class="dv">1</span> <span class="sc">|</span> experiment_id) <span class="sc">+</span></span>
 <span id="cb592-18"><a href="lmm.html#cb592-18" aria-hidden="true" tabindex="-1"></a>                    (<span class="dv">1</span> <span class="sc">|</span> experiment_id<span class="sc">:</span>sex) <span class="sc">+</span></span>
-<span id="cb592-19"><a href="lmm.html#cb592-19" aria-hidden="true" tabindex="-1"></a>                    (<span class="dv">1</span> <span class="sc">|</span> experiment_id<span class="sc">:</span>sex<span class="sc">:</span>genotype),</span>
+<span id="cb592-19"><a href="lmm.html#cb592-19" aria-hidden="true" tabindex="-1"></a>                    (<span class="dv">1</span> <span class="sc">|</span> experiment_id<span class="sc">:</span>genotype<span class="sc">:</span>sex),</span>
 <span id="cb592-20"><a href="lmm.html#cb592-20" aria-hidden="true" tabindex="-1"></a>                 <span class="at">data =</span> exp1g)</span></code></pre></div>
 <p>Notes</p>
 <ol style="list-style-type: decimal">
-<li>Model <code>exp1g_m1a</code> fits</li>
+<li>All four models model the same fixed effects. The models differ only in how they model the random effects.</li>
+<li>Model <code>exp1g_m1a</code> fits one random intercept, two random slopes, and one random interaction.</li>
 </ol>
 <ul>
 <li><span class="math inline">\(\gamma_{0j}\)</span> – a random intercept modeling batch effects of <span class="math inline">\(\texttt{experiment_id}\)</span> on the intercept</li>
-<li><span class="math inline">\(\gamma_{1j}\)</span> – a random slope modeling the effect of “F” (female) on the batch effect of $\texttt{experiment_id}. This is a <span class="math inline">\(\texttt{experiment_id} \times \texttt{sex}\)</span> interaction.</li>
-<li><span class="math inline">\(\gamma_{2j}\)</span> – a random slope modeling the effect of the non-reference level of “Gpr174-” on the batch effect of $\texttt{experiment_id}. This is a <span class="math inline">\(\texttt{experiment_id} \times \texttt{genotype}\)</span> interaction.</li>
-<li><span class="math inline">\(\gamma_{3j}\)</span> – a random slope modeling the effect of the interaction effect of “F” and “Gpr174-” on the batch effect of $\texttt{experiment_id}. This is a <span class="math inline">\(\texttt{experiment_id} \times \texttt{sex} \times \texttt{genotype}\)</span> interaction.</li>
-</ul>
-<ol start="2" style="list-style-type: decimal">
-<li>Model <code>exp1g_m1b</code> fits</li>
-</ol>
-<ul>
-<li><span class="math inline">\(\gamma_{0j}\)</span> – a random intercept modeling batch effects of <span class="math inline">\(\texttt{experiment_id}\)</span> on the intercept. This is modeling the same thing as <span class="math inline">\(\gamma_{0j}\)</span> in Model <code>exp1g_m1a</code>.</li>
-<li><span class="math inline">\(\gamma_{1j}\)</span> – a random slope modeling the effect of “Gpr174+ F” on the batch effect of <span class="math inline">\(\texttt{experiment_id}\)</span>. This is modeling the same thing as <span class="math inline">\(\gamma_{1j}\)</span> in Model <code>exp1g_m1a</code>.</li>
-<li><span class="math inline">\(\gamma_{2j}\)</span> – a random slope modeling the effect of “Gpr174- M” on the batch effect of <span class="math inline">\(\texttt{experiment_id}\)</span>. This is modeling the same thing as <span class="math inline">\(\gamma_{2j}\)</span> in Model <code>exp1g_m1a</code>.</li>
-<li><span class="math inline">\(\gamma_{3j}\)</span> – a random slope modeling the effect of “M Gpr174- F” on the batch effect of <span class="math inline">\(\texttt{experiment_id}\)</span>. This is modeling the added variance accounted for by the random interaction <span class="math inline">\(\gamma_{2j}\)</span> in Model <code>exp1g_m1a</code> but in a different way.</li>
+<li><span class="math inline">\(\gamma_{1j}\)</span> – a random slope modeling the effect of the non-reference level of “Gpr174-” on the batch effect of <span class="math inline">\(\texttt{experiment_id}\)</span>. This is a <span class="math inline">\(\texttt{experiment_id} \times \texttt{genotype}\)</span> interaction.</li>
+<li><span class="math inline">\(\gamma_{2j}\)</span> – a random slope modeling the effect of “F” (female) on the batch effect of <span class="math inline">\(\texttt{experiment_id}\)</span>. This is a <span class="math inline">\(\texttt{experiment_id} \times \texttt{sex}\)</span> interaction.</li>
+<li><span class="math inline">\(\gamma_{3j}\)</span> – a random slope modeling the effect of the interaction effect of “Gpr174-” and “F” on the batch effect of <span class="math inline">\(\texttt{experiment_id}\)</span>. This is a <span class="math inline">\(\texttt{experiment_id} \times \texttt{sex} \times \texttt{genotype}\)</span> interaction.</li>
 </ul>
 <ol start="3" style="list-style-type: decimal">
-<li>Model <code>exp1g_m1c</code> fits</li>
+<li>Model <code>exp1g_m1b</code> fits one random intercept and three random slopes</li>
 </ol>
 <ul>
 <li><span class="math inline">\(\gamma_{0j}\)</span> – a random intercept modeling batch effects of <span class="math inline">\(\texttt{experiment_id}\)</span> on the intercept. This is modeling the same thing as <span class="math inline">\(\gamma_{0j}\)</span> in Model <code>exp1g_m1a</code>.</li>
-<li><span class="math inline">\(\gamma_{0jk}\)</span> – a random intercept modeling the effects of the combination of <span class="math inline">\(\texttt{experiment_id}\)</span> and <span class="math inline">\(\texttt{sex}\)</span>. This is very similar to the variance modeled by <span class="math inline">\(\gamma_{1j}\)</span> in Model <code>exp1g_m1a</code> except the draws from <span class="math inline">\(\gamma_{0jk}\)</span> are independent (uncorrelated) of draws from the other random intercepts (review <a href="lmm.html#lmm-varcorr">The correlation among random intercepts and slopes</a> if this doesn’t make sense).</li>
-<li><span class="math inline">\(\gamma_{0jl}\)</span> – a random intercept modeling the effects of the combination of <span class="math inline">\(\texttt{experiment_id}\)</span> and <span class="math inline">\(\texttt{genotype}\)</span>. This is very similar to the variance modeled by <span class="math inline">\(\gamma_{2j}\)</span> in Model <code>exp1g_m1a</code> except the draws from <span class="math inline">\(\gamma_{0jl}\)</span> are independent (uncorrelated) of draws from the other random intercepts.</li>
-<li><span class="math inline">\(\gamma_{0jkl}\)</span> – a random intercept modeling the effects of the combination of <span class="math inline">\(\texttt{experiment_id}\)</span>, <span class="math inline">\(\texttt{sex}\)</span> and <span class="math inline">\(\texttt{genotype}\)</span>. This is very similar to the variance modeled by <span class="math inline">\(\gamma_{3j}\)</span> in Model <code>exp1g_m1a</code> except the draws from <span class="math inline">\(\gamma_{0jkl}\)</span> are independent (uncorrelated) of draws from the other random intercepts.</li>
+<li><span class="math inline">\(\gamma_{1j}\)</span> – a random slope modeling the effect of “Gpr174- M” on the batch effect of <span class="math inline">\(\texttt{experiment_id}\)</span>. This is modeling the same thing as <span class="math inline">\(\gamma_{1j}\)</span> in Model <code>exp1g_m1a</code>.</li>
+<li><span class="math inline">\(\gamma_{2j}\)</span> – a random slope modeling the effect of “Gpr174+ F” on the batch effect of <span class="math inline">\(\texttt{experiment_id}\)</span>. This is modeling the same thing as <span class="math inline">\(\gamma_{2j}\)</span> in Model <code>exp1g_m1a</code>.</li>
+<li><span class="math inline">\(\gamma_{3j}\)</span> – a random slope modeling the effect of “M Gpr174- F” on the batch effect of <span class="math inline">\(\texttt{experiment_id}\)</span>. This is modeling the added variance accounted for by the random interaction <span class="math inline">\(\gamma_{2j}\)</span> in Model <code>exp1g_m1a</code> but in a different way.</li>
 </ul>
 <ol start="4" style="list-style-type: decimal">
+<li>Model <code>exp1g_m1c</code> fits four random intercepts</li>
+</ol>
+<ul>
+<li><span class="math inline">\(\gamma_{0j}\)</span> – a random intercept modeling batch effects of <span class="math inline">\(\texttt{experiment_id}\)</span> on the intercept. This is modeling the same thing as <span class="math inline">\(\gamma_{0j}\)</span> in Model <code>exp1g_m1a</code>.</li>
+<li><span class="math inline">\(\gamma_{0jk}\)</span> – a random intercept modeling the effects of the combination of <span class="math inline">\(\texttt{experiment_id}\)</span> and <span class="math inline">\(\texttt{genotype}\)</span>. This is very similar to the variance modeled by <span class="math inline">\(\gamma_{1j}\)</span> in Model <code>exp1g_m1a</code> except the draws from <span class="math inline">\(\gamma_{0jk}\)</span> are independent (uncorrelated) of draws from the other random intercepts.</li>
+<li><span class="math inline">\(\gamma_{0jl}\)</span> – a random intercept modeling the effects of the combination of <span class="math inline">\(\texttt{experiment_id}\)</span> and <span class="math inline">\(\texttt{sex}\)</span>. This is very similar to the variance modeled by <span class="math inline">\(\gamma_{2j}\)</span> in Model <code>exp1g_m1a</code> except the draws from <span class="math inline">\(\gamma_{0jl}\)</span> are independent (uncorrelated) of draws from the other random intercepts (review <a href="lmm.html#lmm-varcorr">The correlation among random intercepts and slopes</a> if this doesn’t make sense).</li>
+<li><span class="math inline">\(\gamma_{0jkl}\)</span> – a random intercept modeling the effects of the combination of <span class="math inline">\(\texttt{experiment_id}\)</span>, <span class="math inline">\(\texttt{genotype}\)</span> and <span class="math inline">\(\texttt{sex}\)</span>. This is very similar to the variance modeled by <span class="math inline">\(\gamma_{3j}\)</span> in Model <code>exp1g_m1a</code> except the draws from <span class="math inline">\(\gamma_{0jkl}\)</span> are independent (uncorrelated) of draws from the other random intercepts.</li>
+</ul>
+<ol start="5" style="list-style-type: decimal">
 <li>Model <code>exp1g_m1d</code> fits the same random intercepts as Model <code>exp1g_m1c</code> but excludes
 <span class="math inline">\(\gamma_{0jl}\)</span> (the random intercept for the experiment_id by genotyp combination. This was excluded because of the low variance of this component in the fit model.</li>
 </ol>
@@ -6355,24 +6372,9 @@ Figure 18.13: Dashed gray line is expected additive mean of Gpr174- F
 (Intercept)
 </td>
 <td style="text-align:right;">
-1.7711
+1.7708
 </td>
 <td style="text-align:right;">
-</td>
-<td style="text-align:right;">
-</td>
-<td style="text-align:right;">
-</td>
-</tr>
-<tr>
-<td style="text-align:left;padding-left: 2em;" indentlevel="1">
-sexF
-</td>
-<td style="text-align:right;">
-0.4584
-</td>
-<td style="text-align:right;">
-2.9023
 </td>
 <td style="text-align:right;">
 </td>
@@ -6384,32 +6386,47 @@ sexF
 genotypeGpr174-
 </td>
 <td style="text-align:right;">
--0.0253
+-0.0232
 </td>
 <td style="text-align:right;">
-0.8761
+0.9619
 </td>
 <td style="text-align:right;">
-0.9641
 </td>
 <td style="text-align:right;">
 </td>
 </tr>
 <tr>
 <td style="text-align:left;padding-left: 2em;" indentlevel="1">
-sexF:genotypeGpr174-
+sexF
 </td>
 <td style="text-align:right;">
--0.3017
+0.4589
 </td>
 <td style="text-align:right;">
--0.6934
+0.8776
 </td>
 <td style="text-align:right;">
--0.6468
+2.9015
 </td>
 <td style="text-align:right;">
-1.3565
+</td>
+</tr>
+<tr>
+<td style="text-align:left;padding-left: 2em;" indentlevel="1">
+genotypeGpr174-:sexF
+</td>
+<td style="text-align:right;">
+-0.3138
+</td>
+<td style="text-align:right;">
+-0.6246
+</td>
+<td style="text-align:right;">
+-0.7056
+</td>
+<td style="text-align:right;">
+1.3317
 </td>
 </tr>
 <tr grouplength="4">
@@ -6422,24 +6439,9 @@ sexF:genotypeGpr174-
 (Intercept)
 </td>
 <td style="text-align:right;">
-1.7706
+1.7710
 </td>
 <td style="text-align:right;">
-</td>
-<td style="text-align:right;">
-</td>
-<td style="text-align:right;">
-</td>
-</tr>
-<tr>
-<td style="text-align:left;padding-left: 2em;" indentlevel="1">
-treatmentGpr174+ F
-</td>
-<td style="text-align:right;">
-0.4589
-</td>
-<td style="text-align:right;">
-2.9031
 </td>
 <td style="text-align:right;">
 </td>
@@ -6451,13 +6453,28 @@ treatmentGpr174+ F
 treatmentGpr174- M
 </td>
 <td style="text-align:right;">
--0.0241
+-0.0251
 </td>
 <td style="text-align:right;">
-0.8764
+0.9640
 </td>
 <td style="text-align:right;">
-0.9641
+</td>
+<td style="text-align:right;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;padding-left: 2em;" indentlevel="1">
+treatmentGpr174+ F
+</td>
+<td style="text-align:right;">
+0.4585
+</td>
+<td style="text-align:right;">
+0.8761
+</td>
+<td style="text-align:right;">
+2.9022
 </td>
 <td style="text-align:right;">
 </td>
@@ -6467,23 +6484,26 @@ treatmentGpr174- M
 treatmentGpr174- F
 </td>
 <td style="text-align:right;">
-0.3006
+0.2999
+</td>
+<td style="text-align:right;">
+0.8791
 </td>
 <td style="text-align:right;">
 0.9384
 </td>
 <td style="text-align:right;">
-0.8794
-</td>
-<td style="text-align:right;">
-2.9912
+2.9905
 </td>
 </tr>
 </tbody>
 </table>
 </div>
-<div id="fixed-effect-models-and-pseudoreplication" class="section level3" number="18.4.9">
-<h3><span class="header-section-number">18.4.9</span> Fixed effect models and pseudoreplication</h3>
+<div id="a" class="section level3" number="18.4.9">
+<h3><span class="header-section-number">18.4.9</span> A</h3>
+</div>
+<div id="fixed-effect-models-and-pseudoreplication" class="section level3" number="18.4.10">
+<h3><span class="header-section-number">18.4.10</span> Fixed effect models and pseudoreplication</h3>
 <div class="sourceCode" id="cb593"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb593-1"><a href="lmm.html#cb593-1" aria-hidden="true" tabindex="-1"></a><span class="co"># complete pooling model</span></span>
 <span id="cb593-2"><a href="lmm.html#cb593-2" aria-hidden="true" tabindex="-1"></a>exp1g_m2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(gc <span class="sc">~</span> sex <span class="sc">*</span> genotype,</span>
 <span id="cb593-3"><a href="lmm.html#cb593-3" aria-hidden="true" tabindex="-1"></a>                <span class="at">data =</span> exp1g)</span>
@@ -6533,25 +6553,25 @@ p.value
 (Scr EPS) - (Scr Basal)
 </td>
 <td style="text-align:right;">
-2.54
+2.57
 </td>
 <td style="text-align:right;">
-0.804
+0.714
 </td>
 <td style="text-align:right;">
-2.978
+5.784
 </td>
 <td style="text-align:right;">
--0.03
+0.81
 </td>
 <td style="text-align:right;">
-5.11
+4.33
 </td>
 <td style="text-align:right;">
-3.16
+3.60
 </td>
 <td style="text-align:right;">
-0.051
+0.012
 </td>
 </tr>
 <tr>
@@ -6559,25 +6579,25 @@ p.value
 (siNR4A3 EPS) - (siNR4A3 Basal)
 </td>
 <td style="text-align:right;">
--2.76
+-2.74
 </td>
 <td style="text-align:right;">
-0.833
+0.722
 </td>
 <td style="text-align:right;">
-2.985
+6.100
 </td>
 <td style="text-align:right;">
--5.42
+-4.50
 </td>
 <td style="text-align:right;">
--0.10
+-0.98
 </td>
 <td style="text-align:right;">
--3.32
+-3.79
 </td>
 <td style="text-align:right;">
-0.046
+0.009
 </td>
 </tr>
 <tr>
@@ -6588,22 +6608,22 @@ Interaction
 -5.30
 </td>
 <td style="text-align:right;">
-1.140
+1.016
 </td>
 <td style="text-align:right;">
-2.982
+5.942
 </td>
 <td style="text-align:right;">
--8.94
+-7.80
 </td>
 <td style="text-align:right;">
--1.66
+-2.81
 </td>
 <td style="text-align:right;">
--4.65
+-5.22
 </td>
 <td style="text-align:right;">
-0.019
+0.002
 </td>
 </tr>
 <tr grouplength="3">
@@ -6775,40 +6795,301 @@ Interaction
 </tbody>
 </table>
 </div>
-<div id="mixed-effect-anova" class="section level3" number="18.4.10">
-<h3><span class="header-section-number">18.4.10</span> Mixed effect ANOVA</h3>
+<div id="mixed-effect-anova" class="section level3" number="18.4.11">
+<h3><span class="header-section-number">18.4.11</span> Mixed effect ANOVA</h3>
 <div class="sourceCode" id="cb594"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb594-1"><a href="lmm.html#cb594-1" aria-hidden="true" tabindex="-1"></a>exp1g_m1_aov <span class="ot">&lt;-</span> <span class="fu">aov_4</span>(gc <span class="sc">~</span> sex <span class="sc">*</span> genotype <span class="sc">+</span></span>
 <span id="cb594-2"><a href="lmm.html#cb594-2" aria-hidden="true" tabindex="-1"></a>                  (sex <span class="sc">*</span> genotype <span class="sc">|</span> experiment_id),</span>
 <span id="cb594-3"><a href="lmm.html#cb594-3" aria-hidden="true" tabindex="-1"></a>                <span class="at">data =</span> exp1g)</span></code></pre></div>
 <p>Notes</p>
 <ol style="list-style-type: decimal">
-<li>In biology, this is often called a <strong>three-way mixed effect ANOVA</strong> with two fixed factors and one random factor.</li>
-<li>Let’s back up.</li>
+<li>The formula as the same format as that in Example 3 for repeated measures ANOVA on RCB designs with no subsampling. In biology, this is often called a <strong>mixed effect ANOVA</strong> with two fixed factors and one random factor.</li>
+<li>The data are aggregated prior to fitting the model – this means the subsamples are averaged within each batch by treatment combination.</li>
+<li>The mixed-effect ANOVA is equivalent to the linear mixed model <code>exp1g_m1c</code> if the all batch by treatment combinations have the same number of subsamples. The design is not balanced in this example.</li>
 </ol>
-<div class="sourceCode" id="cb595"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb595-1"><a href="lmm.html#cb595-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(exp1g_m1_aov, <span class="at">correction =</span> <span class="st">&quot;none&quot;</span>)</span></code></pre></div>
-<pre><code>## Anova Table (Type 3 tests)
-## 
-## Response: gc
-##              num Df den Df    MSE       F      ges Pr(&gt;F)  
-## sex               1      3 6.5222  5.3675 0.222543 0.1034  
-## genotype          1      3 0.8403  0.0628 0.000431 0.8183  
-## sex:genotype      1      3 1.1811 23.2434 0.183318 0.0170 *
-## ---
-## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
-<div class="sourceCode" id="cb597"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb597-1"><a href="lmm.html#cb597-1" aria-hidden="true" tabindex="-1"></a>exp1g_m1e <span class="ot">&lt;-</span> <span class="fu">lmer</span>(gc <span class="sc">~</span> sex <span class="sc">*</span> genotype <span class="sc">+</span></span>
-<span id="cb597-2"><a href="lmm.html#cb597-2" aria-hidden="true" tabindex="-1"></a>                   (<span class="dv">1</span> <span class="sc">|</span> experiment_id) <span class="sc">+</span></span>
-<span id="cb597-3"><a href="lmm.html#cb597-3" aria-hidden="true" tabindex="-1"></a>                    (<span class="dv">1</span> <span class="sc">|</span> experiment_id<span class="sc">:</span>sex) <span class="sc">+</span></span>
-<span id="cb597-4"><a href="lmm.html#cb597-4" aria-hidden="true" tabindex="-1"></a>                    (<span class="dv">1</span> <span class="sc">|</span> experiment_id<span class="sc">:</span>genotype),</span>
-<span id="cb597-5"><a href="lmm.html#cb597-5" aria-hidden="true" tabindex="-1"></a>                 <span class="at">data =</span> exp1g)</span>
-<span id="cb597-6"><a href="lmm.html#cb597-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb597-7"><a href="lmm.html#cb597-7" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(exp1g_m1e)</span></code></pre></div>
-<pre><code>## Type III Analysis of Variance Table with Satterthwaite&#39;s method
-##               Sum Sq Mean Sq NumDF  DenDF F value    Pr(&gt;F)    
-## sex           20.094  20.094     1  3.040  5.0477    0.1091    
-## genotype       0.112   0.112     1  3.292  0.0280    0.8768    
-## sex:genotype 128.465 128.465     1 60.539 32.2713 4.069e-07 ***
-## ---
-## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<table class="table" style="margin-left: auto; margin-right: auto;">
+<caption>
+(#tab:lmm-exp1g_m1_aov-pairs)Planned contrasts from mixed ANOVA compared to lmm equivalent of mixed ANOVA and lowest AIC lmm.
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;">
+contrast
+</th>
+<th style="text-align:right;">
+estimate
+</th>
+<th style="text-align:right;">
+SE
+</th>
+<th style="text-align:right;">
+df
+</th>
+<th style="text-align:right;">
+lower.CL
+</th>
+<th style="text-align:right;">
+upper.CL
+</th>
+<th style="text-align:right;">
+t.ratio
+</th>
+<th style="text-align:right;">
+p.value
+</th>
+</tr>
+</thead>
+<tbody>
+<tr grouplength="3">
+<td colspan="8" style="border-bottom: 1px solid;">
+<strong>exp1g_m1_aov (mixed ANOVA)</strong>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;padding-left: 2em;" indentlevel="1">
+KO/M - WT/M
+</td>
+<td style="text-align:right;">
+2.50
+</td>
+<td style="text-align:right;">
+0.711
+</td>
+<td style="text-align:right;">
+5.834
+</td>
+<td style="text-align:right;">
+0.75
+</td>
+<td style="text-align:right;">
+4.26
+</td>
+<td style="text-align:right;">
+3.52
+</td>
+<td style="text-align:right;">
+0.013
+</td>
+</tr>
+<tr>
+<td style="text-align:left;padding-left: 2em;" indentlevel="1">
+KO/F - WT/F
+</td>
+<td style="text-align:right;">
+-2.73
+</td>
+<td style="text-align:right;">
+0.711
+</td>
+<td style="text-align:right;">
+5.834
+</td>
+<td style="text-align:right;">
+-4.49
+</td>
+<td style="text-align:right;">
+-0.98
+</td>
+<td style="text-align:right;">
+-3.85
+</td>
+<td style="text-align:right;">
+0.009
+</td>
+</tr>
+<tr>
+<td style="text-align:left;padding-left: 2em;" indentlevel="1">
+Interaction
+</td>
+<td style="text-align:right;">
+-5.24
+</td>
+<td style="text-align:right;">
+1.087
+</td>
+<td style="text-align:right;">
+3.000
+</td>
+<td style="text-align:right;">
+-8.70
+</td>
+<td style="text-align:right;">
+-1.78
+</td>
+<td style="text-align:right;">
+-4.82
+</td>
+<td style="text-align:right;">
+0.017
+</td>
+</tr>
+<tr grouplength="3">
+<td colspan="8" style="border-bottom: 1px solid;">
+<strong>exp1g_m1_c (lmm equivalent of mixed ANOVA)</strong>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;padding-left: 2em;" indentlevel="1">
+KO/M - WT/M
+</td>
+<td style="text-align:right;">
+2.57
+</td>
+<td style="text-align:right;">
+0.715
+</td>
+<td style="text-align:right;">
+5.784
+</td>
+<td style="text-align:right;">
+0.80
+</td>
+<td style="text-align:right;">
+4.33
+</td>
+<td style="text-align:right;">
+3.59
+</td>
+<td style="text-align:right;">
+0.012
+</td>
+</tr>
+<tr>
+<td style="text-align:left;padding-left: 2em;" indentlevel="1">
+KO/F - WT/F
+</td>
+<td style="text-align:right;">
+-2.74
+</td>
+<td style="text-align:right;">
+0.724
+</td>
+<td style="text-align:right;">
+6.100
+</td>
+<td style="text-align:right;">
+-4.50
+</td>
+<td style="text-align:right;">
+-0.97
+</td>
+<td style="text-align:right;">
+-3.78
+</td>
+<td style="text-align:right;">
+0.009
+</td>
+</tr>
+<tr>
+<td style="text-align:left;padding-left: 2em;" indentlevel="1">
+Interaction
+</td>
+<td style="text-align:right;">
+-5.30
+</td>
+<td style="text-align:right;">
+1.017
+</td>
+<td style="text-align:right;">
+2.972
+</td>
+<td style="text-align:right;">
+-8.56
+</td>
+<td style="text-align:right;">
+-2.05
+</td>
+<td style="text-align:right;">
+-5.21
+</td>
+<td style="text-align:right;">
+0.014
+</td>
+</tr>
+<tr grouplength="3">
+<td colspan="8" style="border-bottom: 1px solid;">
+<strong>exp1g_md (lmm with min AIC)</strong>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;padding-left: 2em;" indentlevel="1">
+KO/M - WT/M
+</td>
+<td style="text-align:right;">
+2.57
+</td>
+<td style="text-align:right;">
+0.714
+</td>
+<td style="text-align:right;">
+5.784
+</td>
+<td style="text-align:right;">
+0.81
+</td>
+<td style="text-align:right;">
+4.33
+</td>
+<td style="text-align:right;">
+3.60
+</td>
+<td style="text-align:right;">
+0.012
+</td>
+</tr>
+<tr>
+<td style="text-align:left;padding-left: 2em;" indentlevel="1">
+KO/F - WT/F
+</td>
+<td style="text-align:right;">
+-2.74
+</td>
+<td style="text-align:right;">
+0.722
+</td>
+<td style="text-align:right;">
+6.100
+</td>
+<td style="text-align:right;">
+-4.50
+</td>
+<td style="text-align:right;">
+-0.98
+</td>
+<td style="text-align:right;">
+-3.79
+</td>
+<td style="text-align:right;">
+0.009
+</td>
+</tr>
+<tr>
+<td style="text-align:left;padding-left: 2em;" indentlevel="1">
+Interaction
+</td>
+<td style="text-align:right;">
+-5.30
+</td>
+<td style="text-align:right;">
+1.016
+</td>
+<td style="text-align:right;">
+5.942
+</td>
+<td style="text-align:right;">
+-7.80
+</td>
+<td style="text-align:right;">
+-2.81
+</td>
+<td style="text-align:right;">
+-5.22
+</td>
+<td style="text-align:right;">
+0.002
+</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 <div id="working-in-r-5" class="section level2" number="18.5">
@@ -6818,25 +7099,25 @@ Interaction
 </div>
 <div id="repeated-measures-anova-randomized-complete-block-with-no-subsampling" class="section level3" number="18.5.2">
 <h3><span class="header-section-number">18.5.2</span> Repeated measures ANOVA (randomized complete block with no subsampling)</h3>
-<div class="sourceCode" id="cb599"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb599-1"><a href="lmm.html#cb599-1" aria-hidden="true" tabindex="-1"></a><span class="co"># this is the rm-ANOVA</span></span>
-<span id="cb599-2"><a href="lmm.html#cb599-2" aria-hidden="true" tabindex="-1"></a>m1 <span class="ot">&lt;-</span> <span class="fu">aov_4</span>(glucose_uptake <span class="sc">~</span> treatment <span class="sc">*</span> activity <span class="sc">+</span></span>
-<span id="cb599-3"><a href="lmm.html#cb599-3" aria-hidden="true" tabindex="-1"></a>              (treatment <span class="sc">*</span> activity <span class="sc">|</span> donor),</span>
-<span id="cb599-4"><a href="lmm.html#cb599-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">data =</span> exp5c)</span>
-<span id="cb599-5"><a href="lmm.html#cb599-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb599-6"><a href="lmm.html#cb599-6" aria-hidden="true" tabindex="-1"></a><span class="co"># lmm equivalent</span></span>
-<span id="cb599-7"><a href="lmm.html#cb599-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb599-8"><a href="lmm.html#cb599-8" aria-hidden="true" tabindex="-1"></a>m2 <span class="ot">&lt;-</span> <span class="fu">lmer</span>(glucose_uptake <span class="sc">~</span> treatment <span class="sc">*</span> activity <span class="sc">+</span></span>
-<span id="cb599-9"><a href="lmm.html#cb599-9" aria-hidden="true" tabindex="-1"></a>         (<span class="dv">1</span> <span class="sc">|</span> donor) <span class="sc">+</span></span>
-<span id="cb599-10"><a href="lmm.html#cb599-10" aria-hidden="true" tabindex="-1"></a>         (<span class="dv">1</span> <span class="sc">|</span> donor<span class="sc">:</span>treatment) <span class="sc">+</span></span>
-<span id="cb599-11"><a href="lmm.html#cb599-11" aria-hidden="true" tabindex="-1"></a>         (<span class="dv">1</span> <span class="sc">|</span> donor<span class="sc">:</span>activity),</span>
-<span id="cb599-12"><a href="lmm.html#cb599-12" aria-hidden="true" tabindex="-1"></a>       <span class="at">data =</span> exp5c)</span>
-<span id="cb599-13"><a href="lmm.html#cb599-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb599-14"><a href="lmm.html#cb599-14" aria-hidden="true" tabindex="-1"></a><span class="co"># random intercept and slope model that is *not* equivalent</span></span>
-<span id="cb599-15"><a href="lmm.html#cb599-15" aria-hidden="true" tabindex="-1"></a><span class="co"># this isn&#39;t solvable because there is no subsampling</span></span>
-<span id="cb599-16"><a href="lmm.html#cb599-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb599-17"><a href="lmm.html#cb599-17" aria-hidden="true" tabindex="-1"></a>m3 <span class="ot">&lt;-</span> <span class="fu">lmer</span>(glucose_uptake <span class="sc">~</span> treatment <span class="sc">*</span> activity <span class="sc">+</span></span>
-<span id="cb599-18"><a href="lmm.html#cb599-18" aria-hidden="true" tabindex="-1"></a>              (treatment <span class="sc">*</span> activity <span class="sc">|</span> donor),</span>
-<span id="cb599-19"><a href="lmm.html#cb599-19" aria-hidden="true" tabindex="-1"></a>            <span class="at">data =</span> exp5c)</span></code></pre></div>
+<div class="sourceCode" id="cb595"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb595-1"><a href="lmm.html#cb595-1" aria-hidden="true" tabindex="-1"></a><span class="co"># this is the rm-ANOVA</span></span>
+<span id="cb595-2"><a href="lmm.html#cb595-2" aria-hidden="true" tabindex="-1"></a>m1 <span class="ot">&lt;-</span> <span class="fu">aov_4</span>(glucose_uptake <span class="sc">~</span> treatment <span class="sc">*</span> activity <span class="sc">+</span></span>
+<span id="cb595-3"><a href="lmm.html#cb595-3" aria-hidden="true" tabindex="-1"></a>              (treatment <span class="sc">*</span> activity <span class="sc">|</span> donor),</span>
+<span id="cb595-4"><a href="lmm.html#cb595-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">data =</span> exp5c)</span>
+<span id="cb595-5"><a href="lmm.html#cb595-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb595-6"><a href="lmm.html#cb595-6" aria-hidden="true" tabindex="-1"></a><span class="co"># lmm equivalent</span></span>
+<span id="cb595-7"><a href="lmm.html#cb595-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb595-8"><a href="lmm.html#cb595-8" aria-hidden="true" tabindex="-1"></a>m2 <span class="ot">&lt;-</span> <span class="fu">lmer</span>(glucose_uptake <span class="sc">~</span> treatment <span class="sc">*</span> activity <span class="sc">+</span></span>
+<span id="cb595-9"><a href="lmm.html#cb595-9" aria-hidden="true" tabindex="-1"></a>         (<span class="dv">1</span> <span class="sc">|</span> donor) <span class="sc">+</span></span>
+<span id="cb595-10"><a href="lmm.html#cb595-10" aria-hidden="true" tabindex="-1"></a>         (<span class="dv">1</span> <span class="sc">|</span> donor<span class="sc">:</span>treatment) <span class="sc">+</span></span>
+<span id="cb595-11"><a href="lmm.html#cb595-11" aria-hidden="true" tabindex="-1"></a>         (<span class="dv">1</span> <span class="sc">|</span> donor<span class="sc">:</span>activity),</span>
+<span id="cb595-12"><a href="lmm.html#cb595-12" aria-hidden="true" tabindex="-1"></a>       <span class="at">data =</span> exp5c)</span>
+<span id="cb595-13"><a href="lmm.html#cb595-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb595-14"><a href="lmm.html#cb595-14" aria-hidden="true" tabindex="-1"></a><span class="co"># random intercept and slope model that is *not* equivalent</span></span>
+<span id="cb595-15"><a href="lmm.html#cb595-15" aria-hidden="true" tabindex="-1"></a><span class="co"># this isn&#39;t solvable because there is no subsampling</span></span>
+<span id="cb595-16"><a href="lmm.html#cb595-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb595-17"><a href="lmm.html#cb595-17" aria-hidden="true" tabindex="-1"></a>m3 <span class="ot">&lt;-</span> <span class="fu">lmer</span>(glucose_uptake <span class="sc">~</span> treatment <span class="sc">*</span> activity <span class="sc">+</span></span>
+<span id="cb595-18"><a href="lmm.html#cb595-18" aria-hidden="true" tabindex="-1"></a>              (treatment <span class="sc">*</span> activity <span class="sc">|</span> donor),</span>
+<span id="cb595-19"><a href="lmm.html#cb595-19" aria-hidden="true" tabindex="-1"></a>            <span class="at">data =</span> exp5c)</span></code></pre></div>
 <p>Notes</p>
 <ol style="list-style-type: decimal">
 <li><code>afex</code> computes the repeated measures anova model using both <code>aov</code> (classical univariate repeated measures ANOVA) and using <code>lm</code> with multiple response variables (the multivariate repeated measures ANOVA). As of this writing, the output from <code>aov</code> is the default.</li>
@@ -6846,36 +7127,36 @@ Interaction
 <div id="univariate-vs.-multivariate-repeated-measures-anova" class="section level4" number="18.5.2.1">
 <h4><span class="header-section-number">18.5.2.1</span> univariate vs. multivariate repeated measures ANOVA</h4>
 <p>Use the multivariate model unless you want to replicate the result of someone who used a univariate model.</p>
-<div class="sourceCode" id="cb600"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb600-1"><a href="lmm.html#cb600-1" aria-hidden="true" tabindex="-1"></a><span class="co"># aov_4 computes both uni and multi but default output is uni</span></span>
-<span id="cb600-2"><a href="lmm.html#cb600-2" aria-hidden="true" tabindex="-1"></a>exp5c_aov1 <span class="ot">&lt;-</span> <span class="fu">aov_4</span>(glucose_uptake <span class="sc">~</span> treatment <span class="sc">*</span> activity <span class="sc">+</span></span>
-<span id="cb600-3"><a href="lmm.html#cb600-3" aria-hidden="true" tabindex="-1"></a>                    (treatment <span class="sc">*</span> activity <span class="sc">|</span> donor),</span>
-<span id="cb600-4"><a href="lmm.html#cb600-4" aria-hidden="true" tabindex="-1"></a>                  <span class="at">data =</span> exp5c)</span>
-<span id="cb600-5"><a href="lmm.html#cb600-5" aria-hidden="true" tabindex="-1"></a><span class="co"># exclude uni, so output is multi</span></span>
-<span id="cb600-6"><a href="lmm.html#cb600-6" aria-hidden="true" tabindex="-1"></a>exp5c_aov2 <span class="ot">&lt;-</span> <span class="fu">aov_4</span>(glucose_uptake <span class="sc">~</span> treatment <span class="sc">*</span> activity <span class="sc">+</span></span>
-<span id="cb600-7"><a href="lmm.html#cb600-7" aria-hidden="true" tabindex="-1"></a>                    (treatment <span class="sc">*</span> activity <span class="sc">|</span> donor),</span>
-<span id="cb600-8"><a href="lmm.html#cb600-8" aria-hidden="true" tabindex="-1"></a>                  <span class="at">data =</span> exp5c,</span>
-<span id="cb600-9"><a href="lmm.html#cb600-9" aria-hidden="true" tabindex="-1"></a>                  <span class="at">include_aov =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb596"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb596-1"><a href="lmm.html#cb596-1" aria-hidden="true" tabindex="-1"></a><span class="co"># aov_4 computes both uni and multi but default output is uni</span></span>
+<span id="cb596-2"><a href="lmm.html#cb596-2" aria-hidden="true" tabindex="-1"></a>exp5c_aov1 <span class="ot">&lt;-</span> <span class="fu">aov_4</span>(glucose_uptake <span class="sc">~</span> treatment <span class="sc">*</span> activity <span class="sc">+</span></span>
+<span id="cb596-3"><a href="lmm.html#cb596-3" aria-hidden="true" tabindex="-1"></a>                    (treatment <span class="sc">*</span> activity <span class="sc">|</span> donor),</span>
+<span id="cb596-4"><a href="lmm.html#cb596-4" aria-hidden="true" tabindex="-1"></a>                  <span class="at">data =</span> exp5c)</span>
+<span id="cb596-5"><a href="lmm.html#cb596-5" aria-hidden="true" tabindex="-1"></a><span class="co"># exclude uni, so output is multi</span></span>
+<span id="cb596-6"><a href="lmm.html#cb596-6" aria-hidden="true" tabindex="-1"></a>exp5c_aov2 <span class="ot">&lt;-</span> <span class="fu">aov_4</span>(glucose_uptake <span class="sc">~</span> treatment <span class="sc">*</span> activity <span class="sc">+</span></span>
+<span id="cb596-7"><a href="lmm.html#cb596-7" aria-hidden="true" tabindex="-1"></a>                    (treatment <span class="sc">*</span> activity <span class="sc">|</span> donor),</span>
+<span id="cb596-8"><a href="lmm.html#cb596-8" aria-hidden="true" tabindex="-1"></a>                  <span class="at">data =</span> exp5c,</span>
+<span id="cb596-9"><a href="lmm.html#cb596-9" aria-hidden="true" tabindex="-1"></a>                  <span class="at">include_aov =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
 <p>Notes</p>
 <ol style="list-style-type: decimal">
 <li>The <code>include_aov = FALSE</code> argument forces output from <code>aov_4</code> to use the multivariate model.</li>
 </ol>
 <p><strong>contrasts from univariate model</strong></p>
-<div class="sourceCode" id="cb601"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb601-1"><a href="lmm.html#cb601-1" aria-hidden="true" tabindex="-1"></a><span class="co"># these 2 are the same</span></span>
-<span id="cb601-2"><a href="lmm.html#cb601-2" aria-hidden="true" tabindex="-1"></a><span class="fu">emmeans</span>(exp5c_aov1, <span class="at">specs =</span> <span class="fu">c</span>(<span class="st">&quot;treatment&quot;</span>, <span class="st">&quot;activity&quot;</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb601-3"><a href="lmm.html#cb601-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">contrast</span>(<span class="at">method =</span> <span class="st">&quot;revpairwise&quot;</span>,</span>
-<span id="cb601-4"><a href="lmm.html#cb601-4" aria-hidden="true" tabindex="-1"></a>           <span class="at">simple =</span> <span class="st">&quot;each&quot;</span>,</span>
-<span id="cb601-5"><a href="lmm.html#cb601-5" aria-hidden="true" tabindex="-1"></a>           <span class="at">combine =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb601-6"><a href="lmm.html#cb601-6" aria-hidden="true" tabindex="-1"></a>           <span class="at">adjust =</span> <span class="st">&quot;none&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb597"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb597-1"><a href="lmm.html#cb597-1" aria-hidden="true" tabindex="-1"></a><span class="co"># these 2 are the same</span></span>
+<span id="cb597-2"><a href="lmm.html#cb597-2" aria-hidden="true" tabindex="-1"></a><span class="fu">emmeans</span>(exp5c_aov1, <span class="at">specs =</span> <span class="fu">c</span>(<span class="st">&quot;treatment&quot;</span>, <span class="st">&quot;activity&quot;</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb597-3"><a href="lmm.html#cb597-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">contrast</span>(<span class="at">method =</span> <span class="st">&quot;revpairwise&quot;</span>,</span>
+<span id="cb597-4"><a href="lmm.html#cb597-4" aria-hidden="true" tabindex="-1"></a>           <span class="at">simple =</span> <span class="st">&quot;each&quot;</span>,</span>
+<span id="cb597-5"><a href="lmm.html#cb597-5" aria-hidden="true" tabindex="-1"></a>           <span class="at">combine =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb597-6"><a href="lmm.html#cb597-6" aria-hidden="true" tabindex="-1"></a>           <span class="at">adjust =</span> <span class="st">&quot;none&quot;</span>)</span></code></pre></div>
 <pre><code>##  activity treatment contrast      estimate     SE   df t.ratio p.value
 ##  Basal    .         siNR4A3 - Scr   0.0813 0.0759 8.60  1.071  0.3132 
 ##  EPS      .         siNR4A3 - Scr  -0.1858 0.0759 8.60 -2.448  0.0380 
 ##  .        Scr       EPS - Basal     0.1510 0.0524 9.39  2.884  0.0173 
 ##  .        siNR4A3   EPS - Basal    -0.1161 0.0524 9.39 -2.218  0.0525</code></pre>
-<div class="sourceCode" id="cb603"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb603-1"><a href="lmm.html#cb603-1" aria-hidden="true" tabindex="-1"></a><span class="fu">emmeans</span>(exp5c_aov1<span class="sc">$</span>aov, <span class="at">specs =</span> <span class="fu">c</span>(<span class="st">&quot;treatment&quot;</span>, <span class="st">&quot;activity&quot;</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb603-2"><a href="lmm.html#cb603-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">contrast</span>(<span class="at">method =</span> <span class="st">&quot;revpairwise&quot;</span>,</span>
-<span id="cb603-3"><a href="lmm.html#cb603-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">simple =</span> <span class="st">&quot;each&quot;</span>,</span>
-<span id="cb603-4"><a href="lmm.html#cb603-4" aria-hidden="true" tabindex="-1"></a>           <span class="at">combine =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb603-5"><a href="lmm.html#cb603-5" aria-hidden="true" tabindex="-1"></a>           <span class="at">adjust =</span> <span class="st">&quot;none&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb599"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb599-1"><a href="lmm.html#cb599-1" aria-hidden="true" tabindex="-1"></a><span class="fu">emmeans</span>(exp5c_aov1<span class="sc">$</span>aov, <span class="at">specs =</span> <span class="fu">c</span>(<span class="st">&quot;treatment&quot;</span>, <span class="st">&quot;activity&quot;</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb599-2"><a href="lmm.html#cb599-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">contrast</span>(<span class="at">method =</span> <span class="st">&quot;revpairwise&quot;</span>,</span>
+<span id="cb599-3"><a href="lmm.html#cb599-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">simple =</span> <span class="st">&quot;each&quot;</span>,</span>
+<span id="cb599-4"><a href="lmm.html#cb599-4" aria-hidden="true" tabindex="-1"></a>           <span class="at">combine =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb599-5"><a href="lmm.html#cb599-5" aria-hidden="true" tabindex="-1"></a>           <span class="at">adjust =</span> <span class="st">&quot;none&quot;</span>)</span></code></pre></div>
 <pre><code>##  activity treatment contrast      estimate     SE   df t.ratio p.value
 ##  Basal    .         siNR4A3 - Scr   0.0813 0.0759 8.60  1.071  0.3132 
 ##  EPS      .         siNR4A3 - Scr  -0.1858 0.0759 8.60 -2.448  0.0380 
@@ -6886,25 +7167,25 @@ Interaction
 <li>Passing <code>exp5c_aov1</code> to <code>emmeans</code> will return the contrasts from the univariate model by deault. Make this explicit by passing only the univarite fit <code>exp5c_aov1$aov</code>.</li>
 </ol>
 <p><strong>contrasts from multivariate model</strong></p>
-<div class="sourceCode" id="cb605"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb605-1"><a href="lmm.html#cb605-1" aria-hidden="true" tabindex="-1"></a><span class="co"># these 2 are the same</span></span>
-<span id="cb605-2"><a href="lmm.html#cb605-2" aria-hidden="true" tabindex="-1"></a><span class="fu">emmeans</span>(exp5c_aov1,</span>
-<span id="cb605-3"><a href="lmm.html#cb605-3" aria-hidden="true" tabindex="-1"></a>        <span class="at">specs =</span> <span class="fu">c</span>(<span class="st">&quot;treatment&quot;</span>, <span class="st">&quot;activity&quot;</span>),</span>
-<span id="cb605-4"><a href="lmm.html#cb605-4" aria-hidden="true" tabindex="-1"></a>        <span class="at">model =</span> <span class="st">&quot;multivariate&quot;</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb605-5"><a href="lmm.html#cb605-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">contrast</span>(<span class="at">method =</span> <span class="st">&quot;revpairwise&quot;</span>,</span>
-<span id="cb605-6"><a href="lmm.html#cb605-6" aria-hidden="true" tabindex="-1"></a>           <span class="at">simple =</span> <span class="st">&quot;each&quot;</span>,</span>
-<span id="cb605-7"><a href="lmm.html#cb605-7" aria-hidden="true" tabindex="-1"></a>           <span class="at">combine =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb605-8"><a href="lmm.html#cb605-8" aria-hidden="true" tabindex="-1"></a>           <span class="at">adjust =</span> <span class="st">&quot;none&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb601"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb601-1"><a href="lmm.html#cb601-1" aria-hidden="true" tabindex="-1"></a><span class="co"># these 2 are the same</span></span>
+<span id="cb601-2"><a href="lmm.html#cb601-2" aria-hidden="true" tabindex="-1"></a><span class="fu">emmeans</span>(exp5c_aov1,</span>
+<span id="cb601-3"><a href="lmm.html#cb601-3" aria-hidden="true" tabindex="-1"></a>        <span class="at">specs =</span> <span class="fu">c</span>(<span class="st">&quot;treatment&quot;</span>, <span class="st">&quot;activity&quot;</span>),</span>
+<span id="cb601-4"><a href="lmm.html#cb601-4" aria-hidden="true" tabindex="-1"></a>        <span class="at">model =</span> <span class="st">&quot;multivariate&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb601-5"><a href="lmm.html#cb601-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">contrast</span>(<span class="at">method =</span> <span class="st">&quot;revpairwise&quot;</span>,</span>
+<span id="cb601-6"><a href="lmm.html#cb601-6" aria-hidden="true" tabindex="-1"></a>           <span class="at">simple =</span> <span class="st">&quot;each&quot;</span>,</span>
+<span id="cb601-7"><a href="lmm.html#cb601-7" aria-hidden="true" tabindex="-1"></a>           <span class="at">combine =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb601-8"><a href="lmm.html#cb601-8" aria-hidden="true" tabindex="-1"></a>           <span class="at">adjust =</span> <span class="st">&quot;none&quot;</span>)</span></code></pre></div>
 <pre><code>##  activity treatment contrast      estimate     SE df t.ratio p.value
 ##  Basal    .         siNR4A3 - Scr   0.0813 0.1012  5  0.804  0.4581 
 ##  EPS      .         siNR4A3 - Scr  -0.1858 0.0359  5 -5.180  0.0035 
 ##  .        Scr       EPS - Basal     0.1510 0.0395  5  3.821  0.0124 
 ##  .        siNR4A3   EPS - Basal    -0.1161 0.0626  5 -1.855  0.1228</code></pre>
-<div class="sourceCode" id="cb607"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb607-1"><a href="lmm.html#cb607-1" aria-hidden="true" tabindex="-1"></a><span class="fu">emmeans</span>(exp5c_aov2,</span>
-<span id="cb607-2"><a href="lmm.html#cb607-2" aria-hidden="true" tabindex="-1"></a>        <span class="at">specs =</span> <span class="fu">c</span>(<span class="st">&quot;treatment&quot;</span>, <span class="st">&quot;activity&quot;</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb607-3"><a href="lmm.html#cb607-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">contrast</span>(<span class="at">method =</span> <span class="st">&quot;revpairwise&quot;</span>,</span>
-<span id="cb607-4"><a href="lmm.html#cb607-4" aria-hidden="true" tabindex="-1"></a>           <span class="at">simple =</span> <span class="st">&quot;each&quot;</span>,</span>
-<span id="cb607-5"><a href="lmm.html#cb607-5" aria-hidden="true" tabindex="-1"></a>           <span class="at">combine =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb607-6"><a href="lmm.html#cb607-6" aria-hidden="true" tabindex="-1"></a>           <span class="at">adjust =</span> <span class="st">&quot;none&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb603"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb603-1"><a href="lmm.html#cb603-1" aria-hidden="true" tabindex="-1"></a><span class="fu">emmeans</span>(exp5c_aov2,</span>
+<span id="cb603-2"><a href="lmm.html#cb603-2" aria-hidden="true" tabindex="-1"></a>        <span class="at">specs =</span> <span class="fu">c</span>(<span class="st">&quot;treatment&quot;</span>, <span class="st">&quot;activity&quot;</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb603-3"><a href="lmm.html#cb603-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">contrast</span>(<span class="at">method =</span> <span class="st">&quot;revpairwise&quot;</span>,</span>
+<span id="cb603-4"><a href="lmm.html#cb603-4" aria-hidden="true" tabindex="-1"></a>           <span class="at">simple =</span> <span class="st">&quot;each&quot;</span>,</span>
+<span id="cb603-5"><a href="lmm.html#cb603-5" aria-hidden="true" tabindex="-1"></a>           <span class="at">combine =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb603-6"><a href="lmm.html#cb603-6" aria-hidden="true" tabindex="-1"></a>           <span class="at">adjust =</span> <span class="st">&quot;none&quot;</span>)</span></code></pre></div>
 <pre><code>##  activity treatment contrast      estimate     SE df t.ratio p.value
 ##  Basal    .         siNR4A3 - Scr   0.0813 0.1012  5  0.804  0.4581 
 ##  EPS      .         siNR4A3 - Scr  -0.1858 0.0359  5 -5.180  0.0035 
@@ -6917,7 +7198,7 @@ Interaction
 </div>
 <div id="the-anova-table" class="section level4" number="18.5.2.2">
 <h4><span class="header-section-number">18.5.2.2</span> The ANOVA table</h4>
-<div class="sourceCode" id="cb609"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb609-1"><a href="lmm.html#cb609-1" aria-hidden="true" tabindex="-1"></a><span class="fu">nice</span>(exp5c_aov1, <span class="at">correction =</span> <span class="st">&quot;GG&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb605"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb605-1"><a href="lmm.html#cb605-1" aria-hidden="true" tabindex="-1"></a><span class="fu">nice</span>(exp5c_aov1, <span class="at">correction =</span> <span class="st">&quot;GG&quot;</span>)</span></code></pre></div>
 <pre><code>## Anova Table (Type 3 tests)
 ## 
 ## Response: glucose_uptake
@@ -6927,7 +7208,7 @@ Interaction
 ## 3 treatment:activity 1, 5 0.01 10.37 *   .04     .02
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;+&#39; 0.1 &#39; &#39; 1</code></pre>
-<div class="sourceCode" id="cb611"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb611-1"><a href="lmm.html#cb611-1" aria-hidden="true" tabindex="-1"></a><span class="fu">nice</span>(exp5c_aov1, <span class="at">correction =</span> <span class="st">&quot;none&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb607"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb607-1"><a href="lmm.html#cb607-1" aria-hidden="true" tabindex="-1"></a><span class="fu">nice</span>(exp5c_aov1, <span class="at">correction =</span> <span class="st">&quot;none&quot;</span>)</span></code></pre></div>
 <pre><code>## Anova Table (Type 3 tests)
 ## 
 ## Response: glucose_uptake
@@ -6949,69 +7230,69 @@ Interaction
 <h2><span class="header-section-number">18.6</span> Hidden code</h2>
 <div id="import-exp5c" class="section level3" number="18.6.1">
 <h3><span class="header-section-number">18.6.1</span> Import exp5c</h3>
-<div class="sourceCode" id="cb613"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb613-1"><a href="lmm.html#cb613-1" aria-hidden="true" tabindex="-1"></a>data_from <span class="ot">&lt;-</span> <span class="st">&quot;Transcriptomic profiling of skeletal muscle adaptations to exercise and inactivity&quot;</span></span>
-<span id="cb613-2"><a href="lmm.html#cb613-2" aria-hidden="true" tabindex="-1"></a>file_name <span class="ot">&lt;-</span> <span class="st">&quot;41467_2019_13869_MOESM6_ESM.xlsx&quot;</span></span>
-<span id="cb613-3"><a href="lmm.html#cb613-3" aria-hidden="true" tabindex="-1"></a>file_path <span class="ot">&lt;-</span> <span class="fu">here</span>(data_folder, data_from, file_name)</span>
-<span id="cb613-4"><a href="lmm.html#cb613-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb613-5"><a href="lmm.html#cb613-5" aria-hidden="true" tabindex="-1"></a>exp5c_wide <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(file_path,</span>
-<span id="cb613-6"><a href="lmm.html#cb613-6" aria-hidden="true" tabindex="-1"></a>                         <span class="at">sheet =</span> <span class="st">&quot;Fig5c&quot;</span>,</span>
-<span id="cb613-7"><a href="lmm.html#cb613-7" aria-hidden="true" tabindex="-1"></a>                         <span class="at">range =</span> <span class="st">&quot;A2:M3&quot;</span>,</span>
-<span id="cb613-8"><a href="lmm.html#cb613-8" aria-hidden="true" tabindex="-1"></a>                         <span class="at">col_names =</span> <span class="cn">FALSE</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb613-9"><a href="lmm.html#cb613-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.table</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb613-10"><a href="lmm.html#cb613-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">transpose</span>(<span class="at">make.names =</span> <span class="dv">1</span>)</span>
-<span id="cb613-11"><a href="lmm.html#cb613-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb613-12"><a href="lmm.html#cb613-12" aria-hidden="true" tabindex="-1"></a>activity_levels <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;Basal&quot;</span>, <span class="st">&quot;EPS&quot;</span>)</span>
-<span id="cb613-13"><a href="lmm.html#cb613-13" aria-hidden="true" tabindex="-1"></a>treatment_levels <span class="ot">&lt;-</span> <span class="fu">names</span>(exp5c_wide)</span>
-<span id="cb613-14"><a href="lmm.html#cb613-14" aria-hidden="true" tabindex="-1"></a>exp5c_wide[, activity <span class="sc">:</span><span class="er">=</span> <span class="fu">rep</span>(activity_levels, <span class="at">each =</span> <span class="dv">6</span>)]</span>
-<span id="cb613-15"><a href="lmm.html#cb613-15" aria-hidden="true" tabindex="-1"></a>exp5c_wide[, activity <span class="sc">:</span><span class="er">=</span> <span class="fu">factor</span>(activity, <span class="at">levels =</span> activity_levels)]</span>
-<span id="cb613-16"><a href="lmm.html#cb613-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb613-17"><a href="lmm.html#cb613-17" aria-hidden="true" tabindex="-1"></a>exp5c <span class="ot">&lt;-</span> <span class="fu">melt</span>(exp5c_wide,</span>
-<span id="cb613-18"><a href="lmm.html#cb613-18" aria-hidden="true" tabindex="-1"></a>              <span class="at">id.vars =</span> <span class="st">&quot;activity&quot;</span>,</span>
-<span id="cb613-19"><a href="lmm.html#cb613-19" aria-hidden="true" tabindex="-1"></a>              <span class="at">variable.name =</span> <span class="st">&quot;treatment&quot;</span>,</span>
-<span id="cb613-20"><a href="lmm.html#cb613-20" aria-hidden="true" tabindex="-1"></a>              <span class="at">value.name =</span> <span class="st">&quot;glucose_uptake&quot;</span>)</span>
-<span id="cb613-21"><a href="lmm.html#cb613-21" aria-hidden="true" tabindex="-1"></a>exp5c[, treatment <span class="sc">:</span><span class="er">=</span> <span class="fu">factor</span>(treatment, <span class="at">levels =</span> treatment_levels)]</span>
-<span id="cb613-22"><a href="lmm.html#cb613-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb613-23"><a href="lmm.html#cb613-23" aria-hidden="true" tabindex="-1"></a>exp5c[, donor <span class="sc">:</span><span class="er">=</span> <span class="fu">rep</span>(<span class="fu">paste0</span>(<span class="st">&quot;donor_&quot;</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>), <span class="dv">4</span>)]</span></code></pre></div>
+<div class="sourceCode" id="cb609"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb609-1"><a href="lmm.html#cb609-1" aria-hidden="true" tabindex="-1"></a>data_from <span class="ot">&lt;-</span> <span class="st">&quot;Transcriptomic profiling of skeletal muscle adaptations to exercise and inactivity&quot;</span></span>
+<span id="cb609-2"><a href="lmm.html#cb609-2" aria-hidden="true" tabindex="-1"></a>file_name <span class="ot">&lt;-</span> <span class="st">&quot;41467_2019_13869_MOESM6_ESM.xlsx&quot;</span></span>
+<span id="cb609-3"><a href="lmm.html#cb609-3" aria-hidden="true" tabindex="-1"></a>file_path <span class="ot">&lt;-</span> <span class="fu">here</span>(data_folder, data_from, file_name)</span>
+<span id="cb609-4"><a href="lmm.html#cb609-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb609-5"><a href="lmm.html#cb609-5" aria-hidden="true" tabindex="-1"></a>exp5c_wide <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(file_path,</span>
+<span id="cb609-6"><a href="lmm.html#cb609-6" aria-hidden="true" tabindex="-1"></a>                         <span class="at">sheet =</span> <span class="st">&quot;Fig5c&quot;</span>,</span>
+<span id="cb609-7"><a href="lmm.html#cb609-7" aria-hidden="true" tabindex="-1"></a>                         <span class="at">range =</span> <span class="st">&quot;A2:M3&quot;</span>,</span>
+<span id="cb609-8"><a href="lmm.html#cb609-8" aria-hidden="true" tabindex="-1"></a>                         <span class="at">col_names =</span> <span class="cn">FALSE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb609-9"><a href="lmm.html#cb609-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.table</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb609-10"><a href="lmm.html#cb609-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">transpose</span>(<span class="at">make.names =</span> <span class="dv">1</span>)</span>
+<span id="cb609-11"><a href="lmm.html#cb609-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb609-12"><a href="lmm.html#cb609-12" aria-hidden="true" tabindex="-1"></a>activity_levels <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;Basal&quot;</span>, <span class="st">&quot;EPS&quot;</span>)</span>
+<span id="cb609-13"><a href="lmm.html#cb609-13" aria-hidden="true" tabindex="-1"></a>treatment_levels <span class="ot">&lt;-</span> <span class="fu">names</span>(exp5c_wide)</span>
+<span id="cb609-14"><a href="lmm.html#cb609-14" aria-hidden="true" tabindex="-1"></a>exp5c_wide[, activity <span class="sc">:</span><span class="er">=</span> <span class="fu">rep</span>(activity_levels, <span class="at">each =</span> <span class="dv">6</span>)]</span>
+<span id="cb609-15"><a href="lmm.html#cb609-15" aria-hidden="true" tabindex="-1"></a>exp5c_wide[, activity <span class="sc">:</span><span class="er">=</span> <span class="fu">factor</span>(activity, <span class="at">levels =</span> activity_levels)]</span>
+<span id="cb609-16"><a href="lmm.html#cb609-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb609-17"><a href="lmm.html#cb609-17" aria-hidden="true" tabindex="-1"></a>exp5c <span class="ot">&lt;-</span> <span class="fu">melt</span>(exp5c_wide,</span>
+<span id="cb609-18"><a href="lmm.html#cb609-18" aria-hidden="true" tabindex="-1"></a>              <span class="at">id.vars =</span> <span class="st">&quot;activity&quot;</span>,</span>
+<span id="cb609-19"><a href="lmm.html#cb609-19" aria-hidden="true" tabindex="-1"></a>              <span class="at">variable.name =</span> <span class="st">&quot;treatment&quot;</span>,</span>
+<span id="cb609-20"><a href="lmm.html#cb609-20" aria-hidden="true" tabindex="-1"></a>              <span class="at">value.name =</span> <span class="st">&quot;glucose_uptake&quot;</span>)</span>
+<span id="cb609-21"><a href="lmm.html#cb609-21" aria-hidden="true" tabindex="-1"></a>exp5c[, treatment <span class="sc">:</span><span class="er">=</span> <span class="fu">factor</span>(treatment, <span class="at">levels =</span> treatment_levels)]</span>
+<span id="cb609-22"><a href="lmm.html#cb609-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb609-23"><a href="lmm.html#cb609-23" aria-hidden="true" tabindex="-1"></a>exp5c[, donor <span class="sc">:</span><span class="er">=</span> <span class="fu">rep</span>(<span class="fu">paste0</span>(<span class="st">&quot;donor_&quot;</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>), <span class="dv">4</span>)]</span></code></pre></div>
 </div>
 <div id="import-exp1g" class="section level3" number="18.6.2">
 <h3><span class="header-section-number">18.6.2</span> Import exp1g</h3>
-<div class="sourceCode" id="cb614"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb614-1"><a href="lmm.html#cb614-1" aria-hidden="true" tabindex="-1"></a>data_from <span class="ot">&lt;-</span> <span class="st">&quot;A GPR174–CCL21 module imparts sexual dimorphism to humoral immunity&quot;</span></span>
-<span id="cb614-2"><a href="lmm.html#cb614-2" aria-hidden="true" tabindex="-1"></a>file_name <span class="ot">&lt;-</span> <span class="st">&quot;41586_2019_1873_MOESM3_ESM.xlsx&quot;</span></span>
-<span id="cb614-3"><a href="lmm.html#cb614-3" aria-hidden="true" tabindex="-1"></a>file_path <span class="ot">&lt;-</span> <span class="fu">here</span>(data_folder, data_from, file_name)</span>
-<span id="cb614-4"><a href="lmm.html#cb614-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb614-5"><a href="lmm.html#cb614-5" aria-hidden="true" tabindex="-1"></a>exp1g_wide <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(file_path,</span>
-<span id="cb614-6"><a href="lmm.html#cb614-6" aria-hidden="true" tabindex="-1"></a>                         <span class="at">sheet =</span> <span class="st">&quot;Fig 1g&quot;</span>,</span>
-<span id="cb614-7"><a href="lmm.html#cb614-7" aria-hidden="true" tabindex="-1"></a>                         <span class="at">range =</span> <span class="st">&quot;B4:E25&quot;</span>,</span>
-<span id="cb614-8"><a href="lmm.html#cb614-8" aria-hidden="true" tabindex="-1"></a>                         <span class="at">col_types =</span> <span class="fu">c</span>(<span class="st">&quot;numeric&quot;</span>),</span>
-<span id="cb614-9"><a href="lmm.html#cb614-9" aria-hidden="true" tabindex="-1"></a>                         <span class="at">col_names =</span> <span class="cn">FALSE</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb614-10"><a href="lmm.html#cb614-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.table</span>()</span>
-<span id="cb614-11"><a href="lmm.html#cb614-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb614-12"><a href="lmm.html#cb614-12" aria-hidden="true" tabindex="-1"></a>genotype_levels <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;Gpr174+&quot;</span>, <span class="st">&quot;Gpr174-&quot;</span>)</span>
-<span id="cb614-13"><a href="lmm.html#cb614-13" aria-hidden="true" tabindex="-1"></a>sex_levels <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;M&quot;</span>, <span class="st">&quot;F&quot;</span>)</span>
-<span id="cb614-14"><a href="lmm.html#cb614-14" aria-hidden="true" tabindex="-1"></a>g.by.s_levels <span class="ot">&lt;-</span> <span class="fu">do.call</span>(paste, <span class="fu">expand.grid</span>(genotype_levels, sex_levels))</span>
-<span id="cb614-15"><a href="lmm.html#cb614-15" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(exp1g_wide) <span class="ot">&lt;-</span> g.by.s_levels</span>
-<span id="cb614-16"><a href="lmm.html#cb614-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb614-17"><a href="lmm.html#cb614-17" aria-hidden="true" tabindex="-1"></a>exp_levels <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">&quot;exp_&quot;</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>)</span>
-<span id="cb614-18"><a href="lmm.html#cb614-18" aria-hidden="true" tabindex="-1"></a>exp1g_wide[, experiment_id <span class="sc">:</span><span class="er">=</span> <span class="fu">rep</span>(exp_levels, <span class="fu">c</span>(<span class="dv">5</span>,<span class="dv">6</span>,<span class="dv">6</span>,<span class="dv">5</span>))] <span class="co">#check!</span></span>
-<span id="cb614-19"><a href="lmm.html#cb614-19" aria-hidden="true" tabindex="-1"></a>exp1g_wide[, experiment_id <span class="sc">:</span><span class="er">=</span> <span class="fu">factor</span>(experiment_id)] <span class="co">#check!</span></span>
-<span id="cb614-20"><a href="lmm.html#cb614-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb614-21"><a href="lmm.html#cb614-21" aria-hidden="true" tabindex="-1"></a>exp1g <span class="ot">&lt;-</span> <span class="fu">melt</span>(exp1g_wide,</span>
-<span id="cb614-22"><a href="lmm.html#cb614-22" aria-hidden="true" tabindex="-1"></a>              <span class="at">id.vars =</span> <span class="st">&quot;experiment_id&quot;</span>,</span>
-<span id="cb614-23"><a href="lmm.html#cb614-23" aria-hidden="true" tabindex="-1"></a>              <span class="at">measure.vars =</span> g.by.s_levels,</span>
-<span id="cb614-24"><a href="lmm.html#cb614-24" aria-hidden="true" tabindex="-1"></a>              <span class="at">variable.name =</span> <span class="st">&quot;treatment&quot;</span>,</span>
-<span id="cb614-25"><a href="lmm.html#cb614-25" aria-hidden="true" tabindex="-1"></a>              <span class="at">value.name =</span> <span class="st">&quot;gc&quot;</span>) <span class="sc">%&gt;%</span> <span class="co"># cell count</span></span>
-<span id="cb614-26"><a href="lmm.html#cb614-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">na.omit</span>()</span>
-<span id="cb614-27"><a href="lmm.html#cb614-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb614-28"><a href="lmm.html#cb614-28" aria-hidden="true" tabindex="-1"></a>exp1g[, <span class="fu">c</span>(<span class="st">&quot;genotype&quot;</span>, <span class="st">&quot;sex&quot;</span>)<span class="sc">:</span><span class="er">=</span> <span class="fu">tstrsplit</span>(treatment,</span>
-<span id="cb614-29"><a href="lmm.html#cb614-29" aria-hidden="true" tabindex="-1"></a>                                             <span class="st">&quot; &quot;</span>,</span>
-<span id="cb614-30"><a href="lmm.html#cb614-30" aria-hidden="true" tabindex="-1"></a>                                             <span class="at">fixed =</span> <span class="cn">TRUE</span>)]</span>
-<span id="cb614-31"><a href="lmm.html#cb614-31" aria-hidden="true" tabindex="-1"></a>exp1g[, genotype <span class="sc">:</span><span class="er">=</span> <span class="fu">factor</span>(genotype,</span>
-<span id="cb614-32"><a href="lmm.html#cb614-32" aria-hidden="true" tabindex="-1"></a>                           <span class="at">levels =</span> genotype_levels)]</span>
-<span id="cb614-33"><a href="lmm.html#cb614-33" aria-hidden="true" tabindex="-1"></a>exp1g[, sex <span class="sc">:</span><span class="er">=</span> <span class="fu">factor</span>(sex,</span>
-<span id="cb614-34"><a href="lmm.html#cb614-34" aria-hidden="true" tabindex="-1"></a>                           <span class="at">levels =</span> sex_levels)]</span>
-<span id="cb614-35"><a href="lmm.html#cb614-35" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb614-36"><a href="lmm.html#cb614-36" aria-hidden="true" tabindex="-1"></a>exp1g_means <span class="ot">&lt;-</span> exp1g[, .(<span class="at">gc =</span> <span class="fu">mean</span>(gc)),</span>
-<span id="cb614-37"><a href="lmm.html#cb614-37" aria-hidden="true" tabindex="-1"></a>                     by <span class="ot">=</span> .(treatment, genotype, sex, experiment_id)]</span></code></pre></div>
+<div class="sourceCode" id="cb610"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb610-1"><a href="lmm.html#cb610-1" aria-hidden="true" tabindex="-1"></a>data_from <span class="ot">&lt;-</span> <span class="st">&quot;A GPR174–CCL21 module imparts sexual dimorphism to humoral immunity&quot;</span></span>
+<span id="cb610-2"><a href="lmm.html#cb610-2" aria-hidden="true" tabindex="-1"></a>file_name <span class="ot">&lt;-</span> <span class="st">&quot;41586_2019_1873_MOESM3_ESM.xlsx&quot;</span></span>
+<span id="cb610-3"><a href="lmm.html#cb610-3" aria-hidden="true" tabindex="-1"></a>file_path <span class="ot">&lt;-</span> <span class="fu">here</span>(data_folder, data_from, file_name)</span>
+<span id="cb610-4"><a href="lmm.html#cb610-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb610-5"><a href="lmm.html#cb610-5" aria-hidden="true" tabindex="-1"></a>exp1g_wide <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(file_path,</span>
+<span id="cb610-6"><a href="lmm.html#cb610-6" aria-hidden="true" tabindex="-1"></a>                         <span class="at">sheet =</span> <span class="st">&quot;Fig 1g&quot;</span>,</span>
+<span id="cb610-7"><a href="lmm.html#cb610-7" aria-hidden="true" tabindex="-1"></a>                         <span class="at">range =</span> <span class="st">&quot;B4:E25&quot;</span>,</span>
+<span id="cb610-8"><a href="lmm.html#cb610-8" aria-hidden="true" tabindex="-1"></a>                         <span class="at">col_types =</span> <span class="fu">c</span>(<span class="st">&quot;numeric&quot;</span>),</span>
+<span id="cb610-9"><a href="lmm.html#cb610-9" aria-hidden="true" tabindex="-1"></a>                         <span class="at">col_names =</span> <span class="cn">FALSE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb610-10"><a href="lmm.html#cb610-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.table</span>()</span>
+<span id="cb610-11"><a href="lmm.html#cb610-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb610-12"><a href="lmm.html#cb610-12" aria-hidden="true" tabindex="-1"></a>genotype_levels <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;Gpr174+&quot;</span>, <span class="st">&quot;Gpr174-&quot;</span>)</span>
+<span id="cb610-13"><a href="lmm.html#cb610-13" aria-hidden="true" tabindex="-1"></a>sex_levels <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;M&quot;</span>, <span class="st">&quot;F&quot;</span>)</span>
+<span id="cb610-14"><a href="lmm.html#cb610-14" aria-hidden="true" tabindex="-1"></a>g.by.s_levels <span class="ot">&lt;-</span> <span class="fu">do.call</span>(paste, <span class="fu">expand.grid</span>(genotype_levels, sex_levels))</span>
+<span id="cb610-15"><a href="lmm.html#cb610-15" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(exp1g_wide) <span class="ot">&lt;-</span> g.by.s_levels</span>
+<span id="cb610-16"><a href="lmm.html#cb610-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb610-17"><a href="lmm.html#cb610-17" aria-hidden="true" tabindex="-1"></a>exp_levels <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">&quot;exp_&quot;</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>)</span>
+<span id="cb610-18"><a href="lmm.html#cb610-18" aria-hidden="true" tabindex="-1"></a>exp1g_wide[, experiment_id <span class="sc">:</span><span class="er">=</span> <span class="fu">rep</span>(exp_levels, <span class="fu">c</span>(<span class="dv">5</span>,<span class="dv">6</span>,<span class="dv">6</span>,<span class="dv">5</span>))] <span class="co">#check!</span></span>
+<span id="cb610-19"><a href="lmm.html#cb610-19" aria-hidden="true" tabindex="-1"></a>exp1g_wide[, experiment_id <span class="sc">:</span><span class="er">=</span> <span class="fu">factor</span>(experiment_id)] <span class="co">#check!</span></span>
+<span id="cb610-20"><a href="lmm.html#cb610-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb610-21"><a href="lmm.html#cb610-21" aria-hidden="true" tabindex="-1"></a>exp1g <span class="ot">&lt;-</span> <span class="fu">melt</span>(exp1g_wide,</span>
+<span id="cb610-22"><a href="lmm.html#cb610-22" aria-hidden="true" tabindex="-1"></a>              <span class="at">id.vars =</span> <span class="st">&quot;experiment_id&quot;</span>,</span>
+<span id="cb610-23"><a href="lmm.html#cb610-23" aria-hidden="true" tabindex="-1"></a>              <span class="at">measure.vars =</span> g.by.s_levels,</span>
+<span id="cb610-24"><a href="lmm.html#cb610-24" aria-hidden="true" tabindex="-1"></a>              <span class="at">variable.name =</span> <span class="st">&quot;treatment&quot;</span>,</span>
+<span id="cb610-25"><a href="lmm.html#cb610-25" aria-hidden="true" tabindex="-1"></a>              <span class="at">value.name =</span> <span class="st">&quot;gc&quot;</span>) <span class="sc">%&gt;%</span> <span class="co"># cell count</span></span>
+<span id="cb610-26"><a href="lmm.html#cb610-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">na.omit</span>()</span>
+<span id="cb610-27"><a href="lmm.html#cb610-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb610-28"><a href="lmm.html#cb610-28" aria-hidden="true" tabindex="-1"></a>exp1g[, <span class="fu">c</span>(<span class="st">&quot;genotype&quot;</span>, <span class="st">&quot;sex&quot;</span>)<span class="sc">:</span><span class="er">=</span> <span class="fu">tstrsplit</span>(treatment,</span>
+<span id="cb610-29"><a href="lmm.html#cb610-29" aria-hidden="true" tabindex="-1"></a>                                             <span class="st">&quot; &quot;</span>,</span>
+<span id="cb610-30"><a href="lmm.html#cb610-30" aria-hidden="true" tabindex="-1"></a>                                             <span class="at">fixed =</span> <span class="cn">TRUE</span>)]</span>
+<span id="cb610-31"><a href="lmm.html#cb610-31" aria-hidden="true" tabindex="-1"></a>exp1g[, genotype <span class="sc">:</span><span class="er">=</span> <span class="fu">factor</span>(genotype,</span>
+<span id="cb610-32"><a href="lmm.html#cb610-32" aria-hidden="true" tabindex="-1"></a>                           <span class="at">levels =</span> genotype_levels)]</span>
+<span id="cb610-33"><a href="lmm.html#cb610-33" aria-hidden="true" tabindex="-1"></a>exp1g[, sex <span class="sc">:</span><span class="er">=</span> <span class="fu">factor</span>(sex,</span>
+<span id="cb610-34"><a href="lmm.html#cb610-34" aria-hidden="true" tabindex="-1"></a>                           <span class="at">levels =</span> sex_levels)]</span>
+<span id="cb610-35"><a href="lmm.html#cb610-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb610-36"><a href="lmm.html#cb610-36" aria-hidden="true" tabindex="-1"></a>exp1g_means <span class="ot">&lt;-</span> exp1g[, .(<span class="at">gc =</span> <span class="fu">mean</span>(gc)),</span>
+<span id="cb610-37"><a href="lmm.html#cb610-37" aria-hidden="true" tabindex="-1"></a>                     by <span class="ot">=</span> .(treatment, genotype, sex, experiment_id)]</span></code></pre></div>
 
 </div>
 </div>
