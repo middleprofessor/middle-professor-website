@@ -224,7 +224,7 @@ code span.wa { color: #bf0303; } /* Warning */
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="part-iii-some-fundamentals-of-statistical-modeling.html"><a href="part-iii-some-fundamentals-of-statistical-modeling.html"><i class="fa fa-check"></i>Part III: Some Fundamentals of Statistical Modeling</a></li>
-<li class="chapter" data-level="5" data-path="uncertainty.html"><a href="uncertainty.html"><i class="fa fa-check"></i><b>5</b> Variability and Uncertainty (Standard Deviations, Standard Errors, Confidence Intervals)</a>
+<li class="chapter" data-level="5" data-path="uncertainty.html"><a href="uncertainty.html"><i class="fa fa-check"></i><b>5</b> Variability and Uncertainty (Standard Deviations, Standard Errors, and Confidence Intervals)</a>
 <ul>
 <li class="chapter" data-level="5.1" data-path="uncertainty.html"><a href="uncertainty.html#why-we-care-about-standard-errors"><i class="fa fa-check"></i><b>5.1</b> Why we care about standard errors</a></li>
 <li class="chapter" data-level="5.2" data-path="uncertainty.html"><a href="uncertainty.html#the-sample-standard-deviation-vs.-the-standard-error-of-the-mean"><i class="fa fa-check"></i><b>5.2</b> The sample standard deviation vs. the standard error of the mean</a>
@@ -891,18 +891,97 @@ code span.wa { color: #bf0303; } /* Warning */
 <h2><span class="header-section-number">1.1</span> This text is about using linear models to estimate treatment effects and the uncertainty in our estimates. This, raises the question, what is “an effect?”</h2>
 <p><a href="ask1-report.html#ask1-report">At the end of this text</a>, I provide an example set of analyses for multiple, related experiments. This example is a goal or target; it’s what you will be working towards as you learn from this text. The data for the analysis come from multiple experiments presented in Figure 2 in the article <a href="https://www.nature.com/articles/s41467-020-15483-7" target="_blank">ASK1 inhibits browning of white adipose tissue in obesity</a>. The chapter preceding the analysis is <a href="ask1-bio.html#ask1-bio">just enough biology</a> to help you understand the biological importance of each experiment. The data for Figure 2 is from a set of experiments exploring the consequences of adipose-tissue specific deletion of the ASK1 signaling protein on multiple, adverse effects of a high-fat diet in mice, including weight gain, glucose intolerance, and increased liver triacylglycerol levels. I chose the data in Figure 2 of this paper because of the diversity of analyses and plot types. My analyses and plots differ slightly from those of the researchers because I implemented better practices – the stuff of this text.</p>
 <p>Here, I use one panel from Figure 2 to outline what the statistical analysis of experimental data is all about. Much of this outline will be repeated in “An introduction to linear models” chapter.</p>
-<p>The goal of the experiments is to measure the <strong>effect</strong> of the adipose-specific ASK1 deletion. To understand what I mean by “an effect,” and to understand how we can estimate an effect by <strong>fiting a linear model</strong> to data, let’s analyze the data from the experiment in Figure 2i (the “exp2i” data). My version of Figure 2i is in Figure @ref(fig:ask1-exp2i-ggplot_the_model).</p>
-<div class="figure">
-<img src="Walker-elementary-statistical-modeling-draft_files/figure-html/ask1-exp2i-ggplot_the_model-1.png" alt="The effect of adipose-specific ASK1 knockout on liver triglyceride (TG)." width="672" />
+<p>The goal of the experiments is to <strong>estimate</strong> the <strong>effect</strong> of the adipose-specific ASK1 deletion. To understand what I mean by “an effect,” and to understand how we can estimate an effect by <strong>fiting a linear model</strong> to data, let’s peak at the results of the fit model.</p>
+<div class="figure"><span id="fig:ask1-exp2i-ggplot-the-model"></span>
+<img src="Walker-elementary-statistical-modeling-draft_files/figure-html/ask1-exp2i-ggplot-the-model-1.png" alt="The effect of adipose-specific ASK1 knockout on liver triglyceride (TG)." width="672" />
 <p class="caption">
-(#fig:ask1-exp2i-ggplot_the_model)The effect of adipose-specific ASK1 knockout on liver triglyceride (TG).
+Figure 1.1: The effect of adipose-specific ASK1 knockout on liver triglyceride (TG).
 </p>
 </div>
-<p>For Figure 2i, the researchers want to know if <a href="https://en.wikipedia.org/wiki/Gene_knockout" target="_blank">knocking out</a> the ASK1 gene in the adipose tissue cells lowers the liver triglyceride (TG) level in mice fed a high-fat diet. To investigate this, the researchers compared the TG levels in a group of knockout mice (“ASK1Δadipo” – Δ is the del operator and refers to a deletion in genetics) to the TG levels in a group of control mice (“ASK1F/F”). Specifically, they measured <em>the difference</em> in the mean TG of the control group from the mean TG of the knockout group.</p>
+<p>For this experiment, the researchers want to know if <a href="https://en.wikipedia.org/wiki/Gene_knockout" target="_blank">knocking out</a> the ASK1 gene in the adipose tissue cells lowers the liver triglyceride (TG) level in mice fed a high-fat diet. To investigate this, the researchers compared the TG levels in a group of knockout mice (“ASK1Δadipo” – Δ is the del operator and refers to a deletion in genetics) to the TG levels in a group of control mice (“ASK1F/F”). Specifically, they measured <em>the difference</em> in the mean TG of the control group from the mean TG of the knockout group.</p>
 <p><span class="math display">\[
 \overline{\texttt{TG}}_\texttt{ASK1Δadipo} - \overline{\texttt{TG}}_\texttt{ASK1F/F}
 \]</span></p>
-<p>The difference in the means is <strong>the estimate</strong> of <strong>the effect</strong> of ASK1 deletion on liver TG levels. This estimate is -21.6 µmol per g liver. An effect has the same units as the variable compared (µmol per g liver), a magnitude (21.6 units), and a direction (negative).</p>
+<p>The measured difference in the means is <strong>the estimate</strong> of <strong>the effect</strong> of ASK1 deletion on liver TG levels. This estimate is -21.6 µmol per g liver. An effect has the same units as the variable compared (µmol per g liver), a magnitude (21.6 units), and a direction (negative).</p>
+<p>My version of Figure 2i, which shows the results of the experiment, is Fig. <a href="analyzing-experimental-data-with-a-linear-model.html#fig:ask1-exp2i-ggplot-the-model">1.1</a> above. The direction and magnitude of the estimated effect (the measured difference in means) can be mentally reconstructed by comparing the position of the two group means in the lower part of Fig. <a href="analyzing-experimental-data-with-a-linear-model.html#fig:ask1-exp2i-ggplot-the-model">1.1</a>. The upper part of Fig. <a href="analyzing-experimental-data-with-a-linear-model.html#fig:ask1-exp2i-ggplot-the-model">1.1</a> explicitly shows the estimate <em>and</em> shows the the uncertainty in the estimate using <strong>95% confidence intervals</strong>.</p>
+<p>The numbers to make this plot come from the <strong>coefficient table</strong> of the fit model, shown in Table <a href="analyzing-experimental-data-with-a-linear-model.html#tab:ask1-exp2i-intro-coef-table">1.1</a>. The second row of this table are the statistics for the effect of the knockout on TG levels. The value in the “Estimate” column is the estimated effect (the measured difference in means). The value in the “Std. Error” column is the <strong>standard error of the difference in means</strong> (SE), a measure of uncertainty of the estimate. We use this SE to compute the statistic for a <em>t</em>-test, from which we get the <em>p</em>-value, the probability of observing a <em>t</em>-value as large or larger than our observed value, if the <strong>null were true</strong>. The “null is true” not only means the true effect is zero but also assumes a long list of conditions, such as, a random treatment assignment and <strong>homogeneity of variance</strong>. We also use the SE to compute the 95% confidence intervals of the difference. Understanding what a standard error is and how to interpret confidence intervals is paramount to practicing good statistics. This is covered in the chapter <a href="uncertainty.html#uncertainty">Variability and Uncertainty (Standard Deviations, Standard Errors, and Confidence Intervals)</a>.</p>
+<table class="table" style="margin-left: auto; margin-right: auto;">
+<caption>
+<span id="tab:ask1-exp2i-intro-coef-table">Table 1.1: </span>Coefficient table for linear model fit to exp2i data.
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;">
+</th>
+<th style="text-align:right;">
+Estimate
+</th>
+<th style="text-align:right;">
+Std. Error
+</th>
+<th style="text-align:right;">
+t value
+</th>
+<th style="text-align:right;">
+Pr(&gt;|t|)
+</th>
+<th style="text-align:right;">
+2.5 %
+</th>
+<th style="text-align:right;">
+97.5 %
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+(Intercept)
+</td>
+<td style="text-align:right;">
+61.47
+</td>
+<td style="text-align:right;">
+4.98
+</td>
+<td style="text-align:right;">
+12.3
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+50.37
+</td>
+<td style="text-align:right;">
+72.57
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+treatmentASK1Δadipo
+</td>
+<td style="text-align:right;">
+-21.60
+</td>
+<td style="text-align:right;">
+7.05
+</td>
+<td style="text-align:right;">
+-3.1
+</td>
+<td style="text-align:right;">
+0.012
+</td>
+<td style="text-align:right;">
+-37.30
+</td>
+<td style="text-align:right;">
+-5.90
+</td>
+</tr>
+</tbody>
+</table>
 <p>It is hard to overemphasize that what we measure in experiments is <strong>estimated effects</strong>. The true effect may be larger, smaller, or even in the reverse direction. This text is all about what we can infer about true effects from the statistical analysis of experimental data. This inference requires that we also measure our <strong>uncertainty</strong> in our estimate of the effect.</p>
 <p>The measured means in each group are computed from a random <strong>sample</strong> of mice. If we only cared about the six mice in each group in this experiment, then we would not need to fit a linear model to the data to estimate the effect, we could simply compute each group’s mean and subtract the control mean from the knockout mean. But we care more about something more than these dozen mice because we are trying to discover something general about ASK1 regulation of TG levels in mice, generally (and even in mammals, and especially humans, generally). To make this leap of <strong>inference</strong>, we use a model to claim that each sample mean is an <strong>estimate</strong> of the respective <strong>population</strong> mean. Given this model, we can compute the <strong>standard error</strong> of each mean and the <strong>standard error of the difference in means</strong>. A standard error is a measure of the <strong>sampling variance of a statistic</strong> and, therefore, a measure of the precision of the estimate. The standard error, then, is a measure of <strong>uncertainty</strong> in the estimate. Here is how to think about precision and uncertainty: if we were to repeat this experiment many, many times, we would generate a long list of mean TG levels for the control mice and a long list of mean TG levels for the knockout mice. The less variable the means in each list, the more precise. By using a model, we do not need to repeat this experiment many times to get a standard error.</p>
 <p>The model we are going to fit to the Figure 2i data is</p>
@@ -916,19 +995,20 @@ y &amp;= \beta_0 + \beta_1 x + \varepsilon\\
 <p><span class="math inline">\(\varepsilon\)</span> is the <strong>error</strong> for the randomly generated mouse. It is a random number sampled from a Normal distribution with a mean of zero and a variance of <span class="math inline">\(\sigma^2\)</span>. The variation in generated mice has a systematic component due to variation in <span class="math inline">\(x\)</span> and a random (or <strong>stochastic</strong>) component due to variation in <span class="math inline">\(\varepsilon\)</span>.</p>
 <p>By <strong>fitting a model to the data</strong> we estimate the parameters <span class="math inline">\(\beta_0\)</span>, <span class="math inline">\(\beta_1\)</span> and <span class="math inline">\(\sigma\)</span>. It is the estimation of <span class="math inline">\(\sigma\)</span> that allows us to compute a measure of our uncertainty (a standard error) of our estimates of the means (<span class="math inline">\(\beta_0\)</span> and <span class="math inline">\(\beta_0 + \beta_1\)</span>) and of the difference in the means (<span class="math inline">\(\beta_1\)</span>).</p>
 <p>Let’s fit this model to the Figure 2i data using R.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="analyzing-experimental-data-with-a-linear-model.html#cb1-1" aria-hidden="true" tabindex="-1"></a>exp2i_m1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(liver_tg <span class="sc">~</span> treatment, <span class="at">data =</span> exp2i)</span></code></pre></div>
 <p>Robust inference from the model (generalizing from sample to population, including measures of the uncertainty of our estimates, requires that our data approximates the kind of data we’d expect from the data generating model specified above. All rigorous analysis should use specific <strong>model checks</strong> to evaluate this. First, the “normality check” – we use a <strong>quantile-quantile (QQ) plot</strong> to see if our data approximate what we’d see if we sampled from a normal distribution.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="analyzing-experimental-data-with-a-linear-model.html#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
-<span id="cb1-2"><a href="analyzing-experimental-data-with-a-linear-model.html#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">qqPlot</span>(exp2i_m1, <span class="at">id=</span><span class="cn">FALSE</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="analyzing-experimental-data-with-a-linear-model.html#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
+<span id="cb2-2"><a href="analyzing-experimental-data-with-a-linear-model.html#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">qqPlot</span>(exp2i_m1, <span class="at">id=</span><span class="cn">FALSE</span>)</span></code></pre></div>
 <p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/ask1-exp2i-qq-1.png" width="672" /></p>
 <p>95% of quantiles computed from fake samples from the generating model above are inside the two dashed lines in the plot. Our measured quantiles are the open circles. The quantiles from a sample that looks like it was sampled from a normal distribution, or “looks Normal,” should be approximately linear and mostly lie within the dashed lines. Our sample looks good. Regardless, inference is pretty robust to moderate departure from Normal.</p>
 <p>Second, the “homogeneity check” – we use a <strong>spread level plot</strong> to see if there is some pattern to the variance, for example if the spread of residuals is noticeably bigger in one group than another, or if the spread increases with the fitted value.</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="analyzing-experimental-data-with-a-linear-model.html#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">spreadLevelPlot</span>(exp2i_m1, <span class="at">id=</span><span class="cn">FALSE</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="analyzing-experimental-data-with-a-linear-model.html#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">spreadLevelPlot</span>(exp2i_m1, <span class="at">id=</span><span class="cn">FALSE</span>)</span></code></pre></div>
 <p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/ask1-exp2i-spread-1.png" width="672" /></p>
 <pre><code>## 
 ## Suggested power transformation:  1.294553</code></pre>
 <p>This looks pretty good. Given these checks, lets move on and look at the table of model coefficients.</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="analyzing-experimental-data-with-a-linear-model.html#cb4-1" aria-hidden="true" tabindex="-1"></a>exp2i_m1_coef <span class="ot">&lt;-</span> <span class="fu">cbind</span>(<span class="fu">coef</span>(<span class="fu">summary</span>(exp2i_m1)),</span>
-<span id="cb4-2"><a href="analyzing-experimental-data-with-a-linear-model.html#cb4-2" aria-hidden="true" tabindex="-1"></a>                        <span class="fu">confint</span>(exp2i_m1))</span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="analyzing-experimental-data-with-a-linear-model.html#cb5-1" aria-hidden="true" tabindex="-1"></a>exp2i_m1_coef <span class="ot">&lt;-</span> <span class="fu">cbind</span>(<span class="fu">coef</span>(<span class="fu">summary</span>(exp2i_m1)),</span>
+<span id="cb5-2"><a href="analyzing-experimental-data-with-a-linear-model.html#cb5-2" aria-hidden="true" tabindex="-1"></a>                        <span class="fu">confint</span>(exp2i_m1))</span></code></pre></div>
 <table class="table" style="margin-left: auto; margin-right: auto;">
 <thead>
 <tr>

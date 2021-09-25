@@ -224,7 +224,7 @@ code span.wa { color: #bf0303; } /* Warning */
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="part-iii-some-fundamentals-of-statistical-modeling.html"><a href="part-iii-some-fundamentals-of-statistical-modeling.html"><i class="fa fa-check"></i>Part III: Some Fundamentals of Statistical Modeling</a></li>
-<li class="chapter" data-level="5" data-path="uncertainty.html"><a href="uncertainty.html"><i class="fa fa-check"></i><b>5</b> Variability and Uncertainty (Standard Deviations, Standard Errors, Confidence Intervals)</a>
+<li class="chapter" data-level="5" data-path="uncertainty.html"><a href="uncertainty.html"><i class="fa fa-check"></i><b>5</b> Variability and Uncertainty (Standard Deviations, Standard Errors, and Confidence Intervals)</a>
 <ul>
 <li class="chapter" data-level="5.1" data-path="uncertainty.html"><a href="uncertainty.html#why-we-care-about-standard-errors"><i class="fa fa-check"></i><b>5.1</b> Why we care about standard errors</a></li>
 <li class="chapter" data-level="5.2" data-path="uncertainty.html"><a href="uncertainty.html#the-sample-standard-deviation-vs.-the-standard-error-of-the-mean"><i class="fa fa-check"></i><b>5.2</b> The sample standard deviation vs. the standard error of the mean</a>
@@ -929,25 +929,25 @@ y_i &amp;\sim N(\mu_i, \sigma^2)\\
 <h3><span class="header-section-number">8.1.3</span> Comparing the error-draw and conditional-draw ways of specifying the linear model</h3>
 <p>These two ways of specifying the model encourage slightly different ways of thinking about how the data (the response varible <span class="math inline">\(Y\)</span>) were generated. The error-draw specification “generates” data by 1) constructing what <span class="math inline">\(y_i\)</span> “should be” given <span class="math inline">\(x_i\)</span> (this is the conditional expection), then 2) adding some error <span class="math inline">\(e_i\)</span> drawn from a normal distribution with mean zero and some specified variance. The conditional-draw specification “generates” data by 1) constructing what <span class="math inline">\(y_i\)</span> “should be” given <span class="math inline">\(x_i\)</span>, then 2) drawing a random variable from some specified distribution <em>whose mean is this expectation</em>. This random draw is not “error” but the measured value <span class="math inline">\(y_i\)</span>. For the error draw generation, we need only one hat of random numbers, but for the conditional draw generation, we need a hat for each value of <span class="math inline">\(x_i\)</span>.</p>
 <p>Here is a short script that generates data by implementing both the error-draw and conditional-draw specifications. See if you can follow the logic of the code and match it to the meaning of these two ways of specifying a linear model.</p>
-<div class="sourceCode" id="cb179"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb179-1"><a href="intro-linear-models.html#cb179-1" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">5</span></span>
-<span id="cb179-2"><a href="intro-linear-models.html#cb179-2" aria-hidden="true" tabindex="-1"></a>b_0 <span class="ot">&lt;-</span> <span class="fl">10.0</span></span>
-<span id="cb179-3"><a href="intro-linear-models.html#cb179-3" aria-hidden="true" tabindex="-1"></a>b_1 <span class="ot">&lt;-</span> <span class="fl">1.2</span></span>
-<span id="cb179-4"><a href="intro-linear-models.html#cb179-4" aria-hidden="true" tabindex="-1"></a>sigma <span class="ot">&lt;-</span> <span class="fl">0.4</span></span>
-<span id="cb179-5"><a href="intro-linear-models.html#cb179-5" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">:</span>n</span>
-<span id="cb179-6"><a href="intro-linear-models.html#cb179-6" aria-hidden="true" tabindex="-1"></a>y_expected <span class="ot">&lt;-</span> b_0 <span class="sc">+</span> b_1<span class="sc">*</span>x</span>
-<span id="cb179-7"><a href="intro-linear-models.html#cb179-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb179-8"><a href="intro-linear-models.html#cb179-8" aria-hidden="true" tabindex="-1"></a><span class="co"># error-draw. Note that the n draws are all from the same distribution</span></span>
-<span id="cb179-9"><a href="intro-linear-models.html#cb179-9" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
-<span id="cb179-10"><a href="intro-linear-models.html#cb179-10" aria-hidden="true" tabindex="-1"></a>y_error_draw <span class="ot">&lt;-</span> y_expected <span class="sc">+</span> <span class="fu">rnorm</span>(n, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> sigma)</span>
-<span id="cb179-11"><a href="intro-linear-models.html#cb179-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb179-12"><a href="intro-linear-models.html#cb179-12" aria-hidden="true" tabindex="-1"></a><span class="co"># conditional-draw. Note that the n draws are each from a different</span></span>
-<span id="cb179-13"><a href="intro-linear-models.html#cb179-13" aria-hidden="true" tabindex="-1"></a><span class="co"># distribution because each has a different mean.</span></span>
-<span id="cb179-14"><a href="intro-linear-models.html#cb179-14" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
-<span id="cb179-15"><a href="intro-linear-models.html#cb179-15" aria-hidden="true" tabindex="-1"></a>y_conditional_draw <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n, <span class="at">mean =</span> y_expected, <span class="at">sd =</span> sigma)</span>
-<span id="cb179-16"><a href="intro-linear-models.html#cb179-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb179-17"><a href="intro-linear-models.html#cb179-17" aria-hidden="true" tabindex="-1"></a><span class="fu">data.table</span>(<span class="at">X =</span> x,</span>
-<span id="cb179-18"><a href="intro-linear-models.html#cb179-18" aria-hidden="true" tabindex="-1"></a>           <span class="st">&quot;Y (error draw)&quot;</span> <span class="ot">=</span> y_error_draw,</span>
-<span id="cb179-19"><a href="intro-linear-models.html#cb179-19" aria-hidden="true" tabindex="-1"></a>           <span class="st">&quot;Y (conditional draw)&quot;</span> <span class="ot">=</span> y_conditional_draw)</span></code></pre></div>
+<div class="sourceCode" id="cb180"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb180-1"><a href="intro-linear-models.html#cb180-1" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">5</span></span>
+<span id="cb180-2"><a href="intro-linear-models.html#cb180-2" aria-hidden="true" tabindex="-1"></a>b_0 <span class="ot">&lt;-</span> <span class="fl">10.0</span></span>
+<span id="cb180-3"><a href="intro-linear-models.html#cb180-3" aria-hidden="true" tabindex="-1"></a>b_1 <span class="ot">&lt;-</span> <span class="fl">1.2</span></span>
+<span id="cb180-4"><a href="intro-linear-models.html#cb180-4" aria-hidden="true" tabindex="-1"></a>sigma <span class="ot">&lt;-</span> <span class="fl">0.4</span></span>
+<span id="cb180-5"><a href="intro-linear-models.html#cb180-5" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">:</span>n</span>
+<span id="cb180-6"><a href="intro-linear-models.html#cb180-6" aria-hidden="true" tabindex="-1"></a>y_expected <span class="ot">&lt;-</span> b_0 <span class="sc">+</span> b_1<span class="sc">*</span>x</span>
+<span id="cb180-7"><a href="intro-linear-models.html#cb180-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb180-8"><a href="intro-linear-models.html#cb180-8" aria-hidden="true" tabindex="-1"></a><span class="co"># error-draw. Note that the n draws are all from the same distribution</span></span>
+<span id="cb180-9"><a href="intro-linear-models.html#cb180-9" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
+<span id="cb180-10"><a href="intro-linear-models.html#cb180-10" aria-hidden="true" tabindex="-1"></a>y_error_draw <span class="ot">&lt;-</span> y_expected <span class="sc">+</span> <span class="fu">rnorm</span>(n, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> sigma)</span>
+<span id="cb180-11"><a href="intro-linear-models.html#cb180-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb180-12"><a href="intro-linear-models.html#cb180-12" aria-hidden="true" tabindex="-1"></a><span class="co"># conditional-draw. Note that the n draws are each from a different</span></span>
+<span id="cb180-13"><a href="intro-linear-models.html#cb180-13" aria-hidden="true" tabindex="-1"></a><span class="co"># distribution because each has a different mean.</span></span>
+<span id="cb180-14"><a href="intro-linear-models.html#cb180-14" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
+<span id="cb180-15"><a href="intro-linear-models.html#cb180-15" aria-hidden="true" tabindex="-1"></a>y_conditional_draw <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n, <span class="at">mean =</span> y_expected, <span class="at">sd =</span> sigma)</span>
+<span id="cb180-16"><a href="intro-linear-models.html#cb180-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb180-17"><a href="intro-linear-models.html#cb180-17" aria-hidden="true" tabindex="-1"></a><span class="fu">data.table</span>(<span class="at">X =</span> x,</span>
+<span id="cb180-18"><a href="intro-linear-models.html#cb180-18" aria-hidden="true" tabindex="-1"></a>           <span class="st">&quot;Y (error draw)&quot;</span> <span class="ot">=</span> y_error_draw,</span>
+<span id="cb180-19"><a href="intro-linear-models.html#cb180-19" aria-hidden="true" tabindex="-1"></a>           <span class="st">&quot;Y (conditional draw)&quot;</span> <span class="ot">=</span> y_conditional_draw)</span></code></pre></div>
 <pre><code>##    X Y (error draw) Y (conditional draw)
 ## 1: 1       10.94942             10.94942
 ## 2: 2       12.47346             12.47346

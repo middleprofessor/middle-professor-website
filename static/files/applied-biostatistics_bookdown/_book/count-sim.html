@@ -224,7 +224,7 @@ code span.wa { color: #bf0303; } /* Warning */
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="part-iii-some-fundamentals-of-statistical-modeling.html"><a href="part-iii-some-fundamentals-of-statistical-modeling.html"><i class="fa fa-check"></i>Part III: Some Fundamentals of Statistical Modeling</a></li>
-<li class="chapter" data-level="5" data-path="uncertainty.html"><a href="uncertainty.html"><i class="fa fa-check"></i><b>5</b> Variability and Uncertainty (Standard Deviations, Standard Errors, Confidence Intervals)</a>
+<li class="chapter" data-level="5" data-path="uncertainty.html"><a href="uncertainty.html"><i class="fa fa-check"></i><b>5</b> Variability and Uncertainty (Standard Deviations, Standard Errors, and Confidence Intervals)</a>
 <ul>
 <li class="chapter" data-level="5.1" data-path="uncertainty.html"><a href="uncertainty.html#why-we-care-about-standard-errors"><i class="fa fa-check"></i><b>5.1</b> Why we care about standard errors</a></li>
 <li class="chapter" data-level="5.2" data-path="uncertainty.html"><a href="uncertainty.html#the-sample-standard-deviation-vs.-the-standard-error-of-the-mean"><i class="fa fa-check"></i><b>5.2</b> The sample standard deviation vs. the standard error of the mean</a>
@@ -887,256 +887,219 @@ code span.wa { color: #bf0303; } /* Warning */
             <section class="normal" id="section-">
 <div id="count-sim" class="section level1" number="22">
 <h1><span class="header-section-number">Chapter 22</span> Simulations – Count data (alternatives to a t-test)</h1>
-<div class="sourceCode" id="cb720"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb720-1"><a href="count-sim.html#cb720-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(here)</span>
-<span id="cb720-2"><a href="count-sim.html#cb720-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(data.table)</span>
-<span id="cb720-3"><a href="count-sim.html#cb720-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readxl)</span>
-<span id="cb720-4"><a href="count-sim.html#cb720-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb720-5"><a href="count-sim.html#cb720-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(MASS)</span>
-<span id="cb720-6"><a href="count-sim.html#cb720-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lmPerm)</span>
-<span id="cb720-7"><a href="count-sim.html#cb720-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(nlme)</span>
-<span id="cb720-8"><a href="count-sim.html#cb720-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(glmmTMB)</span>
-<span id="cb720-9"><a href="count-sim.html#cb720-9" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(emmeans)</span>
-<span id="cb720-10"><a href="count-sim.html#cb720-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb720-11"><a href="count-sim.html#cb720-11" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(knitr)</span>
-<span id="cb720-12"><a href="count-sim.html#cb720-12" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(kableExtra)</span>
-<span id="cb720-13"><a href="count-sim.html#cb720-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb720-14"><a href="count-sim.html#cb720-14" aria-hidden="true" tabindex="-1"></a>here <span class="ot">&lt;-</span> here<span class="sc">::</span>here</span></code></pre></div>
+<div class="sourceCode" id="cb721"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb721-1"><a href="count-sim.html#cb721-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(here)</span>
+<span id="cb721-2"><a href="count-sim.html#cb721-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(data.table)</span>
+<span id="cb721-3"><a href="count-sim.html#cb721-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readxl)</span>
+<span id="cb721-4"><a href="count-sim.html#cb721-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb721-5"><a href="count-sim.html#cb721-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(MASS)</span>
+<span id="cb721-6"><a href="count-sim.html#cb721-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lmPerm)</span>
+<span id="cb721-7"><a href="count-sim.html#cb721-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(nlme)</span>
+<span id="cb721-8"><a href="count-sim.html#cb721-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(glmmTMB)</span>
+<span id="cb721-9"><a href="count-sim.html#cb721-9" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(emmeans)</span>
+<span id="cb721-10"><a href="count-sim.html#cb721-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb721-11"><a href="count-sim.html#cb721-11" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(knitr)</span>
+<span id="cb721-12"><a href="count-sim.html#cb721-12" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(kableExtra)</span>
+<span id="cb721-13"><a href="count-sim.html#cb721-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb721-14"><a href="count-sim.html#cb721-14" aria-hidden="true" tabindex="-1"></a>here <span class="ot">&lt;-</span> here<span class="sc">::</span>here</span></code></pre></div>
 <div id="use-data-similar-to-figure-6f-from-example-1" class="section level2" number="22.1">
 <h2><span class="header-section-number">22.1</span> Use data similar to Figure 6f from Example 1</h2>
 <p>The simulated data are modeled to look like the <a href="violations.html#violations-6f">Figure 6f</a> data used in Example 1 of the Violations chapter.</p>
-<div class="sourceCode" id="cb721"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb721-1"><a href="count-sim.html#cb721-1" aria-hidden="true" tabindex="-1"></a>data_folder <span class="ot">&lt;-</span> <span class="st">&quot;data&quot;</span></span>
-<span id="cb721-2"><a href="count-sim.html#cb721-2" aria-hidden="true" tabindex="-1"></a>data_from <span class="ot">&lt;-</span> <span class="st">&quot;Exercise reduces inflammatory cell production and cardiovascular inflammation via instruction of hematopoietic progenitor cells&quot;</span></span>
-<span id="cb721-3"><a href="count-sim.html#cb721-3" aria-hidden="true" tabindex="-1"></a>file_name <span class="ot">&lt;-</span> <span class="st">&quot;41591_2019_633_MOESM8_ESM.xlsx&quot;</span></span>
-<span id="cb721-4"><a href="count-sim.html#cb721-4" aria-hidden="true" tabindex="-1"></a>file_path <span class="ot">&lt;-</span> <span class="fu">here</span>(data_folder, data_from, file_name)</span>
-<span id="cb721-5"><a href="count-sim.html#cb721-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb721-6"><a href="count-sim.html#cb721-6" aria-hidden="true" tabindex="-1"></a><span class="co"># assuming mice are independent and not same mouse used for all three treatment</span></span>
-<span id="cb721-7"><a href="count-sim.html#cb721-7" aria-hidden="true" tabindex="-1"></a>melt_col_names <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;Sedentary&quot;</span>, <span class="st">&quot;Exercise&quot;</span>)</span>
-<span id="cb721-8"><a href="count-sim.html#cb721-8" aria-hidden="true" tabindex="-1"></a>fig6f <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(file_path,</span>
-<span id="cb721-9"><a href="count-sim.html#cb721-9" aria-hidden="true" tabindex="-1"></a>                     <span class="at">sheet =</span> <span class="st">&quot;Figure 6f&quot;</span>,</span>
-<span id="cb721-10"><a href="count-sim.html#cb721-10" aria-hidden="true" tabindex="-1"></a>                     <span class="at">range =</span> <span class="st">&quot;A7:B29&quot;</span>,</span>
-<span id="cb721-11"><a href="count-sim.html#cb721-11" aria-hidden="true" tabindex="-1"></a>                     <span class="at">col_names =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb721-12"><a href="count-sim.html#cb721-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.table</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb721-13"><a href="count-sim.html#cb721-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">melt</span>(<span class="at">measure.vars =</span> melt_col_names,</span>
-<span id="cb721-14"><a href="count-sim.html#cb721-14" aria-hidden="true" tabindex="-1"></a>       <span class="at">variable.name =</span> <span class="st">&quot;treatment&quot;</span>,</span>
-<span id="cb721-15"><a href="count-sim.html#cb721-15" aria-hidden="true" tabindex="-1"></a>       <span class="at">value.name =</span> <span class="st">&quot;neutrophils&quot;</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb721-16"><a href="count-sim.html#cb721-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">na.omit</span>() <span class="co"># danger!</span></span>
-<span id="cb721-17"><a href="count-sim.html#cb721-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb721-18"><a href="count-sim.html#cb721-18" aria-hidden="true" tabindex="-1"></a>treatment_levels <span class="ot">&lt;-</span> melt_col_names</span>
-<span id="cb721-19"><a href="count-sim.html#cb721-19" aria-hidden="true" tabindex="-1"></a>fig6f[, treatment <span class="sc">:</span><span class="er">=</span> <span class="fu">factor</span>(treatment,</span>
-<span id="cb721-20"><a href="count-sim.html#cb721-20" aria-hidden="true" tabindex="-1"></a>                            <span class="at">levels =</span> treatment_levels)]</span>
-<span id="cb721-21"><a href="count-sim.html#cb721-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb721-22"><a href="count-sim.html#cb721-22" aria-hidden="true" tabindex="-1"></a><span class="co"># neutrophils is count/10^6</span></span>
-<span id="cb721-23"><a href="count-sim.html#cb721-23" aria-hidden="true" tabindex="-1"></a>fig6f[, neutrophil_count <span class="sc">:</span><span class="er">=</span> <span class="fu">round</span>(neutrophils<span class="sc">*</span><span class="dv">10</span><span class="sc">^</span><span class="dv">6</span>, <span class="dv">0</span>)]</span>
-<span id="cb721-24"><a href="count-sim.html#cb721-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb721-25"><a href="count-sim.html#cb721-25" aria-hidden="true" tabindex="-1"></a><span class="co"># fig6f[1, neutrophil_count]</span></span>
-<span id="cb721-26"><a href="count-sim.html#cb721-26" aria-hidden="true" tabindex="-1"></a><span class="co">#View(fig6f)</span></span></code></pre></div>
-<div class="sourceCode" id="cb722"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb722-1"><a href="count-sim.html#cb722-1" aria-hidden="true" tabindex="-1"></a>m1 <span class="ot">&lt;-</span> <span class="fu">glmmTMB</span>(neutrophil_count <span class="sc">~</span> treatment,</span>
-<span id="cb722-2"><a href="count-sim.html#cb722-2" aria-hidden="true" tabindex="-1"></a>              <span class="at">data =</span> fig6f,</span>
-<span id="cb722-3"><a href="count-sim.html#cb722-3" aria-hidden="true" tabindex="-1"></a>              <span class="at">family =</span> <span class="fu">nbinom2</span>(<span class="at">link =</span> <span class="st">&quot;log&quot;</span>))</span>
-<span id="cb722-4"><a href="count-sim.html#cb722-4" aria-hidden="true" tabindex="-1"></a>mu_cn_obs <span class="ot">&lt;-</span> <span class="fu">exp</span>(<span class="fu">coef</span>(<span class="fu">summary</span>(m1))<span class="sc">$</span>cond[<span class="st">&quot;(Intercept)&quot;</span>, <span class="st">&quot;Estimate&quot;</span>])</span>
-<span id="cb722-5"><a href="count-sim.html#cb722-5" aria-hidden="true" tabindex="-1"></a>theta_obs <span class="ot">&lt;-</span> <span class="fu">sigma</span>(m1) <span class="sc">%&gt;%</span></span>
-<span id="cb722-6"><a href="count-sim.html#cb722-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">round</span>(<span class="dv">1</span>)</span>
-<span id="cb722-7"><a href="count-sim.html#cb722-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb722-8"><a href="count-sim.html#cb722-8" aria-hidden="true" tabindex="-1"></a><span class="co"># compare with glm.nb, which is used for the simulation</span></span>
-<span id="cb722-9"><a href="count-sim.html#cb722-9" aria-hidden="true" tabindex="-1"></a>m2 <span class="ot">&lt;-</span> <span class="fu">glm.nb</span>(neutrophil_count <span class="sc">~</span> treatment,</span>
-<span id="cb722-10"><a href="count-sim.html#cb722-10" aria-hidden="true" tabindex="-1"></a>              <span class="at">data =</span> fig6f)</span>
-<span id="cb722-11"><a href="count-sim.html#cb722-11" aria-hidden="true" tabindex="-1"></a>mu_cn_obs</span></code></pre></div>
+<div class="sourceCode" id="cb722"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb722-1"><a href="count-sim.html#cb722-1" aria-hidden="true" tabindex="-1"></a>data_folder <span class="ot">&lt;-</span> <span class="st">&quot;data&quot;</span></span>
+<span id="cb722-2"><a href="count-sim.html#cb722-2" aria-hidden="true" tabindex="-1"></a>data_from <span class="ot">&lt;-</span> <span class="st">&quot;Exercise reduces inflammatory cell production and cardiovascular inflammation via instruction of hematopoietic progenitor cells&quot;</span></span>
+<span id="cb722-3"><a href="count-sim.html#cb722-3" aria-hidden="true" tabindex="-1"></a>file_name <span class="ot">&lt;-</span> <span class="st">&quot;41591_2019_633_MOESM8_ESM.xlsx&quot;</span></span>
+<span id="cb722-4"><a href="count-sim.html#cb722-4" aria-hidden="true" tabindex="-1"></a>file_path <span class="ot">&lt;-</span> <span class="fu">here</span>(data_folder, data_from, file_name)</span>
+<span id="cb722-5"><a href="count-sim.html#cb722-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb722-6"><a href="count-sim.html#cb722-6" aria-hidden="true" tabindex="-1"></a><span class="co"># assuming mice are independent and not same mouse used for all three treatment</span></span>
+<span id="cb722-7"><a href="count-sim.html#cb722-7" aria-hidden="true" tabindex="-1"></a>melt_col_names <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;Sedentary&quot;</span>, <span class="st">&quot;Exercise&quot;</span>)</span>
+<span id="cb722-8"><a href="count-sim.html#cb722-8" aria-hidden="true" tabindex="-1"></a>fig6f <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(file_path,</span>
+<span id="cb722-9"><a href="count-sim.html#cb722-9" aria-hidden="true" tabindex="-1"></a>                     <span class="at">sheet =</span> <span class="st">&quot;Figure 6f&quot;</span>,</span>
+<span id="cb722-10"><a href="count-sim.html#cb722-10" aria-hidden="true" tabindex="-1"></a>                     <span class="at">range =</span> <span class="st">&quot;A7:B29&quot;</span>,</span>
+<span id="cb722-11"><a href="count-sim.html#cb722-11" aria-hidden="true" tabindex="-1"></a>                     <span class="at">col_names =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb722-12"><a href="count-sim.html#cb722-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.table</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb722-13"><a href="count-sim.html#cb722-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">melt</span>(<span class="at">measure.vars =</span> melt_col_names,</span>
+<span id="cb722-14"><a href="count-sim.html#cb722-14" aria-hidden="true" tabindex="-1"></a>       <span class="at">variable.name =</span> <span class="st">&quot;treatment&quot;</span>,</span>
+<span id="cb722-15"><a href="count-sim.html#cb722-15" aria-hidden="true" tabindex="-1"></a>       <span class="at">value.name =</span> <span class="st">&quot;neutrophils&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb722-16"><a href="count-sim.html#cb722-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">na.omit</span>() <span class="co"># danger!</span></span>
+<span id="cb722-17"><a href="count-sim.html#cb722-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb722-18"><a href="count-sim.html#cb722-18" aria-hidden="true" tabindex="-1"></a>treatment_levels <span class="ot">&lt;-</span> melt_col_names</span>
+<span id="cb722-19"><a href="count-sim.html#cb722-19" aria-hidden="true" tabindex="-1"></a>fig6f[, treatment <span class="sc">:</span><span class="er">=</span> <span class="fu">factor</span>(treatment,</span>
+<span id="cb722-20"><a href="count-sim.html#cb722-20" aria-hidden="true" tabindex="-1"></a>                            <span class="at">levels =</span> treatment_levels)]</span>
+<span id="cb722-21"><a href="count-sim.html#cb722-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb722-22"><a href="count-sim.html#cb722-22" aria-hidden="true" tabindex="-1"></a><span class="co"># neutrophils is count/10^6</span></span>
+<span id="cb722-23"><a href="count-sim.html#cb722-23" aria-hidden="true" tabindex="-1"></a>fig6f[, neutrophil_count <span class="sc">:</span><span class="er">=</span> <span class="fu">round</span>(neutrophils<span class="sc">*</span><span class="dv">10</span><span class="sc">^</span><span class="dv">6</span>, <span class="dv">0</span>)]</span>
+<span id="cb722-24"><a href="count-sim.html#cb722-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb722-25"><a href="count-sim.html#cb722-25" aria-hidden="true" tabindex="-1"></a><span class="co"># fig6f[1, neutrophil_count]</span></span>
+<span id="cb722-26"><a href="count-sim.html#cb722-26" aria-hidden="true" tabindex="-1"></a><span class="co">#View(fig6f)</span></span></code></pre></div>
+<div class="sourceCode" id="cb723"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb723-1"><a href="count-sim.html#cb723-1" aria-hidden="true" tabindex="-1"></a>m1 <span class="ot">&lt;-</span> <span class="fu">glmmTMB</span>(neutrophil_count <span class="sc">~</span> treatment,</span>
+<span id="cb723-2"><a href="count-sim.html#cb723-2" aria-hidden="true" tabindex="-1"></a>              <span class="at">data =</span> fig6f,</span>
+<span id="cb723-3"><a href="count-sim.html#cb723-3" aria-hidden="true" tabindex="-1"></a>              <span class="at">family =</span> <span class="fu">nbinom2</span>(<span class="at">link =</span> <span class="st">&quot;log&quot;</span>))</span>
+<span id="cb723-4"><a href="count-sim.html#cb723-4" aria-hidden="true" tabindex="-1"></a>mu_cn_obs <span class="ot">&lt;-</span> <span class="fu">exp</span>(<span class="fu">coef</span>(<span class="fu">summary</span>(m1))<span class="sc">$</span>cond[<span class="st">&quot;(Intercept)&quot;</span>, <span class="st">&quot;Estimate&quot;</span>])</span>
+<span id="cb723-5"><a href="count-sim.html#cb723-5" aria-hidden="true" tabindex="-1"></a>theta_obs <span class="ot">&lt;-</span> <span class="fu">sigma</span>(m1) <span class="sc">%&gt;%</span></span>
+<span id="cb723-6"><a href="count-sim.html#cb723-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">round</span>(<span class="dv">1</span>)</span>
+<span id="cb723-7"><a href="count-sim.html#cb723-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb723-8"><a href="count-sim.html#cb723-8" aria-hidden="true" tabindex="-1"></a><span class="co"># compare with glm.nb, which is used for the simulation</span></span>
+<span id="cb723-9"><a href="count-sim.html#cb723-9" aria-hidden="true" tabindex="-1"></a>m2 <span class="ot">&lt;-</span> <span class="fu">glm.nb</span>(neutrophil_count <span class="sc">~</span> treatment,</span>
+<span id="cb723-10"><a href="count-sim.html#cb723-10" aria-hidden="true" tabindex="-1"></a>              <span class="at">data =</span> fig6f)</span>
+<span id="cb723-11"><a href="count-sim.html#cb723-11" aria-hidden="true" tabindex="-1"></a>mu_cn_obs</span></code></pre></div>
 <pre><code>## [1] 3633140</code></pre>
-<div class="sourceCode" id="cb724"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb724-1"><a href="count-sim.html#cb724-1" aria-hidden="true" tabindex="-1"></a>m2<span class="sc">$</span>theta</span></code></pre></div>
+<div class="sourceCode" id="cb725"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb725-1"><a href="count-sim.html#cb725-1" aria-hidden="true" tabindex="-1"></a>m2<span class="sc">$</span>theta</span></code></pre></div>
 <pre><code>## [1] 6.607988</code></pre>
 </div>
 <div id="functions" class="section level2" number="22.2">
 <h2><span class="header-section-number">22.2</span> Functions</h2>
-<div class="sourceCode" id="cb726"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb726-1"><a href="count-sim.html#cb726-1" aria-hidden="true" tabindex="-1"></a>simulator <span class="ot">&lt;-</span> <span class="cf">function</span>(<span class="at">n_sim =</span> <span class="dv">1000</span>,</span>
-<span id="cb726-2"><a href="count-sim.html#cb726-2" aria-hidden="true" tabindex="-1"></a>                      <span class="at">n_levels =</span> <span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">10</span>),</span>
-<span id="cb726-3"><a href="count-sim.html#cb726-3" aria-hidden="true" tabindex="-1"></a>                      <span class="at">treatment_levels =</span> <span class="fu">c</span>(<span class="st">&quot;cn&quot;</span>, <span class="st">&quot;tr&quot;</span>),</span>
-<span id="cb726-4"><a href="count-sim.html#cb726-4" aria-hidden="true" tabindex="-1"></a>                      <span class="at">mu_levels =</span> <span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">10</span>),</span>
-<span id="cb726-5"><a href="count-sim.html#cb726-5" aria-hidden="true" tabindex="-1"></a>                      <span class="at">theta_levels =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>),</span>
-<span id="cb726-6"><a href="count-sim.html#cb726-6" aria-hidden="true" tabindex="-1"></a>                      <span class="at">sigma_levels =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">1</span>),</span>
-<span id="cb726-7"><a href="count-sim.html#cb726-7" aria-hidden="true" tabindex="-1"></a>                      <span class="at">normal =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb726-8"><a href="count-sim.html#cb726-8" aria-hidden="true" tabindex="-1"></a>                      <span class="at">seed =</span> <span class="dv">1</span>){</span>
-<span id="cb726-9"><a href="count-sim.html#cb726-9" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb726-10"><a href="count-sim.html#cb726-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set.seed</span>(seed)</span>
-<span id="cb726-11"><a href="count-sim.html#cb726-11" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb726-12"><a href="count-sim.html#cb726-12" aria-hidden="true" tabindex="-1"></a>  N <span class="ot">&lt;-</span> <span class="fu">sum</span>(n_levels)</span>
-<span id="cb726-13"><a href="count-sim.html#cb726-13" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb726-14"><a href="count-sim.html#cb726-14" aria-hidden="true" tabindex="-1"></a>  mu_sim <span class="ot">&lt;-</span> <span class="fu">rep</span>(mu_levels, n_levels)</span>
-<span id="cb726-15"><a href="count-sim.html#cb726-15" aria-hidden="true" tabindex="-1"></a>  theta_sim <span class="ot">&lt;-</span> <span class="fu">rep</span>(theta_levels, n_levels)</span>
-<span id="cb726-16"><a href="count-sim.html#cb726-16" aria-hidden="true" tabindex="-1"></a>  sigma_sim <span class="ot">&lt;-</span> <span class="fu">rep</span>(sigma_levels, n_levels)</span>
-<span id="cb726-17"><a href="count-sim.html#cb726-17" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb726-18"><a href="count-sim.html#cb726-18" aria-hidden="true" tabindex="-1"></a>  method_list <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;lm&quot;</span>, <span class="st">&quot;gls&quot;</span>, <span class="st">&quot;glm_nb&quot;</span>, <span class="st">&quot;glm_qp&quot;</span>, <span class="st">&quot;lmp&quot;</span>, <span class="st">&quot;mww&quot;</span>)</span>
-<span id="cb726-19"><a href="count-sim.html#cb726-19" aria-hidden="true" tabindex="-1"></a>  p_values <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">as.numeric</span>(<span class="cn">NA</span>),</span>
-<span id="cb726-20"><a href="count-sim.html#cb726-20" aria-hidden="true" tabindex="-1"></a>                     <span class="at">nrow =</span> n_sim,</span>
-<span id="cb726-21"><a href="count-sim.html#cb726-21" aria-hidden="true" tabindex="-1"></a>                     <span class="at">ncol =</span> <span class="fu">length</span>(method_list)) <span class="sc">%&gt;%</span></span>
-<span id="cb726-22"><a href="count-sim.html#cb726-22" aria-hidden="true" tabindex="-1"></a>    <span class="fu">data.table</span>()</span>
-<span id="cb726-23"><a href="count-sim.html#cb726-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">colnames</span>(p_values) <span class="ot">&lt;-</span> method_list</span>
-<span id="cb726-24"><a href="count-sim.html#cb726-24" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb726-25"><a href="count-sim.html#cb726-25" aria-hidden="true" tabindex="-1"></a>  fake_counts <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">as.numeric</span>(<span class="cn">NA</span>),</span>
-<span id="cb726-26"><a href="count-sim.html#cb726-26" aria-hidden="true" tabindex="-1"></a>                        <span class="at">nrow =</span> N,</span>
-<span id="cb726-27"><a href="count-sim.html#cb726-27" aria-hidden="true" tabindex="-1"></a>                        <span class="at">ncol =</span> n_sim)</span>
-<span id="cb726-28"><a href="count-sim.html#cb726-28" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb726-29"><a href="count-sim.html#cb726-29" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(normal <span class="sc">==</span> <span class="cn">TRUE</span>){</span>
-<span id="cb726-30"><a href="count-sim.html#cb726-30" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span>(j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n_sim){</span>
-<span id="cb726-31"><a href="count-sim.html#cb726-31" aria-hidden="true" tabindex="-1"></a>      fake_counts[, j] <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N,</span>
-<span id="cb726-32"><a href="count-sim.html#cb726-32" aria-hidden="true" tabindex="-1"></a>                                <span class="at">mean =</span> mu_sim,</span>
-<span id="cb726-33"><a href="count-sim.html#cb726-33" aria-hidden="true" tabindex="-1"></a>                                <span class="at">sd =</span> sigma_sim) <span class="sc">%&gt;%</span></span>
-<span id="cb726-34"><a href="count-sim.html#cb726-34" aria-hidden="true" tabindex="-1"></a>        <span class="fu">round</span>(<span class="dv">0</span>)</span>
-<span id="cb726-35"><a href="count-sim.html#cb726-35" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb726-36"><a href="count-sim.html#cb726-36" aria-hidden="true" tabindex="-1"></a>  }<span class="cf">else</span>{</span>
-<span id="cb726-37"><a href="count-sim.html#cb726-37" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span>(j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n_sim){</span>
-<span id="cb726-38"><a href="count-sim.html#cb726-38" aria-hidden="true" tabindex="-1"></a>      fake_counts[, j] <span class="ot">&lt;-</span> <span class="fu">rnegbin</span>(N,</span>
-<span id="cb726-39"><a href="count-sim.html#cb726-39" aria-hidden="true" tabindex="-1"></a>                                  <span class="at">mu =</span> mu_sim,</span>
-<span id="cb726-40"><a href="count-sim.html#cb726-40" aria-hidden="true" tabindex="-1"></a>                                  <span class="at">theta =</span> theta_sim)</span>
-<span id="cb726-41"><a href="count-sim.html#cb726-41" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb726-42"><a href="count-sim.html#cb726-42" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb726-43"><a href="count-sim.html#cb726-43" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb726-44"><a href="count-sim.html#cb726-44" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span>(j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n_sim){</span>
-<span id="cb726-45"><a href="count-sim.html#cb726-45" aria-hidden="true" tabindex="-1"></a>    fake_data[, count <span class="sc">:</span><span class="er">=</span> fake_counts[,j]]</span>
-<span id="cb726-46"><a href="count-sim.html#cb726-46" aria-hidden="true" tabindex="-1"></a>    m1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(count <span class="sc">~</span> treatment, <span class="at">data =</span> fake_data)</span>
-<span id="cb726-47"><a href="count-sim.html#cb726-47" aria-hidden="true" tabindex="-1"></a>    m2 <span class="ot">&lt;-</span> <span class="fu">gls</span>(count <span class="sc">~</span> treatment,</span>
-<span id="cb726-48"><a href="count-sim.html#cb726-48" aria-hidden="true" tabindex="-1"></a>              <span class="at">data =</span> fake_data,</span>
-<span id="cb726-49"><a href="count-sim.html#cb726-49" aria-hidden="true" tabindex="-1"></a>              <span class="at">weights =</span> <span class="fu">varIdent</span>(<span class="at">form =</span> <span class="sc">~</span> <span class="dv">1</span> <span class="sc">|</span> treatment))</span>
-<span id="cb726-50"><a href="count-sim.html#cb726-50" aria-hidden="true" tabindex="-1"></a>    m2_pairs <span class="ot">&lt;-</span> <span class="fu">contrast</span>(<span class="fu">emmeans</span>(m2, <span class="at">specs =</span> <span class="st">&quot;treatment&quot;</span>),</span>
-<span id="cb726-51"><a href="count-sim.html#cb726-51" aria-hidden="true" tabindex="-1"></a>                         <span class="at">method =</span> <span class="st">&quot;revpairwise&quot;</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb726-52"><a href="count-sim.html#cb726-52" aria-hidden="true" tabindex="-1"></a>      <span class="fu">summary</span>()</span>
-<span id="cb726-53"><a href="count-sim.html#cb726-53" aria-hidden="true" tabindex="-1"></a>    m3 <span class="ot">&lt;-</span> <span class="fu">glm.nb</span>(count <span class="sc">~</span> treatment, <span class="at">data =</span> fake_data)</span>
-<span id="cb726-54"><a href="count-sim.html#cb726-54" aria-hidden="true" tabindex="-1"></a>    m4 <span class="ot">&lt;-</span> <span class="fu">glm</span>(count <span class="sc">~</span> treatment,</span>
-<span id="cb726-55"><a href="count-sim.html#cb726-55" aria-hidden="true" tabindex="-1"></a>                 <span class="at">data =</span> fake_data,</span>
-<span id="cb726-56"><a href="count-sim.html#cb726-56" aria-hidden="true" tabindex="-1"></a>                 <span class="at">family =</span> quasipoisson)</span>
-<span id="cb726-57"><a href="count-sim.html#cb726-57" aria-hidden="true" tabindex="-1"></a>    <span class="co"># m3 &lt;- glmmTMB(count ~ treatment,</span></span>
-<span id="cb726-58"><a href="count-sim.html#cb726-58" aria-hidden="true" tabindex="-1"></a>    <span class="co">#                data = fake_data,</span></span>
-<span id="cb726-59"><a href="count-sim.html#cb726-59" aria-hidden="true" tabindex="-1"></a>    <span class="co">#                family = nbinom2(link = &quot;log&quot;))$cond</span></span>
-<span id="cb726-60"><a href="count-sim.html#cb726-60" aria-hidden="true" tabindex="-1"></a>    <span class="co"># m4 &lt;- glmmTMB(count ~ treatment,</span></span>
-<span id="cb726-61"><a href="count-sim.html#cb726-61" aria-hidden="true" tabindex="-1"></a>    <span class="co">#                data = fake_data,</span></span>
-<span id="cb726-62"><a href="count-sim.html#cb726-62" aria-hidden="true" tabindex="-1"></a>    <span class="co">#                family = nbinom1(link = &quot;log&quot;))$cond</span></span>
-<span id="cb726-63"><a href="count-sim.html#cb726-63" aria-hidden="true" tabindex="-1"></a>    m5 <span class="ot">&lt;-</span> <span class="fu">lmp</span>(count <span class="sc">~</span> treatment,</span>
-<span id="cb726-64"><a href="count-sim.html#cb726-64" aria-hidden="true" tabindex="-1"></a>              <span class="at">data =</span> fake_data,</span>
-<span id="cb726-65"><a href="count-sim.html#cb726-65" aria-hidden="true" tabindex="-1"></a>              <span class="at">perm =</span> <span class="st">&quot;Exact&quot;</span>,</span>
-<span id="cb726-66"><a href="count-sim.html#cb726-66" aria-hidden="true" tabindex="-1"></a>              <span class="at">settings =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb726-67"><a href="count-sim.html#cb726-67" aria-hidden="true" tabindex="-1"></a>    m6 <span class="ot">&lt;-</span> <span class="fu">wilcox.test</span>(count <span class="sc">~</span> treatment,</span>
-<span id="cb726-68"><a href="count-sim.html#cb726-68" aria-hidden="true" tabindex="-1"></a>                      <span class="at">data =</span> fake_data) </span>
-<span id="cb726-69"><a href="count-sim.html#cb726-69" aria-hidden="true" tabindex="-1"></a>    p_values[j, lm <span class="sc">:</span><span class="er">=</span> <span class="fu">coef</span>(<span class="fu">summary</span>(m1))[<span class="dv">2</span>, <span class="st">&quot;Pr(&gt;|t|)&quot;</span>]]</span>
-<span id="cb726-70"><a href="count-sim.html#cb726-70" aria-hidden="true" tabindex="-1"></a>    p_values[j, gls <span class="sc">:</span><span class="er">=</span> m2_pairs[<span class="dv">1</span>, <span class="st">&quot;p.value&quot;</span>]]</span>
-<span id="cb726-71"><a href="count-sim.html#cb726-71" aria-hidden="true" tabindex="-1"></a>    p_values[j, glm_nb <span class="sc">:</span><span class="er">=</span> <span class="fu">coef</span>(<span class="fu">summary</span>(m3))[<span class="dv">2</span>, <span class="st">&quot;Pr(&gt;|z|)&quot;</span>]]</span>
-<span id="cb726-72"><a href="count-sim.html#cb726-72" aria-hidden="true" tabindex="-1"></a>    p_values[j, glm_qp <span class="sc">:</span><span class="er">=</span> <span class="fu">coef</span>(<span class="fu">summary</span>(m4))[<span class="dv">2</span>, <span class="st">&quot;Pr(&gt;|t|)&quot;</span>]]</span>
-<span id="cb726-73"><a href="count-sim.html#cb726-73" aria-hidden="true" tabindex="-1"></a>    p_values[j, lmp <span class="sc">:</span><span class="er">=</span> <span class="fu">coef</span>(<span class="fu">summary</span>(m5))[<span class="dv">2</span>, <span class="st">&quot;Pr(Prob)&quot;</span>]]</span>
-<span id="cb726-74"><a href="count-sim.html#cb726-74" aria-hidden="true" tabindex="-1"></a>    p_values[j, mww <span class="sc">:</span><span class="er">=</span> m6<span class="sc">$</span>p.value]</span>
-<span id="cb726-75"><a href="count-sim.html#cb726-75" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb726-76"><a href="count-sim.html#cb726-76" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb726-77"><a href="count-sim.html#cb726-77" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(p_values)</span>
-<span id="cb726-78"><a href="count-sim.html#cb726-78" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
-<div class="sourceCode" id="cb727"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb727-1"><a href="count-sim.html#cb727-1" aria-hidden="true" tabindex="-1"></a>binder <span class="ot">&lt;-</span> <span class="cf">function</span>(</span>
-<span id="cb727-2"><a href="count-sim.html#cb727-2" aria-hidden="true" tabindex="-1"></a>  p_values,</span>
-<span id="cb727-3"><a href="count-sim.html#cb727-3" aria-hidden="true" tabindex="-1"></a>  sim_res,</span>
-<span id="cb727-4"><a href="count-sim.html#cb727-4" aria-hidden="true" tabindex="-1"></a>  sim_i,</span>
-<span id="cb727-5"><a href="count-sim.html#cb727-5" aria-hidden="true" tabindex="-1"></a>  n_levels_sim,</span>
-<span id="cb727-6"><a href="count-sim.html#cb727-6" aria-hidden="true" tabindex="-1"></a>  mu_levels_sim,</span>
-<span id="cb727-7"><a href="count-sim.html#cb727-7" aria-hidden="true" tabindex="-1"></a>  theta_levels_sim,</span>
-<span id="cb727-8"><a href="count-sim.html#cb727-8" aria-hidden="true" tabindex="-1"></a>  sigma_levels_sim,</span>
-<span id="cb727-9"><a href="count-sim.html#cb727-9" aria-hidden="true" tabindex="-1"></a>  normal_sim){</span>
-<span id="cb727-10"><a href="count-sim.html#cb727-10" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb727-11"><a href="count-sim.html#cb727-11" aria-hidden="true" tabindex="-1"></a>  sim_table <span class="ot">&lt;-</span> <span class="fu">data.table</span>(</span>
-<span id="cb727-12"><a href="count-sim.html#cb727-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">sim =</span> sim_i,</span>
-<span id="cb727-13"><a href="count-sim.html#cb727-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">n_sim =</span> n_sim_i,</span>
-<span id="cb727-14"><a href="count-sim.html#cb727-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">n1 =</span> n_levels_sim[<span class="dv">1</span>],</span>
-<span id="cb727-15"><a href="count-sim.html#cb727-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">n2 =</span> n_levels_sim[<span class="dv">2</span>],</span>
-<span id="cb727-16"><a href="count-sim.html#cb727-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">n =</span> <span class="fu">ifelse</span>(n_levels_sim[<span class="dv">1</span>] <span class="sc">==</span> n_levels_sim[<span class="dv">2</span>],</span>
-<span id="cb727-17"><a href="count-sim.html#cb727-17" aria-hidden="true" tabindex="-1"></a>               <span class="st">&quot;=&quot;</span>,</span>
-<span id="cb727-18"><a href="count-sim.html#cb727-18" aria-hidden="true" tabindex="-1"></a>               <span class="st">&quot;!=&quot;</span>),</span>
-<span id="cb727-19"><a href="count-sim.html#cb727-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">mu1 =</span> mu_levels_sim[<span class="dv">1</span>],</span>
-<span id="cb727-20"><a href="count-sim.html#cb727-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">mu2 =</span> mu_levels_sim[<span class="dv">2</span>],</span>
-<span id="cb727-21"><a href="count-sim.html#cb727-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">type =</span> <span class="fu">ifelse</span>(mu_levels_sim[<span class="dv">1</span>] <span class="sc">==</span> mu_levels_sim[<span class="dv">2</span>],</span>
-<span id="cb727-22"><a href="count-sim.html#cb727-22" aria-hidden="true" tabindex="-1"></a>                  <span class="st">&quot;type 1&quot;</span>,</span>
-<span id="cb727-23"><a href="count-sim.html#cb727-23" aria-hidden="true" tabindex="-1"></a>                  <span class="st">&quot;power&quot;</span>),</span>
-<span id="cb727-24"><a href="count-sim.html#cb727-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">theta1 =</span> theta_levels_sim[<span class="dv">1</span>],</span>
-<span id="cb727-25"><a href="count-sim.html#cb727-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">theta2 =</span> theta_levels_sim[<span class="dv">2</span>],</span>
-<span id="cb727-26"><a href="count-sim.html#cb727-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">sigma1 =</span> sigma_levels_sim[<span class="dv">1</span>],</span>
-<span id="cb727-27"><a href="count-sim.html#cb727-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">sigma1 =</span> sigma_levels_sim[<span class="dv">2</span>],</span>
-<span id="cb727-28"><a href="count-sim.html#cb727-28" aria-hidden="true" tabindex="-1"></a>    <span class="at">normal =</span> normal_sim,</span>
-<span id="cb727-29"><a href="count-sim.html#cb727-29" aria-hidden="true" tabindex="-1"></a>    sim_res    </span>
-<span id="cb727-30"><a href="count-sim.html#cb727-30" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb727-31"><a href="count-sim.html#cb727-31" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb727-32"><a href="count-sim.html#cb727-32" aria-hidden="true" tabindex="-1"></a>  p_values <span class="ot">&lt;-</span> <span class="fu">rbind</span>(p_values, sim_table)</span>
-<span id="cb727-33"><a href="count-sim.html#cb727-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(p_values)</span>
-<span id="cb727-34"><a href="count-sim.html#cb727-34" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb727"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb727-1"><a href="count-sim.html#cb727-1" aria-hidden="true" tabindex="-1"></a>simulator <span class="ot">&lt;-</span> <span class="cf">function</span>(<span class="at">n_sim =</span> <span class="dv">1000</span>,</span>
+<span id="cb727-2"><a href="count-sim.html#cb727-2" aria-hidden="true" tabindex="-1"></a>                      <span class="at">n_levels =</span> <span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">10</span>),</span>
+<span id="cb727-3"><a href="count-sim.html#cb727-3" aria-hidden="true" tabindex="-1"></a>                      <span class="at">treatment_levels =</span> <span class="fu">c</span>(<span class="st">&quot;cn&quot;</span>, <span class="st">&quot;tr&quot;</span>),</span>
+<span id="cb727-4"><a href="count-sim.html#cb727-4" aria-hidden="true" tabindex="-1"></a>                      <span class="at">mu_levels =</span> <span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">10</span>),</span>
+<span id="cb727-5"><a href="count-sim.html#cb727-5" aria-hidden="true" tabindex="-1"></a>                      <span class="at">theta_levels =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>),</span>
+<span id="cb727-6"><a href="count-sim.html#cb727-6" aria-hidden="true" tabindex="-1"></a>                      <span class="at">sigma_levels =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">1</span>),</span>
+<span id="cb727-7"><a href="count-sim.html#cb727-7" aria-hidden="true" tabindex="-1"></a>                      <span class="at">normal =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb727-8"><a href="count-sim.html#cb727-8" aria-hidden="true" tabindex="-1"></a>                      <span class="at">seed =</span> <span class="dv">1</span>){</span>
+<span id="cb727-9"><a href="count-sim.html#cb727-9" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb727-10"><a href="count-sim.html#cb727-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set.seed</span>(seed)</span>
+<span id="cb727-11"><a href="count-sim.html#cb727-11" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb727-12"><a href="count-sim.html#cb727-12" aria-hidden="true" tabindex="-1"></a>  N <span class="ot">&lt;-</span> <span class="fu">sum</span>(n_levels)</span>
+<span id="cb727-13"><a href="count-sim.html#cb727-13" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb727-14"><a href="count-sim.html#cb727-14" aria-hidden="true" tabindex="-1"></a>  mu_sim <span class="ot">&lt;-</span> <span class="fu">rep</span>(mu_levels, n_levels)</span>
+<span id="cb727-15"><a href="count-sim.html#cb727-15" aria-hidden="true" tabindex="-1"></a>  theta_sim <span class="ot">&lt;-</span> <span class="fu">rep</span>(theta_levels, n_levels)</span>
+<span id="cb727-16"><a href="count-sim.html#cb727-16" aria-hidden="true" tabindex="-1"></a>  sigma_sim <span class="ot">&lt;-</span> <span class="fu">rep</span>(sigma_levels, n_levels)</span>
+<span id="cb727-17"><a href="count-sim.html#cb727-17" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb727-18"><a href="count-sim.html#cb727-18" aria-hidden="true" tabindex="-1"></a>  method_list <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;lm&quot;</span>, <span class="st">&quot;gls&quot;</span>, <span class="st">&quot;glm_nb&quot;</span>, <span class="st">&quot;glm_qp&quot;</span>, <span class="st">&quot;lmp&quot;</span>, <span class="st">&quot;mww&quot;</span>)</span>
+<span id="cb727-19"><a href="count-sim.html#cb727-19" aria-hidden="true" tabindex="-1"></a>  p_values <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">as.numeric</span>(<span class="cn">NA</span>),</span>
+<span id="cb727-20"><a href="count-sim.html#cb727-20" aria-hidden="true" tabindex="-1"></a>                     <span class="at">nrow =</span> n_sim,</span>
+<span id="cb727-21"><a href="count-sim.html#cb727-21" aria-hidden="true" tabindex="-1"></a>                     <span class="at">ncol =</span> <span class="fu">length</span>(method_list)) <span class="sc">%&gt;%</span></span>
+<span id="cb727-22"><a href="count-sim.html#cb727-22" aria-hidden="true" tabindex="-1"></a>    <span class="fu">data.table</span>()</span>
+<span id="cb727-23"><a href="count-sim.html#cb727-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">colnames</span>(p_values) <span class="ot">&lt;-</span> method_list</span>
+<span id="cb727-24"><a href="count-sim.html#cb727-24" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb727-25"><a href="count-sim.html#cb727-25" aria-hidden="true" tabindex="-1"></a>  fake_counts <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">as.numeric</span>(<span class="cn">NA</span>),</span>
+<span id="cb727-26"><a href="count-sim.html#cb727-26" aria-hidden="true" tabindex="-1"></a>                        <span class="at">nrow =</span> N,</span>
+<span id="cb727-27"><a href="count-sim.html#cb727-27" aria-hidden="true" tabindex="-1"></a>                        <span class="at">ncol =</span> n_sim)</span>
+<span id="cb727-28"><a href="count-sim.html#cb727-28" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb727-29"><a href="count-sim.html#cb727-29" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(normal <span class="sc">==</span> <span class="cn">TRUE</span>){</span>
+<span id="cb727-30"><a href="count-sim.html#cb727-30" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span>(j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n_sim){</span>
+<span id="cb727-31"><a href="count-sim.html#cb727-31" aria-hidden="true" tabindex="-1"></a>      fake_counts[, j] <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N,</span>
+<span id="cb727-32"><a href="count-sim.html#cb727-32" aria-hidden="true" tabindex="-1"></a>                                <span class="at">mean =</span> mu_sim,</span>
+<span id="cb727-33"><a href="count-sim.html#cb727-33" aria-hidden="true" tabindex="-1"></a>                                <span class="at">sd =</span> sigma_sim) <span class="sc">%&gt;%</span></span>
+<span id="cb727-34"><a href="count-sim.html#cb727-34" aria-hidden="true" tabindex="-1"></a>        <span class="fu">round</span>(<span class="dv">0</span>)</span>
+<span id="cb727-35"><a href="count-sim.html#cb727-35" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb727-36"><a href="count-sim.html#cb727-36" aria-hidden="true" tabindex="-1"></a>  }<span class="cf">else</span>{</span>
+<span id="cb727-37"><a href="count-sim.html#cb727-37" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span>(j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n_sim){</span>
+<span id="cb727-38"><a href="count-sim.html#cb727-38" aria-hidden="true" tabindex="-1"></a>      fake_counts[, j] <span class="ot">&lt;-</span> <span class="fu">rnegbin</span>(N,</span>
+<span id="cb727-39"><a href="count-sim.html#cb727-39" aria-hidden="true" tabindex="-1"></a>                                  <span class="at">mu =</span> mu_sim,</span>
+<span id="cb727-40"><a href="count-sim.html#cb727-40" aria-hidden="true" tabindex="-1"></a>                                  <span class="at">theta =</span> theta_sim)</span>
+<span id="cb727-41"><a href="count-sim.html#cb727-41" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb727-42"><a href="count-sim.html#cb727-42" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb727-43"><a href="count-sim.html#cb727-43" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb727-44"><a href="count-sim.html#cb727-44" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span>(j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n_sim){</span>
+<span id="cb727-45"><a href="count-sim.html#cb727-45" aria-hidden="true" tabindex="-1"></a>    fake_data[, count <span class="sc">:</span><span class="er">=</span> fake_counts[,j]]</span>
+<span id="cb727-46"><a href="count-sim.html#cb727-46" aria-hidden="true" tabindex="-1"></a>    m1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(count <span class="sc">~</span> treatment, <span class="at">data =</span> fake_data)</span>
+<span id="cb727-47"><a href="count-sim.html#cb727-47" aria-hidden="true" tabindex="-1"></a>    m2 <span class="ot">&lt;-</span> <span class="fu">gls</span>(count <span class="sc">~</span> treatment,</span>
+<span id="cb727-48"><a href="count-sim.html#cb727-48" aria-hidden="true" tabindex="-1"></a>              <span class="at">data =</span> fake_data,</span>
+<span id="cb727-49"><a href="count-sim.html#cb727-49" aria-hidden="true" tabindex="-1"></a>              <span class="at">weights =</span> <span class="fu">varIdent</span>(<span class="at">form =</span> <span class="sc">~</span> <span class="dv">1</span> <span class="sc">|</span> treatment))</span>
+<span id="cb727-50"><a href="count-sim.html#cb727-50" aria-hidden="true" tabindex="-1"></a>    m2_pairs <span class="ot">&lt;-</span> <span class="fu">contrast</span>(<span class="fu">emmeans</span>(m2, <span class="at">specs =</span> <span class="st">&quot;treatment&quot;</span>),</span>
+<span id="cb727-51"><a href="count-sim.html#cb727-51" aria-hidden="true" tabindex="-1"></a>                         <span class="at">method =</span> <span class="st">&quot;revpairwise&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb727-52"><a href="count-sim.html#cb727-52" aria-hidden="true" tabindex="-1"></a>      <span class="fu">summary</span>()</span>
+<span id="cb727-53"><a href="count-sim.html#cb727-53" aria-hidden="true" tabindex="-1"></a>    m3 <span class="ot">&lt;-</span> <span class="fu">glm.nb</span>(count <span class="sc">~</span> treatment, <span class="at">data =</span> fake_data)</span>
+<span id="cb727-54"><a href="count-sim.html#cb727-54" aria-hidden="true" tabindex="-1"></a>    m4 <span class="ot">&lt;-</span> <span class="fu">glm</span>(count <span class="sc">~</span> treatment,</span>
+<span id="cb727-55"><a href="count-sim.html#cb727-55" aria-hidden="true" tabindex="-1"></a>                 <span class="at">data =</span> fake_data,</span>
+<span id="cb727-56"><a href="count-sim.html#cb727-56" aria-hidden="true" tabindex="-1"></a>                 <span class="at">family =</span> quasipoisson)</span>
+<span id="cb727-57"><a href="count-sim.html#cb727-57" aria-hidden="true" tabindex="-1"></a>    <span class="co"># m3 &lt;- glmmTMB(count ~ treatment,</span></span>
+<span id="cb727-58"><a href="count-sim.html#cb727-58" aria-hidden="true" tabindex="-1"></a>    <span class="co">#                data = fake_data,</span></span>
+<span id="cb727-59"><a href="count-sim.html#cb727-59" aria-hidden="true" tabindex="-1"></a>    <span class="co">#                family = nbinom2(link = &quot;log&quot;))$cond</span></span>
+<span id="cb727-60"><a href="count-sim.html#cb727-60" aria-hidden="true" tabindex="-1"></a>    <span class="co"># m4 &lt;- glmmTMB(count ~ treatment,</span></span>
+<span id="cb727-61"><a href="count-sim.html#cb727-61" aria-hidden="true" tabindex="-1"></a>    <span class="co">#                data = fake_data,</span></span>
+<span id="cb727-62"><a href="count-sim.html#cb727-62" aria-hidden="true" tabindex="-1"></a>    <span class="co">#                family = nbinom1(link = &quot;log&quot;))$cond</span></span>
+<span id="cb727-63"><a href="count-sim.html#cb727-63" aria-hidden="true" tabindex="-1"></a>    m5 <span class="ot">&lt;-</span> <span class="fu">lmp</span>(count <span class="sc">~</span> treatment,</span>
+<span id="cb727-64"><a href="count-sim.html#cb727-64" aria-hidden="true" tabindex="-1"></a>              <span class="at">data =</span> fake_data,</span>
+<span id="cb727-65"><a href="count-sim.html#cb727-65" aria-hidden="true" tabindex="-1"></a>              <span class="at">perm =</span> <span class="st">&quot;Exact&quot;</span>,</span>
+<span id="cb727-66"><a href="count-sim.html#cb727-66" aria-hidden="true" tabindex="-1"></a>              <span class="at">settings =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb727-67"><a href="count-sim.html#cb727-67" aria-hidden="true" tabindex="-1"></a>    m6 <span class="ot">&lt;-</span> <span class="fu">wilcox.test</span>(count <span class="sc">~</span> treatment,</span>
+<span id="cb727-68"><a href="count-sim.html#cb727-68" aria-hidden="true" tabindex="-1"></a>                      <span class="at">data =</span> fake_data) </span>
+<span id="cb727-69"><a href="count-sim.html#cb727-69" aria-hidden="true" tabindex="-1"></a>    p_values[j, lm <span class="sc">:</span><span class="er">=</span> <span class="fu">coef</span>(<span class="fu">summary</span>(m1))[<span class="dv">2</span>, <span class="st">&quot;Pr(&gt;|t|)&quot;</span>]]</span>
+<span id="cb727-70"><a href="count-sim.html#cb727-70" aria-hidden="true" tabindex="-1"></a>    p_values[j, gls <span class="sc">:</span><span class="er">=</span> m2_pairs[<span class="dv">1</span>, <span class="st">&quot;p.value&quot;</span>]]</span>
+<span id="cb727-71"><a href="count-sim.html#cb727-71" aria-hidden="true" tabindex="-1"></a>    p_values[j, glm_nb <span class="sc">:</span><span class="er">=</span> <span class="fu">coef</span>(<span class="fu">summary</span>(m3))[<span class="dv">2</span>, <span class="st">&quot;Pr(&gt;|z|)&quot;</span>]]</span>
+<span id="cb727-72"><a href="count-sim.html#cb727-72" aria-hidden="true" tabindex="-1"></a>    p_values[j, glm_qp <span class="sc">:</span><span class="er">=</span> <span class="fu">coef</span>(<span class="fu">summary</span>(m4))[<span class="dv">2</span>, <span class="st">&quot;Pr(&gt;|t|)&quot;</span>]]</span>
+<span id="cb727-73"><a href="count-sim.html#cb727-73" aria-hidden="true" tabindex="-1"></a>    p_values[j, lmp <span class="sc">:</span><span class="er">=</span> <span class="fu">coef</span>(<span class="fu">summary</span>(m5))[<span class="dv">2</span>, <span class="st">&quot;Pr(Prob)&quot;</span>]]</span>
+<span id="cb727-74"><a href="count-sim.html#cb727-74" aria-hidden="true" tabindex="-1"></a>    p_values[j, mww <span class="sc">:</span><span class="er">=</span> m6<span class="sc">$</span>p.value]</span>
+<span id="cb727-75"><a href="count-sim.html#cb727-75" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb727-76"><a href="count-sim.html#cb727-76" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb727-77"><a href="count-sim.html#cb727-77" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(p_values)</span>
+<span id="cb727-78"><a href="count-sim.html#cb727-78" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb728"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb728-1"><a href="count-sim.html#cb728-1" aria-hidden="true" tabindex="-1"></a>binder <span class="ot">&lt;-</span> <span class="cf">function</span>(</span>
+<span id="cb728-2"><a href="count-sim.html#cb728-2" aria-hidden="true" tabindex="-1"></a>  p_values,</span>
+<span id="cb728-3"><a href="count-sim.html#cb728-3" aria-hidden="true" tabindex="-1"></a>  sim_res,</span>
+<span id="cb728-4"><a href="count-sim.html#cb728-4" aria-hidden="true" tabindex="-1"></a>  sim_i,</span>
+<span id="cb728-5"><a href="count-sim.html#cb728-5" aria-hidden="true" tabindex="-1"></a>  n_levels_sim,</span>
+<span id="cb728-6"><a href="count-sim.html#cb728-6" aria-hidden="true" tabindex="-1"></a>  mu_levels_sim,</span>
+<span id="cb728-7"><a href="count-sim.html#cb728-7" aria-hidden="true" tabindex="-1"></a>  theta_levels_sim,</span>
+<span id="cb728-8"><a href="count-sim.html#cb728-8" aria-hidden="true" tabindex="-1"></a>  sigma_levels_sim,</span>
+<span id="cb728-9"><a href="count-sim.html#cb728-9" aria-hidden="true" tabindex="-1"></a>  normal_sim){</span>
+<span id="cb728-10"><a href="count-sim.html#cb728-10" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb728-11"><a href="count-sim.html#cb728-11" aria-hidden="true" tabindex="-1"></a>  sim_table <span class="ot">&lt;-</span> <span class="fu">data.table</span>(</span>
+<span id="cb728-12"><a href="count-sim.html#cb728-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">sim =</span> sim_i,</span>
+<span id="cb728-13"><a href="count-sim.html#cb728-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">n_sim =</span> n_sim_i,</span>
+<span id="cb728-14"><a href="count-sim.html#cb728-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">n1 =</span> n_levels_sim[<span class="dv">1</span>],</span>
+<span id="cb728-15"><a href="count-sim.html#cb728-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">n2 =</span> n_levels_sim[<span class="dv">2</span>],</span>
+<span id="cb728-16"><a href="count-sim.html#cb728-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">n =</span> <span class="fu">ifelse</span>(n_levels_sim[<span class="dv">1</span>] <span class="sc">==</span> n_levels_sim[<span class="dv">2</span>],</span>
+<span id="cb728-17"><a href="count-sim.html#cb728-17" aria-hidden="true" tabindex="-1"></a>               <span class="st">&quot;=&quot;</span>,</span>
+<span id="cb728-18"><a href="count-sim.html#cb728-18" aria-hidden="true" tabindex="-1"></a>               <span class="st">&quot;!=&quot;</span>),</span>
+<span id="cb728-19"><a href="count-sim.html#cb728-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">mu1 =</span> mu_levels_sim[<span class="dv">1</span>],</span>
+<span id="cb728-20"><a href="count-sim.html#cb728-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">mu2 =</span> mu_levels_sim[<span class="dv">2</span>],</span>
+<span id="cb728-21"><a href="count-sim.html#cb728-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">type =</span> <span class="fu">ifelse</span>(mu_levels_sim[<span class="dv">1</span>] <span class="sc">==</span> mu_levels_sim[<span class="dv">2</span>],</span>
+<span id="cb728-22"><a href="count-sim.html#cb728-22" aria-hidden="true" tabindex="-1"></a>                  <span class="st">&quot;type 1&quot;</span>,</span>
+<span id="cb728-23"><a href="count-sim.html#cb728-23" aria-hidden="true" tabindex="-1"></a>                  <span class="st">&quot;power&quot;</span>),</span>
+<span id="cb728-24"><a href="count-sim.html#cb728-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">theta1 =</span> theta_levels_sim[<span class="dv">1</span>],</span>
+<span id="cb728-25"><a href="count-sim.html#cb728-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">theta2 =</span> theta_levels_sim[<span class="dv">2</span>],</span>
+<span id="cb728-26"><a href="count-sim.html#cb728-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">sigma1 =</span> sigma_levels_sim[<span class="dv">1</span>],</span>
+<span id="cb728-27"><a href="count-sim.html#cb728-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">sigma1 =</span> sigma_levels_sim[<span class="dv">2</span>],</span>
+<span id="cb728-28"><a href="count-sim.html#cb728-28" aria-hidden="true" tabindex="-1"></a>    <span class="at">normal =</span> normal_sim,</span>
+<span id="cb728-29"><a href="count-sim.html#cb728-29" aria-hidden="true" tabindex="-1"></a>    sim_res    </span>
+<span id="cb728-30"><a href="count-sim.html#cb728-30" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb728-31"><a href="count-sim.html#cb728-31" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb728-32"><a href="count-sim.html#cb728-32" aria-hidden="true" tabindex="-1"></a>  p_values <span class="ot">&lt;-</span> <span class="fu">rbind</span>(p_values, sim_table)</span>
+<span id="cb728-33"><a href="count-sim.html#cb728-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(p_values)</span>
+<span id="cb728-34"><a href="count-sim.html#cb728-34" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
 </div>
 <div id="simulations" class="section level2" number="22.3">
 <h2><span class="header-section-number">22.3</span> Simulations</h2>
-<div class="sourceCode" id="cb728"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb728-1"><a href="count-sim.html#cb728-1" aria-hidden="true" tabindex="-1"></a>do_it <span class="ot">&lt;-</span> <span class="cn">FALSE</span></span>
-<span id="cb728-2"><a href="count-sim.html#cb728-2" aria-hidden="true" tabindex="-1"></a>p_values <span class="ot">&lt;-</span> <span class="fu">data.table</span>(<span class="cn">NULL</span>)</span>
-<span id="cb728-3"><a href="count-sim.html#cb728-3" aria-hidden="true" tabindex="-1"></a>sim_i <span class="ot">&lt;-</span> <span class="dv">0</span></span>
-<span id="cb728-4"><a href="count-sim.html#cb728-4" aria-hidden="true" tabindex="-1"></a>n_sim_i <span class="ot">=</span> <span class="dv">4000</span></span></code></pre></div>
+<div class="sourceCode" id="cb729"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb729-1"><a href="count-sim.html#cb729-1" aria-hidden="true" tabindex="-1"></a>do_it <span class="ot">&lt;-</span> <span class="cn">FALSE</span></span>
+<span id="cb729-2"><a href="count-sim.html#cb729-2" aria-hidden="true" tabindex="-1"></a>p_values <span class="ot">&lt;-</span> <span class="fu">data.table</span>(<span class="cn">NULL</span>)</span>
+<span id="cb729-3"><a href="count-sim.html#cb729-3" aria-hidden="true" tabindex="-1"></a>sim_i <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="cb729-4"><a href="count-sim.html#cb729-4" aria-hidden="true" tabindex="-1"></a>n_sim_i <span class="ot">=</span> <span class="dv">4000</span></span></code></pre></div>
 <div id="type-i-pseudo-normal-distribution" class="section level3" number="22.3.1">
 <h3><span class="header-section-number">22.3.1</span> Type I, Pseudo-Normal distribution</h3>
-<div class="sourceCode" id="cb729"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb729-1"><a href="count-sim.html#cb729-1" aria-hidden="true" tabindex="-1"></a>sim_i <span class="ot">&lt;-</span> sim_i <span class="sc">+</span> <span class="dv">1</span></span>
-<span id="cb729-2"><a href="count-sim.html#cb729-2" aria-hidden="true" tabindex="-1"></a>n_levels_sim <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">10</span>)</span>
-<span id="cb729-3"><a href="count-sim.html#cb729-3" aria-hidden="true" tabindex="-1"></a>mu_levels_sim <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1000</span>, <span class="dv">1000</span>)</span>
-<span id="cb729-4"><a href="count-sim.html#cb729-4" aria-hidden="true" tabindex="-1"></a>theta_levels_sim <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="cn">NA</span>, <span class="cn">NA</span>) <span class="co"># not used</span></span>
-<span id="cb729-5"><a href="count-sim.html#cb729-5" aria-hidden="true" tabindex="-1"></a>sigma_levels_sim <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">100</span>, <span class="dv">100</span>)</span>
-<span id="cb729-6"><a href="count-sim.html#cb729-6" aria-hidden="true" tabindex="-1"></a>normal_sim <span class="ot">&lt;-</span> <span class="cn">TRUE</span></span>
-<span id="cb729-7"><a href="count-sim.html#cb729-7" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(do_it <span class="sc">==</span> <span class="cn">TRUE</span>){</span>
-<span id="cb729-8"><a href="count-sim.html#cb729-8" aria-hidden="true" tabindex="-1"></a>  sim_res <span class="ot">&lt;-</span> <span class="fu">simulator</span>(</span>
-<span id="cb729-9"><a href="count-sim.html#cb729-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">n_sim =</span> n_sim_i,</span>
-<span id="cb729-10"><a href="count-sim.html#cb729-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">n_levels =</span> n_levels_sim,</span>
-<span id="cb729-11"><a href="count-sim.html#cb729-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">mu_levels =</span> mu_levels_sim,</span>
-<span id="cb729-12"><a href="count-sim.html#cb729-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">theta_levels =</span> theta_levels_sim, <span class="co"># not used</span></span>
-<span id="cb729-13"><a href="count-sim.html#cb729-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">sigma_levels =</span> sigma_levels_sim,</span>
-<span id="cb729-14"><a href="count-sim.html#cb729-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">normal =</span> normal_sim</span>
-<span id="cb729-15"><a href="count-sim.html#cb729-15" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb729-16"><a href="count-sim.html#cb729-16" aria-hidden="true" tabindex="-1"></a>  p_values <span class="ot">&lt;-</span> <span class="fu">binder</span>(p_values,</span>
-<span id="cb729-17"><a href="count-sim.html#cb729-17" aria-hidden="true" tabindex="-1"></a>                     sim_res,</span>
-<span id="cb729-18"><a href="count-sim.html#cb729-18" aria-hidden="true" tabindex="-1"></a>                     sim_i,</span>
-<span id="cb729-19"><a href="count-sim.html#cb729-19" aria-hidden="true" tabindex="-1"></a>                     n_levels_sim,</span>
-<span id="cb729-20"><a href="count-sim.html#cb729-20" aria-hidden="true" tabindex="-1"></a>                     mu_levels_sim,</span>
-<span id="cb729-21"><a href="count-sim.html#cb729-21" aria-hidden="true" tabindex="-1"></a>                     theta_levels_sim,</span>
-<span id="cb729-22"><a href="count-sim.html#cb729-22" aria-hidden="true" tabindex="-1"></a>                     sigma_levels_sim,</span>
-<span id="cb729-23"><a href="count-sim.html#cb729-23" aria-hidden="true" tabindex="-1"></a>                     normal_sim)</span>
-<span id="cb729-24"><a href="count-sim.html#cb729-24" aria-hidden="true" tabindex="-1"></a><span class="co">#  apply(sim_res, 2, function(x) sum(x &lt; 0.05)/n_sim_i)</span></span>
-<span id="cb729-25"><a href="count-sim.html#cb729-25" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb730"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb730-1"><a href="count-sim.html#cb730-1" aria-hidden="true" tabindex="-1"></a>sim_i <span class="ot">&lt;-</span> sim_i <span class="sc">+</span> <span class="dv">1</span></span>
+<span id="cb730-2"><a href="count-sim.html#cb730-2" aria-hidden="true" tabindex="-1"></a>n_levels_sim <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">10</span>)</span>
+<span id="cb730-3"><a href="count-sim.html#cb730-3" aria-hidden="true" tabindex="-1"></a>mu_levels_sim <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1000</span>, <span class="dv">1000</span>)</span>
+<span id="cb730-4"><a href="count-sim.html#cb730-4" aria-hidden="true" tabindex="-1"></a>theta_levels_sim <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="cn">NA</span>, <span class="cn">NA</span>) <span class="co"># not used</span></span>
+<span id="cb730-5"><a href="count-sim.html#cb730-5" aria-hidden="true" tabindex="-1"></a>sigma_levels_sim <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">100</span>, <span class="dv">100</span>)</span>
+<span id="cb730-6"><a href="count-sim.html#cb730-6" aria-hidden="true" tabindex="-1"></a>normal_sim <span class="ot">&lt;-</span> <span class="cn">TRUE</span></span>
+<span id="cb730-7"><a href="count-sim.html#cb730-7" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(do_it <span class="sc">==</span> <span class="cn">TRUE</span>){</span>
+<span id="cb730-8"><a href="count-sim.html#cb730-8" aria-hidden="true" tabindex="-1"></a>  sim_res <span class="ot">&lt;-</span> <span class="fu">simulator</span>(</span>
+<span id="cb730-9"><a href="count-sim.html#cb730-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">n_sim =</span> n_sim_i,</span>
+<span id="cb730-10"><a href="count-sim.html#cb730-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">n_levels =</span> n_levels_sim,</span>
+<span id="cb730-11"><a href="count-sim.html#cb730-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">mu_levels =</span> mu_levels_sim,</span>
+<span id="cb730-12"><a href="count-sim.html#cb730-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">theta_levels =</span> theta_levels_sim, <span class="co"># not used</span></span>
+<span id="cb730-13"><a href="count-sim.html#cb730-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">sigma_levels =</span> sigma_levels_sim,</span>
+<span id="cb730-14"><a href="count-sim.html#cb730-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">normal =</span> normal_sim</span>
+<span id="cb730-15"><a href="count-sim.html#cb730-15" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb730-16"><a href="count-sim.html#cb730-16" aria-hidden="true" tabindex="-1"></a>  p_values <span class="ot">&lt;-</span> <span class="fu">binder</span>(p_values,</span>
+<span id="cb730-17"><a href="count-sim.html#cb730-17" aria-hidden="true" tabindex="-1"></a>                     sim_res,</span>
+<span id="cb730-18"><a href="count-sim.html#cb730-18" aria-hidden="true" tabindex="-1"></a>                     sim_i,</span>
+<span id="cb730-19"><a href="count-sim.html#cb730-19" aria-hidden="true" tabindex="-1"></a>                     n_levels_sim,</span>
+<span id="cb730-20"><a href="count-sim.html#cb730-20" aria-hidden="true" tabindex="-1"></a>                     mu_levels_sim,</span>
+<span id="cb730-21"><a href="count-sim.html#cb730-21" aria-hidden="true" tabindex="-1"></a>                     theta_levels_sim,</span>
+<span id="cb730-22"><a href="count-sim.html#cb730-22" aria-hidden="true" tabindex="-1"></a>                     sigma_levels_sim,</span>
+<span id="cb730-23"><a href="count-sim.html#cb730-23" aria-hidden="true" tabindex="-1"></a>                     normal_sim)</span>
+<span id="cb730-24"><a href="count-sim.html#cb730-24" aria-hidden="true" tabindex="-1"></a><span class="co">#  apply(sim_res, 2, function(x) sum(x &lt; 0.05)/n_sim_i)</span></span>
+<span id="cb730-25"><a href="count-sim.html#cb730-25" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
 </div>
 <div id="type-i-neg-binom-equal-n" class="section level3" number="22.3.2">
 <h3><span class="header-section-number">22.3.2</span> Type I, neg binom, equal n</h3>
-<div class="sourceCode" id="cb730"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb730-1"><a href="count-sim.html#cb730-1" aria-hidden="true" tabindex="-1"></a>sim_i <span class="ot">&lt;-</span> sim_i <span class="sc">+</span> <span class="dv">1</span></span>
-<span id="cb730-2"><a href="count-sim.html#cb730-2" aria-hidden="true" tabindex="-1"></a>n_levels_sim <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">10</span>)</span>
-<span id="cb730-3"><a href="count-sim.html#cb730-3" aria-hidden="true" tabindex="-1"></a>mu_levels_sim <span class="ot">&lt;-</span> <span class="fu">c</span>(mu_cn_obs, mu_cn_obs)</span>
-<span id="cb730-4"><a href="count-sim.html#cb730-4" aria-hidden="true" tabindex="-1"></a>theta_levels_sim <span class="ot">&lt;-</span> <span class="fu">c</span>(theta_obs, theta_obs)</span>
-<span id="cb730-5"><a href="count-sim.html#cb730-5" aria-hidden="true" tabindex="-1"></a>sigma_levels_sim <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="cn">NA</span>, <span class="cn">NA</span>) <span class="co"># not used</span></span>
-<span id="cb730-6"><a href="count-sim.html#cb730-6" aria-hidden="true" tabindex="-1"></a>normal_sim <span class="ot">&lt;-</span> <span class="cn">FALSE</span></span>
-<span id="cb730-7"><a href="count-sim.html#cb730-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb730-8"><a href="count-sim.html#cb730-8" aria-hidden="true" tabindex="-1"></a><span class="co"># fake_data has to be global for emmeans to run inside </span></span>
-<span id="cb730-9"><a href="count-sim.html#cb730-9" aria-hidden="true" tabindex="-1"></a><span class="co"># a function</span></span>
-<span id="cb730-10"><a href="count-sim.html#cb730-10" aria-hidden="true" tabindex="-1"></a>treatment_levels <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;cn&quot;</span>, <span class="st">&quot;tr&quot;</span>)</span>
-<span id="cb730-11"><a href="count-sim.html#cb730-11" aria-hidden="true" tabindex="-1"></a>fake_data <span class="ot">&lt;-</span> <span class="fu">data.table</span>(</span>
-<span id="cb730-12"><a href="count-sim.html#cb730-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">treatment =</span> <span class="fu">factor</span>(<span class="fu">rep</span>(treatment_levels, n_levels_sim),</span>
-<span id="cb730-13"><a href="count-sim.html#cb730-13" aria-hidden="true" tabindex="-1"></a>                     <span class="at">levels =</span> treatment_levels)</span>
-<span id="cb730-14"><a href="count-sim.html#cb730-14" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb730-15"><a href="count-sim.html#cb730-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb730-16"><a href="count-sim.html#cb730-16" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(do_it <span class="sc">==</span> <span class="cn">TRUE</span>){</span>
-<span id="cb730-17"><a href="count-sim.html#cb730-17" aria-hidden="true" tabindex="-1"></a>  sim_res <span class="ot">&lt;-</span> <span class="fu">simulator</span>(</span>
-<span id="cb730-18"><a href="count-sim.html#cb730-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">n_sim =</span> n_sim_i,</span>
-<span id="cb730-19"><a href="count-sim.html#cb730-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">n_levels =</span> n_levels_sim,</span>
-<span id="cb730-20"><a href="count-sim.html#cb730-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">mu_levels =</span> mu_levels_sim,</span>
-<span id="cb730-21"><a href="count-sim.html#cb730-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">theta_levels =</span> theta_levels_sim, <span class="co"># not used</span></span>
-<span id="cb730-22"><a href="count-sim.html#cb730-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">sigma_levels =</span> sigma_levels_sim,</span>
-<span id="cb730-23"><a href="count-sim.html#cb730-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">normal =</span> normal_sim</span>
-<span id="cb730-24"><a href="count-sim.html#cb730-24" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb730-25"><a href="count-sim.html#cb730-25" aria-hidden="true" tabindex="-1"></a>  p_values <span class="ot">&lt;-</span> <span class="fu">binder</span>(p_values,</span>
-<span id="cb730-26"><a href="count-sim.html#cb730-26" aria-hidden="true" tabindex="-1"></a>                     sim_res,</span>
-<span id="cb730-27"><a href="count-sim.html#cb730-27" aria-hidden="true" tabindex="-1"></a>                     sim_i,</span>
-<span id="cb730-28"><a href="count-sim.html#cb730-28" aria-hidden="true" tabindex="-1"></a>                     n_levels_sim,</span>
-<span id="cb730-29"><a href="count-sim.html#cb730-29" aria-hidden="true" tabindex="-1"></a>                     mu_levels_sim,</span>
-<span id="cb730-30"><a href="count-sim.html#cb730-30" aria-hidden="true" tabindex="-1"></a>                     theta_levels_sim,</span>
-<span id="cb730-31"><a href="count-sim.html#cb730-31" aria-hidden="true" tabindex="-1"></a>                     sigma_levels_sim,</span>
-<span id="cb730-32"><a href="count-sim.html#cb730-32" aria-hidden="true" tabindex="-1"></a>                     normal_sim)</span>
-<span id="cb730-33"><a href="count-sim.html#cb730-33" aria-hidden="true" tabindex="-1"></a><span class="co">#  apply(sim_res, 2, function(x) sum(x &lt; 0.05)/n_sim_i)</span></span>
-<span id="cb730-34"><a href="count-sim.html#cb730-34" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
-</div>
-<div id="type-i-neg-binom-equal-n-small-theta" class="section level3" number="22.3.3">
-<h3><span class="header-section-number">22.3.3</span> Type I, neg binom, equal n, small theta</h3>
 <div class="sourceCode" id="cb731"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb731-1"><a href="count-sim.html#cb731-1" aria-hidden="true" tabindex="-1"></a>sim_i <span class="ot">&lt;-</span> sim_i <span class="sc">+</span> <span class="dv">1</span></span>
 <span id="cb731-2"><a href="count-sim.html#cb731-2" aria-hidden="true" tabindex="-1"></a>n_levels_sim <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">10</span>)</span>
 <span id="cb731-3"><a href="count-sim.html#cb731-3" aria-hidden="true" tabindex="-1"></a>mu_levels_sim <span class="ot">&lt;-</span> <span class="fu">c</span>(mu_cn_obs, mu_cn_obs)</span>
-<span id="cb731-4"><a href="count-sim.html#cb731-4" aria-hidden="true" tabindex="-1"></a>theta_levels_sim <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>)</span>
+<span id="cb731-4"><a href="count-sim.html#cb731-4" aria-hidden="true" tabindex="-1"></a>theta_levels_sim <span class="ot">&lt;-</span> <span class="fu">c</span>(theta_obs, theta_obs)</span>
 <span id="cb731-5"><a href="count-sim.html#cb731-5" aria-hidden="true" tabindex="-1"></a>sigma_levels_sim <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="cn">NA</span>, <span class="cn">NA</span>) <span class="co"># not used</span></span>
 <span id="cb731-6"><a href="count-sim.html#cb731-6" aria-hidden="true" tabindex="-1"></a>normal_sim <span class="ot">&lt;-</span> <span class="cn">FALSE</span></span>
 <span id="cb731-7"><a href="count-sim.html#cb731-7" aria-hidden="true" tabindex="-1"></a></span>
@@ -1168,12 +1131,12 @@ code span.wa { color: #bf0303; } /* Warning */
 <span id="cb731-33"><a href="count-sim.html#cb731-33" aria-hidden="true" tabindex="-1"></a><span class="co">#  apply(sim_res, 2, function(x) sum(x &lt; 0.05)/n_sim_i)</span></span>
 <span id="cb731-34"><a href="count-sim.html#cb731-34" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
 </div>
-<div id="type-i-neg-binom-unequal-n" class="section level3" number="22.3.4">
-<h3><span class="header-section-number">22.3.4</span> Type I, neg binom, unequal n</h3>
+<div id="type-i-neg-binom-equal-n-small-theta" class="section level3" number="22.3.3">
+<h3><span class="header-section-number">22.3.3</span> Type I, neg binom, equal n, small theta</h3>
 <div class="sourceCode" id="cb732"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb732-1"><a href="count-sim.html#cb732-1" aria-hidden="true" tabindex="-1"></a>sim_i <span class="ot">&lt;-</span> sim_i <span class="sc">+</span> <span class="dv">1</span></span>
-<span id="cb732-2"><a href="count-sim.html#cb732-2" aria-hidden="true" tabindex="-1"></a>n_levels_sim <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">12</span>, <span class="dv">8</span>)</span>
+<span id="cb732-2"><a href="count-sim.html#cb732-2" aria-hidden="true" tabindex="-1"></a>n_levels_sim <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">10</span>)</span>
 <span id="cb732-3"><a href="count-sim.html#cb732-3" aria-hidden="true" tabindex="-1"></a>mu_levels_sim <span class="ot">&lt;-</span> <span class="fu">c</span>(mu_cn_obs, mu_cn_obs)</span>
-<span id="cb732-4"><a href="count-sim.html#cb732-4" aria-hidden="true" tabindex="-1"></a>theta_levels_sim <span class="ot">&lt;-</span> <span class="fu">c</span>(theta_obs, theta_obs)</span>
+<span id="cb732-4"><a href="count-sim.html#cb732-4" aria-hidden="true" tabindex="-1"></a>theta_levels_sim <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>)</span>
 <span id="cb732-5"><a href="count-sim.html#cb732-5" aria-hidden="true" tabindex="-1"></a>sigma_levels_sim <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="cn">NA</span>, <span class="cn">NA</span>) <span class="co"># not used</span></span>
 <span id="cb732-6"><a href="count-sim.html#cb732-6" aria-hidden="true" tabindex="-1"></a>normal_sim <span class="ot">&lt;-</span> <span class="cn">FALSE</span></span>
 <span id="cb732-7"><a href="count-sim.html#cb732-7" aria-hidden="true" tabindex="-1"></a></span>
@@ -1205,14 +1168,14 @@ code span.wa { color: #bf0303; } /* Warning */
 <span id="cb732-33"><a href="count-sim.html#cb732-33" aria-hidden="true" tabindex="-1"></a><span class="co">#  apply(sim_res, 2, function(x) sum(x &lt; 0.05)/n_sim_i)</span></span>
 <span id="cb732-34"><a href="count-sim.html#cb732-34" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
 </div>
-<div id="power-pseudo-normal-distribution-equal-n" class="section level3" number="22.3.5">
-<h3><span class="header-section-number">22.3.5</span> Power, Pseudo-Normal distribution, equal n</h3>
+<div id="type-i-neg-binom-unequal-n" class="section level3" number="22.3.4">
+<h3><span class="header-section-number">22.3.4</span> Type I, neg binom, unequal n</h3>
 <div class="sourceCode" id="cb733"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb733-1"><a href="count-sim.html#cb733-1" aria-hidden="true" tabindex="-1"></a>sim_i <span class="ot">&lt;-</span> sim_i <span class="sc">+</span> <span class="dv">1</span></span>
-<span id="cb733-2"><a href="count-sim.html#cb733-2" aria-hidden="true" tabindex="-1"></a>n_levels_sim <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">10</span>)</span>
-<span id="cb733-3"><a href="count-sim.html#cb733-3" aria-hidden="true" tabindex="-1"></a>mu_levels_sim <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1000</span>, <span class="dv">1100</span>)</span>
-<span id="cb733-4"><a href="count-sim.html#cb733-4" aria-hidden="true" tabindex="-1"></a>theta_levels_sim <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="cn">NA</span>, <span class="cn">NA</span>) <span class="co"># not used</span></span>
-<span id="cb733-5"><a href="count-sim.html#cb733-5" aria-hidden="true" tabindex="-1"></a>sigma_levels_sim <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">100</span>, <span class="dv">100</span>)</span>
-<span id="cb733-6"><a href="count-sim.html#cb733-6" aria-hidden="true" tabindex="-1"></a>normal_sim <span class="ot">&lt;-</span> <span class="cn">TRUE</span></span>
+<span id="cb733-2"><a href="count-sim.html#cb733-2" aria-hidden="true" tabindex="-1"></a>n_levels_sim <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">12</span>, <span class="dv">8</span>)</span>
+<span id="cb733-3"><a href="count-sim.html#cb733-3" aria-hidden="true" tabindex="-1"></a>mu_levels_sim <span class="ot">&lt;-</span> <span class="fu">c</span>(mu_cn_obs, mu_cn_obs)</span>
+<span id="cb733-4"><a href="count-sim.html#cb733-4" aria-hidden="true" tabindex="-1"></a>theta_levels_sim <span class="ot">&lt;-</span> <span class="fu">c</span>(theta_obs, theta_obs)</span>
+<span id="cb733-5"><a href="count-sim.html#cb733-5" aria-hidden="true" tabindex="-1"></a>sigma_levels_sim <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="cn">NA</span>, <span class="cn">NA</span>) <span class="co"># not used</span></span>
+<span id="cb733-6"><a href="count-sim.html#cb733-6" aria-hidden="true" tabindex="-1"></a>normal_sim <span class="ot">&lt;-</span> <span class="cn">FALSE</span></span>
 <span id="cb733-7"><a href="count-sim.html#cb733-7" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb733-8"><a href="count-sim.html#cb733-8" aria-hidden="true" tabindex="-1"></a><span class="co"># fake_data has to be global for emmeans to run inside </span></span>
 <span id="cb733-9"><a href="count-sim.html#cb733-9" aria-hidden="true" tabindex="-1"></a><span class="co"># a function</span></span>
@@ -1239,18 +1202,17 @@ code span.wa { color: #bf0303; } /* Warning */
 <span id="cb733-30"><a href="count-sim.html#cb733-30" aria-hidden="true" tabindex="-1"></a>                     theta_levels_sim,</span>
 <span id="cb733-31"><a href="count-sim.html#cb733-31" aria-hidden="true" tabindex="-1"></a>                     sigma_levels_sim,</span>
 <span id="cb733-32"><a href="count-sim.html#cb733-32" aria-hidden="true" tabindex="-1"></a>                     normal_sim)</span>
-<span id="cb733-33"><a href="count-sim.html#cb733-33" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb733-34"><a href="count-sim.html#cb733-34" aria-hidden="true" tabindex="-1"></a><span class="co">#  apply(sim_res, 2, function(x) sum(x &lt; 0.05)/n_sim_i)</span></span>
-<span id="cb733-35"><a href="count-sim.html#cb733-35" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<span id="cb733-33"><a href="count-sim.html#cb733-33" aria-hidden="true" tabindex="-1"></a><span class="co">#  apply(sim_res, 2, function(x) sum(x &lt; 0.05)/n_sim_i)</span></span>
+<span id="cb733-34"><a href="count-sim.html#cb733-34" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
 </div>
-<div id="power-neg-binom-equal-n" class="section level3" number="22.3.6">
-<h3><span class="header-section-number">22.3.6</span> Power, neg binom, equal n</h3>
+<div id="power-pseudo-normal-distribution-equal-n" class="section level3" number="22.3.5">
+<h3><span class="header-section-number">22.3.5</span> Power, Pseudo-Normal distribution, equal n</h3>
 <div class="sourceCode" id="cb734"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb734-1"><a href="count-sim.html#cb734-1" aria-hidden="true" tabindex="-1"></a>sim_i <span class="ot">&lt;-</span> sim_i <span class="sc">+</span> <span class="dv">1</span></span>
 <span id="cb734-2"><a href="count-sim.html#cb734-2" aria-hidden="true" tabindex="-1"></a>n_levels_sim <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">10</span>)</span>
-<span id="cb734-3"><a href="count-sim.html#cb734-3" aria-hidden="true" tabindex="-1"></a>mu_levels_sim <span class="ot">&lt;-</span> <span class="fu">c</span>(mu_cn_obs, mu_cn_obs<span class="sc">*</span>.<span class="dv">7</span>)</span>
-<span id="cb734-4"><a href="count-sim.html#cb734-4" aria-hidden="true" tabindex="-1"></a>theta_levels_sim <span class="ot">&lt;-</span> <span class="fu">c</span>(theta_obs, theta_obs)</span>
-<span id="cb734-5"><a href="count-sim.html#cb734-5" aria-hidden="true" tabindex="-1"></a>sigma_levels_sim <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="cn">NA</span>, <span class="cn">NA</span>) <span class="co"># not used</span></span>
-<span id="cb734-6"><a href="count-sim.html#cb734-6" aria-hidden="true" tabindex="-1"></a>normal_sim <span class="ot">&lt;-</span> <span class="cn">FALSE</span></span>
+<span id="cb734-3"><a href="count-sim.html#cb734-3" aria-hidden="true" tabindex="-1"></a>mu_levels_sim <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1000</span>, <span class="dv">1100</span>)</span>
+<span id="cb734-4"><a href="count-sim.html#cb734-4" aria-hidden="true" tabindex="-1"></a>theta_levels_sim <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="cn">NA</span>, <span class="cn">NA</span>) <span class="co"># not used</span></span>
+<span id="cb734-5"><a href="count-sim.html#cb734-5" aria-hidden="true" tabindex="-1"></a>sigma_levels_sim <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">100</span>, <span class="dv">100</span>)</span>
+<span id="cb734-6"><a href="count-sim.html#cb734-6" aria-hidden="true" tabindex="-1"></a>normal_sim <span class="ot">&lt;-</span> <span class="cn">TRUE</span></span>
 <span id="cb734-7"><a href="count-sim.html#cb734-7" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb734-8"><a href="count-sim.html#cb734-8" aria-hidden="true" tabindex="-1"></a><span class="co"># fake_data has to be global for emmeans to run inside </span></span>
 <span id="cb734-9"><a href="count-sim.html#cb734-9" aria-hidden="true" tabindex="-1"></a><span class="co"># a function</span></span>
@@ -1277,15 +1239,16 @@ code span.wa { color: #bf0303; } /* Warning */
 <span id="cb734-30"><a href="count-sim.html#cb734-30" aria-hidden="true" tabindex="-1"></a>                     theta_levels_sim,</span>
 <span id="cb734-31"><a href="count-sim.html#cb734-31" aria-hidden="true" tabindex="-1"></a>                     sigma_levels_sim,</span>
 <span id="cb734-32"><a href="count-sim.html#cb734-32" aria-hidden="true" tabindex="-1"></a>                     normal_sim)</span>
-<span id="cb734-33"><a href="count-sim.html#cb734-33" aria-hidden="true" tabindex="-1"></a><span class="co">#  apply(sim_res, 2, function(x) sum(x &lt; 0.05)/n_sim_i)</span></span>
-<span id="cb734-34"><a href="count-sim.html#cb734-34" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<span id="cb734-33"><a href="count-sim.html#cb734-33" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb734-34"><a href="count-sim.html#cb734-34" aria-hidden="true" tabindex="-1"></a><span class="co">#  apply(sim_res, 2, function(x) sum(x &lt; 0.05)/n_sim_i)</span></span>
+<span id="cb734-35"><a href="count-sim.html#cb734-35" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
 </div>
-<div id="power-neg-binom-small-theta" class="section level3" number="22.3.7">
-<h3><span class="header-section-number">22.3.7</span> Power, neg binom, small theta</h3>
+<div id="power-neg-binom-equal-n" class="section level3" number="22.3.6">
+<h3><span class="header-section-number">22.3.6</span> Power, neg binom, equal n</h3>
 <div class="sourceCode" id="cb735"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb735-1"><a href="count-sim.html#cb735-1" aria-hidden="true" tabindex="-1"></a>sim_i <span class="ot">&lt;-</span> sim_i <span class="sc">+</span> <span class="dv">1</span></span>
 <span id="cb735-2"><a href="count-sim.html#cb735-2" aria-hidden="true" tabindex="-1"></a>n_levels_sim <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">10</span>)</span>
 <span id="cb735-3"><a href="count-sim.html#cb735-3" aria-hidden="true" tabindex="-1"></a>mu_levels_sim <span class="ot">&lt;-</span> <span class="fu">c</span>(mu_cn_obs, mu_cn_obs<span class="sc">*</span>.<span class="dv">7</span>)</span>
-<span id="cb735-4"><a href="count-sim.html#cb735-4" aria-hidden="true" tabindex="-1"></a>theta_levels_sim <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>)</span>
+<span id="cb735-4"><a href="count-sim.html#cb735-4" aria-hidden="true" tabindex="-1"></a>theta_levels_sim <span class="ot">&lt;-</span> <span class="fu">c</span>(theta_obs, theta_obs)</span>
 <span id="cb735-5"><a href="count-sim.html#cb735-5" aria-hidden="true" tabindex="-1"></a>sigma_levels_sim <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="cn">NA</span>, <span class="cn">NA</span>) <span class="co"># not used</span></span>
 <span id="cb735-6"><a href="count-sim.html#cb735-6" aria-hidden="true" tabindex="-1"></a>normal_sim <span class="ot">&lt;-</span> <span class="cn">FALSE</span></span>
 <span id="cb735-7"><a href="count-sim.html#cb735-7" aria-hidden="true" tabindex="-1"></a></span>
@@ -1317,12 +1280,12 @@ code span.wa { color: #bf0303; } /* Warning */
 <span id="cb735-33"><a href="count-sim.html#cb735-33" aria-hidden="true" tabindex="-1"></a><span class="co">#  apply(sim_res, 2, function(x) sum(x &lt; 0.05)/n_sim_i)</span></span>
 <span id="cb735-34"><a href="count-sim.html#cb735-34" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
 </div>
-<div id="power-neg-binom-unequal-n" class="section level3" number="22.3.8">
-<h3><span class="header-section-number">22.3.8</span> Power, neg binom, unequal n</h3>
+<div id="power-neg-binom-small-theta" class="section level3" number="22.3.7">
+<h3><span class="header-section-number">22.3.7</span> Power, neg binom, small theta</h3>
 <div class="sourceCode" id="cb736"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb736-1"><a href="count-sim.html#cb736-1" aria-hidden="true" tabindex="-1"></a>sim_i <span class="ot">&lt;-</span> sim_i <span class="sc">+</span> <span class="dv">1</span></span>
-<span id="cb736-2"><a href="count-sim.html#cb736-2" aria-hidden="true" tabindex="-1"></a>n_levels_sim <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">12</span>, <span class="dv">8</span>)</span>
+<span id="cb736-2"><a href="count-sim.html#cb736-2" aria-hidden="true" tabindex="-1"></a>n_levels_sim <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">10</span>)</span>
 <span id="cb736-3"><a href="count-sim.html#cb736-3" aria-hidden="true" tabindex="-1"></a>mu_levels_sim <span class="ot">&lt;-</span> <span class="fu">c</span>(mu_cn_obs, mu_cn_obs<span class="sc">*</span>.<span class="dv">7</span>)</span>
-<span id="cb736-4"><a href="count-sim.html#cb736-4" aria-hidden="true" tabindex="-1"></a>theta_levels_sim <span class="ot">&lt;-</span> <span class="fu">c</span>(theta_obs, theta_obs)</span>
+<span id="cb736-4"><a href="count-sim.html#cb736-4" aria-hidden="true" tabindex="-1"></a>theta_levels_sim <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>)</span>
 <span id="cb736-5"><a href="count-sim.html#cb736-5" aria-hidden="true" tabindex="-1"></a>sigma_levels_sim <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="cn">NA</span>, <span class="cn">NA</span>) <span class="co"># not used</span></span>
 <span id="cb736-6"><a href="count-sim.html#cb736-6" aria-hidden="true" tabindex="-1"></a>normal_sim <span class="ot">&lt;-</span> <span class="cn">FALSE</span></span>
 <span id="cb736-7"><a href="count-sim.html#cb736-7" aria-hidden="true" tabindex="-1"></a></span>
@@ -1354,13 +1317,12 @@ code span.wa { color: #bf0303; } /* Warning */
 <span id="cb736-33"><a href="count-sim.html#cb736-33" aria-hidden="true" tabindex="-1"></a><span class="co">#  apply(sim_res, 2, function(x) sum(x &lt; 0.05)/n_sim_i)</span></span>
 <span id="cb736-34"><a href="count-sim.html#cb736-34" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
 </div>
-<div id="power-neg-binom-unequal-n-unequal-theta" class="section level3" number="22.3.9">
-<h3><span class="header-section-number">22.3.9</span> Power, neg binom, unequal n, unequal theta</h3>
-<p>What if the treatment affects the variance and the mean?</p>
+<div id="power-neg-binom-unequal-n" class="section level3" number="22.3.8">
+<h3><span class="header-section-number">22.3.8</span> Power, neg binom, unequal n</h3>
 <div class="sourceCode" id="cb737"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb737-1"><a href="count-sim.html#cb737-1" aria-hidden="true" tabindex="-1"></a>sim_i <span class="ot">&lt;-</span> sim_i <span class="sc">+</span> <span class="dv">1</span></span>
 <span id="cb737-2"><a href="count-sim.html#cb737-2" aria-hidden="true" tabindex="-1"></a>n_levels_sim <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">12</span>, <span class="dv">8</span>)</span>
 <span id="cb737-3"><a href="count-sim.html#cb737-3" aria-hidden="true" tabindex="-1"></a>mu_levels_sim <span class="ot">&lt;-</span> <span class="fu">c</span>(mu_cn_obs, mu_cn_obs<span class="sc">*</span>.<span class="dv">7</span>)</span>
-<span id="cb737-4"><a href="count-sim.html#cb737-4" aria-hidden="true" tabindex="-1"></a>theta_levels_sim <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1</span>, theta_obs)</span>
+<span id="cb737-4"><a href="count-sim.html#cb737-4" aria-hidden="true" tabindex="-1"></a>theta_levels_sim <span class="ot">&lt;-</span> <span class="fu">c</span>(theta_obs, theta_obs)</span>
 <span id="cb737-5"><a href="count-sim.html#cb737-5" aria-hidden="true" tabindex="-1"></a>sigma_levels_sim <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="cn">NA</span>, <span class="cn">NA</span>) <span class="co"># not used</span></span>
 <span id="cb737-6"><a href="count-sim.html#cb737-6" aria-hidden="true" tabindex="-1"></a>normal_sim <span class="ot">&lt;-</span> <span class="cn">FALSE</span></span>
 <span id="cb737-7"><a href="count-sim.html#cb737-7" aria-hidden="true" tabindex="-1"></a></span>
@@ -1392,13 +1354,13 @@ code span.wa { color: #bf0303; } /* Warning */
 <span id="cb737-33"><a href="count-sim.html#cb737-33" aria-hidden="true" tabindex="-1"></a><span class="co">#  apply(sim_res, 2, function(x) sum(x &lt; 0.05)/n_sim_i)</span></span>
 <span id="cb737-34"><a href="count-sim.html#cb737-34" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
 </div>
-<div id="type-1-neg-binom-equal-n-unequal-theta" class="section level3" number="22.3.10">
-<h3><span class="header-section-number">22.3.10</span> Type 1, neg binom, equal n, unequal theta</h3>
-<p>What if the treatment affects the variance but not the mean?</p>
+<div id="power-neg-binom-unequal-n-unequal-theta" class="section level3" number="22.3.9">
+<h3><span class="header-section-number">22.3.9</span> Power, neg binom, unequal n, unequal theta</h3>
+<p>What if the treatment affects the variance and the mean?</p>
 <div class="sourceCode" id="cb738"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb738-1"><a href="count-sim.html#cb738-1" aria-hidden="true" tabindex="-1"></a>sim_i <span class="ot">&lt;-</span> sim_i <span class="sc">+</span> <span class="dv">1</span></span>
 <span id="cb738-2"><a href="count-sim.html#cb738-2" aria-hidden="true" tabindex="-1"></a>n_levels_sim <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">12</span>, <span class="dv">8</span>)</span>
-<span id="cb738-3"><a href="count-sim.html#cb738-3" aria-hidden="true" tabindex="-1"></a>mu_levels_sim <span class="ot">&lt;-</span> <span class="fu">c</span>(mu_cn_obs, mu_cn_obs)</span>
-<span id="cb738-4"><a href="count-sim.html#cb738-4" aria-hidden="true" tabindex="-1"></a>theta_levels_sim <span class="ot">&lt;-</span> <span class="fu">c</span>(theta_obs, <span class="dv">1</span>)</span>
+<span id="cb738-3"><a href="count-sim.html#cb738-3" aria-hidden="true" tabindex="-1"></a>mu_levels_sim <span class="ot">&lt;-</span> <span class="fu">c</span>(mu_cn_obs, mu_cn_obs<span class="sc">*</span>.<span class="dv">7</span>)</span>
+<span id="cb738-4"><a href="count-sim.html#cb738-4" aria-hidden="true" tabindex="-1"></a>theta_levels_sim <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1</span>, theta_obs)</span>
 <span id="cb738-5"><a href="count-sim.html#cb738-5" aria-hidden="true" tabindex="-1"></a>sigma_levels_sim <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="cn">NA</span>, <span class="cn">NA</span>) <span class="co"># not used</span></span>
 <span id="cb738-6"><a href="count-sim.html#cb738-6" aria-hidden="true" tabindex="-1"></a>normal_sim <span class="ot">&lt;-</span> <span class="cn">FALSE</span></span>
 <span id="cb738-7"><a href="count-sim.html#cb738-7" aria-hidden="true" tabindex="-1"></a></span>
@@ -1430,28 +1392,66 @@ code span.wa { color: #bf0303; } /* Warning */
 <span id="cb738-33"><a href="count-sim.html#cb738-33" aria-hidden="true" tabindex="-1"></a><span class="co">#  apply(sim_res, 2, function(x) sum(x &lt; 0.05)/n_sim_i)</span></span>
 <span id="cb738-34"><a href="count-sim.html#cb738-34" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
 </div>
+<div id="type-1-neg-binom-equal-n-unequal-theta" class="section level3" number="22.3.10">
+<h3><span class="header-section-number">22.3.10</span> Type 1, neg binom, equal n, unequal theta</h3>
+<p>What if the treatment affects the variance but not the mean?</p>
+<div class="sourceCode" id="cb739"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb739-1"><a href="count-sim.html#cb739-1" aria-hidden="true" tabindex="-1"></a>sim_i <span class="ot">&lt;-</span> sim_i <span class="sc">+</span> <span class="dv">1</span></span>
+<span id="cb739-2"><a href="count-sim.html#cb739-2" aria-hidden="true" tabindex="-1"></a>n_levels_sim <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">12</span>, <span class="dv">8</span>)</span>
+<span id="cb739-3"><a href="count-sim.html#cb739-3" aria-hidden="true" tabindex="-1"></a>mu_levels_sim <span class="ot">&lt;-</span> <span class="fu">c</span>(mu_cn_obs, mu_cn_obs)</span>
+<span id="cb739-4"><a href="count-sim.html#cb739-4" aria-hidden="true" tabindex="-1"></a>theta_levels_sim <span class="ot">&lt;-</span> <span class="fu">c</span>(theta_obs, <span class="dv">1</span>)</span>
+<span id="cb739-5"><a href="count-sim.html#cb739-5" aria-hidden="true" tabindex="-1"></a>sigma_levels_sim <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="cn">NA</span>, <span class="cn">NA</span>) <span class="co"># not used</span></span>
+<span id="cb739-6"><a href="count-sim.html#cb739-6" aria-hidden="true" tabindex="-1"></a>normal_sim <span class="ot">&lt;-</span> <span class="cn">FALSE</span></span>
+<span id="cb739-7"><a href="count-sim.html#cb739-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb739-8"><a href="count-sim.html#cb739-8" aria-hidden="true" tabindex="-1"></a><span class="co"># fake_data has to be global for emmeans to run inside </span></span>
+<span id="cb739-9"><a href="count-sim.html#cb739-9" aria-hidden="true" tabindex="-1"></a><span class="co"># a function</span></span>
+<span id="cb739-10"><a href="count-sim.html#cb739-10" aria-hidden="true" tabindex="-1"></a>treatment_levels <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;cn&quot;</span>, <span class="st">&quot;tr&quot;</span>)</span>
+<span id="cb739-11"><a href="count-sim.html#cb739-11" aria-hidden="true" tabindex="-1"></a>fake_data <span class="ot">&lt;-</span> <span class="fu">data.table</span>(</span>
+<span id="cb739-12"><a href="count-sim.html#cb739-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">treatment =</span> <span class="fu">factor</span>(<span class="fu">rep</span>(treatment_levels, n_levels_sim),</span>
+<span id="cb739-13"><a href="count-sim.html#cb739-13" aria-hidden="true" tabindex="-1"></a>                     <span class="at">levels =</span> treatment_levels)</span>
+<span id="cb739-14"><a href="count-sim.html#cb739-14" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb739-15"><a href="count-sim.html#cb739-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb739-16"><a href="count-sim.html#cb739-16" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(do_it <span class="sc">==</span> <span class="cn">TRUE</span>){</span>
+<span id="cb739-17"><a href="count-sim.html#cb739-17" aria-hidden="true" tabindex="-1"></a>  sim_res <span class="ot">&lt;-</span> <span class="fu">simulator</span>(</span>
+<span id="cb739-18"><a href="count-sim.html#cb739-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">n_sim =</span> n_sim_i,</span>
+<span id="cb739-19"><a href="count-sim.html#cb739-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">n_levels =</span> n_levels_sim,</span>
+<span id="cb739-20"><a href="count-sim.html#cb739-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">mu_levels =</span> mu_levels_sim,</span>
+<span id="cb739-21"><a href="count-sim.html#cb739-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">theta_levels =</span> theta_levels_sim, <span class="co"># not used</span></span>
+<span id="cb739-22"><a href="count-sim.html#cb739-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">sigma_levels =</span> sigma_levels_sim,</span>
+<span id="cb739-23"><a href="count-sim.html#cb739-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">normal =</span> normal_sim</span>
+<span id="cb739-24"><a href="count-sim.html#cb739-24" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb739-25"><a href="count-sim.html#cb739-25" aria-hidden="true" tabindex="-1"></a>  p_values <span class="ot">&lt;-</span> <span class="fu">binder</span>(p_values,</span>
+<span id="cb739-26"><a href="count-sim.html#cb739-26" aria-hidden="true" tabindex="-1"></a>                     sim_res,</span>
+<span id="cb739-27"><a href="count-sim.html#cb739-27" aria-hidden="true" tabindex="-1"></a>                     sim_i,</span>
+<span id="cb739-28"><a href="count-sim.html#cb739-28" aria-hidden="true" tabindex="-1"></a>                     n_levels_sim,</span>
+<span id="cb739-29"><a href="count-sim.html#cb739-29" aria-hidden="true" tabindex="-1"></a>                     mu_levels_sim,</span>
+<span id="cb739-30"><a href="count-sim.html#cb739-30" aria-hidden="true" tabindex="-1"></a>                     theta_levels_sim,</span>
+<span id="cb739-31"><a href="count-sim.html#cb739-31" aria-hidden="true" tabindex="-1"></a>                     sigma_levels_sim,</span>
+<span id="cb739-32"><a href="count-sim.html#cb739-32" aria-hidden="true" tabindex="-1"></a>                     normal_sim)</span>
+<span id="cb739-33"><a href="count-sim.html#cb739-33" aria-hidden="true" tabindex="-1"></a><span class="co">#  apply(sim_res, 2, function(x) sum(x &lt; 0.05)/n_sim_i)</span></span>
+<span id="cb739-34"><a href="count-sim.html#cb739-34" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+</div>
 </div>
 <div id="save-it-read-it" class="section level2" number="22.4">
 <h2><span class="header-section-number">22.4</span> Save it, Read it</h2>
-<div class="sourceCode" id="cb739"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb739-1"><a href="count-sim.html#cb739-1" aria-hidden="true" tabindex="-1"></a>sim_data_folder <span class="ot">&lt;-</span> <span class="st">&quot;sim_data&quot;</span></span>
-<span id="cb739-2"><a href="count-sim.html#cb739-2" aria-hidden="true" tabindex="-1"></a>sim_fn <span class="ot">&lt;-</span> <span class="st">&quot;counts_t_test_alternative.Rds&quot;</span></span>
-<span id="cb739-3"><a href="count-sim.html#cb739-3" aria-hidden="true" tabindex="-1"></a>sim_path <span class="ot">&lt;-</span> <span class="fu">here</span>(sim_data_folder, sim_fn)</span>
-<span id="cb739-4"><a href="count-sim.html#cb739-4" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(do_it <span class="sc">==</span> <span class="cn">TRUE</span>){</span>
-<span id="cb739-5"><a href="count-sim.html#cb739-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">saveRDS</span>(p_values, sim_path)</span>
-<span id="cb739-6"><a href="count-sim.html#cb739-6" aria-hidden="true" tabindex="-1"></a>}<span class="cf">else</span>{</span>
-<span id="cb739-7"><a href="count-sim.html#cb739-7" aria-hidden="true" tabindex="-1"></a>  p_values <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(sim_path)</span>
-<span id="cb739-8"><a href="count-sim.html#cb739-8" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb740"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb740-1"><a href="count-sim.html#cb740-1" aria-hidden="true" tabindex="-1"></a>sim_data_folder <span class="ot">&lt;-</span> <span class="st">&quot;sim_data&quot;</span></span>
+<span id="cb740-2"><a href="count-sim.html#cb740-2" aria-hidden="true" tabindex="-1"></a>sim_fn <span class="ot">&lt;-</span> <span class="st">&quot;counts_t_test_alternative.Rds&quot;</span></span>
+<span id="cb740-3"><a href="count-sim.html#cb740-3" aria-hidden="true" tabindex="-1"></a>sim_path <span class="ot">&lt;-</span> <span class="fu">here</span>(sim_data_folder, sim_fn)</span>
+<span id="cb740-4"><a href="count-sim.html#cb740-4" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(do_it <span class="sc">==</span> <span class="cn">TRUE</span>){</span>
+<span id="cb740-5"><a href="count-sim.html#cb740-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">saveRDS</span>(p_values, sim_path)</span>
+<span id="cb740-6"><a href="count-sim.html#cb740-6" aria-hidden="true" tabindex="-1"></a>}<span class="cf">else</span>{</span>
+<span id="cb740-7"><a href="count-sim.html#cb740-7" aria-hidden="true" tabindex="-1"></a>  p_values <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(sim_path)</span>
+<span id="cb740-8"><a href="count-sim.html#cb740-8" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
 </div>
 <div id="analysis" class="section level2" number="22.5">
 <h2><span class="header-section-number">22.5</span> Analysis</h2>
-<div class="sourceCode" id="cb740"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb740-1"><a href="count-sim.html#cb740-1" aria-hidden="true" tabindex="-1"></a>method_list <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;lm&quot;</span>, <span class="st">&quot;gls&quot;</span>, <span class="st">&quot;glm_nb&quot;</span>, <span class="st">&quot;glm_qp&quot;</span>, <span class="st">&quot;lmp&quot;</span>, <span class="st">&quot;mww&quot;</span>)</span>
-<span id="cb740-2"><a href="count-sim.html#cb740-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb740-3"><a href="count-sim.html#cb740-3" aria-hidden="true" tabindex="-1"></a>p_values[, <span class="fu">lapply</span>(.SD,</span>
-<span id="cb740-4"><a href="count-sim.html#cb740-4" aria-hidden="true" tabindex="-1"></a>                  <span class="cf">function</span>(x) <span class="fu">sum</span>(x <span class="sc">&lt;</span> <span class="fl">0.05</span>)<span class="sc">/</span><span class="fu">mean</span>(n_sim)),</span>
-<span id="cb740-5"><a href="count-sim.html#cb740-5" aria-hidden="true" tabindex="-1"></a>         .SDcols <span class="ot">=</span> method_list,</span>
-<span id="cb740-6"><a href="count-sim.html#cb740-6" aria-hidden="true" tabindex="-1"></a>         by <span class="ot">=</span> <span class="fu">c</span>(<span class="st">&quot;sim&quot;</span>, <span class="st">&quot;normal&quot;</span>,<span class="st">&quot;type&quot;</span>, <span class="st">&quot;n&quot;</span>, <span class="st">&quot;theta1&quot;</span>, <span class="st">&quot;theta2&quot;</span>)] <span class="sc">%&gt;%</span></span>
-<span id="cb740-7"><a href="count-sim.html#cb740-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">digits =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">2</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">3</span>,<span class="dv">3</span>,<span class="dv">3</span>,<span class="dv">3</span>,<span class="dv">3</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb740-8"><a href="count-sim.html#cb740-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_styling</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb741"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb741-1"><a href="count-sim.html#cb741-1" aria-hidden="true" tabindex="-1"></a>method_list <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;lm&quot;</span>, <span class="st">&quot;gls&quot;</span>, <span class="st">&quot;glm_nb&quot;</span>, <span class="st">&quot;glm_qp&quot;</span>, <span class="st">&quot;lmp&quot;</span>, <span class="st">&quot;mww&quot;</span>)</span>
+<span id="cb741-2"><a href="count-sim.html#cb741-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb741-3"><a href="count-sim.html#cb741-3" aria-hidden="true" tabindex="-1"></a>p_values[, <span class="fu">lapply</span>(.SD,</span>
+<span id="cb741-4"><a href="count-sim.html#cb741-4" aria-hidden="true" tabindex="-1"></a>                  <span class="cf">function</span>(x) <span class="fu">sum</span>(x <span class="sc">&lt;</span> <span class="fl">0.05</span>)<span class="sc">/</span><span class="fu">mean</span>(n_sim)),</span>
+<span id="cb741-5"><a href="count-sim.html#cb741-5" aria-hidden="true" tabindex="-1"></a>         .SDcols <span class="ot">=</span> method_list,</span>
+<span id="cb741-6"><a href="count-sim.html#cb741-6" aria-hidden="true" tabindex="-1"></a>         by <span class="ot">=</span> <span class="fu">c</span>(<span class="st">&quot;sim&quot;</span>, <span class="st">&quot;normal&quot;</span>,<span class="st">&quot;type&quot;</span>, <span class="st">&quot;n&quot;</span>, <span class="st">&quot;theta1&quot;</span>, <span class="st">&quot;theta2&quot;</span>)] <span class="sc">%&gt;%</span></span>
+<span id="cb741-7"><a href="count-sim.html#cb741-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">digits =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">2</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">3</span>,<span class="dv">3</span>,<span class="dv">3</span>,<span class="dv">3</span>,<span class="dv">3</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb741-8"><a href="count-sim.html#cb741-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_styling</span>()</span></code></pre></div>
 <table class="table" style="margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
