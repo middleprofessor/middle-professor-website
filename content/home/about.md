@@ -10,7 +10,8 @@ weight = 5
 # List your academic interests.
 [interests]
   interests = [
-    "good science in ecology, evolution, and cell biology",
+    "phenotypic evolution",
+    "fluid mechanics of fins, wings, and bodies"
     "developing tools for best statistical practices",
     "being a research parasite"
   ]
