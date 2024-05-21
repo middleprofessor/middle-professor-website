@@ -16,17 +16,17 @@ weight = 50
 +++
 Lots more to come
 
-Elementary Statistical Modeling for Applied Biostatistics
+Statistics for the Experimental Biologist
 <a class="btn" href="/files/applied-biostatistics_bookdown/_book/index.html">HTML</a>
-<a class="btn" href="/files/applied-biostatistics_bookdown/_book/Walker-elementary-statistical-modeling-draft.pdf">PDF</a>
+
+Data From -- weekly posts analyzing data from the experimental bench biology literature
+<a class="btn" href="https://data-from.netlify.app">HTML</a>
 
 Physics for Introductory Biology
 <a class="btn" href="/files/physics_for_biologists/_book/index.html">HTML</a>
-<a class="btn" href="/files/physics_for_biologists/_book/physics.pdf">PDF (not yet available)</a>
 
 Quantitative Problems for Human Physiology
 <a class="btn" href="/files/quant-physiology/_book/index.html">HTML</a>
-<a class="btn" href="/files/quant-physiology/_book/index.pdf">PDF (not yet available)</a>
 
 An elementary explanation of confounding (a very working explanation)
 <a class="btn" href="/files/math/confounding.html">HTML</a>
@@ -34,6 +34,5 @@ An elementary explanation of confounding (a very working explanation)
 Getting started with R
 <a class="btn" href="/files/lab/Getting_started_with_R.html">HTML</a>
 
-External Links for
-
-[BIO 413 / 513 Applied Biostatistics](/categories/statistics-links/)
+Bike Geometry Project -- exploring and classifying gravel bike frame geometry
+<a class="btn" href="https://bikegeometry.site">HTML</a>
