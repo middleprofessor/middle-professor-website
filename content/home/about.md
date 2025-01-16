@@ -11,7 +11,7 @@ weight = 5
 [interests]
   interests = [
     "phenotypic evolution",
-    "fluid mechanics of fins, wings, and bodies"
+    "fluid mechanics of fins, wings, and bodies",
     "developing tools for best statistical practices",
     "being a research parasite"
   ]
@@ -31,4 +31,4 @@ weight = 5
 
 # Biography
 
-Jeff Walker is a Professor of Biological Sciences at the University of Southern Maine with a background in geometric morphometrics, biomechanical modeling of swimming and flying animals, and modeling performance trade-offs in functional systems. More recent work is devoted to developing tools for best statistical practices in biology.
+Jeff Walker is a Professor of Biological Sciences at the University of Southern Maine with a background in geometric morphometrics, biomechanical modeling of swimming and flying animals, and modeling performance trade-offs in functional systems. More recent work is devoted to developing tools for best statistical practices in bench biology.
