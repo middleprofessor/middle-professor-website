@@ -4,18 +4,18 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Chapter 9 Linear models with a single, continuous X (“regression”) | Statistics for the Experimental Biologist</title>
+  <title>Chapter 9 Linear models with a single, continuous X (“regression”) | Statistics for the Bench Biologist</title>
   <meta name="description" content="An introduction to statistical modeling for experimental biology researchers" />
-  <meta name="generator" content="bookdown 0.39 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.41 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Chapter 9 Linear models with a single, continuous X (“regression”) | Statistics for the Experimental Biologist" />
+  <meta property="og:title" content="Chapter 9 Linear models with a single, continuous X (“regression”) | Statistics for the Bench Biologist" />
   <meta property="og:type" content="book" />
   
   <meta property="og:description" content="An introduction to statistical modeling for experimental biology researchers" />
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Chapter 9 Linear models with a single, continuous X (“regression”) | Statistics for the Experimental Biologist" />
+  <meta name="twitter:title" content="Chapter 9 Linear models with a single, continuous X (“regression”) | Statistics for the Bench Biologist" />
   
   <meta name="twitter:description" content="An introduction to statistical modeling for experimental biology researchers" />
   
@@ -59,7 +59,7 @@
 
 <style type="text/css">
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span { line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -913,7 +913,7 @@ code span.wa { color: #bf0303; } /* Warning */
       <div class="body-inner">
         <div class="book-header" role="navigation">
           <h1>
-            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Statistics for the Experimental Biologist</a>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Statistics for the Bench Biologist</a>
           </h1>
         </div>
 
@@ -923,6 +923,7 @@ code span.wa { color: #bf0303; } /* Warning */
             <section class="normal" id="section-">
 <div id="regression" class="section level1 hasAnchor" number="9">
 <h1><span class="header-section-number">Chapter 9</span> Linear models with a single, continuous <em>X</em> (“regression”)<a href="regression.html#regression" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<p>All updates to this book are now at <a href="https://middleprofessor.github.io/benchbiostats/">https://middleprofessor.github.io/benchbiostats/</a></p>
 <div id="a-linear-model-with-a-single-continuous-x-is-classical-regression" class="section level2 hasAnchor" number="9.1">
 <h2><span class="header-section-number">9.1</span> A linear model with a single, continuous <em>X</em> is classical “regression”<a href="regression.html#a-linear-model-with-a-single-continuous-x-is-classical-regression" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <div id="analysis-of-green-down-data" class="section level3 hasAnchor" number="9.1.1">
@@ -936,37 +937,37 @@ code span.wa { color: #bf0303; } /* Warning */
 <ol style="list-style-type: decimal">
 <li><strong>Examine the data</strong></li>
 </ol>
-<div class="sourceCode" id="cb190"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb190-1"><a href="regression.html#cb190-1" tabindex="-1"></a>gg1 <span class="ot">&lt;-</span> <span class="fu">qplot</span>(<span class="at">x =</span> temperature,</span>
-<span id="cb190-2"><a href="regression.html#cb190-2" tabindex="-1"></a>      <span class="at">y =</span> transition_date,</span>
-<span id="cb190-3"><a href="regression.html#cb190-3" tabindex="-1"></a>      <span class="at">data =</span> fig2c) <span class="sc">+</span></span>
-<span id="cb190-4"><a href="regression.html#cb190-4" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">&quot;lm&quot;</span>)</span>
-<span id="cb190-5"><a href="regression.html#cb190-5" tabindex="-1"></a>gg2 <span class="ot">&lt;-</span> <span class="fu">qplot</span>(<span class="at">x =</span> temperature,</span>
-<span id="cb190-6"><a href="regression.html#cb190-6" tabindex="-1"></a>      <span class="at">y =</span> transition_date,</span>
-<span id="cb190-7"><a href="regression.html#cb190-7" tabindex="-1"></a>      <span class="at">data =</span> fig2c) <span class="sc">+</span></span>
-<span id="cb190-8"><a href="regression.html#cb190-8" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">&quot;lm&quot;</span>, <span class="at">formula =</span> y <span class="sc">~</span> <span class="fu">poly</span>(x, <span class="dv">2</span>))</span>
-<span id="cb190-9"><a href="regression.html#cb190-9" tabindex="-1"></a>gg3 <span class="ot">&lt;-</span> <span class="fu">qplot</span>(<span class="at">x =</span> temperature,</span>
-<span id="cb190-10"><a href="regression.html#cb190-10" tabindex="-1"></a>      <span class="at">y =</span> transition_date,</span>
-<span id="cb190-11"><a href="regression.html#cb190-11" tabindex="-1"></a>      <span class="at">data =</span> fig2c) <span class="sc">+</span></span>
-<span id="cb190-12"><a href="regression.html#cb190-12" tabindex="-1"></a>  <span class="fu">geom_smooth</span>()</span>
-<span id="cb190-13"><a href="regression.html#cb190-13" tabindex="-1"></a><span class="fu">plot_grid</span>(gg1, gg2, gg3, <span class="at">ncol=</span><span class="dv">3</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb192"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb192-1"><a href="regression.html#cb192-1" tabindex="-1"></a>gg1 <span class="ot">&lt;-</span> <span class="fu">qplot</span>(<span class="at">x =</span> temperature,</span>
+<span id="cb192-2"><a href="regression.html#cb192-2" tabindex="-1"></a>      <span class="at">y =</span> transition_date,</span>
+<span id="cb192-3"><a href="regression.html#cb192-3" tabindex="-1"></a>      <span class="at">data =</span> fig2c) <span class="sc">+</span></span>
+<span id="cb192-4"><a href="regression.html#cb192-4" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">&quot;lm&quot;</span>)</span>
+<span id="cb192-5"><a href="regression.html#cb192-5" tabindex="-1"></a>gg2 <span class="ot">&lt;-</span> <span class="fu">qplot</span>(<span class="at">x =</span> temperature,</span>
+<span id="cb192-6"><a href="regression.html#cb192-6" tabindex="-1"></a>      <span class="at">y =</span> transition_date,</span>
+<span id="cb192-7"><a href="regression.html#cb192-7" tabindex="-1"></a>      <span class="at">data =</span> fig2c) <span class="sc">+</span></span>
+<span id="cb192-8"><a href="regression.html#cb192-8" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">&quot;lm&quot;</span>, <span class="at">formula =</span> y <span class="sc">~</span> <span class="fu">poly</span>(x, <span class="dv">2</span>))</span>
+<span id="cb192-9"><a href="regression.html#cb192-9" tabindex="-1"></a>gg3 <span class="ot">&lt;-</span> <span class="fu">qplot</span>(<span class="at">x =</span> temperature,</span>
+<span id="cb192-10"><a href="regression.html#cb192-10" tabindex="-1"></a>      <span class="at">y =</span> transition_date,</span>
+<span id="cb192-11"><a href="regression.html#cb192-11" tabindex="-1"></a>      <span class="at">data =</span> fig2c) <span class="sc">+</span></span>
+<span id="cb192-12"><a href="regression.html#cb192-12" tabindex="-1"></a>  <span class="fu">geom_smooth</span>()</span>
+<span id="cb192-13"><a href="regression.html#cb192-13" tabindex="-1"></a><span class="fu">plot_grid</span>(gg1, gg2, gg3, <span class="at">ncol=</span><span class="dv">3</span>)</span></code></pre></div>
 <p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/continuous-x-vet-1.png" width="576" /></p>
 <p>No plot shows any obvious outlier that might be due to measurement blunders or curation error. The linear regression in the left-most plot clearly shows that a linear response is sufficient to capture the effect of temperature on day of green-down.</p>
 <ol start="2" style="list-style-type: decimal">
 <li><p><strong>choose a model</strong>. Because the <span class="math inline">\(X\)</span> variable (<span class="math inline">\(temperature\)</span>) was experimentally set to five levels, the data could reasonably be modeled using either a linear model with a categorical <span class="math inline">\(X\)</span> or a linear model with a continuous <span class="math inline">\(X\)</span>. The advantage of modeling <span class="math inline">\(temperature\)</span> as a continuous variable is that there is only one effect, the slope of the regression line. If modeled as a categorical factor with five levels, there are, at a minimum, four interesting effects (the difference in means between each non-reference level and reference (temperature = 0) level). Also, for inference, modeling <span class="math inline">\(temperature\)</span> as a continuous variable increases power for hypothesis tests.</p></li>
 <li><p><strong>fit the model</strong></p></li>
 </ol>
-<div class="sourceCode" id="cb191"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb191-1"><a href="regression.html#cb191-1" tabindex="-1"></a><span class="co"># Step 1: fit the model</span></span>
-<span id="cb191-2"><a href="regression.html#cb191-2" tabindex="-1"></a>m1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(transition_date <span class="sc">~</span> temperature, <span class="at">data =</span> fig2c)</span></code></pre></div>
+<div class="sourceCode" id="cb193"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb193-1"><a href="regression.html#cb193-1" tabindex="-1"></a><span class="co"># Step 1: fit the model</span></span>
+<span id="cb193-2"><a href="regression.html#cb193-2" tabindex="-1"></a>m1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(transition_date <span class="sc">~</span> temperature, <span class="at">data =</span> fig2c)</span></code></pre></div>
 <ol start="4" style="list-style-type: decimal">
 <li><strong>check the model</strong></li>
 </ol>
-<div class="sourceCode" id="cb192"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb192-1"><a href="regression.html#cb192-1" tabindex="-1"></a><span class="co"># check normality assumption</span></span>
-<span id="cb192-2"><a href="regression.html#cb192-2" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
-<span id="cb192-3"><a href="regression.html#cb192-3" tabindex="-1"></a><span class="fu">qqPlot</span>(m1, <span class="at">id=</span><span class="cn">FALSE</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb194"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb194-1"><a href="regression.html#cb194-1" tabindex="-1"></a><span class="co"># check normality assumption</span></span>
+<span id="cb194-2"><a href="regression.html#cb194-2" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
+<span id="cb194-3"><a href="regression.html#cb194-3" tabindex="-1"></a><span class="fu">qqPlot</span>(m1, <span class="at">id=</span><span class="cn">FALSE</span>)</span></code></pre></div>
 <p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/continuous-x-check-qq-1.png" width="576" /></p>
 <p>The Q-Q plot indicates the distribution of residuals is well within that expected for a normal sample and there is no cause for concern with inference.</p>
-<div class="sourceCode" id="cb193"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb193-1"><a href="regression.html#cb193-1" tabindex="-1"></a><span class="co"># check homogeneity assumption</span></span>
-<span id="cb193-2"><a href="regression.html#cb193-2" tabindex="-1"></a><span class="fu">spreadLevelPlot</span>(m1, <span class="at">id=</span><span class="cn">FALSE</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb195"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb195-1"><a href="regression.html#cb195-1" tabindex="-1"></a><span class="co"># check homogeneity assumption</span></span>
+<span id="cb195-2"><a href="regression.html#cb195-2" tabindex="-1"></a><span class="fu">spreadLevelPlot</span>(m1, <span class="at">id=</span><span class="cn">FALSE</span>)</span></code></pre></div>
 <p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/continuous-x-check-spread-1.png" width="576" /></p>
 <pre><code>## 
 ## Suggested power transformation:  0.6721303</code></pre>
@@ -974,11 +975,11 @@ code span.wa { color: #bf0303; } /* Warning */
 <ol start="5" style="list-style-type: decimal">
 <li><strong>inference from the model</strong></li>
 </ol>
-<div class="sourceCode" id="cb195"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb195-1"><a href="regression.html#cb195-1" tabindex="-1"></a>m1_coeff <span class="ot">&lt;-</span> <span class="fu">summary</span>(m1) <span class="sc">%&gt;%</span></span>
-<span id="cb195-2"><a href="regression.html#cb195-2" tabindex="-1"></a>  <span class="fu">coef</span>()</span>
-<span id="cb195-3"><a href="regression.html#cb195-3" tabindex="-1"></a>m1_confint <span class="ot">&lt;-</span> <span class="fu">confint</span>(m1)</span>
-<span id="cb195-4"><a href="regression.html#cb195-4" tabindex="-1"></a>m1_coeff <span class="ot">&lt;-</span> <span class="fu">cbind</span>(m1_coeff, m1_confint)</span>
-<span id="cb195-5"><a href="regression.html#cb195-5" tabindex="-1"></a>m1_coeff</span></code></pre></div>
+<div class="sourceCode" id="cb197"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb197-1"><a href="regression.html#cb197-1" tabindex="-1"></a>m1_coeff <span class="ot">&lt;-</span> <span class="fu">summary</span>(m1) <span class="sc">%&gt;%</span></span>
+<span id="cb197-2"><a href="regression.html#cb197-2" tabindex="-1"></a>  <span class="fu">coef</span>()</span>
+<span id="cb197-3"><a href="regression.html#cb197-3" tabindex="-1"></a>m1_confint <span class="ot">&lt;-</span> <span class="fu">confint</span>(m1)</span>
+<span id="cb197-4"><a href="regression.html#cb197-4" tabindex="-1"></a>m1_coeff <span class="ot">&lt;-</span> <span class="fu">cbind</span>(m1_coeff, m1_confint)</span>
+<span id="cb197-5"><a href="regression.html#cb197-5" tabindex="-1"></a>m1_coeff</span></code></pre></div>
 <pre><code>##               Estimate Std. Error   t value     Pr(&gt;|t|)      2.5 %     97.5 %
 ## (Intercept) 289.458750  3.0593949 94.613071 1.738650e-13 282.403773 296.513728
 ## temperature   4.982745  0.5541962  8.990941 1.866888e-05   3.704767   6.260724</code></pre>
@@ -1141,24 +1142,24 @@ green\_down\_anomaly_i = b_0 + b_1 autumn\_temp\_anomaly_i + e_i
 <div id="r2" class="section level4 hasAnchor" number="9.1.4.3">
 <h4><span class="header-section-number">9.1.4.3</span> <span class="math inline">\(R^2\)</span><a href="regression.html#r2" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <p>A good model accounts for a sizable fraction of the total variance in the response. This fraction is the <span class="math inline">\(R^2\)</span> value, which is given in <code>summary(m1)</code> and accessed directly with</p>
-<div class="sourceCode" id="cb197"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb197-1"><a href="regression.html#cb197-1" tabindex="-1"></a><span class="fu">summary</span>(m1)<span class="sc">$</span>r.squared</span></code></pre></div>
+<div class="sourceCode" id="cb199"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb199-1"><a href="regression.html#cb199-1" tabindex="-1"></a><span class="fu">summary</span>(m1)<span class="sc">$</span>r.squared</span></code></pre></div>
 <pre><code>## [1] 0.1305754</code></pre>
 <p><span class="math inline">\(R^2\)</span> is the fraction of the total variance of <span class="math inline">\(Y\)</span> that is generated by the linear predictor.</p>
 <p><span class="math display">\[\begin{equation}
 R^2 = \frac{\mathrm{VAR}(\hat{y})}{\mathrm{VAR}(y)}
 \end{equation}\]</span></p>
-<div class="sourceCode" id="cb199"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb199-1"><a href="regression.html#cb199-1" tabindex="-1"></a>yhat <span class="ot">&lt;-</span> <span class="fu">fitted</span>(m1)</span>
-<span id="cb199-2"><a href="regression.html#cb199-2" tabindex="-1"></a>y <span class="ot">&lt;-</span> efig_3d[, green_down_anomaly]</span>
-<span id="cb199-3"><a href="regression.html#cb199-3" tabindex="-1"></a><span class="fu">var</span>(yhat)<span class="sc">/</span><span class="fu">var</span>(y)</span></code></pre></div>
+<div class="sourceCode" id="cb201"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb201-1"><a href="regression.html#cb201-1" tabindex="-1"></a>yhat <span class="ot">&lt;-</span> <span class="fu">fitted</span>(m1)</span>
+<span id="cb201-2"><a href="regression.html#cb201-2" tabindex="-1"></a>y <span class="ot">&lt;-</span> efig_3d[, green_down_anomaly]</span>
+<span id="cb201-3"><a href="regression.html#cb201-3" tabindex="-1"></a><span class="fu">var</span>(yhat)<span class="sc">/</span><span class="fu">var</span>(y)</span></code></pre></div>
 <pre><code>## [1] 0.1305754</code></pre>
 <p><span class="math inline">\(R^2\)</span> will vary from zero (the model accounts for nothing) to one (the model accounts for everything). <span class="math inline">\(R^2\)</span> is often described as the fraction of total variation <em>explained</em> by the model” but the usage of “explain” is observational and not causal. Because of the ambiguous usage of “explain” in statistics, I prefer to avoid the word.</p>
 <p>It can be useful sometimes to think of <span class="math inline">\(R^2\)</span> in terms of <strong>residual error</strong>, which is the variance of the residuals from the model. The larger the residual error, the smaller the <span class="math inline">\(R^2\)</span>, or</p>
 <p><span class="math display">\[\begin{equation}
 R^2 = 1 - \frac{\mathrm{VAR}(e)}{\mathrm{VAR}(y)}
 \end{equation}\]</span></p>
-<div class="sourceCode" id="cb201"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb201-1"><a href="regression.html#cb201-1" tabindex="-1"></a>e <span class="ot">&lt;-</span> <span class="fu">residuals</span>(m1)</span>
-<span id="cb201-2"><a href="regression.html#cb201-2" tabindex="-1"></a>y <span class="ot">&lt;-</span> efig_3d[, green_down_anomaly]</span>
-<span id="cb201-3"><a href="regression.html#cb201-3" tabindex="-1"></a><span class="dv">1</span> <span class="sc">-</span> <span class="fu">var</span>(e)<span class="sc">/</span><span class="fu">var</span>(y)</span></code></pre></div>
+<div class="sourceCode" id="cb203"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb203-1"><a href="regression.html#cb203-1" tabindex="-1"></a>e <span class="ot">&lt;-</span> <span class="fu">residuals</span>(m1)</span>
+<span id="cb203-2"><a href="regression.html#cb203-2" tabindex="-1"></a>y <span class="ot">&lt;-</span> efig_3d[, green_down_anomaly]</span>
+<span id="cb203-3"><a href="regression.html#cb203-3" tabindex="-1"></a><span class="dv">1</span> <span class="sc">-</span> <span class="fu">var</span>(e)<span class="sc">/</span><span class="fu">var</span>(y)</span></code></pre></div>
 <pre><code>## [1] 0.1305754</code></pre>
 <p>The smaller the residuals, the higher the <span class="math inline">\(R^2\)</span> and the closer the predicted values are to the measured values. The sum of the model variance and residual variance equals the total variance and, consequently, <span class="math inline">\(R^2\)</span> is a signal to signal + noise ratio. The noise in <span class="math inline">\(R^2\)</span> is the sampling variance of the individual measures. The noise in a <em>t</em>-value is the sampling variance of the parameter (for m1, this is the sampling variance of <span class="math inline">\(b_1\)</span>). This is an important distinction because it means that <em>t</em> and <span class="math inline">\(R^2\)</span> are not related 1:1. In a simple model with only a single <span class="math inline">\(X\)</span>, one might expect <span class="math inline">\(R^2\)</span> to be big if the <em>p</em>-value for the slope is tiny, but this isn’t necessarily true because of the different meaning of noise in each. A study with a very large sample size <span class="math inline">\(n\)</span> can have a tiny <em>p</em>-value <em>and</em> a small <span class="math inline">\(R^2\)</span>. A <em>p</em>-value is not a good indicator of predictability. <span class="math inline">\(R^2\)</span> is. This is explored more below.</p>
 </div>
@@ -1167,91 +1168,43 @@ R^2 = 1 - \frac{\mathrm{VAR}(e)}{\mathrm{VAR}(y)}
 <p>A good prediction model has high predictability, meaning the range of predicted values is narrow. A 95% CI is a reasonable range to communicate. For any decision making using prediction, it is better to look at numbers than a band on a plot.</p>
 <table>
 <thead>
-<tr>
-<th style="text-align:right;">
-Autumn Temp Anomaly (°C)
-</th>
-<th style="text-align:right;">
-Expected (days)
-</th>
-<th style="text-align:right;">
-2.5% (days)
-</th>
-<th style="text-align:right;">
-97.5% (days)
-</th>
+<tr class="header">
+<th align="right">Autumn Temp Anomaly (°C)</th>
+<th align="right">Expected (days)</th>
+<th align="right">2.5% (days)</th>
+<th align="right">97.5% (days)</th>
 </tr>
 </thead>
 <tbody>
-<tr>
-<td style="text-align:right;">
-0.5
-</td>
-<td style="text-align:right;">
-0.8
-</td>
-<td style="text-align:right;">
--8.7
-</td>
-<td style="text-align:right;">
-10.3
-</td>
+<tr class="odd">
+<td align="right">0.5</td>
+<td align="right">0.8</td>
+<td align="right">-8.7</td>
+<td align="right">10.3</td>
 </tr>
-<tr>
-<td style="text-align:right;">
-1.0
-</td>
-<td style="text-align:right;">
-1.6
-</td>
-<td style="text-align:right;">
--7.9
-</td>
-<td style="text-align:right;">
-11.1
-</td>
+<tr class="even">
+<td align="right">1.0</td>
+<td align="right">1.6</td>
+<td align="right">-7.9</td>
+<td align="right">11.1</td>
 </tr>
-<tr>
-<td style="text-align:right;">
-1.5
-</td>
-<td style="text-align:right;">
-2.4
-</td>
-<td style="text-align:right;">
--7.2
-</td>
-<td style="text-align:right;">
-12.0
-</td>
+<tr class="odd">
+<td align="right">1.5</td>
+<td align="right">2.4</td>
+<td align="right">-7.2</td>
+<td align="right">12.0</td>
 </tr>
-<tr>
-<td style="text-align:right;">
-2.0
-</td>
-<td style="text-align:right;">
-3.2
-</td>
-<td style="text-align:right;">
--6.4
-</td>
-<td style="text-align:right;">
-12.8
-</td>
+<tr class="even">
+<td align="right">2.0</td>
+<td align="right">3.2</td>
+<td align="right">-6.4</td>
+<td align="right">12.8</td>
 </tr>
-<tr>
-<td style="text-align:right;">
-2.5
-</td>
-<td style="text-align:right;">
-4.0
-</td>
-<td style="text-align:right;">
--5.7
-</td>
-<td style="text-align:right;">
-13.7
-</td>
+<tr class="odd">
+<td align="right">2.5</td>
+<td align="right">4.0</td>
+<td align="right">-5.7</td>
+<td align="right">13.7</td>
 </tr>
 </tbody>
 </table>
@@ -1265,10 +1218,10 @@ Expected (days)
 \hat\sigma^2 = \frac{\sum{e_i^2}}{N-2}
 \end{equation}\]</span></p>
 <p>Again, <span class="math inline">\(e_i\)</span> is the residual for the <em>i</em>th case. The denominator (<span class="math inline">\(N-2\)</span>) is the degrees of freedom of the model. Computing <span class="math inline">\(\hat\sigma^2\)</span> manually helps to insure that we understand what is going on.</p>
-<div class="sourceCode" id="cb203"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb203-1"><a href="regression.html#cb203-1" tabindex="-1"></a><span class="fu">summary</span>(m1)<span class="sc">$</span>sigma <span class="co"># R&#39;s calculation of sigma hat</span></span></code></pre></div>
+<div class="sourceCode" id="cb205"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb205-1"><a href="regression.html#cb205-1" tabindex="-1"></a><span class="fu">summary</span>(m1)<span class="sc">$</span>sigma <span class="co"># R&#39;s calculation of sigma hat</span></span></code></pre></div>
 <pre><code>## [1] 4.736643</code></pre>
-<div class="sourceCode" id="cb205"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb205-1"><a href="regression.html#cb205-1" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">summary</span>(m1)<span class="sc">$</span>df[<span class="dv">2</span>] <span class="co"># R&#39;s calculation of df. Check that this is n-2!</span></span>
-<span id="cb205-2"><a href="regression.html#cb205-2" tabindex="-1"></a><span class="fu">sqrt</span>(<span class="fu">sum</span>(e<span class="sc">^</span><span class="dv">2</span>)<span class="sc">/</span>df)</span></code></pre></div>
+<div class="sourceCode" id="cb207"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb207-1"><a href="regression.html#cb207-1" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">summary</span>(m1)<span class="sc">$</span>df[<span class="dv">2</span>] <span class="co"># R&#39;s calculation of df. Check that this is n-2!</span></span>
+<span id="cb207-2"><a href="regression.html#cb207-2" tabindex="-1"></a><span class="fu">sqrt</span>(<span class="fu">sum</span>(e<span class="sc">^</span><span class="dv">2</span>)<span class="sc">/</span>df)</span></code></pre></div>
 <pre><code>## [1] 4.736643</code></pre>
 <p>Remember that an assumption of the linear models that we are working with at this point is, this variance is constant for all values of <span class="math inline">\(X\)</span>, so we have a single <span class="math inline">\(\sigma\)</span>. Later, we will cover linear models that model heterogeneity in this variance. <span class="math inline">\(\sigma\)</span> is a function of variability in the population – it is the population standard deviation conditional on <span class="math inline">\(X\)</span>.</p>
 <p>Importantly, predictability is a function of both these components of variability. As a consequence, it is <span class="math inline">\(R^2\)</span>, and not the <em>p</em>-value, that is the indicator of predictability. In the observational green-down data, even if we had thousands of years of data, we would still have a pretty low <span class="math inline">\(R^2\)</span> because of the population variability of <span class="math inline">\(green\_down\_anomaly\)</span> at a given <span class="math inline">\(autumn\_temp\_anomaly\)</span>.</p>
@@ -1295,29 +1248,17 @@ MAE = \frac{1}{N}\sum{|y_i - \hat{y}_i|}
 \end{equation}\]</span></p>
 <table>
 <thead>
-<tr>
-<th style="text-align:right;">
-sigma
-</th>
-<th style="text-align:right;">
-RMSE
-</th>
-<th style="text-align:right;">
-MAE
-</th>
+<tr class="header">
+<th align="right">sigma</th>
+<th align="right">RMSE</th>
+<th align="right">MAE</th>
 </tr>
 </thead>
 <tbody>
-<tr>
-<td style="text-align:right;">
-4.74
-</td>
-<td style="text-align:right;">
-4.68
-</td>
-<td style="text-align:right;">
-3.58
-</td>
+<tr class="odd">
+<td align="right">4.74</td>
+<td align="right">4.68</td>
+<td align="right">3.58</td>
 </tr>
 </tbody>
 </table>
@@ -1345,23 +1286,23 @@ MAE
 <li>the coefficient of day (the slope, <span class="math inline">\(b_1\)</span>) is inserted in mouse <em>i</em>’s row in the column “growth” in the data.table “fig1f_wide”.</li>
 </ol>
 <p>At the end of the loop, we have the data.table fig1f_wide which has one row for each mouse, a column for the treatment factor (diet) and a column called “growth” containing each mouse’s growth rate. There are also columns of tumor volume for each mouse on each day but these are ignored.</p>
-<div class="sourceCode" id="cb207"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb207-1"><a href="regression.html#cb207-1" tabindex="-1"></a>N <span class="ot">&lt;-</span> <span class="fu">nrow</span>(fig1f_wide)</span>
-<span id="cb207-2"><a href="regression.html#cb207-2" tabindex="-1"></a>id_list <span class="ot">&lt;-</span> fig1f_wide[, id]</span>
-<span id="cb207-3"><a href="regression.html#cb207-3" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>N){</span>
-<span id="cb207-4"><a href="regression.html#cb207-4" tabindex="-1"></a>  mouse_i_data <span class="ot">&lt;-</span> fig1f[id <span class="sc">==</span> id_list[i]] <span class="co"># subset</span></span>
-<span id="cb207-5"><a href="regression.html#cb207-5" tabindex="-1"></a>  fit <span class="ot">&lt;-</span> <span class="fu">lm</span>(volume <span class="sc">~</span> day, <span class="at">data =</span> mouse_i_data)</span>
-<span id="cb207-6"><a href="regression.html#cb207-6" tabindex="-1"></a>  fig1f_wide[id <span class="sc">==</span> id_list[i], growth <span class="sc">:=</span> <span class="fu">coef</span>(fit)[<span class="dv">2</span>]]</span>
-<span id="cb207-7"><a href="regression.html#cb207-7" tabindex="-1"></a>}</span>
-<span id="cb207-8"><a href="regression.html#cb207-8" tabindex="-1"></a><span class="co"># View(fig1f_wide)</span></span>
-<span id="cb207-9"><a href="regression.html#cb207-9" tabindex="-1"></a><span class="co"># qplot(x = treatment, y = growth, data = fig1f_wide)</span></span>
-<span id="cb207-10"><a href="regression.html#cb207-10" tabindex="-1"></a><span class="co"># qplot(x = day, y = volume, color = treatment, data = fig1f) + geom_smooth(aes(group = id), method = &quot;lm&quot;, se = FALSE)</span></span></code></pre></div>
+<div class="sourceCode" id="cb209"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb209-1"><a href="regression.html#cb209-1" tabindex="-1"></a>N <span class="ot">&lt;-</span> <span class="fu">nrow</span>(fig1f_wide)</span>
+<span id="cb209-2"><a href="regression.html#cb209-2" tabindex="-1"></a>id_list <span class="ot">&lt;-</span> fig1f_wide[, id]</span>
+<span id="cb209-3"><a href="regression.html#cb209-3" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>N){</span>
+<span id="cb209-4"><a href="regression.html#cb209-4" tabindex="-1"></a>  mouse_i_data <span class="ot">&lt;-</span> fig1f[id <span class="sc">==</span> id_list[i]] <span class="co"># subset</span></span>
+<span id="cb209-5"><a href="regression.html#cb209-5" tabindex="-1"></a>  fit <span class="ot">&lt;-</span> <span class="fu">lm</span>(volume <span class="sc">~</span> day, <span class="at">data =</span> mouse_i_data)</span>
+<span id="cb209-6"><a href="regression.html#cb209-6" tabindex="-1"></a>  fig1f_wide[id <span class="sc">==</span> id_list[i], growth <span class="sc">:=</span> <span class="fu">coef</span>(fit)[<span class="dv">2</span>]]</span>
+<span id="cb209-7"><a href="regression.html#cb209-7" tabindex="-1"></a>}</span>
+<span id="cb209-8"><a href="regression.html#cb209-8" tabindex="-1"></a><span class="co"># View(fig1f_wide)</span></span>
+<span id="cb209-9"><a href="regression.html#cb209-9" tabindex="-1"></a><span class="co"># qplot(x = treatment, y = growth, data = fig1f_wide)</span></span>
+<span id="cb209-10"><a href="regression.html#cb209-10" tabindex="-1"></a><span class="co"># qplot(x = day, y = volume, color = treatment, data = fig1f) + geom_smooth(aes(group = id), method = &quot;lm&quot;, se = FALSE)</span></span></code></pre></div>
 <p>Step 3. <strong>fit the model</strong></p>
-<div class="sourceCode" id="cb208"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb208-1"><a href="regression.html#cb208-1" tabindex="-1"></a>m1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(growth <span class="sc">~</span> treatment, <span class="at">data =</span> fig1f_wide)</span></code></pre></div>
+<div class="sourceCode" id="cb210"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb210-1"><a href="regression.html#cb210-1" tabindex="-1"></a>m1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(growth <span class="sc">~</span> treatment, <span class="at">data =</span> fig1f_wide)</span></code></pre></div>
 <p>Step 5. <strong>inference from the model</strong></p>
-<div class="sourceCode" id="cb209"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb209-1"><a href="regression.html#cb209-1" tabindex="-1"></a>m1_coef <span class="ot">&lt;-</span> <span class="fu">summary</span>(m1) <span class="sc">%&gt;%</span></span>
-<span id="cb209-2"><a href="regression.html#cb209-2" tabindex="-1"></a>  coef</span>
-<span id="cb209-3"><a href="regression.html#cb209-3" tabindex="-1"></a>m1_ci <span class="ot">&lt;-</span> <span class="fu">confint</span>(m1)</span>
-<span id="cb209-4"><a href="regression.html#cb209-4" tabindex="-1"></a>(m1_coef_table <span class="ot">&lt;-</span> <span class="fu">cbind</span>(m1_coef, m1_ci))</span></code></pre></div>
+<div class="sourceCode" id="cb211"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb211-1"><a href="regression.html#cb211-1" tabindex="-1"></a>m1_coef <span class="ot">&lt;-</span> <span class="fu">summary</span>(m1) <span class="sc">%&gt;%</span></span>
+<span id="cb211-2"><a href="regression.html#cb211-2" tabindex="-1"></a>  coef</span>
+<span id="cb211-3"><a href="regression.html#cb211-3" tabindex="-1"></a>m1_ci <span class="ot">&lt;-</span> <span class="fu">confint</span>(m1)</span>
+<span id="cb211-4"><a href="regression.html#cb211-4" tabindex="-1"></a>(m1_coef_table <span class="ot">&lt;-</span> <span class="fu">cbind</span>(m1_coef, m1_ci))</span></code></pre></div>
 <pre><code>##              Estimate Std. Error   t value     Pr(&gt;|t|)     2.5 %    97.5 %
 ## (Intercept)  52.63406   3.102096 16.967258 9.865155e-11  45.98072  59.28739
 ## treatmentMR -23.57616   4.387026 -5.374065 9.809457e-05 -32.98540 -14.16693</code></pre>
@@ -1377,9 +1318,9 @@ MAE
 <div id="fit-the-model" class="section level3 hasAnchor" number="9.2.1">
 <h3><span class="header-section-number">9.2.1</span> Fitting the linear model<a href="plotting-models.html#fit-the-model" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>A linear model is fit with the <code>lm</code> function, which is very flexible and will be a workhorse in much of this text.</p>
-<div class="sourceCode" id="cb211"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb211-1"><a href="regression.html#cb211-1" tabindex="-1"></a>m1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(transition_date <span class="sc">~</span> temperature, <span class="at">data =</span> fig2c)</span></code></pre></div>
+<div class="sourceCode" id="cb213"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb213-1"><a href="regression.html#cb213-1" tabindex="-1"></a>m1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(transition_date <span class="sc">~</span> temperature, <span class="at">data =</span> fig2c)</span></code></pre></div>
 <p>m1 is an lm model object that contains many different kinds information, such as the model coefficients.</p>
-<div class="sourceCode" id="cb212"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb212-1"><a href="regression.html#cb212-1" tabindex="-1"></a><span class="fu">coef</span>(m1)</span></code></pre></div>
+<div class="sourceCode" id="cb214"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb214-1"><a href="regression.html#cb214-1" tabindex="-1"></a><span class="fu">coef</span>(m1)</span></code></pre></div>
 <pre><code>## (Intercept) temperature 
 ##  289.458750    4.982745</code></pre>
 <p>We’ll return to others, but first, let’s explore some of the flexibility of the <code>lm</code> function. Two arguments were sent to the function</p>
@@ -1389,45 +1330,45 @@ MAE
 <ul>
 <li>The model formula itself can be assigned to a variable, which is useful when building functions. An example</li>
 </ul>
-<div class="sourceCode" id="cb214"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb214-1"><a href="regression.html#cb214-1" tabindex="-1"></a>coef_table <span class="ot">&lt;-</span> <span class="cf">function</span>(x, y, data){</span>
-<span id="cb214-2"><a href="regression.html#cb214-2" tabindex="-1"></a>  m1_form <span class="ot">&lt;-</span> <span class="fu">formula</span>(<span class="fu">paste</span>(y, <span class="st">&quot;~&quot;</span>, x))</span>
-<span id="cb214-3"><a href="regression.html#cb214-3" tabindex="-1"></a>  m1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(m1_form, <span class="at">data =</span> data)</span>
-<span id="cb214-4"><a href="regression.html#cb214-4" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">coef</span>(<span class="fu">summary</span>(m1)))</span>
-<span id="cb214-5"><a href="regression.html#cb214-5" tabindex="-1"></a>}</span>
-<span id="cb214-6"><a href="regression.html#cb214-6" tabindex="-1"></a></span>
-<span id="cb214-7"><a href="regression.html#cb214-7" tabindex="-1"></a><span class="fu">coef_table</span>(<span class="at">x =</span> <span class="st">&quot;temperature&quot;</span>,</span>
-<span id="cb214-8"><a href="regression.html#cb214-8" tabindex="-1"></a>           <span class="at">y =</span> <span class="st">&quot;transition_date&quot;</span>,</span>
-<span id="cb214-9"><a href="regression.html#cb214-9" tabindex="-1"></a>           <span class="at">data =</span> fig2c)</span></code></pre></div>
+<div class="sourceCode" id="cb216"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb216-1"><a href="regression.html#cb216-1" tabindex="-1"></a>coef_table <span class="ot">&lt;-</span> <span class="cf">function</span>(x, y, data){</span>
+<span id="cb216-2"><a href="regression.html#cb216-2" tabindex="-1"></a>  m1_form <span class="ot">&lt;-</span> <span class="fu">formula</span>(<span class="fu">paste</span>(y, <span class="st">&quot;~&quot;</span>, x))</span>
+<span id="cb216-3"><a href="regression.html#cb216-3" tabindex="-1"></a>  m1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(m1_form, <span class="at">data =</span> data)</span>
+<span id="cb216-4"><a href="regression.html#cb216-4" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">coef</span>(<span class="fu">summary</span>(m1)))</span>
+<span id="cb216-5"><a href="regression.html#cb216-5" tabindex="-1"></a>}</span>
+<span id="cb216-6"><a href="regression.html#cb216-6" tabindex="-1"></a></span>
+<span id="cb216-7"><a href="regression.html#cb216-7" tabindex="-1"></a><span class="fu">coef_table</span>(<span class="at">x =</span> <span class="st">&quot;temperature&quot;</span>,</span>
+<span id="cb216-8"><a href="regression.html#cb216-8" tabindex="-1"></a>           <span class="at">y =</span> <span class="st">&quot;transition_date&quot;</span>,</span>
+<span id="cb216-9"><a href="regression.html#cb216-9" tabindex="-1"></a>           <span class="at">data =</span> fig2c)</span></code></pre></div>
 <pre><code>##               Estimate Std. Error   t value     Pr(&gt;|t|)
 ## (Intercept) 289.458750  3.0593949 94.613071 1.738650e-13
 ## temperature   4.982745  0.5541962  8.990941 1.866888e-05</code></pre>
 <ul>
 <li>Both Y and X can also be column names embedded within a function, for example</li>
 </ul>
-<div class="sourceCode" id="cb216"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb216-1"><a href="regression.html#cb216-1" tabindex="-1"></a>m2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="fu">log</span>(transition_date) <span class="sc">~</span> temperature, <span class="at">data =</span> fig2c)</span>
-<span id="cb216-2"><a href="regression.html#cb216-2" tabindex="-1"></a><span class="fu">coef</span>(m2)</span></code></pre></div>
+<div class="sourceCode" id="cb218"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb218-1"><a href="regression.html#cb218-1" tabindex="-1"></a>m2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="fu">log</span>(transition_date) <span class="sc">~</span> temperature, <span class="at">data =</span> fig2c)</span>
+<span id="cb218-2"><a href="regression.html#cb218-2" tabindex="-1"></a><span class="fu">coef</span>(m2)</span></code></pre></div>
 <pre><code>## (Intercept) temperature 
 ##   5.6690276   0.0160509</code></pre>
 <p>or</p>
-<div class="sourceCode" id="cb218"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb218-1"><a href="regression.html#cb218-1" tabindex="-1"></a>m3 <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="fu">scale</span>(transition_date) <span class="sc">~</span> <span class="fu">scale</span>(temperature), <span class="at">data =</span> fig2c)</span>
-<span id="cb218-2"><a href="regression.html#cb218-2" tabindex="-1"></a><span class="fu">coef</span>(m3)</span></code></pre></div>
+<div class="sourceCode" id="cb220"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb220-1"><a href="regression.html#cb220-1" tabindex="-1"></a>m3 <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="fu">scale</span>(transition_date) <span class="sc">~</span> <span class="fu">scale</span>(temperature), <span class="at">data =</span> fig2c)</span>
+<span id="cb220-2"><a href="regression.html#cb220-2" tabindex="-1"></a><span class="fu">coef</span>(m3)</span></code></pre></div>
 <pre><code>##        (Intercept) scale(temperature) 
 ##       4.171921e-16       9.539117e-01</code></pre>
 <ol start="2" style="list-style-type: decimal">
 <li>The data frame (remember that a data.table is a data frame) containing the columns with the variable names in the model formula. A data argument is not necessary but it is usually the better way (an exception is when a researcher wants to create a matrix of Y variables or to construct their own model matrix)</li>
 </ol>
 <p>type <code>?lm</code> into the console to see other arguments of the <code>lm</code> function.</p>
-<div class="sourceCode" id="cb220"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb220-1"><a href="regression.html#cb220-1" tabindex="-1"></a>x <span class="ot">&lt;-</span> fig2[, temperature]</span>
-<span id="cb220-2"><a href="regression.html#cb220-2" tabindex="-1"></a>y <span class="ot">&lt;-</span> fig2[, transition_date]</span>
-<span id="cb220-3"><a href="regression.html#cb220-3" tabindex="-1"></a>m4 <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> x)</span>
-<span id="cb220-4"><a href="regression.html#cb220-4" tabindex="-1"></a><span class="fu">coef</span>(m4)</span></code></pre></div>
+<div class="sourceCode" id="cb222"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb222-1"><a href="regression.html#cb222-1" tabindex="-1"></a>x <span class="ot">&lt;-</span> fig2[, temperature]</span>
+<span id="cb222-2"><a href="regression.html#cb222-2" tabindex="-1"></a>y <span class="ot">&lt;-</span> fig2[, transition_date]</span>
+<span id="cb222-3"><a href="regression.html#cb222-3" tabindex="-1"></a>m4 <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> x)</span>
+<span id="cb222-4"><a href="regression.html#cb222-4" tabindex="-1"></a><span class="fu">coef</span>(m4)</span></code></pre></div>
 <pre><code>## (Intercept)           x 
 ## 204.8866185   0.4324755</code></pre>
 </div>
 <div id="getting-to-know-the-linear-model-the-summary-function" class="section level3 hasAnchor" number="9.2.2">
 <h3><span class="header-section-number">9.2.2</span> Getting to know the linear model: the <code>summary</code> function<a href="regression.html#getting-to-know-the-linear-model-the-summary-function" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>The <code>lm</code> function returns an <code>lm</code> object, which we’ve assigned to the name <code>m1</code>. <code>m1</code> contains lots of information about our fit of the linear model to the data. Most of the information that we want for most purposes can be retrieved with the <code>summary</code> function, which is a general-purpose R command the works with many R objects.</p>
-<div class="sourceCode" id="cb222"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb222-1"><a href="regression.html#cb222-1" tabindex="-1"></a><span class="fu">summary</span>(m1)</span></code></pre></div>
+<div class="sourceCode" id="cb224"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb224-1"><a href="regression.html#cb224-1" tabindex="-1"></a><span class="fu">summary</span>(m1)</span></code></pre></div>
 <pre><code>## 
 ## Call:
 ## lm(formula = transition_date ~ temperature, data = fig2c)
@@ -1465,17 +1406,17 @@ MAE
 <div id="inference-the-coefficient-table" class="section level3 hasAnchor" number="9.2.3">
 <h3><span class="header-section-number">9.2.3</span> Inference – the coefficient table<a href="regression.html#inference-the-coefficient-table" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>There are different ways of</p>
-<div class="sourceCode" id="cb224"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb224-1"><a href="regression.html#cb224-1" tabindex="-1"></a><span class="co"># step by step</span></span>
-<span id="cb224-2"><a href="regression.html#cb224-2" tabindex="-1"></a></span>
-<span id="cb224-3"><a href="regression.html#cb224-3" tabindex="-1"></a>m1_summary <span class="ot">&lt;-</span> <span class="fu">summary</span>(m1) <span class="co"># get summary</span></span>
-<span id="cb224-4"><a href="regression.html#cb224-4" tabindex="-1"></a>m1_coef_p1 <span class="ot">&lt;-</span> <span class="fu">coef</span>(m1_summary) <span class="co"># extract coefficient table</span></span>
-<span id="cb224-5"><a href="regression.html#cb224-5" tabindex="-1"></a>m1_coef_p2 <span class="ot">&lt;-</span> <span class="fu">confint</span>(m1) <span class="co"># get CIs</span></span>
-<span id="cb224-6"><a href="regression.html#cb224-6" tabindex="-1"></a>m1_coef <span class="ot">&lt;-</span> <span class="fu">cbind</span>(m1_coef_p1, m1_coef_p2) <span class="co"># column bind the two</span></span>
-<span id="cb224-7"><a href="regression.html#cb224-7" tabindex="-1"></a></span>
-<span id="cb224-8"><a href="regression.html#cb224-8" tabindex="-1"></a><span class="co"># this can be shortened (but still readable) using</span></span>
-<span id="cb224-9"><a href="regression.html#cb224-9" tabindex="-1"></a>m1_coef <span class="ot">&lt;-</span> <span class="fu">cbind</span>(<span class="fu">coef</span>(<span class="fu">summary</span>(m1)),</span>
-<span id="cb224-10"><a href="regression.html#cb224-10" tabindex="-1"></a>                 <span class="fu">confint</span>(m1))</span>
-<span id="cb224-11"><a href="regression.html#cb224-11" tabindex="-1"></a>m1_coef</span></code></pre></div>
+<div class="sourceCode" id="cb226"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb226-1"><a href="regression.html#cb226-1" tabindex="-1"></a><span class="co"># step by step</span></span>
+<span id="cb226-2"><a href="regression.html#cb226-2" tabindex="-1"></a></span>
+<span id="cb226-3"><a href="regression.html#cb226-3" tabindex="-1"></a>m1_summary <span class="ot">&lt;-</span> <span class="fu">summary</span>(m1) <span class="co"># get summary</span></span>
+<span id="cb226-4"><a href="regression.html#cb226-4" tabindex="-1"></a>m1_coef_p1 <span class="ot">&lt;-</span> <span class="fu">coef</span>(m1_summary) <span class="co"># extract coefficient table</span></span>
+<span id="cb226-5"><a href="regression.html#cb226-5" tabindex="-1"></a>m1_coef_p2 <span class="ot">&lt;-</span> <span class="fu">confint</span>(m1) <span class="co"># get CIs</span></span>
+<span id="cb226-6"><a href="regression.html#cb226-6" tabindex="-1"></a>m1_coef <span class="ot">&lt;-</span> <span class="fu">cbind</span>(m1_coef_p1, m1_coef_p2) <span class="co"># column bind the two</span></span>
+<span id="cb226-7"><a href="regression.html#cb226-7" tabindex="-1"></a></span>
+<span id="cb226-8"><a href="regression.html#cb226-8" tabindex="-1"></a><span class="co"># this can be shortened (but still readable) using</span></span>
+<span id="cb226-9"><a href="regression.html#cb226-9" tabindex="-1"></a>m1_coef <span class="ot">&lt;-</span> <span class="fu">cbind</span>(<span class="fu">coef</span>(<span class="fu">summary</span>(m1)),</span>
+<span id="cb226-10"><a href="regression.html#cb226-10" tabindex="-1"></a>                 <span class="fu">confint</span>(m1))</span>
+<span id="cb226-11"><a href="regression.html#cb226-11" tabindex="-1"></a>m1_coef</span></code></pre></div>
 <pre><code>##               Estimate Std. Error   t value     Pr(&gt;|t|)      2.5 %     97.5 %
 ## (Intercept) 289.458750  3.0593949 94.613071 1.738650e-13 282.403773 296.513728
 ## temperature   4.982745  0.5541962  8.990941 1.866888e-05   3.704767   6.260724</code></pre>
@@ -1494,15 +1435,15 @@ MAE
 </ol>
 <p>For inference, a good model generates data that look like the real data. If this is true, our fit model will have well-behaved residuals. There are several aspects of “well-behaved” and each is checked with a diagnostic plot. This <strong>model checking</strong> is covered in more detail in chapter xxx.</p>
 <p>Inference from model <a href="regression.html#eq:continuous-x-m1">(9.2)</a> assumes the data were sampled from a normal distribution. To check this, use a quantile-quantile or <strong>Q-Q plot</strong>. The <code>qqPlot</code> function from the car package generates a more useful plot than that from Base R.</p>
-<div class="sourceCode" id="cb226"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb226-1"><a href="regression.html#cb226-1" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
-<span id="cb226-2"><a href="regression.html#cb226-2" tabindex="-1"></a><span class="fu">qqPlot</span>(m1, <span class="at">id=</span><span class="cn">FALSE</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb228"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb228-1"><a href="regression.html#cb228-1" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
+<span id="cb228-2"><a href="regression.html#cb228-2" tabindex="-1"></a><span class="fu">qqPlot</span>(m1, <span class="at">id=</span><span class="cn">FALSE</span>)</span></code></pre></div>
 <p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/unnamed-chunk-103-1.png" width="576" /></p>
 <p>Approximately normal residuals will track the solid line and stay largely within the boundaries marked by the dashed lines. The residuals from m1 fit to the green-down data track the solid line and remain within the dashed lines, indicating adequate model fit.</p>
 <div style="background-color:#cccccc; text-align:left; vertical-align: middle; padding:20px 47px;">
 <p>Note that a formal test of normality is often recommended. Formal tests do not add value above a diagnostic check. Robustness of inference (for example, a <em>p</em>-value) is a function of the type and degree of “non-normalness”, not of a p-value. For a small sample, there is not much power to test for normality, so samples from non-normal distributions pass the test (<span class="math inline">\(p &gt; 0.05\)</span>) and are deemed “normal”. For large samples, samples from distributions that deviate slightly from normal fail the test (<span class="math inline">\(p &lt; 0.05\)</span>) and are deemed “not normal”. Inference with many non-normal samples with large <span class="math inline">\(n\)</span> are very robust (meaning infernece is not likely to fool you with randomness).</p>
 </div>
 <p>Inference from model <a href="regression.html#eq:continuous-x-m1">(9.2)</a> assumes homogeneity of the response conditional on <span class="math inline">\(X\)</span>. For a continuous <span class="math inline">\(X\)</span>, this means the residuals should have approximately equal variance at low, mid, and high values of <span class="math inline">\(X\)</span> (and everywhere in between). One can visually inspect the spread of points in the <span class="math inline">\(Y\)</span> direction across the groups for categorical <span class="math inline">\(X\)</span> or along the <em>X</em>-axis for continuous <span class="math inline">\(X\)</span>. A useful method for checking how residual variance changes (usually increases) with the conditional mean of <span class="math inline">\(Y\)</span> is a <strong>spread-location plot</strong>. The <code>spreadLevelPlot(m1)</code> function from the car package is useful.</p>
-<div class="sourceCode" id="cb227"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb227-1"><a href="regression.html#cb227-1" tabindex="-1"></a><span class="fu">spreadLevelPlot</span>(m1)</span></code></pre></div>
+<div class="sourceCode" id="cb229"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb229-1"><a href="regression.html#cb229-1" tabindex="-1"></a><span class="fu">spreadLevelPlot</span>(m1)</span></code></pre></div>
 <p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/unnamed-chunk-104-1.png" width="576" /></p>
 <pre><code>## 
 ## Suggested power transformation:  0.6721303</code></pre>
@@ -1513,7 +1454,7 @@ MAE
 <div id="quick-plot" class="section level4 hasAnchor" number="9.2.5.1">
 <h4><span class="header-section-number">9.2.5.1</span> Quick plot<a href="regression.html#quick-plot" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <p><code>qplot</code> from the ggplot package is useful for initial examinations of the data</p>
-<div class="sourceCode" id="cb229"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb229-1"><a href="regression.html#cb229-1" tabindex="-1"></a><span class="fu">qplot</span>(<span class="at">x =</span> temperature, <span class="at">y =</span> transition_date, <span class="at">data =</span> fig2c) <span class="sc">+</span> <span class="fu">geom_smooth</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb231"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb231-1"><a href="regression.html#cb231-1" tabindex="-1"></a><span class="fu">qplot</span>(<span class="at">x =</span> temperature, <span class="at">y =</span> transition_date, <span class="at">data =</span> fig2c) <span class="sc">+</span> <span class="fu">geom_smooth</span>()</span></code></pre></div>
 <p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/unnamed-chunk-105-1.png" width="576" /></p>
 <p>Some variations of this quick plot to explore include</p>
 <ol style="list-style-type: decimal">
@@ -1523,35 +1464,35 @@ MAE
 <div id="ggpubr-plots" class="section level4 hasAnchor" number="9.2.5.2">
 <h4><span class="header-section-number">9.2.5.2</span> ggpubr plots<a href="regression.html#ggpubr-plots" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <p>ggpubr is a package with functions that automates the construction of publication-ready ggplots. <code>ggscatter</code> can generate a publishable plot with little effort.</p>
-<div class="sourceCode" id="cb230"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb230-1"><a href="regression.html#cb230-1" tabindex="-1"></a><span class="fu">ggscatter</span>(<span class="at">data =</span> fig2c,</span>
-<span id="cb230-2"><a href="regression.html#cb230-2" tabindex="-1"></a>          <span class="at">x =</span> <span class="st">&quot;temperature&quot;</span>,</span>
-<span id="cb230-3"><a href="regression.html#cb230-3" tabindex="-1"></a>          <span class="at">y =</span> <span class="st">&quot;transition_date&quot;</span>,</span>
-<span id="cb230-4"><a href="regression.html#cb230-4" tabindex="-1"></a>          <span class="at">add =</span> <span class="st">&quot;reg.line&quot;</span>,</span>
-<span id="cb230-5"><a href="regression.html#cb230-5" tabindex="-1"></a>          <span class="at">xlab =</span> <span class="st">&quot;Added Temperature (°C)&quot;</span>,</span>
-<span id="cb230-6"><a href="regression.html#cb230-6" tabindex="-1"></a>          <span class="at">ylab =</span> <span class="st">&quot;Day of Green-down (DOY)&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb232"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb232-1"><a href="regression.html#cb232-1" tabindex="-1"></a><span class="fu">ggscatter</span>(<span class="at">data =</span> fig2c,</span>
+<span id="cb232-2"><a href="regression.html#cb232-2" tabindex="-1"></a>          <span class="at">x =</span> <span class="st">&quot;temperature&quot;</span>,</span>
+<span id="cb232-3"><a href="regression.html#cb232-3" tabindex="-1"></a>          <span class="at">y =</span> <span class="st">&quot;transition_date&quot;</span>,</span>
+<span id="cb232-4"><a href="regression.html#cb232-4" tabindex="-1"></a>          <span class="at">add =</span> <span class="st">&quot;reg.line&quot;</span>,</span>
+<span id="cb232-5"><a href="regression.html#cb232-5" tabindex="-1"></a>          <span class="at">xlab =</span> <span class="st">&quot;Added Temperature (°C)&quot;</span>,</span>
+<span id="cb232-6"><a href="regression.html#cb232-6" tabindex="-1"></a>          <span class="at">ylab =</span> <span class="st">&quot;Day of Green-down (DOY)&quot;</span>)</span></code></pre></div>
 <p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/unnamed-chunk-106-1.png" width="576" /></p>
 <p>It take only a little more effort to add useful modifications.</p>
-<div class="sourceCode" id="cb231"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb231-1"><a href="regression.html#cb231-1" tabindex="-1"></a><span class="fu">ggscatter</span>(<span class="at">data =</span> fig2c,</span>
-<span id="cb231-2"><a href="regression.html#cb231-2" tabindex="-1"></a>          <span class="at">x =</span> <span class="st">&quot;temperature&quot;</span>,</span>
-<span id="cb231-3"><a href="regression.html#cb231-3" tabindex="-1"></a>          <span class="at">y =</span> <span class="st">&quot;transition_date&quot;</span>,</span>
-<span id="cb231-4"><a href="regression.html#cb231-4" tabindex="-1"></a>          <span class="at">color =</span> <span class="st">&quot;black&quot;</span>,</span>
-<span id="cb231-5"><a href="regression.html#cb231-5" tabindex="-1"></a>          <span class="at">fill =</span> <span class="st">&quot;red&quot;</span>,</span>
-<span id="cb231-6"><a href="regression.html#cb231-6" tabindex="-1"></a>          <span class="at">shape =</span> <span class="dv">21</span>,</span>
-<span id="cb231-7"><a href="regression.html#cb231-7" tabindex="-1"></a>          <span class="at">size =</span> <span class="dv">3</span>,</span>
-<span id="cb231-8"><a href="regression.html#cb231-8" tabindex="-1"></a>          <span class="at">add =</span> <span class="st">&quot;reg.line&quot;</span>,</span>
-<span id="cb231-9"><a href="regression.html#cb231-9" tabindex="-1"></a>          <span class="at">add.params =</span> <span class="fu">list</span>(<span class="at">color =</span> <span class="st">&quot;steelblue&quot;</span>,</span>
-<span id="cb231-10"><a href="regression.html#cb231-10" tabindex="-1"></a>                            <span class="at">fill =</span> <span class="st">&quot;lightgray&quot;</span>),</span>
-<span id="cb231-11"><a href="regression.html#cb231-11" tabindex="-1"></a>          <span class="at">conf.int =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb231-12"><a href="regression.html#cb231-12" tabindex="-1"></a>          <span class="at">xlab =</span> <span class="st">&quot;Added Temperature (°C)&quot;</span>,</span>
-<span id="cb231-13"><a href="regression.html#cb231-13" tabindex="-1"></a>          <span class="at">ylab =</span> <span class="st">&quot;Day of Green-down (DOY)&quot;</span>) <span class="sc">+</span></span>
-<span id="cb231-14"><a href="regression.html#cb231-14" tabindex="-1"></a>  </span>
-<span id="cb231-15"><a href="regression.html#cb231-15" tabindex="-1"></a>  <span class="fu">stat_regline_equation</span>(<span class="at">size =</span> <span class="dv">4</span>,</span>
-<span id="cb231-16"><a href="regression.html#cb231-16" tabindex="-1"></a>                        <span class="at">label.y =</span> <span class="dv">340</span>) <span class="sc">+</span></span>
-<span id="cb231-17"><a href="regression.html#cb231-17" tabindex="-1"></a>  <span class="fu">stat_cor</span>(<span class="fu">aes</span>(<span class="at">label =</span> <span class="fu">paste</span>(..rr.label.., ..p.label.., <span class="at">sep =</span> <span class="st">&quot;~`,`~&quot;</span>)),</span>
-<span id="cb231-18"><a href="regression.html#cb231-18" tabindex="-1"></a>           <span class="at">size =</span> <span class="dv">4</span>,</span>
-<span id="cb231-19"><a href="regression.html#cb231-19" tabindex="-1"></a>           <span class="at">label.y =</span> <span class="dv">335</span>) <span class="sc">+</span></span>
-<span id="cb231-20"><a href="regression.html#cb231-20" tabindex="-1"></a></span>
-<span id="cb231-21"><a href="regression.html#cb231-21" tabindex="-1"></a>  <span class="cn">NULL</span></span></code></pre></div>
+<div class="sourceCode" id="cb233"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb233-1"><a href="regression.html#cb233-1" tabindex="-1"></a><span class="fu">ggscatter</span>(<span class="at">data =</span> fig2c,</span>
+<span id="cb233-2"><a href="regression.html#cb233-2" tabindex="-1"></a>          <span class="at">x =</span> <span class="st">&quot;temperature&quot;</span>,</span>
+<span id="cb233-3"><a href="regression.html#cb233-3" tabindex="-1"></a>          <span class="at">y =</span> <span class="st">&quot;transition_date&quot;</span>,</span>
+<span id="cb233-4"><a href="regression.html#cb233-4" tabindex="-1"></a>          <span class="at">color =</span> <span class="st">&quot;black&quot;</span>,</span>
+<span id="cb233-5"><a href="regression.html#cb233-5" tabindex="-1"></a>          <span class="at">fill =</span> <span class="st">&quot;red&quot;</span>,</span>
+<span id="cb233-6"><a href="regression.html#cb233-6" tabindex="-1"></a>          <span class="at">shape =</span> <span class="dv">21</span>,</span>
+<span id="cb233-7"><a href="regression.html#cb233-7" tabindex="-1"></a>          <span class="at">size =</span> <span class="dv">3</span>,</span>
+<span id="cb233-8"><a href="regression.html#cb233-8" tabindex="-1"></a>          <span class="at">add =</span> <span class="st">&quot;reg.line&quot;</span>,</span>
+<span id="cb233-9"><a href="regression.html#cb233-9" tabindex="-1"></a>          <span class="at">add.params =</span> <span class="fu">list</span>(<span class="at">color =</span> <span class="st">&quot;steelblue&quot;</span>,</span>
+<span id="cb233-10"><a href="regression.html#cb233-10" tabindex="-1"></a>                            <span class="at">fill =</span> <span class="st">&quot;lightgray&quot;</span>),</span>
+<span id="cb233-11"><a href="regression.html#cb233-11" tabindex="-1"></a>          <span class="at">conf.int =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb233-12"><a href="regression.html#cb233-12" tabindex="-1"></a>          <span class="at">xlab =</span> <span class="st">&quot;Added Temperature (°C)&quot;</span>,</span>
+<span id="cb233-13"><a href="regression.html#cb233-13" tabindex="-1"></a>          <span class="at">ylab =</span> <span class="st">&quot;Day of Green-down (DOY)&quot;</span>) <span class="sc">+</span></span>
+<span id="cb233-14"><a href="regression.html#cb233-14" tabindex="-1"></a>  </span>
+<span id="cb233-15"><a href="regression.html#cb233-15" tabindex="-1"></a>  <span class="fu">stat_regline_equation</span>(<span class="at">size =</span> <span class="dv">4</span>,</span>
+<span id="cb233-16"><a href="regression.html#cb233-16" tabindex="-1"></a>                        <span class="at">label.y =</span> <span class="dv">340</span>) <span class="sc">+</span></span>
+<span id="cb233-17"><a href="regression.html#cb233-17" tabindex="-1"></a>  <span class="fu">stat_cor</span>(<span class="fu">aes</span>(<span class="at">label =</span> <span class="fu">paste</span>(..rr.label.., ..p.label.., <span class="at">sep =</span> <span class="st">&quot;~`,`~&quot;</span>)),</span>
+<span id="cb233-18"><a href="regression.html#cb233-18" tabindex="-1"></a>           <span class="at">size =</span> <span class="dv">4</span>,</span>
+<span id="cb233-19"><a href="regression.html#cb233-19" tabindex="-1"></a>           <span class="at">label.y =</span> <span class="dv">335</span>) <span class="sc">+</span></span>
+<span id="cb233-20"><a href="regression.html#cb233-20" tabindex="-1"></a></span>
+<span id="cb233-21"><a href="regression.html#cb233-21" tabindex="-1"></a>  <span class="cn">NULL</span></span></code></pre></div>
 <p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/unnamed-chunk-107-1.png" width="576" /></p>
 <p>Notes</p>
 <ol class="example" style="list-style-type: decimal">
@@ -1561,19 +1502,19 @@ MAE
 <li>The first line of the <code>stat_cor</code> function (everything within <code>aes()</code>) plots the <span class="math inline">\(R^2\)</span> instead of the correlation coefficient <span class="math inline">\(r\)</span>. Copy and pasting this whole line just works.</li>
 <li>Comment out the line of the ggplot script starting with <code>stat_cor</code> and re-run (comment out by inserting a <code>#</code> at the front of the line. A consistent way to do this is to triple-click the line to highlight the line and then type command-shift-c on Mac OS). The script runs without error because <code>NULL</code> has been added as the final plot component. Adding “NULL” is a useful trick.</li>
 </ol>
-<div class="sourceCode" id="cb232"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb232-1"><a href="regression.html#cb232-1" tabindex="-1"></a><span class="fu">ggscatter</span>(<span class="at">data =</span> efig_3d,</span>
-<span id="cb232-2"><a href="regression.html#cb232-2" tabindex="-1"></a>          <span class="at">x =</span> <span class="st">&quot;autumn_temp_anomaly&quot;</span>,</span>
-<span id="cb232-3"><a href="regression.html#cb232-3" tabindex="-1"></a>          <span class="at">y =</span> <span class="st">&quot;green_down_anomaly&quot;</span>,</span>
-<span id="cb232-4"><a href="regression.html#cb232-4" tabindex="-1"></a>          <span class="at">color =</span> <span class="st">&quot;black&quot;</span>,</span>
-<span id="cb232-5"><a href="regression.html#cb232-5" tabindex="-1"></a>          <span class="at">fill =</span> <span class="st">&quot;red&quot;</span>,</span>
-<span id="cb232-6"><a href="regression.html#cb232-6" tabindex="-1"></a>          <span class="at">shape =</span> <span class="dv">21</span>,</span>
-<span id="cb232-7"><a href="regression.html#cb232-7" tabindex="-1"></a>          <span class="at">size =</span> <span class="dv">3</span>,</span>
-<span id="cb232-8"><a href="regression.html#cb232-8" tabindex="-1"></a>          <span class="at">add =</span> <span class="st">&quot;reg.line&quot;</span>,</span>
-<span id="cb232-9"><a href="regression.html#cb232-9" tabindex="-1"></a>          <span class="at">add.params =</span> <span class="fu">list</span>(<span class="at">color =</span> <span class="st">&quot;steelblue&quot;</span>,</span>
-<span id="cb232-10"><a href="regression.html#cb232-10" tabindex="-1"></a>                            <span class="at">fill =</span> <span class="st">&quot;lightgray&quot;</span>),</span>
-<span id="cb232-11"><a href="regression.html#cb232-11" tabindex="-1"></a>          <span class="at">conf.int =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb232-12"><a href="regression.html#cb232-12" tabindex="-1"></a>          <span class="at">xlab =</span> <span class="st">&quot;Added Temperature (°C)&quot;</span>,</span>
-<span id="cb232-13"><a href="regression.html#cb232-13" tabindex="-1"></a>          <span class="at">ylab =</span> <span class="st">&quot;Day of Green-down (DOY)&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb234"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb234-1"><a href="regression.html#cb234-1" tabindex="-1"></a><span class="fu">ggscatter</span>(<span class="at">data =</span> efig_3d,</span>
+<span id="cb234-2"><a href="regression.html#cb234-2" tabindex="-1"></a>          <span class="at">x =</span> <span class="st">&quot;autumn_temp_anomaly&quot;</span>,</span>
+<span id="cb234-3"><a href="regression.html#cb234-3" tabindex="-1"></a>          <span class="at">y =</span> <span class="st">&quot;green_down_anomaly&quot;</span>,</span>
+<span id="cb234-4"><a href="regression.html#cb234-4" tabindex="-1"></a>          <span class="at">color =</span> <span class="st">&quot;black&quot;</span>,</span>
+<span id="cb234-5"><a href="regression.html#cb234-5" tabindex="-1"></a>          <span class="at">fill =</span> <span class="st">&quot;red&quot;</span>,</span>
+<span id="cb234-6"><a href="regression.html#cb234-6" tabindex="-1"></a>          <span class="at">shape =</span> <span class="dv">21</span>,</span>
+<span id="cb234-7"><a href="regression.html#cb234-7" tabindex="-1"></a>          <span class="at">size =</span> <span class="dv">3</span>,</span>
+<span id="cb234-8"><a href="regression.html#cb234-8" tabindex="-1"></a>          <span class="at">add =</span> <span class="st">&quot;reg.line&quot;</span>,</span>
+<span id="cb234-9"><a href="regression.html#cb234-9" tabindex="-1"></a>          <span class="at">add.params =</span> <span class="fu">list</span>(<span class="at">color =</span> <span class="st">&quot;steelblue&quot;</span>,</span>
+<span id="cb234-10"><a href="regression.html#cb234-10" tabindex="-1"></a>                            <span class="at">fill =</span> <span class="st">&quot;lightgray&quot;</span>),</span>
+<span id="cb234-11"><a href="regression.html#cb234-11" tabindex="-1"></a>          <span class="at">conf.int =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb234-12"><a href="regression.html#cb234-12" tabindex="-1"></a>          <span class="at">xlab =</span> <span class="st">&quot;Added Temperature (°C)&quot;</span>,</span>
+<span id="cb234-13"><a href="regression.html#cb234-13" tabindex="-1"></a>          <span class="at">ylab =</span> <span class="st">&quot;Day of Green-down (DOY)&quot;</span>)</span></code></pre></div>
 <p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/unnamed-chunk-108-1.png" width="576" /></p>
 </div>
 <div id="ggplots" class="section level4 hasAnchor" number="9.2.5.3">
@@ -1584,125 +1525,85 @@ MAE
 <div id="creating-a-table-of-predicted-values-and-95-prediction-intervals" class="section level3 hasAnchor" number="9.2.6">
 <h3><span class="header-section-number">9.2.6</span> Creating a table of predicted values and 95% prediction intervals<a href="regression.html#creating-a-table-of-predicted-values-and-95-prediction-intervals" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>efig_3d is the data.table created from importing the data in Extended Data Figure 3d above. The fit model is</p>
-<div class="sourceCode" id="cb233"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb233-1"><a href="regression.html#cb233-1" tabindex="-1"></a>efig3d_m1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(green_down_anomaly <span class="sc">~</span> autumn_temp_anomaly, <span class="at">data =</span> efig_3d)</span></code></pre></div>
+<div class="sourceCode" id="cb235"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb235-1"><a href="regression.html#cb235-1" tabindex="-1"></a>efig3d_m1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(green_down_anomaly <span class="sc">~</span> autumn_temp_anomaly, <span class="at">data =</span> efig_3d)</span></code></pre></div>
 <p>The <code>predict(efig3d_m1)</code> function is used to compute either fitted or predicted values, and either the confidence or prediction interval of these values.</p>
 <p>Unless specified by <code>newdata</code>, the default x-values used to generate the y in <code>predict(efig3d_m1)</code> are the x-values in the data used to fit the model. The returned values are the expected value for each <span class="math inline">\(x_i\)</span> in the data. The argument <code>newdata</code> passes a data.frame (remember a data.table is a data.frame!) with new x-values. Since these x-values were not in the data used to fit the model, the returned <span class="math inline">\(y_{hat}\)</span> are predicted values.</p>
 <p>The range of x-values in the data is</p>
-<div class="sourceCode" id="cb234"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb234-1"><a href="regression.html#cb234-1" tabindex="-1"></a><span class="fu">range</span>(efig_3d[,autumn_temp_anomaly])</span></code></pre></div>
+<div class="sourceCode" id="cb236"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb236-1"><a href="regression.html#cb236-1" tabindex="-1"></a><span class="fu">range</span>(efig_3d[,autumn_temp_anomaly])</span></code></pre></div>
 <pre><code>## [1] -2.673793  2.568045</code></pre>
 <p>Let’s get predicted values for a value of <span class="math inline">\(autumn\_temp\_anomaly = 2\)</span>.</p>
-<div class="sourceCode" id="cb236"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb236-1"><a href="regression.html#cb236-1" tabindex="-1"></a><span class="fu">predict</span>(efig3d_m1, <span class="at">newdata =</span> <span class="fu">data.table</span>(<span class="at">autumn_temp_anomaly =</span> <span class="dv">2</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb238"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb238-1"><a href="regression.html#cb238-1" tabindex="-1"></a><span class="fu">predict</span>(efig3d_m1, <span class="at">newdata =</span> <span class="fu">data.table</span>(<span class="at">autumn_temp_anomaly =</span> <span class="dv">2</span>))</span></code></pre></div>
 <pre><code>##        1 
 ## 3.192646</code></pre>
 <p>And predicted values across the range of measured values</p>
-<div class="sourceCode" id="cb238"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb238-1"><a href="regression.html#cb238-1" tabindex="-1"></a>new_dt <span class="ot">&lt;-</span> <span class="fu">data.table</span>(<span class="at">autumn_temp_anomaly =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">2</span>, <span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">2</span>))</span>
-<span id="cb238-2"><a href="regression.html#cb238-2" tabindex="-1"></a><span class="fu">predict</span>(efig3d_m1, <span class="at">newdata =</span> new_dt)</span></code></pre></div>
+<div class="sourceCode" id="cb240"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb240-1"><a href="regression.html#cb240-1" tabindex="-1"></a>new_dt <span class="ot">&lt;-</span> <span class="fu">data.table</span>(<span class="at">autumn_temp_anomaly =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">2</span>, <span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">2</span>))</span>
+<span id="cb240-2"><a href="regression.html#cb240-2" tabindex="-1"></a><span class="fu">predict</span>(efig3d_m1, <span class="at">newdata =</span> new_dt)</span></code></pre></div>
 <pre><code>##         1         2         3         4 
 ## -3.192646 -1.596323  1.596323  3.192646</code></pre>
 <p>Add 95% confidence intervals (this could be used to create the band for plotting)</p>
-<div class="sourceCode" id="cb240"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb240-1"><a href="regression.html#cb240-1" tabindex="-1"></a><span class="fu">predict</span>(efig3d_m1, </span>
-<span id="cb240-2"><a href="regression.html#cb240-2" tabindex="-1"></a>        <span class="at">newdata =</span> new_dt,</span>
-<span id="cb240-3"><a href="regression.html#cb240-3" tabindex="-1"></a>        <span class="at">interval =</span> <span class="st">&quot;confidence&quot;</span>,</span>
-<span id="cb240-4"><a href="regression.html#cb240-4" tabindex="-1"></a>        <span class="at">se.fit =</span> <span class="cn">TRUE</span>)<span class="sc">$</span>fit</span></code></pre></div>
+<div class="sourceCode" id="cb242"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb242-1"><a href="regression.html#cb242-1" tabindex="-1"></a><span class="fu">predict</span>(efig3d_m1, </span>
+<span id="cb242-2"><a href="regression.html#cb242-2" tabindex="-1"></a>        <span class="at">newdata =</span> new_dt,</span>
+<span id="cb242-3"><a href="regression.html#cb242-3" tabindex="-1"></a>        <span class="at">interval =</span> <span class="st">&quot;confidence&quot;</span>,</span>
+<span id="cb242-4"><a href="regression.html#cb242-4" tabindex="-1"></a>        <span class="at">se.fit =</span> <span class="cn">TRUE</span>)<span class="sc">$</span>fit</span></code></pre></div>
 <pre><code>##         fit        lwr        upr
 ## 1 -3.192646 -5.2485713 -1.1367215
 ## 2 -1.596323 -2.9492686 -0.2433778
 ## 3  1.596323  0.2433778  2.9492686
 ## 4  3.192646  1.1367215  5.2485713</code></pre>
 <p>Change to the 95% prediction intervals</p>
-<div class="sourceCode" id="cb242"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb242-1"><a href="regression.html#cb242-1" tabindex="-1"></a><span class="fu">predict</span>(efig3d_m1, </span>
-<span id="cb242-2"><a href="regression.html#cb242-2" tabindex="-1"></a>        <span class="at">newdata =</span> new_dt,</span>
-<span id="cb242-3"><a href="regression.html#cb242-3" tabindex="-1"></a>        <span class="at">interval =</span> <span class="st">&quot;prediction&quot;</span>,</span>
-<span id="cb242-4"><a href="regression.html#cb242-4" tabindex="-1"></a>        <span class="at">se.fit =</span> <span class="cn">TRUE</span>)<span class="sc">$</span>fit</span></code></pre></div>
+<div class="sourceCode" id="cb244"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb244-1"><a href="regression.html#cb244-1" tabindex="-1"></a><span class="fu">predict</span>(efig3d_m1, </span>
+<span id="cb244-2"><a href="regression.html#cb244-2" tabindex="-1"></a>        <span class="at">newdata =</span> new_dt,</span>
+<span id="cb244-3"><a href="regression.html#cb244-3" tabindex="-1"></a>        <span class="at">interval =</span> <span class="st">&quot;prediction&quot;</span>,</span>
+<span id="cb244-4"><a href="regression.html#cb244-4" tabindex="-1"></a>        <span class="at">se.fit =</span> <span class="cn">TRUE</span>)<span class="sc">$</span>fit</span></code></pre></div>
 <pre><code>##         fit        lwr       upr
 ## 1 -3.192646 -12.833739  6.448446
 ## 2 -1.596323 -11.112325  7.919679
 ## 3  1.596323  -7.919679 11.112325
 ## 4  3.192646  -6.448446 12.833739</code></pre>
 <p>Put this all together in a pretty table. I’ve used knitr’s <code>kable</code> function but there are table packages in R that allow extensive control of the output.</p>
-<div class="sourceCode" id="cb244"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb244-1"><a href="regression.html#cb244-1" tabindex="-1"></a>efig3d_m1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(green_down_anomaly <span class="sc">~</span> autumn_temp_anomaly, <span class="at">data =</span> efig_3d)</span>
-<span id="cb244-2"><a href="regression.html#cb244-2" tabindex="-1"></a>new_dt <span class="ot">&lt;-</span> <span class="fu">data.table</span>(<span class="at">autumn_temp_anomaly =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">2</span>, <span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">2</span>))</span>
-<span id="cb244-3"><a href="regression.html#cb244-3" tabindex="-1"></a>prediction_table <span class="ot">&lt;-</span> <span class="fu">predict</span>(efig3d_m1, </span>
-<span id="cb244-4"><a href="regression.html#cb244-4" tabindex="-1"></a>                            <span class="at">newdata =</span> new_dt,</span>
-<span id="cb244-5"><a href="regression.html#cb244-5" tabindex="-1"></a>                            <span class="at">interval =</span> <span class="st">&quot;prediction&quot;</span>,</span>
-<span id="cb244-6"><a href="regression.html#cb244-6" tabindex="-1"></a>                            <span class="at">se.fit =</span> <span class="cn">TRUE</span>)<span class="sc">$</span>fit</span>
-<span id="cb244-7"><a href="regression.html#cb244-7" tabindex="-1"></a>prediction_table <span class="ot">&lt;-</span> <span class="fu">data.table</span>(new_dt, prediction_table)</span>
-<span id="cb244-8"><a href="regression.html#cb244-8" tabindex="-1"></a>pretty_names <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;Autumn Temp Anomaly&quot;</span>, <span class="st">&quot;Estimate&quot;</span>, <span class="st">&quot;2.5%&quot;</span>, <span class="st">&quot;97.5%&quot;</span>)</span>
-<span id="cb244-9"><a href="regression.html#cb244-9" tabindex="-1"></a><span class="fu">setnames</span>(prediction_table, <span class="at">old =</span> <span class="fu">colnames</span>(prediction_table), <span class="at">new =</span> pretty_names)</span>
-<span id="cb244-10"><a href="regression.html#cb244-10" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(prediction_table, <span class="at">digits =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb246"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb246-1"><a href="regression.html#cb246-1" tabindex="-1"></a>efig3d_m1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(green_down_anomaly <span class="sc">~</span> autumn_temp_anomaly, <span class="at">data =</span> efig_3d)</span>
+<span id="cb246-2"><a href="regression.html#cb246-2" tabindex="-1"></a>new_dt <span class="ot">&lt;-</span> <span class="fu">data.table</span>(<span class="at">autumn_temp_anomaly =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">2</span>, <span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">2</span>))</span>
+<span id="cb246-3"><a href="regression.html#cb246-3" tabindex="-1"></a>prediction_table <span class="ot">&lt;-</span> <span class="fu">predict</span>(efig3d_m1, </span>
+<span id="cb246-4"><a href="regression.html#cb246-4" tabindex="-1"></a>                            <span class="at">newdata =</span> new_dt,</span>
+<span id="cb246-5"><a href="regression.html#cb246-5" tabindex="-1"></a>                            <span class="at">interval =</span> <span class="st">&quot;prediction&quot;</span>,</span>
+<span id="cb246-6"><a href="regression.html#cb246-6" tabindex="-1"></a>                            <span class="at">se.fit =</span> <span class="cn">TRUE</span>)<span class="sc">$</span>fit</span>
+<span id="cb246-7"><a href="regression.html#cb246-7" tabindex="-1"></a>prediction_table <span class="ot">&lt;-</span> <span class="fu">data.table</span>(new_dt, prediction_table)</span>
+<span id="cb246-8"><a href="regression.html#cb246-8" tabindex="-1"></a>pretty_names <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;Autumn Temp Anomaly&quot;</span>, <span class="st">&quot;Estimate&quot;</span>, <span class="st">&quot;2.5%&quot;</span>, <span class="st">&quot;97.5%&quot;</span>)</span>
+<span id="cb246-9"><a href="regression.html#cb246-9" tabindex="-1"></a><span class="fu">setnames</span>(prediction_table, <span class="at">old =</span> <span class="fu">colnames</span>(prediction_table), <span class="at">new =</span> pretty_names)</span>
+<span id="cb246-10"><a href="regression.html#cb246-10" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(prediction_table, <span class="at">digits =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>))</span></code></pre></div>
 <table>
 <thead>
-<tr>
-<th style="text-align:right;">
-Autumn Temp Anomaly
-</th>
-<th style="text-align:right;">
-Estimate
-</th>
-<th style="text-align:right;">
-2.5%
-</th>
-<th style="text-align:right;">
-97.5%
-</th>
+<tr class="header">
+<th align="right">Autumn Temp Anomaly</th>
+<th align="right">Estimate</th>
+<th align="right">2.5%</th>
+<th align="right">97.5%</th>
 </tr>
 </thead>
 <tbody>
-<tr>
-<td style="text-align:right;">
--2
-</td>
-<td style="text-align:right;">
--3.2
-</td>
-<td style="text-align:right;">
--12.8
-</td>
-<td style="text-align:right;">
-6.4
-</td>
+<tr class="odd">
+<td align="right">-2</td>
+<td align="right">-3.2</td>
+<td align="right">-12.8</td>
+<td align="right">6.4</td>
 </tr>
-<tr>
-<td style="text-align:right;">
--1
-</td>
-<td style="text-align:right;">
--1.6
-</td>
-<td style="text-align:right;">
--11.1
-</td>
-<td style="text-align:right;">
-7.9
-</td>
+<tr class="even">
+<td align="right">-1</td>
+<td align="right">-1.6</td>
+<td align="right">-11.1</td>
+<td align="right">7.9</td>
 </tr>
-<tr>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-1.6
-</td>
-<td style="text-align:right;">
--7.9
-</td>
-<td style="text-align:right;">
-11.1
-</td>
+<tr class="odd">
+<td align="right">1</td>
+<td align="right">1.6</td>
+<td align="right">-7.9</td>
+<td align="right">11.1</td>
 </tr>
-<tr>
-<td style="text-align:right;">
-2
-</td>
-<td style="text-align:right;">
-3.2
-</td>
-<td style="text-align:right;">
--6.4
-</td>
-<td style="text-align:right;">
-12.8
-</td>
+<tr class="even">
+<td align="right">2</td>
+<td align="right">3.2</td>
+<td align="right">-6.4</td>
+<td align="right">12.8</td>
 </tr>
 </tbody>
 </table>
@@ -1713,299 +1614,299 @@ Estimate
 <div id="import-and-plot-of-fig2c-ecosystem-warming-experimental-data" class="section level3 hasAnchor" number="9.3.1">
 <h3><span class="header-section-number">9.3.1</span> Import and plot of fig2c (ecosystem warming experimental) data<a href="regression.html#import-and-plot-of-fig2c-ecosystem-warming-experimental-data" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>Import</p>
-<div class="sourceCode" id="cb245"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb245-1"><a href="regression.html#cb245-1" tabindex="-1"></a>data_from <span class="ot">&lt;-</span> <span class="st">&quot;Ecosystem warming extends vegetation activity but heightens vulnerability to cold temperatures&quot;</span></span>
-<span id="cb245-2"><a href="regression.html#cb245-2" tabindex="-1"></a>file_name <span class="ot">&lt;-</span> <span class="st">&quot;41586_2018_399_MOESM3_ESM.xlsx&quot;</span></span>
-<span id="cb245-3"><a href="regression.html#cb245-3" tabindex="-1"></a>file_path <span class="ot">&lt;-</span> <span class="fu">here</span>(data_folder, data_from, file_name)</span>
-<span id="cb245-4"><a href="regression.html#cb245-4" tabindex="-1"></a>fig2 <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(file_path) <span class="sc">%&gt;%</span> <span class="co"># import</span></span>
-<span id="cb245-5"><a href="regression.html#cb245-5" tabindex="-1"></a>  <span class="fu">clean_names</span>() <span class="sc">%&gt;%</span> <span class="co"># clean the column names</span></span>
-<span id="cb245-6"><a href="regression.html#cb245-6" tabindex="-1"></a>  <span class="fu">data.table</span>() <span class="co"># convert to data.table</span></span>
-<span id="cb245-7"><a href="regression.html#cb245-7" tabindex="-1"></a><span class="co"># View(fig2)</span></span>
-<span id="cb245-8"><a href="regression.html#cb245-8" tabindex="-1"></a></span>
-<span id="cb245-9"><a href="regression.html#cb245-9" tabindex="-1"></a>fig2c <span class="ot">&lt;-</span> fig2[panel <span class="sc">==</span> <span class="st">&quot;2c&quot;</span>,]</span>
-<span id="cb245-10"><a href="regression.html#cb245-10" tabindex="-1"></a><span class="co"># View(fig2c)</span></span></code></pre></div>
-<p>Creating the response plot (the bottom component)</p>
-<div class="sourceCode" id="cb246"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb246-1"><a href="regression.html#cb246-1" tabindex="-1"></a>m1_b <span class="ot">&lt;-</span> <span class="fu">coef</span>(m1)</span>
-<span id="cb246-2"><a href="regression.html#cb246-2" tabindex="-1"></a>m1_ci <span class="ot">&lt;-</span> <span class="fu">confint</span>(m1)</span>
-<span id="cb246-3"><a href="regression.html#cb246-3" tabindex="-1"></a>m1_b0_text <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">&quot;Intercept: &quot;</span>,</span>
-<span id="cb246-4"><a href="regression.html#cb246-4" tabindex="-1"></a>                  <span class="fu">round</span>(m1_b[<span class="dv">1</span>],<span class="dv">1</span>),</span>
-<span id="cb246-5"><a href="regression.html#cb246-5" tabindex="-1"></a>                  <span class="st">&quot; (&quot;</span>,</span>
-<span id="cb246-6"><a href="regression.html#cb246-6" tabindex="-1"></a>                  <span class="fu">round</span>(m1_ci[<span class="dv">1</span>,<span class="dv">1</span>],<span class="dv">1</span>),</span>
-<span id="cb246-7"><a href="regression.html#cb246-7" tabindex="-1"></a>                  <span class="st">&quot;, &quot;</span>,</span>
-<span id="cb246-8"><a href="regression.html#cb246-8" tabindex="-1"></a>                  <span class="fu">round</span>(m1_ci[<span class="dv">1</span>,<span class="dv">2</span>],<span class="dv">1</span>),</span>
-<span id="cb246-9"><a href="regression.html#cb246-9" tabindex="-1"></a>                  <span class="st">&quot;) d&quot;</span>)</span>
-<span id="cb246-10"><a href="regression.html#cb246-10" tabindex="-1"></a>m1_b1_text <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">&quot;Slope: &quot;</span>,</span>
-<span id="cb246-11"><a href="regression.html#cb246-11" tabindex="-1"></a>                  <span class="fu">round</span>(m1_b[<span class="dv">2</span>],<span class="dv">2</span>),</span>
-<span id="cb246-12"><a href="regression.html#cb246-12" tabindex="-1"></a>                  <span class="st">&quot; (&quot;</span>,</span>
-<span id="cb246-13"><a href="regression.html#cb246-13" tabindex="-1"></a>                  <span class="fu">round</span>(m1_ci[<span class="dv">2</span>,<span class="dv">1</span>],<span class="dv">2</span>),</span>
-<span id="cb246-14"><a href="regression.html#cb246-14" tabindex="-1"></a>                  <span class="st">&quot;, &quot;</span>,</span>
-<span id="cb246-15"><a href="regression.html#cb246-15" tabindex="-1"></a>                  <span class="fu">round</span>(m1_ci[<span class="dv">2</span>,<span class="dv">2</span>],<span class="dv">2</span>),</span>
-<span id="cb246-16"><a href="regression.html#cb246-16" tabindex="-1"></a>                  <span class="st">&quot;) d per 1 °C&quot;</span>)</span>
-<span id="cb246-17"><a href="regression.html#cb246-17" tabindex="-1"></a></span>
-<span id="cb246-18"><a href="regression.html#cb246-18" tabindex="-1"></a><span class="co"># regression line</span></span>
-<span id="cb246-19"><a href="regression.html#cb246-19" tabindex="-1"></a>m1_x <span class="ot">&lt;-</span> <span class="fu">min</span>(fig2c[, temperature])</span>
-<span id="cb246-20"><a href="regression.html#cb246-20" tabindex="-1"></a>m1_xend <span class="ot">&lt;-</span> <span class="fu">max</span>(fig2c[, temperature])</span>
-<span id="cb246-21"><a href="regression.html#cb246-21" tabindex="-1"></a>m1_y <span class="ot">&lt;-</span> m1_b[<span class="dv">1</span>] <span class="sc">+</span> m1_b[<span class="dv">2</span>]<span class="sc">*</span>m1_x</span>
-<span id="cb246-22"><a href="regression.html#cb246-22" tabindex="-1"></a>m1_yend <span class="ot">&lt;-</span> m1_b[<span class="dv">1</span>] <span class="sc">+</span> m1_b[<span class="dv">2</span>]<span class="sc">*</span>m1_xend</span>
-<span id="cb246-23"><a href="regression.html#cb246-23" tabindex="-1"></a></span>
-<span id="cb246-24"><a href="regression.html#cb246-24" tabindex="-1"></a>fig2c_gg_response <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data =</span> fig2c,</span>
-<span id="cb246-25"><a href="regression.html#cb246-25" tabindex="-1"></a>             <span class="fu">aes</span>(<span class="at">x =</span> temperature,</span>
-<span id="cb246-26"><a href="regression.html#cb246-26" tabindex="-1"></a>                <span class="at">y =</span> transition_date)) <span class="sc">+</span></span>
-<span id="cb246-27"><a href="regression.html#cb246-27" tabindex="-1"></a>  </span>
-<span id="cb246-28"><a href="regression.html#cb246-28" tabindex="-1"></a>  <span class="co"># regression line first, to not block point</span></span>
-<span id="cb246-29"><a href="regression.html#cb246-29" tabindex="-1"></a>  <span class="fu">geom_segment</span>(<span class="at">x =</span> m1_x,</span>
-<span id="cb246-30"><a href="regression.html#cb246-30" tabindex="-1"></a>               <span class="at">y =</span> m1_y,</span>
-<span id="cb246-31"><a href="regression.html#cb246-31" tabindex="-1"></a>               <span class="at">xend =</span> m1_xend,</span>
-<span id="cb246-32"><a href="regression.html#cb246-32" tabindex="-1"></a>               <span class="at">yend =</span> m1_yend) <span class="sc">+</span></span>
-<span id="cb246-33"><a href="regression.html#cb246-33" tabindex="-1"></a>  <span class="co"># create black edge to points</span></span>
-<span id="cb246-34"><a href="regression.html#cb246-34" tabindex="-1"></a>  <span class="co"># geom_point(size = 4,</span></span>
-<span id="cb246-35"><a href="regression.html#cb246-35" tabindex="-1"></a>  <span class="co">#            color = &quot;black&quot;) +</span></span>
-<span id="cb246-36"><a href="regression.html#cb246-36" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">3</span>,</span>
-<span id="cb246-37"><a href="regression.html#cb246-37" tabindex="-1"></a>             <span class="at">color =</span> pal_okabe_ito[<span class="dv">1</span>]) <span class="sc">+</span></span>
-<span id="cb246-38"><a href="regression.html#cb246-38" tabindex="-1"></a>   <span class="fu">scale_x_continuous</span>(<span class="at">breaks =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">2.25</span>, <span class="fl">4.5</span>, <span class="fl">6.75</span>, <span class="dv">9</span>)) <span class="sc">+</span></span>
-<span id="cb246-39"><a href="regression.html#cb246-39" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">&quot;Plot temperature (ΔT, °C)&quot;</span>) <span class="sc">+</span></span>
-<span id="cb246-40"><a href="regression.html#cb246-40" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">&quot;Autumn green-down (DOY)&quot;</span>) <span class="sc">+</span></span>
-<span id="cb246-41"><a href="regression.html#cb246-41" tabindex="-1"></a>  <span class="fu">theme_pubr</span>() <span class="sc">+</span></span>
-<span id="cb246-42"><a href="regression.html#cb246-42" tabindex="-1"></a>  </span>
-<span id="cb246-43"><a href="regression.html#cb246-43" tabindex="-1"></a>  <span class="cn">NULL</span></span>
-<span id="cb246-44"><a href="regression.html#cb246-44" tabindex="-1"></a></span>
-<span id="cb246-45"><a href="regression.html#cb246-45" tabindex="-1"></a><span class="co"># fig2c_gg_response</span></span></code></pre></div>
-<p>Creating the effects plot (the top component)</p>
-<div class="sourceCode" id="cb247"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb247-1"><a href="regression.html#cb247-1" tabindex="-1"></a>m1_coeff_dt <span class="ot">&lt;-</span> <span class="fu">data.table</span>(<span class="at">term =</span> <span class="fu">row.names</span>(m1_coeff),</span>
-<span id="cb247-2"><a href="regression.html#cb247-2" tabindex="-1"></a>                          <span class="fu">data.table</span>(m1_coeff))[<span class="dv">2</span>,] <span class="sc">%&gt;%</span></span>
-<span id="cb247-3"><a href="regression.html#cb247-3" tabindex="-1"></a>  <span class="fu">clean_names</span>()</span>
-<span id="cb247-4"><a href="regression.html#cb247-4" tabindex="-1"></a>m1_coeff_dt[ , p_pretty <span class="sc">:=</span> <span class="fu">pvalString</span>(pr_t)]</span>
-<span id="cb247-5"><a href="regression.html#cb247-5" tabindex="-1"></a></span>
-<span id="cb247-6"><a href="regression.html#cb247-6" tabindex="-1"></a>min_bound <span class="ot">&lt;-</span> <span class="fu">min</span>(m1_coeff_dt[, x2_5_percent])</span>
-<span id="cb247-7"><a href="regression.html#cb247-7" tabindex="-1"></a>max_bound <span class="ot">&lt;-</span> <span class="fu">min</span>(m1_coeff_dt[, x97_5_percent])</span>
+<div class="sourceCode" id="cb247"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb247-1"><a href="regression.html#cb247-1" tabindex="-1"></a>data_from <span class="ot">&lt;-</span> <span class="st">&quot;Ecosystem warming extends vegetation activity but heightens vulnerability to cold temperatures&quot;</span></span>
+<span id="cb247-2"><a href="regression.html#cb247-2" tabindex="-1"></a>file_name <span class="ot">&lt;-</span> <span class="st">&quot;41586_2018_399_MOESM3_ESM.xlsx&quot;</span></span>
+<span id="cb247-3"><a href="regression.html#cb247-3" tabindex="-1"></a>file_path <span class="ot">&lt;-</span> <span class="fu">here</span>(data_folder, data_from, file_name)</span>
+<span id="cb247-4"><a href="regression.html#cb247-4" tabindex="-1"></a>fig2 <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(file_path) <span class="sc">%&gt;%</span> <span class="co"># import</span></span>
+<span id="cb247-5"><a href="regression.html#cb247-5" tabindex="-1"></a>  <span class="fu">clean_names</span>() <span class="sc">%&gt;%</span> <span class="co"># clean the column names</span></span>
+<span id="cb247-6"><a href="regression.html#cb247-6" tabindex="-1"></a>  <span class="fu">data.table</span>() <span class="co"># convert to data.table</span></span>
+<span id="cb247-7"><a href="regression.html#cb247-7" tabindex="-1"></a><span class="co"># View(fig2)</span></span>
 <span id="cb247-8"><a href="regression.html#cb247-8" tabindex="-1"></a></span>
-<span id="cb247-9"><a href="regression.html#cb247-9" tabindex="-1"></a>y_lo <span class="ot">&lt;-</span> <span class="fu">min</span>(min_bound<span class="sc">+</span>min_bound<span class="sc">*</span><span class="fl">0.2</span>,</span>
-<span id="cb247-10"><a href="regression.html#cb247-10" tabindex="-1"></a>            <span class="sc">-</span>max_bound)</span>
-<span id="cb247-11"><a href="regression.html#cb247-11" tabindex="-1"></a>y_hi <span class="ot">&lt;-</span> <span class="fu">max</span>(max_bound <span class="sc">+</span> max_bound<span class="sc">*</span><span class="fl">0.2</span>,</span>
-<span id="cb247-12"><a href="regression.html#cb247-12" tabindex="-1"></a>            <span class="sc">-</span>min_bound)</span>
-<span id="cb247-13"><a href="regression.html#cb247-13" tabindex="-1"></a>y_lims <span class="ot">&lt;-</span> <span class="fu">c</span>(y_lo, y_hi)</span>
-<span id="cb247-14"><a href="regression.html#cb247-14" tabindex="-1"></a></span>
-<span id="cb247-15"><a href="regression.html#cb247-15" tabindex="-1"></a>fig2c_gg_effect <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data=</span>m1_coeff_dt, </span>
-<span id="cb247-16"><a href="regression.html#cb247-16" tabindex="-1"></a>                          <span class="fu">aes</span>(<span class="at">x =</span> term,</span>
-<span id="cb247-17"><a href="regression.html#cb247-17" tabindex="-1"></a>                              <span class="at">y =</span> estimate)) <span class="sc">+</span></span>
-<span id="cb247-18"><a href="regression.html#cb247-18" tabindex="-1"></a>  <span class="co"># confidence level of effect</span></span>
-<span id="cb247-19"><a href="regression.html#cb247-19" tabindex="-1"></a>  <span class="fu">geom_errorbar</span>(<span class="fu">aes</span>(<span class="at">ymin=</span>x2_5_percent, </span>
-<span id="cb247-20"><a href="regression.html#cb247-20" tabindex="-1"></a>                    <span class="at">ymax=</span>x97_5_percent),</span>
-<span id="cb247-21"><a href="regression.html#cb247-21" tabindex="-1"></a>                <span class="at">width=</span><span class="dv">0</span>, </span>
-<span id="cb247-22"><a href="regression.html#cb247-22" tabindex="-1"></a>                <span class="at">color=</span><span class="st">&quot;black&quot;</span>) <span class="sc">+</span></span>
-<span id="cb247-23"><a href="regression.html#cb247-23" tabindex="-1"></a>  <span class="co"># estimate of effect</span></span>
-<span id="cb247-24"><a href="regression.html#cb247-24" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
-<span id="cb247-25"><a href="regression.html#cb247-25" tabindex="-1"></a>  </span>
-<span id="cb247-26"><a href="regression.html#cb247-26" tabindex="-1"></a>  <span class="co"># zero effect</span></span>
-<span id="cb247-27"><a href="regression.html#cb247-27" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept=</span><span class="dv">0</span>, <span class="at">linetype =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
-<span id="cb247-28"><a href="regression.html#cb247-28" tabindex="-1"></a>  </span>
-<span id="cb247-29"><a href="regression.html#cb247-29" tabindex="-1"></a>  <span class="co"># p-value</span></span>
-<span id="cb247-30"><a href="regression.html#cb247-30" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="at">geom =</span> <span class="st">&quot;text&quot;</span>,</span>
-<span id="cb247-31"><a href="regression.html#cb247-31" tabindex="-1"></a>           <span class="at">label =</span> m1_coeff_dt<span class="sc">$</span>p_pretty,</span>
-<span id="cb247-32"><a href="regression.html#cb247-32" tabindex="-1"></a>           <span class="at">x =</span> <span class="dv">1</span>,</span>
-<span id="cb247-33"><a href="regression.html#cb247-33" tabindex="-1"></a>           <span class="at">y =</span> <span class="fl">7.5</span>) <span class="sc">+</span></span>
-<span id="cb247-34"><a href="regression.html#cb247-34" tabindex="-1"></a>  </span>
-<span id="cb247-35"><a href="regression.html#cb247-35" tabindex="-1"></a>  <span class="co"># aesthetics</span></span>
-<span id="cb247-36"><a href="regression.html#cb247-36" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">position=</span><span class="st">&quot;right&quot;</span>) <span class="sc">+</span></span>
-<span id="cb247-37"><a href="regression.html#cb247-37" tabindex="-1"></a>  <span class="fu">scale_x_discrete</span>(<span class="at">labels =</span> <span class="st">&quot;Temperature</span><span class="sc">\n</span><span class="st">effect&quot;</span>) <span class="sc">+</span></span>
-<span id="cb247-38"><a href="regression.html#cb247-38" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">&quot;Effects (day/°C)&quot;</span>) <span class="sc">+</span></span>
-<span id="cb247-39"><a href="regression.html#cb247-39" tabindex="-1"></a>  <span class="fu">coord_flip</span>(<span class="at">ylim =</span> y_lims) <span class="sc">+</span> </span>
-<span id="cb247-40"><a href="regression.html#cb247-40" tabindex="-1"></a>  <span class="fu">theme_pubr</span>() <span class="sc">+</span></span>
-<span id="cb247-41"><a href="regression.html#cb247-41" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.title.y =</span> <span class="fu">element_blank</span>()) <span class="sc">+</span></span>
-<span id="cb247-42"><a href="regression.html#cb247-42" tabindex="-1"></a>  </span>
-<span id="cb247-43"><a href="regression.html#cb247-43" tabindex="-1"></a>  <span class="cn">NULL</span></span>
-<span id="cb247-44"><a href="regression.html#cb247-44" tabindex="-1"></a></span>
-<span id="cb247-45"><a href="regression.html#cb247-45" tabindex="-1"></a><span class="co">#fig2c_gg_effect</span></span></code></pre></div>
+<span id="cb247-9"><a href="regression.html#cb247-9" tabindex="-1"></a>fig2c <span class="ot">&lt;-</span> fig2[panel <span class="sc">==</span> <span class="st">&quot;2c&quot;</span>,]</span>
+<span id="cb247-10"><a href="regression.html#cb247-10" tabindex="-1"></a><span class="co"># View(fig2c)</span></span></code></pre></div>
+<p>Creating the response plot (the bottom component)</p>
+<div class="sourceCode" id="cb248"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb248-1"><a href="regression.html#cb248-1" tabindex="-1"></a>m1_b <span class="ot">&lt;-</span> <span class="fu">coef</span>(m1)</span>
+<span id="cb248-2"><a href="regression.html#cb248-2" tabindex="-1"></a>m1_ci <span class="ot">&lt;-</span> <span class="fu">confint</span>(m1)</span>
+<span id="cb248-3"><a href="regression.html#cb248-3" tabindex="-1"></a>m1_b0_text <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">&quot;Intercept: &quot;</span>,</span>
+<span id="cb248-4"><a href="regression.html#cb248-4" tabindex="-1"></a>                  <span class="fu">round</span>(m1_b[<span class="dv">1</span>],<span class="dv">1</span>),</span>
+<span id="cb248-5"><a href="regression.html#cb248-5" tabindex="-1"></a>                  <span class="st">&quot; (&quot;</span>,</span>
+<span id="cb248-6"><a href="regression.html#cb248-6" tabindex="-1"></a>                  <span class="fu">round</span>(m1_ci[<span class="dv">1</span>,<span class="dv">1</span>],<span class="dv">1</span>),</span>
+<span id="cb248-7"><a href="regression.html#cb248-7" tabindex="-1"></a>                  <span class="st">&quot;, &quot;</span>,</span>
+<span id="cb248-8"><a href="regression.html#cb248-8" tabindex="-1"></a>                  <span class="fu">round</span>(m1_ci[<span class="dv">1</span>,<span class="dv">2</span>],<span class="dv">1</span>),</span>
+<span id="cb248-9"><a href="regression.html#cb248-9" tabindex="-1"></a>                  <span class="st">&quot;) d&quot;</span>)</span>
+<span id="cb248-10"><a href="regression.html#cb248-10" tabindex="-1"></a>m1_b1_text <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">&quot;Slope: &quot;</span>,</span>
+<span id="cb248-11"><a href="regression.html#cb248-11" tabindex="-1"></a>                  <span class="fu">round</span>(m1_b[<span class="dv">2</span>],<span class="dv">2</span>),</span>
+<span id="cb248-12"><a href="regression.html#cb248-12" tabindex="-1"></a>                  <span class="st">&quot; (&quot;</span>,</span>
+<span id="cb248-13"><a href="regression.html#cb248-13" tabindex="-1"></a>                  <span class="fu">round</span>(m1_ci[<span class="dv">2</span>,<span class="dv">1</span>],<span class="dv">2</span>),</span>
+<span id="cb248-14"><a href="regression.html#cb248-14" tabindex="-1"></a>                  <span class="st">&quot;, &quot;</span>,</span>
+<span id="cb248-15"><a href="regression.html#cb248-15" tabindex="-1"></a>                  <span class="fu">round</span>(m1_ci[<span class="dv">2</span>,<span class="dv">2</span>],<span class="dv">2</span>),</span>
+<span id="cb248-16"><a href="regression.html#cb248-16" tabindex="-1"></a>                  <span class="st">&quot;) d per 1 °C&quot;</span>)</span>
+<span id="cb248-17"><a href="regression.html#cb248-17" tabindex="-1"></a></span>
+<span id="cb248-18"><a href="regression.html#cb248-18" tabindex="-1"></a><span class="co"># regression line</span></span>
+<span id="cb248-19"><a href="regression.html#cb248-19" tabindex="-1"></a>m1_x <span class="ot">&lt;-</span> <span class="fu">min</span>(fig2c[, temperature])</span>
+<span id="cb248-20"><a href="regression.html#cb248-20" tabindex="-1"></a>m1_xend <span class="ot">&lt;-</span> <span class="fu">max</span>(fig2c[, temperature])</span>
+<span id="cb248-21"><a href="regression.html#cb248-21" tabindex="-1"></a>m1_y <span class="ot">&lt;-</span> m1_b[<span class="dv">1</span>] <span class="sc">+</span> m1_b[<span class="dv">2</span>]<span class="sc">*</span>m1_x</span>
+<span id="cb248-22"><a href="regression.html#cb248-22" tabindex="-1"></a>m1_yend <span class="ot">&lt;-</span> m1_b[<span class="dv">1</span>] <span class="sc">+</span> m1_b[<span class="dv">2</span>]<span class="sc">*</span>m1_xend</span>
+<span id="cb248-23"><a href="regression.html#cb248-23" tabindex="-1"></a></span>
+<span id="cb248-24"><a href="regression.html#cb248-24" tabindex="-1"></a>fig2c_gg_response <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data =</span> fig2c,</span>
+<span id="cb248-25"><a href="regression.html#cb248-25" tabindex="-1"></a>             <span class="fu">aes</span>(<span class="at">x =</span> temperature,</span>
+<span id="cb248-26"><a href="regression.html#cb248-26" tabindex="-1"></a>                <span class="at">y =</span> transition_date)) <span class="sc">+</span></span>
+<span id="cb248-27"><a href="regression.html#cb248-27" tabindex="-1"></a>  </span>
+<span id="cb248-28"><a href="regression.html#cb248-28" tabindex="-1"></a>  <span class="co"># regression line first, to not block point</span></span>
+<span id="cb248-29"><a href="regression.html#cb248-29" tabindex="-1"></a>  <span class="fu">geom_segment</span>(<span class="at">x =</span> m1_x,</span>
+<span id="cb248-30"><a href="regression.html#cb248-30" tabindex="-1"></a>               <span class="at">y =</span> m1_y,</span>
+<span id="cb248-31"><a href="regression.html#cb248-31" tabindex="-1"></a>               <span class="at">xend =</span> m1_xend,</span>
+<span id="cb248-32"><a href="regression.html#cb248-32" tabindex="-1"></a>               <span class="at">yend =</span> m1_yend) <span class="sc">+</span></span>
+<span id="cb248-33"><a href="regression.html#cb248-33" tabindex="-1"></a>  <span class="co"># create black edge to points</span></span>
+<span id="cb248-34"><a href="regression.html#cb248-34" tabindex="-1"></a>  <span class="co"># geom_point(size = 4,</span></span>
+<span id="cb248-35"><a href="regression.html#cb248-35" tabindex="-1"></a>  <span class="co">#            color = &quot;black&quot;) +</span></span>
+<span id="cb248-36"><a href="regression.html#cb248-36" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">3</span>,</span>
+<span id="cb248-37"><a href="regression.html#cb248-37" tabindex="-1"></a>             <span class="at">color =</span> pal_okabe_ito[<span class="dv">1</span>]) <span class="sc">+</span></span>
+<span id="cb248-38"><a href="regression.html#cb248-38" tabindex="-1"></a>   <span class="fu">scale_x_continuous</span>(<span class="at">breaks =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">2.25</span>, <span class="fl">4.5</span>, <span class="fl">6.75</span>, <span class="dv">9</span>)) <span class="sc">+</span></span>
+<span id="cb248-39"><a href="regression.html#cb248-39" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">&quot;Plot temperature (ΔT, °C)&quot;</span>) <span class="sc">+</span></span>
+<span id="cb248-40"><a href="regression.html#cb248-40" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">&quot;Autumn green-down (DOY)&quot;</span>) <span class="sc">+</span></span>
+<span id="cb248-41"><a href="regression.html#cb248-41" tabindex="-1"></a>  <span class="fu">theme_pubr</span>() <span class="sc">+</span></span>
+<span id="cb248-42"><a href="regression.html#cb248-42" tabindex="-1"></a>  </span>
+<span id="cb248-43"><a href="regression.html#cb248-43" tabindex="-1"></a>  <span class="cn">NULL</span></span>
+<span id="cb248-44"><a href="regression.html#cb248-44" tabindex="-1"></a></span>
+<span id="cb248-45"><a href="regression.html#cb248-45" tabindex="-1"></a><span class="co"># fig2c_gg_response</span></span></code></pre></div>
+<p>Creating the effects plot (the top component)</p>
+<div class="sourceCode" id="cb249"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb249-1"><a href="regression.html#cb249-1" tabindex="-1"></a>m1_coeff_dt <span class="ot">&lt;-</span> <span class="fu">data.table</span>(<span class="at">term =</span> <span class="fu">row.names</span>(m1_coeff),</span>
+<span id="cb249-2"><a href="regression.html#cb249-2" tabindex="-1"></a>                          <span class="fu">data.table</span>(m1_coeff))[<span class="dv">2</span>,] <span class="sc">%&gt;%</span></span>
+<span id="cb249-3"><a href="regression.html#cb249-3" tabindex="-1"></a>  <span class="fu">clean_names</span>()</span>
+<span id="cb249-4"><a href="regression.html#cb249-4" tabindex="-1"></a>m1_coeff_dt[ , p_pretty <span class="sc">:=</span> <span class="fu">pvalString</span>(pr_t)]</span>
+<span id="cb249-5"><a href="regression.html#cb249-5" tabindex="-1"></a></span>
+<span id="cb249-6"><a href="regression.html#cb249-6" tabindex="-1"></a>min_bound <span class="ot">&lt;-</span> <span class="fu">min</span>(m1_coeff_dt[, x2_5_percent])</span>
+<span id="cb249-7"><a href="regression.html#cb249-7" tabindex="-1"></a>max_bound <span class="ot">&lt;-</span> <span class="fu">min</span>(m1_coeff_dt[, x97_5_percent])</span>
+<span id="cb249-8"><a href="regression.html#cb249-8" tabindex="-1"></a></span>
+<span id="cb249-9"><a href="regression.html#cb249-9" tabindex="-1"></a>y_lo <span class="ot">&lt;-</span> <span class="fu">min</span>(min_bound<span class="sc">+</span>min_bound<span class="sc">*</span><span class="fl">0.2</span>,</span>
+<span id="cb249-10"><a href="regression.html#cb249-10" tabindex="-1"></a>            <span class="sc">-</span>max_bound)</span>
+<span id="cb249-11"><a href="regression.html#cb249-11" tabindex="-1"></a>y_hi <span class="ot">&lt;-</span> <span class="fu">max</span>(max_bound <span class="sc">+</span> max_bound<span class="sc">*</span><span class="fl">0.2</span>,</span>
+<span id="cb249-12"><a href="regression.html#cb249-12" tabindex="-1"></a>            <span class="sc">-</span>min_bound)</span>
+<span id="cb249-13"><a href="regression.html#cb249-13" tabindex="-1"></a>y_lims <span class="ot">&lt;-</span> <span class="fu">c</span>(y_lo, y_hi)</span>
+<span id="cb249-14"><a href="regression.html#cb249-14" tabindex="-1"></a></span>
+<span id="cb249-15"><a href="regression.html#cb249-15" tabindex="-1"></a>fig2c_gg_effect <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data=</span>m1_coeff_dt, </span>
+<span id="cb249-16"><a href="regression.html#cb249-16" tabindex="-1"></a>                          <span class="fu">aes</span>(<span class="at">x =</span> term,</span>
+<span id="cb249-17"><a href="regression.html#cb249-17" tabindex="-1"></a>                              <span class="at">y =</span> estimate)) <span class="sc">+</span></span>
+<span id="cb249-18"><a href="regression.html#cb249-18" tabindex="-1"></a>  <span class="co"># confidence level of effect</span></span>
+<span id="cb249-19"><a href="regression.html#cb249-19" tabindex="-1"></a>  <span class="fu">geom_errorbar</span>(<span class="fu">aes</span>(<span class="at">ymin=</span>x2_5_percent, </span>
+<span id="cb249-20"><a href="regression.html#cb249-20" tabindex="-1"></a>                    <span class="at">ymax=</span>x97_5_percent),</span>
+<span id="cb249-21"><a href="regression.html#cb249-21" tabindex="-1"></a>                <span class="at">width=</span><span class="dv">0</span>, </span>
+<span id="cb249-22"><a href="regression.html#cb249-22" tabindex="-1"></a>                <span class="at">color=</span><span class="st">&quot;black&quot;</span>) <span class="sc">+</span></span>
+<span id="cb249-23"><a href="regression.html#cb249-23" tabindex="-1"></a>  <span class="co"># estimate of effect</span></span>
+<span id="cb249-24"><a href="regression.html#cb249-24" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb249-25"><a href="regression.html#cb249-25" tabindex="-1"></a>  </span>
+<span id="cb249-26"><a href="regression.html#cb249-26" tabindex="-1"></a>  <span class="co"># zero effect</span></span>
+<span id="cb249-27"><a href="regression.html#cb249-27" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept=</span><span class="dv">0</span>, <span class="at">linetype =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb249-28"><a href="regression.html#cb249-28" tabindex="-1"></a>  </span>
+<span id="cb249-29"><a href="regression.html#cb249-29" tabindex="-1"></a>  <span class="co"># p-value</span></span>
+<span id="cb249-30"><a href="regression.html#cb249-30" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="at">geom =</span> <span class="st">&quot;text&quot;</span>,</span>
+<span id="cb249-31"><a href="regression.html#cb249-31" tabindex="-1"></a>           <span class="at">label =</span> m1_coeff_dt<span class="sc">$</span>p_pretty,</span>
+<span id="cb249-32"><a href="regression.html#cb249-32" tabindex="-1"></a>           <span class="at">x =</span> <span class="dv">1</span>,</span>
+<span id="cb249-33"><a href="regression.html#cb249-33" tabindex="-1"></a>           <span class="at">y =</span> <span class="fl">7.5</span>) <span class="sc">+</span></span>
+<span id="cb249-34"><a href="regression.html#cb249-34" tabindex="-1"></a>  </span>
+<span id="cb249-35"><a href="regression.html#cb249-35" tabindex="-1"></a>  <span class="co"># aesthetics</span></span>
+<span id="cb249-36"><a href="regression.html#cb249-36" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">position=</span><span class="st">&quot;right&quot;</span>) <span class="sc">+</span></span>
+<span id="cb249-37"><a href="regression.html#cb249-37" tabindex="-1"></a>  <span class="fu">scale_x_discrete</span>(<span class="at">labels =</span> <span class="st">&quot;Temperature</span><span class="sc">\n</span><span class="st">effect&quot;</span>) <span class="sc">+</span></span>
+<span id="cb249-38"><a href="regression.html#cb249-38" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">&quot;Effects (day/°C)&quot;</span>) <span class="sc">+</span></span>
+<span id="cb249-39"><a href="regression.html#cb249-39" tabindex="-1"></a>  <span class="fu">coord_flip</span>(<span class="at">ylim =</span> y_lims) <span class="sc">+</span> </span>
+<span id="cb249-40"><a href="regression.html#cb249-40" tabindex="-1"></a>  <span class="fu">theme_pubr</span>() <span class="sc">+</span></span>
+<span id="cb249-41"><a href="regression.html#cb249-41" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.title.y =</span> <span class="fu">element_blank</span>()) <span class="sc">+</span></span>
+<span id="cb249-42"><a href="regression.html#cb249-42" tabindex="-1"></a>  </span>
+<span id="cb249-43"><a href="regression.html#cb249-43" tabindex="-1"></a>  <span class="cn">NULL</span></span>
+<span id="cb249-44"><a href="regression.html#cb249-44" tabindex="-1"></a></span>
+<span id="cb249-45"><a href="regression.html#cb249-45" tabindex="-1"></a><span class="co">#fig2c_gg_effect</span></span></code></pre></div>
 <p>Combining the response and effects plots into single plot</p>
-<div class="sourceCode" id="cb248"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb248-1"><a href="regression.html#cb248-1" tabindex="-1"></a>fig3d_fig <span class="ot">&lt;-</span> <span class="fu">plot_grid</span>(fig2c_gg_effect,</span>
-<span id="cb248-2"><a href="regression.html#cb248-2" tabindex="-1"></a>                       fig2c_gg_response,</span>
-<span id="cb248-3"><a href="regression.html#cb248-3" tabindex="-1"></a>                       <span class="at">nrow=</span><span class="dv">2</span>,</span>
-<span id="cb248-4"><a href="regression.html#cb248-4" tabindex="-1"></a>                       <span class="at">align =</span> <span class="st">&quot;v&quot;</span>,</span>
-<span id="cb248-5"><a href="regression.html#cb248-5" tabindex="-1"></a>                       <span class="at">axis =</span> <span class="st">&quot;lr&quot;</span>,</span>
-<span id="cb248-6"><a href="regression.html#cb248-6" tabindex="-1"></a>                       <span class="at">rel_heights =</span> <span class="fu">c</span>(<span class="fl">0.4</span>,<span class="dv">1</span>))</span>
-<span id="cb248-7"><a href="regression.html#cb248-7" tabindex="-1"></a>fig3d_fig</span></code></pre></div>
+<div class="sourceCode" id="cb250"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb250-1"><a href="regression.html#cb250-1" tabindex="-1"></a>fig3d_fig <span class="ot">&lt;-</span> <span class="fu">plot_grid</span>(fig2c_gg_effect,</span>
+<span id="cb250-2"><a href="regression.html#cb250-2" tabindex="-1"></a>                       fig2c_gg_response,</span>
+<span id="cb250-3"><a href="regression.html#cb250-3" tabindex="-1"></a>                       <span class="at">nrow=</span><span class="dv">2</span>,</span>
+<span id="cb250-4"><a href="regression.html#cb250-4" tabindex="-1"></a>                       <span class="at">align =</span> <span class="st">&quot;v&quot;</span>,</span>
+<span id="cb250-5"><a href="regression.html#cb250-5" tabindex="-1"></a>                       <span class="at">axis =</span> <span class="st">&quot;lr&quot;</span>,</span>
+<span id="cb250-6"><a href="regression.html#cb250-6" tabindex="-1"></a>                       <span class="at">rel_heights =</span> <span class="fu">c</span>(<span class="fl">0.4</span>,<span class="dv">1</span>))</span>
+<span id="cb250-7"><a href="regression.html#cb250-7" tabindex="-1"></a>fig3d_fig</span></code></pre></div>
 </div>
 <div id="import-and-plot-efig_3d-ecosysem-warming-observational-data" class="section level3 hasAnchor" number="9.3.2">
 <h3><span class="header-section-number">9.3.2</span> Import and plot efig_3d (Ecosysem warming observational) data<a href="regression.html#import-and-plot-efig_3d-ecosysem-warming-observational-data" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>Import</p>
-<div class="sourceCode" id="cb249"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb249-1"><a href="regression.html#cb249-1" tabindex="-1"></a>data_from <span class="ot">&lt;-</span> <span class="st">&quot;Ecosystem warming extends vegetation activity but heightens vulnerability to cold temperatures&quot;</span></span>
-<span id="cb249-2"><a href="regression.html#cb249-2" tabindex="-1"></a>file_name <span class="ot">&lt;-</span> <span class="st">&quot;41586_2018_399_MOESM6_ESM.xlsx&quot;</span></span>
-<span id="cb249-3"><a href="regression.html#cb249-3" tabindex="-1"></a>file_path <span class="ot">&lt;-</span> <span class="fu">here</span>(data_folder, data_from, file_name)</span>
-<span id="cb249-4"><a href="regression.html#cb249-4" tabindex="-1"></a>efig_3d <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(file_path,</span>
-<span id="cb249-5"><a href="regression.html#cb249-5" tabindex="-1"></a>                   <span class="at">range =</span> <span class="st">&quot;J2:K87&quot;</span>,</span>
-<span id="cb249-6"><a href="regression.html#cb249-6" tabindex="-1"></a>                   <span class="at">col_names =</span> <span class="cn">FALSE</span>) <span class="sc">%&gt;%</span> <span class="co"># header causing issues</span></span>
-<span id="cb249-7"><a href="regression.html#cb249-7" tabindex="-1"></a>  <span class="fu">data.table</span>() <span class="co"># convert to data.table</span></span>
-<span id="cb249-8"><a href="regression.html#cb249-8" tabindex="-1"></a><span class="fu">setnames</span>(efig_3d, <span class="at">old =</span> <span class="fu">colnames</span>(efig_3d), <span class="at">new =</span> <span class="fu">c</span>(<span class="st">&quot;autumn_temp_anomaly&quot;</span>, <span class="st">&quot;green_down_anomaly&quot;</span>))</span>
-<span id="cb249-9"><a href="regression.html#cb249-9" tabindex="-1"></a></span>
-<span id="cb249-10"><a href="regression.html#cb249-10" tabindex="-1"></a><span class="co"># View(efig_3d)</span></span></code></pre></div>
+<div class="sourceCode" id="cb251"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb251-1"><a href="regression.html#cb251-1" tabindex="-1"></a>data_from <span class="ot">&lt;-</span> <span class="st">&quot;Ecosystem warming extends vegetation activity but heightens vulnerability to cold temperatures&quot;</span></span>
+<span id="cb251-2"><a href="regression.html#cb251-2" tabindex="-1"></a>file_name <span class="ot">&lt;-</span> <span class="st">&quot;41586_2018_399_MOESM6_ESM.xlsx&quot;</span></span>
+<span id="cb251-3"><a href="regression.html#cb251-3" tabindex="-1"></a>file_path <span class="ot">&lt;-</span> <span class="fu">here</span>(data_folder, data_from, file_name)</span>
+<span id="cb251-4"><a href="regression.html#cb251-4" tabindex="-1"></a>efig_3d <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(file_path,</span>
+<span id="cb251-5"><a href="regression.html#cb251-5" tabindex="-1"></a>                   <span class="at">range =</span> <span class="st">&quot;J2:K87&quot;</span>,</span>
+<span id="cb251-6"><a href="regression.html#cb251-6" tabindex="-1"></a>                   <span class="at">col_names =</span> <span class="cn">FALSE</span>) <span class="sc">%&gt;%</span> <span class="co"># header causing issues</span></span>
+<span id="cb251-7"><a href="regression.html#cb251-7" tabindex="-1"></a>  <span class="fu">data.table</span>() <span class="co"># convert to data.table</span></span>
+<span id="cb251-8"><a href="regression.html#cb251-8" tabindex="-1"></a><span class="fu">setnames</span>(efig_3d, <span class="at">old =</span> <span class="fu">colnames</span>(efig_3d), <span class="at">new =</span> <span class="fu">c</span>(<span class="st">&quot;autumn_temp_anomaly&quot;</span>, <span class="st">&quot;green_down_anomaly&quot;</span>))</span>
+<span id="cb251-9"><a href="regression.html#cb251-9" tabindex="-1"></a></span>
+<span id="cb251-10"><a href="regression.html#cb251-10" tabindex="-1"></a><span class="co"># View(efig_3d)</span></span></code></pre></div>
 <p>Plot</p>
-<div class="sourceCode" id="cb250"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb250-1"><a href="regression.html#cb250-1" tabindex="-1"></a>m1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(green_down_anomaly <span class="sc">~</span> autumn_temp_anomaly, <span class="at">data =</span> efig_3d)</span>
-<span id="cb250-2"><a href="regression.html#cb250-2" tabindex="-1"></a></span>
-<span id="cb250-3"><a href="regression.html#cb250-3" tabindex="-1"></a><span class="co"># get x for drawing slope</span></span>
-<span id="cb250-4"><a href="regression.html#cb250-4" tabindex="-1"></a>minx <span class="ot">&lt;-</span> <span class="fu">min</span>(efig_3d[,autumn_temp_anomaly])</span>
-<span id="cb250-5"><a href="regression.html#cb250-5" tabindex="-1"></a>maxx <span class="ot">&lt;-</span> <span class="fu">max</span>(efig_3d[,autumn_temp_anomaly])</span>
-<span id="cb250-6"><a href="regression.html#cb250-6" tabindex="-1"></a>new_x <span class="ot">&lt;-</span> <span class="fu">seq</span>(minx, maxx, <span class="at">length.out =</span> <span class="dv">20</span>)</span>
-<span id="cb250-7"><a href="regression.html#cb250-7" tabindex="-1"></a>new_data <span class="ot">&lt;-</span> <span class="fu">data.table</span>(<span class="at">autumn_temp_anomaly =</span> new_x)</span>
-<span id="cb250-8"><a href="regression.html#cb250-8" tabindex="-1"></a>new_data[, yhat <span class="sc">:=</span> <span class="fu">predict</span>(m1, <span class="at">newdata =</span> new_data)]</span>
-<span id="cb250-9"><a href="regression.html#cb250-9" tabindex="-1"></a>new_data[, conf_lwr <span class="sc">:=</span> <span class="fu">predict</span>(m1, </span>
-<span id="cb250-10"><a href="regression.html#cb250-10" tabindex="-1"></a>                           <span class="at">se.fit =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb250-11"><a href="regression.html#cb250-11" tabindex="-1"></a>                           <span class="at">interval =</span> <span class="st">&quot;confidence&quot;</span>,</span>
-<span id="cb250-12"><a href="regression.html#cb250-12" tabindex="-1"></a>                           <span class="at">newdata =</span> new_data)<span class="sc">$</span>fit[, <span class="st">&quot;lwr&quot;</span>]]</span>
-<span id="cb250-13"><a href="regression.html#cb250-13" tabindex="-1"></a>new_data[, conf_upr <span class="sc">:=</span> <span class="fu">predict</span>(m1, </span>
-<span id="cb250-14"><a href="regression.html#cb250-14" tabindex="-1"></a>                           <span class="at">se.fit =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb250-15"><a href="regression.html#cb250-15" tabindex="-1"></a>                           <span class="at">interval =</span> <span class="st">&quot;confidence&quot;</span>,</span>
-<span id="cb250-16"><a href="regression.html#cb250-16" tabindex="-1"></a>                           <span class="at">newdata =</span> new_data)<span class="sc">$</span>fit[, <span class="st">&quot;upr&quot;</span>]]</span>
-<span id="cb250-17"><a href="regression.html#cb250-17" tabindex="-1"></a>new_data[, pred_lwr <span class="sc">:=</span> <span class="fu">predict</span>(m1, </span>
-<span id="cb250-18"><a href="regression.html#cb250-18" tabindex="-1"></a>                           <span class="at">se.fit =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb250-19"><a href="regression.html#cb250-19" tabindex="-1"></a>                           <span class="at">interval =</span> <span class="st">&quot;prediction&quot;</span>,</span>
-<span id="cb250-20"><a href="regression.html#cb250-20" tabindex="-1"></a>                           <span class="at">newdata =</span> new_data)<span class="sc">$</span>fit[, <span class="st">&quot;lwr&quot;</span>]]</span>
-<span id="cb250-21"><a href="regression.html#cb250-21" tabindex="-1"></a>new_data[, pred_upr <span class="sc">:=</span> <span class="fu">predict</span>(m1, </span>
-<span id="cb250-22"><a href="regression.html#cb250-22" tabindex="-1"></a>                           <span class="at">se.fit =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb250-23"><a href="regression.html#cb250-23" tabindex="-1"></a>                           <span class="at">interval =</span> <span class="st">&quot;prediction&quot;</span>,</span>
-<span id="cb250-24"><a href="regression.html#cb250-24" tabindex="-1"></a>                           <span class="at">newdata =</span> new_data)<span class="sc">$</span>fit[, <span class="st">&quot;upr&quot;</span>]]</span>
-<span id="cb250-25"><a href="regression.html#cb250-25" tabindex="-1"></a></span>
-<span id="cb250-26"><a href="regression.html#cb250-26" tabindex="-1"></a>gg <span class="ot">&lt;-</span> <span class="fu">ggscatter</span>(<span class="at">data =</span> efig_3d,</span>
-<span id="cb250-27"><a href="regression.html#cb250-27" tabindex="-1"></a>          <span class="at">x =</span> <span class="st">&quot;autumn_temp_anomaly&quot;</span>,</span>
-<span id="cb250-28"><a href="regression.html#cb250-28" tabindex="-1"></a>          <span class="at">y =</span> <span class="st">&quot;green_down_anomaly&quot;</span>,</span>
-<span id="cb250-29"><a href="regression.html#cb250-29" tabindex="-1"></a>          <span class="at">color =</span> <span class="st">&quot;black&quot;</span>,</span>
-<span id="cb250-30"><a href="regression.html#cb250-30" tabindex="-1"></a>          <span class="at">shape =</span> <span class="dv">21</span>,</span>
-<span id="cb250-31"><a href="regression.html#cb250-31" tabindex="-1"></a>          <span class="at">size =</span> <span class="dv">3</span>,</span>
-<span id="cb250-32"><a href="regression.html#cb250-32" tabindex="-1"></a>          <span class="at">add =</span> <span class="st">&quot;reg.line&quot;</span>,</span>
-<span id="cb250-33"><a href="regression.html#cb250-33" tabindex="-1"></a>          <span class="at">add.params =</span> <span class="fu">list</span>(<span class="at">color =</span> <span class="st">&quot;steelblue&quot;</span>,</span>
-<span id="cb250-34"><a href="regression.html#cb250-34" tabindex="-1"></a>                            <span class="at">fill =</span> <span class="st">&quot;lightgray&quot;</span>),</span>
-<span id="cb250-35"><a href="regression.html#cb250-35" tabindex="-1"></a>          <span class="at">xlab =</span> <span class="st">&quot;Temperature Anomaly (°C)&quot;</span>,</span>
-<span id="cb250-36"><a href="regression.html#cb250-36" tabindex="-1"></a>          <span class="at">ylab =</span> <span class="st">&quot;Day of Green-down Anomaly (DOY)&quot;</span>) <span class="sc">+</span></span>
-<span id="cb250-37"><a href="regression.html#cb250-37" tabindex="-1"></a></span>
-<span id="cb250-38"><a href="regression.html#cb250-38" tabindex="-1"></a>  <span class="fu">geom_ribbon</span>(<span class="at">data =</span> new_data,</span>
-<span id="cb250-39"><a href="regression.html#cb250-39" tabindex="-1"></a>              <span class="fu">aes</span>(<span class="at">ymin =</span> pred_lwr,</span>
-<span id="cb250-40"><a href="regression.html#cb250-40" tabindex="-1"></a>                  <span class="at">ymax =</span> pred_upr,</span>
-<span id="cb250-41"><a href="regression.html#cb250-41" tabindex="-1"></a>                  <span class="at">y =</span> yhat,</span>
-<span id="cb250-42"><a href="regression.html#cb250-42" tabindex="-1"></a>                  <span class="at">fill =</span> <span class="st">&quot;band&quot;</span>),</span>
-<span id="cb250-43"><a href="regression.html#cb250-43" tabindex="-1"></a>              <span class="at">fill =</span> <span class="st">&quot;gray&quot;</span>,</span>
-<span id="cb250-44"><a href="regression.html#cb250-44" tabindex="-1"></a>              <span class="at">alpha =</span> <span class="fl">0.3</span>) <span class="sc">+</span></span>
-<span id="cb250-45"><a href="regression.html#cb250-45" tabindex="-1"></a>  </span>
-<span id="cb250-46"><a href="regression.html#cb250-46" tabindex="-1"></a>  <span class="fu">geom_ribbon</span>(<span class="at">data =</span> new_data,</span>
-<span id="cb250-47"><a href="regression.html#cb250-47" tabindex="-1"></a>              <span class="fu">aes</span>(<span class="at">ymin =</span> conf_lwr,</span>
-<span id="cb250-48"><a href="regression.html#cb250-48" tabindex="-1"></a>                  <span class="at">ymax =</span> conf_upr,</span>
-<span id="cb250-49"><a href="regression.html#cb250-49" tabindex="-1"></a>                  <span class="at">y =</span> yhat,</span>
-<span id="cb250-50"><a href="regression.html#cb250-50" tabindex="-1"></a>                  <span class="at">fill =</span> <span class="st">&quot;band&quot;</span>), <span class="at">alpha =</span> <span class="fl">0.3</span>) <span class="sc">+</span></span>
-<span id="cb250-51"><a href="regression.html#cb250-51" tabindex="-1"></a>  </span>
-<span id="cb250-52"><a href="regression.html#cb250-52" tabindex="-1"></a>  <span class="fu">stat_cor</span>(<span class="fu">aes</span>(<span class="at">label =</span> <span class="fu">paste</span>(..rr.label.., ..p.label.., <span class="at">sep =</span> <span class="st">&quot;~`,`~&quot;</span>)),</span>
-<span id="cb250-53"><a href="regression.html#cb250-53" tabindex="-1"></a>           <span class="at">size =</span> <span class="dv">4</span>,</span>
-<span id="cb250-54"><a href="regression.html#cb250-54" tabindex="-1"></a>           <span class="at">label.y =</span> <span class="dv">10</span>) <span class="sc">+</span></span>
-<span id="cb250-55"><a href="regression.html#cb250-55" tabindex="-1"></a>  </span>
-<span id="cb250-56"><a href="regression.html#cb250-56" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> pal_okabe_ito) <span class="sc">+</span></span>
-<span id="cb250-57"><a href="regression.html#cb250-57" tabindex="-1"></a></span>
-<span id="cb250-58"><a href="regression.html#cb250-58" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position=</span><span class="st">&quot;none&quot;</span>) <span class="sc">+</span></span>
-<span id="cb250-59"><a href="regression.html#cb250-59" tabindex="-1"></a></span>
-<span id="cb250-60"><a href="regression.html#cb250-60" tabindex="-1"></a>  <span class="cn">NULL</span>  </span>
-<span id="cb250-61"><a href="regression.html#cb250-61" tabindex="-1"></a></span>
-<span id="cb250-62"><a href="regression.html#cb250-62" tabindex="-1"></a>gg</span></code></pre></div>
+<div class="sourceCode" id="cb252"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb252-1"><a href="regression.html#cb252-1" tabindex="-1"></a>m1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(green_down_anomaly <span class="sc">~</span> autumn_temp_anomaly, <span class="at">data =</span> efig_3d)</span>
+<span id="cb252-2"><a href="regression.html#cb252-2" tabindex="-1"></a></span>
+<span id="cb252-3"><a href="regression.html#cb252-3" tabindex="-1"></a><span class="co"># get x for drawing slope</span></span>
+<span id="cb252-4"><a href="regression.html#cb252-4" tabindex="-1"></a>minx <span class="ot">&lt;-</span> <span class="fu">min</span>(efig_3d[,autumn_temp_anomaly])</span>
+<span id="cb252-5"><a href="regression.html#cb252-5" tabindex="-1"></a>maxx <span class="ot">&lt;-</span> <span class="fu">max</span>(efig_3d[,autumn_temp_anomaly])</span>
+<span id="cb252-6"><a href="regression.html#cb252-6" tabindex="-1"></a>new_x <span class="ot">&lt;-</span> <span class="fu">seq</span>(minx, maxx, <span class="at">length.out =</span> <span class="dv">20</span>)</span>
+<span id="cb252-7"><a href="regression.html#cb252-7" tabindex="-1"></a>new_data <span class="ot">&lt;-</span> <span class="fu">data.table</span>(<span class="at">autumn_temp_anomaly =</span> new_x)</span>
+<span id="cb252-8"><a href="regression.html#cb252-8" tabindex="-1"></a>new_data[, yhat <span class="sc">:=</span> <span class="fu">predict</span>(m1, <span class="at">newdata =</span> new_data)]</span>
+<span id="cb252-9"><a href="regression.html#cb252-9" tabindex="-1"></a>new_data[, conf_lwr <span class="sc">:=</span> <span class="fu">predict</span>(m1, </span>
+<span id="cb252-10"><a href="regression.html#cb252-10" tabindex="-1"></a>                           <span class="at">se.fit =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb252-11"><a href="regression.html#cb252-11" tabindex="-1"></a>                           <span class="at">interval =</span> <span class="st">&quot;confidence&quot;</span>,</span>
+<span id="cb252-12"><a href="regression.html#cb252-12" tabindex="-1"></a>                           <span class="at">newdata =</span> new_data)<span class="sc">$</span>fit[, <span class="st">&quot;lwr&quot;</span>]]</span>
+<span id="cb252-13"><a href="regression.html#cb252-13" tabindex="-1"></a>new_data[, conf_upr <span class="sc">:=</span> <span class="fu">predict</span>(m1, </span>
+<span id="cb252-14"><a href="regression.html#cb252-14" tabindex="-1"></a>                           <span class="at">se.fit =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb252-15"><a href="regression.html#cb252-15" tabindex="-1"></a>                           <span class="at">interval =</span> <span class="st">&quot;confidence&quot;</span>,</span>
+<span id="cb252-16"><a href="regression.html#cb252-16" tabindex="-1"></a>                           <span class="at">newdata =</span> new_data)<span class="sc">$</span>fit[, <span class="st">&quot;upr&quot;</span>]]</span>
+<span id="cb252-17"><a href="regression.html#cb252-17" tabindex="-1"></a>new_data[, pred_lwr <span class="sc">:=</span> <span class="fu">predict</span>(m1, </span>
+<span id="cb252-18"><a href="regression.html#cb252-18" tabindex="-1"></a>                           <span class="at">se.fit =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb252-19"><a href="regression.html#cb252-19" tabindex="-1"></a>                           <span class="at">interval =</span> <span class="st">&quot;prediction&quot;</span>,</span>
+<span id="cb252-20"><a href="regression.html#cb252-20" tabindex="-1"></a>                           <span class="at">newdata =</span> new_data)<span class="sc">$</span>fit[, <span class="st">&quot;lwr&quot;</span>]]</span>
+<span id="cb252-21"><a href="regression.html#cb252-21" tabindex="-1"></a>new_data[, pred_upr <span class="sc">:=</span> <span class="fu">predict</span>(m1, </span>
+<span id="cb252-22"><a href="regression.html#cb252-22" tabindex="-1"></a>                           <span class="at">se.fit =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb252-23"><a href="regression.html#cb252-23" tabindex="-1"></a>                           <span class="at">interval =</span> <span class="st">&quot;prediction&quot;</span>,</span>
+<span id="cb252-24"><a href="regression.html#cb252-24" tabindex="-1"></a>                           <span class="at">newdata =</span> new_data)<span class="sc">$</span>fit[, <span class="st">&quot;upr&quot;</span>]]</span>
+<span id="cb252-25"><a href="regression.html#cb252-25" tabindex="-1"></a></span>
+<span id="cb252-26"><a href="regression.html#cb252-26" tabindex="-1"></a>gg <span class="ot">&lt;-</span> <span class="fu">ggscatter</span>(<span class="at">data =</span> efig_3d,</span>
+<span id="cb252-27"><a href="regression.html#cb252-27" tabindex="-1"></a>          <span class="at">x =</span> <span class="st">&quot;autumn_temp_anomaly&quot;</span>,</span>
+<span id="cb252-28"><a href="regression.html#cb252-28" tabindex="-1"></a>          <span class="at">y =</span> <span class="st">&quot;green_down_anomaly&quot;</span>,</span>
+<span id="cb252-29"><a href="regression.html#cb252-29" tabindex="-1"></a>          <span class="at">color =</span> <span class="st">&quot;black&quot;</span>,</span>
+<span id="cb252-30"><a href="regression.html#cb252-30" tabindex="-1"></a>          <span class="at">shape =</span> <span class="dv">21</span>,</span>
+<span id="cb252-31"><a href="regression.html#cb252-31" tabindex="-1"></a>          <span class="at">size =</span> <span class="dv">3</span>,</span>
+<span id="cb252-32"><a href="regression.html#cb252-32" tabindex="-1"></a>          <span class="at">add =</span> <span class="st">&quot;reg.line&quot;</span>,</span>
+<span id="cb252-33"><a href="regression.html#cb252-33" tabindex="-1"></a>          <span class="at">add.params =</span> <span class="fu">list</span>(<span class="at">color =</span> <span class="st">&quot;steelblue&quot;</span>,</span>
+<span id="cb252-34"><a href="regression.html#cb252-34" tabindex="-1"></a>                            <span class="at">fill =</span> <span class="st">&quot;lightgray&quot;</span>),</span>
+<span id="cb252-35"><a href="regression.html#cb252-35" tabindex="-1"></a>          <span class="at">xlab =</span> <span class="st">&quot;Temperature Anomaly (°C)&quot;</span>,</span>
+<span id="cb252-36"><a href="regression.html#cb252-36" tabindex="-1"></a>          <span class="at">ylab =</span> <span class="st">&quot;Day of Green-down Anomaly (DOY)&quot;</span>) <span class="sc">+</span></span>
+<span id="cb252-37"><a href="regression.html#cb252-37" tabindex="-1"></a></span>
+<span id="cb252-38"><a href="regression.html#cb252-38" tabindex="-1"></a>  <span class="fu">geom_ribbon</span>(<span class="at">data =</span> new_data,</span>
+<span id="cb252-39"><a href="regression.html#cb252-39" tabindex="-1"></a>              <span class="fu">aes</span>(<span class="at">ymin =</span> pred_lwr,</span>
+<span id="cb252-40"><a href="regression.html#cb252-40" tabindex="-1"></a>                  <span class="at">ymax =</span> pred_upr,</span>
+<span id="cb252-41"><a href="regression.html#cb252-41" tabindex="-1"></a>                  <span class="at">y =</span> yhat,</span>
+<span id="cb252-42"><a href="regression.html#cb252-42" tabindex="-1"></a>                  <span class="at">fill =</span> <span class="st">&quot;band&quot;</span>),</span>
+<span id="cb252-43"><a href="regression.html#cb252-43" tabindex="-1"></a>              <span class="at">fill =</span> <span class="st">&quot;gray&quot;</span>,</span>
+<span id="cb252-44"><a href="regression.html#cb252-44" tabindex="-1"></a>              <span class="at">alpha =</span> <span class="fl">0.3</span>) <span class="sc">+</span></span>
+<span id="cb252-45"><a href="regression.html#cb252-45" tabindex="-1"></a>  </span>
+<span id="cb252-46"><a href="regression.html#cb252-46" tabindex="-1"></a>  <span class="fu">geom_ribbon</span>(<span class="at">data =</span> new_data,</span>
+<span id="cb252-47"><a href="regression.html#cb252-47" tabindex="-1"></a>              <span class="fu">aes</span>(<span class="at">ymin =</span> conf_lwr,</span>
+<span id="cb252-48"><a href="regression.html#cb252-48" tabindex="-1"></a>                  <span class="at">ymax =</span> conf_upr,</span>
+<span id="cb252-49"><a href="regression.html#cb252-49" tabindex="-1"></a>                  <span class="at">y =</span> yhat,</span>
+<span id="cb252-50"><a href="regression.html#cb252-50" tabindex="-1"></a>                  <span class="at">fill =</span> <span class="st">&quot;band&quot;</span>), <span class="at">alpha =</span> <span class="fl">0.3</span>) <span class="sc">+</span></span>
+<span id="cb252-51"><a href="regression.html#cb252-51" tabindex="-1"></a>  </span>
+<span id="cb252-52"><a href="regression.html#cb252-52" tabindex="-1"></a>  <span class="fu">stat_cor</span>(<span class="fu">aes</span>(<span class="at">label =</span> <span class="fu">paste</span>(..rr.label.., ..p.label.., <span class="at">sep =</span> <span class="st">&quot;~`,`~&quot;</span>)),</span>
+<span id="cb252-53"><a href="regression.html#cb252-53" tabindex="-1"></a>           <span class="at">size =</span> <span class="dv">4</span>,</span>
+<span id="cb252-54"><a href="regression.html#cb252-54" tabindex="-1"></a>           <span class="at">label.y =</span> <span class="dv">10</span>) <span class="sc">+</span></span>
+<span id="cb252-55"><a href="regression.html#cb252-55" tabindex="-1"></a>  </span>
+<span id="cb252-56"><a href="regression.html#cb252-56" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> pal_okabe_ito) <span class="sc">+</span></span>
+<span id="cb252-57"><a href="regression.html#cb252-57" tabindex="-1"></a></span>
+<span id="cb252-58"><a href="regression.html#cb252-58" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position=</span><span class="st">&quot;none&quot;</span>) <span class="sc">+</span></span>
+<span id="cb252-59"><a href="regression.html#cb252-59" tabindex="-1"></a></span>
+<span id="cb252-60"><a href="regression.html#cb252-60" tabindex="-1"></a>  <span class="cn">NULL</span>  </span>
+<span id="cb252-61"><a href="regression.html#cb252-61" tabindex="-1"></a></span>
+<span id="cb252-62"><a href="regression.html#cb252-62" tabindex="-1"></a>gg</span></code></pre></div>
 </div>
 <div id="import-and-plot-of-fig1f-methionine-restriction-data" class="section level3 hasAnchor" number="9.3.3">
 <h3><span class="header-section-number">9.3.3</span> Import and plot of fig1f (methionine restriction) data<a href="regression.html#import-and-plot-of-fig1f-methionine-restriction-data" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>Import</p>
-<div class="sourceCode" id="cb251"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb251-1"><a href="regression.html#cb251-1" tabindex="-1"></a>data_from <span class="ot">&lt;-</span> <span class="st">&quot;Dietary methionine influences therapy in mouse cancer models and alters human metabolism&quot;</span></span>
-<span id="cb251-2"><a href="regression.html#cb251-2" tabindex="-1"></a>file_name <span class="ot">&lt;-</span> <span class="st">&quot;41586_2019_1437_MOESM2_ESM.xlsx&quot;</span></span>
-<span id="cb251-3"><a href="regression.html#cb251-3" tabindex="-1"></a>file_path <span class="ot">&lt;-</span> <span class="fu">here</span>(data_folder, data_from, file_name)</span>
-<span id="cb251-4"><a href="regression.html#cb251-4" tabindex="-1"></a></span>
-<span id="cb251-5"><a href="regression.html#cb251-5" tabindex="-1"></a>fig1f_wide <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(file_path,</span>
-<span id="cb251-6"><a href="regression.html#cb251-6" tabindex="-1"></a>                    <span class="at">sheet =</span> <span class="st">&quot;f&quot;</span>,</span>
-<span id="cb251-7"><a href="regression.html#cb251-7" tabindex="-1"></a>                    <span class="at">range =</span> <span class="st">&quot;B7:R12&quot;</span>,</span>
-<span id="cb251-8"><a href="regression.html#cb251-8" tabindex="-1"></a>                    <span class="at">col_names =</span> <span class="cn">FALSE</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb251-9"><a href="regression.html#cb251-9" tabindex="-1"></a>  <span class="fu">data.table</span>() <span class="co"># convert to data.table</span></span>
-<span id="cb251-10"><a href="regression.html#cb251-10" tabindex="-1"></a></span>
-<span id="cb251-11"><a href="regression.html#cb251-11" tabindex="-1"></a><span class="fu">setnames</span>(fig1f_wide,</span>
-<span id="cb251-12"><a href="regression.html#cb251-12" tabindex="-1"></a>         <span class="at">old =</span> <span class="fu">colnames</span>(fig1f_wide),</span>
-<span id="cb251-13"><a href="regression.html#cb251-13" tabindex="-1"></a>         <span class="at">new =</span> <span class="fu">c</span>(<span class="st">&quot;day&quot;</span>,</span>
-<span id="cb251-14"><a href="regression.html#cb251-14" tabindex="-1"></a>                 <span class="fu">paste0</span>(<span class="st">&quot;Cn_&quot;</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">8</span>),</span>
-<span id="cb251-15"><a href="regression.html#cb251-15" tabindex="-1"></a>                 <span class="fu">paste0</span>(<span class="st">&quot;MR_&quot;</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">8</span>)))</span>
-<span id="cb251-16"><a href="regression.html#cb251-16" tabindex="-1"></a></span>
-<span id="cb251-17"><a href="regression.html#cb251-17" tabindex="-1"></a>fig1f_wide <span class="ot">&lt;-</span> <span class="fu">transpose</span>(fig1f_wide, <span class="at">make.names =</span> <span class="dv">1</span>, <span class="at">keep.names =</span> <span class="st">&quot;id&quot;</span>)</span>
-<span id="cb251-18"><a href="regression.html#cb251-18" tabindex="-1"></a>fig1f_wide[, treatment <span class="sc">:=</span> <span class="fu">factor</span>(<span class="fu">substr</span>(id, <span class="dv">1</span>, <span class="dv">2</span>))]</span>
-<span id="cb251-19"><a href="regression.html#cb251-19" tabindex="-1"></a></span>
-<span id="cb251-20"><a href="regression.html#cb251-20" tabindex="-1"></a>days <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">21</span>, <span class="dv">25</span>, <span class="dv">28</span>, <span class="dv">30</span>, <span class="dv">34</span>, <span class="dv">39</span>)</span>
-<span id="cb251-21"><a href="regression.html#cb251-21" tabindex="-1"></a>fig1f <span class="ot">&lt;-</span> <span class="fu">melt</span>(fig1f_wide,</span>
-<span id="cb251-22"><a href="regression.html#cb251-22" tabindex="-1"></a>              id.vars <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;treatment&quot;</span>, <span class="st">&quot;id&quot;</span>),</span>
-<span id="cb251-23"><a href="regression.html#cb251-23" tabindex="-1"></a>              measure.vars <span class="ot">&lt;-</span> <span class="fu">as.character</span>(days),</span>
-<span id="cb251-24"><a href="regression.html#cb251-24" tabindex="-1"></a>              <span class="at">variable.name =</span> <span class="st">&quot;day&quot;</span>,</span>
-<span id="cb251-25"><a href="regression.html#cb251-25" tabindex="-1"></a>              <span class="at">value.name =</span> <span class="st">&quot;volume&quot;</span>)</span>
-<span id="cb251-26"><a href="regression.html#cb251-26" tabindex="-1"></a>fig1f[, day <span class="sc">:=</span> <span class="fu">as.numeric</span>(<span class="fu">as.character</span>(day))]</span>
-<span id="cb251-27"><a href="regression.html#cb251-27" tabindex="-1"></a><span class="co"># View(fig1f)</span></span>
-<span id="cb251-28"><a href="regression.html#cb251-28" tabindex="-1"></a><span class="co"># qplot(x = day, y = volume, color = treatment, data = fig1f) + geom_line(aes(group = id))</span></span></code></pre></div>
+<div class="sourceCode" id="cb253"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb253-1"><a href="regression.html#cb253-1" tabindex="-1"></a>data_from <span class="ot">&lt;-</span> <span class="st">&quot;Dietary methionine influences therapy in mouse cancer models and alters human metabolism&quot;</span></span>
+<span id="cb253-2"><a href="regression.html#cb253-2" tabindex="-1"></a>file_name <span class="ot">&lt;-</span> <span class="st">&quot;41586_2019_1437_MOESM2_ESM.xlsx&quot;</span></span>
+<span id="cb253-3"><a href="regression.html#cb253-3" tabindex="-1"></a>file_path <span class="ot">&lt;-</span> <span class="fu">here</span>(data_folder, data_from, file_name)</span>
+<span id="cb253-4"><a href="regression.html#cb253-4" tabindex="-1"></a></span>
+<span id="cb253-5"><a href="regression.html#cb253-5" tabindex="-1"></a>fig1f_wide <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(file_path,</span>
+<span id="cb253-6"><a href="regression.html#cb253-6" tabindex="-1"></a>                    <span class="at">sheet =</span> <span class="st">&quot;f&quot;</span>,</span>
+<span id="cb253-7"><a href="regression.html#cb253-7" tabindex="-1"></a>                    <span class="at">range =</span> <span class="st">&quot;B7:R12&quot;</span>,</span>
+<span id="cb253-8"><a href="regression.html#cb253-8" tabindex="-1"></a>                    <span class="at">col_names =</span> <span class="cn">FALSE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb253-9"><a href="regression.html#cb253-9" tabindex="-1"></a>  <span class="fu">data.table</span>() <span class="co"># convert to data.table</span></span>
+<span id="cb253-10"><a href="regression.html#cb253-10" tabindex="-1"></a></span>
+<span id="cb253-11"><a href="regression.html#cb253-11" tabindex="-1"></a><span class="fu">setnames</span>(fig1f_wide,</span>
+<span id="cb253-12"><a href="regression.html#cb253-12" tabindex="-1"></a>         <span class="at">old =</span> <span class="fu">colnames</span>(fig1f_wide),</span>
+<span id="cb253-13"><a href="regression.html#cb253-13" tabindex="-1"></a>         <span class="at">new =</span> <span class="fu">c</span>(<span class="st">&quot;day&quot;</span>,</span>
+<span id="cb253-14"><a href="regression.html#cb253-14" tabindex="-1"></a>                 <span class="fu">paste0</span>(<span class="st">&quot;Cn_&quot;</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">8</span>),</span>
+<span id="cb253-15"><a href="regression.html#cb253-15" tabindex="-1"></a>                 <span class="fu">paste0</span>(<span class="st">&quot;MR_&quot;</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">8</span>)))</span>
+<span id="cb253-16"><a href="regression.html#cb253-16" tabindex="-1"></a></span>
+<span id="cb253-17"><a href="regression.html#cb253-17" tabindex="-1"></a>fig1f_wide <span class="ot">&lt;-</span> <span class="fu">transpose</span>(fig1f_wide, <span class="at">make.names =</span> <span class="dv">1</span>, <span class="at">keep.names =</span> <span class="st">&quot;id&quot;</span>)</span>
+<span id="cb253-18"><a href="regression.html#cb253-18" tabindex="-1"></a>fig1f_wide[, treatment <span class="sc">:=</span> <span class="fu">factor</span>(<span class="fu">substr</span>(id, <span class="dv">1</span>, <span class="dv">2</span>))]</span>
+<span id="cb253-19"><a href="regression.html#cb253-19" tabindex="-1"></a></span>
+<span id="cb253-20"><a href="regression.html#cb253-20" tabindex="-1"></a>days <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">21</span>, <span class="dv">25</span>, <span class="dv">28</span>, <span class="dv">30</span>, <span class="dv">34</span>, <span class="dv">39</span>)</span>
+<span id="cb253-21"><a href="regression.html#cb253-21" tabindex="-1"></a>fig1f <span class="ot">&lt;-</span> <span class="fu">melt</span>(fig1f_wide,</span>
+<span id="cb253-22"><a href="regression.html#cb253-22" tabindex="-1"></a>              id.vars <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;treatment&quot;</span>, <span class="st">&quot;id&quot;</span>),</span>
+<span id="cb253-23"><a href="regression.html#cb253-23" tabindex="-1"></a>              measure.vars <span class="ot">&lt;-</span> <span class="fu">as.character</span>(days),</span>
+<span id="cb253-24"><a href="regression.html#cb253-24" tabindex="-1"></a>              <span class="at">variable.name =</span> <span class="st">&quot;day&quot;</span>,</span>
+<span id="cb253-25"><a href="regression.html#cb253-25" tabindex="-1"></a>              <span class="at">value.name =</span> <span class="st">&quot;volume&quot;</span>)</span>
+<span id="cb253-26"><a href="regression.html#cb253-26" tabindex="-1"></a>fig1f[, day <span class="sc">:=</span> <span class="fu">as.numeric</span>(<span class="fu">as.character</span>(day))]</span>
+<span id="cb253-27"><a href="regression.html#cb253-27" tabindex="-1"></a><span class="co"># View(fig1f)</span></span>
+<span id="cb253-28"><a href="regression.html#cb253-28" tabindex="-1"></a><span class="co"># qplot(x = day, y = volume, color = treatment, data = fig1f) + geom_line(aes(group = id))</span></span></code></pre></div>
 <p>Creating the response plot (the bottom component)</p>
-<div class="sourceCode" id="cb252"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb252-1"><a href="regression.html#cb252-1" tabindex="-1"></a>fig1f_gg_response <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data =</span> fig1f,</span>
-<span id="cb252-2"><a href="regression.html#cb252-2" tabindex="-1"></a>                      <span class="fu">aes</span>(<span class="at">x =</span> day, <span class="at">y =</span> volume, <span class="at">color =</span> treatment)) <span class="sc">+</span></span>
-<span id="cb252-3"><a href="regression.html#cb252-3" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
-<span id="cb252-4"><a href="regression.html#cb252-4" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="fu">aes</span>(<span class="at">group =</span> id), <span class="at">method =</span> <span class="st">&quot;lm&quot;</span>, <span class="at">se =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
-<span id="cb252-5"><a href="regression.html#cb252-5" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">&quot;Day&quot;</span>) <span class="sc">+</span></span>
-<span id="cb252-6"><a href="regression.html#cb252-6" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="fu">expression</span>(Tumor<span class="sc">~</span>Volume<span class="sc">~</span>(mm<span class="sc">^</span><span class="dv">3</span>))) <span class="sc">+</span></span>
-<span id="cb252-7"><a href="regression.html#cb252-7" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> pal_okabe_ito) <span class="sc">+</span></span>
-<span id="cb252-8"><a href="regression.html#cb252-8" tabindex="-1"></a>  <span class="fu">theme_pubr</span>() <span class="sc">+</span></span>
-<span id="cb252-9"><a href="regression.html#cb252-9" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
-<span id="cb252-10"><a href="regression.html#cb252-10" tabindex="-1"></a>    <span class="at">legend.position =</span> <span class="fu">c</span>(.<span class="dv">15</span>, .<span class="dv">98</span>),</span>
-<span id="cb252-11"><a href="regression.html#cb252-11" tabindex="-1"></a>    <span class="at">legend.justification =</span> <span class="fu">c</span>(<span class="st">&quot;right&quot;</span>, <span class="st">&quot;top&quot;</span>),</span>
-<span id="cb252-12"><a href="regression.html#cb252-12" tabindex="-1"></a>    <span class="at">legend.box.just =</span> <span class="st">&quot;right&quot;</span>,</span>
-<span id="cb252-13"><a href="regression.html#cb252-13" tabindex="-1"></a>    <span class="at">legend.margin =</span> <span class="fu">margin</span>(<span class="dv">6</span>, <span class="dv">6</span>, <span class="dv">6</span>, <span class="dv">6</span>),</span>
-<span id="cb252-14"><a href="regression.html#cb252-14" tabindex="-1"></a>    <span class="at">legend.title =</span> <span class="fu">element_blank</span>()</span>
-<span id="cb252-15"><a href="regression.html#cb252-15" tabindex="-1"></a>    ) <span class="sc">+</span></span>
-<span id="cb252-16"><a href="regression.html#cb252-16" tabindex="-1"></a></span>
-<span id="cb252-17"><a href="regression.html#cb252-17" tabindex="-1"></a>  <span class="cn">NULL</span></span>
-<span id="cb252-18"><a href="regression.html#cb252-18" tabindex="-1"></a></span>
-<span id="cb252-19"><a href="regression.html#cb252-19" tabindex="-1"></a><span class="co"># fig1f_gg_response</span></span></code></pre></div>
+<div class="sourceCode" id="cb254"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb254-1"><a href="regression.html#cb254-1" tabindex="-1"></a>fig1f_gg_response <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data =</span> fig1f,</span>
+<span id="cb254-2"><a href="regression.html#cb254-2" tabindex="-1"></a>                      <span class="fu">aes</span>(<span class="at">x =</span> day, <span class="at">y =</span> volume, <span class="at">color =</span> treatment)) <span class="sc">+</span></span>
+<span id="cb254-3"><a href="regression.html#cb254-3" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb254-4"><a href="regression.html#cb254-4" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="fu">aes</span>(<span class="at">group =</span> id), <span class="at">method =</span> <span class="st">&quot;lm&quot;</span>, <span class="at">se =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb254-5"><a href="regression.html#cb254-5" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">&quot;Day&quot;</span>) <span class="sc">+</span></span>
+<span id="cb254-6"><a href="regression.html#cb254-6" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="fu">expression</span>(Tumor<span class="sc">~</span>Volume<span class="sc">~</span>(mm<span class="sc">^</span><span class="dv">3</span>))) <span class="sc">+</span></span>
+<span id="cb254-7"><a href="regression.html#cb254-7" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> pal_okabe_ito) <span class="sc">+</span></span>
+<span id="cb254-8"><a href="regression.html#cb254-8" tabindex="-1"></a>  <span class="fu">theme_pubr</span>() <span class="sc">+</span></span>
+<span id="cb254-9"><a href="regression.html#cb254-9" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb254-10"><a href="regression.html#cb254-10" tabindex="-1"></a>    <span class="at">legend.position =</span> <span class="fu">c</span>(.<span class="dv">15</span>, .<span class="dv">98</span>),</span>
+<span id="cb254-11"><a href="regression.html#cb254-11" tabindex="-1"></a>    <span class="at">legend.justification =</span> <span class="fu">c</span>(<span class="st">&quot;right&quot;</span>, <span class="st">&quot;top&quot;</span>),</span>
+<span id="cb254-12"><a href="regression.html#cb254-12" tabindex="-1"></a>    <span class="at">legend.box.just =</span> <span class="st">&quot;right&quot;</span>,</span>
+<span id="cb254-13"><a href="regression.html#cb254-13" tabindex="-1"></a>    <span class="at">legend.margin =</span> <span class="fu">margin</span>(<span class="dv">6</span>, <span class="dv">6</span>, <span class="dv">6</span>, <span class="dv">6</span>),</span>
+<span id="cb254-14"><a href="regression.html#cb254-14" tabindex="-1"></a>    <span class="at">legend.title =</span> <span class="fu">element_blank</span>()</span>
+<span id="cb254-15"><a href="regression.html#cb254-15" tabindex="-1"></a>    ) <span class="sc">+</span></span>
+<span id="cb254-16"><a href="regression.html#cb254-16" tabindex="-1"></a></span>
+<span id="cb254-17"><a href="regression.html#cb254-17" tabindex="-1"></a>  <span class="cn">NULL</span></span>
+<span id="cb254-18"><a href="regression.html#cb254-18" tabindex="-1"></a></span>
+<span id="cb254-19"><a href="regression.html#cb254-19" tabindex="-1"></a><span class="co"># fig1f_gg_response</span></span></code></pre></div>
 <p>Creating the effects plot (the top component)</p>
-<div class="sourceCode" id="cb253"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb253-1"><a href="regression.html#cb253-1" tabindex="-1"></a>m1_coeff_dt <span class="ot">&lt;-</span> <span class="fu">data.table</span>(<span class="at">term =</span> <span class="fu">row.names</span>(m1_coef_table),</span>
-<span id="cb253-2"><a href="regression.html#cb253-2" tabindex="-1"></a>                          <span class="fu">data.table</span>(m1_coef_table))[<span class="dv">2</span>,] <span class="sc">%&gt;%</span></span>
-<span id="cb253-3"><a href="regression.html#cb253-3" tabindex="-1"></a>  <span class="fu">clean_names</span>()</span>
-<span id="cb253-4"><a href="regression.html#cb253-4" tabindex="-1"></a>m1_coeff_dt[ , p_pretty <span class="sc">:=</span> <span class="fu">pvalString</span>(pr_t)]</span>
-<span id="cb253-5"><a href="regression.html#cb253-5" tabindex="-1"></a></span>
-<span id="cb253-6"><a href="regression.html#cb253-6" tabindex="-1"></a>min_bound <span class="ot">&lt;-</span> <span class="fu">min</span>(m1_coeff_dt[, x2_5_percent])</span>
-<span id="cb253-7"><a href="regression.html#cb253-7" tabindex="-1"></a>max_bound <span class="ot">&lt;-</span> <span class="fu">min</span>(m1_coeff_dt[, x97_5_percent])</span>
-<span id="cb253-8"><a href="regression.html#cb253-8" tabindex="-1"></a></span>
-<span id="cb253-9"><a href="regression.html#cb253-9" tabindex="-1"></a>y_lo <span class="ot">&lt;-</span> <span class="fu">min</span>(min_bound<span class="sc">+</span>min_bound<span class="sc">*</span><span class="fl">0.2</span>,</span>
-<span id="cb253-10"><a href="regression.html#cb253-10" tabindex="-1"></a>            <span class="sc">-</span>max_bound)</span>
-<span id="cb253-11"><a href="regression.html#cb253-11" tabindex="-1"></a>y_hi <span class="ot">&lt;-</span> <span class="fu">max</span>(max_bound <span class="sc">+</span> max_bound<span class="sc">*</span><span class="fl">0.2</span>,</span>
-<span id="cb253-12"><a href="regression.html#cb253-12" tabindex="-1"></a>            <span class="sc">-</span>min_bound)</span>
-<span id="cb253-13"><a href="regression.html#cb253-13" tabindex="-1"></a>y_lims <span class="ot">&lt;-</span> <span class="fu">c</span>(y_lo, y_hi)</span>
-<span id="cb253-14"><a href="regression.html#cb253-14" tabindex="-1"></a></span>
-<span id="cb253-15"><a href="regression.html#cb253-15" tabindex="-1"></a>fig1f_gg_effect <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data=</span>m1_coeff_dt, </span>
-<span id="cb253-16"><a href="regression.html#cb253-16" tabindex="-1"></a>                          <span class="fu">aes</span>(<span class="at">x =</span> term,</span>
-<span id="cb253-17"><a href="regression.html#cb253-17" tabindex="-1"></a>                              <span class="at">y =</span> estimate)) <span class="sc">+</span></span>
-<span id="cb253-18"><a href="regression.html#cb253-18" tabindex="-1"></a>  <span class="co"># confidence level of effect</span></span>
-<span id="cb253-19"><a href="regression.html#cb253-19" tabindex="-1"></a>  <span class="fu">geom_errorbar</span>(<span class="fu">aes</span>(<span class="at">ymin=</span>x2_5_percent, </span>
-<span id="cb253-20"><a href="regression.html#cb253-20" tabindex="-1"></a>                    <span class="at">ymax=</span>x97_5_percent),</span>
-<span id="cb253-21"><a href="regression.html#cb253-21" tabindex="-1"></a>                <span class="at">width=</span><span class="dv">0</span>, </span>
-<span id="cb253-22"><a href="regression.html#cb253-22" tabindex="-1"></a>                <span class="at">color=</span><span class="st">&quot;black&quot;</span>) <span class="sc">+</span></span>
-<span id="cb253-23"><a href="regression.html#cb253-23" tabindex="-1"></a>  <span class="co"># estimate of effect</span></span>
-<span id="cb253-24"><a href="regression.html#cb253-24" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
-<span id="cb253-25"><a href="regression.html#cb253-25" tabindex="-1"></a>  </span>
-<span id="cb253-26"><a href="regression.html#cb253-26" tabindex="-1"></a>  <span class="co"># zero effect</span></span>
-<span id="cb253-27"><a href="regression.html#cb253-27" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept=</span><span class="dv">0</span>, <span class="at">linetype =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
-<span id="cb253-28"><a href="regression.html#cb253-28" tabindex="-1"></a>  </span>
-<span id="cb253-29"><a href="regression.html#cb253-29" tabindex="-1"></a>  <span class="co"># p-value</span></span>
-<span id="cb253-30"><a href="regression.html#cb253-30" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="at">geom =</span> <span class="st">&quot;text&quot;</span>,</span>
-<span id="cb253-31"><a href="regression.html#cb253-31" tabindex="-1"></a>           <span class="at">label =</span> m1_coeff_dt<span class="sc">$</span>p_pretty,</span>
-<span id="cb253-32"><a href="regression.html#cb253-32" tabindex="-1"></a>           <span class="at">x =</span> <span class="dv">1</span>,</span>
-<span id="cb253-33"><a href="regression.html#cb253-33" tabindex="-1"></a>           <span class="at">y =</span> <span class="fl">7.5</span>) <span class="sc">+</span></span>
-<span id="cb253-34"><a href="regression.html#cb253-34" tabindex="-1"></a>  </span>
-<span id="cb253-35"><a href="regression.html#cb253-35" tabindex="-1"></a>  <span class="co"># aesthetics</span></span>
-<span id="cb253-36"><a href="regression.html#cb253-36" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">position=</span><span class="st">&quot;right&quot;</span>) <span class="sc">+</span></span>
-<span id="cb253-37"><a href="regression.html#cb253-37" tabindex="-1"></a>  <span class="fu">scale_x_discrete</span>(<span class="at">labels =</span> <span class="st">&quot;MR</span><span class="sc">\n</span><span class="st">effect&quot;</span>) <span class="sc">+</span></span>
-<span id="cb253-38"><a href="regression.html#cb253-38" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="fu">expression</span>(Growth<span class="sc">~</span>(mm<span class="sc">^</span><span class="dv">3</span><span class="sc">/</span>day))) <span class="sc">+</span></span>
-<span id="cb253-39"><a href="regression.html#cb253-39" tabindex="-1"></a>  <span class="fu">coord_flip</span>(<span class="at">ylim =</span> y_lims) <span class="sc">+</span> </span>
-<span id="cb253-40"><a href="regression.html#cb253-40" tabindex="-1"></a>  <span class="fu">theme_pubr</span>() <span class="sc">+</span></span>
-<span id="cb253-41"><a href="regression.html#cb253-41" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.title.y =</span> <span class="fu">element_blank</span>()) <span class="sc">+</span></span>
-<span id="cb253-42"><a href="regression.html#cb253-42" tabindex="-1"></a>  </span>
-<span id="cb253-43"><a href="regression.html#cb253-43" tabindex="-1"></a>  <span class="cn">NULL</span></span>
-<span id="cb253-44"><a href="regression.html#cb253-44" tabindex="-1"></a></span>
-<span id="cb253-45"><a href="regression.html#cb253-45" tabindex="-1"></a><span class="co">#fig1f_gg_effect</span></span></code></pre></div>
+<div class="sourceCode" id="cb255"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb255-1"><a href="regression.html#cb255-1" tabindex="-1"></a>m1_coeff_dt <span class="ot">&lt;-</span> <span class="fu">data.table</span>(<span class="at">term =</span> <span class="fu">row.names</span>(m1_coef_table),</span>
+<span id="cb255-2"><a href="regression.html#cb255-2" tabindex="-1"></a>                          <span class="fu">data.table</span>(m1_coef_table))[<span class="dv">2</span>,] <span class="sc">%&gt;%</span></span>
+<span id="cb255-3"><a href="regression.html#cb255-3" tabindex="-1"></a>  <span class="fu">clean_names</span>()</span>
+<span id="cb255-4"><a href="regression.html#cb255-4" tabindex="-1"></a>m1_coeff_dt[ , p_pretty <span class="sc">:=</span> <span class="fu">pvalString</span>(pr_t)]</span>
+<span id="cb255-5"><a href="regression.html#cb255-5" tabindex="-1"></a></span>
+<span id="cb255-6"><a href="regression.html#cb255-6" tabindex="-1"></a>min_bound <span class="ot">&lt;-</span> <span class="fu">min</span>(m1_coeff_dt[, x2_5_percent])</span>
+<span id="cb255-7"><a href="regression.html#cb255-7" tabindex="-1"></a>max_bound <span class="ot">&lt;-</span> <span class="fu">min</span>(m1_coeff_dt[, x97_5_percent])</span>
+<span id="cb255-8"><a href="regression.html#cb255-8" tabindex="-1"></a></span>
+<span id="cb255-9"><a href="regression.html#cb255-9" tabindex="-1"></a>y_lo <span class="ot">&lt;-</span> <span class="fu">min</span>(min_bound<span class="sc">+</span>min_bound<span class="sc">*</span><span class="fl">0.2</span>,</span>
+<span id="cb255-10"><a href="regression.html#cb255-10" tabindex="-1"></a>            <span class="sc">-</span>max_bound)</span>
+<span id="cb255-11"><a href="regression.html#cb255-11" tabindex="-1"></a>y_hi <span class="ot">&lt;-</span> <span class="fu">max</span>(max_bound <span class="sc">+</span> max_bound<span class="sc">*</span><span class="fl">0.2</span>,</span>
+<span id="cb255-12"><a href="regression.html#cb255-12" tabindex="-1"></a>            <span class="sc">-</span>min_bound)</span>
+<span id="cb255-13"><a href="regression.html#cb255-13" tabindex="-1"></a>y_lims <span class="ot">&lt;-</span> <span class="fu">c</span>(y_lo, y_hi)</span>
+<span id="cb255-14"><a href="regression.html#cb255-14" tabindex="-1"></a></span>
+<span id="cb255-15"><a href="regression.html#cb255-15" tabindex="-1"></a>fig1f_gg_effect <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data=</span>m1_coeff_dt, </span>
+<span id="cb255-16"><a href="regression.html#cb255-16" tabindex="-1"></a>                          <span class="fu">aes</span>(<span class="at">x =</span> term,</span>
+<span id="cb255-17"><a href="regression.html#cb255-17" tabindex="-1"></a>                              <span class="at">y =</span> estimate)) <span class="sc">+</span></span>
+<span id="cb255-18"><a href="regression.html#cb255-18" tabindex="-1"></a>  <span class="co"># confidence level of effect</span></span>
+<span id="cb255-19"><a href="regression.html#cb255-19" tabindex="-1"></a>  <span class="fu">geom_errorbar</span>(<span class="fu">aes</span>(<span class="at">ymin=</span>x2_5_percent, </span>
+<span id="cb255-20"><a href="regression.html#cb255-20" tabindex="-1"></a>                    <span class="at">ymax=</span>x97_5_percent),</span>
+<span id="cb255-21"><a href="regression.html#cb255-21" tabindex="-1"></a>                <span class="at">width=</span><span class="dv">0</span>, </span>
+<span id="cb255-22"><a href="regression.html#cb255-22" tabindex="-1"></a>                <span class="at">color=</span><span class="st">&quot;black&quot;</span>) <span class="sc">+</span></span>
+<span id="cb255-23"><a href="regression.html#cb255-23" tabindex="-1"></a>  <span class="co"># estimate of effect</span></span>
+<span id="cb255-24"><a href="regression.html#cb255-24" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb255-25"><a href="regression.html#cb255-25" tabindex="-1"></a>  </span>
+<span id="cb255-26"><a href="regression.html#cb255-26" tabindex="-1"></a>  <span class="co"># zero effect</span></span>
+<span id="cb255-27"><a href="regression.html#cb255-27" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept=</span><span class="dv">0</span>, <span class="at">linetype =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb255-28"><a href="regression.html#cb255-28" tabindex="-1"></a>  </span>
+<span id="cb255-29"><a href="regression.html#cb255-29" tabindex="-1"></a>  <span class="co"># p-value</span></span>
+<span id="cb255-30"><a href="regression.html#cb255-30" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="at">geom =</span> <span class="st">&quot;text&quot;</span>,</span>
+<span id="cb255-31"><a href="regression.html#cb255-31" tabindex="-1"></a>           <span class="at">label =</span> m1_coeff_dt<span class="sc">$</span>p_pretty,</span>
+<span id="cb255-32"><a href="regression.html#cb255-32" tabindex="-1"></a>           <span class="at">x =</span> <span class="dv">1</span>,</span>
+<span id="cb255-33"><a href="regression.html#cb255-33" tabindex="-1"></a>           <span class="at">y =</span> <span class="fl">7.5</span>) <span class="sc">+</span></span>
+<span id="cb255-34"><a href="regression.html#cb255-34" tabindex="-1"></a>  </span>
+<span id="cb255-35"><a href="regression.html#cb255-35" tabindex="-1"></a>  <span class="co"># aesthetics</span></span>
+<span id="cb255-36"><a href="regression.html#cb255-36" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">position=</span><span class="st">&quot;right&quot;</span>) <span class="sc">+</span></span>
+<span id="cb255-37"><a href="regression.html#cb255-37" tabindex="-1"></a>  <span class="fu">scale_x_discrete</span>(<span class="at">labels =</span> <span class="st">&quot;MR</span><span class="sc">\n</span><span class="st">effect&quot;</span>) <span class="sc">+</span></span>
+<span id="cb255-38"><a href="regression.html#cb255-38" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="fu">expression</span>(Growth<span class="sc">~</span>(mm<span class="sc">^</span><span class="dv">3</span><span class="sc">/</span>day))) <span class="sc">+</span></span>
+<span id="cb255-39"><a href="regression.html#cb255-39" tabindex="-1"></a>  <span class="fu">coord_flip</span>(<span class="at">ylim =</span> y_lims) <span class="sc">+</span> </span>
+<span id="cb255-40"><a href="regression.html#cb255-40" tabindex="-1"></a>  <span class="fu">theme_pubr</span>() <span class="sc">+</span></span>
+<span id="cb255-41"><a href="regression.html#cb255-41" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.title.y =</span> <span class="fu">element_blank</span>()) <span class="sc">+</span></span>
+<span id="cb255-42"><a href="regression.html#cb255-42" tabindex="-1"></a>  </span>
+<span id="cb255-43"><a href="regression.html#cb255-43" tabindex="-1"></a>  <span class="cn">NULL</span></span>
+<span id="cb255-44"><a href="regression.html#cb255-44" tabindex="-1"></a></span>
+<span id="cb255-45"><a href="regression.html#cb255-45" tabindex="-1"></a><span class="co">#fig1f_gg_effect</span></span></code></pre></div>
 <p>Combining the response and effects plots into single plot</p>
-<div class="sourceCode" id="cb254"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb254-1"><a href="regression.html#cb254-1" tabindex="-1"></a>fig1f_gg <span class="ot">&lt;-</span> <span class="fu">plot_grid</span>(fig1f_gg_effect,</span>
-<span id="cb254-2"><a href="regression.html#cb254-2" tabindex="-1"></a>                      fig1f_gg_response,</span>
-<span id="cb254-3"><a href="regression.html#cb254-3" tabindex="-1"></a>                      <span class="at">nrow=</span><span class="dv">2</span>,</span>
-<span id="cb254-4"><a href="regression.html#cb254-4" tabindex="-1"></a>                      <span class="at">align =</span> <span class="st">&quot;v&quot;</span>,</span>
-<span id="cb254-5"><a href="regression.html#cb254-5" tabindex="-1"></a>                      <span class="at">axis =</span> <span class="st">&quot;lr&quot;</span>,</span>
-<span id="cb254-6"><a href="regression.html#cb254-6" tabindex="-1"></a>                      <span class="at">rel_heights =</span> <span class="fu">c</span>(<span class="fl">0.4</span>,<span class="dv">1</span>))</span>
-<span id="cb254-7"><a href="regression.html#cb254-7" tabindex="-1"></a>fig1f_gg</span></code></pre></div>
+<div class="sourceCode" id="cb256"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb256-1"><a href="regression.html#cb256-1" tabindex="-1"></a>fig1f_gg <span class="ot">&lt;-</span> <span class="fu">plot_grid</span>(fig1f_gg_effect,</span>
+<span id="cb256-2"><a href="regression.html#cb256-2" tabindex="-1"></a>                      fig1f_gg_response,</span>
+<span id="cb256-3"><a href="regression.html#cb256-3" tabindex="-1"></a>                      <span class="at">nrow=</span><span class="dv">2</span>,</span>
+<span id="cb256-4"><a href="regression.html#cb256-4" tabindex="-1"></a>                      <span class="at">align =</span> <span class="st">&quot;v&quot;</span>,</span>
+<span id="cb256-5"><a href="regression.html#cb256-5" tabindex="-1"></a>                      <span class="at">axis =</span> <span class="st">&quot;lr&quot;</span>,</span>
+<span id="cb256-6"><a href="regression.html#cb256-6" tabindex="-1"></a>                      <span class="at">rel_heights =</span> <span class="fu">c</span>(<span class="fl">0.4</span>,<span class="dv">1</span>))</span>
+<span id="cb256-7"><a href="regression.html#cb256-7" tabindex="-1"></a>fig1f_gg</span></code></pre></div>
 </div>
 </div>
 <div id="try-it" class="section level2 hasAnchor" number="9.4">
@@ -2037,18 +1938,18 @@ Estimate
 <li>change the value of <code>n</code> to explore effect on the variability of the estimate. Look at this variability, and the magnitude of the SE, and the magnitude of the p-value.</li>
 <li>change the value of <code>beta_1</code> to explore effect on what different slopes and correlations look like. Notice that if the variance is fixed (as in this simulation) the expected slope and expected correlation are equal. (Because I’ve fixed the variance in this simple simulation, this code will fail if abs(beta_1) &gt;= 1).</li>
 </ol>
-<div class="sourceCode" id="cb255"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb255-1"><a href="regression.html#cb255-1" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">100</span> <span class="co"># choose between 3 and 10^5</span></span>
-<span id="cb255-2"><a href="regression.html#cb255-2" tabindex="-1"></a>beta_1 <span class="ot">&lt;-</span> <span class="fl">0.6</span> <span class="co"># choose a value between -0.99 and 0.99</span></span>
-<span id="cb255-3"><a href="regression.html#cb255-3" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n)</span>
-<span id="cb255-4"><a href="regression.html#cb255-4" tabindex="-1"></a>y <span class="ot">&lt;-</span> beta_1<span class="sc">*</span>x <span class="sc">+</span> <span class="fu">sqrt</span>(<span class="dv">1</span><span class="sc">-</span>beta_1<span class="sc">^</span><span class="dv">2</span>)<span class="sc">*</span><span class="fu">rnorm</span>(n)</span>
-<span id="cb255-5"><a href="regression.html#cb255-5" tabindex="-1"></a>m1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> x)</span>
-<span id="cb255-6"><a href="regression.html#cb255-6" tabindex="-1"></a>slope <span class="ot">&lt;-</span> <span class="fu">paste</span>(<span class="st">&quot;b_1: &quot;</span>, <span class="fu">round</span>(<span class="fu">coef</span>(m1)[<span class="dv">2</span>], <span class="dv">3</span>))</span>
-<span id="cb255-7"><a href="regression.html#cb255-7" tabindex="-1"></a>se <span class="ot">&lt;-</span> <span class="fu">paste</span>(<span class="st">&quot;SE: &quot;</span>, <span class="fu">round</span>(<span class="fu">coef</span>(<span class="fu">summary</span>(m1))[<span class="dv">2</span>,<span class="dv">2</span>], <span class="dv">3</span>))</span>
-<span id="cb255-8"><a href="regression.html#cb255-8" tabindex="-1"></a>r <span class="ot">&lt;-</span> <span class="fu">paste</span>(<span class="st">&quot;r: &quot;</span>, <span class="fu">round</span>(<span class="fu">cor</span>(x,y), <span class="dv">3</span>))</span>
-<span id="cb255-9"><a href="regression.html#cb255-9" tabindex="-1"></a>r2 <span class="ot">&lt;-</span> <span class="fu">paste</span>(<span class="st">&quot;R^2: &quot;</span>, <span class="fu">round</span>(<span class="fu">summary</span>(m1)<span class="sc">$</span>r.squared, <span class="dv">3</span>))</span>
-<span id="cb255-10"><a href="regression.html#cb255-10" tabindex="-1"></a><span class="fu">ggscatter</span>(<span class="at">data =</span> <span class="fu">data.table</span>(<span class="at">x=</span>x, <span class="at">y=</span>y), <span class="at">x =</span> <span class="st">&quot;x&quot;</span>, <span class="at">y =</span> <span class="st">&quot;y&quot;</span>,</span>
-<span id="cb255-11"><a href="regression.html#cb255-11" tabindex="-1"></a>          <span class="at">add =</span> <span class="st">&quot;reg.line&quot;</span>) <span class="sc">+</span></span>
-<span id="cb255-12"><a href="regression.html#cb255-12" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="at">label =</span> <span class="fu">paste</span>(slope,se,r,r2,<span class="at">sep=</span><span class="st">&quot;;  &quot;</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb257"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb257-1"><a href="regression.html#cb257-1" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">100</span> <span class="co"># choose between 3 and 10^5</span></span>
+<span id="cb257-2"><a href="regression.html#cb257-2" tabindex="-1"></a>beta_1 <span class="ot">&lt;-</span> <span class="fl">0.6</span> <span class="co"># choose a value between -0.99 and 0.99</span></span>
+<span id="cb257-3"><a href="regression.html#cb257-3" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n)</span>
+<span id="cb257-4"><a href="regression.html#cb257-4" tabindex="-1"></a>y <span class="ot">&lt;-</span> beta_1<span class="sc">*</span>x <span class="sc">+</span> <span class="fu">sqrt</span>(<span class="dv">1</span><span class="sc">-</span>beta_1<span class="sc">^</span><span class="dv">2</span>)<span class="sc">*</span><span class="fu">rnorm</span>(n)</span>
+<span id="cb257-5"><a href="regression.html#cb257-5" tabindex="-1"></a>m1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> x)</span>
+<span id="cb257-6"><a href="regression.html#cb257-6" tabindex="-1"></a>slope <span class="ot">&lt;-</span> <span class="fu">paste</span>(<span class="st">&quot;b_1: &quot;</span>, <span class="fu">round</span>(<span class="fu">coef</span>(m1)[<span class="dv">2</span>], <span class="dv">3</span>))</span>
+<span id="cb257-7"><a href="regression.html#cb257-7" tabindex="-1"></a>se <span class="ot">&lt;-</span> <span class="fu">paste</span>(<span class="st">&quot;SE: &quot;</span>, <span class="fu">round</span>(<span class="fu">coef</span>(<span class="fu">summary</span>(m1))[<span class="dv">2</span>,<span class="dv">2</span>], <span class="dv">3</span>))</span>
+<span id="cb257-8"><a href="regression.html#cb257-8" tabindex="-1"></a>r <span class="ot">&lt;-</span> <span class="fu">paste</span>(<span class="st">&quot;r: &quot;</span>, <span class="fu">round</span>(<span class="fu">cor</span>(x,y), <span class="dv">3</span>))</span>
+<span id="cb257-9"><a href="regression.html#cb257-9" tabindex="-1"></a>r2 <span class="ot">&lt;-</span> <span class="fu">paste</span>(<span class="st">&quot;R^2: &quot;</span>, <span class="fu">round</span>(<span class="fu">summary</span>(m1)<span class="sc">$</span>r.squared, <span class="dv">3</span>))</span>
+<span id="cb257-10"><a href="regression.html#cb257-10" tabindex="-1"></a><span class="fu">ggscatter</span>(<span class="at">data =</span> <span class="fu">data.table</span>(<span class="at">x=</span>x, <span class="at">y=</span>y), <span class="at">x =</span> <span class="st">&quot;x&quot;</span>, <span class="at">y =</span> <span class="st">&quot;y&quot;</span>,</span>
+<span id="cb257-11"><a href="regression.html#cb257-11" tabindex="-1"></a>          <span class="at">add =</span> <span class="st">&quot;reg.line&quot;</span>) <span class="sc">+</span></span>
+<span id="cb257-12"><a href="regression.html#cb257-12" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="at">label =</span> <span class="fu">paste</span>(slope,se,r,r2,<span class="at">sep=</span><span class="st">&quot;;  &quot;</span>))</span></code></pre></div>
 <p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/unnamed-chunk-118-1.png" width="576" /></p>
 
 </div>
