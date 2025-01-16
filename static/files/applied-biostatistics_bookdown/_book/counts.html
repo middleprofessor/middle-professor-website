@@ -923,7 +923,9 @@ code span.wa { color: #bf0303; } /* Warning */
             <section class="normal" id="section-">
 <div id="counts" class="section level1 hasAnchor" number="18">
 <h1><span class="header-section-number">Chapter 18</span> Linear models for counts, binary responses, skewed responses, and ratios – Generalized Linear Models<a href="counts.html#counts" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div style="background-color:#fde0dd; text-align:left; vertical-align: middle; padding:20px 47px;">
 <p>All updates to this book are now at <a href="https://middleprofessor.github.io/benchbiostats/">https://middleprofessor.github.io/benchbiostats/</a></p>
+</div>
 <div id="glm-counts" class="section level2 hasAnchor" number="18.1">
 <h2><span class="header-section-number">18.1</span> Introducing Generalized Linear Models using count data examples<a href="counts.html#glm-counts" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>Biologists frequently count stuff, and design experiments to estimate the effects of different factors on these counts. Count data can cause numerous problems with linear models that assume a normal, conditional distribution, including 1) counts are discrete, and can be zero or positive integers only, 2) counts tend to bunch up on the small side of the range, creating a distribution with a positive skew, 3) a sample of counts can have an abundance of zeros, and 4) the variance of counts increases with the mean (see Figure <a href="counts.html#fig:glm1-plot1">18.1</a> for some of these properties). Some count data can be approximated by and reasonably modeled with a normal distribution. More often, count data should modeled with a <a href="https://en.wikipedia.org/wiki/Poisson_distribution" target="_blank">Poisson distribution</a> or <a href="https://en.wikipedia.org/wiki/Negative_binomial_distribution" target="_blank">negative binomial distribution</a> using a <a href="https://en.wikipedia.org/wiki/Generalized_linear_model%20(GLM)" target="_blank">generalized linear model</a>. Poisson and negative binomial distributions are <strong>discrete probability distributions</strong> with two important properties: 1) the distribution contains only zero and positive integers and 2) the variance is a function of the mean. Back before modern computing and fast processors, count data were often analyzed by either <strong>transforming</strong> the response or by <strong>non-parametric hypothesis tests</strong>. One reason to prefer a statistical modeling approach with a GLM is that we can get interpretable parameter estimates. By contrast, both the analysis of transformed data and non-parametric hypothesis tests are really tools for computing “correct” <em>p</em>-values.</p>
@@ -1062,16 +1064,16 @@ y_i &amp;\sim \operatorname{Normal}(\mu_i, \sigma^2)\\
 <h3><span class="header-section-number">18.2.2</span> Model fit and inference<a href="counts.html#model-fit-and-inference-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <div id="fit-the-models-1" class="section level4 hasAnchor" number="18.2.2.1">
 <h4><span class="header-section-number">18.2.2.1</span> Fit the models<a href="counts.html#fit-the-models-1" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<div class="sourceCode" id="cb626"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb626-1"><a href="counts.html#cb626-1" tabindex="-1"></a>fig3a_m1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(sprouts <span class="sc">~</span> treatment <span class="sc">*</span> genotype, <span class="at">data =</span> fig3a)</span>
-<span id="cb626-2"><a href="counts.html#cb626-2" tabindex="-1"></a>fig3a_m2 <span class="ot">&lt;-</span> <span class="fu">glm</span>(sprouts <span class="sc">~</span> treatment <span class="sc">*</span> genotype,</span>
-<span id="cb626-3"><a href="counts.html#cb626-3" tabindex="-1"></a>                <span class="at">family =</span> <span class="st">&quot;poisson&quot;</span>,</span>
-<span id="cb626-4"><a href="counts.html#cb626-4" tabindex="-1"></a>                <span class="at">data =</span> fig3a)</span>
-<span id="cb626-5"><a href="counts.html#cb626-5" tabindex="-1"></a>fig3a_m3 <span class="ot">&lt;-</span> <span class="fu">glm.nb</span>(sprouts <span class="sc">~</span> treatment <span class="sc">*</span> genotype,</span>
-<span id="cb626-6"><a href="counts.html#cb626-6" tabindex="-1"></a>                <span class="at">data =</span> fig3a)</span></code></pre></div>
+<div class="sourceCode" id="cb625"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb625-1"><a href="counts.html#cb625-1" tabindex="-1"></a>fig3a_m1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(sprouts <span class="sc">~</span> treatment <span class="sc">*</span> genotype, <span class="at">data =</span> fig3a)</span>
+<span id="cb625-2"><a href="counts.html#cb625-2" tabindex="-1"></a>fig3a_m2 <span class="ot">&lt;-</span> <span class="fu">glm</span>(sprouts <span class="sc">~</span> treatment <span class="sc">*</span> genotype,</span>
+<span id="cb625-3"><a href="counts.html#cb625-3" tabindex="-1"></a>                <span class="at">family =</span> <span class="st">&quot;poisson&quot;</span>,</span>
+<span id="cb625-4"><a href="counts.html#cb625-4" tabindex="-1"></a>                <span class="at">data =</span> fig3a)</span>
+<span id="cb625-5"><a href="counts.html#cb625-5" tabindex="-1"></a>fig3a_m3 <span class="ot">&lt;-</span> <span class="fu">glm.nb</span>(sprouts <span class="sc">~</span> treatment <span class="sc">*</span> genotype,</span>
+<span id="cb625-6"><a href="counts.html#cb625-6" tabindex="-1"></a>                <span class="at">data =</span> fig3a)</span></code></pre></div>
 </div>
 <div id="check-the-linear-model" class="section level4 hasAnchor" number="18.2.2.2">
 <h4><span class="header-section-number">18.2.2.2</span> Check the linear model<a href="counts.html#check-the-linear-model" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<div class="sourceCode" id="cb627"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb627-1"><a href="counts.html#cb627-1" tabindex="-1"></a><span class="fu">ggcheck_the_model</span>(fig3a_m1)</span></code></pre></div>
+<div class="sourceCode" id="cb626"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb626-1"><a href="counts.html#cb626-1" tabindex="-1"></a><span class="fu">ggcheck_the_model</span>(fig3a_m1)</span></code></pre></div>
 <p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/glm-fig3a_m1-check-lm-1.png" width="576" />
 Notes</p>
 <ol style="list-style-type: decimal">
@@ -1082,26 +1084,26 @@ Notes</p>
 <div id="check-the-poisson-model" class="section level4 hasAnchor" number="18.2.2.3">
 <h4><span class="header-section-number">18.2.2.3</span> Check the poisson model<a href="counts.html#check-the-poisson-model" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <p><strong>Check shape and homogeneity</strong></p>
-<div class="sourceCode" id="cb628"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb628-1"><a href="counts.html#cb628-1" tabindex="-1"></a><span class="co"># from the DHARMa package</span></span>
-<span id="cb628-2"><a href="counts.html#cb628-2" tabindex="-1"></a>  fig3a_m2_simulation <span class="ot">&lt;-</span> <span class="fu">simulateResiduals</span>(<span class="at">fittedModel =</span> fig3a_m2, <span class="at">n =</span> <span class="dv">250</span>)</span>
-<span id="cb628-3"><a href="counts.html#cb628-3" tabindex="-1"></a>  <span class="fu">plot</span>(fig3a_m2_simulation, <span class="at">asFactor =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb627"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb627-1"><a href="counts.html#cb627-1" tabindex="-1"></a><span class="co"># from the DHARMa package</span></span>
+<span id="cb627-2"><a href="counts.html#cb627-2" tabindex="-1"></a>  fig3a_m2_simulation <span class="ot">&lt;-</span> <span class="fu">simulateResiduals</span>(<span class="at">fittedModel =</span> fig3a_m2, <span class="at">n =</span> <span class="dv">250</span>)</span>
+<span id="cb627-3"><a href="counts.html#cb627-3" tabindex="-1"></a>  <span class="fu">plot</span>(fig3a_m2_simulation, <span class="at">asFactor =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
 <p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/glm-fig3a_m2-check-poisson-1.png" width="576" /></p>
 <p>Notes</p>
 <ol style="list-style-type: decimal">
 <li>poisson glm fails to generated scaled residuals approximating uniform distribution.</li>
 </ol>
 <p><strong>Check dispersion</strong></p>
-<div class="sourceCode" id="cb629"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb629-1"><a href="counts.html#cb629-1" tabindex="-1"></a>fig3a_m2_simulation_refit <span class="ot">&lt;-</span> <span class="fu">simulateResiduals</span>(<span class="at">fittedModel =</span> fig3a_m2,</span>
-<span id="cb629-2"><a href="counts.html#cb629-2" tabindex="-1"></a>                                       <span class="at">n =</span> <span class="dv">250</span>,</span>
-<span id="cb629-3"><a href="counts.html#cb629-3" tabindex="-1"></a>                                       <span class="at">refit =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb629-4"><a href="counts.html#cb629-4" tabindex="-1"></a>fig3a_m2_test_dispersion <span class="ot">&lt;-</span> <span class="fu">testDispersion</span>(fig3a_m2_simulation_refit)</span></code></pre></div>
+<div class="sourceCode" id="cb628"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb628-1"><a href="counts.html#cb628-1" tabindex="-1"></a>fig3a_m2_simulation_refit <span class="ot">&lt;-</span> <span class="fu">simulateResiduals</span>(<span class="at">fittedModel =</span> fig3a_m2,</span>
+<span id="cb628-2"><a href="counts.html#cb628-2" tabindex="-1"></a>                                       <span class="at">n =</span> <span class="dv">250</span>,</span>
+<span id="cb628-3"><a href="counts.html#cb628-3" tabindex="-1"></a>                                       <span class="at">refit =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb628-4"><a href="counts.html#cb628-4" tabindex="-1"></a>fig3a_m2_test_dispersion <span class="ot">&lt;-</span> <span class="fu">testDispersion</span>(fig3a_m2_simulation_refit)</span></code></pre></div>
 <p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/glm-fig3a_m2-check-dispersion-1.png" width="576" /></p>
 <p>Notes</p>
 <ol style="list-style-type: decimal">
 <li>large overdispersion</li>
 </ol>
 <p><strong>Check zero inflation</strong></p>
-<div class="sourceCode" id="cb630"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb630-1"><a href="counts.html#cb630-1" tabindex="-1"></a>fig3a_m2_test_zi <span class="ot">&lt;-</span> <span class="fu">testZeroInflation</span>(fig3a_m2_simulation_refit)</span></code></pre></div>
+<div class="sourceCode" id="cb629"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb629-1"><a href="counts.html#cb629-1" tabindex="-1"></a>fig3a_m2_test_zi <span class="ot">&lt;-</span> <span class="fu">testZeroInflation</span>(fig3a_m2_simulation_refit)</span></code></pre></div>
 <p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/glm-fig3a_m2-check-zero-1.png" width="576" /></p>
 <p>Notes</p>
 <ol style="list-style-type: decimal">
@@ -1111,10 +1113,10 @@ Notes</p>
 <div id="check-the-negative-binomial-model" class="section level4 hasAnchor" number="18.2.2.4">
 <h4><span class="header-section-number">18.2.2.4</span> Check the negative binomial model<a href="counts.html#check-the-negative-binomial-model" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <p><strong>Check shape and homogeneity</strong></p>
-<div class="sourceCode" id="cb631"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb631-1"><a href="counts.html#cb631-1" tabindex="-1"></a><span class="co"># from the DHARMa package</span></span>
-<span id="cb631-2"><a href="counts.html#cb631-2" tabindex="-1"></a>  fig3a_m3_simulation <span class="ot">&lt;-</span> <span class="fu">simulateResiduals</span>(<span class="at">fittedModel =</span> fig3a_m3,</span>
-<span id="cb631-3"><a href="counts.html#cb631-3" tabindex="-1"></a>                                        <span class="at">n =</span> <span class="dv">250</span>)</span>
-<span id="cb631-4"><a href="counts.html#cb631-4" tabindex="-1"></a>  <span class="fu">plot</span>(fig3a_m3_simulation, <span class="at">asFactor =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb630"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb630-1"><a href="counts.html#cb630-1" tabindex="-1"></a><span class="co"># from the DHARMa package</span></span>
+<span id="cb630-2"><a href="counts.html#cb630-2" tabindex="-1"></a>  fig3a_m3_simulation <span class="ot">&lt;-</span> <span class="fu">simulateResiduals</span>(<span class="at">fittedModel =</span> fig3a_m3,</span>
+<span id="cb630-3"><a href="counts.html#cb630-3" tabindex="-1"></a>                                        <span class="at">n =</span> <span class="dv">250</span>)</span>
+<span id="cb630-4"><a href="counts.html#cb630-4" tabindex="-1"></a>  <span class="fu">plot</span>(fig3a_m3_simulation, <span class="at">asFactor =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
 <p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/glm-fig3a_m3-check-nb-1.png" width="576" /></p>
 <p>Notes</p>
 <ol style="list-style-type: decimal">
@@ -1122,23 +1124,23 @@ Notes</p>
 <li>spread-location plot looks good.</li>
 </ol>
 <p><strong>Check dispersion</strong></p>
-<div class="sourceCode" id="cb632"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb632-1"><a href="counts.html#cb632-1" tabindex="-1"></a>fig3a_m3_simulation_refit <span class="ot">&lt;-</span> <span class="fu">simulateResiduals</span>(<span class="at">fittedModel =</span> fig3a_m3,</span>
-<span id="cb632-2"><a href="counts.html#cb632-2" tabindex="-1"></a>                                               <span class="at">n =</span> <span class="dv">250</span>,</span>
-<span id="cb632-3"><a href="counts.html#cb632-3" tabindex="-1"></a>                                               <span class="at">refit =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb632-4"><a href="counts.html#cb632-4" tabindex="-1"></a>fig3a_m3_test_dispersion <span class="ot">&lt;-</span> <span class="fu">testDispersion</span>(fig3a_m3_simulation_refit)</span></code></pre></div>
+<div class="sourceCode" id="cb631"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb631-1"><a href="counts.html#cb631-1" tabindex="-1"></a>fig3a_m3_simulation_refit <span class="ot">&lt;-</span> <span class="fu">simulateResiduals</span>(<span class="at">fittedModel =</span> fig3a_m3,</span>
+<span id="cb631-2"><a href="counts.html#cb631-2" tabindex="-1"></a>                                               <span class="at">n =</span> <span class="dv">250</span>,</span>
+<span id="cb631-3"><a href="counts.html#cb631-3" tabindex="-1"></a>                                               <span class="at">refit =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb631-4"><a href="counts.html#cb631-4" tabindex="-1"></a>fig3a_m3_test_dispersion <span class="ot">&lt;-</span> <span class="fu">testDispersion</span>(fig3a_m3_simulation_refit)</span></code></pre></div>
 <p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/glm-fig3a_m3_test_dispersion-1.png" width="576" /></p>
 <p>Notes</p>
 <ol style="list-style-type: decimal">
 <li>good</li>
 </ol>
 <p><strong>Check zero inflation</strong></p>
-<div class="sourceCode" id="cb633"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb633-1"><a href="counts.html#cb633-1" tabindex="-1"></a>fig3a_m3_test_zi <span class="ot">&lt;-</span> <span class="fu">testZeroInflation</span>(fig3a_m3_simulation_refit)</span></code></pre></div>
+<div class="sourceCode" id="cb632"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb632-1"><a href="counts.html#cb632-1" tabindex="-1"></a>fig3a_m3_test_zi <span class="ot">&lt;-</span> <span class="fu">testZeroInflation</span>(fig3a_m3_simulation_refit)</span></code></pre></div>
 <p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/glm-fig3a_m3_test_zi-1.png" width="576" /></p>
 </div>
 <div id="glm-fig3a-m3-inference" class="section level4 hasAnchor" number="18.2.2.5">
 <h4><span class="header-section-number">18.2.2.5</span> Inference from the model<a href="counts.html#glm-fig3a-m3-inference" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<div class="sourceCode" id="cb634"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb634-1"><a href="counts.html#cb634-1" tabindex="-1"></a>fig3a_m3_coef <span class="ot">&lt;-</span> <span class="fu">cbind</span>(<span class="fu">coef</span>(<span class="fu">summary</span>(fig3a_m3)),</span>
-<span id="cb634-2"><a href="counts.html#cb634-2" tabindex="-1"></a>                       <span class="fu">confint</span>(fig3a_m3))</span></code></pre></div>
+<div class="sourceCode" id="cb633"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb633-1"><a href="counts.html#cb633-1" tabindex="-1"></a>fig3a_m3_coef <span class="ot">&lt;-</span> <span class="fu">cbind</span>(<span class="fu">coef</span>(<span class="fu">summary</span>(fig3a_m3)),</span>
+<span id="cb633-2"><a href="counts.html#cb633-2" tabindex="-1"></a>                       <span class="fu">confint</span>(fig3a_m3))</span></code></pre></div>
 <table class="table" style="margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
@@ -1259,9 +1261,9 @@ treatmentGAS6:genotypeFAK_ko
 </tr>
 </tbody>
 </table>
-<div class="sourceCode" id="cb635"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb635-1"><a href="counts.html#cb635-1" tabindex="-1"></a>fig3a_m3_emm <span class="ot">&lt;-</span> <span class="fu">emmeans</span>(fig3a_m3,</span>
-<span id="cb635-2"><a href="counts.html#cb635-2" tabindex="-1"></a>                        <span class="at">specs =</span> <span class="fu">c</span>(<span class="st">&quot;treatment&quot;</span>, <span class="st">&quot;genotype&quot;</span>),</span>
-<span id="cb635-3"><a href="counts.html#cb635-3" tabindex="-1"></a>                        <span class="at">type=</span><span class="st">&quot;response&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb634"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb634-1"><a href="counts.html#cb634-1" tabindex="-1"></a>fig3a_m3_emm <span class="ot">&lt;-</span> <span class="fu">emmeans</span>(fig3a_m3,</span>
+<span id="cb634-2"><a href="counts.html#cb634-2" tabindex="-1"></a>                        <span class="at">specs =</span> <span class="fu">c</span>(<span class="st">&quot;treatment&quot;</span>, <span class="st">&quot;genotype&quot;</span>),</span>
+<span id="cb634-3"><a href="counts.html#cb634-3" tabindex="-1"></a>                        <span class="at">type=</span><span class="st">&quot;response&quot;</span>)</span></code></pre></div>
 <table class="table" style="margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
@@ -1383,27 +1385,27 @@ Inf
 </tr>
 </tbody>
 </table>
-<div class="sourceCode" id="cb636"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb636-1"><a href="counts.html#cb636-1" tabindex="-1"></a><span class="co"># fig3a_m3_emm # print in console to get row numbers</span></span>
-<span id="cb636-2"><a href="counts.html#cb636-2" tabindex="-1"></a><span class="co"># set the mean as the row number from the emmeans table</span></span>
-<span id="cb636-3"><a href="counts.html#cb636-3" tabindex="-1"></a>pbs_fak_wt <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>)</span>
-<span id="cb636-4"><a href="counts.html#cb636-4" tabindex="-1"></a>gas6_fak_wt <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">0</span>,<span class="dv">0</span>)</span>
-<span id="cb636-5"><a href="counts.html#cb636-5" tabindex="-1"></a>pbs_fak_ko <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">0</span>)</span>
-<span id="cb636-6"><a href="counts.html#cb636-6" tabindex="-1"></a>gas6_fak_ko <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">1</span>)</span>
-<span id="cb636-7"><a href="counts.html#cb636-7" tabindex="-1"></a></span>
-<span id="cb636-8"><a href="counts.html#cb636-8" tabindex="-1"></a><span class="co">#1. (PBS FAK_ko) - (PBS FAK_wt)</span></span>
-<span id="cb636-9"><a href="counts.html#cb636-9" tabindex="-1"></a><span class="co">#2. (GAS6 FAK_ko) - (GAS6 FAK_wt) </span></span>
-<span id="cb636-10"><a href="counts.html#cb636-10" tabindex="-1"></a><span class="co">#3. ((PBS FAK_ko) - (PBS FAK_wt)) - (GAS6 FAK_ko) - (GAS6 FAK_wt). </span></span>
-<span id="cb636-11"><a href="counts.html#cb636-11" tabindex="-1"></a>fig3a_m3_planned <span class="ot">&lt;-</span> <span class="fu">contrast</span>(</span>
-<span id="cb636-12"><a href="counts.html#cb636-12" tabindex="-1"></a>  fig3a_m3_emm,</span>
-<span id="cb636-13"><a href="counts.html#cb636-13" tabindex="-1"></a>  <span class="at">method =</span> <span class="fu">list</span>(</span>
-<span id="cb636-14"><a href="counts.html#cb636-14" tabindex="-1"></a>    <span class="st">&quot;(PBS FAK_ko) - (PBS FAK_wt)&quot;</span> <span class="ot">=</span> <span class="fu">c</span>(pbs_fak_ko <span class="sc">-</span> pbs_fak_wt),</span>
-<span id="cb636-15"><a href="counts.html#cb636-15" tabindex="-1"></a>    <span class="st">&quot;(GAS6 FAK_ko) - (GAS6 FAK_wt)&quot;</span> <span class="ot">=</span> <span class="fu">c</span>(gas6_fak_ko <span class="sc">-</span> gas6_fak_wt),</span>
-<span id="cb636-16"><a href="counts.html#cb636-16" tabindex="-1"></a>    <span class="st">&quot;Interaction&quot;</span> <span class="ot">=</span> <span class="fu">c</span>(gas6_fak_ko <span class="sc">-</span> gas6_fak_wt) <span class="sc">-</span></span>
-<span id="cb636-17"><a href="counts.html#cb636-17" tabindex="-1"></a>      <span class="fu">c</span>(pbs_fak_ko <span class="sc">-</span> pbs_fak_wt)</span>
-<span id="cb636-18"><a href="counts.html#cb636-18" tabindex="-1"></a>  ),</span>
-<span id="cb636-19"><a href="counts.html#cb636-19" tabindex="-1"></a>  <span class="at">adjust =</span> <span class="st">&quot;none&quot;</span></span>
-<span id="cb636-20"><a href="counts.html#cb636-20" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
-<span id="cb636-21"><a href="counts.html#cb636-21" tabindex="-1"></a>  <span class="fu">summary</span>(<span class="at">infer =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb635"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb635-1"><a href="counts.html#cb635-1" tabindex="-1"></a><span class="co"># fig3a_m3_emm # print in console to get row numbers</span></span>
+<span id="cb635-2"><a href="counts.html#cb635-2" tabindex="-1"></a><span class="co"># set the mean as the row number from the emmeans table</span></span>
+<span id="cb635-3"><a href="counts.html#cb635-3" tabindex="-1"></a>pbs_fak_wt <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>)</span>
+<span id="cb635-4"><a href="counts.html#cb635-4" tabindex="-1"></a>gas6_fak_wt <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">0</span>,<span class="dv">0</span>)</span>
+<span id="cb635-5"><a href="counts.html#cb635-5" tabindex="-1"></a>pbs_fak_ko <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">0</span>)</span>
+<span id="cb635-6"><a href="counts.html#cb635-6" tabindex="-1"></a>gas6_fak_ko <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">1</span>)</span>
+<span id="cb635-7"><a href="counts.html#cb635-7" tabindex="-1"></a></span>
+<span id="cb635-8"><a href="counts.html#cb635-8" tabindex="-1"></a><span class="co">#1. (PBS FAK_ko) - (PBS FAK_wt)</span></span>
+<span id="cb635-9"><a href="counts.html#cb635-9" tabindex="-1"></a><span class="co">#2. (GAS6 FAK_ko) - (GAS6 FAK_wt) </span></span>
+<span id="cb635-10"><a href="counts.html#cb635-10" tabindex="-1"></a><span class="co">#3. ((PBS FAK_ko) - (PBS FAK_wt)) - (GAS6 FAK_ko) - (GAS6 FAK_wt). </span></span>
+<span id="cb635-11"><a href="counts.html#cb635-11" tabindex="-1"></a>fig3a_m3_planned <span class="ot">&lt;-</span> <span class="fu">contrast</span>(</span>
+<span id="cb635-12"><a href="counts.html#cb635-12" tabindex="-1"></a>  fig3a_m3_emm,</span>
+<span id="cb635-13"><a href="counts.html#cb635-13" tabindex="-1"></a>  <span class="at">method =</span> <span class="fu">list</span>(</span>
+<span id="cb635-14"><a href="counts.html#cb635-14" tabindex="-1"></a>    <span class="st">&quot;(PBS FAK_ko) - (PBS FAK_wt)&quot;</span> <span class="ot">=</span> <span class="fu">c</span>(pbs_fak_ko <span class="sc">-</span> pbs_fak_wt),</span>
+<span id="cb635-15"><a href="counts.html#cb635-15" tabindex="-1"></a>    <span class="st">&quot;(GAS6 FAK_ko) - (GAS6 FAK_wt)&quot;</span> <span class="ot">=</span> <span class="fu">c</span>(gas6_fak_ko <span class="sc">-</span> gas6_fak_wt),</span>
+<span id="cb635-16"><a href="counts.html#cb635-16" tabindex="-1"></a>    <span class="st">&quot;Interaction&quot;</span> <span class="ot">=</span> <span class="fu">c</span>(gas6_fak_ko <span class="sc">-</span> gas6_fak_wt) <span class="sc">-</span></span>
+<span id="cb635-17"><a href="counts.html#cb635-17" tabindex="-1"></a>      <span class="fu">c</span>(pbs_fak_ko <span class="sc">-</span> pbs_fak_wt)</span>
+<span id="cb635-18"><a href="counts.html#cb635-18" tabindex="-1"></a>  ),</span>
+<span id="cb635-19"><a href="counts.html#cb635-19" tabindex="-1"></a>  <span class="at">adjust =</span> <span class="st">&quot;none&quot;</span></span>
+<span id="cb635-20"><a href="counts.html#cb635-20" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
+<span id="cb635-21"><a href="counts.html#cb635-21" tabindex="-1"></a>  <span class="fu">summary</span>(<span class="at">infer =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
 <table class="table" style="margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
@@ -1643,7 +1645,7 @@ Figure 18.2: Diagnostic plots of angiogenic sprout data (fig3a). A) Distribution
 <div id="model-checking-a-count-glm-check-zero-inflation" class="section level4 hasAnchor" number="18.3.2.7">
 <h4><span class="header-section-number">18.3.2.7</span> Model Checking a count GLM – Check zero inflation<a href="counts.html#model-checking-a-count-glm-check-zero-inflation" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <p>Counts can have the value zero. Data that have more zeros than expected given a fit count GLM model (Poisson, quasi-Poisson, negative binomial) is <strong>zero-inflated</strong>.</p>
-<div class="sourceCode" id="cb637"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb637-1"><a href="counts.html#cb637-1" tabindex="-1"></a>zero_inflation_test <span class="ot">&lt;-</span> <span class="fu">testZeroInflation</span>(simulation_output)</span></code></pre></div>
+<div class="sourceCode" id="cb636"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb636-1"><a href="counts.html#cb636-1" tabindex="-1"></a>zero_inflation_test <span class="ot">&lt;-</span> <span class="fu">testZeroInflation</span>(simulation_output)</span></code></pre></div>
 <p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/unnamed-chunk-271-1.png" width="576" /></p>
 <ol style="list-style-type: decimal">
 <li>This plot is a histogram of the number of zeros in each of the fake data sets generated by the fit model. An observed number of zeros at the extremes of this distribution are unlikely given the fit model. The number of zeros in the observed data is greater than expected by the model.</li>
@@ -1829,11 +1831,11 @@ treatmentGAS6:genotypeFAK_ko
 <li>The transformation between link scale and response scale is part of the specification of a Generalized Linear Model. For the negative binomial GLM fit to the fig3a data, this specification is in line 3 of the specification (Model <a href="counts.html#eq:nb-glm-fig3a">(18.4)</a>).</li>
 </ol>
 <p>Compare the computation here with the modeled mean in the emmeans table (Section <a href="counts.html#glm-fig3a-m3-inference">18.2.2.5</a> or with a computation of the sample mean.</p>
-<div class="sourceCode" id="cb638"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb638-1"><a href="counts.html#cb638-1" tabindex="-1"></a>b1 <span class="ot">&lt;-</span> <span class="fu">coef</span>(fig3a_m3)[<span class="dv">1</span>]</span>
-<span id="cb638-2"><a href="counts.html#cb638-2" tabindex="-1"></a><span class="fu">exp</span>(b1)</span></code></pre></div>
+<div class="sourceCode" id="cb637"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb637-1"><a href="counts.html#cb637-1" tabindex="-1"></a>b1 <span class="ot">&lt;-</span> <span class="fu">coef</span>(fig3a_m3)[<span class="dv">1</span>]</span>
+<span id="cb637-2"><a href="counts.html#cb637-2" tabindex="-1"></a><span class="fu">exp</span>(b1)</span></code></pre></div>
 <pre><code>## (Intercept) 
 ##    2.470588</code></pre>
-<div class="sourceCode" id="cb640"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb640-1"><a href="counts.html#cb640-1" tabindex="-1"></a><span class="fu">mean</span>(fig3a[t_by_g <span class="sc">==</span> <span class="st">&quot;PBS FAK_wt&quot;</span>, sprouts])</span></code></pre></div>
+<div class="sourceCode" id="cb639"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb639-1"><a href="counts.html#cb639-1" tabindex="-1"></a><span class="fu">mean</span>(fig3a[t_by_g <span class="sc">==</span> <span class="st">&quot;PBS FAK_wt&quot;</span>, sprouts])</span></code></pre></div>
 <pre><code>## [1] 2.470588</code></pre>
 </div>
 <div id="the-coefficients-of-the-indicator-variables-of-a-generalized-linear-model-with-a-log-link-function-are-effect-ratios-on-the-response-scale" class="section level4 hasAnchor" number="18.3.5.2">
@@ -1842,38 +1844,38 @@ treatmentGAS6:genotypeFAK_ko
 <li>In the linear model <code>fig3a_m1</code>, the coefficient of an indicator variable is a difference in means. In a GLM with a log-link, the coefficient of an indicator variable is the difference (group minus reference) of the modeled means <em>on the link scale</em>. Let’s check this with some computations.</li>
 </ol>
 <p>The modeled means on the link scale are in the emmeans table</p>
-<div class="sourceCode" id="cb642"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb642-1"><a href="counts.html#cb642-1" tabindex="-1"></a>fig3a_m3_emm_link <span class="ot">&lt;-</span> <span class="fu">emmeans</span>(fig3a_m3,</span>
-<span id="cb642-2"><a href="counts.html#cb642-2" tabindex="-1"></a>                             <span class="at">specs =</span> <span class="fu">c</span>(<span class="st">&quot;treatment&quot;</span>, <span class="st">&quot;genotype&quot;</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb642-3"><a href="counts.html#cb642-3" tabindex="-1"></a>  <span class="fu">summary</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb642-4"><a href="counts.html#cb642-4" tabindex="-1"></a>  <span class="fu">data.table</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb641"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb641-1"><a href="counts.html#cb641-1" tabindex="-1"></a>fig3a_m3_emm_link <span class="ot">&lt;-</span> <span class="fu">emmeans</span>(fig3a_m3,</span>
+<span id="cb641-2"><a href="counts.html#cb641-2" tabindex="-1"></a>                             <span class="at">specs =</span> <span class="fu">c</span>(<span class="st">&quot;treatment&quot;</span>, <span class="st">&quot;genotype&quot;</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb641-3"><a href="counts.html#cb641-3" tabindex="-1"></a>  <span class="fu">summary</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb641-4"><a href="counts.html#cb641-4" tabindex="-1"></a>  <span class="fu">data.table</span>()</span></code></pre></div>
 <p>Using this table, the difference between the link-scale mean of “GAS6 FAK_wt” and “PBS FAK_wt” (the reference) is</p>
-<div class="sourceCode" id="cb643"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb643-1"><a href="counts.html#cb643-1" tabindex="-1"></a>fig3a_m3_emm_link[treatment <span class="sc">==</span> <span class="st">&quot;GAS6&quot;</span> <span class="sc">&amp;</span></span>
-<span id="cb643-2"><a href="counts.html#cb643-2" tabindex="-1"></a>                    genotype <span class="sc">==</span> <span class="st">&quot;FAK_wt&quot;</span>, emmean] <span class="sc">-</span></span>
-<span id="cb643-3"><a href="counts.html#cb643-3" tabindex="-1"></a>  fig3a_m3_emm_link[treatment <span class="sc">==</span> <span class="st">&quot;PBS&quot;</span> <span class="sc">&amp;</span> genotype <span class="sc">==</span> <span class="st">&quot;FAK_wt&quot;</span>, emmean]</span></code></pre></div>
+<div class="sourceCode" id="cb642"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb642-1"><a href="counts.html#cb642-1" tabindex="-1"></a>fig3a_m3_emm_link[treatment <span class="sc">==</span> <span class="st">&quot;GAS6&quot;</span> <span class="sc">&amp;</span></span>
+<span id="cb642-2"><a href="counts.html#cb642-2" tabindex="-1"></a>                    genotype <span class="sc">==</span> <span class="st">&quot;FAK_wt&quot;</span>, emmean] <span class="sc">-</span></span>
+<span id="cb642-3"><a href="counts.html#cb642-3" tabindex="-1"></a>  fig3a_m3_emm_link[treatment <span class="sc">==</span> <span class="st">&quot;PBS&quot;</span> <span class="sc">&amp;</span> genotype <span class="sc">==</span> <span class="st">&quot;FAK_wt&quot;</span>, emmean]</span></code></pre></div>
 <pre><code>## [1] 1.298045</code></pre>
 <p>And the coefficient for the <span class="math inline">\(\texttt{treatment_gas6}\)</span> indicator variable is</p>
-<div class="sourceCode" id="cb645"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb645-1"><a href="counts.html#cb645-1" tabindex="-1"></a><span class="co"># coefficient for treatment_gas6</span></span>
-<span id="cb645-2"><a href="counts.html#cb645-2" tabindex="-1"></a>b2 <span class="ot">&lt;-</span> <span class="fu">coef</span>(fig3a_m3)[<span class="dv">2</span>]</span>
-<span id="cb645-3"><a href="counts.html#cb645-3" tabindex="-1"></a>b2</span></code></pre></div>
+<div class="sourceCode" id="cb644"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb644-1"><a href="counts.html#cb644-1" tabindex="-1"></a><span class="co"># coefficient for treatment_gas6</span></span>
+<span id="cb644-2"><a href="counts.html#cb644-2" tabindex="-1"></a>b2 <span class="ot">&lt;-</span> <span class="fu">coef</span>(fig3a_m3)[<span class="dv">2</span>]</span>
+<span id="cb644-3"><a href="counts.html#cb644-3" tabindex="-1"></a>b2</span></code></pre></div>
 <pre><code>## treatmentGAS6 
 ##      1.298045</code></pre>
 <ol start="2" style="list-style-type: decimal">
 <li>In a GLM with a log-link, the exponent of the coefficient of an indicator variable is the ratio of the modeled means <em>on the response scale</em>. Let’s check this with some computations.</li>
 </ol>
 <p>The modeled means on the response scale are in the emmeans table</p>
-<div class="sourceCode" id="cb647"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb647-1"><a href="counts.html#cb647-1" tabindex="-1"></a>fig3a_m3_emm_response <span class="ot">&lt;-</span> <span class="fu">emmeans</span>(fig3a_m3,</span>
-<span id="cb647-2"><a href="counts.html#cb647-2" tabindex="-1"></a>                             <span class="at">specs =</span> <span class="fu">c</span>(<span class="st">&quot;treatment&quot;</span>, <span class="st">&quot;genotype&quot;</span>),</span>
-<span id="cb647-3"><a href="counts.html#cb647-3" tabindex="-1"></a>                             <span class="at">type =</span> <span class="st">&quot;response&quot;</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb647-4"><a href="counts.html#cb647-4" tabindex="-1"></a>  <span class="fu">summary</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb647-5"><a href="counts.html#cb647-5" tabindex="-1"></a>  <span class="fu">data.table</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb646"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb646-1"><a href="counts.html#cb646-1" tabindex="-1"></a>fig3a_m3_emm_response <span class="ot">&lt;-</span> <span class="fu">emmeans</span>(fig3a_m3,</span>
+<span id="cb646-2"><a href="counts.html#cb646-2" tabindex="-1"></a>                             <span class="at">specs =</span> <span class="fu">c</span>(<span class="st">&quot;treatment&quot;</span>, <span class="st">&quot;genotype&quot;</span>),</span>
+<span id="cb646-3"><a href="counts.html#cb646-3" tabindex="-1"></a>                             <span class="at">type =</span> <span class="st">&quot;response&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb646-4"><a href="counts.html#cb646-4" tabindex="-1"></a>  <span class="fu">summary</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb646-5"><a href="counts.html#cb646-5" tabindex="-1"></a>  <span class="fu">data.table</span>()</span></code></pre></div>
 <p>Using this table, the ratio of the response-scale mean of “GAS6 FAK_wt” to the response-scale mean of “PBS FAK_wt” (the reference) is</p>
-<div class="sourceCode" id="cb648"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb648-1"><a href="counts.html#cb648-1" tabindex="-1"></a>fig3a_m3_emm_response[treatment <span class="sc">==</span> <span class="st">&quot;GAS6&quot;</span> <span class="sc">&amp;</span></span>
-<span id="cb648-2"><a href="counts.html#cb648-2" tabindex="-1"></a>                    genotype <span class="sc">==</span> <span class="st">&quot;FAK_wt&quot;</span>, response]<span class="sc">/</span></span>
-<span id="cb648-3"><a href="counts.html#cb648-3" tabindex="-1"></a>  fig3a_m3_emm_response[treatment <span class="sc">==</span> <span class="st">&quot;PBS&quot;</span> <span class="sc">&amp;</span> genotype <span class="sc">==</span> <span class="st">&quot;FAK_wt&quot;</span>, response]</span></code></pre></div>
+<div class="sourceCode" id="cb647"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb647-1"><a href="counts.html#cb647-1" tabindex="-1"></a>fig3a_m3_emm_response[treatment <span class="sc">==</span> <span class="st">&quot;GAS6&quot;</span> <span class="sc">&amp;</span></span>
+<span id="cb647-2"><a href="counts.html#cb647-2" tabindex="-1"></a>                    genotype <span class="sc">==</span> <span class="st">&quot;FAK_wt&quot;</span>, response]<span class="sc">/</span></span>
+<span id="cb647-3"><a href="counts.html#cb647-3" tabindex="-1"></a>  fig3a_m3_emm_response[treatment <span class="sc">==</span> <span class="st">&quot;PBS&quot;</span> <span class="sc">&amp;</span> genotype <span class="sc">==</span> <span class="st">&quot;FAK_wt&quot;</span>, response]</span></code></pre></div>
 <pre><code>## [1] 3.662132</code></pre>
 <p>And the coefficient for the <span class="math inline">\(\texttt{treatment_gas6}\)</span> indicator variable backtransformed to the response scale is</p>
-<div class="sourceCode" id="cb650"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb650-1"><a href="counts.html#cb650-1" tabindex="-1"></a>exp_b2 <span class="ot">&lt;-</span> <span class="fu">exp</span>(b2)</span>
-<span id="cb650-2"><a href="counts.html#cb650-2" tabindex="-1"></a>exp_b2</span></code></pre></div>
+<div class="sourceCode" id="cb649"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb649-1"><a href="counts.html#cb649-1" tabindex="-1"></a>exp_b2 <span class="ot">&lt;-</span> <span class="fu">exp</span>(b2)</span>
+<span id="cb649-2"><a href="counts.html#cb649-2" tabindex="-1"></a>exp_b2</span></code></pre></div>
 <pre><code>## treatmentGAS6 
 ##      3.662132</code></pre>
 <ol start="3" style="list-style-type: decimal">
@@ -2014,33 +2016,33 @@ Inf
 <li>The CIs are “asymptotic”, meaning they are computed using infinite degrees of freedom. The consequences is that the CIs will be too narrow, especially for small <em>n</em>.</li>
 <li>Check the math! Given asymptotic CIs, the lower CI should be (mean - 1.96 <span class="math inline">\(\times\)</span> SE) and the upper should be (mean + 1.96 <span class="math inline">\(\times\)</span> SE).</li>
 </ol>
-<div class="sourceCode" id="cb652"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb652-1"><a href="counts.html#cb652-1" tabindex="-1"></a><span class="fl">0.90446</span> <span class="sc">-</span> <span class="fl">1.96</span><span class="sc">*</span><span class="fl">0.23</span></span></code></pre></div>
+<div class="sourceCode" id="cb651"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb651-1"><a href="counts.html#cb651-1" tabindex="-1"></a><span class="fl">0.90446</span> <span class="sc">-</span> <span class="fl">1.96</span><span class="sc">*</span><span class="fl">0.23</span></span></code></pre></div>
 <pre><code>## [1] 0.45366</code></pre>
 <ol start="4" style="list-style-type: decimal">
 <li>A GLM is linear on the link scale. This means the model is additive on the link scale. Modeled means on the link scale are computed by <em>adding</em> the coefficients.</li>
 </ol>
-<div class="sourceCode" id="cb654"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb654-1"><a href="counts.html#cb654-1" tabindex="-1"></a>b <span class="ot">&lt;-</span> <span class="fu">coef</span>(fig3a_m3) <span class="co"># the model coefficients</span></span>
-<span id="cb654-2"><a href="counts.html#cb654-2" tabindex="-1"></a></span>
-<span id="cb654-3"><a href="counts.html#cb654-3" tabindex="-1"></a><span class="co"># the way I typically compute these</span></span>
-<span id="cb654-4"><a href="counts.html#cb654-4" tabindex="-1"></a>pbs_fak_wt_link <span class="ot">&lt;-</span> b[<span class="dv">1</span>] </span>
-<span id="cb654-5"><a href="counts.html#cb654-5" tabindex="-1"></a>gas6_fak_wt_link <span class="ot">&lt;-</span> b[<span class="dv">1</span>] <span class="sc">+</span> b[<span class="dv">2</span>] </span>
-<span id="cb654-6"><a href="counts.html#cb654-6" tabindex="-1"></a>pbs_fak_ko_link <span class="ot">&lt;-</span> b[<span class="dv">1</span>] <span class="sc">+</span> b[<span class="dv">3</span>]</span>
-<span id="cb654-7"><a href="counts.html#cb654-7" tabindex="-1"></a>gas6_fak_ko_link <span class="ot">&lt;-</span> b[<span class="dv">1</span>] <span class="sc">+</span> b[<span class="dv">2</span>] <span class="sc">+</span> b[<span class="dv">3</span>] <span class="sc">+</span> b[<span class="dv">4</span>]</span>
-<span id="cb654-8"><a href="counts.html#cb654-8" tabindex="-1"></a></span>
-<span id="cb654-9"><a href="counts.html#cb654-9" tabindex="-1"></a><span class="co"># but this is the algebra more consistent with the linear model math</span></span>
-<span id="cb654-10"><a href="counts.html#cb654-10" tabindex="-1"></a>pbs_fak_wt_link <span class="ot">&lt;-</span> b[<span class="dv">1</span>] <span class="sc">+</span> b[<span class="dv">2</span>]<span class="sc">*</span><span class="dv">0</span> <span class="sc">+</span> b[<span class="dv">3</span>]<span class="sc">*</span><span class="dv">0</span> <span class="sc">+</span> b[<span class="dv">4</span>]<span class="sc">*</span><span class="dv">0</span></span>
-<span id="cb654-11"><a href="counts.html#cb654-11" tabindex="-1"></a>gas6_fak_wt_link <span class="ot">&lt;-</span> b[<span class="dv">1</span>] <span class="sc">+</span> b[<span class="dv">2</span>]<span class="sc">*</span><span class="dv">1</span> <span class="sc">+</span> b[<span class="dv">3</span>]<span class="sc">*</span><span class="dv">0</span> <span class="sc">+</span> b[<span class="dv">4</span>]<span class="sc">*</span><span class="dv">0</span></span>
-<span id="cb654-12"><a href="counts.html#cb654-12" tabindex="-1"></a>pbs_fak_ko_link <span class="ot">&lt;-</span> b[<span class="dv">1</span>] <span class="sc">+</span> b[<span class="dv">2</span>]<span class="sc">*</span><span class="dv">0</span> <span class="sc">+</span> b[<span class="dv">3</span>]<span class="sc">*</span><span class="dv">1</span> <span class="sc">+</span> b[<span class="dv">4</span>]<span class="sc">*</span><span class="dv">0</span></span>
-<span id="cb654-13"><a href="counts.html#cb654-13" tabindex="-1"></a>gas6_fak_ko_link <span class="ot">&lt;-</span> b[<span class="dv">1</span>] <span class="sc">+</span> b[<span class="dv">2</span>]<span class="sc">*</span><span class="dv">1</span> <span class="sc">+</span> b[<span class="dv">3</span>]<span class="sc">*</span><span class="dv">1</span> <span class="sc">+</span> b[<span class="dv">4</span>]<span class="sc">*</span><span class="dv">1</span></span>
-<span id="cb654-14"><a href="counts.html#cb654-14" tabindex="-1"></a></span>
-<span id="cb654-15"><a href="counts.html#cb654-15" tabindex="-1"></a><span class="co"># combine into a table</span></span>
-<span id="cb654-16"><a href="counts.html#cb654-16" tabindex="-1"></a>fig3a_means <span class="ot">&lt;-</span> <span class="fu">data.table</span>(</span>
-<span id="cb654-17"><a href="counts.html#cb654-17" tabindex="-1"></a>  <span class="at">group =</span> t_by_g_levels,</span>
-<span id="cb654-18"><a href="counts.html#cb654-18" tabindex="-1"></a>  <span class="st">&quot;mean (link scale)&quot;</span> <span class="ot">=</span> <span class="fu">c</span>(pbs_fak_wt_link,</span>
-<span id="cb654-19"><a href="counts.html#cb654-19" tabindex="-1"></a>                          gas6_fak_wt_link,</span>
-<span id="cb654-20"><a href="counts.html#cb654-20" tabindex="-1"></a>                          pbs_fak_ko_link,</span>
-<span id="cb654-21"><a href="counts.html#cb654-21" tabindex="-1"></a>                          gas6_fak_ko_link)</span>
-<span id="cb654-22"><a href="counts.html#cb654-22" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb653"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb653-1"><a href="counts.html#cb653-1" tabindex="-1"></a>b <span class="ot">&lt;-</span> <span class="fu">coef</span>(fig3a_m3) <span class="co"># the model coefficients</span></span>
+<span id="cb653-2"><a href="counts.html#cb653-2" tabindex="-1"></a></span>
+<span id="cb653-3"><a href="counts.html#cb653-3" tabindex="-1"></a><span class="co"># the way I typically compute these</span></span>
+<span id="cb653-4"><a href="counts.html#cb653-4" tabindex="-1"></a>pbs_fak_wt_link <span class="ot">&lt;-</span> b[<span class="dv">1</span>] </span>
+<span id="cb653-5"><a href="counts.html#cb653-5" tabindex="-1"></a>gas6_fak_wt_link <span class="ot">&lt;-</span> b[<span class="dv">1</span>] <span class="sc">+</span> b[<span class="dv">2</span>] </span>
+<span id="cb653-6"><a href="counts.html#cb653-6" tabindex="-1"></a>pbs_fak_ko_link <span class="ot">&lt;-</span> b[<span class="dv">1</span>] <span class="sc">+</span> b[<span class="dv">3</span>]</span>
+<span id="cb653-7"><a href="counts.html#cb653-7" tabindex="-1"></a>gas6_fak_ko_link <span class="ot">&lt;-</span> b[<span class="dv">1</span>] <span class="sc">+</span> b[<span class="dv">2</span>] <span class="sc">+</span> b[<span class="dv">3</span>] <span class="sc">+</span> b[<span class="dv">4</span>]</span>
+<span id="cb653-8"><a href="counts.html#cb653-8" tabindex="-1"></a></span>
+<span id="cb653-9"><a href="counts.html#cb653-9" tabindex="-1"></a><span class="co"># but this is the algebra more consistent with the linear model math</span></span>
+<span id="cb653-10"><a href="counts.html#cb653-10" tabindex="-1"></a>pbs_fak_wt_link <span class="ot">&lt;-</span> b[<span class="dv">1</span>] <span class="sc">+</span> b[<span class="dv">2</span>]<span class="sc">*</span><span class="dv">0</span> <span class="sc">+</span> b[<span class="dv">3</span>]<span class="sc">*</span><span class="dv">0</span> <span class="sc">+</span> b[<span class="dv">4</span>]<span class="sc">*</span><span class="dv">0</span></span>
+<span id="cb653-11"><a href="counts.html#cb653-11" tabindex="-1"></a>gas6_fak_wt_link <span class="ot">&lt;-</span> b[<span class="dv">1</span>] <span class="sc">+</span> b[<span class="dv">2</span>]<span class="sc">*</span><span class="dv">1</span> <span class="sc">+</span> b[<span class="dv">3</span>]<span class="sc">*</span><span class="dv">0</span> <span class="sc">+</span> b[<span class="dv">4</span>]<span class="sc">*</span><span class="dv">0</span></span>
+<span id="cb653-12"><a href="counts.html#cb653-12" tabindex="-1"></a>pbs_fak_ko_link <span class="ot">&lt;-</span> b[<span class="dv">1</span>] <span class="sc">+</span> b[<span class="dv">2</span>]<span class="sc">*</span><span class="dv">0</span> <span class="sc">+</span> b[<span class="dv">3</span>]<span class="sc">*</span><span class="dv">1</span> <span class="sc">+</span> b[<span class="dv">4</span>]<span class="sc">*</span><span class="dv">0</span></span>
+<span id="cb653-13"><a href="counts.html#cb653-13" tabindex="-1"></a>gas6_fak_ko_link <span class="ot">&lt;-</span> b[<span class="dv">1</span>] <span class="sc">+</span> b[<span class="dv">2</span>]<span class="sc">*</span><span class="dv">1</span> <span class="sc">+</span> b[<span class="dv">3</span>]<span class="sc">*</span><span class="dv">1</span> <span class="sc">+</span> b[<span class="dv">4</span>]<span class="sc">*</span><span class="dv">1</span></span>
+<span id="cb653-14"><a href="counts.html#cb653-14" tabindex="-1"></a></span>
+<span id="cb653-15"><a href="counts.html#cb653-15" tabindex="-1"></a><span class="co"># combine into a table</span></span>
+<span id="cb653-16"><a href="counts.html#cb653-16" tabindex="-1"></a>fig3a_means <span class="ot">&lt;-</span> <span class="fu">data.table</span>(</span>
+<span id="cb653-17"><a href="counts.html#cb653-17" tabindex="-1"></a>  <span class="at">group =</span> t_by_g_levels,</span>
+<span id="cb653-18"><a href="counts.html#cb653-18" tabindex="-1"></a>  <span class="st">&quot;mean (link scale)&quot;</span> <span class="ot">=</span> <span class="fu">c</span>(pbs_fak_wt_link,</span>
+<span id="cb653-19"><a href="counts.html#cb653-19" tabindex="-1"></a>                          gas6_fak_wt_link,</span>
+<span id="cb653-20"><a href="counts.html#cb653-20" tabindex="-1"></a>                          pbs_fak_ko_link,</span>
+<span id="cb653-21"><a href="counts.html#cb653-21" tabindex="-1"></a>                          gas6_fak_ko_link)</span>
+<span id="cb653-22"><a href="counts.html#cb653-22" tabindex="-1"></a>)</span></code></pre></div>
 <table class="table" style="margin-left: auto; margin-right: auto;">
 <caption>
 <span id="tab:unnamed-chunk-273">Table 18.1: </span><span id="tab:unnamed-chunk-273">Table 18.2: </span>Table of group treatment by genotype means on the link scale
@@ -2223,22 +2225,22 @@ Inf
 <li>The values in the columns “asymp.LCL” and “asymp.UCL” are the 95% confidence intervals on the response scale. These values are the exponent of the values in the same columns of the emmeans table on the link scale.</li>
 <li>Don’t do additive math on the response scale! Remember, a GLM is linear on the link scale. The CIs on the response scale are not the mean plus or minus 1.96 <span class="math inline">\(\times\)</span> SE!</li>
 </ol>
-<div class="sourceCode" id="cb655"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb655-1"><a href="counts.html#cb655-1" tabindex="-1"></a><span class="fl">2.47059</span> <span class="sc">-</span> <span class="fl">1.96</span><span class="sc">*</span><span class="fl">0.57</span></span></code></pre></div>
+<div class="sourceCode" id="cb654"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb654-1"><a href="counts.html#cb654-1" tabindex="-1"></a><span class="fl">2.47059</span> <span class="sc">-</span> <span class="fl">1.96</span><span class="sc">*</span><span class="fl">0.57</span></span></code></pre></div>
 <pre><code>## [1] 1.35339</code></pre>
-<div class="sourceCode" id="cb657"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb657-1"><a href="counts.html#cb657-1" tabindex="-1"></a><span class="co"># oops</span></span></code></pre></div>
+<div class="sourceCode" id="cb656"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb656-1"><a href="counts.html#cb656-1" tabindex="-1"></a><span class="co"># oops</span></span></code></pre></div>
 <ol start="4" style="list-style-type: decimal">
 <li>Modeled means on the response scale are computed by backtransforming the modeled means on the link scale. Since the fit model used a log-link, the backtransformation is the exponent.</li>
 </ol>
-<div class="sourceCode" id="cb658"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb658-1"><a href="counts.html#cb658-1" tabindex="-1"></a>pbs_fak_wt_response <span class="ot">&lt;-</span> <span class="fu">exp</span>(pbs_fak_wt_link)</span>
-<span id="cb658-2"><a href="counts.html#cb658-2" tabindex="-1"></a>gas6_fak_wt_response <span class="ot">&lt;-</span> <span class="fu">exp</span>(gas6_fak_wt_link)</span>
-<span id="cb658-3"><a href="counts.html#cb658-3" tabindex="-1"></a>pbs_fak_ko_response <span class="ot">&lt;-</span> <span class="fu">exp</span>(pbs_fak_ko_link)</span>
-<span id="cb658-4"><a href="counts.html#cb658-4" tabindex="-1"></a>gas6_fak_ko_response <span class="ot">&lt;-</span> <span class="fu">exp</span>(gas6_fak_ko_link)</span>
-<span id="cb658-5"><a href="counts.html#cb658-5" tabindex="-1"></a></span>
-<span id="cb658-6"><a href="counts.html#cb658-6" tabindex="-1"></a><span class="co"># add a column to the fig3a_means data.table</span></span>
-<span id="cb658-7"><a href="counts.html#cb658-7" tabindex="-1"></a>fig3a_means[, <span class="st">&quot;mean (response scale)&quot;</span> <span class="sc">:=</span> <span class="fu">c</span>(pbs_fak_wt_response,</span>
-<span id="cb658-8"><a href="counts.html#cb658-8" tabindex="-1"></a>                                            gas6_fak_wt_response,</span>
-<span id="cb658-9"><a href="counts.html#cb658-9" tabindex="-1"></a>                                            pbs_fak_ko_response,</span>
-<span id="cb658-10"><a href="counts.html#cb658-10" tabindex="-1"></a>                                            gas6_fak_ko_response)]</span></code></pre></div>
+<div class="sourceCode" id="cb657"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb657-1"><a href="counts.html#cb657-1" tabindex="-1"></a>pbs_fak_wt_response <span class="ot">&lt;-</span> <span class="fu">exp</span>(pbs_fak_wt_link)</span>
+<span id="cb657-2"><a href="counts.html#cb657-2" tabindex="-1"></a>gas6_fak_wt_response <span class="ot">&lt;-</span> <span class="fu">exp</span>(gas6_fak_wt_link)</span>
+<span id="cb657-3"><a href="counts.html#cb657-3" tabindex="-1"></a>pbs_fak_ko_response <span class="ot">&lt;-</span> <span class="fu">exp</span>(pbs_fak_ko_link)</span>
+<span id="cb657-4"><a href="counts.html#cb657-4" tabindex="-1"></a>gas6_fak_ko_response <span class="ot">&lt;-</span> <span class="fu">exp</span>(gas6_fak_ko_link)</span>
+<span id="cb657-5"><a href="counts.html#cb657-5" tabindex="-1"></a></span>
+<span id="cb657-6"><a href="counts.html#cb657-6" tabindex="-1"></a><span class="co"># add a column to the fig3a_means data.table</span></span>
+<span id="cb657-7"><a href="counts.html#cb657-7" tabindex="-1"></a>fig3a_means[, <span class="st">&quot;mean (response scale)&quot;</span> <span class="sc">:=</span> <span class="fu">c</span>(pbs_fak_wt_response,</span>
+<span id="cb657-8"><a href="counts.html#cb657-8" tabindex="-1"></a>                                            gas6_fak_wt_response,</span>
+<span id="cb657-9"><a href="counts.html#cb657-9" tabindex="-1"></a>                                            pbs_fak_ko_response,</span>
+<span id="cb657-10"><a href="counts.html#cb657-10" tabindex="-1"></a>                                            gas6_fak_ko_response)]</span></code></pre></div>
 <table class="table" style="margin-left: auto; margin-right: auto;">
 <caption>
 <span id="tab:unnamed-chunk-276">Table 18.3: </span><span id="tab:unnamed-chunk-276">Table 18.4: </span>Table of group treatment by genotype means on both the link and response scale.
@@ -2310,7 +2312,7 @@ GAS6 FAK_ko
 <h3><span class="header-section-number">18.3.7</span> Some consequences of fitting a linear model to count data<a href="counts.html#some-consequences-of-fitting-a-linear-model-to-count-data" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <div id="one-linear-models-can-make-absurd-predictions" class="section level4 hasAnchor" number="18.3.7.1">
 <h4><span class="header-section-number">18.3.7.1</span> One – linear models can make absurd predictions<a href="counts.html#one-linear-models-can-make-absurd-predictions" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<div class="sourceCode" id="cb659"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb659-1"><a href="counts.html#cb659-1" tabindex="-1"></a><span class="fu">plot_grid</span>(gg1, gg2, gg3, <span class="at">ncol=</span><span class="dv">3</span>, <span class="at">labels =</span> <span class="st">&quot;AUTO&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb658"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb658-1"><a href="counts.html#cb658-1" tabindex="-1"></a><span class="fu">plot_grid</span>(gg1, gg2, gg3, <span class="at">ncol=</span><span class="dv">3</span>, <span class="at">labels =</span> <span class="st">&quot;AUTO&quot;</span>)</span></code></pre></div>
 <p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/unnamed-chunk-277-1.png" width="1066.66666666667" /></p>
 <p>Notes</p>
 <ol style="list-style-type: decimal">
@@ -2368,42 +2370,42 @@ GAS6 FAK_ko
 <h3><span class="header-section-number">18.4.3</span> Model fit and inference<a href="counts.html#model-fit-and-inference-2" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <div id="fit-the-models-2" class="section level4 hasAnchor" number="18.4.3.1">
 <h4><span class="header-section-number">18.4.3.1</span> Fit the models<a href="counts.html#fit-the-models-2" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<div class="sourceCode" id="cb660"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb660-1"><a href="counts.html#cb660-1" tabindex="-1"></a><span class="co"># lm with ratio response</span></span>
-<span id="cb660-2"><a href="counts.html#cb660-2" tabindex="-1"></a>fig3b_m1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(count_per_area <span class="sc">~</span> age <span class="sc">*</span> genotype,</span>
-<span id="cb660-3"><a href="counts.html#cb660-3" tabindex="-1"></a>               <span class="at">data =</span> fig3b)</span>
-<span id="cb660-4"><a href="counts.html#cb660-4" tabindex="-1"></a></span>
-<span id="cb660-5"><a href="counts.html#cb660-5" tabindex="-1"></a><span class="co"># poisson offset</span></span>
-<span id="cb660-6"><a href="counts.html#cb660-6" tabindex="-1"></a>fig3b_m2 <span class="ot">&lt;-</span> <span class="fu">glm</span>(positive_nuclei <span class="sc">~</span> age <span class="sc">*</span> genotype <span class="sc">+</span></span>
-<span id="cb660-7"><a href="counts.html#cb660-7" tabindex="-1"></a>                  <span class="fu">offset</span>(<span class="fu">log</span>(area_mm2)),</span>
-<span id="cb660-8"><a href="counts.html#cb660-8" tabindex="-1"></a>                <span class="at">family =</span> <span class="st">&quot;poisson&quot;</span>,</span>
-<span id="cb660-9"><a href="counts.html#cb660-9" tabindex="-1"></a>                <span class="at">data =</span> fig3b)</span>
-<span id="cb660-10"><a href="counts.html#cb660-10" tabindex="-1"></a><span class="co"># nb offset</span></span>
-<span id="cb660-11"><a href="counts.html#cb660-11" tabindex="-1"></a>fig3b_m3 <span class="ot">&lt;-</span> <span class="fu">glm.nb</span>(positive_nuclei <span class="sc">~</span> age <span class="sc">*</span> genotype <span class="sc">+</span></span>
-<span id="cb660-12"><a href="counts.html#cb660-12" tabindex="-1"></a>                     <span class="fu">offset</span>(<span class="fu">log</span>(area_mm2)),</span>
-<span id="cb660-13"><a href="counts.html#cb660-13" tabindex="-1"></a>                   <span class="at">data =</span> fig3b)</span>
-<span id="cb660-14"><a href="counts.html#cb660-14" tabindex="-1"></a></span>
-<span id="cb660-15"><a href="counts.html#cb660-15" tabindex="-1"></a><span class="co"># non-parametric</span></span>
-<span id="cb660-16"><a href="counts.html#cb660-16" tabindex="-1"></a>fig3b_m4_2mo <span class="ot">&lt;-</span> <span class="fu">wilcox.test</span>(count_per_area <span class="sc">~</span> genotype,</span>
-<span id="cb660-17"><a href="counts.html#cb660-17" tabindex="-1"></a>                            <span class="at">data =</span> fig3b[age <span class="sc">==</span> <span class="st">&quot;Young&quot;</span>])</span>
-<span id="cb660-18"><a href="counts.html#cb660-18" tabindex="-1"></a>fig3b_m4_20mo <span class="ot">&lt;-</span> <span class="fu">wilcox.test</span>(count_per_area <span class="sc">~</span> genotype,</span>
-<span id="cb660-19"><a href="counts.html#cb660-19" tabindex="-1"></a>                             <span class="at">data =</span> fig3b[age <span class="sc">==</span> <span class="st">&quot;Old&quot;</span>])</span></code></pre></div>
+<div class="sourceCode" id="cb659"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb659-1"><a href="counts.html#cb659-1" tabindex="-1"></a><span class="co"># lm with ratio response</span></span>
+<span id="cb659-2"><a href="counts.html#cb659-2" tabindex="-1"></a>fig3b_m1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(count_per_area <span class="sc">~</span> age <span class="sc">*</span> genotype,</span>
+<span id="cb659-3"><a href="counts.html#cb659-3" tabindex="-1"></a>               <span class="at">data =</span> fig3b)</span>
+<span id="cb659-4"><a href="counts.html#cb659-4" tabindex="-1"></a></span>
+<span id="cb659-5"><a href="counts.html#cb659-5" tabindex="-1"></a><span class="co"># poisson offset</span></span>
+<span id="cb659-6"><a href="counts.html#cb659-6" tabindex="-1"></a>fig3b_m2 <span class="ot">&lt;-</span> <span class="fu">glm</span>(positive_nuclei <span class="sc">~</span> age <span class="sc">*</span> genotype <span class="sc">+</span></span>
+<span id="cb659-7"><a href="counts.html#cb659-7" tabindex="-1"></a>                  <span class="fu">offset</span>(<span class="fu">log</span>(area_mm2)),</span>
+<span id="cb659-8"><a href="counts.html#cb659-8" tabindex="-1"></a>                <span class="at">family =</span> <span class="st">&quot;poisson&quot;</span>,</span>
+<span id="cb659-9"><a href="counts.html#cb659-9" tabindex="-1"></a>                <span class="at">data =</span> fig3b)</span>
+<span id="cb659-10"><a href="counts.html#cb659-10" tabindex="-1"></a><span class="co"># nb offset</span></span>
+<span id="cb659-11"><a href="counts.html#cb659-11" tabindex="-1"></a>fig3b_m3 <span class="ot">&lt;-</span> <span class="fu">glm.nb</span>(positive_nuclei <span class="sc">~</span> age <span class="sc">*</span> genotype <span class="sc">+</span></span>
+<span id="cb659-12"><a href="counts.html#cb659-12" tabindex="-1"></a>                     <span class="fu">offset</span>(<span class="fu">log</span>(area_mm2)),</span>
+<span id="cb659-13"><a href="counts.html#cb659-13" tabindex="-1"></a>                   <span class="at">data =</span> fig3b)</span>
+<span id="cb659-14"><a href="counts.html#cb659-14" tabindex="-1"></a></span>
+<span id="cb659-15"><a href="counts.html#cb659-15" tabindex="-1"></a><span class="co"># non-parametric</span></span>
+<span id="cb659-16"><a href="counts.html#cb659-16" tabindex="-1"></a>fig3b_m4_2mo <span class="ot">&lt;-</span> <span class="fu">wilcox.test</span>(count_per_area <span class="sc">~</span> genotype,</span>
+<span id="cb659-17"><a href="counts.html#cb659-17" tabindex="-1"></a>                            <span class="at">data =</span> fig3b[age <span class="sc">==</span> <span class="st">&quot;Young&quot;</span>])</span>
+<span id="cb659-18"><a href="counts.html#cb659-18" tabindex="-1"></a>fig3b_m4_20mo <span class="ot">&lt;-</span> <span class="fu">wilcox.test</span>(count_per_area <span class="sc">~</span> genotype,</span>
+<span id="cb659-19"><a href="counts.html#cb659-19" tabindex="-1"></a>                             <span class="at">data =</span> fig3b[age <span class="sc">==</span> <span class="st">&quot;Old&quot;</span>])</span></code></pre></div>
 </div>
 <div id="check-the-models-1" class="section level4 hasAnchor" number="18.4.3.2">
 <h4><span class="header-section-number">18.4.3.2</span> Check the models<a href="counts.html#check-the-models-1" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<div class="sourceCode" id="cb661"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb661-1"><a href="counts.html#cb661-1" tabindex="-1"></a><span class="fu">ggcheck_the_model</span>(fig3b_m1)</span></code></pre></div>
+<div class="sourceCode" id="cb660"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb660-1"><a href="counts.html#cb660-1" tabindex="-1"></a><span class="fu">ggcheck_the_model</span>(fig3b_m1)</span></code></pre></div>
 <p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/glm-fig3b_m1-check-1.png" width="576" /></p>
-<div class="sourceCode" id="cb662"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb662-1"><a href="counts.html#cb662-1" tabindex="-1"></a>fig3b_m2_simulation <span class="ot">&lt;-</span> <span class="fu">simulateResiduals</span>(<span class="at">fittedModel =</span> fig3b_m2, <span class="at">n =</span> <span class="dv">250</span>)</span>
-<span id="cb662-2"><a href="counts.html#cb662-2" tabindex="-1"></a><span class="fu">plot</span>(fig3b_m2_simulation, <span class="at">asFactor =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb661"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb661-1"><a href="counts.html#cb661-1" tabindex="-1"></a>fig3b_m2_simulation <span class="ot">&lt;-</span> <span class="fu">simulateResiduals</span>(<span class="at">fittedModel =</span> fig3b_m2, <span class="at">n =</span> <span class="dv">250</span>)</span>
+<span id="cb661-2"><a href="counts.html#cb661-2" tabindex="-1"></a><span class="fu">plot</span>(fig3b_m2_simulation, <span class="at">asFactor =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
 <p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/glm-fig3b_m2_simulation-1.png" width="576" /></p>
-<div class="sourceCode" id="cb663"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb663-1"><a href="counts.html#cb663-1" tabindex="-1"></a>fig3b_m3_simulation <span class="ot">&lt;-</span> <span class="fu">simulateResiduals</span>(<span class="at">fittedModel =</span> fig3b_m3,</span>
-<span id="cb663-2"><a href="counts.html#cb663-2" tabindex="-1"></a>                                         <span class="at">n =</span> <span class="dv">250</span>)</span>
-<span id="cb663-3"><a href="counts.html#cb663-3" tabindex="-1"></a><span class="fu">plot</span>(fig3b_m3_simulation, <span class="at">asFactor =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb662"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb662-1"><a href="counts.html#cb662-1" tabindex="-1"></a>fig3b_m3_simulation <span class="ot">&lt;-</span> <span class="fu">simulateResiduals</span>(<span class="at">fittedModel =</span> fig3b_m3,</span>
+<span id="cb662-2"><a href="counts.html#cb662-2" tabindex="-1"></a>                                         <span class="at">n =</span> <span class="dv">250</span>)</span>
+<span id="cb662-3"><a href="counts.html#cb662-3" tabindex="-1"></a><span class="fu">plot</span>(fig3b_m3_simulation, <span class="at">asFactor =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
 <p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/glm-fig3b_m3_simulation-1.png" width="576" /></p>
 </div>
 <div id="glm-fig3b-m3-inference" class="section level4 hasAnchor" number="18.4.3.3">
 <h4><span class="header-section-number">18.4.3.3</span> Inference from the model<a href="counts.html#glm-fig3b-m3-inference" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<div class="sourceCode" id="cb664"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb664-1"><a href="counts.html#cb664-1" tabindex="-1"></a>fig3b_m3_coef <span class="ot">&lt;-</span> <span class="fu">cbind</span>(<span class="fu">coef</span>(<span class="fu">summary</span>(fig3b_m3)),</span>
-<span id="cb664-2"><a href="counts.html#cb664-2" tabindex="-1"></a>                       <span class="fu">confint</span>(fig3b_m3))</span></code></pre></div>
+<div class="sourceCode" id="cb663"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb663-1"><a href="counts.html#cb663-1" tabindex="-1"></a>fig3b_m3_coef <span class="ot">&lt;-</span> <span class="fu">cbind</span>(<span class="fu">coef</span>(<span class="fu">summary</span>(fig3b_m3)),</span>
+<span id="cb663-2"><a href="counts.html#cb663-2" tabindex="-1"></a>                       <span class="fu">confint</span>(fig3b_m3))</span></code></pre></div>
 <table class="table" style="margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
@@ -2524,12 +2526,12 @@ ageOld:genotypeKI
 </tr>
 </tbody>
 </table>
-<div class="sourceCode" id="cb665"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb665-1"><a href="counts.html#cb665-1" tabindex="-1"></a>mean_area <span class="ot">&lt;-</span> <span class="fu">mean</span>(fig3b[age <span class="sc">==</span> <span class="st">&quot;Old&quot;</span> <span class="sc">&amp;</span> genotype <span class="sc">==</span> <span class="st">&quot;WT&quot;</span>,</span>
-<span id="cb665-2"><a href="counts.html#cb665-2" tabindex="-1"></a>                        positive_nuclei])</span>
-<span id="cb665-3"><a href="counts.html#cb665-3" tabindex="-1"></a>fig3b_m3_emm <span class="ot">&lt;-</span> <span class="fu">emmeans</span>(fig3b_m3,</span>
-<span id="cb665-4"><a href="counts.html#cb665-4" tabindex="-1"></a>                        <span class="at">specs =</span> <span class="fu">c</span>(<span class="st">&quot;age&quot;</span>, <span class="st">&quot;genotype&quot;</span>),</span>
-<span id="cb665-5"><a href="counts.html#cb665-5" tabindex="-1"></a>                        <span class="at">type=</span><span class="st">&quot;response&quot;</span>,</span>
-<span id="cb665-6"><a href="counts.html#cb665-6" tabindex="-1"></a>                        <span class="at">offset =</span> <span class="fu">log</span>(mean_area))</span></code></pre></div>
+<div class="sourceCode" id="cb664"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb664-1"><a href="counts.html#cb664-1" tabindex="-1"></a>mean_area <span class="ot">&lt;-</span> <span class="fu">mean</span>(fig3b[age <span class="sc">==</span> <span class="st">&quot;Old&quot;</span> <span class="sc">&amp;</span> genotype <span class="sc">==</span> <span class="st">&quot;WT&quot;</span>,</span>
+<span id="cb664-2"><a href="counts.html#cb664-2" tabindex="-1"></a>                        positive_nuclei])</span>
+<span id="cb664-3"><a href="counts.html#cb664-3" tabindex="-1"></a>fig3b_m3_emm <span class="ot">&lt;-</span> <span class="fu">emmeans</span>(fig3b_m3,</span>
+<span id="cb664-4"><a href="counts.html#cb664-4" tabindex="-1"></a>                        <span class="at">specs =</span> <span class="fu">c</span>(<span class="st">&quot;age&quot;</span>, <span class="st">&quot;genotype&quot;</span>),</span>
+<span id="cb664-5"><a href="counts.html#cb664-5" tabindex="-1"></a>                        <span class="at">type=</span><span class="st">&quot;response&quot;</span>,</span>
+<span id="cb664-6"><a href="counts.html#cb664-6" tabindex="-1"></a>                        <span class="at">offset =</span> <span class="fu">log</span>(mean_area))</span></code></pre></div>
 <table class="table" style="margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
@@ -2651,32 +2653,32 @@ Inf
 </tr>
 </tbody>
 </table>
-<div class="sourceCode" id="cb666"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb666-1"><a href="counts.html#cb666-1" tabindex="-1"></a>fig3b_m3_pairs <span class="ot">&lt;-</span> <span class="fu">contrast</span>(fig3b_m3_emm,</span>
-<span id="cb666-2"><a href="counts.html#cb666-2" tabindex="-1"></a>                             <span class="at">method =</span> <span class="st">&quot;revpairwise&quot;</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb666-3"><a href="counts.html#cb666-3" tabindex="-1"></a>  <span class="fu">summary</span>(<span class="at">infer =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb666-4"><a href="counts.html#cb666-4" tabindex="-1"></a></span>
-<span id="cb666-5"><a href="counts.html#cb666-5" tabindex="-1"></a><span class="co"># fig3b_m3_emm # print in console to get row numbers</span></span>
-<span id="cb666-6"><a href="counts.html#cb666-6" tabindex="-1"></a><span class="co"># set the mean as the row number from the emmeans table</span></span>
-<span id="cb666-7"><a href="counts.html#cb666-7" tabindex="-1"></a>young_wt <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>)</span>
-<span id="cb666-8"><a href="counts.html#cb666-8" tabindex="-1"></a>old_wt <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">0</span>,<span class="dv">0</span>)</span>
-<span id="cb666-9"><a href="counts.html#cb666-9" tabindex="-1"></a>young_ki <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">0</span>)</span>
-<span id="cb666-10"><a href="counts.html#cb666-10" tabindex="-1"></a>old_ki <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">1</span>)</span>
-<span id="cb666-11"><a href="counts.html#cb666-11" tabindex="-1"></a></span>
-<span id="cb666-12"><a href="counts.html#cb666-12" tabindex="-1"></a><span class="co">#1. (Young KI) - (Young WT)</span></span>
-<span id="cb666-13"><a href="counts.html#cb666-13" tabindex="-1"></a><span class="co">#2. (Old   KI) - (Old   WT)</span></span>
-<span id="cb666-14"><a href="counts.html#cb666-14" tabindex="-1"></a><span class="co">#3. Interaction</span></span>
-<span id="cb666-15"><a href="counts.html#cb666-15" tabindex="-1"></a>fig3b_m3_planned <span class="ot">&lt;-</span> <span class="fu">contrast</span>(</span>
-<span id="cb666-16"><a href="counts.html#cb666-16" tabindex="-1"></a>  fig3b_m3_emm,</span>
-<span id="cb666-17"><a href="counts.html#cb666-17" tabindex="-1"></a>  <span class="at">method =</span> <span class="fu">list</span>(</span>
-<span id="cb666-18"><a href="counts.html#cb666-18" tabindex="-1"></a>    <span class="st">&quot;(Young KI) - (Young WT)&quot;</span> <span class="ot">=</span> <span class="fu">c</span>(young_ki <span class="sc">-</span> young_wt),</span>
-<span id="cb666-19"><a href="counts.html#cb666-19" tabindex="-1"></a>    <span class="st">&quot;(Old   KI) - (Old   WT)&quot;</span> <span class="ot">=</span> <span class="fu">c</span>(old_ki <span class="sc">-</span> old_wt),</span>
-<span id="cb666-20"><a href="counts.html#cb666-20" tabindex="-1"></a>    <span class="st">&quot;Interaction&quot;</span> <span class="ot">=</span> <span class="fu">c</span>((old_ki <span class="sc">-</span> old_wt) <span class="sc">-</span> (young_ki <span class="sc">-</span> young_wt))</span>
-<span id="cb666-21"><a href="counts.html#cb666-21" tabindex="-1"></a>    <span class="co"># &quot;Interaction&quot; = c(old_ki - old_wt) -</span></span>
-<span id="cb666-22"><a href="counts.html#cb666-22" tabindex="-1"></a>    <span class="co">#   c(young_ki - young_wt)</span></span>
-<span id="cb666-23"><a href="counts.html#cb666-23" tabindex="-1"></a>  ),</span>
-<span id="cb666-24"><a href="counts.html#cb666-24" tabindex="-1"></a>  <span class="at">adjust =</span> <span class="st">&quot;none&quot;</span></span>
-<span id="cb666-25"><a href="counts.html#cb666-25" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
-<span id="cb666-26"><a href="counts.html#cb666-26" tabindex="-1"></a>  <span class="fu">summary</span>(<span class="at">infer =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb665"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb665-1"><a href="counts.html#cb665-1" tabindex="-1"></a>fig3b_m3_pairs <span class="ot">&lt;-</span> <span class="fu">contrast</span>(fig3b_m3_emm,</span>
+<span id="cb665-2"><a href="counts.html#cb665-2" tabindex="-1"></a>                             <span class="at">method =</span> <span class="st">&quot;revpairwise&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb665-3"><a href="counts.html#cb665-3" tabindex="-1"></a>  <span class="fu">summary</span>(<span class="at">infer =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb665-4"><a href="counts.html#cb665-4" tabindex="-1"></a></span>
+<span id="cb665-5"><a href="counts.html#cb665-5" tabindex="-1"></a><span class="co"># fig3b_m3_emm # print in console to get row numbers</span></span>
+<span id="cb665-6"><a href="counts.html#cb665-6" tabindex="-1"></a><span class="co"># set the mean as the row number from the emmeans table</span></span>
+<span id="cb665-7"><a href="counts.html#cb665-7" tabindex="-1"></a>young_wt <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>)</span>
+<span id="cb665-8"><a href="counts.html#cb665-8" tabindex="-1"></a>old_wt <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">0</span>,<span class="dv">0</span>)</span>
+<span id="cb665-9"><a href="counts.html#cb665-9" tabindex="-1"></a>young_ki <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">0</span>)</span>
+<span id="cb665-10"><a href="counts.html#cb665-10" tabindex="-1"></a>old_ki <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">1</span>)</span>
+<span id="cb665-11"><a href="counts.html#cb665-11" tabindex="-1"></a></span>
+<span id="cb665-12"><a href="counts.html#cb665-12" tabindex="-1"></a><span class="co">#1. (Young KI) - (Young WT)</span></span>
+<span id="cb665-13"><a href="counts.html#cb665-13" tabindex="-1"></a><span class="co">#2. (Old   KI) - (Old   WT)</span></span>
+<span id="cb665-14"><a href="counts.html#cb665-14" tabindex="-1"></a><span class="co">#3. Interaction</span></span>
+<span id="cb665-15"><a href="counts.html#cb665-15" tabindex="-1"></a>fig3b_m3_planned <span class="ot">&lt;-</span> <span class="fu">contrast</span>(</span>
+<span id="cb665-16"><a href="counts.html#cb665-16" tabindex="-1"></a>  fig3b_m3_emm,</span>
+<span id="cb665-17"><a href="counts.html#cb665-17" tabindex="-1"></a>  <span class="at">method =</span> <span class="fu">list</span>(</span>
+<span id="cb665-18"><a href="counts.html#cb665-18" tabindex="-1"></a>    <span class="st">&quot;(Young KI) - (Young WT)&quot;</span> <span class="ot">=</span> <span class="fu">c</span>(young_ki <span class="sc">-</span> young_wt),</span>
+<span id="cb665-19"><a href="counts.html#cb665-19" tabindex="-1"></a>    <span class="st">&quot;(Old   KI) - (Old   WT)&quot;</span> <span class="ot">=</span> <span class="fu">c</span>(old_ki <span class="sc">-</span> old_wt),</span>
+<span id="cb665-20"><a href="counts.html#cb665-20" tabindex="-1"></a>    <span class="st">&quot;Interaction&quot;</span> <span class="ot">=</span> <span class="fu">c</span>((old_ki <span class="sc">-</span> old_wt) <span class="sc">-</span> (young_ki <span class="sc">-</span> young_wt))</span>
+<span id="cb665-21"><a href="counts.html#cb665-21" tabindex="-1"></a>    <span class="co"># &quot;Interaction&quot; = c(old_ki - old_wt) -</span></span>
+<span id="cb665-22"><a href="counts.html#cb665-22" tabindex="-1"></a>    <span class="co">#   c(young_ki - young_wt)</span></span>
+<span id="cb665-23"><a href="counts.html#cb665-23" tabindex="-1"></a>  ),</span>
+<span id="cb665-24"><a href="counts.html#cb665-24" tabindex="-1"></a>  <span class="at">adjust =</span> <span class="st">&quot;none&quot;</span></span>
+<span id="cb665-25"><a href="counts.html#cb665-25" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
+<span id="cb665-26"><a href="counts.html#cb665-26" tabindex="-1"></a>  <span class="fu">summary</span>(<span class="at">infer =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
 <table class="table" style="margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
@@ -2853,43 +2855,43 @@ Figure 18.3: What an offset looks like. A. The offset on the response scale. B. 
 \]</span></p>
 <p>That is, the GLM with offset also models the conditional mean of the area-normalized count, but in a way where the data are much more compatible with the assumptions of the statistical model (in the sense that model checks show that the data look like a sample from the statistical model).</p>
 <p>If you want the area-normalized means and their uncertainty under the assumptions of the count GLM offset model, here is some code.</p>
-<div class="sourceCode" id="cb667"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb667-1"><a href="counts.html#cb667-1" tabindex="-1"></a>mean_area <span class="ot">&lt;-</span> <span class="fu">mean</span>(fig3b[, area_mm2])</span>
-<span id="cb667-2"><a href="counts.html#cb667-2" tabindex="-1"></a></span>
-<span id="cb667-3"><a href="counts.html#cb667-3" tabindex="-1"></a><span class="co"># link scale</span></span>
-<span id="cb667-4"><a href="counts.html#cb667-4" tabindex="-1"></a></span>
-<span id="cb667-5"><a href="counts.html#cb667-5" tabindex="-1"></a><span class="co"># compute rate or normalized count using emmeans</span></span>
-<span id="cb667-6"><a href="counts.html#cb667-6" tabindex="-1"></a><span class="co"># setting the offset will compute mean at the specified</span></span>
-<span id="cb667-7"><a href="counts.html#cb667-7" tabindex="-1"></a><span class="co"># value of the offset</span></span>
-<span id="cb667-8"><a href="counts.html#cb667-8" tabindex="-1"></a><span class="co"># be sure the stats are on the link scale</span></span>
-<span id="cb667-9"><a href="counts.html#cb667-9" tabindex="-1"></a>m3_emm <span class="ot">&lt;-</span> <span class="fu">emmeans</span>(fig3b_m3,</span>
-<span id="cb667-10"><a href="counts.html#cb667-10" tabindex="-1"></a>                  <span class="at">specs =</span> <span class="fu">c</span>(<span class="st">&quot;age&quot;</span>, <span class="st">&quot;genotype&quot;</span>),</span>
-<span id="cb667-11"><a href="counts.html#cb667-11" tabindex="-1"></a>                  <span class="at">offset =</span> <span class="fu">log</span>(mean_area)) <span class="sc">%&gt;%</span></span>
-<span id="cb667-12"><a href="counts.html#cb667-12" tabindex="-1"></a>  <span class="fu">summary</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb667-13"><a href="counts.html#cb667-13" tabindex="-1"></a>  <span class="fu">data.table</span>()</span>
-<span id="cb667-14"><a href="counts.html#cb667-14" tabindex="-1"></a></span>
-<span id="cb667-15"><a href="counts.html#cb667-15" tabindex="-1"></a><span class="co"># emmeans is returning the first line in equations above.</span></span>
-<span id="cb667-16"><a href="counts.html#cb667-16" tabindex="-1"></a><span class="co"># We want the last line. So subtract the log of the offset value.</span></span>
-<span id="cb667-17"><a href="counts.html#cb667-17" tabindex="-1"></a>m3_emm[, log_rate <span class="sc">:=</span> emmean <span class="sc">-</span> <span class="fu">log</span>(mean_area)]</span>
-<span id="cb667-18"><a href="counts.html#cb667-18" tabindex="-1"></a></span>
-<span id="cb667-19"><a href="counts.html#cb667-19" tabindex="-1"></a><span class="co"># and compute the 95% asymptotic CIs</span></span>
-<span id="cb667-20"><a href="counts.html#cb667-20" tabindex="-1"></a>m3_emm[, log_rate_lcl <span class="sc">:=</span> log_rate <span class="sc">-</span> <span class="fl">1.96</span><span class="sc">*</span>SE]</span>
-<span id="cb667-21"><a href="counts.html#cb667-21" tabindex="-1"></a>m3_emm[, log_rate_ucl <span class="sc">:=</span> log_rate <span class="sc">+</span> <span class="fl">1.96</span><span class="sc">*</span>SE]</span>
-<span id="cb667-22"><a href="counts.html#cb667-22" tabindex="-1"></a><span class="co"># m3_emm</span></span>
-<span id="cb667-23"><a href="counts.html#cb667-23" tabindex="-1"></a></span>
-<span id="cb667-24"><a href="counts.html#cb667-24" tabindex="-1"></a><span class="co"># response scale</span></span>
-<span id="cb667-25"><a href="counts.html#cb667-25" tabindex="-1"></a>m3_emm_response <span class="ot">&lt;-</span> <span class="fu">emmeans</span>(fig3b_m3,</span>
-<span id="cb667-26"><a href="counts.html#cb667-26" tabindex="-1"></a>                  <span class="at">specs =</span> <span class="fu">c</span>(<span class="st">&quot;age&quot;</span>, <span class="st">&quot;genotype&quot;</span>),</span>
-<span id="cb667-27"><a href="counts.html#cb667-27" tabindex="-1"></a>                  <span class="at">offset =</span> <span class="fu">log</span>(mean_area),</span>
-<span id="cb667-28"><a href="counts.html#cb667-28" tabindex="-1"></a>                  <span class="at">type =</span> <span class="st">&quot;response&quot;</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb667-29"><a href="counts.html#cb667-29" tabindex="-1"></a>  <span class="fu">summary</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb667-30"><a href="counts.html#cb667-30" tabindex="-1"></a>  <span class="fu">data.table</span>()</span>
-<span id="cb667-31"><a href="counts.html#cb667-31" tabindex="-1"></a></span>
-<span id="cb667-32"><a href="counts.html#cb667-32" tabindex="-1"></a><span class="co"># replace the mean and CIs with the backtransformed values from the</span></span>
-<span id="cb667-33"><a href="counts.html#cb667-33" tabindex="-1"></a><span class="co"># link scale table</span></span>
-<span id="cb667-34"><a href="counts.html#cb667-34" tabindex="-1"></a>m3_emm_rates <span class="ot">&lt;-</span> m3_emm_response</span>
-<span id="cb667-35"><a href="counts.html#cb667-35" tabindex="-1"></a>m3_emm_rates[, response <span class="sc">:=</span> <span class="fu">exp</span>(m3_emm<span class="sc">$</span>log_rate)]</span>
-<span id="cb667-36"><a href="counts.html#cb667-36" tabindex="-1"></a>m3_emm_rates[, asymp.LCL <span class="sc">:=</span> <span class="fu">exp</span>(m3_emm<span class="sc">$</span>log_rate_lcl)]</span>
-<span id="cb667-37"><a href="counts.html#cb667-37" tabindex="-1"></a>m3_emm_rates[, asymp.UCL <span class="sc">:=</span> <span class="fu">exp</span>(m3_emm<span class="sc">$</span>log_rate_ucl)]</span></code></pre></div>
+<div class="sourceCode" id="cb666"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb666-1"><a href="counts.html#cb666-1" tabindex="-1"></a>mean_area <span class="ot">&lt;-</span> <span class="fu">mean</span>(fig3b[, area_mm2])</span>
+<span id="cb666-2"><a href="counts.html#cb666-2" tabindex="-1"></a></span>
+<span id="cb666-3"><a href="counts.html#cb666-3" tabindex="-1"></a><span class="co"># link scale</span></span>
+<span id="cb666-4"><a href="counts.html#cb666-4" tabindex="-1"></a></span>
+<span id="cb666-5"><a href="counts.html#cb666-5" tabindex="-1"></a><span class="co"># compute rate or normalized count using emmeans</span></span>
+<span id="cb666-6"><a href="counts.html#cb666-6" tabindex="-1"></a><span class="co"># setting the offset will compute mean at the specified</span></span>
+<span id="cb666-7"><a href="counts.html#cb666-7" tabindex="-1"></a><span class="co"># value of the offset</span></span>
+<span id="cb666-8"><a href="counts.html#cb666-8" tabindex="-1"></a><span class="co"># be sure the stats are on the link scale</span></span>
+<span id="cb666-9"><a href="counts.html#cb666-9" tabindex="-1"></a>m3_emm <span class="ot">&lt;-</span> <span class="fu">emmeans</span>(fig3b_m3,</span>
+<span id="cb666-10"><a href="counts.html#cb666-10" tabindex="-1"></a>                  <span class="at">specs =</span> <span class="fu">c</span>(<span class="st">&quot;age&quot;</span>, <span class="st">&quot;genotype&quot;</span>),</span>
+<span id="cb666-11"><a href="counts.html#cb666-11" tabindex="-1"></a>                  <span class="at">offset =</span> <span class="fu">log</span>(mean_area)) <span class="sc">%&gt;%</span></span>
+<span id="cb666-12"><a href="counts.html#cb666-12" tabindex="-1"></a>  <span class="fu">summary</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb666-13"><a href="counts.html#cb666-13" tabindex="-1"></a>  <span class="fu">data.table</span>()</span>
+<span id="cb666-14"><a href="counts.html#cb666-14" tabindex="-1"></a></span>
+<span id="cb666-15"><a href="counts.html#cb666-15" tabindex="-1"></a><span class="co"># emmeans is returning the first line in equations above.</span></span>
+<span id="cb666-16"><a href="counts.html#cb666-16" tabindex="-1"></a><span class="co"># We want the last line. So subtract the log of the offset value.</span></span>
+<span id="cb666-17"><a href="counts.html#cb666-17" tabindex="-1"></a>m3_emm[, log_rate <span class="sc">:=</span> emmean <span class="sc">-</span> <span class="fu">log</span>(mean_area)]</span>
+<span id="cb666-18"><a href="counts.html#cb666-18" tabindex="-1"></a></span>
+<span id="cb666-19"><a href="counts.html#cb666-19" tabindex="-1"></a><span class="co"># and compute the 95% asymptotic CIs</span></span>
+<span id="cb666-20"><a href="counts.html#cb666-20" tabindex="-1"></a>m3_emm[, log_rate_lcl <span class="sc">:=</span> log_rate <span class="sc">-</span> <span class="fl">1.96</span><span class="sc">*</span>SE]</span>
+<span id="cb666-21"><a href="counts.html#cb666-21" tabindex="-1"></a>m3_emm[, log_rate_ucl <span class="sc">:=</span> log_rate <span class="sc">+</span> <span class="fl">1.96</span><span class="sc">*</span>SE]</span>
+<span id="cb666-22"><a href="counts.html#cb666-22" tabindex="-1"></a><span class="co"># m3_emm</span></span>
+<span id="cb666-23"><a href="counts.html#cb666-23" tabindex="-1"></a></span>
+<span id="cb666-24"><a href="counts.html#cb666-24" tabindex="-1"></a><span class="co"># response scale</span></span>
+<span id="cb666-25"><a href="counts.html#cb666-25" tabindex="-1"></a>m3_emm_response <span class="ot">&lt;-</span> <span class="fu">emmeans</span>(fig3b_m3,</span>
+<span id="cb666-26"><a href="counts.html#cb666-26" tabindex="-1"></a>                  <span class="at">specs =</span> <span class="fu">c</span>(<span class="st">&quot;age&quot;</span>, <span class="st">&quot;genotype&quot;</span>),</span>
+<span id="cb666-27"><a href="counts.html#cb666-27" tabindex="-1"></a>                  <span class="at">offset =</span> <span class="fu">log</span>(mean_area),</span>
+<span id="cb666-28"><a href="counts.html#cb666-28" tabindex="-1"></a>                  <span class="at">type =</span> <span class="st">&quot;response&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb666-29"><a href="counts.html#cb666-29" tabindex="-1"></a>  <span class="fu">summary</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb666-30"><a href="counts.html#cb666-30" tabindex="-1"></a>  <span class="fu">data.table</span>()</span>
+<span id="cb666-31"><a href="counts.html#cb666-31" tabindex="-1"></a></span>
+<span id="cb666-32"><a href="counts.html#cb666-32" tabindex="-1"></a><span class="co"># replace the mean and CIs with the backtransformed values from the</span></span>
+<span id="cb666-33"><a href="counts.html#cb666-33" tabindex="-1"></a><span class="co"># link scale table</span></span>
+<span id="cb666-34"><a href="counts.html#cb666-34" tabindex="-1"></a>m3_emm_rates <span class="ot">&lt;-</span> m3_emm_response</span>
+<span id="cb666-35"><a href="counts.html#cb666-35" tabindex="-1"></a>m3_emm_rates[, response <span class="sc">:=</span> <span class="fu">exp</span>(m3_emm<span class="sc">$</span>log_rate)]</span>
+<span id="cb666-36"><a href="counts.html#cb666-36" tabindex="-1"></a>m3_emm_rates[, asymp.LCL <span class="sc">:=</span> <span class="fu">exp</span>(m3_emm<span class="sc">$</span>log_rate_lcl)]</span>
+<span id="cb666-37"><a href="counts.html#cb666-37" tabindex="-1"></a>m3_emm_rates[, asymp.UCL <span class="sc">:=</span> <span class="fu">exp</span>(m3_emm<span class="sc">$</span>log_rate_ucl)]</span></code></pre></div>
 <table class="table" style="margin-left: auto; margin-right: auto;">
 <caption>
 <span id="tab:glm-fig3b-rate-show">Table 18.5: </span><span id="tab:glm-fig3b-rate-show">Table 18.6: </span>Modeled mean area-normalized counts of TUNEL+ cells, estimated using negative binomial GLM.
@@ -3031,17 +3033,17 @@ Figure 18.4: Area-normalized counts modeled using negative binomial GLM with off
 </ol>
 <div style="background-color:#cccccc; text-align:left; vertical-align: middle; padding:20px 47px;">
 <p><strong>More than I need to know</strong>. The modeled means of a count GLM on the link scale are <span class="math inline">\(\mathbf{X} \mathbf{b}\)</span>, where <span class="math inline">\(\mathbf{X}\)</span> is the model matrix and <span class="math inline">\(\mathbf{b}\)</span> is the vector of model coefficients. In a model with an offset, the values of the offset variable are not in the model matrix and the coefficient (1.0) is not in the vector of coefficients. Following the math above, this expectation is the modeled mean normalized-count (on the link scale) and not the modeled mean count conditional on some offset value (on the link scale). Again, following the math above, to compute the expected count conditional on some value of the offset, use <span class="math inline">\(\mathbf{X} \mathbf{b} + \mathrm{log}(offset)\)</span>. But we want the rate not the mean, and we want the rate on the response scale, so simply use <span class="math inline">\(\mathrm{exp}(\mathbf{X} \mathbf{b})\)</span>.</p>
-<div class="sourceCode" id="cb668"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb668-1"><a href="counts.html#cb668-1" tabindex="-1"></a><span class="co"># compute rate or normalized count using matrix algebra using</span></span>
-<span id="cb668-2"><a href="counts.html#cb668-2" tabindex="-1"></a><span class="co"># final line of equations above</span></span>
-<span id="cb668-3"><a href="counts.html#cb668-3" tabindex="-1"></a>b <span class="ot">&lt;-</span> <span class="fu">coef</span>(fig3b_m3)</span>
-<span id="cb668-4"><a href="counts.html#cb668-4" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(fig3b_m3)</span>
-<span id="cb668-5"><a href="counts.html#cb668-5" tabindex="-1"></a>fig3b[, rate <span class="sc">:=</span> <span class="fu">exp</span>((X <span class="sc">%*%</span> b)[,<span class="dv">1</span>])]</span>
-<span id="cb668-6"><a href="counts.html#cb668-6" tabindex="-1"></a></span>
-<span id="cb668-7"><a href="counts.html#cb668-7" tabindex="-1"></a><span class="co"># compare rate to area-normalized count</span></span>
-<span id="cb668-8"><a href="counts.html#cb668-8" tabindex="-1"></a>rates <span class="ot">&lt;-</span> fig3b[, .(<span class="at">rate_manual =</span> <span class="fu">mean</span>(rate),</span>
-<span id="cb668-9"><a href="counts.html#cb668-9" tabindex="-1"></a>                        <span class="at">norm_count =</span> <span class="fu">mean</span>(count_per_area)),</span>
-<span id="cb668-10"><a href="counts.html#cb668-10" tabindex="-1"></a>                    by <span class="ot">=</span> .(age, genotype)]</span>
-<span id="cb668-11"><a href="counts.html#cb668-11" tabindex="-1"></a>m3_emm <span class="ot">&lt;-</span> <span class="fu">merge</span>(m3_emm_rates, rates, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">&quot;age&quot;</span>, <span class="st">&quot;genotype&quot;</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb667"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb667-1"><a href="counts.html#cb667-1" tabindex="-1"></a><span class="co"># compute rate or normalized count using matrix algebra using</span></span>
+<span id="cb667-2"><a href="counts.html#cb667-2" tabindex="-1"></a><span class="co"># final line of equations above</span></span>
+<span id="cb667-3"><a href="counts.html#cb667-3" tabindex="-1"></a>b <span class="ot">&lt;-</span> <span class="fu">coef</span>(fig3b_m3)</span>
+<span id="cb667-4"><a href="counts.html#cb667-4" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(fig3b_m3)</span>
+<span id="cb667-5"><a href="counts.html#cb667-5" tabindex="-1"></a>fig3b[, rate <span class="sc">:=</span> <span class="fu">exp</span>((X <span class="sc">%*%</span> b)[,<span class="dv">1</span>])]</span>
+<span id="cb667-6"><a href="counts.html#cb667-6" tabindex="-1"></a></span>
+<span id="cb667-7"><a href="counts.html#cb667-7" tabindex="-1"></a><span class="co"># compare rate to area-normalized count</span></span>
+<span id="cb667-8"><a href="counts.html#cb667-8" tabindex="-1"></a>rates <span class="ot">&lt;-</span> fig3b[, .(<span class="at">rate_manual =</span> <span class="fu">mean</span>(rate),</span>
+<span id="cb667-9"><a href="counts.html#cb667-9" tabindex="-1"></a>                        <span class="at">norm_count =</span> <span class="fu">mean</span>(count_per_area)),</span>
+<span id="cb667-10"><a href="counts.html#cb667-10" tabindex="-1"></a>                    by <span class="ot">=</span> .(age, genotype)]</span>
+<span id="cb667-11"><a href="counts.html#cb667-11" tabindex="-1"></a>m3_emm <span class="ot">&lt;-</span> <span class="fu">merge</span>(m3_emm_rates, rates, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">&quot;age&quot;</span>, <span class="st">&quot;genotype&quot;</span>))</span></code></pre></div>
 <table class="table" style="margin-left: auto; margin-right: auto;">
 <caption>
 <span id="tab:glm-rate-algebra-table">Table 18.7: </span><span id="tab:glm-rate-algebra-table">Table 18.8: </span>Mean area-normalized-counts computed using the emmeans package (<span class="math inline">\(\texttt{response}\)</span>), the matrix algebra code in this section (<span class="math inline">\(\texttt{rate_manual}\)</span>), and as the simple average of the normalized counts (<span class="math inline">\(\texttt{norm_count}\)</span>)
@@ -3215,9 +3217,9 @@ KI Old
 </div>
 <div id="compare-an-offset-to-an-added-covariate-with-an-estimated-coefficient" class="section level3 hasAnchor" number="18.5.3">
 <h3><span class="header-section-number">18.5.3</span> Compare an offset to an added covariate with an estimated coefficient<a href="counts.html#compare-an-offset-to-an-added-covariate-with-an-estimated-coefficient" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<div class="sourceCode" id="cb669"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb669-1"><a href="counts.html#cb669-1" tabindex="-1"></a>fig3b_m5 <span class="ot">&lt;-</span> <span class="fu">glm.nb</span>(positive_nuclei <span class="sc">~</span> age <span class="sc">*</span> genotype <span class="sc">+</span></span>
-<span id="cb669-2"><a href="counts.html#cb669-2" tabindex="-1"></a>                     <span class="fu">log</span>(area_mm2),</span>
-<span id="cb669-3"><a href="counts.html#cb669-3" tabindex="-1"></a>                   <span class="at">data =</span> fig3b)</span></code></pre></div>
+<div class="sourceCode" id="cb668"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb668-1"><a href="counts.html#cb668-1" tabindex="-1"></a>fig3b_m5 <span class="ot">&lt;-</span> <span class="fu">glm.nb</span>(positive_nuclei <span class="sc">~</span> age <span class="sc">*</span> genotype <span class="sc">+</span></span>
+<span id="cb668-2"><a href="counts.html#cb668-2" tabindex="-1"></a>                     <span class="fu">log</span>(area_mm2),</span>
+<span id="cb668-3"><a href="counts.html#cb668-3" tabindex="-1"></a>                   <span class="at">data =</span> fig3b)</span></code></pre></div>
 <table class="table" style="margin-left: auto; margin-right: auto;">
 <caption>
 <span id="tab:glm-fig3b-m5-coef">Table 18.9: </span><span id="tab:glm-fig3b-m5-coef">Table 18.10: </span>Coefficients from model fig3b_m5 (covariate) and model fig3b_m3 (offset).
@@ -3490,64 +3492,64 @@ ageOld:genotypeKI
 <div id="fitting-glms-to-count-data" class="section level3 hasAnchor" number="18.7.1">
 <h3><span class="header-section-number">18.7.1</span> Fitting GLMs to count data<a href="counts.html#fitting-glms-to-count-data" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>The Poisson family is specified with the base R <code>glm()</code> function. For negative binomial, use <code>glm.nb</code> from the MASS package</p>
-<div class="sourceCode" id="cb670"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb670-1"><a href="counts.html#cb670-1" tabindex="-1"></a><span class="co"># poisson - less likely to fit to real biological data well </span></span>
-<span id="cb670-2"><a href="counts.html#cb670-2" tabindex="-1"></a><span class="co"># because of overdispersion</span></span>
-<span id="cb670-3"><a href="counts.html#cb670-3" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">glm</span>(y <span class="sc">~</span> treatment, <span class="at">family =</span> <span class="st">&quot;poisson&quot;</span>, <span class="at">data =</span> dt)</span>
-<span id="cb670-4"><a href="counts.html#cb670-4" tabindex="-1"></a></span>
-<span id="cb670-5"><a href="counts.html#cb670-5" tabindex="-1"></a><span class="co"># two alternatives to overdispersed poisson fit</span></span>
-<span id="cb670-6"><a href="counts.html#cb670-6" tabindex="-1"></a></span>
-<span id="cb670-7"><a href="counts.html#cb670-7" tabindex="-1"></a><span class="co"># quasipoisson</span></span>
-<span id="cb670-8"><a href="counts.html#cb670-8" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">glm</span>(y <span class="sc">~</span> treatment, <span class="at">family =</span> <span class="st">&quot;quasipoisson&quot;</span>, <span class="at">data=</span>dt)</span>
-<span id="cb670-9"><a href="counts.html#cb670-9" tabindex="-1"></a></span>
-<span id="cb670-10"><a href="counts.html#cb670-10" tabindex="-1"></a><span class="co"># note that &quot;family&quot; is not an argument since this function is used only to fit a negative binomial distribution!</span></span>
-<span id="cb670-11"><a href="counts.html#cb670-11" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">glm.nb</span>(y <span class="sc">~</span> treatment, <span class="at">data =</span> dt)</span></code></pre></div>
+<div class="sourceCode" id="cb669"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb669-1"><a href="counts.html#cb669-1" tabindex="-1"></a><span class="co"># poisson - less likely to fit to real biological data well </span></span>
+<span id="cb669-2"><a href="counts.html#cb669-2" tabindex="-1"></a><span class="co"># because of overdispersion</span></span>
+<span id="cb669-3"><a href="counts.html#cb669-3" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">glm</span>(y <span class="sc">~</span> treatment, <span class="at">family =</span> <span class="st">&quot;poisson&quot;</span>, <span class="at">data =</span> dt)</span>
+<span id="cb669-4"><a href="counts.html#cb669-4" tabindex="-1"></a></span>
+<span id="cb669-5"><a href="counts.html#cb669-5" tabindex="-1"></a><span class="co"># two alternatives to overdispersed poisson fit</span></span>
+<span id="cb669-6"><a href="counts.html#cb669-6" tabindex="-1"></a></span>
+<span id="cb669-7"><a href="counts.html#cb669-7" tabindex="-1"></a><span class="co"># quasipoisson</span></span>
+<span id="cb669-8"><a href="counts.html#cb669-8" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">glm</span>(y <span class="sc">~</span> treatment, <span class="at">family =</span> <span class="st">&quot;quasipoisson&quot;</span>, <span class="at">data=</span>dt)</span>
+<span id="cb669-9"><a href="counts.html#cb669-9" tabindex="-1"></a></span>
+<span id="cb669-10"><a href="counts.html#cb669-10" tabindex="-1"></a><span class="co"># note that &quot;family&quot; is not an argument since this function is used only to fit a negative binomial distribution!</span></span>
+<span id="cb669-11"><a href="counts.html#cb669-11" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">glm.nb</span>(y <span class="sc">~</span> treatment, <span class="at">data =</span> dt)</span></code></pre></div>
 </div>
 <div id="fitting-a-glm-to-a-continuous-conditional-response-with-right-skew." class="section level3 hasAnchor" number="18.7.2">
 <h3><span class="header-section-number">18.7.2</span> Fitting a GLM to a continuous conditional response with right skew.<a href="counts.html#fitting-a-glm-to-a-continuous-conditional-response-with-right-skew." class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>The Gamma family is specified with the base R <code>glm()</code> function.</p>
-<div class="sourceCode" id="cb671"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb671-1"><a href="counts.html#cb671-1" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">glm</span>(y <span class="sc">~</span> treatment, <span class="at">family =</span> <span class="fu">Gamma</span>(<span class="at">link =</span> <span class="st">&quot;log&quot;</span>), <span class="at">data =</span> dt)</span></code></pre></div>
+<div class="sourceCode" id="cb670"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb670-1"><a href="counts.html#cb670-1" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">glm</span>(y <span class="sc">~</span> treatment, <span class="at">family =</span> <span class="fu">Gamma</span>(<span class="at">link =</span> <span class="st">&quot;log&quot;</span>), <span class="at">data =</span> dt)</span></code></pre></div>
 </div>
 <div id="fitting-a-glm-to-a-binary-success-or-failure-presence-or-absence-survived-or-died-response" class="section level3 hasAnchor" number="18.7.3">
 <h3><span class="header-section-number">18.7.3</span> Fitting a GLM to a binary (success or failure, presence or absence, survived or died) response<a href="counts.html#fitting-a-glm-to-a-binary-success-or-failure-presence-or-absence-survived-or-died-response" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>The binomial family is specified with base R <code>glm()</code> function.</p>
-<div class="sourceCode" id="cb672"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb672-1"><a href="counts.html#cb672-1" tabindex="-1"></a><span class="co"># if the data includes a 0 or 1 for every observation of y</span></span>
-<span id="cb672-2"><a href="counts.html#cb672-2" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">glm</span>(y <span class="sc">~</span> treatment, <span class="at">family =</span> <span class="st">&quot;binomial&quot;</span>, <span class="at">data =</span> dt)</span>
-<span id="cb672-3"><a href="counts.html#cb672-3" tabindex="-1"></a></span>
-<span id="cb672-4"><a href="counts.html#cb672-4" tabindex="-1"></a><span class="co"># if the data includes the frequency of success AND there is a measure of the total n</span></span>
-<span id="cb672-5"><a href="counts.html#cb672-5" tabindex="-1"></a>dt[ , failure <span class="sc">:=</span> n <span class="sc">-</span> success]</span>
-<span id="cb672-6"><a href="counts.html#cb672-6" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">glm</span>(<span class="fu">cbind</span>(success, failure) <span class="sc">~</span> treatment, <span class="at">family =</span> <span class="st">&quot;binomial&quot;</span>, <span class="at">data =</span> dt)</span></code></pre></div>
+<div class="sourceCode" id="cb671"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb671-1"><a href="counts.html#cb671-1" tabindex="-1"></a><span class="co"># if the data includes a 0 or 1 for every observation of y</span></span>
+<span id="cb671-2"><a href="counts.html#cb671-2" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">glm</span>(y <span class="sc">~</span> treatment, <span class="at">family =</span> <span class="st">&quot;binomial&quot;</span>, <span class="at">data =</span> dt)</span>
+<span id="cb671-3"><a href="counts.html#cb671-3" tabindex="-1"></a></span>
+<span id="cb671-4"><a href="counts.html#cb671-4" tabindex="-1"></a><span class="co"># if the data includes the frequency of success AND there is a measure of the total n</span></span>
+<span id="cb671-5"><a href="counts.html#cb671-5" tabindex="-1"></a>dt[ , failure <span class="sc">:=</span> n <span class="sc">-</span> success]</span>
+<span id="cb671-6"><a href="counts.html#cb671-6" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">glm</span>(<span class="fu">cbind</span>(success, failure) <span class="sc">~</span> treatment, <span class="at">family =</span> <span class="st">&quot;binomial&quot;</span>, <span class="at">data =</span> dt)</span></code></pre></div>
 </div>
 <div id="fitting-generalized-linear-mixed-models" class="section level3 hasAnchor" number="18.7.4">
 <h3><span class="header-section-number">18.7.4</span> Fitting Generalized Linear Mixed Models<a href="counts.html#fitting-generalized-linear-mixed-models" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>Generalized linear mixed models are fit with <code>glmer</code> from the lmer package.</p>
-<div class="sourceCode" id="cb673"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb673-1"><a href="counts.html#cb673-1" tabindex="-1"></a><span class="co"># random intercept of factor &quot;id&quot;</span></span>
-<span id="cb673-2"><a href="counts.html#cb673-2" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">glmer</span>(y <span class="sc">~</span> treatment <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>id), <span class="at">family =</span> <span class="st">&quot;poisson&quot;</span>, <span class="at">data =</span> dt)</span>
-<span id="cb673-3"><a href="counts.html#cb673-3" tabindex="-1"></a></span>
-<span id="cb673-4"><a href="counts.html#cb673-4" tabindex="-1"></a><span class="co"># random intercept and slope of factor &quot;id&quot;</span></span>
-<span id="cb673-5"><a href="counts.html#cb673-5" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">glmer</span>(y <span class="sc">~</span> treatment <span class="sc">+</span> (treatment<span class="sc">|</span>id), <span class="at">family =</span> <span class="fu">Gamma</span>(<span class="at">link =</span> <span class="st">&quot;log&quot;</span>), <span class="at">data =</span> dt)</span>
-<span id="cb673-6"><a href="counts.html#cb673-6" tabindex="-1"></a></span>
-<span id="cb673-7"><a href="counts.html#cb673-7" tabindex="-1"></a><span class="co"># Again, negative binomial uses a special function</span></span>
-<span id="cb673-8"><a href="counts.html#cb673-8" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">glmer.nb</span>(y <span class="sc">~</span> treatment <span class="sc">+</span> (treatment<span class="sc">|</span>id), <span class="at">data =</span> dt)</span></code></pre></div>
+<div class="sourceCode" id="cb672"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb672-1"><a href="counts.html#cb672-1" tabindex="-1"></a><span class="co"># random intercept of factor &quot;id&quot;</span></span>
+<span id="cb672-2"><a href="counts.html#cb672-2" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">glmer</span>(y <span class="sc">~</span> treatment <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>id), <span class="at">family =</span> <span class="st">&quot;poisson&quot;</span>, <span class="at">data =</span> dt)</span>
+<span id="cb672-3"><a href="counts.html#cb672-3" tabindex="-1"></a></span>
+<span id="cb672-4"><a href="counts.html#cb672-4" tabindex="-1"></a><span class="co"># random intercept and slope of factor &quot;id&quot;</span></span>
+<span id="cb672-5"><a href="counts.html#cb672-5" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">glmer</span>(y <span class="sc">~</span> treatment <span class="sc">+</span> (treatment<span class="sc">|</span>id), <span class="at">family =</span> <span class="fu">Gamma</span>(<span class="at">link =</span> <span class="st">&quot;log&quot;</span>), <span class="at">data =</span> dt)</span>
+<span id="cb672-6"><a href="counts.html#cb672-6" tabindex="-1"></a></span>
+<span id="cb672-7"><a href="counts.html#cb672-7" tabindex="-1"></a><span class="co"># Again, negative binomial uses a special function</span></span>
+<span id="cb672-8"><a href="counts.html#cb672-8" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">glmer.nb</span>(y <span class="sc">~</span> treatment <span class="sc">+</span> (treatment<span class="sc">|</span>id), <span class="at">data =</span> dt)</span></code></pre></div>
 <p>Another good package for GLMMs is <code>glmmTMB</code> from the glmmTMB package</p>
-<div class="sourceCode" id="cb674"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb674-1"><a href="counts.html#cb674-1" tabindex="-1"></a><span class="co"># negative binomial</span></span>
-<span id="cb674-2"><a href="counts.html#cb674-2" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">glmmTMB</span>(y <span class="sc">~</span> treatment <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>id), <span class="at">family=</span><span class="st">&quot;nbinom2&quot;</span>, <span class="at">data =</span> dt)</span>
-<span id="cb674-3"><a href="counts.html#cb674-3" tabindex="-1"></a></span>
-<span id="cb674-4"><a href="counts.html#cb674-4" tabindex="-1"></a><span class="co"># nbinom1, the mean variance relationship is that of quasipoisson</span></span>
-<span id="cb674-5"><a href="counts.html#cb674-5" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">glmmTMB</span>(y <span class="sc">~</span> treatment <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>id), <span class="at">family=</span><span class="st">&quot;nbinom1&quot;</span>, <span class="at">data =</span> dt)</span></code></pre></div>
+<div class="sourceCode" id="cb673"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb673-1"><a href="counts.html#cb673-1" tabindex="-1"></a><span class="co"># negative binomial</span></span>
+<span id="cb673-2"><a href="counts.html#cb673-2" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">glmmTMB</span>(y <span class="sc">~</span> treatment <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>id), <span class="at">family=</span><span class="st">&quot;nbinom2&quot;</span>, <span class="at">data =</span> dt)</span>
+<span id="cb673-3"><a href="counts.html#cb673-3" tabindex="-1"></a></span>
+<span id="cb673-4"><a href="counts.html#cb673-4" tabindex="-1"></a><span class="co"># nbinom1, the mean variance relationship is that of quasipoisson</span></span>
+<span id="cb673-5"><a href="counts.html#cb673-5" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">glmmTMB</span>(y <span class="sc">~</span> treatment <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>id), <span class="at">family=</span><span class="st">&quot;nbinom1&quot;</span>, <span class="at">data =</span> dt)</span></code></pre></div>
 </div>
 </div>
 <div id="model-checking-glms" class="section level2 hasAnchor" number="18.8">
 <h2><span class="header-section-number">18.8</span> Model checking GLMs<a href="counts.html#model-checking-glms" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>The <code>DHARMa</code> package has an excellent set of model checking tools. The DHARMa package uses simulation to generate fake data sampled from the fit model using the function <code>simulateResiduals</code>.</p>
-<div class="sourceCode" id="cb675"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb675-1"><a href="counts.html#cb675-1" tabindex="-1"></a>simulation_output <span class="ot">&lt;-</span> <span class="fu">simulateResiduals</span>(<span class="at">fittedModel =</span> fig3a_m3,</span>
+<div class="sourceCode" id="cb674"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb674-1"><a href="counts.html#cb674-1" tabindex="-1"></a>simulation_output <span class="ot">&lt;-</span> <span class="fu">simulateResiduals</span>(<span class="at">fittedModel =</span> fig3a_m3,</span>
+<span id="cb674-2"><a href="counts.html#cb674-2" tabindex="-1"></a>                                       <span class="at">n =</span> <span class="dv">250</span>,</span>
+<span id="cb674-3"><a href="counts.html#cb674-3" tabindex="-1"></a>                                       <span class="at">refit =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb675"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb675-1"><a href="counts.html#cb675-1" tabindex="-1"></a>simulation_output <span class="ot">&lt;-</span> <span class="fu">simulateResiduals</span>(<span class="at">fittedModel =</span> fig3a_m2,</span>
 <span id="cb675-2"><a href="counts.html#cb675-2" tabindex="-1"></a>                                       <span class="at">n =</span> <span class="dv">250</span>,</span>
 <span id="cb675-3"><a href="counts.html#cb675-3" tabindex="-1"></a>                                       <span class="at">refit =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
-<div class="sourceCode" id="cb676"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb676-1"><a href="counts.html#cb676-1" tabindex="-1"></a>simulation_output <span class="ot">&lt;-</span> <span class="fu">simulateResiduals</span>(<span class="at">fittedModel =</span> fig3a_m2,</span>
-<span id="cb676-2"><a href="counts.html#cb676-2" tabindex="-1"></a>                                       <span class="at">n =</span> <span class="dv">250</span>,</span>
-<span id="cb676-3"><a href="counts.html#cb676-3" tabindex="-1"></a>                                       <span class="at">refit =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
-<div class="sourceCode" id="cb677"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb677-1"><a href="counts.html#cb677-1" tabindex="-1"></a><span class="fu">plot</span>(simulation_output)</span></code></pre></div>
+<div class="sourceCode" id="cb676"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb676-1"><a href="counts.html#cb676-1" tabindex="-1"></a><span class="fu">plot</span>(simulation_output)</span></code></pre></div>
 <p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/unnamed-chunk-285-1.png" width="576" /></p>
-<div class="sourceCode" id="cb678"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb678-1"><a href="counts.html#cb678-1" tabindex="-1"></a><span class="fu">plotQQunif</span>(simulation_output)</span></code></pre></div>
+<div class="sourceCode" id="cb677"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb677-1"><a href="counts.html#cb677-1" tabindex="-1"></a><span class="fu">plotQQunif</span>(simulation_output)</span></code></pre></div>
 <p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/unnamed-chunk-286-1.png" width="576" /></p>
 <p>Three test statistics are superimposed. Use these <em>p</em>-values cautiously – they are guides and not thresholds of demarcation. The two we care about here are
 * The KS statistic indicates that the quantile residuals are not very compatible with a Poisson model – think of this as having a very low probability of sampling these counts from a Poisson with the estimated <span class="math inline">\(\lambda\)</span>.
@@ -3557,37 +3559,37 @@ ageOld:genotypeKI
 <h2><span class="header-section-number">18.9</span> Hidden code<a href="counts.html#hidden-code-9" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <div id="import-example-1-data-fig3a-angiogenic-sprouts" class="section level3 hasAnchor" number="18.9.1">
 <h3><span class="header-section-number">18.9.1</span> Import Example 1 data (fig3a – “angiogenic sprouts”)<a href="counts.html#import-example-1-data-fig3a-angiogenic-sprouts" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<div class="sourceCode" id="cb679"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb679-1"><a href="counts.html#cb679-1" tabindex="-1"></a>data_from <span class="ot">&lt;-</span> <span class="st">&quot;Pericyte FAK negatively regulates Gas6-Axl signalling to suppress tumour angiogenesis and tumour growth&quot;</span></span>
-<span id="cb679-2"><a href="counts.html#cb679-2" tabindex="-1"></a>file_name <span class="ot">&lt;-</span> <span class="st">&quot;41467_2020_16618_MOESM3_ESM.xlsx&quot;</span></span>
-<span id="cb679-3"><a href="counts.html#cb679-3" tabindex="-1"></a>file_path <span class="ot">&lt;-</span> <span class="fu">here</span>(data_folder, data_from, file_name)</span>
-<span id="cb679-4"><a href="counts.html#cb679-4" tabindex="-1"></a></span>
-<span id="cb679-5"><a href="counts.html#cb679-5" tabindex="-1"></a>fig3a_wide <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(file_path,</span>
-<span id="cb679-6"><a href="counts.html#cb679-6" tabindex="-1"></a>                         <span class="at">sheet =</span> <span class="st">&quot;Figure 3&quot;</span>,</span>
-<span id="cb679-7"><a href="counts.html#cb679-7" tabindex="-1"></a>                         <span class="at">range =</span> <span class="st">&quot;B4:E26&quot;</span>,</span>
-<span id="cb679-8"><a href="counts.html#cb679-8" tabindex="-1"></a>                         <span class="at">col_names =</span> <span class="cn">FALSE</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb679-9"><a href="counts.html#cb679-9" tabindex="-1"></a>  <span class="fu">data.table</span>()</span>
-<span id="cb679-10"><a href="counts.html#cb679-10" tabindex="-1"></a></span>
-<span id="cb679-11"><a href="counts.html#cb679-11" tabindex="-1"></a>input_labels <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;PBS FAK_wt&quot;</span>, <span class="st">&quot;PBS FAK_ko&quot;</span>, <span class="st">&quot;GAS6 FAK_wt&quot;</span>, <span class="st">&quot;GAS6 FAK_ko&quot;</span>)</span>
-<span id="cb679-12"><a href="counts.html#cb679-12" tabindex="-1"></a><span class="fu">colnames</span>(fig3a_wide) <span class="ot">&lt;-</span> input_labels</span>
-<span id="cb679-13"><a href="counts.html#cb679-13" tabindex="-1"></a></span>
-<span id="cb679-14"><a href="counts.html#cb679-14" tabindex="-1"></a>fig3a <span class="ot">&lt;-</span> <span class="fu">melt</span>(fig3a_wide,</span>
-<span id="cb679-15"><a href="counts.html#cb679-15" tabindex="-1"></a>              <span class="at">measure.vars =</span> input_labels,</span>
-<span id="cb679-16"><a href="counts.html#cb679-16" tabindex="-1"></a>              <span class="at">variable.name =</span> <span class="st">&quot;t_by_g&quot;</span>,</span>
-<span id="cb679-17"><a href="counts.html#cb679-17" tabindex="-1"></a>              <span class="at">value.name =</span> <span class="st">&quot;sprouts&quot;</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb679-18"><a href="counts.html#cb679-18" tabindex="-1"></a>  <span class="fu">na.omit</span>()</span>
-<span id="cb679-19"><a href="counts.html#cb679-19" tabindex="-1"></a></span>
-<span id="cb679-20"><a href="counts.html#cb679-20" tabindex="-1"></a><span class="co"># change order of factor levels</span></span>
-<span id="cb679-21"><a href="counts.html#cb679-21" tabindex="-1"></a>t_by_g_levels <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;PBS FAK_wt&quot;</span>, <span class="st">&quot;GAS6 FAK_wt&quot;</span>, <span class="st">&quot;PBS FAK_ko&quot;</span>, <span class="st">&quot;GAS6 FAK_ko&quot;</span>)</span>
-<span id="cb679-22"><a href="counts.html#cb679-22" tabindex="-1"></a></span>
-<span id="cb679-23"><a href="counts.html#cb679-23" tabindex="-1"></a>fig3a[, <span class="fu">c</span>(<span class="st">&quot;treatment&quot;</span>, <span class="st">&quot;genotype&quot;</span>)<span class="sc">:=</span> <span class="fu">tstrsplit</span>(t_by_g,</span>
-<span id="cb679-24"><a href="counts.html#cb679-24" tabindex="-1"></a>                                             <span class="st">&quot; &quot;</span>,</span>
-<span id="cb679-25"><a href="counts.html#cb679-25" tabindex="-1"></a>                                             <span class="at">fixed =</span> <span class="cn">TRUE</span>)]</span>
-<span id="cb679-26"><a href="counts.html#cb679-26" tabindex="-1"></a></span>
-<span id="cb679-27"><a href="counts.html#cb679-27" tabindex="-1"></a>fig3a[, t_by_g <span class="sc">:=</span> <span class="fu">factor</span>(t_by_g, <span class="at">levels =</span> t_by_g_levels)]</span>
-<span id="cb679-28"><a href="counts.html#cb679-28" tabindex="-1"></a>treatment_levels <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;PBS&quot;</span>, <span class="st">&quot;GAS6&quot;</span>)</span>
-<span id="cb679-29"><a href="counts.html#cb679-29" tabindex="-1"></a>fig3a[, treatment <span class="sc">:=</span> <span class="fu">factor</span>(treatment, <span class="at">levels =</span> treatment_levels)]</span>
-<span id="cb679-30"><a href="counts.html#cb679-30" tabindex="-1"></a>genotype_levels <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;FAK_wt&quot;</span>, <span class="st">&quot;FAK_ko&quot;</span>)</span>
-<span id="cb679-31"><a href="counts.html#cb679-31" tabindex="-1"></a>fig3a[, genotype <span class="sc">:=</span> <span class="fu">factor</span>(genotype, <span class="at">levels =</span> genotype_levels)]</span></code></pre></div>
+<div class="sourceCode" id="cb678"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb678-1"><a href="counts.html#cb678-1" tabindex="-1"></a>data_from <span class="ot">&lt;-</span> <span class="st">&quot;Pericyte FAK negatively regulates Gas6-Axl signalling to suppress tumour angiogenesis and tumour growth&quot;</span></span>
+<span id="cb678-2"><a href="counts.html#cb678-2" tabindex="-1"></a>file_name <span class="ot">&lt;-</span> <span class="st">&quot;41467_2020_16618_MOESM3_ESM.xlsx&quot;</span></span>
+<span id="cb678-3"><a href="counts.html#cb678-3" tabindex="-1"></a>file_path <span class="ot">&lt;-</span> <span class="fu">here</span>(data_folder, data_from, file_name)</span>
+<span id="cb678-4"><a href="counts.html#cb678-4" tabindex="-1"></a></span>
+<span id="cb678-5"><a href="counts.html#cb678-5" tabindex="-1"></a>fig3a_wide <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(file_path,</span>
+<span id="cb678-6"><a href="counts.html#cb678-6" tabindex="-1"></a>                         <span class="at">sheet =</span> <span class="st">&quot;Figure 3&quot;</span>,</span>
+<span id="cb678-7"><a href="counts.html#cb678-7" tabindex="-1"></a>                         <span class="at">range =</span> <span class="st">&quot;B4:E26&quot;</span>,</span>
+<span id="cb678-8"><a href="counts.html#cb678-8" tabindex="-1"></a>                         <span class="at">col_names =</span> <span class="cn">FALSE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb678-9"><a href="counts.html#cb678-9" tabindex="-1"></a>  <span class="fu">data.table</span>()</span>
+<span id="cb678-10"><a href="counts.html#cb678-10" tabindex="-1"></a></span>
+<span id="cb678-11"><a href="counts.html#cb678-11" tabindex="-1"></a>input_labels <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;PBS FAK_wt&quot;</span>, <span class="st">&quot;PBS FAK_ko&quot;</span>, <span class="st">&quot;GAS6 FAK_wt&quot;</span>, <span class="st">&quot;GAS6 FAK_ko&quot;</span>)</span>
+<span id="cb678-12"><a href="counts.html#cb678-12" tabindex="-1"></a><span class="fu">colnames</span>(fig3a_wide) <span class="ot">&lt;-</span> input_labels</span>
+<span id="cb678-13"><a href="counts.html#cb678-13" tabindex="-1"></a></span>
+<span id="cb678-14"><a href="counts.html#cb678-14" tabindex="-1"></a>fig3a <span class="ot">&lt;-</span> <span class="fu">melt</span>(fig3a_wide,</span>
+<span id="cb678-15"><a href="counts.html#cb678-15" tabindex="-1"></a>              <span class="at">measure.vars =</span> input_labels,</span>
+<span id="cb678-16"><a href="counts.html#cb678-16" tabindex="-1"></a>              <span class="at">variable.name =</span> <span class="st">&quot;t_by_g&quot;</span>,</span>
+<span id="cb678-17"><a href="counts.html#cb678-17" tabindex="-1"></a>              <span class="at">value.name =</span> <span class="st">&quot;sprouts&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb678-18"><a href="counts.html#cb678-18" tabindex="-1"></a>  <span class="fu">na.omit</span>()</span>
+<span id="cb678-19"><a href="counts.html#cb678-19" tabindex="-1"></a></span>
+<span id="cb678-20"><a href="counts.html#cb678-20" tabindex="-1"></a><span class="co"># change order of factor levels</span></span>
+<span id="cb678-21"><a href="counts.html#cb678-21" tabindex="-1"></a>t_by_g_levels <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;PBS FAK_wt&quot;</span>, <span class="st">&quot;GAS6 FAK_wt&quot;</span>, <span class="st">&quot;PBS FAK_ko&quot;</span>, <span class="st">&quot;GAS6 FAK_ko&quot;</span>)</span>
+<span id="cb678-22"><a href="counts.html#cb678-22" tabindex="-1"></a></span>
+<span id="cb678-23"><a href="counts.html#cb678-23" tabindex="-1"></a>fig3a[, <span class="fu">c</span>(<span class="st">&quot;treatment&quot;</span>, <span class="st">&quot;genotype&quot;</span>)<span class="sc">:=</span> <span class="fu">tstrsplit</span>(t_by_g,</span>
+<span id="cb678-24"><a href="counts.html#cb678-24" tabindex="-1"></a>                                             <span class="st">&quot; &quot;</span>,</span>
+<span id="cb678-25"><a href="counts.html#cb678-25" tabindex="-1"></a>                                             <span class="at">fixed =</span> <span class="cn">TRUE</span>)]</span>
+<span id="cb678-26"><a href="counts.html#cb678-26" tabindex="-1"></a></span>
+<span id="cb678-27"><a href="counts.html#cb678-27" tabindex="-1"></a>fig3a[, t_by_g <span class="sc">:=</span> <span class="fu">factor</span>(t_by_g, <span class="at">levels =</span> t_by_g_levels)]</span>
+<span id="cb678-28"><a href="counts.html#cb678-28" tabindex="-1"></a>treatment_levels <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;PBS&quot;</span>, <span class="st">&quot;GAS6&quot;</span>)</span>
+<span id="cb678-29"><a href="counts.html#cb678-29" tabindex="-1"></a>fig3a[, treatment <span class="sc">:=</span> <span class="fu">factor</span>(treatment, <span class="at">levels =</span> treatment_levels)]</span>
+<span id="cb678-30"><a href="counts.html#cb678-30" tabindex="-1"></a>genotype_levels <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;FAK_wt&quot;</span>, <span class="st">&quot;FAK_ko&quot;</span>)</span>
+<span id="cb678-31"><a href="counts.html#cb678-31" tabindex="-1"></a>fig3a[, genotype <span class="sc">:=</span> <span class="fu">factor</span>(genotype, <span class="at">levels =</span> genotype_levels)]</span></code></pre></div>
 
 </div>
 </div>
