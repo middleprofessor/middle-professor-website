@@ -923,6 +923,9 @@ code span.wa { color: #bf0303; } /* Warning */
             <section class="normal" id="section-">
 <div id="pre-post" class="section level1 hasAnchor" number="17">
 <h1><span class="header-section-number">Chapter 17</span> Linear models for longitudinal experiments – I. pre-post designs<a href="pre-post.html#pre-post" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div style="background-color:#fde0dd; text-align:left; vertical-align: middle; padding:20px 47px;">
+<p>All updates to this book are now at <a href="https://middleprofessor.github.io/benchbiostats/">https://middleprofessor.github.io/benchbiostats/</a></p>
+</div>
 <p>In a Longitudinal experiment, the response is measured in the same set of individuals over multiple time points. For example, in a glucose tolerance test (GTT), plasma glucose levels are measured at 0, 15, 30, 60, and 120 minutes (or some variation of this) after glucose has been given to the individual. The initial measure (time 0) is the <strong>baseline</strong> measure and subsequent measures are post-baseline measures. In a pre-post experiment, there is a single post-baseline measure. This chapter focuses on pre-post designs. The next chapter generalizes this information to longitudinal experiments with more than one post-baseline measure. For this chapter, I’ll use <span class="math inline">\(pre_i\)</span> and <span class="math inline">\(post_i\)</span> for the baseline and post-baseline measures of the response variable of indiviual <span class="math inline">\(i\)</span>. The change from baseline for individual <span class="math inline">\(i\)</span> is <span class="math inline">\(change_i = post_i - pre_i\)</span>. The change from baseline is often called a <strong>change score</strong>.</p>
 <p>Imagine two versions of an experiment where researchers are interested in the effect of different intestinal microbiomes on body weight.</p>
 <ol style="list-style-type: decimal">
@@ -2505,15 +2508,15 @@ cLDA
 <h2><span class="header-section-number">17.5</span> Example 1 – a single post-baseline measure (pre-post design)<a href="pre-post.html#example-1-a-single-post-baseline-measure-pre-post-design" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <div id="fit-the-model-10" class="section level4 hasAnchor" number="17.5.0.1">
 <h4><span class="header-section-number">17.5.0.1</span> Fit the model<a href="pre-post.html#fit-the-model-10" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<div class="sourceCode" id="cb612"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb612-1"><a href="pre-post.html#cb612-1" tabindex="-1"></a>m1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(post <span class="sc">~</span> pre <span class="sc">+</span> treatment, <span class="at">data =</span> fig3f)</span></code></pre></div>
+<div class="sourceCode" id="cb611"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb611-1"><a href="pre-post.html#cb611-1" tabindex="-1"></a>m1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(post <span class="sc">~</span> pre <span class="sc">+</span> treatment, <span class="at">data =</span> fig3f)</span></code></pre></div>
 </div>
 <div id="model-checking-1" class="section level4 hasAnchor" number="17.5.0.2">
 <h4><span class="header-section-number">17.5.0.2</span> Model checking<a href="pre-post.html#model-checking-1" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<div class="sourceCode" id="cb613"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb613-1"><a href="pre-post.html#cb613-1" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
-<span id="cb613-2"><a href="pre-post.html#cb613-2" tabindex="-1"></a><span class="fu">qqPlot</span>(m1, <span class="at">id =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb612"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb612-1"><a href="pre-post.html#cb612-1" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
+<span id="cb612-2"><a href="pre-post.html#cb612-2" tabindex="-1"></a><span class="fu">qqPlot</span>(m1, <span class="at">id =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
 <p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/pre-post-eg1-qq-1.png" width="576" /></p>
 <p>The residuals are within the bounds reasonably expected of a sample from a normal distribution</p>
-<div class="sourceCode" id="cb614"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb614-1"><a href="pre-post.html#cb614-1" tabindex="-1"></a><span class="fu">spreadLevelPlot</span>(m1)</span></code></pre></div>
+<div class="sourceCode" id="cb613"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb613-1"><a href="pre-post.html#cb613-1" tabindex="-1"></a><span class="fu">spreadLevelPlot</span>(m1)</span></code></pre></div>
 <p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/pre-post-eg1-spreadlevel-1.png" width="576" /></p>
 <pre><code>## 
 ## Suggested power transformation:  0.1054906</code></pre>
@@ -2521,12 +2524,12 @@ cLDA
 </div>
 <div id="inference-from-the-model-7" class="section level4 hasAnchor" number="17.5.0.3">
 <h4><span class="header-section-number">17.5.0.3</span> Inference from the model<a href="pre-post.html#inference-from-the-model-7" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<div class="sourceCode" id="cb616"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb616-1"><a href="pre-post.html#cb616-1" tabindex="-1"></a>m1_coef <span class="ot">&lt;-</span> <span class="fu">cbind</span>(<span class="fu">coef</span>(<span class="fu">summary</span>(m1)),</span>
-<span id="cb616-2"><a href="pre-post.html#cb616-2" tabindex="-1"></a>                 <span class="fu">confint</span>(m1))</span>
-<span id="cb616-3"><a href="pre-post.html#cb616-3" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(m1_coef,</span>
-<span id="cb616-4"><a href="pre-post.html#cb616-4" tabindex="-1"></a>             <span class="at">digits =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">1</span>,<span class="dv">3</span>,<span class="dv">1</span>,<span class="dv">1</span>),</span>
-<span id="cb616-5"><a href="pre-post.html#cb616-5" tabindex="-1"></a>             <span class="at">caption =</span> <span class="st">&quot;Coefficient table of model m1&quot;</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb616-6"><a href="pre-post.html#cb616-6" tabindex="-1"></a>  <span class="fu">kable_styling</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb615"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb615-1"><a href="pre-post.html#cb615-1" tabindex="-1"></a>m1_coef <span class="ot">&lt;-</span> <span class="fu">cbind</span>(<span class="fu">coef</span>(<span class="fu">summary</span>(m1)),</span>
+<span id="cb615-2"><a href="pre-post.html#cb615-2" tabindex="-1"></a>                 <span class="fu">confint</span>(m1))</span>
+<span id="cb615-3"><a href="pre-post.html#cb615-3" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(m1_coef,</span>
+<span id="cb615-4"><a href="pre-post.html#cb615-4" tabindex="-1"></a>             <span class="at">digits =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">1</span>,<span class="dv">3</span>,<span class="dv">1</span>,<span class="dv">1</span>),</span>
+<span id="cb615-5"><a href="pre-post.html#cb615-5" tabindex="-1"></a>             <span class="at">caption =</span> <span class="st">&quot;Coefficient table of model m1&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb615-6"><a href="pre-post.html#cb615-6" tabindex="-1"></a>  <span class="fu">kable_styling</span>()</span></code></pre></div>
 <table class="table" style="margin-left: auto; margin-right: auto;">
 <caption>
 <span id="tab:pre-post-eg1-inference">Table 17.27: </span><span id="tab:pre-post-eg1-inference">Table 17.28: </span>Coefficient table of model m1
@@ -2637,13 +2640,13 @@ treatmentIL-17
 <div id="working-in-r-6" class="section level2 hasAnchor" number="17.6">
 <h2><span class="header-section-number">17.6</span> Working in R<a href="pre-post.html#working-in-r-6" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p><strong>(M1) Linear model with the baseline measure as the covariate (ANCOVA model)</strong></p>
-<div class="sourceCode" id="cb617"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb617-1"><a href="pre-post.html#cb617-1" tabindex="-1"></a>m1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(post <span class="sc">~</span> pre <span class="sc">+</span> treatment, <span class="at">data =</span> fig3f)</span>
-<span id="cb617-2"><a href="pre-post.html#cb617-2" tabindex="-1"></a>m1_coef <span class="ot">&lt;-</span> <span class="fu">cbind</span>(<span class="fu">coef</span>(<span class="fu">summary</span>(m1)),</span>
-<span id="cb617-3"><a href="pre-post.html#cb617-3" tabindex="-1"></a>                 <span class="fu">confint</span>(m1))</span>
-<span id="cb617-4"><a href="pre-post.html#cb617-4" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(m1_coef,</span>
-<span id="cb617-5"><a href="pre-post.html#cb617-5" tabindex="-1"></a>             <span class="at">digits =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">1</span>,<span class="dv">3</span>,<span class="dv">1</span>,<span class="dv">1</span>),</span>
-<span id="cb617-6"><a href="pre-post.html#cb617-6" tabindex="-1"></a>             <span class="at">caption =</span> <span class="st">&quot;Coefficient table of Model M1&quot;</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb617-7"><a href="pre-post.html#cb617-7" tabindex="-1"></a>  <span class="fu">kable_styling</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb616"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb616-1"><a href="pre-post.html#cb616-1" tabindex="-1"></a>m1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(post <span class="sc">~</span> pre <span class="sc">+</span> treatment, <span class="at">data =</span> fig3f)</span>
+<span id="cb616-2"><a href="pre-post.html#cb616-2" tabindex="-1"></a>m1_coef <span class="ot">&lt;-</span> <span class="fu">cbind</span>(<span class="fu">coef</span>(<span class="fu">summary</span>(m1)),</span>
+<span id="cb616-3"><a href="pre-post.html#cb616-3" tabindex="-1"></a>                 <span class="fu">confint</span>(m1))</span>
+<span id="cb616-4"><a href="pre-post.html#cb616-4" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(m1_coef,</span>
+<span id="cb616-5"><a href="pre-post.html#cb616-5" tabindex="-1"></a>             <span class="at">digits =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">1</span>,<span class="dv">3</span>,<span class="dv">1</span>,<span class="dv">1</span>),</span>
+<span id="cb616-6"><a href="pre-post.html#cb616-6" tabindex="-1"></a>             <span class="at">caption =</span> <span class="st">&quot;Coefficient table of Model M1&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb616-7"><a href="pre-post.html#cb616-7" tabindex="-1"></a>  <span class="fu">kable_styling</span>()</span></code></pre></div>
 <table class="table" style="margin-left: auto; margin-right: auto;">
 <caption>
 <span id="tab:pre-post-ancova-show">Table 17.29: </span><span id="tab:pre-post-ancova-show">Table 17.30: </span>Coefficient table of Model M1
@@ -2745,13 +2748,13 @@ treatmentIL-17
 </tbody>
 </table>
 <p><strong>(M2) Linear model of the change score (change-score model)</strong></p>
-<div class="sourceCode" id="cb618"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb618-1"><a href="pre-post.html#cb618-1" tabindex="-1"></a>m2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(change <span class="sc">~</span> treatment, <span class="at">data =</span> fig3f)</span>
-<span id="cb618-2"><a href="pre-post.html#cb618-2" tabindex="-1"></a>m2_coef <span class="ot">&lt;-</span> <span class="fu">cbind</span>(<span class="fu">coef</span>(<span class="fu">summary</span>(m2)),</span>
-<span id="cb618-3"><a href="pre-post.html#cb618-3" tabindex="-1"></a>                 <span class="fu">confint</span>(m2))</span>
-<span id="cb618-4"><a href="pre-post.html#cb618-4" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(m2_coef,</span>
-<span id="cb618-5"><a href="pre-post.html#cb618-5" tabindex="-1"></a>             <span class="at">digits =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">1</span>,<span class="dv">3</span>,<span class="dv">1</span>,<span class="dv">1</span>),</span>
-<span id="cb618-6"><a href="pre-post.html#cb618-6" tabindex="-1"></a>             <span class="at">caption =</span> <span class="st">&quot;Coefficient table of Model M2&quot;</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb618-7"><a href="pre-post.html#cb618-7" tabindex="-1"></a>  <span class="fu">kable_styling</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb617"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb617-1"><a href="pre-post.html#cb617-1" tabindex="-1"></a>m2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(change <span class="sc">~</span> treatment, <span class="at">data =</span> fig3f)</span>
+<span id="cb617-2"><a href="pre-post.html#cb617-2" tabindex="-1"></a>m2_coef <span class="ot">&lt;-</span> <span class="fu">cbind</span>(<span class="fu">coef</span>(<span class="fu">summary</span>(m2)),</span>
+<span id="cb617-3"><a href="pre-post.html#cb617-3" tabindex="-1"></a>                 <span class="fu">confint</span>(m2))</span>
+<span id="cb617-4"><a href="pre-post.html#cb617-4" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(m2_coef,</span>
+<span id="cb617-5"><a href="pre-post.html#cb617-5" tabindex="-1"></a>             <span class="at">digits =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">1</span>,<span class="dv">3</span>,<span class="dv">1</span>,<span class="dv">1</span>),</span>
+<span id="cb617-6"><a href="pre-post.html#cb617-6" tabindex="-1"></a>             <span class="at">caption =</span> <span class="st">&quot;Coefficient table of Model M2&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb617-7"><a href="pre-post.html#cb617-7" tabindex="-1"></a>  <span class="fu">kable_styling</span>()</span></code></pre></div>
 <table class="table" style="margin-left: auto; margin-right: auto;">
 <caption>
 <span id="tab:pre-post-change-score-show">Table 17.31: </span><span id="tab:pre-post-change-score-show">Table 17.32: </span>Coefficient table of Model M2
@@ -2932,13 +2935,13 @@ treatment:time
 </tbody>
 </table>
 <p><strong>(M6) Linear mixed model</strong></p>
-<div class="sourceCode" id="cb619"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb619-1"><a href="pre-post.html#cb619-1" tabindex="-1"></a>m6 <span class="ot">&lt;-</span> <span class="fu">lmer</span>(sociability <span class="sc">~</span> treatment<span class="sc">*</span>time <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>id), <span class="at">data =</span> fig3f_long)</span>
-<span id="cb619-2"><a href="pre-post.html#cb619-2" tabindex="-1"></a>m6_coef <span class="ot">&lt;-</span> <span class="fu">cbind</span>(<span class="fu">coef</span>(<span class="fu">summary</span>(m6)),</span>
-<span id="cb619-3"><a href="pre-post.html#cb619-3" tabindex="-1"></a>                  <span class="fu">confint</span>(m6)[<span class="dv">3</span><span class="sc">:</span><span class="dv">6</span>,])</span>
-<span id="cb619-4"><a href="pre-post.html#cb619-4" tabindex="-1"></a>m6_coef <span class="sc">%&gt;%</span></span>
-<span id="cb619-5"><a href="pre-post.html#cb619-5" tabindex="-1"></a>  knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="at">digits =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">3</span>,<span class="dv">1</span>),</span>
-<span id="cb619-6"><a href="pre-post.html#cb619-6" tabindex="-1"></a>             <span class="at">caption =</span> <span class="st">&quot;Coefficient table of Model M6&quot;</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb619-7"><a href="pre-post.html#cb619-7" tabindex="-1"></a>  <span class="fu">kable_styling</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb618"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb618-1"><a href="pre-post.html#cb618-1" tabindex="-1"></a>m6 <span class="ot">&lt;-</span> <span class="fu">lmer</span>(sociability <span class="sc">~</span> treatment<span class="sc">*</span>time <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>id), <span class="at">data =</span> fig3f_long)</span>
+<span id="cb618-2"><a href="pre-post.html#cb618-2" tabindex="-1"></a>m6_coef <span class="ot">&lt;-</span> <span class="fu">cbind</span>(<span class="fu">coef</span>(<span class="fu">summary</span>(m6)),</span>
+<span id="cb618-3"><a href="pre-post.html#cb618-3" tabindex="-1"></a>                  <span class="fu">confint</span>(m6)[<span class="dv">3</span><span class="sc">:</span><span class="dv">6</span>,])</span>
+<span id="cb618-4"><a href="pre-post.html#cb618-4" tabindex="-1"></a>m6_coef <span class="sc">%&gt;%</span></span>
+<span id="cb618-5"><a href="pre-post.html#cb618-5" tabindex="-1"></a>  knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="at">digits =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">3</span>,<span class="dv">1</span>),</span>
+<span id="cb618-6"><a href="pre-post.html#cb618-6" tabindex="-1"></a>             <span class="at">caption =</span> <span class="st">&quot;Coefficient table of Model M6&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb618-7"><a href="pre-post.html#cb618-7" tabindex="-1"></a>  <span class="fu">kable_styling</span>()</span></code></pre></div>
 <table class="table" style="margin-left: auto; margin-right: auto;">
 <caption>
 <span id="tab:pre-post-lmm-show">Table 17.35: </span><span id="tab:pre-post-lmm-show">Table 17.36: </span>Coefficient table of Model M6
@@ -3078,17 +3081,17 @@ treatmentIL-17:timepost
 </tbody>
 </table>
 <p>Use <code>lmer.df = "Satterthwaite"</code> as an argument in <code>emmeans</code> (not <code>contrast</code>!) to get the satterthwaite df for the interaction contrast.</p>
-<div class="sourceCode" id="cb620"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb620-1"><a href="pre-post.html#cb620-1" tabindex="-1"></a>m6_emm <span class="ot">&lt;-</span> <span class="fu">emmeans</span>(m6,</span>
-<span id="cb620-2"><a href="pre-post.html#cb620-2" tabindex="-1"></a>                    <span class="at">specs =</span> <span class="fu">c</span>(<span class="st">&quot;treatment&quot;</span>, <span class="st">&quot;time&quot;</span>),</span>
-<span id="cb620-3"><a href="pre-post.html#cb620-3" tabindex="-1"></a>                    <span class="at">lmer.df =</span> <span class="st">&quot;Satterthwaite&quot;</span>)</span>
-<span id="cb620-4"><a href="pre-post.html#cb620-4" tabindex="-1"></a>m6_pairs <span class="ot">&lt;-</span> <span class="fu">contrast</span>(m6_emm, <span class="at">interaction =</span> <span class="fu">c</span>(<span class="st">&quot;trt.vs.ctrl&quot;</span>), <span class="at">by =</span> <span class="cn">NULL</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb620-5"><a href="pre-post.html#cb620-5" tabindex="-1"></a>  <span class="fu">summary</span>(<span class="at">infer =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb620-6"><a href="pre-post.html#cb620-6" tabindex="-1"></a><span class="co"># do not use profile or Wald intervals of coefficients, which are </span></span>
-<span id="cb620-7"><a href="pre-post.html#cb620-7" tabindex="-1"></a><span class="co"># similar/equal to lmer.df = &quot;asymptotic&quot;</span></span>
-<span id="cb620-8"><a href="pre-post.html#cb620-8" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(m6_pairs,</span>
-<span id="cb620-9"><a href="pre-post.html#cb620-9" tabindex="-1"></a>             <span class="at">digits =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">3</span>),</span>
-<span id="cb620-10"><a href="pre-post.html#cb620-10" tabindex="-1"></a>             <span class="at">caption =</span> <span class="st">&quot;Contrasts table of Model M6.&quot;</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb620-11"><a href="pre-post.html#cb620-11" tabindex="-1"></a>  <span class="fu">kable_styling</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb619"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb619-1"><a href="pre-post.html#cb619-1" tabindex="-1"></a>m6_emm <span class="ot">&lt;-</span> <span class="fu">emmeans</span>(m6,</span>
+<span id="cb619-2"><a href="pre-post.html#cb619-2" tabindex="-1"></a>                    <span class="at">specs =</span> <span class="fu">c</span>(<span class="st">&quot;treatment&quot;</span>, <span class="st">&quot;time&quot;</span>),</span>
+<span id="cb619-3"><a href="pre-post.html#cb619-3" tabindex="-1"></a>                    <span class="at">lmer.df =</span> <span class="st">&quot;Satterthwaite&quot;</span>)</span>
+<span id="cb619-4"><a href="pre-post.html#cb619-4" tabindex="-1"></a>m6_pairs <span class="ot">&lt;-</span> <span class="fu">contrast</span>(m6_emm, <span class="at">interaction =</span> <span class="fu">c</span>(<span class="st">&quot;trt.vs.ctrl&quot;</span>), <span class="at">by =</span> <span class="cn">NULL</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb619-5"><a href="pre-post.html#cb619-5" tabindex="-1"></a>  <span class="fu">summary</span>(<span class="at">infer =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb619-6"><a href="pre-post.html#cb619-6" tabindex="-1"></a><span class="co"># do not use profile or Wald intervals of coefficients, which are </span></span>
+<span id="cb619-7"><a href="pre-post.html#cb619-7" tabindex="-1"></a><span class="co"># similar/equal to lmer.df = &quot;asymptotic&quot;</span></span>
+<span id="cb619-8"><a href="pre-post.html#cb619-8" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(m6_pairs,</span>
+<span id="cb619-9"><a href="pre-post.html#cb619-9" tabindex="-1"></a>             <span class="at">digits =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">3</span>),</span>
+<span id="cb619-10"><a href="pre-post.html#cb619-10" tabindex="-1"></a>             <span class="at">caption =</span> <span class="st">&quot;Contrasts table of Model M6.&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb619-11"><a href="pre-post.html#cb619-11" tabindex="-1"></a>  <span class="fu">kable_styling</span>()</span></code></pre></div>
 <table class="table" style="margin-left: auto; margin-right: auto;">
 <caption>
 <span id="tab:pre-post-lmm-contrast-show">Table 17.37: </span><span id="tab:pre-post-lmm-contrast-show">Table 17.38: </span>Contrasts table of Model M6.
@@ -3157,16 +3160,16 @@ post - pre
 </tbody>
 </table>
 <p><strong>(M7) Linear model with correlated error</strong></p>
-<div class="sourceCode" id="cb621"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb621-1"><a href="pre-post.html#cb621-1" tabindex="-1"></a>m7 <span class="ot">&lt;-</span> <span class="fu">gls</span>(sociability <span class="sc">~</span> treatment<span class="sc">*</span>time,</span>
-<span id="cb621-2"><a href="pre-post.html#cb621-2" tabindex="-1"></a>          <span class="at">data =</span> fig3f_long,</span>
-<span id="cb621-3"><a href="pre-post.html#cb621-3" tabindex="-1"></a>          <span class="at">weights =</span> <span class="fu">varIdent</span>(<span class="at">form=</span> <span class="sc">~</span> <span class="dv">1</span> <span class="sc">|</span> time),</span>
-<span id="cb621-4"><a href="pre-post.html#cb621-4" tabindex="-1"></a>          <span class="at">correlation=</span> <span class="fu">corSymm</span>(<span class="at">form=</span><span class="sc">~</span> <span class="dv">1</span><span class="sc">|</span> id))</span>
-<span id="cb621-5"><a href="pre-post.html#cb621-5" tabindex="-1"></a>m7_coef <span class="ot">&lt;-</span> <span class="fu">cbind</span>(<span class="fu">coef</span>(<span class="fu">summary</span>(m7)),</span>
-<span id="cb621-6"><a href="pre-post.html#cb621-6" tabindex="-1"></a>                 <span class="fu">confint</span>(m7))</span>
-<span id="cb621-7"><a href="pre-post.html#cb621-7" tabindex="-1"></a>m7_coef <span class="sc">%&gt;%</span></span>
-<span id="cb621-8"><a href="pre-post.html#cb621-8" tabindex="-1"></a>  knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="at">digits =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">3</span>,<span class="dv">1</span>),</span>
-<span id="cb621-9"><a href="pre-post.html#cb621-9" tabindex="-1"></a>               <span class="at">caption =</span> <span class="st">&quot;Coefficient table of Model M7&quot;</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb621-10"><a href="pre-post.html#cb621-10" tabindex="-1"></a>  <span class="fu">kable_styling</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb620"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb620-1"><a href="pre-post.html#cb620-1" tabindex="-1"></a>m7 <span class="ot">&lt;-</span> <span class="fu">gls</span>(sociability <span class="sc">~</span> treatment<span class="sc">*</span>time,</span>
+<span id="cb620-2"><a href="pre-post.html#cb620-2" tabindex="-1"></a>          <span class="at">data =</span> fig3f_long,</span>
+<span id="cb620-3"><a href="pre-post.html#cb620-3" tabindex="-1"></a>          <span class="at">weights =</span> <span class="fu">varIdent</span>(<span class="at">form=</span> <span class="sc">~</span> <span class="dv">1</span> <span class="sc">|</span> time),</span>
+<span id="cb620-4"><a href="pre-post.html#cb620-4" tabindex="-1"></a>          <span class="at">correlation=</span> <span class="fu">corSymm</span>(<span class="at">form=</span><span class="sc">~</span> <span class="dv">1</span><span class="sc">|</span> id))</span>
+<span id="cb620-5"><a href="pre-post.html#cb620-5" tabindex="-1"></a>m7_coef <span class="ot">&lt;-</span> <span class="fu">cbind</span>(<span class="fu">coef</span>(<span class="fu">summary</span>(m7)),</span>
+<span id="cb620-6"><a href="pre-post.html#cb620-6" tabindex="-1"></a>                 <span class="fu">confint</span>(m7))</span>
+<span id="cb620-7"><a href="pre-post.html#cb620-7" tabindex="-1"></a>m7_coef <span class="sc">%&gt;%</span></span>
+<span id="cb620-8"><a href="pre-post.html#cb620-8" tabindex="-1"></a>  knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="at">digits =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">3</span>,<span class="dv">1</span>),</span>
+<span id="cb620-9"><a href="pre-post.html#cb620-9" tabindex="-1"></a>               <span class="at">caption =</span> <span class="st">&quot;Coefficient table of Model M7&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb620-10"><a href="pre-post.html#cb620-10" tabindex="-1"></a>  <span class="fu">kable_styling</span>()</span></code></pre></div>
 <table class="table" style="margin-left: auto; margin-right: auto;">
 <caption>
 <span id="tab:pre-post-lmCorErr-show">Table 17.39: </span><span id="tab:pre-post-lmCorErr-show">Table 17.40: </span>Coefficient table of Model M7
@@ -3291,15 +3294,15 @@ treatmentIL-17:timepost
 </tbody>
 </table>
 <p>Use <code>mode = "satterthwaite"</code> as an argument in <code>emmeans</code> (not <code>contrast</code>!) to get the satterthwaite df for the interaction contrast.</p>
-<div class="sourceCode" id="cb622"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb622-1"><a href="pre-post.html#cb622-1" tabindex="-1"></a>m7_emm <span class="ot">&lt;-</span> <span class="fu">emmeans</span>(m7,</span>
-<span id="cb622-2"><a href="pre-post.html#cb622-2" tabindex="-1"></a>                  <span class="at">specs =</span> <span class="fu">c</span>(<span class="st">&quot;treatment&quot;</span>, <span class="st">&quot;time&quot;</span>),</span>
-<span id="cb622-3"><a href="pre-post.html#cb622-3" tabindex="-1"></a>                  <span class="at">mode =</span> <span class="st">&quot;satterthwaite&quot;</span>)</span>
-<span id="cb622-4"><a href="pre-post.html#cb622-4" tabindex="-1"></a>m7_pairs <span class="ot">&lt;-</span> <span class="fu">contrast</span>(m7_emm, <span class="at">interaction =</span> <span class="fu">c</span>(<span class="st">&quot;trt.vs.ctrl&quot;</span>), <span class="at">by =</span> <span class="cn">NULL</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb622-5"><a href="pre-post.html#cb622-5" tabindex="-1"></a>  <span class="fu">summary</span>(<span class="at">infer =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb622-6"><a href="pre-post.html#cb622-6" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(m7_pairs,</span>
-<span id="cb622-7"><a href="pre-post.html#cb622-7" tabindex="-1"></a>             <span class="at">digits =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">3</span>),</span>
-<span id="cb622-8"><a href="pre-post.html#cb622-8" tabindex="-1"></a>             <span class="at">caption =</span> <span class="st">&quot;Contrasts table of Model M7.&quot;</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb622-9"><a href="pre-post.html#cb622-9" tabindex="-1"></a>  <span class="fu">kable_styling</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb621"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb621-1"><a href="pre-post.html#cb621-1" tabindex="-1"></a>m7_emm <span class="ot">&lt;-</span> <span class="fu">emmeans</span>(m7,</span>
+<span id="cb621-2"><a href="pre-post.html#cb621-2" tabindex="-1"></a>                  <span class="at">specs =</span> <span class="fu">c</span>(<span class="st">&quot;treatment&quot;</span>, <span class="st">&quot;time&quot;</span>),</span>
+<span id="cb621-3"><a href="pre-post.html#cb621-3" tabindex="-1"></a>                  <span class="at">mode =</span> <span class="st">&quot;satterthwaite&quot;</span>)</span>
+<span id="cb621-4"><a href="pre-post.html#cb621-4" tabindex="-1"></a>m7_pairs <span class="ot">&lt;-</span> <span class="fu">contrast</span>(m7_emm, <span class="at">interaction =</span> <span class="fu">c</span>(<span class="st">&quot;trt.vs.ctrl&quot;</span>), <span class="at">by =</span> <span class="cn">NULL</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb621-5"><a href="pre-post.html#cb621-5" tabindex="-1"></a>  <span class="fu">summary</span>(<span class="at">infer =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb621-6"><a href="pre-post.html#cb621-6" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(m7_pairs,</span>
+<span id="cb621-7"><a href="pre-post.html#cb621-7" tabindex="-1"></a>             <span class="at">digits =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">3</span>),</span>
+<span id="cb621-8"><a href="pre-post.html#cb621-8" tabindex="-1"></a>             <span class="at">caption =</span> <span class="st">&quot;Contrasts table of Model M7.&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb621-9"><a href="pre-post.html#cb621-9" tabindex="-1"></a>  <span class="fu">kable_styling</span>()</span></code></pre></div>
 <table class="table" style="margin-left: auto; margin-right: auto;">
 <caption>
 <span id="tab:pre-post-lmCorErr-contrast-show">Table 17.41: </span><span id="tab:pre-post-lmCorErr-contrast-show">Table 17.42: </span>Contrasts table of Model M7.
@@ -3369,53 +3372,53 @@ post - pre
 </table>
 <p><strong>(M8) Constrained fixed effects model with correlated error (cLDA model)</strong></p>
 <p><strong>cLDA function</strong></p>
-<div class="sourceCode" id="cb623"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb623-1"><a href="pre-post.html#cb623-1" tabindex="-1"></a>clda <span class="ot">&lt;-</span> <span class="cf">function</span>(data,</span>
-<span id="cb623-2"><a href="pre-post.html#cb623-2" tabindex="-1"></a>                  y_col,</span>
-<span id="cb623-3"><a href="pre-post.html#cb623-3" tabindex="-1"></a>                  <span class="at">treatment_col =</span> <span class="st">&quot;treatment&quot;</span>,</span>
-<span id="cb623-4"><a href="pre-post.html#cb623-4" tabindex="-1"></a>                  <span class="at">time_col =</span> <span class="st">&quot;time&quot;</span>,</span>
-<span id="cb623-5"><a href="pre-post.html#cb623-5" tabindex="-1"></a>                  <span class="at">id_col =</span> <span class="st">&quot;id&quot;</span>){</span>
-<span id="cb623-6"><a href="pre-post.html#cb623-6" tabindex="-1"></a><span class="co"># warning - not debugged for missing</span></span>
-<span id="cb623-7"><a href="pre-post.html#cb623-7" tabindex="-1"></a>  </span>
-<span id="cb623-8"><a href="pre-post.html#cb623-8" tabindex="-1"></a>  dt <span class="ot">&lt;-</span> <span class="fu">setDT</span>(data)</span>
-<span id="cb623-9"><a href="pre-post.html#cb623-9" tabindex="-1"></a>  n_groups <span class="ot">&lt;-</span> <span class="fu">length</span>(<span class="fu">unique</span>(dt[, <span class="fu">get</span>(treatment_col)]))</span>
-<span id="cb623-10"><a href="pre-post.html#cb623-10" tabindex="-1"></a>  n_times <span class="ot">&lt;-</span> <span class="fu">length</span>(<span class="fu">unique</span>(dt[, <span class="fu">get</span>(time_col)]))</span>
-<span id="cb623-11"><a href="pre-post.html#cb623-11" tabindex="-1"></a>  </span>
-<span id="cb623-12"><a href="pre-post.html#cb623-12" tabindex="-1"></a>  <span class="co"># create model matrix with no treatment effect at baseline</span></span>
-<span id="cb623-13"><a href="pre-post.html#cb623-13" tabindex="-1"></a>  <span class="co"># part 1 - get the model matrix</span></span>
-<span id="cb623-14"><a href="pre-post.html#cb623-14" tabindex="-1"></a>  form <span class="ot">&lt;-</span> <span class="fu">formula</span>(<span class="fu">paste0</span>(<span class="st">&quot; ~ &quot;</span>, treatment_col,<span class="st">&quot; * &quot;</span>, time_col))</span>
-<span id="cb623-15"><a href="pre-post.html#cb623-15" tabindex="-1"></a>  model_matrix <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(form, <span class="at">data =</span> dt)</span>
-<span id="cb623-16"><a href="pre-post.html#cb623-16" tabindex="-1"></a>  </span>
-<span id="cb623-17"><a href="pre-post.html#cb623-17" tabindex="-1"></a>  <span class="co"># part 2 - exclude columns</span></span>
-<span id="cb623-18"><a href="pre-post.html#cb623-18" tabindex="-1"></a>  treat_cols <span class="ot">&lt;-</span> <span class="dv">2</span><span class="sc">:</span>n_groups</span>
-<span id="cb623-19"><a href="pre-post.html#cb623-19" tabindex="-1"></a>  exc <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1</span>, treat_cols)</span>
-<span id="cb623-20"><a href="pre-post.html#cb623-20" tabindex="-1"></a>  </span>
-<span id="cb623-21"><a href="pre-post.html#cb623-21" tabindex="-1"></a>  <span class="co"># constrained model matrix</span></span>
-<span id="cb623-22"><a href="pre-post.html#cb623-22" tabindex="-1"></a>  X <span class="ot">&lt;-</span> model_matrix[, <span class="sc">-</span>exc] <span class="sc">%&gt;%</span></span>
-<span id="cb623-23"><a href="pre-post.html#cb623-23" tabindex="-1"></a>    <span class="fu">data.table</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb623-24"><a href="pre-post.html#cb623-24" tabindex="-1"></a>    <span class="fu">clean_names</span>()</span>
-<span id="cb623-25"><a href="pre-post.html#cb623-25" tabindex="-1"></a>  dt <span class="ot">&lt;-</span> <span class="fu">cbind</span>(dt, X)</span>
-<span id="cb623-26"><a href="pre-post.html#cb623-26" tabindex="-1"></a>  rhs <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="fu">names</span>(X), <span class="at">collapse =</span> <span class="st">&quot; + &quot;</span>)</span>
-<span id="cb623-27"><a href="pre-post.html#cb623-27" tabindex="-1"></a>  </span>
-<span id="cb623-28"><a href="pre-post.html#cb623-28" tabindex="-1"></a>  model_form <span class="ot">&lt;-</span> <span class="fu">formula</span>(<span class="fu">paste0</span>(y_col, <span class="st">&quot; ~ &quot;</span>, rhs))</span>
-<span id="cb623-29"><a href="pre-post.html#cb623-29" tabindex="-1"></a>  weight_form <span class="ot">&lt;-</span> <span class="fu">formula</span>(<span class="fu">paste0</span>(<span class="st">&quot;~ 1 | &quot;</span>, time_col))</span>
-<span id="cb623-30"><a href="pre-post.html#cb623-30" tabindex="-1"></a>  cor_form <span class="ot">&lt;-</span> <span class="fu">formula</span>(<span class="fu">paste0</span>(<span class="st">&quot;~ 1 | &quot;</span>, id_col))</span>
-<span id="cb623-31"><a href="pre-post.html#cb623-31" tabindex="-1"></a>  fit <span class="ot">&lt;-</span> <span class="fu">gls</span>(model_form,</span>
-<span id="cb623-32"><a href="pre-post.html#cb623-32" tabindex="-1"></a>             <span class="at">data =</span> dt,</span>
-<span id="cb623-33"><a href="pre-post.html#cb623-33" tabindex="-1"></a>             <span class="at">weights =</span> <span class="fu">varIdent</span>(<span class="at">form =</span> weight_form),</span>
-<span id="cb623-34"><a href="pre-post.html#cb623-34" tabindex="-1"></a>             <span class="at">correlation=</span> <span class="fu">corSymm</span>(<span class="at">form =</span> cor_form))</span>
-<span id="cb623-35"><a href="pre-post.html#cb623-35" tabindex="-1"></a>  <span class="fu">return</span>(fit)</span>
-<span id="cb623-36"><a href="pre-post.html#cb623-36" tabindex="-1"></a>}</span></code></pre></div>
-<div class="sourceCode" id="cb624"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb624-1"><a href="pre-post.html#cb624-1" tabindex="-1"></a>m8 <span class="ot">&lt;-</span> <span class="fu">clda</span>(fig3f_long,</span>
-<span id="cb624-2"><a href="pre-post.html#cb624-2" tabindex="-1"></a>           <span class="at">y_col =</span> <span class="st">&quot;sociability&quot;</span>,</span>
-<span id="cb624-3"><a href="pre-post.html#cb624-3" tabindex="-1"></a>           <span class="at">treatment_col =</span> <span class="st">&quot;treatment&quot;</span>,</span>
-<span id="cb624-4"><a href="pre-post.html#cb624-4" tabindex="-1"></a>           <span class="at">time_col =</span> <span class="st">&quot;time&quot;</span>,</span>
-<span id="cb624-5"><a href="pre-post.html#cb624-5" tabindex="-1"></a>           <span class="at">id_col =</span> <span class="st">&quot;id&quot;</span>)</span>
-<span id="cb624-6"><a href="pre-post.html#cb624-6" tabindex="-1"></a>m8_coef <span class="ot">&lt;-</span> <span class="fu">cbind</span>(<span class="fu">coef</span>(<span class="fu">summary</span>(m8)),</span>
-<span id="cb624-7"><a href="pre-post.html#cb624-7" tabindex="-1"></a>                 <span class="fu">confint</span>(m8))</span>
-<span id="cb624-8"><a href="pre-post.html#cb624-8" tabindex="-1"></a>m8_coef <span class="sc">%&gt;%</span></span>
-<span id="cb624-9"><a href="pre-post.html#cb624-9" tabindex="-1"></a>  knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="at">digits =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">1</span>,<span class="dv">4</span>,<span class="dv">1</span>,<span class="dv">1</span>),</span>
-<span id="cb624-10"><a href="pre-post.html#cb624-10" tabindex="-1"></a>             <span class="at">caption =</span> <span class="st">&quot;Coefficient table of Model M8&quot;</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb624-11"><a href="pre-post.html#cb624-11" tabindex="-1"></a>  <span class="fu">kable_styling</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb622"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb622-1"><a href="pre-post.html#cb622-1" tabindex="-1"></a>clda <span class="ot">&lt;-</span> <span class="cf">function</span>(data,</span>
+<span id="cb622-2"><a href="pre-post.html#cb622-2" tabindex="-1"></a>                  y_col,</span>
+<span id="cb622-3"><a href="pre-post.html#cb622-3" tabindex="-1"></a>                  <span class="at">treatment_col =</span> <span class="st">&quot;treatment&quot;</span>,</span>
+<span id="cb622-4"><a href="pre-post.html#cb622-4" tabindex="-1"></a>                  <span class="at">time_col =</span> <span class="st">&quot;time&quot;</span>,</span>
+<span id="cb622-5"><a href="pre-post.html#cb622-5" tabindex="-1"></a>                  <span class="at">id_col =</span> <span class="st">&quot;id&quot;</span>){</span>
+<span id="cb622-6"><a href="pre-post.html#cb622-6" tabindex="-1"></a><span class="co"># warning - not debugged for missing</span></span>
+<span id="cb622-7"><a href="pre-post.html#cb622-7" tabindex="-1"></a>  </span>
+<span id="cb622-8"><a href="pre-post.html#cb622-8" tabindex="-1"></a>  dt <span class="ot">&lt;-</span> <span class="fu">setDT</span>(data)</span>
+<span id="cb622-9"><a href="pre-post.html#cb622-9" tabindex="-1"></a>  n_groups <span class="ot">&lt;-</span> <span class="fu">length</span>(<span class="fu">unique</span>(dt[, <span class="fu">get</span>(treatment_col)]))</span>
+<span id="cb622-10"><a href="pre-post.html#cb622-10" tabindex="-1"></a>  n_times <span class="ot">&lt;-</span> <span class="fu">length</span>(<span class="fu">unique</span>(dt[, <span class="fu">get</span>(time_col)]))</span>
+<span id="cb622-11"><a href="pre-post.html#cb622-11" tabindex="-1"></a>  </span>
+<span id="cb622-12"><a href="pre-post.html#cb622-12" tabindex="-1"></a>  <span class="co"># create model matrix with no treatment effect at baseline</span></span>
+<span id="cb622-13"><a href="pre-post.html#cb622-13" tabindex="-1"></a>  <span class="co"># part 1 - get the model matrix</span></span>
+<span id="cb622-14"><a href="pre-post.html#cb622-14" tabindex="-1"></a>  form <span class="ot">&lt;-</span> <span class="fu">formula</span>(<span class="fu">paste0</span>(<span class="st">&quot; ~ &quot;</span>, treatment_col,<span class="st">&quot; * &quot;</span>, time_col))</span>
+<span id="cb622-15"><a href="pre-post.html#cb622-15" tabindex="-1"></a>  model_matrix <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(form, <span class="at">data =</span> dt)</span>
+<span id="cb622-16"><a href="pre-post.html#cb622-16" tabindex="-1"></a>  </span>
+<span id="cb622-17"><a href="pre-post.html#cb622-17" tabindex="-1"></a>  <span class="co"># part 2 - exclude columns</span></span>
+<span id="cb622-18"><a href="pre-post.html#cb622-18" tabindex="-1"></a>  treat_cols <span class="ot">&lt;-</span> <span class="dv">2</span><span class="sc">:</span>n_groups</span>
+<span id="cb622-19"><a href="pre-post.html#cb622-19" tabindex="-1"></a>  exc <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1</span>, treat_cols)</span>
+<span id="cb622-20"><a href="pre-post.html#cb622-20" tabindex="-1"></a>  </span>
+<span id="cb622-21"><a href="pre-post.html#cb622-21" tabindex="-1"></a>  <span class="co"># constrained model matrix</span></span>
+<span id="cb622-22"><a href="pre-post.html#cb622-22" tabindex="-1"></a>  X <span class="ot">&lt;-</span> model_matrix[, <span class="sc">-</span>exc] <span class="sc">%&gt;%</span></span>
+<span id="cb622-23"><a href="pre-post.html#cb622-23" tabindex="-1"></a>    <span class="fu">data.table</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb622-24"><a href="pre-post.html#cb622-24" tabindex="-1"></a>    <span class="fu">clean_names</span>()</span>
+<span id="cb622-25"><a href="pre-post.html#cb622-25" tabindex="-1"></a>  dt <span class="ot">&lt;-</span> <span class="fu">cbind</span>(dt, X)</span>
+<span id="cb622-26"><a href="pre-post.html#cb622-26" tabindex="-1"></a>  rhs <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="fu">names</span>(X), <span class="at">collapse =</span> <span class="st">&quot; + &quot;</span>)</span>
+<span id="cb622-27"><a href="pre-post.html#cb622-27" tabindex="-1"></a>  </span>
+<span id="cb622-28"><a href="pre-post.html#cb622-28" tabindex="-1"></a>  model_form <span class="ot">&lt;-</span> <span class="fu">formula</span>(<span class="fu">paste0</span>(y_col, <span class="st">&quot; ~ &quot;</span>, rhs))</span>
+<span id="cb622-29"><a href="pre-post.html#cb622-29" tabindex="-1"></a>  weight_form <span class="ot">&lt;-</span> <span class="fu">formula</span>(<span class="fu">paste0</span>(<span class="st">&quot;~ 1 | &quot;</span>, time_col))</span>
+<span id="cb622-30"><a href="pre-post.html#cb622-30" tabindex="-1"></a>  cor_form <span class="ot">&lt;-</span> <span class="fu">formula</span>(<span class="fu">paste0</span>(<span class="st">&quot;~ 1 | &quot;</span>, id_col))</span>
+<span id="cb622-31"><a href="pre-post.html#cb622-31" tabindex="-1"></a>  fit <span class="ot">&lt;-</span> <span class="fu">gls</span>(model_form,</span>
+<span id="cb622-32"><a href="pre-post.html#cb622-32" tabindex="-1"></a>             <span class="at">data =</span> dt,</span>
+<span id="cb622-33"><a href="pre-post.html#cb622-33" tabindex="-1"></a>             <span class="at">weights =</span> <span class="fu">varIdent</span>(<span class="at">form =</span> weight_form),</span>
+<span id="cb622-34"><a href="pre-post.html#cb622-34" tabindex="-1"></a>             <span class="at">correlation=</span> <span class="fu">corSymm</span>(<span class="at">form =</span> cor_form))</span>
+<span id="cb622-35"><a href="pre-post.html#cb622-35" tabindex="-1"></a>  <span class="fu">return</span>(fit)</span>
+<span id="cb622-36"><a href="pre-post.html#cb622-36" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb623"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb623-1"><a href="pre-post.html#cb623-1" tabindex="-1"></a>m8 <span class="ot">&lt;-</span> <span class="fu">clda</span>(fig3f_long,</span>
+<span id="cb623-2"><a href="pre-post.html#cb623-2" tabindex="-1"></a>           <span class="at">y_col =</span> <span class="st">&quot;sociability&quot;</span>,</span>
+<span id="cb623-3"><a href="pre-post.html#cb623-3" tabindex="-1"></a>           <span class="at">treatment_col =</span> <span class="st">&quot;treatment&quot;</span>,</span>
+<span id="cb623-4"><a href="pre-post.html#cb623-4" tabindex="-1"></a>           <span class="at">time_col =</span> <span class="st">&quot;time&quot;</span>,</span>
+<span id="cb623-5"><a href="pre-post.html#cb623-5" tabindex="-1"></a>           <span class="at">id_col =</span> <span class="st">&quot;id&quot;</span>)</span>
+<span id="cb623-6"><a href="pre-post.html#cb623-6" tabindex="-1"></a>m8_coef <span class="ot">&lt;-</span> <span class="fu">cbind</span>(<span class="fu">coef</span>(<span class="fu">summary</span>(m8)),</span>
+<span id="cb623-7"><a href="pre-post.html#cb623-7" tabindex="-1"></a>                 <span class="fu">confint</span>(m8))</span>
+<span id="cb623-8"><a href="pre-post.html#cb623-8" tabindex="-1"></a>m8_coef <span class="sc">%&gt;%</span></span>
+<span id="cb623-9"><a href="pre-post.html#cb623-9" tabindex="-1"></a>  knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="at">digits =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">1</span>,<span class="dv">4</span>,<span class="dv">1</span>,<span class="dv">1</span>),</span>
+<span id="cb623-10"><a href="pre-post.html#cb623-10" tabindex="-1"></a>             <span class="at">caption =</span> <span class="st">&quot;Coefficient table of Model M8&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb623-11"><a href="pre-post.html#cb623-11" tabindex="-1"></a>  <span class="fu">kable_styling</span>()</span></code></pre></div>
 <table class="table" style="margin-left: auto; margin-right: auto;">
 <caption>
 <span id="tab:pre-post-clda-show">Table 17.43: </span><span id="tab:pre-post-clda-show">Table 17.44: </span>Coefficient table of Model M8
@@ -3521,46 +3524,46 @@ treatment_il_17_timepost
 <h2><span class="header-section-number">17.7</span> Hidden code<a href="pre-post.html#hidden-code-8" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <div id="import-and-wrangle-mouse-sociability-data" class="section level3 hasAnchor" number="17.7.1">
 <h3><span class="header-section-number">17.7.1</span> Import and wrangle mouse sociability data<a href="pre-post.html#import-and-wrangle-mouse-sociability-data" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<div class="sourceCode" id="cb625"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb625-1"><a href="pre-post.html#cb625-1" tabindex="-1"></a>data_from <span class="ot">&lt;-</span> <span class="st">&quot;IL-17a promotes sociability in mouse models of neurodevelopmental disorders&quot;</span></span>
-<span id="cb625-2"><a href="pre-post.html#cb625-2" tabindex="-1"></a>file_name <span class="ot">&lt;-</span> <span class="st">&quot;41586_2019_1843_MOESM3_ESM.xlsx&quot;</span></span>
-<span id="cb625-3"><a href="pre-post.html#cb625-3" tabindex="-1"></a>file_path <span class="ot">&lt;-</span> <span class="fu">here</span>(data_folder, data_from, file_name)</span>
-<span id="cb625-4"><a href="pre-post.html#cb625-4" tabindex="-1"></a></span>
-<span id="cb625-5"><a href="pre-post.html#cb625-5" tabindex="-1"></a><span class="co"># response - fmr1</span></span>
-<span id="cb625-6"><a href="pre-post.html#cb625-6" tabindex="-1"></a><span class="co"># vehicle</span></span>
-<span id="cb625-7"><a href="pre-post.html#cb625-7" tabindex="-1"></a>fig3f_vehicle <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(file_path,</span>
-<span id="cb625-8"><a href="pre-post.html#cb625-8" tabindex="-1"></a>                     <span class="at">sheet =</span> <span class="st">&quot;Fig 3f&quot;</span>,</span>
-<span id="cb625-9"><a href="pre-post.html#cb625-9" tabindex="-1"></a>                     <span class="at">range =</span> <span class="st">&quot;DA2:DI3&quot;</span>, <span class="co"># 1 blank column</span></span>
-<span id="cb625-10"><a href="pre-post.html#cb625-10" tabindex="-1"></a>                     <span class="at">col_names =</span> <span class="cn">FALSE</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb625-11"><a href="pre-post.html#cb625-11" tabindex="-1"></a>  <span class="fu">data.table</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb625-12"><a href="pre-post.html#cb625-12" tabindex="-1"></a>  <span class="fu">transpose</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb625-13"><a href="pre-post.html#cb625-13" tabindex="-1"></a>  <span class="fu">setnames</span>(<span class="at">old =</span> <span class="fu">c</span>(<span class="st">&quot;V1&quot;</span>, <span class="st">&quot;V2&quot;</span>), <span class="at">new =</span> <span class="fu">c</span>(<span class="st">&quot;pre&quot;</span>, <span class="st">&quot;post&quot;</span>))</span>
-<span id="cb625-14"><a href="pre-post.html#cb625-14" tabindex="-1"></a></span>
-<span id="cb625-15"><a href="pre-post.html#cb625-15" tabindex="-1"></a>fig3f_il17 <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(file_path,</span>
-<span id="cb625-16"><a href="pre-post.html#cb625-16" tabindex="-1"></a>                     <span class="at">sheet =</span> <span class="st">&quot;Fig 3f&quot;</span>,</span>
-<span id="cb625-17"><a href="pre-post.html#cb625-17" tabindex="-1"></a>                     <span class="at">range =</span> <span class="st">&quot;DL2:DV3&quot;</span>, <span class="co"># 1 blank column</span></span>
-<span id="cb625-18"><a href="pre-post.html#cb625-18" tabindex="-1"></a>                     <span class="at">col_names =</span> <span class="cn">FALSE</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb625-19"><a href="pre-post.html#cb625-19" tabindex="-1"></a>  <span class="fu">data.table</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb625-20"><a href="pre-post.html#cb625-20" tabindex="-1"></a>  <span class="fu">transpose</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb625-21"><a href="pre-post.html#cb625-21" tabindex="-1"></a>  <span class="fu">setnames</span>(<span class="at">old =</span> <span class="fu">c</span>(<span class="st">&quot;V1&quot;</span>, <span class="st">&quot;V2&quot;</span>), <span class="at">new =</span> <span class="fu">c</span>(<span class="st">&quot;pre&quot;</span>, <span class="st">&quot;post&quot;</span>))</span>
-<span id="cb625-22"><a href="pre-post.html#cb625-22" tabindex="-1"></a></span>
-<span id="cb625-23"><a href="pre-post.html#cb625-23" tabindex="-1"></a>treatment_levels <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;Vehicle&quot;</span>, <span class="st">&quot;IL-17&quot;</span>)</span>
-<span id="cb625-24"><a href="pre-post.html#cb625-24" tabindex="-1"></a>fig3f <span class="ot">&lt;-</span> <span class="fu">rbind</span>(<span class="fu">data.table</span>(<span class="at">treatment =</span> treatment_levels[<span class="dv">1</span>], fig3f_vehicle),</span>
-<span id="cb625-25"><a href="pre-post.html#cb625-25" tabindex="-1"></a>               <span class="fu">data.table</span>(<span class="at">treatment =</span> treatment_levels[<span class="dv">2</span>], fig3f_il17))</span>
-<span id="cb625-26"><a href="pre-post.html#cb625-26" tabindex="-1"></a></span>
-<span id="cb625-27"><a href="pre-post.html#cb625-27" tabindex="-1"></a>fig3f[, treatment <span class="sc">:=</span> <span class="fu">factor</span>(treatment, <span class="at">levels =</span> treatment_levels)]</span>
-<span id="cb625-28"><a href="pre-post.html#cb625-28" tabindex="-1"></a>fig3f[, id <span class="sc">:=</span> <span class="fu">paste0</span>(<span class="st">&quot;mouse_&quot;</span>, .I)] <span class="co"># add id for each mouse</span></span>
-<span id="cb625-29"><a href="pre-post.html#cb625-29" tabindex="-1"></a>fig3f[, background <span class="sc">:=</span> <span class="st">&quot;fmr1&quot;</span>] <span class="co"># which mouse group?</span></span>
-<span id="cb625-30"><a href="pre-post.html#cb625-30" tabindex="-1"></a>fig3f[, change <span class="sc">:=</span> post <span class="sc">-</span> pre] <span class="co"># change score</span></span>
-<span id="cb625-31"><a href="pre-post.html#cb625-31" tabindex="-1"></a></span>
-<span id="cb625-32"><a href="pre-post.html#cb625-32" tabindex="-1"></a><span class="co"># melt to long</span></span>
-<span id="cb625-33"><a href="pre-post.html#cb625-33" tabindex="-1"></a>fig3f_long <span class="ot">&lt;-</span> <span class="fu">melt</span>(fig3f,</span>
-<span id="cb625-34"><a href="pre-post.html#cb625-34" tabindex="-1"></a>                   <span class="at">id.vars =</span> <span class="fu">c</span>(<span class="st">&quot;treatment&quot;</span>, <span class="st">&quot;id&quot;</span>, <span class="st">&quot;change&quot;</span>),</span>
-<span id="cb625-35"><a href="pre-post.html#cb625-35" tabindex="-1"></a>                   <span class="at">measure.vars =</span> <span class="fu">c</span>(<span class="st">&quot;pre&quot;</span>, <span class="st">&quot;post&quot;</span>),</span>
-<span id="cb625-36"><a href="pre-post.html#cb625-36" tabindex="-1"></a>                   <span class="at">variable.name =</span> <span class="st">&quot;time&quot;</span>,</span>
-<span id="cb625-37"><a href="pre-post.html#cb625-37" tabindex="-1"></a>                   <span class="at">value.name =</span> <span class="st">&quot;sociability&quot;</span>)</span>
-<span id="cb625-38"><a href="pre-post.html#cb625-38" tabindex="-1"></a>fig3f_long[, time <span class="sc">:=</span> <span class="fu">factor</span>(time,</span>
-<span id="cb625-39"><a href="pre-post.html#cb625-39" tabindex="-1"></a>                            <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">&quot;pre&quot;</span>, <span class="st">&quot;post&quot;</span>))]</span>
-<span id="cb625-40"><a href="pre-post.html#cb625-40" tabindex="-1"></a>fig3f_long[, id <span class="sc">:=</span> <span class="fu">factor</span>(id)]</span></code></pre></div>
+<div class="sourceCode" id="cb624"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb624-1"><a href="pre-post.html#cb624-1" tabindex="-1"></a>data_from <span class="ot">&lt;-</span> <span class="st">&quot;IL-17a promotes sociability in mouse models of neurodevelopmental disorders&quot;</span></span>
+<span id="cb624-2"><a href="pre-post.html#cb624-2" tabindex="-1"></a>file_name <span class="ot">&lt;-</span> <span class="st">&quot;41586_2019_1843_MOESM3_ESM.xlsx&quot;</span></span>
+<span id="cb624-3"><a href="pre-post.html#cb624-3" tabindex="-1"></a>file_path <span class="ot">&lt;-</span> <span class="fu">here</span>(data_folder, data_from, file_name)</span>
+<span id="cb624-4"><a href="pre-post.html#cb624-4" tabindex="-1"></a></span>
+<span id="cb624-5"><a href="pre-post.html#cb624-5" tabindex="-1"></a><span class="co"># response - fmr1</span></span>
+<span id="cb624-6"><a href="pre-post.html#cb624-6" tabindex="-1"></a><span class="co"># vehicle</span></span>
+<span id="cb624-7"><a href="pre-post.html#cb624-7" tabindex="-1"></a>fig3f_vehicle <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(file_path,</span>
+<span id="cb624-8"><a href="pre-post.html#cb624-8" tabindex="-1"></a>                     <span class="at">sheet =</span> <span class="st">&quot;Fig 3f&quot;</span>,</span>
+<span id="cb624-9"><a href="pre-post.html#cb624-9" tabindex="-1"></a>                     <span class="at">range =</span> <span class="st">&quot;DA2:DI3&quot;</span>, <span class="co"># 1 blank column</span></span>
+<span id="cb624-10"><a href="pre-post.html#cb624-10" tabindex="-1"></a>                     <span class="at">col_names =</span> <span class="cn">FALSE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb624-11"><a href="pre-post.html#cb624-11" tabindex="-1"></a>  <span class="fu">data.table</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb624-12"><a href="pre-post.html#cb624-12" tabindex="-1"></a>  <span class="fu">transpose</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb624-13"><a href="pre-post.html#cb624-13" tabindex="-1"></a>  <span class="fu">setnames</span>(<span class="at">old =</span> <span class="fu">c</span>(<span class="st">&quot;V1&quot;</span>, <span class="st">&quot;V2&quot;</span>), <span class="at">new =</span> <span class="fu">c</span>(<span class="st">&quot;pre&quot;</span>, <span class="st">&quot;post&quot;</span>))</span>
+<span id="cb624-14"><a href="pre-post.html#cb624-14" tabindex="-1"></a></span>
+<span id="cb624-15"><a href="pre-post.html#cb624-15" tabindex="-1"></a>fig3f_il17 <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(file_path,</span>
+<span id="cb624-16"><a href="pre-post.html#cb624-16" tabindex="-1"></a>                     <span class="at">sheet =</span> <span class="st">&quot;Fig 3f&quot;</span>,</span>
+<span id="cb624-17"><a href="pre-post.html#cb624-17" tabindex="-1"></a>                     <span class="at">range =</span> <span class="st">&quot;DL2:DV3&quot;</span>, <span class="co"># 1 blank column</span></span>
+<span id="cb624-18"><a href="pre-post.html#cb624-18" tabindex="-1"></a>                     <span class="at">col_names =</span> <span class="cn">FALSE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb624-19"><a href="pre-post.html#cb624-19" tabindex="-1"></a>  <span class="fu">data.table</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb624-20"><a href="pre-post.html#cb624-20" tabindex="-1"></a>  <span class="fu">transpose</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb624-21"><a href="pre-post.html#cb624-21" tabindex="-1"></a>  <span class="fu">setnames</span>(<span class="at">old =</span> <span class="fu">c</span>(<span class="st">&quot;V1&quot;</span>, <span class="st">&quot;V2&quot;</span>), <span class="at">new =</span> <span class="fu">c</span>(<span class="st">&quot;pre&quot;</span>, <span class="st">&quot;post&quot;</span>))</span>
+<span id="cb624-22"><a href="pre-post.html#cb624-22" tabindex="-1"></a></span>
+<span id="cb624-23"><a href="pre-post.html#cb624-23" tabindex="-1"></a>treatment_levels <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;Vehicle&quot;</span>, <span class="st">&quot;IL-17&quot;</span>)</span>
+<span id="cb624-24"><a href="pre-post.html#cb624-24" tabindex="-1"></a>fig3f <span class="ot">&lt;-</span> <span class="fu">rbind</span>(<span class="fu">data.table</span>(<span class="at">treatment =</span> treatment_levels[<span class="dv">1</span>], fig3f_vehicle),</span>
+<span id="cb624-25"><a href="pre-post.html#cb624-25" tabindex="-1"></a>               <span class="fu">data.table</span>(<span class="at">treatment =</span> treatment_levels[<span class="dv">2</span>], fig3f_il17))</span>
+<span id="cb624-26"><a href="pre-post.html#cb624-26" tabindex="-1"></a></span>
+<span id="cb624-27"><a href="pre-post.html#cb624-27" tabindex="-1"></a>fig3f[, treatment <span class="sc">:=</span> <span class="fu">factor</span>(treatment, <span class="at">levels =</span> treatment_levels)]</span>
+<span id="cb624-28"><a href="pre-post.html#cb624-28" tabindex="-1"></a>fig3f[, id <span class="sc">:=</span> <span class="fu">paste0</span>(<span class="st">&quot;mouse_&quot;</span>, .I)] <span class="co"># add id for each mouse</span></span>
+<span id="cb624-29"><a href="pre-post.html#cb624-29" tabindex="-1"></a>fig3f[, background <span class="sc">:=</span> <span class="st">&quot;fmr1&quot;</span>] <span class="co"># which mouse group?</span></span>
+<span id="cb624-30"><a href="pre-post.html#cb624-30" tabindex="-1"></a>fig3f[, change <span class="sc">:=</span> post <span class="sc">-</span> pre] <span class="co"># change score</span></span>
+<span id="cb624-31"><a href="pre-post.html#cb624-31" tabindex="-1"></a></span>
+<span id="cb624-32"><a href="pre-post.html#cb624-32" tabindex="-1"></a><span class="co"># melt to long</span></span>
+<span id="cb624-33"><a href="pre-post.html#cb624-33" tabindex="-1"></a>fig3f_long <span class="ot">&lt;-</span> <span class="fu">melt</span>(fig3f,</span>
+<span id="cb624-34"><a href="pre-post.html#cb624-34" tabindex="-1"></a>                   <span class="at">id.vars =</span> <span class="fu">c</span>(<span class="st">&quot;treatment&quot;</span>, <span class="st">&quot;id&quot;</span>, <span class="st">&quot;change&quot;</span>),</span>
+<span id="cb624-35"><a href="pre-post.html#cb624-35" tabindex="-1"></a>                   <span class="at">measure.vars =</span> <span class="fu">c</span>(<span class="st">&quot;pre&quot;</span>, <span class="st">&quot;post&quot;</span>),</span>
+<span id="cb624-36"><a href="pre-post.html#cb624-36" tabindex="-1"></a>                   <span class="at">variable.name =</span> <span class="st">&quot;time&quot;</span>,</span>
+<span id="cb624-37"><a href="pre-post.html#cb624-37" tabindex="-1"></a>                   <span class="at">value.name =</span> <span class="st">&quot;sociability&quot;</span>)</span>
+<span id="cb624-38"><a href="pre-post.html#cb624-38" tabindex="-1"></a>fig3f_long[, time <span class="sc">:=</span> <span class="fu">factor</span>(time,</span>
+<span id="cb624-39"><a href="pre-post.html#cb624-39" tabindex="-1"></a>                            <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">&quot;pre&quot;</span>, <span class="st">&quot;post&quot;</span>))]</span>
+<span id="cb624-40"><a href="pre-post.html#cb624-40" tabindex="-1"></a>fig3f_long[, id <span class="sc">:=</span> <span class="fu">factor</span>(id)]</span></code></pre></div>
 
 </div>
 </div>
