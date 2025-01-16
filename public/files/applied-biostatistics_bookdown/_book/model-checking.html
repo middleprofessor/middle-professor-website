@@ -4,18 +4,18 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Chapter 11 Model Checking | Statistics for the Experimental Biologist</title>
+  <title>Chapter 11 Model Checking | Statistics for the Bench Biologist</title>
   <meta name="description" content="An introduction to statistical modeling for experimental biology researchers" />
-  <meta name="generator" content="bookdown 0.39 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.41 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Chapter 11 Model Checking | Statistics for the Experimental Biologist" />
+  <meta property="og:title" content="Chapter 11 Model Checking | Statistics for the Bench Biologist" />
   <meta property="og:type" content="book" />
   
   <meta property="og:description" content="An introduction to statistical modeling for experimental biology researchers" />
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Chapter 11 Model Checking | Statistics for the Experimental Biologist" />
+  <meta name="twitter:title" content="Chapter 11 Model Checking | Statistics for the Bench Biologist" />
   
   <meta name="twitter:description" content="An introduction to statistical modeling for experimental biology researchers" />
   
@@ -59,7 +59,7 @@
 
 <style type="text/css">
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span { line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -913,7 +913,7 @@ code span.wa { color: #bf0303; } /* Warning */
       <div class="body-inner">
         <div class="book-header" role="navigation">
           <h1>
-            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Statistics for the Experimental Biologist</a>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Statistics for the Bench Biologist</a>
           </h1>
         </div>
 
@@ -999,9 +999,9 @@ y_i &amp;\sim N(\mu_i, \sigma^2)\\
 <li><strong>sample quantiles</strong> on the <em>y</em> axis. The sample quantiles is the vector of <span class="math inline">\(N\)</span> residuals in rank order, from smallest (most negative) to largest (most positive). Sometimes this vector is standardized by dividing the residual by the standard deviation of the residuals (doing this makes no difference to the interpretation of the Q-Q plot).</li>
 <li><strong>standard normal quantiles</strong> on the <em>x</em> axis. This is the vector of standard, Normal quantiles given <span class="math inline">\(N\)</span> elements in the vector. “Standard Normal” means a normal distribution with mean zero and standard deviation (<span class="math inline">\(\sigma\)</span>) one. A Normal quantile is the expected deviation given a probability. For example, if the probability is 0.025, the Normal quantile is -1.959964. Check your understanding: 2.5% of the values in a Normal distribution with mean 0 and standard deviation one are more negative than -1.959964. The Normal quantiles of a Normal Q-Q plot are computed for the set of <span class="math inline">\(N\)</span> values that evenly split the probability span from 0 to 1. For <span class="math inline">\(N=20\)</span>, this would be</li>
 </ol>
-<div class="sourceCode" id="cb305"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb305-1"><a href="model-checking.html#cb305-1" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">quantile =</span> <span class="fu">qnorm</span>(<span class="fu">ppoints</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">20</span>)))</span>
-<span id="cb305-2"><a href="model-checking.html#cb305-2" tabindex="-1"></a><span class="fu">row.names</span>(p) <span class="ot">&lt;-</span> <span class="fu">ppoints</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">20</span>)</span>
-<span id="cb305-3"><a href="model-checking.html#cb305-3" tabindex="-1"></a>p</span></code></pre></div>
+<div class="sourceCode" id="cb307"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb307-1"><a href="model-checking.html#cb307-1" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">quantile =</span> <span class="fu">qnorm</span>(<span class="fu">ppoints</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">20</span>)))</span>
+<span id="cb307-2"><a href="model-checking.html#cb307-2" tabindex="-1"></a><span class="fu">row.names</span>(p) <span class="ot">&lt;-</span> <span class="fu">ppoints</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">20</span>)</span>
+<span id="cb307-3"><a href="model-checking.html#cb307-3" tabindex="-1"></a>p</span></code></pre></div>
 <pre><code>##          quantile
 ## 0.025 -1.95996398
 ## 0.075 -1.43953147
@@ -1089,43 +1089,43 @@ y_i &amp;\sim N(\mu_i, \sigma^2)\\
 <li>Repeat steps 1-3 <span class="math inline">\(n\_iter\)</span> times, superimposing the new sample quantiles over all previous sample quantiles. This creates a band of all sample quantiles over <span class="math inline">\(n\_iter\)</span> iterations of sampling <span class="math inline">\(n\)</span> values from a Normal distribution.</li>
 <li>At each value of the Normal quantile, compute the 95 percentile range of the sampled quantiles. Draw a ribbon inside these boundaries.</li>
 </ol>
-<div class="sourceCode" id="cb307"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb307-1"><a href="model-checking.html#cb307-1" tabindex="-1"></a>n_iter <span class="ot">&lt;-</span> <span class="dv">1000</span></span>
-<span id="cb307-2"><a href="model-checking.html#cb307-2" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">20</span></span>
-<span id="cb307-3"><a href="model-checking.html#cb307-3" tabindex="-1"></a>normal_qq <span class="ot">&lt;-</span> <span class="fu">ppoints</span>(n) <span class="sc">%&gt;%</span></span>
-<span id="cb307-4"><a href="model-checking.html#cb307-4" tabindex="-1"></a>  <span class="fu">qnorm</span>()</span>
-<span id="cb307-5"><a href="model-checking.html#cb307-5" tabindex="-1"></a>sample_qq <span class="ot">&lt;-</span> <span class="fu">numeric</span>(n_iter<span class="sc">*</span>n)</span>
-<span id="cb307-6"><a href="model-checking.html#cb307-6" tabindex="-1"></a>inc <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">:</span>n</span>
-<span id="cb307-7"><a href="model-checking.html#cb307-7" tabindex="-1"></a><span class="cf">for</span>(iter <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n_iter){</span>
-<span id="cb307-8"><a href="model-checking.html#cb307-8" tabindex="-1"></a>  y <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n)</span>
-<span id="cb307-9"><a href="model-checking.html#cb307-9" tabindex="-1"></a>  y_res <span class="ot">&lt;-</span> y <span class="sc">-</span> <span class="fu">mean</span>(y)</span>
-<span id="cb307-10"><a href="model-checking.html#cb307-10" tabindex="-1"></a>  sample_qq[inc] <span class="ot">&lt;-</span> y_res[<span class="fu">order</span>(y_res)]</span>
-<span id="cb307-11"><a href="model-checking.html#cb307-11" tabindex="-1"></a>  inc <span class="ot">&lt;-</span> inc <span class="sc">+</span> n</span>
-<span id="cb307-12"><a href="model-checking.html#cb307-12" tabindex="-1"></a>}</span>
-<span id="cb307-13"><a href="model-checking.html#cb307-13" tabindex="-1"></a></span>
-<span id="cb307-14"><a href="model-checking.html#cb307-14" tabindex="-1"></a>qq_data <span class="ot">&lt;-</span> <span class="fu">data.table</span>(<span class="at">normal_qq =</span> normal_qq,</span>
-<span id="cb307-15"><a href="model-checking.html#cb307-15" tabindex="-1"></a>                      <span class="at">sample_qq =</span> sample_qq)</span>
-<span id="cb307-16"><a href="model-checking.html#cb307-16" tabindex="-1"></a></span>
-<span id="cb307-17"><a href="model-checking.html#cb307-17" tabindex="-1"></a>qq_ci <span class="ot">&lt;-</span> qq_data[, .(<span class="at">median =</span> <span class="fu">median</span>(sample_qq),</span>
-<span id="cb307-18"><a href="model-checking.html#cb307-18" tabindex="-1"></a>                     <span class="at">lower =</span> <span class="fu">quantile</span>(sample_qq, <span class="fl">0.025</span>),</span>
-<span id="cb307-19"><a href="model-checking.html#cb307-19" tabindex="-1"></a>                     <span class="at">upper =</span> <span class="fu">quantile</span>(sample_qq, <span class="fl">0.975</span>)),</span>
-<span id="cb307-20"><a href="model-checking.html#cb307-20" tabindex="-1"></a>                 by <span class="ot">=</span> normal_qq]</span>
-<span id="cb307-21"><a href="model-checking.html#cb307-21" tabindex="-1"></a></span>
-<span id="cb307-22"><a href="model-checking.html#cb307-22" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> qq_data,</span>
-<span id="cb307-23"><a href="model-checking.html#cb307-23" tabindex="-1"></a>       <span class="fu">aes</span>(<span class="at">x =</span> normal_qq,</span>
-<span id="cb307-24"><a href="model-checking.html#cb307-24" tabindex="-1"></a>           <span class="at">y =</span> sample_qq)) <span class="sc">+</span></span>
-<span id="cb307-25"><a href="model-checking.html#cb307-25" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.2</span>) <span class="sc">+</span></span>
-<span id="cb307-26"><a href="model-checking.html#cb307-26" tabindex="-1"></a>  <span class="fu">geom_ribbon</span>(<span class="at">data =</span> qq_ci,</span>
-<span id="cb307-27"><a href="model-checking.html#cb307-27" tabindex="-1"></a>              <span class="fu">aes</span>(<span class="at">ymin =</span> lower,</span>
-<span id="cb307-28"><a href="model-checking.html#cb307-28" tabindex="-1"></a>                  <span class="at">ymax =</span> upper,</span>
-<span id="cb307-29"><a href="model-checking.html#cb307-29" tabindex="-1"></a>                  <span class="at">y =</span> median,</span>
-<span id="cb307-30"><a href="model-checking.html#cb307-30" tabindex="-1"></a>                  <span class="at">fill =</span> <span class="st">&quot;band&quot;</span>),</span>
-<span id="cb307-31"><a href="model-checking.html#cb307-31" tabindex="-1"></a>              <span class="at">fill =</span> pal_okabe_ito[<span class="dv">1</span>],</span>
-<span id="cb307-32"><a href="model-checking.html#cb307-32" tabindex="-1"></a>              <span class="at">alpha =</span> <span class="fl">0.3</span>) <span class="sc">+</span></span>
-<span id="cb307-33"><a href="model-checking.html#cb307-33" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">&quot;Normal Quantile&quot;</span>) <span class="sc">+</span></span>
-<span id="cb307-34"><a href="model-checking.html#cb307-34" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">&quot;Sample Quantile&quot;</span>) <span class="sc">+</span></span>
-<span id="cb307-35"><a href="model-checking.html#cb307-35" tabindex="-1"></a>  <span class="fu">theme_grid</span>() <span class="sc">+</span></span>
-<span id="cb307-36"><a href="model-checking.html#cb307-36" tabindex="-1"></a>  </span>
-<span id="cb307-37"><a href="model-checking.html#cb307-37" tabindex="-1"></a>  <span class="cn">NULL</span></span></code></pre></div>
+<div class="sourceCode" id="cb309"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb309-1"><a href="model-checking.html#cb309-1" tabindex="-1"></a>n_iter <span class="ot">&lt;-</span> <span class="dv">1000</span></span>
+<span id="cb309-2"><a href="model-checking.html#cb309-2" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">20</span></span>
+<span id="cb309-3"><a href="model-checking.html#cb309-3" tabindex="-1"></a>normal_qq <span class="ot">&lt;-</span> <span class="fu">ppoints</span>(n) <span class="sc">%&gt;%</span></span>
+<span id="cb309-4"><a href="model-checking.html#cb309-4" tabindex="-1"></a>  <span class="fu">qnorm</span>()</span>
+<span id="cb309-5"><a href="model-checking.html#cb309-5" tabindex="-1"></a>sample_qq <span class="ot">&lt;-</span> <span class="fu">numeric</span>(n_iter<span class="sc">*</span>n)</span>
+<span id="cb309-6"><a href="model-checking.html#cb309-6" tabindex="-1"></a>inc <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">:</span>n</span>
+<span id="cb309-7"><a href="model-checking.html#cb309-7" tabindex="-1"></a><span class="cf">for</span>(iter <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n_iter){</span>
+<span id="cb309-8"><a href="model-checking.html#cb309-8" tabindex="-1"></a>  y <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n)</span>
+<span id="cb309-9"><a href="model-checking.html#cb309-9" tabindex="-1"></a>  y_res <span class="ot">&lt;-</span> y <span class="sc">-</span> <span class="fu">mean</span>(y)</span>
+<span id="cb309-10"><a href="model-checking.html#cb309-10" tabindex="-1"></a>  sample_qq[inc] <span class="ot">&lt;-</span> y_res[<span class="fu">order</span>(y_res)]</span>
+<span id="cb309-11"><a href="model-checking.html#cb309-11" tabindex="-1"></a>  inc <span class="ot">&lt;-</span> inc <span class="sc">+</span> n</span>
+<span id="cb309-12"><a href="model-checking.html#cb309-12" tabindex="-1"></a>}</span>
+<span id="cb309-13"><a href="model-checking.html#cb309-13" tabindex="-1"></a></span>
+<span id="cb309-14"><a href="model-checking.html#cb309-14" tabindex="-1"></a>qq_data <span class="ot">&lt;-</span> <span class="fu">data.table</span>(<span class="at">normal_qq =</span> normal_qq,</span>
+<span id="cb309-15"><a href="model-checking.html#cb309-15" tabindex="-1"></a>                      <span class="at">sample_qq =</span> sample_qq)</span>
+<span id="cb309-16"><a href="model-checking.html#cb309-16" tabindex="-1"></a></span>
+<span id="cb309-17"><a href="model-checking.html#cb309-17" tabindex="-1"></a>qq_ci <span class="ot">&lt;-</span> qq_data[, .(<span class="at">median =</span> <span class="fu">median</span>(sample_qq),</span>
+<span id="cb309-18"><a href="model-checking.html#cb309-18" tabindex="-1"></a>                     <span class="at">lower =</span> <span class="fu">quantile</span>(sample_qq, <span class="fl">0.025</span>),</span>
+<span id="cb309-19"><a href="model-checking.html#cb309-19" tabindex="-1"></a>                     <span class="at">upper =</span> <span class="fu">quantile</span>(sample_qq, <span class="fl">0.975</span>)),</span>
+<span id="cb309-20"><a href="model-checking.html#cb309-20" tabindex="-1"></a>                 by <span class="ot">=</span> normal_qq]</span>
+<span id="cb309-21"><a href="model-checking.html#cb309-21" tabindex="-1"></a></span>
+<span id="cb309-22"><a href="model-checking.html#cb309-22" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> qq_data,</span>
+<span id="cb309-23"><a href="model-checking.html#cb309-23" tabindex="-1"></a>       <span class="fu">aes</span>(<span class="at">x =</span> normal_qq,</span>
+<span id="cb309-24"><a href="model-checking.html#cb309-24" tabindex="-1"></a>           <span class="at">y =</span> sample_qq)) <span class="sc">+</span></span>
+<span id="cb309-25"><a href="model-checking.html#cb309-25" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.2</span>) <span class="sc">+</span></span>
+<span id="cb309-26"><a href="model-checking.html#cb309-26" tabindex="-1"></a>  <span class="fu">geom_ribbon</span>(<span class="at">data =</span> qq_ci,</span>
+<span id="cb309-27"><a href="model-checking.html#cb309-27" tabindex="-1"></a>              <span class="fu">aes</span>(<span class="at">ymin =</span> lower,</span>
+<span id="cb309-28"><a href="model-checking.html#cb309-28" tabindex="-1"></a>                  <span class="at">ymax =</span> upper,</span>
+<span id="cb309-29"><a href="model-checking.html#cb309-29" tabindex="-1"></a>                  <span class="at">y =</span> median,</span>
+<span id="cb309-30"><a href="model-checking.html#cb309-30" tabindex="-1"></a>                  <span class="at">fill =</span> <span class="st">&quot;band&quot;</span>),</span>
+<span id="cb309-31"><a href="model-checking.html#cb309-31" tabindex="-1"></a>              <span class="at">fill =</span> pal_okabe_ito[<span class="dv">1</span>],</span>
+<span id="cb309-32"><a href="model-checking.html#cb309-32" tabindex="-1"></a>              <span class="at">alpha =</span> <span class="fl">0.3</span>) <span class="sc">+</span></span>
+<span id="cb309-33"><a href="model-checking.html#cb309-33" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">&quot;Normal Quantile&quot;</span>) <span class="sc">+</span></span>
+<span id="cb309-34"><a href="model-checking.html#cb309-34" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">&quot;Sample Quantile&quot;</span>) <span class="sc">+</span></span>
+<span id="cb309-35"><a href="model-checking.html#cb309-35" tabindex="-1"></a>  <span class="fu">theme_grid</span>() <span class="sc">+</span></span>
+<span id="cb309-36"><a href="model-checking.html#cb309-36" tabindex="-1"></a>  </span>
+<span id="cb309-37"><a href="model-checking.html#cb309-37" tabindex="-1"></a>  <span class="cn">NULL</span></span></code></pre></div>
 </div>
 </div>
 <div id="model-checking-spread-level" class="section level3 hasAnchor" number="11.3.4">
@@ -1140,26 +1140,26 @@ y_i &amp;\sim N(\mu_i, \sigma^2)\\
 <p>Source: <a href="https://www.nature.com/articles/s41586-019-1450-6" target="_blank">Wellenstein, M.D., Coffelt, S.B., Duits, D.E., van Miltenburg, M.H., Slagter, M., de Rink, I., Henneman, L., Kas, S.M., Prekovic, S., Hau, C.S. and Vrijland, K., 2019. Loss of p53 triggers WNT-dependent systemic inflammation to drive breast cancer metastasis. Nature, 572(7770), pp.538-542.</a></p>
 <p><a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6707815/" target="_blank">Public source</a></p>
 <p><a href="https://www.nature.com/articles/s41586-019-1450-6#Sec22" target="_blank">Data source</a></p>
-<div class="sourceCode" id="cb308"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb308-1"><a href="model-checking.html#cb308-1" tabindex="-1"></a>data_from <span class="ot">&lt;-</span> <span class="st">&quot;Loss of p53 triggers WNT-dependent systemic inflammation to drive breast cancer metastasis&quot;</span></span>
-<span id="cb308-2"><a href="model-checking.html#cb308-2" tabindex="-1"></a>file_name <span class="ot">&lt;-</span> <span class="st">&quot;41586_2019_1450_MOESM3_ESM.xlsx&quot;</span></span>
-<span id="cb308-3"><a href="model-checking.html#cb308-3" tabindex="-1"></a>file_path <span class="ot">&lt;-</span> <span class="fu">here</span>(data_folder, data_from, file_name)</span>
-<span id="cb308-4"><a href="model-checking.html#cb308-4" tabindex="-1"></a>  </span>
-<span id="cb308-5"><a href="model-checking.html#cb308-5" tabindex="-1"></a>treatment_levels <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;Trp53+/+&quot;</span>, <span class="st">&quot;Trp53-/-&quot;</span>)</span>
-<span id="cb308-6"><a href="model-checking.html#cb308-6" tabindex="-1"></a>fig1f <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(file_path,</span>
-<span id="cb308-7"><a href="model-checking.html#cb308-7" tabindex="-1"></a>                     <span class="at">sheet =</span> <span class="st">&quot;Fig. 1f&quot;</span>,</span>
-<span id="cb308-8"><a href="model-checking.html#cb308-8" tabindex="-1"></a>                     <span class="at">range =</span> <span class="st">&quot;A2:B23&quot;</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb308-9"><a href="model-checking.html#cb308-9" tabindex="-1"></a>  <span class="fu">data.table</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb308-10"><a href="model-checking.html#cb308-10" tabindex="-1"></a>  <span class="fu">melt</span>(<span class="at">measure.vars =</span> treatment_levels,</span>
-<span id="cb308-11"><a href="model-checking.html#cb308-11" tabindex="-1"></a>       <span class="at">variable.name =</span> <span class="st">&quot;treatment&quot;</span>,</span>
-<span id="cb308-12"><a href="model-checking.html#cb308-12" tabindex="-1"></a>       <span class="at">value.name =</span> <span class="st">&quot;il1beta&quot;</span>)</span>
-<span id="cb308-13"><a href="model-checking.html#cb308-13" tabindex="-1"></a>fig1f[, treatment <span class="sc">:=</span> <span class="fu">factor</span>(treatment, treatment_levels)]</span>
-<span id="cb308-14"><a href="model-checking.html#cb308-14" tabindex="-1"></a></span>
-<span id="cb308-15"><a href="model-checking.html#cb308-15" tabindex="-1"></a><span class="co"># be careful of the missing data. This can create mismatch between id and residual unless specified in lm</span></span>
-<span id="cb308-16"><a href="model-checking.html#cb308-16" tabindex="-1"></a></span>
-<span id="cb308-17"><a href="model-checking.html#cb308-17" tabindex="-1"></a><span class="co"># head(fig1f)</span></span></code></pre></div>
+<div class="sourceCode" id="cb310"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb310-1"><a href="model-checking.html#cb310-1" tabindex="-1"></a>data_from <span class="ot">&lt;-</span> <span class="st">&quot;Loss of p53 triggers WNT-dependent systemic inflammation to drive breast cancer metastasis&quot;</span></span>
+<span id="cb310-2"><a href="model-checking.html#cb310-2" tabindex="-1"></a>file_name <span class="ot">&lt;-</span> <span class="st">&quot;41586_2019_1450_MOESM3_ESM.xlsx&quot;</span></span>
+<span id="cb310-3"><a href="model-checking.html#cb310-3" tabindex="-1"></a>file_path <span class="ot">&lt;-</span> <span class="fu">here</span>(data_folder, data_from, file_name)</span>
+<span id="cb310-4"><a href="model-checking.html#cb310-4" tabindex="-1"></a>  </span>
+<span id="cb310-5"><a href="model-checking.html#cb310-5" tabindex="-1"></a>treatment_levels <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;Trp53+/+&quot;</span>, <span class="st">&quot;Trp53-/-&quot;</span>)</span>
+<span id="cb310-6"><a href="model-checking.html#cb310-6" tabindex="-1"></a>fig1f <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(file_path,</span>
+<span id="cb310-7"><a href="model-checking.html#cb310-7" tabindex="-1"></a>                     <span class="at">sheet =</span> <span class="st">&quot;Fig. 1f&quot;</span>,</span>
+<span id="cb310-8"><a href="model-checking.html#cb310-8" tabindex="-1"></a>                     <span class="at">range =</span> <span class="st">&quot;A2:B23&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb310-9"><a href="model-checking.html#cb310-9" tabindex="-1"></a>  <span class="fu">data.table</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb310-10"><a href="model-checking.html#cb310-10" tabindex="-1"></a>  <span class="fu">melt</span>(<span class="at">measure.vars =</span> treatment_levels,</span>
+<span id="cb310-11"><a href="model-checking.html#cb310-11" tabindex="-1"></a>       <span class="at">variable.name =</span> <span class="st">&quot;treatment&quot;</span>,</span>
+<span id="cb310-12"><a href="model-checking.html#cb310-12" tabindex="-1"></a>       <span class="at">value.name =</span> <span class="st">&quot;il1beta&quot;</span>)</span>
+<span id="cb310-13"><a href="model-checking.html#cb310-13" tabindex="-1"></a>fig1f[, treatment <span class="sc">:=</span> <span class="fu">factor</span>(treatment, treatment_levels)]</span>
+<span id="cb310-14"><a href="model-checking.html#cb310-14" tabindex="-1"></a></span>
+<span id="cb310-15"><a href="model-checking.html#cb310-15" tabindex="-1"></a><span class="co"># be careful of the missing data. This can create mismatch between id and residual unless specified in lm</span></span>
+<span id="cb310-16"><a href="model-checking.html#cb310-16" tabindex="-1"></a></span>
+<span id="cb310-17"><a href="model-checking.html#cb310-17" tabindex="-1"></a><span class="co"># head(fig1f)</span></span></code></pre></div>
 <p>Fit a linear model</p>
-<div class="sourceCode" id="cb309"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb309-1"><a href="model-checking.html#cb309-1" tabindex="-1"></a>m1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(il1beta <span class="sc">~</span> treatment,</span>
-<span id="cb309-2"><a href="model-checking.html#cb309-2" tabindex="-1"></a>         <span class="at">data =</span> fig1f)</span></code></pre></div>
+<div class="sourceCode" id="cb311"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb311-1"><a href="model-checking.html#cb311-1" tabindex="-1"></a>m1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(il1beta <span class="sc">~</span> treatment,</span>
+<span id="cb311-2"><a href="model-checking.html#cb311-2" tabindex="-1"></a>         <span class="at">data =</span> fig1f)</span></code></pre></div>
 <div id="normal-q-q-plots" class="section level3 hasAnchor" number="11.5.1">
 <h3><span class="header-section-number">11.5.1</span> Normal Q-Q plots<a href="model-checking.html#normal-q-q-plots" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p><code>car::qqPlot</code> has several important arguments to control the type of Q-Q plot. The function uses base graphics instead of ggplot2. Typically, these plots would not be published other than possibly a supplement. <a href="https://www.tjmahr.com/quantile-quantile-plots-from-scratch/" target="_blank">Q-Q Plots and Worm Plots from Scratch</a> is a good source of some of the arguments in <code>qqPlot</code>. Three important arguments are:</p>
@@ -1169,20 +1169,20 @@ y_i &amp;\sim N(\mu_i, \sigma^2)\\
 <li>id. The default identifies the index of the two points with the most extreme quartiles. Set to FALSE to hide.</li>
 </ol>
 <p>The robust line is more sensitive to departures from Normality than the quartiles line.</p>
-<div class="sourceCode" id="cb310"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb310-1"><a href="model-checking.html#cb310-1" tabindex="-1"></a><span class="co"># defaults: robust line with bootstrap CI</span></span>
-<span id="cb310-2"><a href="model-checking.html#cb310-2" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
-<span id="cb310-3"><a href="model-checking.html#cb310-3" tabindex="-1"></a><span class="fu">qqPlot</span>(m1, <span class="at">id =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb312"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb312-1"><a href="model-checking.html#cb312-1" tabindex="-1"></a><span class="co"># defaults: robust line with bootstrap CI</span></span>
+<span id="cb312-2"><a href="model-checking.html#cb312-2" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
+<span id="cb312-3"><a href="model-checking.html#cb312-3" tabindex="-1"></a><span class="fu">qqPlot</span>(m1, <span class="at">id =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
 <p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/unnamed-chunk-152-1.png" width="576" /></p>
-<div class="sourceCode" id="cb311"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb311-1"><a href="model-checking.html#cb311-1" tabindex="-1"></a><span class="co"># classic: standard line with parametric CI</span></span>
-<span id="cb311-2"><a href="model-checking.html#cb311-2" tabindex="-1"></a><span class="fu">qqPlot</span>(m1,</span>
-<span id="cb311-3"><a href="model-checking.html#cb311-3" tabindex="-1"></a>       <span class="at">line =</span> <span class="st">&quot;quartiles&quot;</span>,</span>
-<span id="cb311-4"><a href="model-checking.html#cb311-4" tabindex="-1"></a>       <span class="at">simulate =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb311-5"><a href="model-checking.html#cb311-5" tabindex="-1"></a>       <span class="at">id =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb313"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb313-1"><a href="model-checking.html#cb313-1" tabindex="-1"></a><span class="co"># classic: standard line with parametric CI</span></span>
+<span id="cb313-2"><a href="model-checking.html#cb313-2" tabindex="-1"></a><span class="fu">qqPlot</span>(m1,</span>
+<span id="cb313-3"><a href="model-checking.html#cb313-3" tabindex="-1"></a>       <span class="at">line =</span> <span class="st">&quot;quartiles&quot;</span>,</span>
+<span id="cb313-4"><a href="model-checking.html#cb313-4" tabindex="-1"></a>       <span class="at">simulate =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb313-5"><a href="model-checking.html#cb313-5" tabindex="-1"></a>       <span class="at">id =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
 <p><code>ggpubr::ggqqplot</code> generates a pretty, ggplot2 based Normal Q-Q plot, using the standard method for computing the line and confidence band.</p>
-<div class="sourceCode" id="cb312"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb312-1"><a href="model-checking.html#cb312-1" tabindex="-1"></a>m1_residuals <span class="ot">&lt;-</span> <span class="fu">data.table</span>(<span class="at">m1_residuals =</span> <span class="fu">residuals</span>(m1))</span>
-<span id="cb312-2"><a href="model-checking.html#cb312-2" tabindex="-1"></a>m1_residuals[, studentized <span class="sc">:=</span> m1_residuals<span class="sc">/</span><span class="fu">sd</span>(m1_residuals)]</span>
-<span id="cb312-3"><a href="model-checking.html#cb312-3" tabindex="-1"></a><span class="fu">ggqqplot</span>(<span class="at">data =</span> m1_residuals,</span>
-<span id="cb312-4"><a href="model-checking.html#cb312-4" tabindex="-1"></a>                          <span class="at">x =</span> <span class="st">&quot;studentized&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb314"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb314-1"><a href="model-checking.html#cb314-1" tabindex="-1"></a>m1_residuals <span class="ot">&lt;-</span> <span class="fu">data.table</span>(<span class="at">m1_residuals =</span> <span class="fu">residuals</span>(m1))</span>
+<span id="cb314-2"><a href="model-checking.html#cb314-2" tabindex="-1"></a>m1_residuals[, studentized <span class="sc">:=</span> m1_residuals<span class="sc">/</span><span class="fu">sd</span>(m1_residuals)]</span>
+<span id="cb314-3"><a href="model-checking.html#cb314-3" tabindex="-1"></a><span class="fu">ggqqplot</span>(<span class="at">data =</span> m1_residuals,</span>
+<span id="cb314-4"><a href="model-checking.html#cb314-4" tabindex="-1"></a>                          <span class="at">x =</span> <span class="st">&quot;studentized&quot;</span>)</span></code></pre></div>
 <p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/unnamed-chunk-154-1.png" width="576" /></p>
 
 </div>

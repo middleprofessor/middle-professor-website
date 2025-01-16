@@ -4,18 +4,18 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Chapter 8 An introduction to linear models | Statistics for the Experimental Biologist</title>
+  <title>Chapter 8 An introduction to linear models | Statistics for the Bench Biologist</title>
   <meta name="description" content="An introduction to statistical modeling for experimental biology researchers" />
-  <meta name="generator" content="bookdown 0.39 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.41 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Chapter 8 An introduction to linear models | Statistics for the Experimental Biologist" />
+  <meta property="og:title" content="Chapter 8 An introduction to linear models | Statistics for the Bench Biologist" />
   <meta property="og:type" content="book" />
   
   <meta property="og:description" content="An introduction to statistical modeling for experimental biology researchers" />
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Chapter 8 An introduction to linear models | Statistics for the Experimental Biologist" />
+  <meta name="twitter:title" content="Chapter 8 An introduction to linear models | Statistics for the Bench Biologist" />
   
   <meta name="twitter:description" content="An introduction to statistical modeling for experimental biology researchers" />
   
@@ -59,7 +59,7 @@
 
 <style type="text/css">
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span { line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -913,7 +913,7 @@ code span.wa { color: #bf0303; } /* Warning */
       <div class="body-inner">
         <div class="book-header" role="navigation">
           <h1>
-            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Statistics for the Experimental Biologist</a>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Statistics for the Bench Biologist</a>
           </h1>
         </div>
 
@@ -965,31 +965,32 @@ y_i &amp;\sim N(\mu_i, \sigma^2)\\
 <h3><span class="header-section-number">8.1.3</span> Comparing the error-draw and conditional-draw ways of specifying the linear model<a href="intro-linear-models.html#comparing-the-error-draw-and-conditional-draw-ways-of-specifying-the-linear-model" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>These two ways of specifying the model encourage slightly different ways of thinking about how the data (the response varible <span class="math inline">\(Y\)</span>) were generated. The error-draw specification “generates” data by 1) constructing what <span class="math inline">\(y_i\)</span> “should be” given <span class="math inline">\(x_i\)</span> (this is the conditional expection), then 2) adding some error <span class="math inline">\(e_i\)</span> drawn from a normal distribution with mean zero and some specified variance. The conditional-draw specification “generates” data by 1) constructing what <span class="math inline">\(y_i\)</span> “should be” given <span class="math inline">\(x_i\)</span>, then 2) drawing a random variable from some specified distribution <em>whose mean is this expectation</em>. This random draw is not “error” but the measured value <span class="math inline">\(y_i\)</span>. For the error draw generation, we need only one hat of random numbers, but for the conditional draw generation, we need a hat for each value of <span class="math inline">\(x_i\)</span>.</p>
 <p>Here is a short script that generates data by implementing both the error-draw and conditional-draw specifications. See if you can follow the logic of the code and match it to the meaning of these two ways of specifying a linear model.</p>
-<div class="sourceCode" id="cb188"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb188-1"><a href="intro-linear-models.html#cb188-1" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">5</span></span>
-<span id="cb188-2"><a href="intro-linear-models.html#cb188-2" tabindex="-1"></a>b_0 <span class="ot">&lt;-</span> <span class="fl">10.0</span></span>
-<span id="cb188-3"><a href="intro-linear-models.html#cb188-3" tabindex="-1"></a>b_1 <span class="ot">&lt;-</span> <span class="fl">1.2</span></span>
-<span id="cb188-4"><a href="intro-linear-models.html#cb188-4" tabindex="-1"></a>sigma <span class="ot">&lt;-</span> <span class="fl">0.4</span></span>
-<span id="cb188-5"><a href="intro-linear-models.html#cb188-5" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">:</span>n</span>
-<span id="cb188-6"><a href="intro-linear-models.html#cb188-6" tabindex="-1"></a>y_expected <span class="ot">&lt;-</span> b_0 <span class="sc">+</span> b_1<span class="sc">*</span>x</span>
-<span id="cb188-7"><a href="intro-linear-models.html#cb188-7" tabindex="-1"></a></span>
-<span id="cb188-8"><a href="intro-linear-models.html#cb188-8" tabindex="-1"></a><span class="co"># error-draw. Note that the n draws are all from the same distribution</span></span>
-<span id="cb188-9"><a href="intro-linear-models.html#cb188-9" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
-<span id="cb188-10"><a href="intro-linear-models.html#cb188-10" tabindex="-1"></a>y_error_draw <span class="ot">&lt;-</span> y_expected <span class="sc">+</span> <span class="fu">rnorm</span>(n, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> sigma)</span>
-<span id="cb188-11"><a href="intro-linear-models.html#cb188-11" tabindex="-1"></a></span>
-<span id="cb188-12"><a href="intro-linear-models.html#cb188-12" tabindex="-1"></a><span class="co"># conditional-draw. Note that the n draws are each from a different</span></span>
-<span id="cb188-13"><a href="intro-linear-models.html#cb188-13" tabindex="-1"></a><span class="co"># distribution because each has a different mean.</span></span>
-<span id="cb188-14"><a href="intro-linear-models.html#cb188-14" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
-<span id="cb188-15"><a href="intro-linear-models.html#cb188-15" tabindex="-1"></a>y_conditional_draw <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n, <span class="at">mean =</span> y_expected, <span class="at">sd =</span> sigma)</span>
-<span id="cb188-16"><a href="intro-linear-models.html#cb188-16" tabindex="-1"></a></span>
-<span id="cb188-17"><a href="intro-linear-models.html#cb188-17" tabindex="-1"></a><span class="fu">data.table</span>(<span class="at">X =</span> x,</span>
-<span id="cb188-18"><a href="intro-linear-models.html#cb188-18" tabindex="-1"></a>           <span class="st">&quot;Y (error draw)&quot;</span> <span class="ot">=</span> y_error_draw,</span>
-<span id="cb188-19"><a href="intro-linear-models.html#cb188-19" tabindex="-1"></a>           <span class="st">&quot;Y (conditional draw)&quot;</span> <span class="ot">=</span> y_conditional_draw)</span></code></pre></div>
-<pre><code>##    X Y (error draw) Y (conditional draw)
-## 1: 1       10.94942             10.94942
-## 2: 2       12.47346             12.47346
-## 3: 3       13.26575             13.26575
-## 4: 4       15.43811             15.43811
-## 5: 5       16.13180             16.13180</code></pre>
+<div class="sourceCode" id="cb190"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb190-1"><a href="intro-linear-models.html#cb190-1" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">5</span></span>
+<span id="cb190-2"><a href="intro-linear-models.html#cb190-2" tabindex="-1"></a>b_0 <span class="ot">&lt;-</span> <span class="fl">10.0</span></span>
+<span id="cb190-3"><a href="intro-linear-models.html#cb190-3" tabindex="-1"></a>b_1 <span class="ot">&lt;-</span> <span class="fl">1.2</span></span>
+<span id="cb190-4"><a href="intro-linear-models.html#cb190-4" tabindex="-1"></a>sigma <span class="ot">&lt;-</span> <span class="fl">0.4</span></span>
+<span id="cb190-5"><a href="intro-linear-models.html#cb190-5" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">:</span>n</span>
+<span id="cb190-6"><a href="intro-linear-models.html#cb190-6" tabindex="-1"></a>y_expected <span class="ot">&lt;-</span> b_0 <span class="sc">+</span> b_1<span class="sc">*</span>x</span>
+<span id="cb190-7"><a href="intro-linear-models.html#cb190-7" tabindex="-1"></a></span>
+<span id="cb190-8"><a href="intro-linear-models.html#cb190-8" tabindex="-1"></a><span class="co"># error-draw. Note that the n draws are all from the same distribution</span></span>
+<span id="cb190-9"><a href="intro-linear-models.html#cb190-9" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
+<span id="cb190-10"><a href="intro-linear-models.html#cb190-10" tabindex="-1"></a>y_error_draw <span class="ot">&lt;-</span> y_expected <span class="sc">+</span> <span class="fu">rnorm</span>(n, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> sigma)</span>
+<span id="cb190-11"><a href="intro-linear-models.html#cb190-11" tabindex="-1"></a></span>
+<span id="cb190-12"><a href="intro-linear-models.html#cb190-12" tabindex="-1"></a><span class="co"># conditional-draw. Note that the n draws are each from a different</span></span>
+<span id="cb190-13"><a href="intro-linear-models.html#cb190-13" tabindex="-1"></a><span class="co"># distribution because each has a different mean.</span></span>
+<span id="cb190-14"><a href="intro-linear-models.html#cb190-14" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
+<span id="cb190-15"><a href="intro-linear-models.html#cb190-15" tabindex="-1"></a>y_conditional_draw <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n, <span class="at">mean =</span> y_expected, <span class="at">sd =</span> sigma)</span>
+<span id="cb190-16"><a href="intro-linear-models.html#cb190-16" tabindex="-1"></a></span>
+<span id="cb190-17"><a href="intro-linear-models.html#cb190-17" tabindex="-1"></a><span class="fu">data.table</span>(<span class="at">X =</span> x,</span>
+<span id="cb190-18"><a href="intro-linear-models.html#cb190-18" tabindex="-1"></a>           <span class="st">&quot;Y (error draw)&quot;</span> <span class="ot">=</span> y_error_draw,</span>
+<span id="cb190-19"><a href="intro-linear-models.html#cb190-19" tabindex="-1"></a>           <span class="st">&quot;Y (conditional draw)&quot;</span> <span class="ot">=</span> y_conditional_draw)</span></code></pre></div>
+<pre><code>##        X Y (error draw) Y (conditional draw)
+##    &lt;int&gt;          &lt;num&gt;                &lt;num&gt;
+## 1:     1       10.94942             10.94942
+## 2:     2       12.47346             12.47346
+## 3:     3       13.26575             13.26575
+## 4:     4       15.43811             15.43811
+## 5:     5       16.13180             16.13180</code></pre>
 <div style="background-color:#cccccc; text-align:left; vertical-align: middle; padding:20px 47px;">
 <p>What’s that code? <code>rnorm()</code> is a pseudorandom number generator that simulates random draws from a normal distribution with the specified mean and variance. The algorithm to generate the numbers is entirely deterministic – the numbers are not truly random but are “pseudorandom”. The list of numbers returned closely approximates a set of true, random numbers. The sequence of numbers returned is determined by the “seed”, which can be set with the <code>set.seed()</code> function (R will use an internal seed if not set by the user).</p>
 </div>
@@ -1017,7 +1018,7 @@ b_1 = \mathrm{E}(Y|X=x+1) - \mathrm{E}(Y|X=x+1)
 \end{equation}\]</span></p>
 <p>I show this in Figure <a href="intro-linear-models.html#fig:intro-linear-models-cont-slope">8.2</a> using the points on the regression line at <span class="math inline">\(x = 5\)</span> and <span class="math inline">\(x = 6\)</span>. Thinking about a regression coefficient as a difference in conditional means is especially useful for understanding the coefficients of a categorical <span class="math inline">\(X\)</span> variable, as described below.</p>
 <div class="figure"><span style="display:block;" id="fig:intro-linear-models-cont-slope"></span>
-<img src="output/fig_2c_explainer.png" alt="Illustration of the slope in a linear model with a numeric X. The slope (the coefficient of X) is the difference in expected value for any two X that are one unit apart. This is illustrated for the points on the line at x = 5 and x = 6." width="900" />
+<img src="output/fig_2c_explainer.png" alt="Illustration of the slope in a linear model with a numeric X. The slope (the coefficient of X) is the difference in expected value for any two X that are one unit apart. This is illustrated for the points on the line at x = 5 and x = 6."  />
 <p class="caption">
 Figure 8.2: Illustration of the slope in a linear model with a numeric X. The slope (the coefficient of X) is the difference in expected value for any two X that are one unit apart. This is illustrated for the points on the line at x = 5 and x = 6.
 </p>
@@ -1028,7 +1029,7 @@ Figure 8.2: Illustration of the slope in a linear model with a numeric X. The sl
 <p>Linear models can be fit to experimental data in which the <span class="math inline">\(X\)</span> variable is categorical – this is the focus of this text! For the model fit to the data in Figure <a href="intro-linear-models.html#fig:line">8.1</a>B, the coefficient of <span class="math inline">\(X\)</span> is the slope of the line. Perhaps surprisingly, 1) we can fit a model like equation <a href="intro-linear-models.html#eq:error-spec">(8.2)</a> to data in which the <span class="math inline">\(X\)</span> variable is categorical and 2) the coefficient of <span class="math inline">\(X\)</span> <em>is</em> a slope. How is this possible? The slope of a line is <span class="math inline">\(\frac{y_2 - y_1}{x_2 - x_1}\)</span> where <span class="math inline">\((x_1, y_1)\)</span> and <span class="math inline">\((x_2, y_2)\)</span> are the graph coordinates of any two points on the line. What is the denominator of the slope function <span class="math inline">\((x_2 - x_1)\)</span> when <span class="math inline">\(X\)</span> is categorical?</p>
 <p>The solution to using a linear model with categorical <span class="math inline">\(X\)</span> is to recode the factor levels into numbers. An example of this was outlined in Chapter <a href="#analyzing-experimental-data-with-a-linear-model"><strong>??</strong></a> (<a href="ask1-intro.html#ask1-intro">Analyzing experimental data with a linear model</a>). The value of <span class="math inline">\(X\)</span> for individual mouse <em>i</em> is a number that indicates the treatment assignment – a value of 0 is given to mice with a functional ASK1 gene and a value of 1 is given to mice with a knocked out gene. The regression line goes through the two group means (Figure <a href="intro-linear-models.html#fig:intro-linear-models-cat-slope">8.3</a>). With the (0, 1) coding, <span class="math inline">\(\overline{x}_{ASK1Δadipo} - \overline{x}_{ASK1F/F} = 1\)</span>, so the denominator of the slope is equal to one and the slope is simply equal to the numerator <span class="math inline">\(\overline{y}_{ASK1Δadipo} - \overline{y}_{ASK1F/F}\)</span>. The coefficient (which is a slope!) <em>is</em> the difference in conditional means.</p>
 <div class="figure"><span style="display:block;" id="fig:intro-linear-models-cat-slope"></span>
-<img src="images/intro-linear-models-cat-slope-1.png" alt="Illustration of the slope in a linear model with categorical X. The slope (the coefficient of X) is the difference in conditional means." width="576" />
+<img src="images/intro-linear-models-cat-slope-1.png" alt="Illustration of the slope in a linear model with categorical X. The slope (the coefficient of X) is the difference in conditional means."  />
 <p class="caption">
 Figure 8.3: Illustration of the slope in a linear model with categorical X. The slope (the coefficient of X) is the difference in conditional means.
 </p>

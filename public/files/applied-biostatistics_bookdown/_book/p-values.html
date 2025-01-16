@@ -4,18 +4,18 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Chapter 6 P-values | Statistics for the Experimental Biologist</title>
+  <title>Chapter 6 P-values | Statistics for the Bench Biologist</title>
   <meta name="description" content="An introduction to statistical modeling for experimental biology researchers" />
-  <meta name="generator" content="bookdown 0.39 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.41 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Chapter 6 P-values | Statistics for the Experimental Biologist" />
+  <meta property="og:title" content="Chapter 6 P-values | Statistics for the Bench Biologist" />
   <meta property="og:type" content="book" />
   
   <meta property="og:description" content="An introduction to statistical modeling for experimental biology researchers" />
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Chapter 6 P-values | Statistics for the Experimental Biologist" />
+  <meta name="twitter:title" content="Chapter 6 P-values | Statistics for the Bench Biologist" />
   
   <meta name="twitter:description" content="An introduction to statistical modeling for experimental biology researchers" />
   
@@ -59,7 +59,7 @@
 
 <style type="text/css">
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span { line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -913,7 +913,7 @@ code span.wa { color: #bf0303; } /* Warning */
       <div class="body-inner">
         <div class="book-header" role="navigation">
           <h1>
-            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Statistics for the Experimental Biologist</a>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Statistics for the Bench Biologist</a>
           </h1>
         </div>
 
@@ -923,11 +923,12 @@ code span.wa { color: #bf0303; } /* Warning */
             <section class="normal" id="section-">
 <div id="p-values" class="section level1 hasAnchor" number="6">
 <h1><span class="header-section-number">Chapter 6</span> P-values<a href="p-values.html#p-values" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<p>All updates to this book are now at <a href="https://middleprofessor.github.io/benchbiostats/">https://middleprofessor.github.io/benchbiostats/</a></p>
 <p><em>A general perception of a “replication crisis” may thus reflect failure to recognize that statistical tests not only test hypotheses, but countless assumptions and the entire environment in which research takes place. Because of all the uncertain and unknown assumptions that underpin statistical inferences, we should treat inferential statistics as highly unstable local descriptions of relations between assumptions and data, rather than as providing generalizable inferences about hypotheses or models. And that means we should treat statistical results as being much more incomplete and uncertain than is currently the norm.</em><a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a></p>
 <p>A <em>p</em>-value <em>is a measure of the compatibility between observed data and the null model</em>. Here, “compatibility” is a probability, specifically, the probability of sampling a test-statistic as or more extreme than the observed test statistic, if all the assumptions used to compute the <em>p</em>-value are true.</p>
 <p>To deconstruct what this means, and the implications of the meaning, let’s use the exp2i data from Figure 2i in the study on the browning of white adipose tissue in mice that was introduced in the introductory chapter # <a href="ask1-intro.html#ask1-intro">Analyzing experimental data with a linear model</a>.</p>
 <p>Data source: <a href="https://www.nature.com/articles/s41467-020-15483-7" target="_blank">ASK1 inhibits browning of white adipose tissue in obesity</a></p>
-<div class="sourceCode" id="cb170"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb170-1"><a href="p-values.html#cb170-1" tabindex="-1"></a>fig_2i_m1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(liver_tg <span class="sc">~</span> treatment, <span class="at">data =</span> fig_2i)</span></code></pre></div>
+<div class="sourceCode" id="cb172"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb172-1"><a href="p-values.html#cb172-1" tabindex="-1"></a>fig_2i_m1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(liver_tg <span class="sc">~</span> treatment, <span class="at">data =</span> fig_2i)</span></code></pre></div>
 <p>The chunk above fits a linear model with <code>liver_tg</code> as the response variable and <code>treatment</code> as the single <span class="math inline">\(X\)</span>-varaiable. Figure <a href="p-values.html#fig:p-value-fig2i-fig">6.1</a> is the plot of the modeled means, 95% confidence intervals of the mean, and <em>p</em>-value of the significance test of the effect of treatment on liver triacylglycerol.</p>
 <div class="figure"><span style="display:block;" id="fig:p-value-fig2i-fig"></span>
 <img src="Walker-elementary-statistical-modeling-draft_files/figure-html/p-value-fig2i-fig-1.png" alt="UCP1 expression, relative to the mean level in the control group. Mean (circle) and 95% confidence interval (line) are shown. Unadjusted p-values are from linear model with sh-RNA treatment and LPS treatment fully crossed." width="576" />
@@ -951,7 +952,7 @@ Std. Error
 t value
 </th>
 <th style="text-align:right;">
-Pr(&gt;|t|)
+p value
 </th>
 <th style="text-align:right;">
 2.5 %
@@ -1030,22 +1031,22 @@ p = \mathrm{prob}(t \ge t_o | H_o)
 <h2><span class="header-section-number">6.2</span> Pump your intuition – Creating a null distribution<a href="p-values.html#pump-your-intuition-creating-a-null-distribution" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>The mean <code>liver_tg</code> in the knockout treatment is 21.6 µmol less than the mean <code>liver_tg</code> in the control treatment. This is the measured effect, or the <strong>observed differences in means</strong>. How confident are we in this effect? Certainly, if the researchers did the experiment comparing two control (ASK1F/F) groups, instead of a control and treatment group, they would measure some difference in their means simply because of sampling (that is which mice were sampled for the experiment). So let’s reframe the question: are the observed differences unusually large compared to a distribution of differences that would occur if there were no effect? That is, if the “null were true”. To answer this, we compare our observed difference to this <strong>null distribution</strong>. This comparison gives the probability (a long-run frequency) of “sampling” a random difference from the null distribution of differences that is as large, or larger, than the observed difference.</p>
 <p>What is a null distribution? It is the distribution of a statistic (such as a difference in means, or better, a <em>t</em>-value) if the null were true. Here, I hope to pump your intuition by generating a null distribution that is relevant to the ASK1 liver TG data. See if you can understand the script before reading the explanation below.</p>
-<div class="sourceCode" id="cb171"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb171-1"><a href="p-values.html#cb171-1" tabindex="-1"></a>seed <span class="ot">&lt;-</span> <span class="dv">1</span></span>
-<span id="cb171-2"><a href="p-values.html#cb171-2" tabindex="-1"></a>n_rep <span class="ot">&lt;-</span> <span class="dv">10</span><span class="sc">^</span><span class="dv">5</span> <span class="co"># number of replicate experiments</span></span>
-<span id="cb171-3"><a href="p-values.html#cb171-3" tabindex="-1"></a></span>
-<span id="cb171-4"><a href="p-values.html#cb171-4" tabindex="-1"></a>mu <span class="ot">&lt;-</span> <span class="fu">mean</span>(fig_2i[treatment <span class="sc">==</span> <span class="st">&quot;ASK1F/F&quot;</span>, liver_tg]) </span>
-<span id="cb171-5"><a href="p-values.html#cb171-5" tabindex="-1"></a>sigma <span class="ot">&lt;-</span> <span class="fu">sd</span>(fig_2i[treatment <span class="sc">==</span> <span class="st">&quot;ASK1F/F&quot;</span>, liver_tg])</span>
-<span id="cb171-6"><a href="p-values.html#cb171-6" tabindex="-1"></a></span>
-<span id="cb171-7"><a href="p-values.html#cb171-7" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="fu">nrow</span>(fig_2i[treatment <span class="sc">==</span> <span class="st">&quot;ASK1F/F&quot;</span>,])</span>
-<span id="cb171-8"><a href="p-values.html#cb171-8" tabindex="-1"></a></span>
-<span id="cb171-9"><a href="p-values.html#cb171-9" tabindex="-1"></a>d_null <span class="ot">&lt;-</span> <span class="fu">numeric</span>(n_rep)</span>
-<span id="cb171-10"><a href="p-values.html#cb171-10" tabindex="-1"></a><span class="cf">for</span>(rep <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n_rep){</span>
-<span id="cb171-11"><a href="p-values.html#cb171-11" tabindex="-1"></a>  sample_1 <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n, <span class="at">mean =</span> mu, <span class="at">sd =</span> sigma)</span>
-<span id="cb171-12"><a href="p-values.html#cb171-12" tabindex="-1"></a>  sample_2 <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n, <span class="at">mean =</span> mu, <span class="at">sd =</span> sigma)</span>
-<span id="cb171-13"><a href="p-values.html#cb171-13" tabindex="-1"></a>  d_null[rep] <span class="ot">&lt;-</span> <span class="fu">mean</span>(sample_2) <span class="sc">-</span> <span class="fu">mean</span>(sample_1)</span>
-<span id="cb171-14"><a href="p-values.html#cb171-14" tabindex="-1"></a>}</span>
-<span id="cb171-15"><a href="p-values.html#cb171-15" tabindex="-1"></a></span>
-<span id="cb171-16"><a href="p-values.html#cb171-16" tabindex="-1"></a><span class="fu">qplot</span>(d_null)</span></code></pre></div>
+<div class="sourceCode" id="cb173"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb173-1"><a href="p-values.html#cb173-1" tabindex="-1"></a>seed <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb173-2"><a href="p-values.html#cb173-2" tabindex="-1"></a>n_rep <span class="ot">&lt;-</span> <span class="dv">10</span><span class="sc">^</span><span class="dv">5</span> <span class="co"># number of replicate experiments</span></span>
+<span id="cb173-3"><a href="p-values.html#cb173-3" tabindex="-1"></a></span>
+<span id="cb173-4"><a href="p-values.html#cb173-4" tabindex="-1"></a>mu <span class="ot">&lt;-</span> <span class="fu">mean</span>(fig_2i[treatment <span class="sc">==</span> <span class="st">&quot;ASK1F/F&quot;</span>, liver_tg]) </span>
+<span id="cb173-5"><a href="p-values.html#cb173-5" tabindex="-1"></a>sigma <span class="ot">&lt;-</span> <span class="fu">sd</span>(fig_2i[treatment <span class="sc">==</span> <span class="st">&quot;ASK1F/F&quot;</span>, liver_tg])</span>
+<span id="cb173-6"><a href="p-values.html#cb173-6" tabindex="-1"></a></span>
+<span id="cb173-7"><a href="p-values.html#cb173-7" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="fu">nrow</span>(fig_2i[treatment <span class="sc">==</span> <span class="st">&quot;ASK1F/F&quot;</span>,])</span>
+<span id="cb173-8"><a href="p-values.html#cb173-8" tabindex="-1"></a></span>
+<span id="cb173-9"><a href="p-values.html#cb173-9" tabindex="-1"></a>d_null <span class="ot">&lt;-</span> <span class="fu">numeric</span>(n_rep)</span>
+<span id="cb173-10"><a href="p-values.html#cb173-10" tabindex="-1"></a><span class="cf">for</span>(rep <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n_rep){</span>
+<span id="cb173-11"><a href="p-values.html#cb173-11" tabindex="-1"></a>  sample_1 <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n, <span class="at">mean =</span> mu, <span class="at">sd =</span> sigma)</span>
+<span id="cb173-12"><a href="p-values.html#cb173-12" tabindex="-1"></a>  sample_2 <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n, <span class="at">mean =</span> mu, <span class="at">sd =</span> sigma)</span>
+<span id="cb173-13"><a href="p-values.html#cb173-13" tabindex="-1"></a>  d_null[rep] <span class="ot">&lt;-</span> <span class="fu">mean</span>(sample_2) <span class="sc">-</span> <span class="fu">mean</span>(sample_1)</span>
+<span id="cb173-14"><a href="p-values.html#cb173-14" tabindex="-1"></a>}</span>
+<span id="cb173-15"><a href="p-values.html#cb173-15" tabindex="-1"></a></span>
+<span id="cb173-16"><a href="p-values.html#cb173-16" tabindex="-1"></a><span class="fu">qplot</span>(d_null)</span></code></pre></div>
 <div class="figure"><span style="display:block;" id="fig:pvalue-d-null"></span>
 <img src="Walker-elementary-statistical-modeling-draft_files/figure-html/pvalue-d-null-1.png" alt="Null distribution for the difference in means of two samples from the same, inifinitely large population with a true mean and standard deviation equal to the observed mean and standard deviation of the ASK1 liver TG data." width="576" />
 <p class="caption">
@@ -1061,10 +1062,10 @@ Figure 6.2: Null distribution for the difference in means of two samples from th
 <li>plot the distribution of the 100,000 differences using a histogram</li>
 </ol>
 <p>The distribution of the differences is a null distribution. Notice that the mode of the null distribution is at zero, and the mean (0.01768) is close to zero (if we had set <span class="math inline">\(n\)</span> to infinity, the mean would be precisely zero). <em>The expected difference between the means of two random samples from the same population is, of course, zero</em>. Don’t gloss over this statement if that is not obvious. The tails extend out to a little more than +20 and -20. What this means is that it would be uncommon to randomly sample a value from this distribution of differences <em>as or more extreme</em> than our observed difference, -21.6. By “more extreme”, I mean any value more negative than -21.6 or more postive than 21.6. So it would be uncommon to sample a value from this distribution whose <em>absolute value</em> is as or more extreme than 21.6. How uncommon would this be?</p>
-<div class="sourceCode" id="cb172"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb172-1"><a href="p-values.html#cb172-1" tabindex="-1"></a>diff_obs <span class="ot">&lt;-</span> fig_2i_m1_coef[<span class="st">&quot;treatmentASK1Δadipo&quot;</span>, <span class="st">&quot;Estimate&quot;</span>]</span>
-<span id="cb172-2"><a href="p-values.html#cb172-2" tabindex="-1"></a>null_diff_extreme <span class="ot">&lt;-</span> <span class="fu">which</span>(<span class="fu">abs</span>(d_null) <span class="sc">&gt;</span> <span class="fu">abs</span>(diff_obs))</span>
-<span id="cb172-3"><a href="p-values.html#cb172-3" tabindex="-1"></a>n_extreme <span class="ot">&lt;-</span> <span class="fu">length</span>(null_diff_extreme)</span>
-<span id="cb172-4"><a href="p-values.html#cb172-4" tabindex="-1"></a>(<span class="at">p_d_null =</span> n_extreme<span class="sc">/</span>n_rep)</span></code></pre></div>
+<div class="sourceCode" id="cb174"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb174-1"><a href="p-values.html#cb174-1" tabindex="-1"></a>diff_obs <span class="ot">&lt;-</span> fig_2i_m1_coef[<span class="st">&quot;treatmentASK1Δadipo&quot;</span>, <span class="st">&quot;Estimate&quot;</span>]</span>
+<span id="cb174-2"><a href="p-values.html#cb174-2" tabindex="-1"></a>null_diff_extreme <span class="ot">&lt;-</span> <span class="fu">which</span>(<span class="fu">abs</span>(d_null) <span class="sc">&gt;</span> <span class="fu">abs</span>(diff_obs))</span>
+<span id="cb174-3"><a href="p-values.html#cb174-3" tabindex="-1"></a>n_extreme <span class="ot">&lt;-</span> <span class="fu">length</span>(null_diff_extreme)</span>
+<span id="cb174-4"><a href="p-values.html#cb174-4" tabindex="-1"></a>(<span class="at">p_d_null =</span> n_extreme<span class="sc">/</span>n_rep)</span></code></pre></div>
 <pre><code>## [1] 0.00566</code></pre>
 <p>In the 100,000 runs, only 566 generated data with an absolute difference as large or larger than 21.6 (an “absolute difference” is the absoute value of the difference). The frequency of differences as large or larger than our observed difference is 0.00566. This frequency is the <em>probability</em> of sampling a difference as or more extreme than the observed difference “under the null”. It is a <em>p</em>-value, but it is not the <em>p</em>-value in the coefficient table. This is because the <em>p</em>-value in the coefficient table is computed from a distribution of <em>t</em>-values, not raw differences. This raises the question, what is a <em>t</em>-distribution, and a <em>t</em>-value, more generally?</p>
 </div>
@@ -1092,40 +1093,40 @@ t = \frac{\bar{y}_2 - \bar{y}_1}{SE_{\bar{y}_2 - \bar{y}_1}}
 <li>I want to think of the observed variances of the WT and KO samples as sampled variances from this fake distribution. Therefore, I give the variance of the fake distribution the average of the observed WT and KO samples. The true (population) standard deviation (<span class="math inline">\(\sigma\)</span>) of the simulated data, then, is the square root of this averaged variance.</li>
 </ol>
 <p>I show the script, but don’t just cut and paste the code. Spend time thinking about what the each line does. Explore it by copying parts and pasting into console.</p>
-<div class="sourceCode" id="cb174"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb174-1"><a href="p-values.html#cb174-1" tabindex="-1"></a>seed <span class="ot">&lt;-</span> <span class="dv">1</span></span>
-<span id="cb174-2"><a href="p-values.html#cb174-2" tabindex="-1"></a>n_rep <span class="ot">&lt;-</span> <span class="dv">10</span><span class="sc">^</span><span class="dv">5</span> <span class="co"># number of iterations</span></span>
-<span id="cb174-3"><a href="p-values.html#cb174-3" tabindex="-1"></a></span>
-<span id="cb174-4"><a href="p-values.html#cb174-4" tabindex="-1"></a>mu <span class="ot">&lt;-</span> <span class="fu">mean</span>(fig_2i[treatment <span class="sc">==</span> <span class="st">&quot;ASK1F/F&quot;</span>, liver_tg])</span>
-<span id="cb174-5"><a href="p-values.html#cb174-5" tabindex="-1"></a>sd_control <span class="ot">&lt;-</span> <span class="fu">sd</span>(fig_2i[treatment <span class="sc">==</span> <span class="st">&quot;ASK1F/F&quot;</span>, liver_tg])</span>
-<span id="cb174-6"><a href="p-values.html#cb174-6" tabindex="-1"></a>sd_knockout <span class="ot">&lt;-</span> <span class="fu">sd</span>(fig_2i[treatment <span class="sc">==</span> <span class="st">&quot;ASK1Δadipo&quot;</span>, liver_tg])</span>
-<span id="cb174-7"><a href="p-values.html#cb174-7" tabindex="-1"></a>sigma <span class="ot">&lt;-</span> <span class="fu">sqrt</span>((sd_control<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> sd_knockout<span class="sc">^</span><span class="dv">2</span>)<span class="sc">/</span><span class="dv">2</span>)</span>
-<span id="cb174-8"><a href="p-values.html#cb174-8" tabindex="-1"></a></span>
-<span id="cb174-9"><a href="p-values.html#cb174-9" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="fu">nrow</span>(fig_2i[treatment <span class="sc">==</span> <span class="st">&quot;ASK1F/F&quot;</span>,])</span>
-<span id="cb174-10"><a href="p-values.html#cb174-10" tabindex="-1"></a></span>
-<span id="cb174-11"><a href="p-values.html#cb174-11" tabindex="-1"></a>treatment <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">&quot;WT&quot;</span>, <span class="st">&quot;KO&quot;</span>), <span class="at">each =</span> n) <span class="sc">%&gt;%</span></span>
-<span id="cb174-12"><a href="p-values.html#cb174-12" tabindex="-1"></a>  <span class="fu">factor</span>(<span class="at">levels =</span> <span class="fu">c</span>(<span class="st">&quot;WT&quot;</span>, <span class="st">&quot;KO&quot;</span>)) <span class="co"># need this for for-loop</span></span>
-<span id="cb174-13"><a href="p-values.html#cb174-13" tabindex="-1"></a>t_null <span class="ot">&lt;-</span> <span class="fu">numeric</span>(n)</span>
-<span id="cb174-14"><a href="p-values.html#cb174-14" tabindex="-1"></a>t_null_manual <span class="ot">&lt;-</span> <span class="fu">numeric</span>(n)</span>
-<span id="cb174-15"><a href="p-values.html#cb174-15" tabindex="-1"></a><span class="cf">for</span>(rep <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n_rep){</span>
-<span id="cb174-16"><a href="p-values.html#cb174-16" tabindex="-1"></a>  wt_sample <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n, <span class="at">mean =</span> mu, <span class="at">sd =</span> sigma)</span>
-<span id="cb174-17"><a href="p-values.html#cb174-17" tabindex="-1"></a>  ko_sample <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n, <span class="at">mean =</span> mu, <span class="at">sd =</span> sigma)</span>
-<span id="cb174-18"><a href="p-values.html#cb174-18" tabindex="-1"></a></span>
-<span id="cb174-19"><a href="p-values.html#cb174-19" tabindex="-1"></a>  <span class="co"># way no.1 - compute the t-tests using the linear model</span></span>
-<span id="cb174-20"><a href="p-values.html#cb174-20" tabindex="-1"></a>  y <span class="ot">&lt;-</span> <span class="fu">c</span>(wt_sample, ko_sample)</span>
-<span id="cb174-21"><a href="p-values.html#cb174-21" tabindex="-1"></a>  m1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> treatment)</span>
-<span id="cb174-22"><a href="p-values.html#cb174-22" tabindex="-1"></a>  t_null[rep] <span class="ot">&lt;-</span> <span class="fu">coef</span>(<span class="fu">summary</span>(m1))[<span class="st">&quot;treatmentKO&quot;</span>, <span class="st">&quot;t value&quot;</span>]</span>
-<span id="cb174-23"><a href="p-values.html#cb174-23" tabindex="-1"></a>  </span>
-<span id="cb174-24"><a href="p-values.html#cb174-24" tabindex="-1"></a>  <span class="co"># way no. 2 - compute the t-tests manually!</span></span>
-<span id="cb174-25"><a href="p-values.html#cb174-25" tabindex="-1"></a>  <span class="co"># check to make sure these are the same as t_null !!!</span></span>
-<span id="cb174-26"><a href="p-values.html#cb174-26" tabindex="-1"></a>  diff <span class="ot">&lt;-</span> <span class="fu">mean</span>(ko_sample) <span class="sc">-</span> <span class="fu">mean</span>(wt_sample)</span>
-<span id="cb174-27"><a href="p-values.html#cb174-27" tabindex="-1"></a>  se_diff <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(<span class="fu">sd</span>(ko_sample)<span class="sc">^</span><span class="dv">2</span><span class="sc">/</span>n <span class="sc">+</span> <span class="fu">sd</span>(wt_sample)<span class="sc">^</span><span class="dv">2</span><span class="sc">/</span>n)</span>
-<span id="cb174-28"><a href="p-values.html#cb174-28" tabindex="-1"></a>  t_null_manual[rep] <span class="ot">&lt;-</span> diff<span class="sc">/</span>se_diff</span>
-<span id="cb174-29"><a href="p-values.html#cb174-29" tabindex="-1"></a></span>
-<span id="cb174-30"><a href="p-values.html#cb174-30" tabindex="-1"></a>}</span>
-<span id="cb174-31"><a href="p-values.html#cb174-31" tabindex="-1"></a></span>
-<span id="cb174-32"><a href="p-values.html#cb174-32" tabindex="-1"></a></span>
-<span id="cb174-33"><a href="p-values.html#cb174-33" tabindex="-1"></a><span class="co"># plot the null distribution of t-values</span></span>
-<span id="cb174-34"><a href="p-values.html#cb174-34" tabindex="-1"></a><span class="fu">qplot</span>(t_null)</span></code></pre></div>
+<div class="sourceCode" id="cb176"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb176-1"><a href="p-values.html#cb176-1" tabindex="-1"></a>seed <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb176-2"><a href="p-values.html#cb176-2" tabindex="-1"></a>n_rep <span class="ot">&lt;-</span> <span class="dv">10</span><span class="sc">^</span><span class="dv">5</span> <span class="co"># number of iterations</span></span>
+<span id="cb176-3"><a href="p-values.html#cb176-3" tabindex="-1"></a></span>
+<span id="cb176-4"><a href="p-values.html#cb176-4" tabindex="-1"></a>mu <span class="ot">&lt;-</span> <span class="fu">mean</span>(fig_2i[treatment <span class="sc">==</span> <span class="st">&quot;ASK1F/F&quot;</span>, liver_tg])</span>
+<span id="cb176-5"><a href="p-values.html#cb176-5" tabindex="-1"></a>sd_control <span class="ot">&lt;-</span> <span class="fu">sd</span>(fig_2i[treatment <span class="sc">==</span> <span class="st">&quot;ASK1F/F&quot;</span>, liver_tg])</span>
+<span id="cb176-6"><a href="p-values.html#cb176-6" tabindex="-1"></a>sd_knockout <span class="ot">&lt;-</span> <span class="fu">sd</span>(fig_2i[treatment <span class="sc">==</span> <span class="st">&quot;ASK1Δadipo&quot;</span>, liver_tg])</span>
+<span id="cb176-7"><a href="p-values.html#cb176-7" tabindex="-1"></a>sigma <span class="ot">&lt;-</span> <span class="fu">sqrt</span>((sd_control<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> sd_knockout<span class="sc">^</span><span class="dv">2</span>)<span class="sc">/</span><span class="dv">2</span>)</span>
+<span id="cb176-8"><a href="p-values.html#cb176-8" tabindex="-1"></a></span>
+<span id="cb176-9"><a href="p-values.html#cb176-9" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="fu">nrow</span>(fig_2i[treatment <span class="sc">==</span> <span class="st">&quot;ASK1F/F&quot;</span>,])</span>
+<span id="cb176-10"><a href="p-values.html#cb176-10" tabindex="-1"></a></span>
+<span id="cb176-11"><a href="p-values.html#cb176-11" tabindex="-1"></a>treatment <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">&quot;WT&quot;</span>, <span class="st">&quot;KO&quot;</span>), <span class="at">each =</span> n) <span class="sc">%&gt;%</span></span>
+<span id="cb176-12"><a href="p-values.html#cb176-12" tabindex="-1"></a>  <span class="fu">factor</span>(<span class="at">levels =</span> <span class="fu">c</span>(<span class="st">&quot;WT&quot;</span>, <span class="st">&quot;KO&quot;</span>)) <span class="co"># need this for for-loop</span></span>
+<span id="cb176-13"><a href="p-values.html#cb176-13" tabindex="-1"></a>t_null <span class="ot">&lt;-</span> <span class="fu">numeric</span>(n)</span>
+<span id="cb176-14"><a href="p-values.html#cb176-14" tabindex="-1"></a>t_null_manual <span class="ot">&lt;-</span> <span class="fu">numeric</span>(n)</span>
+<span id="cb176-15"><a href="p-values.html#cb176-15" tabindex="-1"></a><span class="cf">for</span>(rep <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n_rep){</span>
+<span id="cb176-16"><a href="p-values.html#cb176-16" tabindex="-1"></a>  wt_sample <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n, <span class="at">mean =</span> mu, <span class="at">sd =</span> sigma)</span>
+<span id="cb176-17"><a href="p-values.html#cb176-17" tabindex="-1"></a>  ko_sample <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n, <span class="at">mean =</span> mu, <span class="at">sd =</span> sigma)</span>
+<span id="cb176-18"><a href="p-values.html#cb176-18" tabindex="-1"></a></span>
+<span id="cb176-19"><a href="p-values.html#cb176-19" tabindex="-1"></a>  <span class="co"># way no.1 - compute the t-tests using the linear model</span></span>
+<span id="cb176-20"><a href="p-values.html#cb176-20" tabindex="-1"></a>  y <span class="ot">&lt;-</span> <span class="fu">c</span>(wt_sample, ko_sample)</span>
+<span id="cb176-21"><a href="p-values.html#cb176-21" tabindex="-1"></a>  m1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> treatment)</span>
+<span id="cb176-22"><a href="p-values.html#cb176-22" tabindex="-1"></a>  t_null[rep] <span class="ot">&lt;-</span> <span class="fu">coef</span>(<span class="fu">summary</span>(m1))[<span class="st">&quot;treatmentKO&quot;</span>, <span class="st">&quot;t value&quot;</span>]</span>
+<span id="cb176-23"><a href="p-values.html#cb176-23" tabindex="-1"></a>  </span>
+<span id="cb176-24"><a href="p-values.html#cb176-24" tabindex="-1"></a>  <span class="co"># way no. 2 - compute the t-tests manually!</span></span>
+<span id="cb176-25"><a href="p-values.html#cb176-25" tabindex="-1"></a>  <span class="co"># check to make sure these are the same as t_null !!!</span></span>
+<span id="cb176-26"><a href="p-values.html#cb176-26" tabindex="-1"></a>  diff <span class="ot">&lt;-</span> <span class="fu">mean</span>(ko_sample) <span class="sc">-</span> <span class="fu">mean</span>(wt_sample)</span>
+<span id="cb176-27"><a href="p-values.html#cb176-27" tabindex="-1"></a>  se_diff <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(<span class="fu">sd</span>(ko_sample)<span class="sc">^</span><span class="dv">2</span><span class="sc">/</span>n <span class="sc">+</span> <span class="fu">sd</span>(wt_sample)<span class="sc">^</span><span class="dv">2</span><span class="sc">/</span>n)</span>
+<span id="cb176-28"><a href="p-values.html#cb176-28" tabindex="-1"></a>  t_null_manual[rep] <span class="ot">&lt;-</span> diff<span class="sc">/</span>se_diff</span>
+<span id="cb176-29"><a href="p-values.html#cb176-29" tabindex="-1"></a></span>
+<span id="cb176-30"><a href="p-values.html#cb176-30" tabindex="-1"></a>}</span>
+<span id="cb176-31"><a href="p-values.html#cb176-31" tabindex="-1"></a></span>
+<span id="cb176-32"><a href="p-values.html#cb176-32" tabindex="-1"></a></span>
+<span id="cb176-33"><a href="p-values.html#cb176-33" tabindex="-1"></a><span class="co"># plot the null distribution of t-values</span></span>
+<span id="cb176-34"><a href="p-values.html#cb176-34" tabindex="-1"></a><span class="fu">qplot</span>(t_null)</span></code></pre></div>
 <div class="figure"><span style="display:block;" id="fig:pvalue-t-null"></span>
 <img src="Walker-elementary-statistical-modeling-draft_files/figure-html/pvalue-t-null-1.png" alt="Null distribution of t-values. The simulation generated 10,000 t-tests with a true null." width="576" />
 <p class="caption">
@@ -1133,25 +1134,25 @@ Figure 6.3: Null distribution of t-values. The simulation generated 10,000 t-tes
 </p>
 </div>
 <p>Now let’s use this null distribution of <em>t</em>-values to compute a <em>p</em>-value</p>
-<div class="sourceCode" id="cb175"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb175-1"><a href="p-values.html#cb175-1" tabindex="-1"></a><span class="co"># what is the p-value?</span></span>
-<span id="cb175-2"><a href="p-values.html#cb175-2" tabindex="-1"></a><span class="co"># the p-value is the number of t-values in t_null_2 that are as large</span></span>
-<span id="cb175-3"><a href="p-values.html#cb175-3" tabindex="-1"></a><span class="co"># or larger than the observed t. Large, negative t-values</span></span>
-<span id="cb175-4"><a href="p-values.html#cb175-4" tabindex="-1"></a><span class="co"># are as unlikely under the null as large, positive t-values.</span></span>
-<span id="cb175-5"><a href="p-values.html#cb175-5" tabindex="-1"></a><span class="co"># To account for this, we want to use absolute values in our counts</span></span>
-<span id="cb175-6"><a href="p-values.html#cb175-6" tabindex="-1"></a><span class="co"># this is a &quot;two-tail test&quot;</span></span>
-<span id="cb175-7"><a href="p-values.html#cb175-7" tabindex="-1"></a></span>
-<span id="cb175-8"><a href="p-values.html#cb175-8" tabindex="-1"></a><span class="co"># first assign the observed t-value</span></span>
-<span id="cb175-9"><a href="p-values.html#cb175-9" tabindex="-1"></a>t_obs <span class="ot">&lt;-</span> fig_2i_m1_coef[<span class="st">&quot;treatmentASK1Δadipo&quot;</span>, <span class="st">&quot;t value&quot;</span>]</span>
-<span id="cb175-10"><a href="p-values.html#cb175-10" tabindex="-1"></a></span>
-<span id="cb175-11"><a href="p-values.html#cb175-11" tabindex="-1"></a></span>
-<span id="cb175-12"><a href="p-values.html#cb175-12" tabindex="-1"></a><span class="co"># now count the number of t-values in t_dis as big or bigger than this</span></span>
-<span id="cb175-13"><a href="p-values.html#cb175-13" tabindex="-1"></a><span class="co"># include the observed value as one of these (so add 1 to the count)</span></span>
-<span id="cb175-14"><a href="p-values.html#cb175-14" tabindex="-1"></a>count <span class="ot">&lt;-</span> <span class="fu">sum</span>(<span class="fu">abs</span>(t_null) <span class="sc">&gt;=</span> <span class="fu">abs</span>(t_obs))</span>
-<span id="cb175-15"><a href="p-values.html#cb175-15" tabindex="-1"></a></span>
-<span id="cb175-16"><a href="p-values.html#cb175-16" tabindex="-1"></a><span class="co"># the p-value is the frequency of t_dis &gt;= t_obs, so divide</span></span>
-<span id="cb175-17"><a href="p-values.html#cb175-17" tabindex="-1"></a><span class="co"># count by the total number of t-values in the distribution.</span></span>
-<span id="cb175-18"><a href="p-values.html#cb175-18" tabindex="-1"></a><span class="co"># Again add one since the observed value counts as a sample</span></span>
-<span id="cb175-19"><a href="p-values.html#cb175-19" tabindex="-1"></a>(p_ASK1Δadipo <span class="ot">&lt;-</span> count<span class="sc">/</span>(n_rep))</span></code></pre></div>
+<div class="sourceCode" id="cb177"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb177-1"><a href="p-values.html#cb177-1" tabindex="-1"></a><span class="co"># what is the p-value?</span></span>
+<span id="cb177-2"><a href="p-values.html#cb177-2" tabindex="-1"></a><span class="co"># the p-value is the number of t-values in t_null_2 that are as large</span></span>
+<span id="cb177-3"><a href="p-values.html#cb177-3" tabindex="-1"></a><span class="co"># or larger than the observed t. Large, negative t-values</span></span>
+<span id="cb177-4"><a href="p-values.html#cb177-4" tabindex="-1"></a><span class="co"># are as unlikely under the null as large, positive t-values.</span></span>
+<span id="cb177-5"><a href="p-values.html#cb177-5" tabindex="-1"></a><span class="co"># To account for this, we want to use absolute values in our counts</span></span>
+<span id="cb177-6"><a href="p-values.html#cb177-6" tabindex="-1"></a><span class="co"># this is a &quot;two-tail test&quot;</span></span>
+<span id="cb177-7"><a href="p-values.html#cb177-7" tabindex="-1"></a></span>
+<span id="cb177-8"><a href="p-values.html#cb177-8" tabindex="-1"></a><span class="co"># first assign the observed t-value</span></span>
+<span id="cb177-9"><a href="p-values.html#cb177-9" tabindex="-1"></a>t_obs <span class="ot">&lt;-</span> fig_2i_m1_coef[<span class="st">&quot;treatmentASK1Δadipo&quot;</span>, <span class="st">&quot;t value&quot;</span>]</span>
+<span id="cb177-10"><a href="p-values.html#cb177-10" tabindex="-1"></a></span>
+<span id="cb177-11"><a href="p-values.html#cb177-11" tabindex="-1"></a></span>
+<span id="cb177-12"><a href="p-values.html#cb177-12" tabindex="-1"></a><span class="co"># now count the number of t-values in t_dis as big or bigger than this</span></span>
+<span id="cb177-13"><a href="p-values.html#cb177-13" tabindex="-1"></a><span class="co"># include the observed value as one of these (so add 1 to the count)</span></span>
+<span id="cb177-14"><a href="p-values.html#cb177-14" tabindex="-1"></a>count <span class="ot">&lt;-</span> <span class="fu">sum</span>(<span class="fu">abs</span>(t_null) <span class="sc">&gt;=</span> <span class="fu">abs</span>(t_obs))</span>
+<span id="cb177-15"><a href="p-values.html#cb177-15" tabindex="-1"></a></span>
+<span id="cb177-16"><a href="p-values.html#cb177-16" tabindex="-1"></a><span class="co"># the p-value is the frequency of t_dis &gt;= t_obs, so divide</span></span>
+<span id="cb177-17"><a href="p-values.html#cb177-17" tabindex="-1"></a><span class="co"># count by the total number of t-values in the distribution.</span></span>
+<span id="cb177-18"><a href="p-values.html#cb177-18" tabindex="-1"></a><span class="co"># Again add one since the observed value counts as a sample</span></span>
+<span id="cb177-19"><a href="p-values.html#cb177-19" tabindex="-1"></a>(p_ASK1Δadipo <span class="ot">&lt;-</span> count<span class="sc">/</span>(n_rep))</span></code></pre></div>
 <pre><code>## [1] 0.01173</code></pre>
 <p>Hey that looks pretty good! Compare this to the <em>p</em>-value in the coefficient table above.</p>
 <p>A <em>p</em>-value can be computed by counting the number of simulated <em>t</em>-values, <em>including the observed value</em>, that are equal to or more extreme (in either the positive or negative direction) than the observed <em>t</em>. Including the observed <em>t</em>, there are 1173 values that are more extreme than that observed. An approximate measure of <em>p</em> is this count divided by 100,001 (why is 1 added to the denominator?), which is 0.01173. This simulation-based <em>p</em>-value is very (very!) close to that computed from the observed <em>t</em>-test.</p>
@@ -1163,26 +1164,26 @@ Figure 6.3: Null distribution of t-values. The simulation generated 10,000 t-tes
 <p>In our thought experiment, let’s leave the values in the <code>treatment</code> column be, and just randomly re-arrange or permute the values in the <code>liver_tg</code> column. What is the new expected diference in liver TG between the rows assigned to ASK1F/F and the rows assigned to ASK1Δadipo? The expected difference is Zero. Because the <code>liver_tg</code> values were randomly re-arranged, they <em>cannot</em> be caused by treatment assignment.</p>
 <p>A permutation is a random re-arrangement of values in a column. Consider the many thousands of permutations of the values in the <code>liver_tg</code> column. A difference in means can be computed from each of these permuations and a distribution of differences can be generated. Is the observed difference extreme relative to the other values in this distribution? This is a permutation test – it compares an observed statistic to a distribution of the statistic computed over many thousands of permutations.</p>
 <p>Let’s create a script for a permutation test</p>
-<div class="sourceCode" id="cb177"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb177-1"><a href="p-values.html#cb177-1" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
-<span id="cb177-2"><a href="p-values.html#cb177-2" tabindex="-1"></a>n_iter <span class="ot">&lt;-</span> <span class="dv">5000</span> <span class="co"># number of random permutations</span></span>
-<span id="cb177-3"><a href="p-values.html#cb177-3" tabindex="-1"></a></span>
-<span id="cb177-4"><a href="p-values.html#cb177-4" tabindex="-1"></a>y <span class="ot">&lt;-</span> fig_2i[, liver_tg]</span>
-<span id="cb177-5"><a href="p-values.html#cb177-5" tabindex="-1"></a>x <span class="ot">&lt;-</span> fig_2i[, treatment]</span>
-<span id="cb177-6"><a href="p-values.html#cb177-6" tabindex="-1"></a></span>
-<span id="cb177-7"><a href="p-values.html#cb177-7" tabindex="-1"></a>d_dist_perm <span class="ot">&lt;-</span> <span class="fu">numeric</span>(n_iter)</span>
-<span id="cb177-8"><a href="p-values.html#cb177-8" tabindex="-1"></a></span>
-<span id="cb177-9"><a href="p-values.html#cb177-9" tabindex="-1"></a><span class="cf">for</span>(iter <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n_iter){</span>
-<span id="cb177-10"><a href="p-values.html#cb177-10" tabindex="-1"></a>  xbar1 <span class="ot">&lt;-</span> <span class="fu">mean</span>(y[x <span class="sc">==</span> <span class="st">&quot;ASK1F/F&quot;</span>])</span>
-<span id="cb177-11"><a href="p-values.html#cb177-11" tabindex="-1"></a>  xbar2 <span class="ot">&lt;-</span> <span class="fu">mean</span>(y[x <span class="sc">==</span> <span class="st">&quot;ASK1Δadipo&quot;</span>])</span>
-<span id="cb177-12"><a href="p-values.html#cb177-12" tabindex="-1"></a>  </span>
-<span id="cb177-13"><a href="p-values.html#cb177-13" tabindex="-1"></a>  d_dist_perm[iter] <span class="ot">&lt;-</span> xbar2 <span class="sc">-</span> xbar1</span>
-<span id="cb177-14"><a href="p-values.html#cb177-14" tabindex="-1"></a>  </span>
-<span id="cb177-15"><a href="p-values.html#cb177-15" tabindex="-1"></a>  <span class="co"># permute y</span></span>
-<span id="cb177-16"><a href="p-values.html#cb177-16" tabindex="-1"></a>  y <span class="ot">&lt;-</span> <span class="fu">sample</span>(y, <span class="at">replace=</span><span class="cn">FALSE</span>)</span>
-<span id="cb177-17"><a href="p-values.html#cb177-17" tabindex="-1"></a>  <span class="co"># note that, when i=1, the first &quot;permutation&quot; is the original arrangement</span></span>
-<span id="cb177-18"><a href="p-values.html#cb177-18" tabindex="-1"></a>}</span>
-<span id="cb177-19"><a href="p-values.html#cb177-19" tabindex="-1"></a></span>
-<span id="cb177-20"><a href="p-values.html#cb177-20" tabindex="-1"></a><span class="fu">qplot</span>(d_dist_perm)</span></code></pre></div>
+<div class="sourceCode" id="cb179"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb179-1"><a href="p-values.html#cb179-1" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
+<span id="cb179-2"><a href="p-values.html#cb179-2" tabindex="-1"></a>n_iter <span class="ot">&lt;-</span> <span class="dv">5000</span> <span class="co"># number of random permutations</span></span>
+<span id="cb179-3"><a href="p-values.html#cb179-3" tabindex="-1"></a></span>
+<span id="cb179-4"><a href="p-values.html#cb179-4" tabindex="-1"></a>y <span class="ot">&lt;-</span> fig_2i[, liver_tg]</span>
+<span id="cb179-5"><a href="p-values.html#cb179-5" tabindex="-1"></a>x <span class="ot">&lt;-</span> fig_2i[, treatment]</span>
+<span id="cb179-6"><a href="p-values.html#cb179-6" tabindex="-1"></a></span>
+<span id="cb179-7"><a href="p-values.html#cb179-7" tabindex="-1"></a>d_dist_perm <span class="ot">&lt;-</span> <span class="fu">numeric</span>(n_iter)</span>
+<span id="cb179-8"><a href="p-values.html#cb179-8" tabindex="-1"></a></span>
+<span id="cb179-9"><a href="p-values.html#cb179-9" tabindex="-1"></a><span class="cf">for</span>(iter <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n_iter){</span>
+<span id="cb179-10"><a href="p-values.html#cb179-10" tabindex="-1"></a>  xbar1 <span class="ot">&lt;-</span> <span class="fu">mean</span>(y[x <span class="sc">==</span> <span class="st">&quot;ASK1F/F&quot;</span>])</span>
+<span id="cb179-11"><a href="p-values.html#cb179-11" tabindex="-1"></a>  xbar2 <span class="ot">&lt;-</span> <span class="fu">mean</span>(y[x <span class="sc">==</span> <span class="st">&quot;ASK1Δadipo&quot;</span>])</span>
+<span id="cb179-12"><a href="p-values.html#cb179-12" tabindex="-1"></a>  </span>
+<span id="cb179-13"><a href="p-values.html#cb179-13" tabindex="-1"></a>  d_dist_perm[iter] <span class="ot">&lt;-</span> xbar2 <span class="sc">-</span> xbar1</span>
+<span id="cb179-14"><a href="p-values.html#cb179-14" tabindex="-1"></a>  </span>
+<span id="cb179-15"><a href="p-values.html#cb179-15" tabindex="-1"></a>  <span class="co"># permute y</span></span>
+<span id="cb179-16"><a href="p-values.html#cb179-16" tabindex="-1"></a>  y <span class="ot">&lt;-</span> <span class="fu">sample</span>(y, <span class="at">replace=</span><span class="cn">FALSE</span>)</span>
+<span id="cb179-17"><a href="p-values.html#cb179-17" tabindex="-1"></a>  <span class="co"># note that, when i=1, the first &quot;permutation&quot; is the original arrangement</span></span>
+<span id="cb179-18"><a href="p-values.html#cb179-18" tabindex="-1"></a>}</span>
+<span id="cb179-19"><a href="p-values.html#cb179-19" tabindex="-1"></a></span>
+<span id="cb179-20"><a href="p-values.html#cb179-20" tabindex="-1"></a><span class="fu">qplot</span>(d_dist_perm)</span></code></pre></div>
 <p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/pvalue-d-dist-perm-1.png" width="576" /></p>
 <p>From this distribution of distances generated by random permuation of the response, we can compute a permutation <em>p</em>-value.</p>
 <p><code>{rpvalue-d-dist-perm-p } (p_permute &lt;- sum(abs(d_dist_perm) &gt;= abs(d_dist_perm[1]))/n_iter)</code></p>
@@ -1282,18 +1283,18 @@ Figure 6.4: Variability of <em>p</em>-values when the power is 0.4
 <h3><span class="header-section-number">6.7.4</span> Misconception: a low <em>p</em>-value indicates an important effect<a href="p-values.html#misconception-a-low-p-value-indicates-an-important-effect" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>Many researchers write results as if they believe that a small <em>p</em>-value means the effect is big or important. This may misconception may arise because of the ubiquitous use of “significant” to indicate a small p-value and “very” or “extremely” or “wicked” significant to indicate a really small p-value. Regardless, this is a misconception. A small p-value will usually result when there is high power (but can occur even if power is low) and power is a function of effect size, variability (the standard deviation), and sample size. A small <em>p</em> could result from a large effect size but can also result with a small effect size if the sample size is big enough.</p>
 <p>This is easy to simulate (see script below). Let’s model the effect of the genotype of a gene on height</p>
-<div class="sourceCode" id="cb178"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb178-1"><a href="p-values.html#cb178-1" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
-<span id="cb178-2"><a href="p-values.html#cb178-2" tabindex="-1"></a>rho <span class="ot">&lt;-</span> <span class="fl">0.5</span></span>
-<span id="cb178-3"><a href="p-values.html#cb178-3" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">10</span><span class="sc">^</span><span class="dv">4</span></span>
-<span id="cb178-4"><a href="p-values.html#cb178-4" tabindex="-1"></a>genotype <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;+/+&quot;</span>, <span class="st">&quot;+/-&quot;</span>, <span class="st">&quot;-/-&quot;</span>)</span>
-<span id="cb178-5"><a href="p-values.html#cb178-5" tabindex="-1"></a>Sigma <span class="ot">&lt;-</span> <span class="fu">diag</span>(<span class="dv">2</span>)</span>
-<span id="cb178-6"><a href="p-values.html#cb178-6" tabindex="-1"></a>Sigma[<span class="dv">1</span>,<span class="dv">2</span>] <span class="ot">&lt;-</span> Sigma[<span class="dv">2</span>,<span class="dv">1</span>] <span class="ot">&lt;-</span> rho</span>
-<span id="cb178-7"><a href="p-values.html#cb178-7" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">rmvnorm</span>(n, <span class="at">mean=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">0</span>), <span class="at">sigma=</span>Sigma)</span>
-<span id="cb178-8"><a href="p-values.html#cb178-8" tabindex="-1"></a><span class="fu">colnames</span>(X) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;X1&quot;</span>, <span class="st">&quot;X2&quot;</span>)</span>
-<span id="cb178-9"><a href="p-values.html#cb178-9" tabindex="-1"></a>beta <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.05</span>, <span class="fl">0.05</span>)</span>
-<span id="cb178-10"><a href="p-values.html#cb178-10" tabindex="-1"></a>y <span class="ot">&lt;-</span> X<span class="sc">%*%</span>beta <span class="sc">+</span> <span class="fu">rnorm</span>(n)</span>
-<span id="cb178-11"><a href="p-values.html#cb178-11" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> X)</span>
-<span id="cb178-12"><a href="p-values.html#cb178-12" tabindex="-1"></a><span class="fu">coefficients</span>(<span class="fu">summary</span>(fit))</span></code></pre></div>
+<div class="sourceCode" id="cb180"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb180-1"><a href="p-values.html#cb180-1" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
+<span id="cb180-2"><a href="p-values.html#cb180-2" tabindex="-1"></a>rho <span class="ot">&lt;-</span> <span class="fl">0.5</span></span>
+<span id="cb180-3"><a href="p-values.html#cb180-3" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">10</span><span class="sc">^</span><span class="dv">4</span></span>
+<span id="cb180-4"><a href="p-values.html#cb180-4" tabindex="-1"></a>genotype <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;+/+&quot;</span>, <span class="st">&quot;+/-&quot;</span>, <span class="st">&quot;-/-&quot;</span>)</span>
+<span id="cb180-5"><a href="p-values.html#cb180-5" tabindex="-1"></a>Sigma <span class="ot">&lt;-</span> <span class="fu">diag</span>(<span class="dv">2</span>)</span>
+<span id="cb180-6"><a href="p-values.html#cb180-6" tabindex="-1"></a>Sigma[<span class="dv">1</span>,<span class="dv">2</span>] <span class="ot">&lt;-</span> Sigma[<span class="dv">2</span>,<span class="dv">1</span>] <span class="ot">&lt;-</span> rho</span>
+<span id="cb180-7"><a href="p-values.html#cb180-7" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">rmvnorm</span>(n, <span class="at">mean=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">0</span>), <span class="at">sigma=</span>Sigma)</span>
+<span id="cb180-8"><a href="p-values.html#cb180-8" tabindex="-1"></a><span class="fu">colnames</span>(X) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;X1&quot;</span>, <span class="st">&quot;X2&quot;</span>)</span>
+<span id="cb180-9"><a href="p-values.html#cb180-9" tabindex="-1"></a>beta <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.05</span>, <span class="fl">0.05</span>)</span>
+<span id="cb180-10"><a href="p-values.html#cb180-10" tabindex="-1"></a>y <span class="ot">&lt;-</span> X<span class="sc">%*%</span>beta <span class="sc">+</span> <span class="fu">rnorm</span>(n)</span>
+<span id="cb180-11"><a href="p-values.html#cb180-11" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> X)</span>
+<span id="cb180-12"><a href="p-values.html#cb180-12" tabindex="-1"></a><span class="fu">coefficients</span>(<span class="fu">summary</span>(fit))</span></code></pre></div>
 <pre><code>##                Estimate Std. Error   t value     Pr(&gt;|t|)
 ## (Intercept) 0.007472959 0.01007946 0.7414046 4.584656e-01
 ## XX1         0.044304824 0.01154709 3.8368830 1.253725e-04
@@ -1302,17 +1303,17 @@ Figure 6.4: Variability of <em>p</em>-values when the power is 0.4
 <div id="misconception-a-low-p-value-indicates-high-model-fit-or-high-predictive-capacity" class="section level3 hasAnchor" number="6.7.5">
 <h3><span class="header-section-number">6.7.5</span> Misconception: a low <em>p</em>-value indicates high model fit or high predictive capacity<a href="p-values.html#misconception-a-low-p-value-indicates-high-model-fit-or-high-predictive-capacity" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>On page 606, of Lock et al “Statistics: Unlocking the Power of Data”, the authors state in item D “The p-value from the ANOVA table is 0.000 so the model as a whole is effective at predicting grade point averages.” This is incorrect. A p-value is not a measure of the predictive capability of a model because the p-value is a function of the signal, noise (unmodeled error), and <em>sample size</em> while predictive ability is a function of just the signal:noise ratio. If the signal:noise ratio is tiny, the predictive ability is small but the p-value can be tiny if the sample size is large. This is easy to simulate (see script below). The whole-model p-value is exceptionally small (0.00001002) but the relative predictive ability, measured by the <span class="math inline">\(R^2\)</span>, is near zero (0.002).</p>
-<div class="sourceCode" id="cb180"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb180-1"><a href="p-values.html#cb180-1" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
-<span id="cb180-2"><a href="p-values.html#cb180-2" tabindex="-1"></a>rho <span class="ot">&lt;-</span> <span class="fl">0.5</span></span>
-<span id="cb180-3"><a href="p-values.html#cb180-3" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">10</span><span class="sc">^</span><span class="dv">4</span></span>
-<span id="cb180-4"><a href="p-values.html#cb180-4" tabindex="-1"></a>Sigma <span class="ot">&lt;-</span> <span class="fu">diag</span>(<span class="dv">2</span>)</span>
-<span id="cb180-5"><a href="p-values.html#cb180-5" tabindex="-1"></a>Sigma[<span class="dv">1</span>,<span class="dv">2</span>] <span class="ot">&lt;-</span> Sigma[<span class="dv">2</span>,<span class="dv">1</span>] <span class="ot">&lt;-</span> rho</span>
-<span id="cb180-6"><a href="p-values.html#cb180-6" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">rmvnorm</span>(n, <span class="at">mean=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">0</span>), <span class="at">sigma=</span>Sigma)</span>
-<span id="cb180-7"><a href="p-values.html#cb180-7" tabindex="-1"></a><span class="fu">colnames</span>(X) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;X1&quot;</span>, <span class="st">&quot;X2&quot;</span>)</span>
-<span id="cb180-8"><a href="p-values.html#cb180-8" tabindex="-1"></a>beta <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.05</span>, <span class="sc">-</span><span class="fl">0.05</span>)</span>
-<span id="cb180-9"><a href="p-values.html#cb180-9" tabindex="-1"></a>y <span class="ot">&lt;-</span> X<span class="sc">%*%</span>beta <span class="sc">+</span> <span class="fu">rnorm</span>(n)</span>
-<span id="cb180-10"><a href="p-values.html#cb180-10" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> X)</span>
-<span id="cb180-11"><a href="p-values.html#cb180-11" tabindex="-1"></a><span class="fu">summary</span>(fit)</span></code></pre></div>
+<div class="sourceCode" id="cb182"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb182-1"><a href="p-values.html#cb182-1" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
+<span id="cb182-2"><a href="p-values.html#cb182-2" tabindex="-1"></a>rho <span class="ot">&lt;-</span> <span class="fl">0.5</span></span>
+<span id="cb182-3"><a href="p-values.html#cb182-3" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">10</span><span class="sc">^</span><span class="dv">4</span></span>
+<span id="cb182-4"><a href="p-values.html#cb182-4" tabindex="-1"></a>Sigma <span class="ot">&lt;-</span> <span class="fu">diag</span>(<span class="dv">2</span>)</span>
+<span id="cb182-5"><a href="p-values.html#cb182-5" tabindex="-1"></a>Sigma[<span class="dv">1</span>,<span class="dv">2</span>] <span class="ot">&lt;-</span> Sigma[<span class="dv">2</span>,<span class="dv">1</span>] <span class="ot">&lt;-</span> rho</span>
+<span id="cb182-6"><a href="p-values.html#cb182-6" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">rmvnorm</span>(n, <span class="at">mean=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">0</span>), <span class="at">sigma=</span>Sigma)</span>
+<span id="cb182-7"><a href="p-values.html#cb182-7" tabindex="-1"></a><span class="fu">colnames</span>(X) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;X1&quot;</span>, <span class="st">&quot;X2&quot;</span>)</span>
+<span id="cb182-8"><a href="p-values.html#cb182-8" tabindex="-1"></a>beta <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.05</span>, <span class="sc">-</span><span class="fl">0.05</span>)</span>
+<span id="cb182-9"><a href="p-values.html#cb182-9" tabindex="-1"></a>y <span class="ot">&lt;-</span> X<span class="sc">%*%</span>beta <span class="sc">+</span> <span class="fu">rnorm</span>(n)</span>
+<span id="cb182-10"><a href="p-values.html#cb182-10" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> X)</span>
+<span id="cb182-11"><a href="p-values.html#cb182-11" tabindex="-1"></a><span class="fu">summary</span>(fit)</span></code></pre></div>
 <pre><code>## 
 ## Call:
 ## lm(formula = y ~ X)

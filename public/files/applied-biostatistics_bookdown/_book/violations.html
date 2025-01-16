@@ -4,18 +4,18 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Chapter 12 Violations of independence, homogeneity, or Normality | Statistics for the Experimental Biologist</title>
+  <title>Chapter 12 Violations of independence, homogeneity, or Normality | Statistics for the Bench Biologist</title>
   <meta name="description" content="An introduction to statistical modeling for experimental biology researchers" />
-  <meta name="generator" content="bookdown 0.39 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.41 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Chapter 12 Violations of independence, homogeneity, or Normality | Statistics for the Experimental Biologist" />
+  <meta property="og:title" content="Chapter 12 Violations of independence, homogeneity, or Normality | Statistics for the Bench Biologist" />
   <meta property="og:type" content="book" />
   
   <meta property="og:description" content="An introduction to statistical modeling for experimental biology researchers" />
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Chapter 12 Violations of independence, homogeneity, or Normality | Statistics for the Experimental Biologist" />
+  <meta name="twitter:title" content="Chapter 12 Violations of independence, homogeneity, or Normality | Statistics for the Bench Biologist" />
   
   <meta name="twitter:description" content="An introduction to statistical modeling for experimental biology researchers" />
   
@@ -59,7 +59,7 @@
 
 <style type="text/css">
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span { line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -913,7 +913,7 @@ code span.wa { color: #bf0303; } /* Warning */
       <div class="body-inner">
         <div class="book-header" role="navigation">
           <h1>
-            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Statistics for the Experimental Biologist</a>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Statistics for the Bench Biologist</a>
           </h1>
         </div>
 
@@ -953,8 +953,8 @@ code span.wa { color: #bf0303; } /* Warning */
 <p>Importantly, if the random effect (<span class="math inline">\(\gamma_{0_j}\)</span>) isn’t modeled, then variation in this component is picked up by the model error <span class="math inline">\(e\)</span>. Consequently, the error component <strong>is correlated</strong> because the subsets of <span class="math inline">\(e\)</span> from the same individual are expected to have more similar values to each other than to that from other individuals. Correlated error is discussed more in the chapter <a href="lmm.html#lmm">Models with random factors – Blocking and pseudoreplication</a>. Importantly, if the random effect isn’t modeled, the increased variance of <span class="math inline">\(e\)</span> decreases precision of the estimate. Consequently, CIs are wider and significance tests have less power.</p>
 <div id="fit-the-model-2" class="section level4 hasAnchor" number="12.1.1.1">
 <h4><span class="header-section-number">12.1.1.1</span> Fit the model<a href="violations.html#fit-the-model-2" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<div class="sourceCode" id="cb313"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb313-1"><a href="violations.html#cb313-1" tabindex="-1"></a><span class="co"># fit the model</span></span>
-<span id="cb313-2"><a href="violations.html#cb313-2" tabindex="-1"></a>exp1b_m1 <span class="ot">&lt;-</span> <span class="fu">lmer</span>(diHOME <span class="sc">~</span> treatment <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>id), <span class="at">data =</span> exp1b)</span></code></pre></div>
+<div class="sourceCode" id="cb315"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb315-1"><a href="violations.html#cb315-1" tabindex="-1"></a><span class="co"># fit the model</span></span>
+<span id="cb315-2"><a href="violations.html#cb315-2" tabindex="-1"></a>exp1b_m1 <span class="ot">&lt;-</span> <span class="fu">lmer</span>(diHOME <span class="sc">~</span> treatment <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>id), <span class="at">data =</span> exp1b)</span></code></pre></div>
 <ol style="list-style-type: decimal">
 <li>The function <code>lmer()</code> from the lme4 package allows the addition of random factors to the model formula. Otherwise, the function works like the <code>lm</code> function.</li>
 <li>The added random factor is <span class="math inline">\(\texttt{id}\)</span>, which contains the id of the human. <span class="math inline">\(\texttt{id}\)</span> didn’t appear from nowhere, it is a column in the data.table exp1b.</li>
@@ -965,17 +965,17 @@ code span.wa { color: #bf0303; } /* Warning */
 <div id="inference" class="section level4 hasAnchor" number="12.1.1.2">
 <h4><span class="header-section-number">12.1.1.2</span> Inference<a href="violations.html#inference" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <p>Inference using the linear model with added random factor:</p>
-<div class="sourceCode" id="cb314"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb314-1"><a href="violations.html#cb314-1" tabindex="-1"></a><span class="co"># estimated marginal means table</span></span>
-<span id="cb314-2"><a href="violations.html#cb314-2" tabindex="-1"></a>exp1b_m1_emm <span class="ot">&lt;-</span> <span class="fu">emmeans</span>(exp1b_m1, <span class="at">specs =</span> <span class="st">&quot;treatment&quot;</span>)</span>
-<span id="cb314-3"><a href="violations.html#cb314-3" tabindex="-1"></a></span>
-<span id="cb314-4"><a href="violations.html#cb314-4" tabindex="-1"></a><span class="co"># contrasts table</span></span>
-<span id="cb314-5"><a href="violations.html#cb314-5" tabindex="-1"></a>exp1b_m1_pairs <span class="ot">&lt;-</span> <span class="fu">contrast</span>(exp1b_m1_emm,</span>
-<span id="cb314-6"><a href="violations.html#cb314-6" tabindex="-1"></a>                     <span class="at">method =</span> <span class="st">&quot;revpairwise&quot;</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb314-7"><a href="violations.html#cb314-7" tabindex="-1"></a>  <span class="fu">summary</span>(<span class="at">infer =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb314-8"><a href="violations.html#cb314-8" tabindex="-1"></a></span>
-<span id="cb314-9"><a href="violations.html#cb314-9" tabindex="-1"></a>exp1b_m1_pairs <span class="sc">%&gt;%</span></span>
-<span id="cb314-10"><a href="violations.html#cb314-10" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">digits =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">5</span>,<span class="dv">5</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb314-11"><a href="violations.html#cb314-11" tabindex="-1"></a>  <span class="fu">kable_styling</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb316"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb316-1"><a href="violations.html#cb316-1" tabindex="-1"></a><span class="co"># estimated marginal means table</span></span>
+<span id="cb316-2"><a href="violations.html#cb316-2" tabindex="-1"></a>exp1b_m1_emm <span class="ot">&lt;-</span> <span class="fu">emmeans</span>(exp1b_m1, <span class="at">specs =</span> <span class="st">&quot;treatment&quot;</span>)</span>
+<span id="cb316-3"><a href="violations.html#cb316-3" tabindex="-1"></a></span>
+<span id="cb316-4"><a href="violations.html#cb316-4" tabindex="-1"></a><span class="co"># contrasts table</span></span>
+<span id="cb316-5"><a href="violations.html#cb316-5" tabindex="-1"></a>exp1b_m1_pairs <span class="ot">&lt;-</span> <span class="fu">contrast</span>(exp1b_m1_emm,</span>
+<span id="cb316-6"><a href="violations.html#cb316-6" tabindex="-1"></a>                     <span class="at">method =</span> <span class="st">&quot;revpairwise&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb316-7"><a href="violations.html#cb316-7" tabindex="-1"></a>  <span class="fu">summary</span>(<span class="at">infer =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb316-8"><a href="violations.html#cb316-8" tabindex="-1"></a></span>
+<span id="cb316-9"><a href="violations.html#cb316-9" tabindex="-1"></a>exp1b_m1_pairs <span class="sc">%&gt;%</span></span>
+<span id="cb316-10"><a href="violations.html#cb316-10" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">digits =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">5</span>,<span class="dv">5</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb316-11"><a href="violations.html#cb316-11" tabindex="-1"></a>  <span class="fu">kable_styling</span>()</span></code></pre></div>
 <table class="table" style="margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
@@ -1035,13 +1035,13 @@ cold - saline
 </tbody>
 </table>
 <p>Inference using paired t-test:</p>
-<div class="sourceCode" id="cb315"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb315-1"><a href="violations.html#cb315-1" tabindex="-1"></a>exp1b_ttest <span class="ot">&lt;-</span> <span class="fu">t.test</span>(</span>
-<span id="cb315-2"><a href="violations.html#cb315-2" tabindex="-1"></a>  <span class="at">x =</span> exp1b[treatment <span class="sc">==</span> <span class="st">&quot;cold&quot;</span>, diHOME],</span>
-<span id="cb315-3"><a href="violations.html#cb315-3" tabindex="-1"></a>  <span class="at">y =</span> exp1b[treatment <span class="sc">==</span> <span class="st">&quot;saline&quot;</span>, diHOME],</span>
-<span id="cb315-4"><a href="violations.html#cb315-4" tabindex="-1"></a>  <span class="at">paired =</span> <span class="cn">TRUE</span></span>
-<span id="cb315-5"><a href="violations.html#cb315-5" tabindex="-1"></a>)</span>
-<span id="cb315-6"><a href="violations.html#cb315-6" tabindex="-1"></a></span>
-<span id="cb315-7"><a href="violations.html#cb315-7" tabindex="-1"></a>exp1b_ttest</span></code></pre></div>
+<div class="sourceCode" id="cb317"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb317-1"><a href="violations.html#cb317-1" tabindex="-1"></a>exp1b_ttest <span class="ot">&lt;-</span> <span class="fu">t.test</span>(</span>
+<span id="cb317-2"><a href="violations.html#cb317-2" tabindex="-1"></a>  <span class="at">x =</span> exp1b[treatment <span class="sc">==</span> <span class="st">&quot;cold&quot;</span>, diHOME],</span>
+<span id="cb317-3"><a href="violations.html#cb317-3" tabindex="-1"></a>  <span class="at">y =</span> exp1b[treatment <span class="sc">==</span> <span class="st">&quot;saline&quot;</span>, diHOME],</span>
+<span id="cb317-4"><a href="violations.html#cb317-4" tabindex="-1"></a>  <span class="at">paired =</span> <span class="cn">TRUE</span></span>
+<span id="cb317-5"><a href="violations.html#cb317-5" tabindex="-1"></a>)</span>
+<span id="cb317-6"><a href="violations.html#cb317-6" tabindex="-1"></a></span>
+<span id="cb317-7"><a href="violations.html#cb317-7" tabindex="-1"></a>exp1b_ttest</span></code></pre></div>
 <pre><code>## 
 ##  Paired t-test
 ## 
@@ -1070,8 +1070,8 @@ cold - saline
 \]</span></p>
 <div id="fit-the-model-3" class="section level4 hasAnchor" number="12.1.2.1">
 <h4><span class="header-section-number">12.1.2.1</span> Fit the model<a href="violations.html#fit-the-model-3" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<div class="sourceCode" id="cb317"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb317-1"><a href="violations.html#cb317-1" tabindex="-1"></a><span class="co"># fit the model</span></span>
-<span id="cb317-2"><a href="violations.html#cb317-2" tabindex="-1"></a>exp2a_m1 <span class="ot">&lt;-</span> <span class="fu">lmer</span>(diHOME <span class="sc">~</span> treatment <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>id), <span class="at">data =</span> exp2a)</span></code></pre></div>
+<div class="sourceCode" id="cb319"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb319-1"><a href="violations.html#cb319-1" tabindex="-1"></a><span class="co"># fit the model</span></span>
+<span id="cb319-2"><a href="violations.html#cb319-2" tabindex="-1"></a>exp2a_m1 <span class="ot">&lt;-</span> <span class="fu">lmer</span>(diHOME <span class="sc">~</span> treatment <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>id), <span class="at">data =</span> exp2a)</span></code></pre></div>
 <p>Notes</p>
 <ol style="list-style-type: decimal">
 <li>If a treatment factor has more than two groups, nothing special has to be done relative to a model with a treatment factor with only two groups.</li>
@@ -1080,18 +1080,18 @@ cold - saline
 <div id="inference-1" class="section level4 hasAnchor" number="12.1.2.2">
 <h4><span class="header-section-number">12.1.2.2</span> Inference<a href="violations.html#inference-1" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <p>Inference using the linear model with added random factor:</p>
-<div class="sourceCode" id="cb318"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb318-1"><a href="violations.html#cb318-1" tabindex="-1"></a><span class="co"># estimated marginal means table</span></span>
-<span id="cb318-2"><a href="violations.html#cb318-2" tabindex="-1"></a>exp2a_m1_emm <span class="ot">&lt;-</span> <span class="fu">emmeans</span>(exp2a_m1, <span class="at">specs =</span> <span class="st">&quot;treatment&quot;</span>)</span>
-<span id="cb318-3"><a href="violations.html#cb318-3" tabindex="-1"></a></span>
-<span id="cb318-4"><a href="violations.html#cb318-4" tabindex="-1"></a><span class="co"># contrasts table</span></span>
-<span id="cb318-5"><a href="violations.html#cb318-5" tabindex="-1"></a>exp2a_m1_planned <span class="ot">&lt;-</span> <span class="fu">contrast</span>(exp2a_m1_emm,</span>
-<span id="cb318-6"><a href="violations.html#cb318-6" tabindex="-1"></a>                     <span class="at">method =</span> <span class="st">&quot;trt.vs.ctrl&quot;</span>,</span>
-<span id="cb318-7"><a href="violations.html#cb318-7" tabindex="-1"></a>                     <span class="at">adjust =</span> <span class="st">&quot;none&quot;</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb318-8"><a href="violations.html#cb318-8" tabindex="-1"></a>  <span class="fu">summary</span>(<span class="at">infer =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb318-9"><a href="violations.html#cb318-9" tabindex="-1"></a></span>
-<span id="cb318-10"><a href="violations.html#cb318-10" tabindex="-1"></a>exp2a_m1_planned <span class="sc">%&gt;%</span></span>
-<span id="cb318-11"><a href="violations.html#cb318-11" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">digits =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">5</span>,<span class="dv">5</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb318-12"><a href="violations.html#cb318-12" tabindex="-1"></a>  <span class="fu">kable_styling</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb320"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb320-1"><a href="violations.html#cb320-1" tabindex="-1"></a><span class="co"># estimated marginal means table</span></span>
+<span id="cb320-2"><a href="violations.html#cb320-2" tabindex="-1"></a>exp2a_m1_emm <span class="ot">&lt;-</span> <span class="fu">emmeans</span>(exp2a_m1, <span class="at">specs =</span> <span class="st">&quot;treatment&quot;</span>)</span>
+<span id="cb320-3"><a href="violations.html#cb320-3" tabindex="-1"></a></span>
+<span id="cb320-4"><a href="violations.html#cb320-4" tabindex="-1"></a><span class="co"># contrasts table</span></span>
+<span id="cb320-5"><a href="violations.html#cb320-5" tabindex="-1"></a>exp2a_m1_planned <span class="ot">&lt;-</span> <span class="fu">contrast</span>(exp2a_m1_emm,</span>
+<span id="cb320-6"><a href="violations.html#cb320-6" tabindex="-1"></a>                     <span class="at">method =</span> <span class="st">&quot;trt.vs.ctrl&quot;</span>,</span>
+<span id="cb320-7"><a href="violations.html#cb320-7" tabindex="-1"></a>                     <span class="at">adjust =</span> <span class="st">&quot;none&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb320-8"><a href="violations.html#cb320-8" tabindex="-1"></a>  <span class="fu">summary</span>(<span class="at">infer =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb320-9"><a href="violations.html#cb320-9" tabindex="-1"></a></span>
+<span id="cb320-10"><a href="violations.html#cb320-10" tabindex="-1"></a>exp2a_m1_planned <span class="sc">%&gt;%</span></span>
+<span id="cb320-11"><a href="violations.html#cb320-11" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">digits =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">5</span>,<span class="dv">5</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb320-12"><a href="violations.html#cb320-12" tabindex="-1"></a>  <span class="fu">kable_styling</span>()</span></code></pre></div>
 <table class="table" style="margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
@@ -1180,24 +1180,26 @@ p.value
 <div id="repeated-measures-anova" class="section level4 hasAnchor" number="12.1.2.3">
 <h4><span class="header-section-number">12.1.2.3</span> repeated measures ANOVA<a href="violations.html#repeated-measures-anova" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <p>In some fields, this analysis would be called <strong>repeated measures ANOVA</strong> and in others it might be called a <strong>two-way Model II (mixed effect) ANOVA</strong> with one fixed and one random factor.</p>
-<div class="sourceCode" id="cb319"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb319-1"><a href="violations.html#cb319-1" tabindex="-1"></a>exp2a_m2 <span class="ot">&lt;-</span> <span class="fu">aov_4</span>(diHOME <span class="sc">~</span> treatment <span class="sc">+</span> (treatment<span class="sc">|</span>id),</span>
-<span id="cb319-2"><a href="violations.html#cb319-2" tabindex="-1"></a>                           <span class="at">data =</span> exp2a)</span></code></pre></div>
-<pre><code>## Warning: Missing values for following ID(s):
+<div class="sourceCode" id="cb321"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb321-1"><a href="violations.html#cb321-1" tabindex="-1"></a>exp2a_m2 <span class="ot">&lt;-</span> <span class="fu">aov_4</span>(diHOME <span class="sc">~</span> treatment <span class="sc">+</span> (treatment<span class="sc">|</span>id),</span>
+<span id="cb321-2"><a href="violations.html#cb321-2" tabindex="-1"></a>                           <span class="at">data =</span> exp2a)</span></code></pre></div>
+<pre><code>## Warning: Missing values for 1 ID(s), which were removed before analysis:
 ## Animal 6
-## Removing those cases from the analysis.</code></pre>
+## Below the first few rows (in wide format) of the removed cases with missing data.
+##           id  Control X1.hour.cold X30.min.NE
+## # 6 Animal 6 12.84069           NA   45.00093</code></pre>
 <p>Notes</p>
 <ol style="list-style-type: decimal">
 <li>The measure of <span class="math inline">\(\texttt{diHOME}\)</span> for animal_6 for the 1 hour cold treatment is missing. To use the <code>exp2a</code> data in repeated measures ANOVA, the “Control” and “30 min NE” values for animal_6 have to be excluded. This exclusion isn’t necessary for the linear mixed model, which is one of the advantages of a linear mixed model over repeated measures ANOVA.</li>
 </ol>
 <p>The contrasts from the model are</p>
-<div class="sourceCode" id="cb321"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb321-1"><a href="violations.html#cb321-1" tabindex="-1"></a>exp2a_m1_planned <span class="ot">&lt;-</span> <span class="fu">emmeans</span>(exp2a_m2, <span class="at">specs =</span> <span class="st">&quot;treatment&quot;</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb321-2"><a href="violations.html#cb321-2" tabindex="-1"></a>  <span class="fu">contrast</span>(<span class="at">method =</span> <span class="st">&quot;trt.vs.ctrl&quot;</span>,</span>
-<span id="cb321-3"><a href="violations.html#cb321-3" tabindex="-1"></a>           <span class="at">adjust =</span> <span class="st">&quot;none&quot;</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb321-4"><a href="violations.html#cb321-4" tabindex="-1"></a>  <span class="fu">summary</span>(<span class="at">infer =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb321-5"><a href="violations.html#cb321-5" tabindex="-1"></a></span>
-<span id="cb321-6"><a href="violations.html#cb321-6" tabindex="-1"></a>exp2a_m1_planned <span class="sc">%&gt;%</span></span>
-<span id="cb321-7"><a href="violations.html#cb321-7" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">digits =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">5</span>,<span class="dv">5</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb321-8"><a href="violations.html#cb321-8" tabindex="-1"></a>  <span class="fu">kable_styling</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb323"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb323-1"><a href="violations.html#cb323-1" tabindex="-1"></a>exp2a_m1_planned <span class="ot">&lt;-</span> <span class="fu">emmeans</span>(exp2a_m2, <span class="at">specs =</span> <span class="st">&quot;treatment&quot;</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb323-2"><a href="violations.html#cb323-2" tabindex="-1"></a>  <span class="fu">contrast</span>(<span class="at">method =</span> <span class="st">&quot;trt.vs.ctrl&quot;</span>,</span>
+<span id="cb323-3"><a href="violations.html#cb323-3" tabindex="-1"></a>           <span class="at">adjust =</span> <span class="st">&quot;none&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb323-4"><a href="violations.html#cb323-4" tabindex="-1"></a>  <span class="fu">summary</span>(<span class="at">infer =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb323-5"><a href="violations.html#cb323-5" tabindex="-1"></a></span>
+<span id="cb323-6"><a href="violations.html#cb323-6" tabindex="-1"></a>exp2a_m1_planned <span class="sc">%&gt;%</span></span>
+<span id="cb323-7"><a href="violations.html#cb323-7" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">digits =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">5</span>,<span class="dv">5</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb323-8"><a href="violations.html#cb323-8" tabindex="-1"></a>  <span class="fu">kable_styling</span>()</span></code></pre></div>
 <table class="table" style="margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
@@ -1285,18 +1287,18 @@ X30.min.NE - Control
 <ol start="2" style="list-style-type: decimal">
 <li>Lets remove animal 6 and rerun the linear mixed model <code>exp2a_m1</code></li>
 </ol>
-<div class="sourceCode" id="cb322"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb322-1"><a href="violations.html#cb322-1" tabindex="-1"></a>exp2a_complete <span class="ot">&lt;-</span> exp2a[id <span class="sc">!=</span> <span class="st">&quot;Animal 6&quot;</span>]</span>
-<span id="cb322-2"><a href="violations.html#cb322-2" tabindex="-1"></a></span>
-<span id="cb322-3"><a href="violations.html#cb322-3" tabindex="-1"></a>exp2a_complete_m1 <span class="ot">&lt;-</span> <span class="fu">lmer</span>(diHOME <span class="sc">~</span> treatment <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>id), <span class="at">data =</span> exp2a_complete)</span>
-<span id="cb322-4"><a href="violations.html#cb322-4" tabindex="-1"></a></span>
-<span id="cb322-5"><a href="violations.html#cb322-5" tabindex="-1"></a>exp2a_m1_complete_planned <span class="ot">&lt;-</span> <span class="fu">emmeans</span>(exp2a_complete_m1, <span class="at">specs =</span> <span class="st">&quot;treatment&quot;</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb322-6"><a href="violations.html#cb322-6" tabindex="-1"></a>  <span class="fu">contrast</span>(<span class="at">method =</span> <span class="st">&quot;trt.vs.ctrl&quot;</span>,</span>
-<span id="cb322-7"><a href="violations.html#cb322-7" tabindex="-1"></a>           <span class="at">adjust =</span> <span class="st">&quot;none&quot;</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb322-8"><a href="violations.html#cb322-8" tabindex="-1"></a>  <span class="fu">summary</span>(<span class="at">infer =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb322-9"><a href="violations.html#cb322-9" tabindex="-1"></a></span>
-<span id="cb322-10"><a href="violations.html#cb322-10" tabindex="-1"></a>exp2a_m1_complete_planned <span class="sc">%&gt;%</span></span>
-<span id="cb322-11"><a href="violations.html#cb322-11" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">digits =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">5</span>,<span class="dv">5</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb322-12"><a href="violations.html#cb322-12" tabindex="-1"></a>  <span class="fu">kable_styling</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb324"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb324-1"><a href="violations.html#cb324-1" tabindex="-1"></a>exp2a_complete <span class="ot">&lt;-</span> exp2a[id <span class="sc">!=</span> <span class="st">&quot;Animal 6&quot;</span>]</span>
+<span id="cb324-2"><a href="violations.html#cb324-2" tabindex="-1"></a></span>
+<span id="cb324-3"><a href="violations.html#cb324-3" tabindex="-1"></a>exp2a_complete_m1 <span class="ot">&lt;-</span> <span class="fu">lmer</span>(diHOME <span class="sc">~</span> treatment <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>id), <span class="at">data =</span> exp2a_complete)</span>
+<span id="cb324-4"><a href="violations.html#cb324-4" tabindex="-1"></a></span>
+<span id="cb324-5"><a href="violations.html#cb324-5" tabindex="-1"></a>exp2a_m1_complete_planned <span class="ot">&lt;-</span> <span class="fu">emmeans</span>(exp2a_complete_m1, <span class="at">specs =</span> <span class="st">&quot;treatment&quot;</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb324-6"><a href="violations.html#cb324-6" tabindex="-1"></a>  <span class="fu">contrast</span>(<span class="at">method =</span> <span class="st">&quot;trt.vs.ctrl&quot;</span>,</span>
+<span id="cb324-7"><a href="violations.html#cb324-7" tabindex="-1"></a>           <span class="at">adjust =</span> <span class="st">&quot;none&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb324-8"><a href="violations.html#cb324-8" tabindex="-1"></a>  <span class="fu">summary</span>(<span class="at">infer =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb324-9"><a href="violations.html#cb324-9" tabindex="-1"></a></span>
+<span id="cb324-10"><a href="violations.html#cb324-10" tabindex="-1"></a>exp2a_m1_complete_planned <span class="sc">%&gt;%</span></span>
+<span id="cb324-11"><a href="violations.html#cb324-11" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">digits =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">5</span>,<span class="dv">5</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb324-12"><a href="violations.html#cb324-12" tabindex="-1"></a>  <span class="fu">kable_styling</span>()</span></code></pre></div>
 <table class="table" style="margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
@@ -1389,12 +1391,12 @@ p.value
 <div id="inferences-from-the-linear-mixed-model-and-paired-t-tests-are-not-the-same-when-there-are-more-than-two-groups" class="section level4 hasAnchor" number="12.1.2.4">
 <h4><span class="header-section-number">12.1.2.4</span> Inferences from the linear mixed model and paired t-tests are not the same when there are more than two groups<a href="violations.html#inferences-from-the-linear-mixed-model-and-paired-t-tests-are-not-the-same-when-there-are-more-than-two-groups" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <p>Inference using two paired t-tests:</p>
-<div class="sourceCode" id="cb323"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb323-1"><a href="violations.html#cb323-1" tabindex="-1"></a>exp2a_ttest_cold <span class="ot">&lt;-</span> <span class="fu">t.test</span>(</span>
-<span id="cb323-2"><a href="violations.html#cb323-2" tabindex="-1"></a>  <span class="at">x =</span> exp2a[treatment <span class="sc">==</span> <span class="st">&quot;1 hour cold&quot;</span>, diHOME],</span>
-<span id="cb323-3"><a href="violations.html#cb323-3" tabindex="-1"></a>  <span class="at">y =</span> exp2a[treatment <span class="sc">==</span> <span class="st">&quot;Control&quot;</span>, diHOME],</span>
-<span id="cb323-4"><a href="violations.html#cb323-4" tabindex="-1"></a>  <span class="at">paired =</span> <span class="cn">TRUE</span></span>
-<span id="cb323-5"><a href="violations.html#cb323-5" tabindex="-1"></a>)</span>
-<span id="cb323-6"><a href="violations.html#cb323-6" tabindex="-1"></a>exp2a_ttest_cold</span></code></pre></div>
+<div class="sourceCode" id="cb325"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb325-1"><a href="violations.html#cb325-1" tabindex="-1"></a>exp2a_ttest_cold <span class="ot">&lt;-</span> <span class="fu">t.test</span>(</span>
+<span id="cb325-2"><a href="violations.html#cb325-2" tabindex="-1"></a>  <span class="at">x =</span> exp2a[treatment <span class="sc">==</span> <span class="st">&quot;1 hour cold&quot;</span>, diHOME],</span>
+<span id="cb325-3"><a href="violations.html#cb325-3" tabindex="-1"></a>  <span class="at">y =</span> exp2a[treatment <span class="sc">==</span> <span class="st">&quot;Control&quot;</span>, diHOME],</span>
+<span id="cb325-4"><a href="violations.html#cb325-4" tabindex="-1"></a>  <span class="at">paired =</span> <span class="cn">TRUE</span></span>
+<span id="cb325-5"><a href="violations.html#cb325-5" tabindex="-1"></a>)</span>
+<span id="cb325-6"><a href="violations.html#cb325-6" tabindex="-1"></a>exp2a_ttest_cold</span></code></pre></div>
 <pre><code>## 
 ##  Paired t-test
 ## 
@@ -1406,12 +1408,12 @@ p.value
 ## sample estimates:
 ## mean difference 
 ##        7.303908</code></pre>
-<div class="sourceCode" id="cb325"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb325-1"><a href="violations.html#cb325-1" tabindex="-1"></a>exp2a_ttest_ne <span class="ot">&lt;-</span> <span class="fu">t.test</span>(</span>
-<span id="cb325-2"><a href="violations.html#cb325-2" tabindex="-1"></a>  <span class="at">x =</span> exp2a[treatment <span class="sc">==</span> <span class="st">&quot;30 min NE&quot;</span>, diHOME],</span>
-<span id="cb325-3"><a href="violations.html#cb325-3" tabindex="-1"></a>  <span class="at">y =</span> exp2a[treatment <span class="sc">==</span> <span class="st">&quot;Control&quot;</span>, diHOME],</span>
-<span id="cb325-4"><a href="violations.html#cb325-4" tabindex="-1"></a>  <span class="at">paired =</span> <span class="cn">TRUE</span></span>
-<span id="cb325-5"><a href="violations.html#cb325-5" tabindex="-1"></a>)</span>
-<span id="cb325-6"><a href="violations.html#cb325-6" tabindex="-1"></a>exp2a_ttest_ne</span></code></pre></div>
+<div class="sourceCode" id="cb327"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb327-1"><a href="violations.html#cb327-1" tabindex="-1"></a>exp2a_ttest_ne <span class="ot">&lt;-</span> <span class="fu">t.test</span>(</span>
+<span id="cb327-2"><a href="violations.html#cb327-2" tabindex="-1"></a>  <span class="at">x =</span> exp2a[treatment <span class="sc">==</span> <span class="st">&quot;30 min NE&quot;</span>, diHOME],</span>
+<span id="cb327-3"><a href="violations.html#cb327-3" tabindex="-1"></a>  <span class="at">y =</span> exp2a[treatment <span class="sc">==</span> <span class="st">&quot;Control&quot;</span>, diHOME],</span>
+<span id="cb327-4"><a href="violations.html#cb327-4" tabindex="-1"></a>  <span class="at">paired =</span> <span class="cn">TRUE</span></span>
+<span id="cb327-5"><a href="violations.html#cb327-5" tabindex="-1"></a>)</span>
+<span id="cb327-6"><a href="violations.html#cb327-6" tabindex="-1"></a>exp2a_ttest_ne</span></code></pre></div>
 <pre><code>## 
 ##  Paired t-test
 ## 
@@ -1452,21 +1454,21 @@ p.value
 </div>
 <div id="fit-the-model-4" class="section level4 hasAnchor" number="12.2.0.2">
 <h4><span class="header-section-number">12.2.0.2</span> Fit the model<a href="violations.html#fit-the-model-4" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<div class="sourceCode" id="cb327"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb327-1"><a href="violations.html#cb327-1" tabindex="-1"></a><span class="co"># gls fails with missing data</span></span>
-<span id="cb327-2"><a href="violations.html#cb327-2" tabindex="-1"></a>subdata <span class="ot">&lt;-</span> exp2a[<span class="fu">is.na</span>(diHOME) <span class="sc">==</span> <span class="cn">FALSE</span>,] <span class="co"># omit rows with missing data</span></span>
-<span id="cb327-3"><a href="violations.html#cb327-3" tabindex="-1"></a>exp2a_m3 <span class="ot">&lt;-</span> <span class="fu">gls</span>(diHOME <span class="sc">~</span> treatment,</span>
-<span id="cb327-4"><a href="violations.html#cb327-4" tabindex="-1"></a>                <span class="at">data =</span> subdata,</span>
-<span id="cb327-5"><a href="violations.html#cb327-5" tabindex="-1"></a>                <span class="at">weights =</span> <span class="fu">varIdent</span>(<span class="at">form =</span> <span class="sc">~</span> <span class="dv">1</span> <span class="sc">|</span> treatment))</span></code></pre></div>
+<div class="sourceCode" id="cb329"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb329-1"><a href="violations.html#cb329-1" tabindex="-1"></a><span class="co"># gls fails with missing data</span></span>
+<span id="cb329-2"><a href="violations.html#cb329-2" tabindex="-1"></a>subdata <span class="ot">&lt;-</span> exp2a[<span class="fu">is.na</span>(diHOME) <span class="sc">==</span> <span class="cn">FALSE</span>,] <span class="co"># omit rows with missing data</span></span>
+<span id="cb329-3"><a href="violations.html#cb329-3" tabindex="-1"></a>exp2a_m3 <span class="ot">&lt;-</span> <span class="fu">gls</span>(diHOME <span class="sc">~</span> treatment,</span>
+<span id="cb329-4"><a href="violations.html#cb329-4" tabindex="-1"></a>                <span class="at">data =</span> subdata,</span>
+<span id="cb329-5"><a href="violations.html#cb329-5" tabindex="-1"></a>                <span class="at">weights =</span> <span class="fu">varIdent</span>(<span class="at">form =</span> <span class="sc">~</span> <span class="dv">1</span> <span class="sc">|</span> treatment))</span></code></pre></div>
 <p>The model <code>exp2a_m3</code> uses variance computed in each group separately as the estimate of <span class="math inline">\(\sigma\)</span> for that group. The coefficient table of the GLS model is</p>
 </div>
 <div id="inference-from-the-linear-model" class="section level4 hasAnchor" number="12.2.0.3">
 <h4><span class="header-section-number">12.2.0.3</span> Inference from the linear model<a href="violations.html#inference-from-the-linear-model" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<div class="sourceCode" id="cb328"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb328-1"><a href="violations.html#cb328-1" tabindex="-1"></a>exp2a_m3_coef <span class="ot">&lt;-</span> <span class="fu">cbind</span>(<span class="fu">coef</span>(<span class="fu">summary</span>(exp2a_m3)),</span>
-<span id="cb328-2"><a href="violations.html#cb328-2" tabindex="-1"></a>                       <span class="fu">confint</span>(exp2a_m3))</span>
-<span id="cb328-3"><a href="violations.html#cb328-3" tabindex="-1"></a></span>
-<span id="cb328-4"><a href="violations.html#cb328-4" tabindex="-1"></a>exp2a_m3_coef <span class="sc">%&gt;%</span></span>
-<span id="cb328-5"><a href="violations.html#cb328-5" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">digits =</span> <span class="fu">c</span>(<span class="dv">4</span>,<span class="dv">4</span>,<span class="dv">4</span>,<span class="dv">6</span>,<span class="dv">4</span>,<span class="dv">4</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb328-6"><a href="violations.html#cb328-6" tabindex="-1"></a>  <span class="fu">kable_styling</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb330"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb330-1"><a href="violations.html#cb330-1" tabindex="-1"></a>exp2a_m3_coef <span class="ot">&lt;-</span> <span class="fu">cbind</span>(<span class="fu">coef</span>(<span class="fu">summary</span>(exp2a_m3)),</span>
+<span id="cb330-2"><a href="violations.html#cb330-2" tabindex="-1"></a>                       <span class="fu">confint</span>(exp2a_m3))</span>
+<span id="cb330-3"><a href="violations.html#cb330-3" tabindex="-1"></a></span>
+<span id="cb330-4"><a href="violations.html#cb330-4" tabindex="-1"></a>exp2a_m3_coef <span class="sc">%&gt;%</span></span>
+<span id="cb330-5"><a href="violations.html#cb330-5" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">digits =</span> <span class="fu">c</span>(<span class="dv">4</span>,<span class="dv">4</span>,<span class="dv">4</span>,<span class="dv">6</span>,<span class="dv">4</span>,<span class="dv">4</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb330-6"><a href="violations.html#cb330-6" tabindex="-1"></a>  <span class="fu">kable_styling</span>()</span></code></pre></div>
 <table class="table" style="margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
@@ -1569,8 +1571,8 @@ treatment30 min NE
 <li><strong>Important</strong> for reporting CIs and <em>p</em>-values. Unlike the linear model modeling homogenous variance, the CIs and <em>p</em>-values for the coefficients of <span class="math inline">\(\texttt{treatment1 hour cold}\)</span> and <span class="math inline">\(\texttt{treatment30 min NE}\)</span> are <em>not</em> the same as the <em>p</em>-values of these equivalent contrasts in the contrasts table (see below). The reason is, the computation of the CI and <em>p</em>-values in the two tables use two different degrees of freedom. Report the CI and <em>p</em>-values from the contrast table using the Satterthwaite df.</li>
 </ol>
 <p>The modeled means and contrasts are computed as above for the <code>lm</code> object</p>
-<div class="sourceCode" id="cb329"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb329-1"><a href="violations.html#cb329-1" tabindex="-1"></a>exp2a_m3_emm <span class="ot">&lt;-</span> <span class="fu">emmeans</span>(exp2a_m3, <span class="at">specs=</span><span class="st">&quot;treatment&quot;</span>)</span>
-<span id="cb329-2"><a href="violations.html#cb329-2" tabindex="-1"></a>exp2a_m3_emm</span></code></pre></div>
+<div class="sourceCode" id="cb331"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb331-1"><a href="violations.html#cb331-1" tabindex="-1"></a>exp2a_m3_emm <span class="ot">&lt;-</span> <span class="fu">emmeans</span>(exp2a_m3, <span class="at">specs=</span><span class="st">&quot;treatment&quot;</span>)</span>
+<span id="cb331-2"><a href="violations.html#cb331-2" tabindex="-1"></a>exp2a_m3_emm</span></code></pre></div>
 <pre><code>##  treatment   emmean   SE df lower.CL upper.CL
 ##  Control       12.0 1.20  5     8.94     15.1
 ##  1 hour cold   19.2 2.93  4    11.04     27.3
@@ -1582,14 +1584,14 @@ treatment30 min NE
 <ol style="list-style-type: decimal">
 <li>The SE of the means in this table are modeled SEs but are equal to the sample SE of the means, because this was specified in the GLS model.</li>
 </ol>
-<div class="sourceCode" id="cb331"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb331-1"><a href="violations.html#cb331-1" tabindex="-1"></a>exp2a_m3_pairs <span class="ot">&lt;-</span>  <span class="fu">contrast</span>(exp2a_m3_emm,</span>
-<span id="cb331-2"><a href="violations.html#cb331-2" tabindex="-1"></a>                            <span class="at">method =</span> <span class="st">&quot;revpairwise&quot;</span>,</span>
-<span id="cb331-3"><a href="violations.html#cb331-3" tabindex="-1"></a>                            <span class="at">adjust =</span> <span class="st">&quot;none&quot;</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb331-4"><a href="violations.html#cb331-4" tabindex="-1"></a>  <span class="fu">summary</span>(<span class="at">infer =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb331-5"><a href="violations.html#cb331-5" tabindex="-1"></a></span>
-<span id="cb331-6"><a href="violations.html#cb331-6" tabindex="-1"></a>exp2a_m3_pairs <span class="sc">%&gt;%</span></span>
-<span id="cb331-7"><a href="violations.html#cb331-7" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">digits =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">4</span>,<span class="dv">4</span>,<span class="dv">1</span>,<span class="dv">4</span>,<span class="dv">4</span>,<span class="dv">4</span>,<span class="dv">5</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb331-8"><a href="violations.html#cb331-8" tabindex="-1"></a>  <span class="fu">kable_styling</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb333"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb333-1"><a href="violations.html#cb333-1" tabindex="-1"></a>exp2a_m3_pairs <span class="ot">&lt;-</span>  <span class="fu">contrast</span>(exp2a_m3_emm,</span>
+<span id="cb333-2"><a href="violations.html#cb333-2" tabindex="-1"></a>                            <span class="at">method =</span> <span class="st">&quot;revpairwise&quot;</span>,</span>
+<span id="cb333-3"><a href="violations.html#cb333-3" tabindex="-1"></a>                            <span class="at">adjust =</span> <span class="st">&quot;none&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb333-4"><a href="violations.html#cb333-4" tabindex="-1"></a>  <span class="fu">summary</span>(<span class="at">infer =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb333-5"><a href="violations.html#cb333-5" tabindex="-1"></a></span>
+<span id="cb333-6"><a href="violations.html#cb333-6" tabindex="-1"></a>exp2a_m3_pairs <span class="sc">%&gt;%</span></span>
+<span id="cb333-7"><a href="violations.html#cb333-7" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">digits =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">4</span>,<span class="dv">4</span>,<span class="dv">1</span>,<span class="dv">4</span>,<span class="dv">4</span>,<span class="dv">4</span>,<span class="dv">5</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb333-8"><a href="violations.html#cb333-8" tabindex="-1"></a>  <span class="fu">kable_styling</span>()</span></code></pre></div>
 <table class="table" style="margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
@@ -1634,7 +1636,7 @@ p.value
 5.3
 </td>
 <td style="text-align:right;">
--0.8393
+-0.8394
 </td>
 <td style="text-align:right;">
 15.1201
@@ -1660,10 +1662,10 @@ p.value
 5.7
 </td>
 <td style="text-align:right;">
-3.4897
+3.4896
 </td>
 <td style="text-align:right;">
-26.0990
+26.0991
 </td>
 <td style="text-align:right;">
 3.2382
@@ -1707,17 +1709,17 @@ p.value
 </div>
 <div id="inference-using-welch-t-test" class="section level4 hasAnchor" number="12.2.0.4">
 <h4><span class="header-section-number">12.2.0.4</span> Inference using Welch t-test<a href="violations.html#inference-using-welch-t-test" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<div class="sourceCode" id="cb332"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb332-1"><a href="violations.html#cb332-1" tabindex="-1"></a>test1 <span class="ot">&lt;-</span> <span class="fu">t.test</span>(exp2a[treatment <span class="sc">==</span> <span class="st">&quot;1 hour cold&quot;</span>, diHOME],</span>
-<span id="cb332-2"><a href="violations.html#cb332-2" tabindex="-1"></a>       exp2a[treatment <span class="sc">==</span> <span class="st">&quot;Control&quot;</span>, diHOME],</span>
-<span id="cb332-3"><a href="violations.html#cb332-3" tabindex="-1"></a>       <span class="at">var.equal =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb332-4"><a href="violations.html#cb332-4" tabindex="-1"></a></span>
-<span id="cb332-5"><a href="violations.html#cb332-5" tabindex="-1"></a>test2 <span class="ot">&lt;-</span> <span class="fu">t.test</span>(exp2a[treatment <span class="sc">==</span> <span class="st">&quot;30 min NE&quot;</span>, diHOME],</span>
-<span id="cb332-6"><a href="violations.html#cb332-6" tabindex="-1"></a>       exp2a[treatment <span class="sc">==</span> <span class="st">&quot;Control&quot;</span>, diHOME],</span>
-<span id="cb332-7"><a href="violations.html#cb332-7" tabindex="-1"></a>       <span class="at">var.equal =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb332-8"><a href="violations.html#cb332-8" tabindex="-1"></a></span>
-<span id="cb332-9"><a href="violations.html#cb332-9" tabindex="-1"></a>test3 <span class="ot">&lt;-</span> <span class="fu">t.test</span>(exp2a[treatment <span class="sc">==</span> <span class="st">&quot;30 min NE&quot;</span>, diHOME],</span>
-<span id="cb332-10"><a href="violations.html#cb332-10" tabindex="-1"></a>       exp2a[treatment <span class="sc">==</span> <span class="st">&quot;1 hour cold&quot;</span>, diHOME],</span>
-<span id="cb332-11"><a href="violations.html#cb332-11" tabindex="-1"></a>       <span class="at">var.equal =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb334"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb334-1"><a href="violations.html#cb334-1" tabindex="-1"></a>test1 <span class="ot">&lt;-</span> <span class="fu">t.test</span>(exp2a[treatment <span class="sc">==</span> <span class="st">&quot;1 hour cold&quot;</span>, diHOME],</span>
+<span id="cb334-2"><a href="violations.html#cb334-2" tabindex="-1"></a>       exp2a[treatment <span class="sc">==</span> <span class="st">&quot;Control&quot;</span>, diHOME],</span>
+<span id="cb334-3"><a href="violations.html#cb334-3" tabindex="-1"></a>       <span class="at">var.equal =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb334-4"><a href="violations.html#cb334-4" tabindex="-1"></a></span>
+<span id="cb334-5"><a href="violations.html#cb334-5" tabindex="-1"></a>test2 <span class="ot">&lt;-</span> <span class="fu">t.test</span>(exp2a[treatment <span class="sc">==</span> <span class="st">&quot;30 min NE&quot;</span>, diHOME],</span>
+<span id="cb334-6"><a href="violations.html#cb334-6" tabindex="-1"></a>       exp2a[treatment <span class="sc">==</span> <span class="st">&quot;Control&quot;</span>, diHOME],</span>
+<span id="cb334-7"><a href="violations.html#cb334-7" tabindex="-1"></a>       <span class="at">var.equal =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb334-8"><a href="violations.html#cb334-8" tabindex="-1"></a></span>
+<span id="cb334-9"><a href="violations.html#cb334-9" tabindex="-1"></a>test3 <span class="ot">&lt;-</span> <span class="fu">t.test</span>(exp2a[treatment <span class="sc">==</span> <span class="st">&quot;30 min NE&quot;</span>, diHOME],</span>
+<span id="cb334-10"><a href="violations.html#cb334-10" tabindex="-1"></a>       exp2a[treatment <span class="sc">==</span> <span class="st">&quot;1 hour cold&quot;</span>, diHOME],</span>
+<span id="cb334-11"><a href="violations.html#cb334-11" tabindex="-1"></a>       <span class="at">var.equal =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
 <p>Notes</p>
 <ol style="list-style-type: decimal">
 <li>the default <code>t.test</code> is the Welch t-test. However, I’ve included <code>var.equal = FALSE</code> so the method is transparent.</li>
@@ -1755,7 +1757,7 @@ p (welch t)
 2.257139
 </td>
 <td style="text-align:right;">
-0.0702604
+0.0702620
 </td>
 <td style="text-align:right;">
 2.257139
@@ -1772,7 +1774,7 @@ p (welch t)
 1.446454
 </td>
 <td style="text-align:right;">
-0.1845159
+0.1845157
 </td>
 <td style="text-align:right;">
 1.446454
@@ -1789,7 +1791,7 @@ p (welch t)
 3.238157
 </td>
 <td style="text-align:right;">
-0.0188899
+0.0188906
 </td>
 <td style="text-align:right;">
 3.238158
@@ -1857,34 +1859,34 @@ p (welch t)
 <div id="fit-a-linear-model-inference-assuming-normal-conditional-response" class="section level4 hasAnchor" number="12.3.1.1">
 <h4><span class="header-section-number">12.3.1.1</span> Fit a Linear Model – Inference assuming Normal conditional response<a href="violations.html#fit-a-linear-model-inference-assuming-normal-conditional-response" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <p><strong>fit the model</strong></p>
-<div class="sourceCode" id="cb333"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb333-1"><a href="violations.html#cb333-1" tabindex="-1"></a>m1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(neutrophil_count <span class="sc">~</span> treatment, <span class="at">data =</span> fig6f)</span></code></pre></div>
+<div class="sourceCode" id="cb335"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb335-1"><a href="violations.html#cb335-1" tabindex="-1"></a>m1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(neutrophil_count <span class="sc">~</span> treatment, <span class="at">data =</span> fig6f)</span></code></pre></div>
 <p><strong>check the model</strong></p>
-<div class="sourceCode" id="cb334"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb334-1"><a href="violations.html#cb334-1" tabindex="-1"></a><span class="fu">ggcheck_the_model</span>(m1)</span></code></pre></div>
+<div class="sourceCode" id="cb336"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb336-1"><a href="violations.html#cb336-1" tabindex="-1"></a><span class="fu">ggcheck_the_model</span>(m1)</span></code></pre></div>
 <p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/violations-fig6f-check-1.png" width="576" /></p>
 <p>The left plot shows classic right skew. The right plot shows evidence for positive relationship between mean and variance. This suggest we fit a negative binomial or quasi-poisson model.</p>
 <p><strong>inference</strong></p>
-<div class="sourceCode" id="cb335"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb335-1"><a href="violations.html#cb335-1" tabindex="-1"></a>m1_emm <span class="ot">&lt;-</span> <span class="fu">emmeans</span>(m1, <span class="at">specs =</span> <span class="st">&quot;treatment&quot;</span>)</span>
-<span id="cb335-2"><a href="violations.html#cb335-2" tabindex="-1"></a>m1_pairs <span class="ot">&lt;-</span> <span class="fu">contrast</span>(m1_emm,</span>
-<span id="cb335-3"><a href="violations.html#cb335-3" tabindex="-1"></a>                     <span class="at">method =</span> <span class="st">&quot;trt.vs.ctrl&quot;</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb335-4"><a href="violations.html#cb335-4" tabindex="-1"></a>  <span class="fu">summary</span>(<span class="at">infer =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb337"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb337-1"><a href="violations.html#cb337-1" tabindex="-1"></a>m1_emm <span class="ot">&lt;-</span> <span class="fu">emmeans</span>(m1, <span class="at">specs =</span> <span class="st">&quot;treatment&quot;</span>)</span>
+<span id="cb337-2"><a href="violations.html#cb337-2" tabindex="-1"></a>m1_pairs <span class="ot">&lt;-</span> <span class="fu">contrast</span>(m1_emm,</span>
+<span id="cb337-3"><a href="violations.html#cb337-3" tabindex="-1"></a>                     <span class="at">method =</span> <span class="st">&quot;trt.vs.ctrl&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb337-4"><a href="violations.html#cb337-4" tabindex="-1"></a>  <span class="fu">summary</span>(<span class="at">infer =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
 </div>
 <div id="fit-a-generalized-linear-model-inference-assuming-negative-binomial-conditional-response" class="section level4 hasAnchor" number="12.3.1.2">
 <h4><span class="header-section-number">12.3.1.2</span> Fit a Generalized Linear Model – inference assuming negative binomial conditional response<a href="violations.html#fit-a-generalized-linear-model-inference-assuming-negative-binomial-conditional-response" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <p>Generalized linear models for count data are covered more thoroughly in the chapter <a href="counts.html#counts">Linear models for count data – Generalized Linear Models I</a>.</p>
 <p><strong>fit the model</strong></p>
-<div class="sourceCode" id="cb336"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb336-1"><a href="violations.html#cb336-1" tabindex="-1"></a>m2 <span class="ot">&lt;-</span> <span class="fu">glmmTMB</span>(neutrophil_count <span class="sc">~</span> treatment,</span>
-<span id="cb336-2"><a href="violations.html#cb336-2" tabindex="-1"></a>              <span class="at">data =</span> fig6f,</span>
-<span id="cb336-3"><a href="violations.html#cb336-3" tabindex="-1"></a>              <span class="at">family =</span> <span class="fu">nbinom2</span>(<span class="at">link =</span> <span class="st">&quot;log&quot;</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb338"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb338-1"><a href="violations.html#cb338-1" tabindex="-1"></a>m2 <span class="ot">&lt;-</span> <span class="fu">glmmTMB</span>(neutrophil_count <span class="sc">~</span> treatment,</span>
+<span id="cb338-2"><a href="violations.html#cb338-2" tabindex="-1"></a>              <span class="at">data =</span> fig6f,</span>
+<span id="cb338-3"><a href="violations.html#cb338-3" tabindex="-1"></a>              <span class="at">family =</span> <span class="fu">nbinom2</span>(<span class="at">link =</span> <span class="st">&quot;log&quot;</span>))</span></code></pre></div>
 <p>Notes</p>
 <ol style="list-style-type: decimal">
 <li>The function <code>glmmTMB</code> allows fitting from multiple distribution families and works like the <code>lm</code> function with a few tweaks, including an argument for the distribution family.</li>
 </ol>
 <p><strong>inference</strong></p>
-<div class="sourceCode" id="cb337"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb337-1"><a href="violations.html#cb337-1" tabindex="-1"></a>m2_coef <span class="ot">&lt;-</span> <span class="fu">coef</span>(<span class="fu">summary</span>(m2))<span class="sc">$</span>cond</span>
-<span id="cb337-2"><a href="violations.html#cb337-2" tabindex="-1"></a></span>
-<span id="cb337-3"><a href="violations.html#cb337-3" tabindex="-1"></a>m2_coef <span class="sc">%&gt;%</span></span>
-<span id="cb337-4"><a href="violations.html#cb337-4" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">digits =</span> <span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">1</span>,<span class="dv">5</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb337-5"><a href="violations.html#cb337-5" tabindex="-1"></a>  <span class="fu">kable_styling</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb339"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb339-1"><a href="violations.html#cb339-1" tabindex="-1"></a>m2_coef <span class="ot">&lt;-</span> <span class="fu">coef</span>(<span class="fu">summary</span>(m2))<span class="sc">$</span>cond</span>
+<span id="cb339-2"><a href="violations.html#cb339-2" tabindex="-1"></a></span>
+<span id="cb339-3"><a href="violations.html#cb339-3" tabindex="-1"></a>m2_coef <span class="sc">%&gt;%</span></span>
+<span id="cb339-4"><a href="violations.html#cb339-4" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">digits =</span> <span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">1</span>,<span class="dv">5</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb339-5"><a href="violations.html#cb339-5" tabindex="-1"></a>  <span class="fu">kable_styling</span>()</span></code></pre></div>
 <table class="table" style="margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
@@ -1900,7 +1902,7 @@ Std. Error
 z value
 </th>
 <th style="text-align:right;">
-Pr(&gt;|z|)
+Pr(&gt;&amp;#124;z&amp;#124;)
 </th>
 </tr>
 </thead>
@@ -1948,13 +1950,13 @@ treatmentExercise
 <li><span class="math inline">\(b_1\)</span> (<span class="math inline">\(\texttt{(intercept)}\)</span>) is the difference of the natural log of the mean of exercise group mean and the natural log of the mean of the sedentary group mean.</li>
 <li>The coefficient values are on a <strong>link scale</strong>, which is the scale of the transformation of the group means in the GLM fit. The link transformation for this fit was <code>log</code> (the natural log transformation). In general, values on the <strong>response scale</strong> are more interpretable. <span class="math inline">\(exp(b_0)\)</span> is the modeled mean of the reference group on the response scale (because the model had no covariates, it is the sample mean of the reference group). <span class="math inline">\(exp(b_1)\)</span> is the <strong>ratio</strong> of the exercise to sedentary means. Remember: <span class="math inline">\(exp(log(a) - log(b)) = a/b\)</span></li>
 </ol>
-<div class="sourceCode" id="cb338"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb338-1"><a href="violations.html#cb338-1" tabindex="-1"></a>m2_emm <span class="ot">&lt;-</span> <span class="fu">emmeans</span>(m2,</span>
-<span id="cb338-2"><a href="violations.html#cb338-2" tabindex="-1"></a>                  <span class="at">specs =</span> <span class="st">&quot;treatment&quot;</span>,</span>
-<span id="cb338-3"><a href="violations.html#cb338-3" tabindex="-1"></a>                  <span class="at">type =</span> <span class="st">&quot;response&quot;</span>)</span>
-<span id="cb338-4"><a href="violations.html#cb338-4" tabindex="-1"></a>m2_pairs <span class="ot">&lt;-</span> <span class="fu">contrast</span>(m2_emm,</span>
-<span id="cb338-5"><a href="violations.html#cb338-5" tabindex="-1"></a>                     <span class="at">method =</span> <span class="st">&quot;trt.vs.ctrl&quot;</span>,</span>
-<span id="cb338-6"><a href="violations.html#cb338-6" tabindex="-1"></a>                     <span class="at">type =</span> <span class="st">&quot;response&quot;</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb338-7"><a href="violations.html#cb338-7" tabindex="-1"></a>  <span class="fu">summary</span>(<span class="at">infer =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb340"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb340-1"><a href="violations.html#cb340-1" tabindex="-1"></a>m2_emm <span class="ot">&lt;-</span> <span class="fu">emmeans</span>(m2,</span>
+<span id="cb340-2"><a href="violations.html#cb340-2" tabindex="-1"></a>                  <span class="at">specs =</span> <span class="st">&quot;treatment&quot;</span>,</span>
+<span id="cb340-3"><a href="violations.html#cb340-3" tabindex="-1"></a>                  <span class="at">type =</span> <span class="st">&quot;response&quot;</span>)</span>
+<span id="cb340-4"><a href="violations.html#cb340-4" tabindex="-1"></a>m2_pairs <span class="ot">&lt;-</span> <span class="fu">contrast</span>(m2_emm,</span>
+<span id="cb340-5"><a href="violations.html#cb340-5" tabindex="-1"></a>                     <span class="at">method =</span> <span class="st">&quot;trt.vs.ctrl&quot;</span>,</span>
+<span id="cb340-6"><a href="violations.html#cb340-6" tabindex="-1"></a>                     <span class="at">type =</span> <span class="st">&quot;response&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb340-7"><a href="violations.html#cb340-7" tabindex="-1"></a>  <span class="fu">summary</span>(<span class="at">infer =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
 <p>Notes</p>
 <ol style="list-style-type: decimal">
 <li>The argument <code>type = "response"</code> tells <code>emmeans</code> and <code>contrast</code> to return the estimates on the response (not link) scale. See the notes for the coefficient table above for a brief explanation of the link and response scale. For more detailed explanation, see the Chapter <a href="counts.html#counts">Linear models for count data – Generalized Linear Models I</a></li>
@@ -1962,30 +1964,30 @@ treatmentExercise
 </div>
 <div id="compare-inference-from-the-lm-and-glm-models" class="section level4 hasAnchor" number="12.3.1.3">
 <h4><span class="header-section-number">12.3.1.3</span> Compare inference from the LM and GLM models<a href="violations.html#compare-inference-from-the-lm-and-glm-models" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<div class="sourceCode" id="cb339"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb339-1"><a href="violations.html#cb339-1" tabindex="-1"></a>gg1 <span class="ot">&lt;-</span> <span class="fu">ggplot_the_model</span>(</span>
-<span id="cb339-2"><a href="violations.html#cb339-2" tabindex="-1"></a>  m1,</span>
-<span id="cb339-3"><a href="violations.html#cb339-3" tabindex="-1"></a>  m1_emm,</span>
-<span id="cb339-4"><a href="violations.html#cb339-4" tabindex="-1"></a>  m1_pairs,</span>
-<span id="cb339-5"><a href="violations.html#cb339-5" tabindex="-1"></a>  <span class="at">legend_position =</span> <span class="st">&quot;none&quot;</span>,</span>
-<span id="cb339-6"><a href="violations.html#cb339-6" tabindex="-1"></a>  <span class="at">y_label =</span> <span class="st">&quot;Neutrophil Count (/mL)&quot;</span>,</span>
-<span id="cb339-7"><a href="violations.html#cb339-7" tabindex="-1"></a>  <span class="at">effect_label =</span> <span class="st">&quot;Effect (/mL)&quot;</span>,</span>
-<span id="cb339-8"><a href="violations.html#cb339-8" tabindex="-1"></a>  <span class="at">palette =</span> pal_okabe_ito_blue,</span>
-<span id="cb339-9"><a href="violations.html#cb339-9" tabindex="-1"></a>  <span class="at">rel_heights =</span> <span class="fu">c</span>(<span class="fl">0.75</span>,<span class="dv">1</span>)</span>
-<span id="cb339-10"><a href="violations.html#cb339-10" tabindex="-1"></a>)</span>
-<span id="cb339-11"><a href="violations.html#cb339-11" tabindex="-1"></a></span>
-<span id="cb339-12"><a href="violations.html#cb339-12" tabindex="-1"></a>gg2 <span class="ot">&lt;-</span> <span class="fu">ggplot_the_model</span>(</span>
-<span id="cb339-13"><a href="violations.html#cb339-13" tabindex="-1"></a>  m2,</span>
-<span id="cb339-14"><a href="violations.html#cb339-14" tabindex="-1"></a>  m2_emm,</span>
-<span id="cb339-15"><a href="violations.html#cb339-15" tabindex="-1"></a>  m2_pairs,</span>
-<span id="cb339-16"><a href="violations.html#cb339-16" tabindex="-1"></a>  <span class="at">legend_position =</span> <span class="st">&quot;none&quot;</span>,</span>
-<span id="cb339-17"><a href="violations.html#cb339-17" tabindex="-1"></a>  <span class="at">y_label =</span> <span class="st">&quot;Neutrophil Count (/mL)&quot;</span>,</span>
-<span id="cb339-18"><a href="violations.html#cb339-18" tabindex="-1"></a>  <span class="at">effect_label =</span> <span class="st">&quot;Relative Effect&quot;</span>,</span>
-<span id="cb339-19"><a href="violations.html#cb339-19" tabindex="-1"></a>  <span class="at">palette =</span> pal_okabe_ito_blue,</span>
-<span id="cb339-20"><a href="violations.html#cb339-20" tabindex="-1"></a>  <span class="at">rel_heights =</span> <span class="fu">c</span>(<span class="fl">0.75</span>,<span class="dv">1</span>),</span>
-<span id="cb339-21"><a href="violations.html#cb339-21" tabindex="-1"></a>  <span class="at">effect_x_lim =</span> <span class="fu">c</span>(<span class="fl">0.35</span>, <span class="fl">1.25</span>)</span>
-<span id="cb339-22"><a href="violations.html#cb339-22" tabindex="-1"></a>)</span>
-<span id="cb339-23"><a href="violations.html#cb339-23" tabindex="-1"></a></span>
-<span id="cb339-24"><a href="violations.html#cb339-24" tabindex="-1"></a><span class="fu">plot_grid</span>(gg1, gg2, <span class="at">nrow=</span><span class="dv">2</span>, <span class="at">labels =</span> <span class="st">&quot;AUTO&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb341"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb341-1"><a href="violations.html#cb341-1" tabindex="-1"></a>gg1 <span class="ot">&lt;-</span> <span class="fu">ggplot_the_model</span>(</span>
+<span id="cb341-2"><a href="violations.html#cb341-2" tabindex="-1"></a>  m1,</span>
+<span id="cb341-3"><a href="violations.html#cb341-3" tabindex="-1"></a>  m1_emm,</span>
+<span id="cb341-4"><a href="violations.html#cb341-4" tabindex="-1"></a>  m1_pairs,</span>
+<span id="cb341-5"><a href="violations.html#cb341-5" tabindex="-1"></a>  <span class="at">legend_position =</span> <span class="st">&quot;none&quot;</span>,</span>
+<span id="cb341-6"><a href="violations.html#cb341-6" tabindex="-1"></a>  <span class="at">y_label =</span> <span class="st">&quot;Neutrophil Count (/mL)&quot;</span>,</span>
+<span id="cb341-7"><a href="violations.html#cb341-7" tabindex="-1"></a>  <span class="at">effect_label =</span> <span class="st">&quot;Effect (/mL)&quot;</span>,</span>
+<span id="cb341-8"><a href="violations.html#cb341-8" tabindex="-1"></a>  <span class="at">palette =</span> pal_okabe_ito_blue,</span>
+<span id="cb341-9"><a href="violations.html#cb341-9" tabindex="-1"></a>  <span class="at">rel_heights =</span> <span class="fu">c</span>(<span class="fl">0.75</span>,<span class="dv">1</span>)</span>
+<span id="cb341-10"><a href="violations.html#cb341-10" tabindex="-1"></a>)</span>
+<span id="cb341-11"><a href="violations.html#cb341-11" tabindex="-1"></a></span>
+<span id="cb341-12"><a href="violations.html#cb341-12" tabindex="-1"></a>gg2 <span class="ot">&lt;-</span> <span class="fu">ggplot_the_model</span>(</span>
+<span id="cb341-13"><a href="violations.html#cb341-13" tabindex="-1"></a>  m2,</span>
+<span id="cb341-14"><a href="violations.html#cb341-14" tabindex="-1"></a>  m2_emm,</span>
+<span id="cb341-15"><a href="violations.html#cb341-15" tabindex="-1"></a>  m2_pairs,</span>
+<span id="cb341-16"><a href="violations.html#cb341-16" tabindex="-1"></a>  <span class="at">legend_position =</span> <span class="st">&quot;none&quot;</span>,</span>
+<span id="cb341-17"><a href="violations.html#cb341-17" tabindex="-1"></a>  <span class="at">y_label =</span> <span class="st">&quot;Neutrophil Count (/mL)&quot;</span>,</span>
+<span id="cb341-18"><a href="violations.html#cb341-18" tabindex="-1"></a>  <span class="at">effect_label =</span> <span class="st">&quot;Relative Effect&quot;</span>,</span>
+<span id="cb341-19"><a href="violations.html#cb341-19" tabindex="-1"></a>  <span class="at">palette =</span> pal_okabe_ito_blue,</span>
+<span id="cb341-20"><a href="violations.html#cb341-20" tabindex="-1"></a>  <span class="at">rel_heights =</span> <span class="fu">c</span>(<span class="fl">0.75</span>,<span class="dv">1</span>),</span>
+<span id="cb341-21"><a href="violations.html#cb341-21" tabindex="-1"></a>  <span class="at">effect_x_lim =</span> <span class="fu">c</span>(<span class="fl">0.35</span>, <span class="fl">1.25</span>)</span>
+<span id="cb341-22"><a href="violations.html#cb341-22" tabindex="-1"></a>)</span>
+<span id="cb341-23"><a href="violations.html#cb341-23" tabindex="-1"></a></span>
+<span id="cb341-24"><a href="violations.html#cb341-24" tabindex="-1"></a><span class="fu">plot_grid</span>(gg1, gg2, <span class="at">nrow=</span><span class="dv">2</span>, <span class="at">labels =</span> <span class="st">&quot;AUTO&quot;</span>)</span></code></pre></div>
 <p><img src="Walker-elementary-statistical-modeling-draft_files/figure-html/violations-glm-plot-1.png" width="576" /></p>
 <p>Notes</p>
 <ol style="list-style-type: decimal">
@@ -2008,7 +2010,7 @@ Figure 12.1: (A) histogram of distribution used for simulation of non-normal cou
 </div>
 <table class="table" style="margin-left: auto; margin-right: auto;">
 <caption>
-<span id="tab:violations-glm-count-simulation">Table 12.1: </span>Table of Type I error and Power computed from simulations of non-normal count data. The model columns are linear model, generalized least squares, GLM negative binomial, GLM quasipoisson, permutation, and Mann-Whitney-Wilcoxon. The values in the model columns are the frequency of simulated experiments with p
+<span id="tab:violations-glm-count-simulation">Table 12.1: </span><span id="tab:violations-glm-count-simulation">Table 12.2: </span>Table of Type I error and Power computed from simulations of non-normal count data. The model columns are linear model, generalized least squares, GLM negative binomial, GLM quasipoisson, permutation, and Mann-Whitney-Wilcoxon. The values in the model columns are the frequency of simulated experiments with p
 </caption>
 <thead>
 <tr>
@@ -2407,81 +2409,81 @@ type 1
 <h2><span class="header-section-number">12.4</span> Hidden Code<a href="violations.html#hidden-code-4" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <div id="importing-and-wrangling-the-exp1b-data" class="section level3 hasAnchor" number="12.4.1">
 <h3><span class="header-section-number">12.4.1</span> Importing and wrangling the exp1b data<a href="violations.html#importing-and-wrangling-the-exp1b-data" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<div class="sourceCode" id="cb340"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb340-1"><a href="violations.html#cb340-1" tabindex="-1"></a>data_from <span class="ot">&lt;-</span> <span class="st">&quot;The cold-induced lipokine 12,13-diHOME promotes fatty acid transport into brown adipose tissue&quot;</span></span>
-<span id="cb340-2"><a href="violations.html#cb340-2" tabindex="-1"></a>file_name <span class="ot">&lt;-</span> <span class="st">&quot;41591_2017_BFnm4297_MOESM1_ESM.xlsx&quot;</span></span>
-<span id="cb340-3"><a href="violations.html#cb340-3" tabindex="-1"></a>file_path <span class="ot">&lt;-</span> <span class="fu">here</span>(data_folder, data_from, file_name)</span>
-<span id="cb340-4"><a href="violations.html#cb340-4" tabindex="-1"></a></span>
-<span id="cb340-5"><a href="violations.html#cb340-5" tabindex="-1"></a>exp1b <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(file_path,</span>
-<span id="cb340-6"><a href="violations.html#cb340-6" tabindex="-1"></a>                     <span class="at">sheet =</span> <span class="st">&quot;Fig 1 b thur c&quot;</span>,</span>
-<span id="cb340-7"><a href="violations.html#cb340-7" tabindex="-1"></a>                     <span class="at">range =</span> <span class="st">&quot;A1:C20&quot;</span>,</span>
-<span id="cb340-8"><a href="violations.html#cb340-8" tabindex="-1"></a>                     <span class="at">col_names =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb340-9"><a href="violations.html#cb340-9" tabindex="-1"></a>  <span class="fu">data.table</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb340-10"><a href="violations.html#cb340-10" tabindex="-1"></a>  <span class="fu">clean_names</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb340-11"><a href="violations.html#cb340-11" tabindex="-1"></a>  <span class="fu">na.omit</span>() <span class="co"># get rid of blank row</span></span>
-<span id="cb340-12"><a href="violations.html#cb340-12" tabindex="-1"></a></span>
-<span id="cb340-13"><a href="violations.html#cb340-13" tabindex="-1"></a><span class="fu">setnames</span>(exp1b,</span>
-<span id="cb340-14"><a href="violations.html#cb340-14" tabindex="-1"></a>         <span class="at">old =</span> <span class="fu">names</span>(exp1b),</span>
-<span id="cb340-15"><a href="violations.html#cb340-15" tabindex="-1"></a>         <span class="at">new =</span> <span class="fu">c</span>(<span class="st">&quot;sample&quot;</span>, <span class="st">&quot;diHOME&quot;</span>, <span class="st">&quot;bat_activity&quot;</span>))</span>
-<span id="cb340-16"><a href="violations.html#cb340-16" tabindex="-1"></a></span>
-<span id="cb340-17"><a href="violations.html#cb340-17" tabindex="-1"></a>exp1b[, id <span class="sc">:=</span> <span class="fu">substr</span>(sample, <span class="dv">1</span>, <span class="dv">6</span>)]</span>
-<span id="cb340-18"><a href="violations.html#cb340-18" tabindex="-1"></a>exp1b[, treatment <span class="sc">:=</span> <span class="fu">ifelse</span>(<span class="fu">substr</span>(sample, <span class="dv">8</span>,<span class="dv">8</span>) <span class="sc">==</span></span>
-<span id="cb340-19"><a href="violations.html#cb340-19" tabindex="-1"></a>                              <span class="st">&quot;C&quot;</span>, <span class="st">&quot;cold&quot;</span>, <span class="st">&quot;saline&quot;</span>)]</span>
-<span id="cb340-20"><a href="violations.html#cb340-20" tabindex="-1"></a>exp1b[, treatment <span class="sc">:=</span> <span class="fu">factor</span>(treatment, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">&quot;saline&quot;</span>, <span class="st">&quot;cold&quot;</span>))]</span>
-<span id="cb340-21"><a href="violations.html#cb340-21" tabindex="-1"></a></span>
-<span id="cb340-22"><a href="violations.html#cb340-22" tabindex="-1"></a><span class="co">#View(exp1b)</span></span></code></pre></div>
+<div class="sourceCode" id="cb342"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb342-1"><a href="violations.html#cb342-1" tabindex="-1"></a>data_from <span class="ot">&lt;-</span> <span class="st">&quot;The cold-induced lipokine 12,13-diHOME promotes fatty acid transport into brown adipose tissue&quot;</span></span>
+<span id="cb342-2"><a href="violations.html#cb342-2" tabindex="-1"></a>file_name <span class="ot">&lt;-</span> <span class="st">&quot;41591_2017_BFnm4297_MOESM1_ESM.xlsx&quot;</span></span>
+<span id="cb342-3"><a href="violations.html#cb342-3" tabindex="-1"></a>file_path <span class="ot">&lt;-</span> <span class="fu">here</span>(data_folder, data_from, file_name)</span>
+<span id="cb342-4"><a href="violations.html#cb342-4" tabindex="-1"></a></span>
+<span id="cb342-5"><a href="violations.html#cb342-5" tabindex="-1"></a>exp1b <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(file_path,</span>
+<span id="cb342-6"><a href="violations.html#cb342-6" tabindex="-1"></a>                     <span class="at">sheet =</span> <span class="st">&quot;Fig 1 b thur c&quot;</span>,</span>
+<span id="cb342-7"><a href="violations.html#cb342-7" tabindex="-1"></a>                     <span class="at">range =</span> <span class="st">&quot;A1:C20&quot;</span>,</span>
+<span id="cb342-8"><a href="violations.html#cb342-8" tabindex="-1"></a>                     <span class="at">col_names =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb342-9"><a href="violations.html#cb342-9" tabindex="-1"></a>  <span class="fu">data.table</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb342-10"><a href="violations.html#cb342-10" tabindex="-1"></a>  <span class="fu">clean_names</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb342-11"><a href="violations.html#cb342-11" tabindex="-1"></a>  <span class="fu">na.omit</span>() <span class="co"># get rid of blank row</span></span>
+<span id="cb342-12"><a href="violations.html#cb342-12" tabindex="-1"></a></span>
+<span id="cb342-13"><a href="violations.html#cb342-13" tabindex="-1"></a><span class="fu">setnames</span>(exp1b,</span>
+<span id="cb342-14"><a href="violations.html#cb342-14" tabindex="-1"></a>         <span class="at">old =</span> <span class="fu">names</span>(exp1b),</span>
+<span id="cb342-15"><a href="violations.html#cb342-15" tabindex="-1"></a>         <span class="at">new =</span> <span class="fu">c</span>(<span class="st">&quot;sample&quot;</span>, <span class="st">&quot;diHOME&quot;</span>, <span class="st">&quot;bat_activity&quot;</span>))</span>
+<span id="cb342-16"><a href="violations.html#cb342-16" tabindex="-1"></a></span>
+<span id="cb342-17"><a href="violations.html#cb342-17" tabindex="-1"></a>exp1b[, id <span class="sc">:=</span> <span class="fu">substr</span>(sample, <span class="dv">1</span>, <span class="dv">6</span>)]</span>
+<span id="cb342-18"><a href="violations.html#cb342-18" tabindex="-1"></a>exp1b[, treatment <span class="sc">:=</span> <span class="fu">ifelse</span>(<span class="fu">substr</span>(sample, <span class="dv">8</span>,<span class="dv">8</span>) <span class="sc">==</span></span>
+<span id="cb342-19"><a href="violations.html#cb342-19" tabindex="-1"></a>                              <span class="st">&quot;C&quot;</span>, <span class="st">&quot;cold&quot;</span>, <span class="st">&quot;saline&quot;</span>)]</span>
+<span id="cb342-20"><a href="violations.html#cb342-20" tabindex="-1"></a>exp1b[, treatment <span class="sc">:=</span> <span class="fu">factor</span>(treatment, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">&quot;saline&quot;</span>, <span class="st">&quot;cold&quot;</span>))]</span>
+<span id="cb342-21"><a href="violations.html#cb342-21" tabindex="-1"></a></span>
+<span id="cb342-22"><a href="violations.html#cb342-22" tabindex="-1"></a><span class="co">#View(exp1b)</span></span></code></pre></div>
 </div>
 <div id="importing-and-wrangling-the-exp2a-data" class="section level3 hasAnchor" number="12.4.2">
 <h3><span class="header-section-number">12.4.2</span> Importing and wrangling the exp2a data<a href="violations.html#importing-and-wrangling-the-exp2a-data" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<div class="sourceCode" id="cb341"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb341-1"><a href="violations.html#cb341-1" tabindex="-1"></a>data_from <span class="ot">&lt;-</span> <span class="st">&quot;The cold-induced lipokine 12,13-diHOME promotes fatty acid transport into brown adipose tissue&quot;</span></span>
-<span id="cb341-2"><a href="violations.html#cb341-2" tabindex="-1"></a>file_name <span class="ot">&lt;-</span> <span class="st">&quot;41591_2017_BFnm4297_MOESM2_ESM.xlsx&quot;</span></span>
-<span id="cb341-3"><a href="violations.html#cb341-3" tabindex="-1"></a>file_path <span class="ot">&lt;-</span> <span class="fu">here</span>(data_folder, data_from, file_name)</span>
-<span id="cb341-4"><a href="violations.html#cb341-4" tabindex="-1"></a></span>
-<span id="cb341-5"><a href="violations.html#cb341-5" tabindex="-1"></a><span class="co"># assuming mice are independent and not same mouse used for all three treatment</span></span>
-<span id="cb341-6"><a href="violations.html#cb341-6" tabindex="-1"></a>melt_col_names <span class="ot">&lt;-</span> <span class="fu">paste</span>(<span class="st">&quot;Animal&quot;</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>)</span>
-<span id="cb341-7"><a href="violations.html#cb341-7" tabindex="-1"></a>exp2a <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(file_path,</span>
-<span id="cb341-8"><a href="violations.html#cb341-8" tabindex="-1"></a>                     <span class="at">sheet =</span> <span class="st">&quot;Fig 2a&quot;</span>,</span>
-<span id="cb341-9"><a href="violations.html#cb341-9" tabindex="-1"></a>                     <span class="at">range =</span> <span class="st">&quot;A3:G6&quot;</span>,</span>
-<span id="cb341-10"><a href="violations.html#cb341-10" tabindex="-1"></a>                     <span class="at">col_names =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb341-11"><a href="violations.html#cb341-11" tabindex="-1"></a>  <span class="fu">data.table</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb341-12"><a href="violations.html#cb341-12" tabindex="-1"></a>  <span class="fu">melt</span>(<span class="at">measure.vars =</span> melt_col_names,</span>
-<span id="cb341-13"><a href="violations.html#cb341-13" tabindex="-1"></a>       <span class="at">variable.name =</span> <span class="st">&quot;id&quot;</span>,</span>
-<span id="cb341-14"><a href="violations.html#cb341-14" tabindex="-1"></a>       <span class="at">value.name =</span> <span class="st">&quot;diHOME&quot;</span>) <span class="co"># cannot start a variable with number</span></span>
-<span id="cb341-15"><a href="violations.html#cb341-15" tabindex="-1"></a><span class="fu">setnames</span>(exp2a, <span class="at">old =</span> <span class="fu">colnames</span>(exp2a)[<span class="dv">1</span>], <span class="at">new =</span> <span class="st">&quot;treatment&quot;</span>)</span>
-<span id="cb341-16"><a href="violations.html#cb341-16" tabindex="-1"></a></span>
-<span id="cb341-17"><a href="violations.html#cb341-17" tabindex="-1"></a>treatment_order <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;Control&quot;</span>, <span class="st">&quot;1 hour cold&quot;</span>, <span class="st">&quot;30 min NE&quot;</span>)</span>
-<span id="cb341-18"><a href="violations.html#cb341-18" tabindex="-1"></a>exp2a[, treatment <span class="sc">:=</span> <span class="fu">factor</span>(treatment, treatment_order)] <span class="co"># order levels</span></span>
-<span id="cb341-19"><a href="violations.html#cb341-19" tabindex="-1"></a></span>
-<span id="cb341-20"><a href="violations.html#cb341-20" tabindex="-1"></a><span class="co">#View(exp2a)</span></span></code></pre></div>
+<div class="sourceCode" id="cb343"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb343-1"><a href="violations.html#cb343-1" tabindex="-1"></a>data_from <span class="ot">&lt;-</span> <span class="st">&quot;The cold-induced lipokine 12,13-diHOME promotes fatty acid transport into brown adipose tissue&quot;</span></span>
+<span id="cb343-2"><a href="violations.html#cb343-2" tabindex="-1"></a>file_name <span class="ot">&lt;-</span> <span class="st">&quot;41591_2017_BFnm4297_MOESM2_ESM.xlsx&quot;</span></span>
+<span id="cb343-3"><a href="violations.html#cb343-3" tabindex="-1"></a>file_path <span class="ot">&lt;-</span> <span class="fu">here</span>(data_folder, data_from, file_name)</span>
+<span id="cb343-4"><a href="violations.html#cb343-4" tabindex="-1"></a></span>
+<span id="cb343-5"><a href="violations.html#cb343-5" tabindex="-1"></a><span class="co"># assuming mice are independent and not same mouse used for all three treatment</span></span>
+<span id="cb343-6"><a href="violations.html#cb343-6" tabindex="-1"></a>melt_col_names <span class="ot">&lt;-</span> <span class="fu">paste</span>(<span class="st">&quot;Animal&quot;</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>)</span>
+<span id="cb343-7"><a href="violations.html#cb343-7" tabindex="-1"></a>exp2a <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(file_path,</span>
+<span id="cb343-8"><a href="violations.html#cb343-8" tabindex="-1"></a>                     <span class="at">sheet =</span> <span class="st">&quot;Fig 2a&quot;</span>,</span>
+<span id="cb343-9"><a href="violations.html#cb343-9" tabindex="-1"></a>                     <span class="at">range =</span> <span class="st">&quot;A3:G6&quot;</span>,</span>
+<span id="cb343-10"><a href="violations.html#cb343-10" tabindex="-1"></a>                     <span class="at">col_names =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb343-11"><a href="violations.html#cb343-11" tabindex="-1"></a>  <span class="fu">data.table</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb343-12"><a href="violations.html#cb343-12" tabindex="-1"></a>  <span class="fu">melt</span>(<span class="at">measure.vars =</span> melt_col_names,</span>
+<span id="cb343-13"><a href="violations.html#cb343-13" tabindex="-1"></a>       <span class="at">variable.name =</span> <span class="st">&quot;id&quot;</span>,</span>
+<span id="cb343-14"><a href="violations.html#cb343-14" tabindex="-1"></a>       <span class="at">value.name =</span> <span class="st">&quot;diHOME&quot;</span>) <span class="co"># cannot start a variable with number</span></span>
+<span id="cb343-15"><a href="violations.html#cb343-15" tabindex="-1"></a><span class="fu">setnames</span>(exp2a, <span class="at">old =</span> <span class="fu">colnames</span>(exp2a)[<span class="dv">1</span>], <span class="at">new =</span> <span class="st">&quot;treatment&quot;</span>)</span>
+<span id="cb343-16"><a href="violations.html#cb343-16" tabindex="-1"></a></span>
+<span id="cb343-17"><a href="violations.html#cb343-17" tabindex="-1"></a>treatment_order <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;Control&quot;</span>, <span class="st">&quot;1 hour cold&quot;</span>, <span class="st">&quot;30 min NE&quot;</span>)</span>
+<span id="cb343-18"><a href="violations.html#cb343-18" tabindex="-1"></a>exp2a[, treatment <span class="sc">:=</span> <span class="fu">factor</span>(treatment, treatment_order)] <span class="co"># order levels</span></span>
+<span id="cb343-19"><a href="violations.html#cb343-19" tabindex="-1"></a></span>
+<span id="cb343-20"><a href="violations.html#cb343-20" tabindex="-1"></a><span class="co">#View(exp2a)</span></span></code></pre></div>
 </div>
 <div id="importing-and-wrangling-the-fig6f-data" class="section level3 hasAnchor" number="12.4.3">
 <h3><span class="header-section-number">12.4.3</span> Importing and wrangling the fig6f data<a href="violations.html#importing-and-wrangling-the-fig6f-data" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<div class="sourceCode" id="cb342"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb342-1"><a href="violations.html#cb342-1" tabindex="-1"></a><span class="co"># need data_folder from earlier chunk</span></span>
-<span id="cb342-2"><a href="violations.html#cb342-2" tabindex="-1"></a>data_from <span class="ot">&lt;-</span> <span class="st">&quot;Exercise reduces inflammatory cell production and cardiovascular inflammation via instruction of hematopoietic progenitor cells&quot;</span></span>
-<span id="cb342-3"><a href="violations.html#cb342-3" tabindex="-1"></a>file_name <span class="ot">&lt;-</span> <span class="st">&quot;41591_2019_633_MOESM8_ESM.xlsx&quot;</span></span>
-<span id="cb342-4"><a href="violations.html#cb342-4" tabindex="-1"></a>file_path <span class="ot">&lt;-</span> <span class="fu">here</span>(data_folder, data_from, file_name)</span>
-<span id="cb342-5"><a href="violations.html#cb342-5" tabindex="-1"></a></span>
-<span id="cb342-6"><a href="violations.html#cb342-6" tabindex="-1"></a><span class="co"># assuming mice are independent and not same mouse used for all three treatment</span></span>
-<span id="cb342-7"><a href="violations.html#cb342-7" tabindex="-1"></a>melt_col_names <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;Sedentary&quot;</span>, <span class="st">&quot;Exercise&quot;</span>)</span>
-<span id="cb342-8"><a href="violations.html#cb342-8" tabindex="-1"></a>fig6f <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(file_path,</span>
-<span id="cb342-9"><a href="violations.html#cb342-9" tabindex="-1"></a>                     <span class="at">sheet =</span> <span class="st">&quot;Figure 6f&quot;</span>,</span>
-<span id="cb342-10"><a href="violations.html#cb342-10" tabindex="-1"></a>                     <span class="at">range =</span> <span class="st">&quot;A7:B29&quot;</span>,</span>
-<span id="cb342-11"><a href="violations.html#cb342-11" tabindex="-1"></a>                     <span class="at">col_names =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb342-12"><a href="violations.html#cb342-12" tabindex="-1"></a>  <span class="fu">data.table</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb342-13"><a href="violations.html#cb342-13" tabindex="-1"></a>  <span class="fu">melt</span>(<span class="at">measure.vars =</span> melt_col_names,</span>
-<span id="cb342-14"><a href="violations.html#cb342-14" tabindex="-1"></a>       <span class="at">variable.name =</span> <span class="st">&quot;treatment&quot;</span>,</span>
-<span id="cb342-15"><a href="violations.html#cb342-15" tabindex="-1"></a>       <span class="at">value.name =</span> <span class="st">&quot;neutrophils&quot;</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb342-16"><a href="violations.html#cb342-16" tabindex="-1"></a>  <span class="fu">na.omit</span>() <span class="co"># danger!</span></span>
-<span id="cb342-17"><a href="violations.html#cb342-17" tabindex="-1"></a></span>
-<span id="cb342-18"><a href="violations.html#cb342-18" tabindex="-1"></a>treatment_levels <span class="ot">&lt;-</span> melt_col_names</span>
-<span id="cb342-19"><a href="violations.html#cb342-19" tabindex="-1"></a>fig6f[, treatment <span class="sc">:=</span> <span class="fu">factor</span>(treatment,</span>
-<span id="cb342-20"><a href="violations.html#cb342-20" tabindex="-1"></a>                            <span class="at">levels =</span> treatment_levels)]</span>
-<span id="cb342-21"><a href="violations.html#cb342-21" tabindex="-1"></a></span>
-<span id="cb342-22"><a href="violations.html#cb342-22" tabindex="-1"></a><span class="co"># neutrophils is count/10^6</span></span>
-<span id="cb342-23"><a href="violations.html#cb342-23" tabindex="-1"></a>fig6f[, neutrophil_count <span class="sc">:=</span> <span class="fu">round</span>(neutrophils<span class="sc">*</span><span class="dv">10</span><span class="sc">^</span><span class="dv">6</span>, <span class="dv">0</span>)]</span>
-<span id="cb342-24"><a href="violations.html#cb342-24" tabindex="-1"></a></span>
-<span id="cb342-25"><a href="violations.html#cb342-25" tabindex="-1"></a>fig6f[<span class="dv">1</span>, neutrophil_count]</span></code></pre></div>
+<div class="sourceCode" id="cb344"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb344-1"><a href="violations.html#cb344-1" tabindex="-1"></a><span class="co"># need data_folder from earlier chunk</span></span>
+<span id="cb344-2"><a href="violations.html#cb344-2" tabindex="-1"></a>data_from <span class="ot">&lt;-</span> <span class="st">&quot;Exercise reduces inflammatory cell production and cardiovascular inflammation via instruction of hematopoietic progenitor cells&quot;</span></span>
+<span id="cb344-3"><a href="violations.html#cb344-3" tabindex="-1"></a>file_name <span class="ot">&lt;-</span> <span class="st">&quot;41591_2019_633_MOESM8_ESM.xlsx&quot;</span></span>
+<span id="cb344-4"><a href="violations.html#cb344-4" tabindex="-1"></a>file_path <span class="ot">&lt;-</span> <span class="fu">here</span>(data_folder, data_from, file_name)</span>
+<span id="cb344-5"><a href="violations.html#cb344-5" tabindex="-1"></a></span>
+<span id="cb344-6"><a href="violations.html#cb344-6" tabindex="-1"></a><span class="co"># assuming mice are independent and not same mouse used for all three treatment</span></span>
+<span id="cb344-7"><a href="violations.html#cb344-7" tabindex="-1"></a>melt_col_names <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;Sedentary&quot;</span>, <span class="st">&quot;Exercise&quot;</span>)</span>
+<span id="cb344-8"><a href="violations.html#cb344-8" tabindex="-1"></a>fig6f <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(file_path,</span>
+<span id="cb344-9"><a href="violations.html#cb344-9" tabindex="-1"></a>                     <span class="at">sheet =</span> <span class="st">&quot;Figure 6f&quot;</span>,</span>
+<span id="cb344-10"><a href="violations.html#cb344-10" tabindex="-1"></a>                     <span class="at">range =</span> <span class="st">&quot;A7:B29&quot;</span>,</span>
+<span id="cb344-11"><a href="violations.html#cb344-11" tabindex="-1"></a>                     <span class="at">col_names =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb344-12"><a href="violations.html#cb344-12" tabindex="-1"></a>  <span class="fu">data.table</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb344-13"><a href="violations.html#cb344-13" tabindex="-1"></a>  <span class="fu">melt</span>(<span class="at">measure.vars =</span> melt_col_names,</span>
+<span id="cb344-14"><a href="violations.html#cb344-14" tabindex="-1"></a>       <span class="at">variable.name =</span> <span class="st">&quot;treatment&quot;</span>,</span>
+<span id="cb344-15"><a href="violations.html#cb344-15" tabindex="-1"></a>       <span class="at">value.name =</span> <span class="st">&quot;neutrophils&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb344-16"><a href="violations.html#cb344-16" tabindex="-1"></a>  <span class="fu">na.omit</span>() <span class="co"># danger!</span></span>
+<span id="cb344-17"><a href="violations.html#cb344-17" tabindex="-1"></a></span>
+<span id="cb344-18"><a href="violations.html#cb344-18" tabindex="-1"></a>treatment_levels <span class="ot">&lt;-</span> melt_col_names</span>
+<span id="cb344-19"><a href="violations.html#cb344-19" tabindex="-1"></a>fig6f[, treatment <span class="sc">:=</span> <span class="fu">factor</span>(treatment,</span>
+<span id="cb344-20"><a href="violations.html#cb344-20" tabindex="-1"></a>                            <span class="at">levels =</span> treatment_levels)]</span>
+<span id="cb344-21"><a href="violations.html#cb344-21" tabindex="-1"></a></span>
+<span id="cb344-22"><a href="violations.html#cb344-22" tabindex="-1"></a><span class="co"># neutrophils is count/10^6</span></span>
+<span id="cb344-23"><a href="violations.html#cb344-23" tabindex="-1"></a>fig6f[, neutrophil_count <span class="sc">:=</span> <span class="fu">round</span>(neutrophils<span class="sc">*</span><span class="dv">10</span><span class="sc">^</span><span class="dv">6</span>, <span class="dv">0</span>)]</span>
+<span id="cb344-24"><a href="violations.html#cb344-24" tabindex="-1"></a></span>
+<span id="cb344-25"><a href="violations.html#cb344-25" tabindex="-1"></a>fig6f[<span class="dv">1</span>, neutrophil_count]</span></code></pre></div>
 <pre><code>## [1] 4936007</code></pre>
-<div class="sourceCode" id="cb344"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb344-1"><a href="violations.html#cb344-1" tabindex="-1"></a><span class="co">#View(fig6f)</span></span></code></pre></div>
+<div class="sourceCode" id="cb346"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb346-1"><a href="violations.html#cb346-1" tabindex="-1"></a><span class="co">#View(fig6f)</span></span></code></pre></div>
 
 </div>
 </div>

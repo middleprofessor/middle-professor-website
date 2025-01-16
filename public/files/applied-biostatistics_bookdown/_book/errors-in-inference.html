@@ -4,18 +4,18 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Chapter 7 Errors in inference | Statistics for the Experimental Biologist</title>
+  <title>Chapter 7 Errors in inference | Statistics for the Bench Biologist</title>
   <meta name="description" content="An introduction to statistical modeling for experimental biology researchers" />
-  <meta name="generator" content="bookdown 0.39 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.41 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Chapter 7 Errors in inference | Statistics for the Experimental Biologist" />
+  <meta property="og:title" content="Chapter 7 Errors in inference | Statistics for the Bench Biologist" />
   <meta property="og:type" content="book" />
   
   <meta property="og:description" content="An introduction to statistical modeling for experimental biology researchers" />
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Chapter 7 Errors in inference | Statistics for the Experimental Biologist" />
+  <meta name="twitter:title" content="Chapter 7 Errors in inference | Statistics for the Bench Biologist" />
   
   <meta name="twitter:description" content="An introduction to statistical modeling for experimental biology researchers" />
   
@@ -59,7 +59,7 @@
 
 <style type="text/css">
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span { line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -913,7 +913,7 @@ code span.wa { color: #bf0303; } /* Warning */
       <div class="body-inner">
         <div class="book-header" role="navigation">
           <h1>
-            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Statistics for the Experimental Biologist</a>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Statistics for the Bench Biologist</a>
           </h1>
         </div>
 
@@ -923,6 +923,7 @@ code span.wa { color: #bf0303; } /* Warning */
             <section class="normal" id="section-">
 <div id="errors-in-inference" class="section level1 hasAnchor" number="7">
 <h1><span class="header-section-number">Chapter 7</span> Errors in inference<a href="errors-in-inference.html#errors-in-inference" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<p>All updates to this book are now at <a href="https://middleprofessor.github.io/benchbiostats/">https://middleprofessor.github.io/benchbiostats/</a></p>
 <div id="classical-nhst-concepts-of-wrong" class="section level2 hasAnchor" number="7.1">
 <h2><span class="header-section-number">7.1</span> Classical NHST concepts of wrong<a href="errors-in-inference.html#classical-nhst-concepts-of-wrong" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>As described in chapter (p-values), two types of error occur in classical Neyman-Pearson hypothesis testing, and in the NHST version that dominates modern practice. <strong>Type I</strong> error occurs when the null hypothesis is true but the <em>p</em>-value of the test is less than <span class="math inline">\(\alpha\)</span>. This is a <em>false positive</em>, where a <em>positive</em> is a test that rejects the null. <strong>Type II</strong> error occurs when the null hypothesis is false but the <em>p</em>-value of the test is greater than <span class="math inline">\(\alpha\)</span>. This is a <em>false negative</em>, where a <em>negative</em> is a test that accepts (or fails to reject) the null. <strong>Power</strong> is not an error but the frequency of true, positive tests (or the frequency of avoiding Type II error). <span class="math inline">\(\alpha\)</span> is not an error but the rate of Type I error that a researcher is willing to accept. Ideally, a researcher sets <span class="math inline">\(\alpha\)</span> based on an evaluation of the pros and cons of Type I and Type II error for the specific experiment. In practice, researchers follow the completely arbitary practice of setting <span class="math inline">\(\alpha = 0.05\)</span>.</p>
@@ -933,186 +934,51 @@ code span.wa { color: #bf0303; } /* Warning */
 <p>It would probably come as a surprise to most researchers to learn that the size of some common tests used with data that look like the researcher’s data is not 0.05. “used with data that look like the researcher’s data” is important here – a <em>t</em>-test doesn’t have one size. With data that conform to the assumptions (independence, homogeneity, normality), the size of a <em>t</em>-test is <span class="math inline">\(\alpha\)</span>. But with any violation, especially when the sample size differs between groups, the size of the <em>t</em>-test can move away from <span class="math inline">\(\alpha\)</span>. A test that has a size that is less than <span class="math inline">\(\alpha\)</span> is “conservative” (fewer nulls are rejected than we think, so the <em>status quo</em> is more often maintained). A test that has a size that is greater than <span class="math inline">\(\alpha\)</span> is “anti-conservative”, or “liberal” (more nulls are rejected than we think, so the <em>status quo</em> is less often maintained). More conservative tests reduce power. More liberal tests <em>artificially</em> increase power and increase our rate of false rejection, which can mean “false discovery” if <em>p</em>-values are used as the arbiter of discovery.</p>
 <div id="size-example-1-the-size-of-a-t-test-vs.-a-permutation-test-when-the-data-meet-the-assumptions" class="section level4 hasAnchor" number="7.1.1.1">
 <h4><span class="header-section-number">7.1.1.1</span> Size example 1: the size of a <em>t</em>-test vs. a permutation test, when the data meet the assumptions<a href="errors-in-inference.html#size-example-1-the-size-of-a-t-test-vs.-a-permutation-test-when-the-data-meet-the-assumptions" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<div class="sourceCode" id="cb182"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb182-1"><a href="errors-in-inference.html#cb182-1" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
-<span id="cb182-2"><a href="errors-in-inference.html#cb182-2" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">10</span></span>
-<span id="cb182-3"><a href="errors-in-inference.html#cb182-3" tabindex="-1"></a>n_iter <span class="ot">&lt;-</span> <span class="dv">10000</span></span>
-<span id="cb182-4"><a href="errors-in-inference.html#cb182-4" tabindex="-1"></a>p_t <span class="ot">&lt;-</span> <span class="fu">numeric</span>(n_iter)</span>
-<span id="cb182-5"><a href="errors-in-inference.html#cb182-5" tabindex="-1"></a>p_perm <span class="ot">&lt;-</span> <span class="fu">numeric</span>(n_iter)</span>
-<span id="cb182-6"><a href="errors-in-inference.html#cb182-6" tabindex="-1"></a></span>
-<span id="cb182-7"><a href="errors-in-inference.html#cb182-7" tabindex="-1"></a>treatment <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">&quot;cn&quot;</span>, <span class="st">&quot;tr&quot;</span>), <span class="at">each =</span> n)</span>
-<span id="cb182-8"><a href="errors-in-inference.html#cb182-8" tabindex="-1"></a><span class="cf">for</span>(iter <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n_iter){</span>
-<span id="cb182-9"><a href="errors-in-inference.html#cb182-9" tabindex="-1"></a>  sample_1 <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n, <span class="at">mean =</span> <span class="dv">10</span>, <span class="at">sd =</span> <span class="dv">1</span>)</span>
-<span id="cb182-10"><a href="errors-in-inference.html#cb182-10" tabindex="-1"></a>  sample_2 <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n, <span class="at">mean =</span> <span class="dv">10</span>, <span class="at">sd =</span> <span class="dv">1</span>)</span>
-<span id="cb182-11"><a href="errors-in-inference.html#cb182-11" tabindex="-1"></a>  y <span class="ot">&lt;-</span> <span class="fu">c</span>(sample_1, sample_2)</span>
-<span id="cb182-12"><a href="errors-in-inference.html#cb182-12" tabindex="-1"></a>  m1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> treatment) <span class="co"># no data statement necessary because both variables in workspace</span></span>
-<span id="cb182-13"><a href="errors-in-inference.html#cb182-13" tabindex="-1"></a>  p_t[iter] <span class="ot">&lt;-</span> <span class="fu">coef</span>(<span class="fu">summary</span>(m1))[<span class="st">&quot;treatmenttr&quot;</span>, <span class="st">&quot;Pr(&gt;|t|)&quot;</span>]</span>
-<span id="cb182-14"><a href="errors-in-inference.html#cb182-14" tabindex="-1"></a>  </span>
-<span id="cb182-15"><a href="errors-in-inference.html#cb182-15" tabindex="-1"></a>  m2 <span class="ot">&lt;-</span> <span class="fu">lmp</span>(y <span class="sc">~</span> treatment,</span>
-<span id="cb182-16"><a href="errors-in-inference.html#cb182-16" tabindex="-1"></a>            <span class="at">perm =</span> <span class="st">&quot;Prob&quot;</span>,</span>
-<span id="cb182-17"><a href="errors-in-inference.html#cb182-17" tabindex="-1"></a>            <span class="at">settings =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb182-18"><a href="errors-in-inference.html#cb182-18" tabindex="-1"></a>  p_perm[iter] <span class="ot">&lt;-</span> <span class="fu">coef</span>(<span class="fu">summary</span>(m2))[<span class="st">&quot;treatment1&quot;</span>, <span class="st">&quot;Pr(Prob)&quot;</span>]</span>
-<span id="cb182-19"><a href="errors-in-inference.html#cb182-19" tabindex="-1"></a>}</span>
-<span id="cb182-20"><a href="errors-in-inference.html#cb182-20" tabindex="-1"></a>size_t <span class="ot">&lt;-</span> <span class="fu">sum</span>(p_t <span class="sc">&lt;</span> <span class="fl">0.05</span>)<span class="sc">/</span>n_iter</span>
-<span id="cb182-21"><a href="errors-in-inference.html#cb182-21" tabindex="-1"></a>size_perm <span class="ot">&lt;-</span> <span class="fu">sum</span>(p_perm <span class="sc">&lt;</span> <span class="fl">0.05</span>)<span class="sc">/</span>n_iter</span>
-<span id="cb182-22"><a href="errors-in-inference.html#cb182-22" tabindex="-1"></a>size_table <span class="ot">&lt;-</span> <span class="fu">data.table</span>(<span class="at">Method =</span> <span class="fu">c</span>(<span class="st">&quot;lm&quot;</span>, <span class="st">&quot;perm&quot;</span>),</span>
-<span id="cb182-23"><a href="errors-in-inference.html#cb182-23" tabindex="-1"></a>                         <span class="at">Size =</span> <span class="fu">c</span>(size_t, size_perm))</span>
-<span id="cb182-24"><a href="errors-in-inference.html#cb182-24" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(size_table, <span class="at">digits =</span> <span class="dv">4</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb184"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb184-1"><a href="errors-in-inference.html#cb184-1" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
+<span id="cb184-2"><a href="errors-in-inference.html#cb184-2" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">10</span></span>
+<span id="cb184-3"><a href="errors-in-inference.html#cb184-3" tabindex="-1"></a>n_iter <span class="ot">&lt;-</span> <span class="dv">10000</span></span>
+<span id="cb184-4"><a href="errors-in-inference.html#cb184-4" tabindex="-1"></a>p_t <span class="ot">&lt;-</span> <span class="fu">numeric</span>(n_iter)</span>
+<span id="cb184-5"><a href="errors-in-inference.html#cb184-5" tabindex="-1"></a>p_perm <span class="ot">&lt;-</span> <span class="fu">numeric</span>(n_iter)</span>
+<span id="cb184-6"><a href="errors-in-inference.html#cb184-6" tabindex="-1"></a></span>
+<span id="cb184-7"><a href="errors-in-inference.html#cb184-7" tabindex="-1"></a>treatment <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">&quot;cn&quot;</span>, <span class="st">&quot;tr&quot;</span>), <span class="at">each =</span> n)</span>
+<span id="cb184-8"><a href="errors-in-inference.html#cb184-8" tabindex="-1"></a><span class="cf">for</span>(iter <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n_iter){</span>
+<span id="cb184-9"><a href="errors-in-inference.html#cb184-9" tabindex="-1"></a>  sample_1 <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n, <span class="at">mean =</span> <span class="dv">10</span>, <span class="at">sd =</span> <span class="dv">1</span>)</span>
+<span id="cb184-10"><a href="errors-in-inference.html#cb184-10" tabindex="-1"></a>  sample_2 <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n, <span class="at">mean =</span> <span class="dv">10</span>, <span class="at">sd =</span> <span class="dv">1</span>)</span>
+<span id="cb184-11"><a href="errors-in-inference.html#cb184-11" tabindex="-1"></a>  y <span class="ot">&lt;-</span> <span class="fu">c</span>(sample_1, sample_2)</span>
+<span id="cb184-12"><a href="errors-in-inference.html#cb184-12" tabindex="-1"></a>  m1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> treatment) <span class="co"># no data statement necessary because both variables in workspace</span></span>
+<span id="cb184-13"><a href="errors-in-inference.html#cb184-13" tabindex="-1"></a>  p_t[iter] <span class="ot">&lt;-</span> <span class="fu">coef</span>(<span class="fu">summary</span>(m1))[<span class="st">&quot;treatmenttr&quot;</span>, <span class="st">&quot;Pr(&gt;|t|)&quot;</span>]</span>
+<span id="cb184-14"><a href="errors-in-inference.html#cb184-14" tabindex="-1"></a>  </span>
+<span id="cb184-15"><a href="errors-in-inference.html#cb184-15" tabindex="-1"></a>  m2 <span class="ot">&lt;-</span> <span class="fu">lmp</span>(y <span class="sc">~</span> treatment,</span>
+<span id="cb184-16"><a href="errors-in-inference.html#cb184-16" tabindex="-1"></a>            <span class="at">perm =</span> <span class="st">&quot;Prob&quot;</span>,</span>
+<span id="cb184-17"><a href="errors-in-inference.html#cb184-17" tabindex="-1"></a>            <span class="at">settings =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb184-18"><a href="errors-in-inference.html#cb184-18" tabindex="-1"></a>  p_perm[iter] <span class="ot">&lt;-</span> <span class="fu">coef</span>(<span class="fu">summary</span>(m2))[<span class="st">&quot;treatment1&quot;</span>, <span class="st">&quot;Pr(Prob)&quot;</span>]</span>
+<span id="cb184-19"><a href="errors-in-inference.html#cb184-19" tabindex="-1"></a>}</span>
+<span id="cb184-20"><a href="errors-in-inference.html#cb184-20" tabindex="-1"></a>size_t <span class="ot">&lt;-</span> <span class="fu">sum</span>(p_t <span class="sc">&lt;</span> <span class="fl">0.05</span>)<span class="sc">/</span>n_iter</span>
+<span id="cb184-21"><a href="errors-in-inference.html#cb184-21" tabindex="-1"></a>size_perm <span class="ot">&lt;-</span> <span class="fu">sum</span>(p_perm <span class="sc">&lt;</span> <span class="fl">0.05</span>)<span class="sc">/</span>n_iter</span>
+<span id="cb184-22"><a href="errors-in-inference.html#cb184-22" tabindex="-1"></a>size_table <span class="ot">&lt;-</span> <span class="fu">data.table</span>(<span class="at">Method =</span> <span class="fu">c</span>(<span class="st">&quot;lm&quot;</span>, <span class="st">&quot;perm&quot;</span>),</span>
+<span id="cb184-23"><a href="errors-in-inference.html#cb184-23" tabindex="-1"></a>                         <span class="at">Size =</span> <span class="fu">c</span>(size_t, size_perm))</span>
+<span id="cb184-24"><a href="errors-in-inference.html#cb184-24" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(size_table, <span class="at">digits =</span> <span class="dv">4</span>)</span></code></pre></div>
 <table>
 <thead>
-<tr>
-<th style="text-align:left;">
-Method
-</th>
-<th style="text-align:right;">
-Size
-</th>
+<tr class="header">
+<th align="left">Method</th>
+<th align="right">Size</th>
 </tr>
 </thead>
 <tbody>
-<tr>
-<td style="text-align:left;">
-lm
-</td>
-<td style="text-align:right;">
-0.0489
-</td>
+<tr class="odd">
+<td align="left">lm</td>
+<td align="right">0.0489</td>
 </tr>
-<tr>
-<td style="text-align:left;">
-perm
-</td>
-<td style="text-align:right;">
-0.0488
-</td>
+<tr class="even">
+<td align="left">perm</td>
+<td align="right">0.0488</td>
 </tr>
 </tbody>
 </table>
 </div>
 <div id="size-example-2-the-size-of-a-t-test-vs.-a-permutation-test-when-the-data-have-a-right-skewed-distribution" class="section level4 hasAnchor" number="7.1.1.2">
 <h4><span class="header-section-number">7.1.1.2</span> Size example 2: the size of a <em>t</em>-test vs. a permutation test, when the data have a right skewed distribution<a href="errors-in-inference.html#size-example-2-the-size-of-a-t-test-vs.-a-permutation-test-when-the-data-have-a-right-skewed-distribution" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<div class="sourceCode" id="cb183"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb183-1"><a href="errors-in-inference.html#cb183-1" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
-<span id="cb183-2"><a href="errors-in-inference.html#cb183-2" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">10</span></span>
-<span id="cb183-3"><a href="errors-in-inference.html#cb183-3" tabindex="-1"></a>n_iter <span class="ot">&lt;-</span> <span class="dv">10000</span></span>
-<span id="cb183-4"><a href="errors-in-inference.html#cb183-4" tabindex="-1"></a>p_t <span class="ot">&lt;-</span> <span class="fu">numeric</span>(n_iter)</span>
-<span id="cb183-5"><a href="errors-in-inference.html#cb183-5" tabindex="-1"></a>p_perm <span class="ot">&lt;-</span> <span class="fu">numeric</span>(n_iter)</span>
-<span id="cb183-6"><a href="errors-in-inference.html#cb183-6" tabindex="-1"></a></span>
-<span id="cb183-7"><a href="errors-in-inference.html#cb183-7" tabindex="-1"></a>treatment <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">&quot;cn&quot;</span>, <span class="st">&quot;tr&quot;</span>), <span class="at">each =</span> n)</span>
-<span id="cb183-8"><a href="errors-in-inference.html#cb183-8" tabindex="-1"></a><span class="cf">for</span>(iter <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n_iter){</span>
-<span id="cb183-9"><a href="errors-in-inference.html#cb183-9" tabindex="-1"></a>  <span class="co">#  qplot(rnegbin(n = 10^4, mu = 100, theta = 1))</span></span>
-<span id="cb183-10"><a href="errors-in-inference.html#cb183-10" tabindex="-1"></a>  sample_1 <span class="ot">&lt;-</span> <span class="fu">rnegbin</span>(n, <span class="at">mu =</span> <span class="dv">100</span>, <span class="at">theta =</span> <span class="dv">1</span>)</span>
-<span id="cb183-11"><a href="errors-in-inference.html#cb183-11" tabindex="-1"></a>  sample_2 <span class="ot">&lt;-</span> <span class="fu">rnegbin</span>(n, <span class="at">mu =</span> <span class="dv">100</span>, <span class="at">theta =</span> <span class="dv">1</span>)</span>
-<span id="cb183-12"><a href="errors-in-inference.html#cb183-12" tabindex="-1"></a>  y <span class="ot">&lt;-</span> <span class="fu">c</span>(sample_1, sample_2)</span>
-<span id="cb183-13"><a href="errors-in-inference.html#cb183-13" tabindex="-1"></a>  <span class="co"># qplot(x=treatment, y = y)</span></span>
-<span id="cb183-14"><a href="errors-in-inference.html#cb183-14" tabindex="-1"></a>  m1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> treatment) <span class="co"># no data statement necessary because both variables in workspace</span></span>
-<span id="cb183-15"><a href="errors-in-inference.html#cb183-15" tabindex="-1"></a>  p_t[iter] <span class="ot">&lt;-</span> <span class="fu">coef</span>(<span class="fu">summary</span>(m1))[<span class="st">&quot;treatmenttr&quot;</span>, <span class="st">&quot;Pr(&gt;|t|)&quot;</span>]</span>
-<span id="cb183-16"><a href="errors-in-inference.html#cb183-16" tabindex="-1"></a>  </span>
-<span id="cb183-17"><a href="errors-in-inference.html#cb183-17" tabindex="-1"></a>  m2 <span class="ot">&lt;-</span> <span class="fu">lmp</span>(y <span class="sc">~</span> treatment,</span>
-<span id="cb183-18"><a href="errors-in-inference.html#cb183-18" tabindex="-1"></a>            <span class="at">perm =</span> <span class="st">&quot;Prob&quot;</span>,</span>
-<span id="cb183-19"><a href="errors-in-inference.html#cb183-19" tabindex="-1"></a>            <span class="at">settings =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb183-20"><a href="errors-in-inference.html#cb183-20" tabindex="-1"></a>  p_perm[iter] <span class="ot">&lt;-</span> <span class="fu">coef</span>(<span class="fu">summary</span>(m2))[<span class="st">&quot;treatment1&quot;</span>, <span class="st">&quot;Pr(Prob)&quot;</span>]</span>
-<span id="cb183-21"><a href="errors-in-inference.html#cb183-21" tabindex="-1"></a>}</span>
-<span id="cb183-22"><a href="errors-in-inference.html#cb183-22" tabindex="-1"></a>size_t <span class="ot">&lt;-</span> <span class="fu">sum</span>(p_t <span class="sc">&lt;</span> <span class="fl">0.05</span>)<span class="sc">/</span>n_iter</span>
-<span id="cb183-23"><a href="errors-in-inference.html#cb183-23" tabindex="-1"></a>size_perm <span class="ot">&lt;-</span> <span class="fu">sum</span>(p_perm <span class="sc">&lt;</span> <span class="fl">0.05</span>)<span class="sc">/</span>n_iter</span>
-<span id="cb183-24"><a href="errors-in-inference.html#cb183-24" tabindex="-1"></a>size_table <span class="ot">&lt;-</span> <span class="fu">data.table</span>(<span class="at">Method =</span> <span class="fu">c</span>(<span class="st">&quot;lm&quot;</span>, <span class="st">&quot;perm&quot;</span>),</span>
-<span id="cb183-25"><a href="errors-in-inference.html#cb183-25" tabindex="-1"></a>                         <span class="at">Size =</span> <span class="fu">c</span>(size_t, size_perm))</span>
-<span id="cb183-26"><a href="errors-in-inference.html#cb183-26" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(size_table, <span class="at">digits =</span> <span class="dv">4</span>)</span></code></pre></div>
-<table>
-<thead>
-<tr>
-<th style="text-align:left;">
-Method
-</th>
-<th style="text-align:right;">
-Size
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-lm
-</td>
-<td style="text-align:right;">
-0.0438
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-perm
-</td>
-<td style="text-align:right;">
-0.0504
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div id="size-example-3-the-size-of-a-t-test-vs.-a-permutation-test-when-the-data-have-heterogenous-variance-and-the-sample-size-is-unequal" class="section level4 hasAnchor" number="7.1.1.3">
-<h4><span class="header-section-number">7.1.1.3</span> Size example 3: the size of a <em>t</em>-test vs. a permutation test, when the data have heterogenous variance and the sample size is unequal<a href="errors-in-inference.html#size-example-3-the-size-of-a-t-test-vs.-a-permutation-test-when-the-data-have-heterogenous-variance-and-the-sample-size-is-unequal" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<div class="sourceCode" id="cb184"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb184-1"><a href="errors-in-inference.html#cb184-1" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
-<span id="cb184-2"><a href="errors-in-inference.html#cb184-2" tabindex="-1"></a>n1 <span class="ot">&lt;-</span> <span class="dv">10</span></span>
-<span id="cb184-3"><a href="errors-in-inference.html#cb184-3" tabindex="-1"></a>n2 <span class="ot">&lt;-</span> n1<span class="sc">/</span><span class="dv">2</span></span>
-<span id="cb184-4"><a href="errors-in-inference.html#cb184-4" tabindex="-1"></a>n_iter <span class="ot">&lt;-</span> <span class="dv">10000</span></span>
-<span id="cb184-5"><a href="errors-in-inference.html#cb184-5" tabindex="-1"></a>p_t <span class="ot">&lt;-</span> <span class="fu">numeric</span>(n_iter)</span>
-<span id="cb184-6"><a href="errors-in-inference.html#cb184-6" tabindex="-1"></a>p_perm <span class="ot">&lt;-</span> <span class="fu">numeric</span>(n_iter)</span>
-<span id="cb184-7"><a href="errors-in-inference.html#cb184-7" tabindex="-1"></a></span>
-<span id="cb184-8"><a href="errors-in-inference.html#cb184-8" tabindex="-1"></a>treatment <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">&quot;cn&quot;</span>, <span class="st">&quot;tr&quot;</span>), <span class="at">times =</span> <span class="fu">c</span>(n1, n2))</span>
-<span id="cb184-9"><a href="errors-in-inference.html#cb184-9" tabindex="-1"></a><span class="cf">for</span>(iter <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n_iter){</span>
-<span id="cb184-10"><a href="errors-in-inference.html#cb184-10" tabindex="-1"></a>  <span class="co">#  qplot(rnegbin(n = 10^4, mu = 100, theta = 1))</span></span>
-<span id="cb184-11"><a href="errors-in-inference.html#cb184-11" tabindex="-1"></a>  sample_1 <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n1, <span class="at">mean =</span> <span class="dv">10</span>, <span class="at">sd =</span> <span class="fl">0.5</span>)</span>
-<span id="cb184-12"><a href="errors-in-inference.html#cb184-12" tabindex="-1"></a>  sample_2 <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n2, <span class="at">mean =</span> <span class="dv">10</span>, <span class="at">sd =</span> <span class="dv">1</span>)</span>
-<span id="cb184-13"><a href="errors-in-inference.html#cb184-13" tabindex="-1"></a>  y <span class="ot">&lt;-</span> <span class="fu">c</span>(sample_1, sample_2)</span>
-<span id="cb184-14"><a href="errors-in-inference.html#cb184-14" tabindex="-1"></a>  <span class="co"># qplot(x=treatment, y = y)</span></span>
-<span id="cb184-15"><a href="errors-in-inference.html#cb184-15" tabindex="-1"></a>  m1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> treatment) <span class="co"># no data statement necessary because both variables in workspace</span></span>
-<span id="cb184-16"><a href="errors-in-inference.html#cb184-16" tabindex="-1"></a>  p_t[iter] <span class="ot">&lt;-</span> <span class="fu">coef</span>(<span class="fu">summary</span>(m1))[<span class="st">&quot;treatmenttr&quot;</span>, <span class="st">&quot;Pr(&gt;|t|)&quot;</span>]</span>
-<span id="cb184-17"><a href="errors-in-inference.html#cb184-17" tabindex="-1"></a>  </span>
-<span id="cb184-18"><a href="errors-in-inference.html#cb184-18" tabindex="-1"></a>  m2 <span class="ot">&lt;-</span> <span class="fu">lmp</span>(y <span class="sc">~</span> treatment,</span>
-<span id="cb184-19"><a href="errors-in-inference.html#cb184-19" tabindex="-1"></a>            <span class="at">perm =</span> <span class="st">&quot;Prob&quot;</span>,</span>
-<span id="cb184-20"><a href="errors-in-inference.html#cb184-20" tabindex="-1"></a>            <span class="at">settings =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb184-21"><a href="errors-in-inference.html#cb184-21" tabindex="-1"></a>  p_perm[iter] <span class="ot">&lt;-</span> <span class="fu">coef</span>(<span class="fu">summary</span>(m2))[<span class="st">&quot;treatment1&quot;</span>, <span class="st">&quot;Pr(Prob)&quot;</span>]</span>
-<span id="cb184-22"><a href="errors-in-inference.html#cb184-22" tabindex="-1"></a>}</span>
-<span id="cb184-23"><a href="errors-in-inference.html#cb184-23" tabindex="-1"></a>size_t <span class="ot">&lt;-</span> <span class="fu">sum</span>(p_t <span class="sc">&lt;</span> <span class="fl">0.05</span>)<span class="sc">/</span>n_iter</span>
-<span id="cb184-24"><a href="errors-in-inference.html#cb184-24" tabindex="-1"></a>size_perm <span class="ot">&lt;-</span> <span class="fu">sum</span>(p_perm <span class="sc">&lt;</span> <span class="fl">0.05</span>)<span class="sc">/</span>n_iter</span>
-<span id="cb184-25"><a href="errors-in-inference.html#cb184-25" tabindex="-1"></a>size_table <span class="ot">&lt;-</span> <span class="fu">data.table</span>(<span class="at">Method =</span> <span class="fu">c</span>(<span class="st">&quot;lm&quot;</span>, <span class="st">&quot;perm&quot;</span>),</span>
-<span id="cb184-26"><a href="errors-in-inference.html#cb184-26" tabindex="-1"></a>                         <span class="at">Size =</span> <span class="fu">c</span>(size_t, size_perm))</span>
-<span id="cb184-27"><a href="errors-in-inference.html#cb184-27" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(size_table, <span class="at">digits =</span> <span class="dv">4</span>)</span></code></pre></div>
-<table>
-<thead>
-<tr>
-<th style="text-align:left;">
-Method
-</th>
-<th style="text-align:right;">
-Size
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-lm
-</td>
-<td style="text-align:right;">
-0.1150
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-perm
-</td>
-<td style="text-align:right;">
-0.1211
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<div id="power" class="section level3 hasAnchor" number="7.1.2">
-<h3><span class="header-section-number">7.1.2</span> Power<a href="errors-in-inference.html#power" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>In classical Neyman-Pearson hypothesis testing, an important property of a hypothesis test is the <strong>power of a test</strong>. “Power” is the probability of rejecting the null when the null is false. A common way to think about power is, power is a test’s ability to “detect” an effect if it exists. This makes sense using Neyman-Pearson but not Fisher (Using Fisher, a <em>p</em>-value is not a detector of an effect – a reasoning brain is). Using Fisher, we could say that power is the sensitivity of a test (it takes less sample to provide the same signal).</p>
-<div id="power-example-1-the-power-of-a-t-test-vs.-a-permutation-test-when-the-data-meet-the-assumptions" class="section level4 hasAnchor" number="7.1.2.1">
-<h4><span class="header-section-number">7.1.2.1</span> Power example 1: the power of a <em>t</em>-test vs. a permutation test, when the data meet the assumptions<a href="errors-in-inference.html#power-example-1-the-power-of-a-t-test-vs.-a-permutation-test-when-the-data-meet-the-assumptions" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <div class="sourceCode" id="cb185"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb185-1"><a href="errors-in-inference.html#cb185-1" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
 <span id="cb185-2"><a href="errors-in-inference.html#cb185-2" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">10</span></span>
 <span id="cb185-3"><a href="errors-in-inference.html#cb185-3" tabindex="-1"></a>n_iter <span class="ot">&lt;-</span> <span class="dv">10000</span></span>
@@ -1121,67 +987,57 @@ perm
 <span id="cb185-6"><a href="errors-in-inference.html#cb185-6" tabindex="-1"></a></span>
 <span id="cb185-7"><a href="errors-in-inference.html#cb185-7" tabindex="-1"></a>treatment <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">&quot;cn&quot;</span>, <span class="st">&quot;tr&quot;</span>), <span class="at">each =</span> n)</span>
 <span id="cb185-8"><a href="errors-in-inference.html#cb185-8" tabindex="-1"></a><span class="cf">for</span>(iter <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n_iter){</span>
-<span id="cb185-9"><a href="errors-in-inference.html#cb185-9" tabindex="-1"></a>  sample_1 <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n, <span class="at">mean =</span> <span class="dv">10</span>, <span class="at">sd =</span> <span class="dv">1</span>)</span>
-<span id="cb185-10"><a href="errors-in-inference.html#cb185-10" tabindex="-1"></a>  sample_2 <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n, <span class="at">mean =</span> <span class="dv">11</span>, <span class="at">sd =</span> <span class="dv">1</span>)</span>
-<span id="cb185-11"><a href="errors-in-inference.html#cb185-11" tabindex="-1"></a>  y <span class="ot">&lt;-</span> <span class="fu">c</span>(sample_1, sample_2)</span>
-<span id="cb185-12"><a href="errors-in-inference.html#cb185-12" tabindex="-1"></a>  m1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> treatment) <span class="co"># no data statement necessary because both variables in workspace</span></span>
-<span id="cb185-13"><a href="errors-in-inference.html#cb185-13" tabindex="-1"></a>  p_t[iter] <span class="ot">&lt;-</span> <span class="fu">coef</span>(<span class="fu">summary</span>(m1))[<span class="st">&quot;treatmenttr&quot;</span>, <span class="st">&quot;Pr(&gt;|t|)&quot;</span>]</span>
-<span id="cb185-14"><a href="errors-in-inference.html#cb185-14" tabindex="-1"></a>  </span>
-<span id="cb185-15"><a href="errors-in-inference.html#cb185-15" tabindex="-1"></a>  m2 <span class="ot">&lt;-</span> <span class="fu">lmp</span>(y <span class="sc">~</span> treatment,</span>
-<span id="cb185-16"><a href="errors-in-inference.html#cb185-16" tabindex="-1"></a>            <span class="at">perm =</span> <span class="st">&quot;Prob&quot;</span>,</span>
-<span id="cb185-17"><a href="errors-in-inference.html#cb185-17" tabindex="-1"></a>            <span class="at">settings =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb185-18"><a href="errors-in-inference.html#cb185-18" tabindex="-1"></a>  p_perm[iter] <span class="ot">&lt;-</span> <span class="fu">coef</span>(<span class="fu">summary</span>(m2))[<span class="st">&quot;treatment1&quot;</span>, <span class="st">&quot;Pr(Prob)&quot;</span>]</span>
-<span id="cb185-19"><a href="errors-in-inference.html#cb185-19" tabindex="-1"></a>}</span>
-<span id="cb185-20"><a href="errors-in-inference.html#cb185-20" tabindex="-1"></a>power_t <span class="ot">&lt;-</span> <span class="fu">sum</span>(p_t <span class="sc">&lt;</span> <span class="fl">0.05</span>)<span class="sc">/</span>n_iter</span>
-<span id="cb185-21"><a href="errors-in-inference.html#cb185-21" tabindex="-1"></a>power_perm <span class="ot">&lt;-</span> <span class="fu">sum</span>(p_perm <span class="sc">&lt;</span> <span class="fl">0.05</span>)<span class="sc">/</span>n_iter</span>
-<span id="cb185-22"><a href="errors-in-inference.html#cb185-22" tabindex="-1"></a>power_table_normal <span class="ot">&lt;-</span> <span class="fu">data.table</span>(<span class="at">Method =</span> <span class="fu">c</span>(<span class="st">&quot;lm&quot;</span>, <span class="st">&quot;perm&quot;</span>),</span>
-<span id="cb185-23"><a href="errors-in-inference.html#cb185-23" tabindex="-1"></a>                         <span class="at">Power =</span> <span class="fu">c</span>(power_t, power_perm))</span>
-<span id="cb185-24"><a href="errors-in-inference.html#cb185-24" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(power_table_normal, <span class="at">digits =</span> <span class="dv">3</span>)</span></code></pre></div>
+<span id="cb185-9"><a href="errors-in-inference.html#cb185-9" tabindex="-1"></a>  <span class="co">#  qplot(rnegbin(n = 10^4, mu = 100, theta = 1))</span></span>
+<span id="cb185-10"><a href="errors-in-inference.html#cb185-10" tabindex="-1"></a>  sample_1 <span class="ot">&lt;-</span> <span class="fu">rnegbin</span>(n, <span class="at">mu =</span> <span class="dv">100</span>, <span class="at">theta =</span> <span class="dv">1</span>)</span>
+<span id="cb185-11"><a href="errors-in-inference.html#cb185-11" tabindex="-1"></a>  sample_2 <span class="ot">&lt;-</span> <span class="fu">rnegbin</span>(n, <span class="at">mu =</span> <span class="dv">100</span>, <span class="at">theta =</span> <span class="dv">1</span>)</span>
+<span id="cb185-12"><a href="errors-in-inference.html#cb185-12" tabindex="-1"></a>  y <span class="ot">&lt;-</span> <span class="fu">c</span>(sample_1, sample_2)</span>
+<span id="cb185-13"><a href="errors-in-inference.html#cb185-13" tabindex="-1"></a>  <span class="co"># qplot(x=treatment, y = y)</span></span>
+<span id="cb185-14"><a href="errors-in-inference.html#cb185-14" tabindex="-1"></a>  m1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> treatment) <span class="co"># no data statement necessary because both variables in workspace</span></span>
+<span id="cb185-15"><a href="errors-in-inference.html#cb185-15" tabindex="-1"></a>  p_t[iter] <span class="ot">&lt;-</span> <span class="fu">coef</span>(<span class="fu">summary</span>(m1))[<span class="st">&quot;treatmenttr&quot;</span>, <span class="st">&quot;Pr(&gt;|t|)&quot;</span>]</span>
+<span id="cb185-16"><a href="errors-in-inference.html#cb185-16" tabindex="-1"></a>  </span>
+<span id="cb185-17"><a href="errors-in-inference.html#cb185-17" tabindex="-1"></a>  m2 <span class="ot">&lt;-</span> <span class="fu">lmp</span>(y <span class="sc">~</span> treatment,</span>
+<span id="cb185-18"><a href="errors-in-inference.html#cb185-18" tabindex="-1"></a>            <span class="at">perm =</span> <span class="st">&quot;Prob&quot;</span>,</span>
+<span id="cb185-19"><a href="errors-in-inference.html#cb185-19" tabindex="-1"></a>            <span class="at">settings =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb185-20"><a href="errors-in-inference.html#cb185-20" tabindex="-1"></a>  p_perm[iter] <span class="ot">&lt;-</span> <span class="fu">coef</span>(<span class="fu">summary</span>(m2))[<span class="st">&quot;treatment1&quot;</span>, <span class="st">&quot;Pr(Prob)&quot;</span>]</span>
+<span id="cb185-21"><a href="errors-in-inference.html#cb185-21" tabindex="-1"></a>}</span>
+<span id="cb185-22"><a href="errors-in-inference.html#cb185-22" tabindex="-1"></a>size_t <span class="ot">&lt;-</span> <span class="fu">sum</span>(p_t <span class="sc">&lt;</span> <span class="fl">0.05</span>)<span class="sc">/</span>n_iter</span>
+<span id="cb185-23"><a href="errors-in-inference.html#cb185-23" tabindex="-1"></a>size_perm <span class="ot">&lt;-</span> <span class="fu">sum</span>(p_perm <span class="sc">&lt;</span> <span class="fl">0.05</span>)<span class="sc">/</span>n_iter</span>
+<span id="cb185-24"><a href="errors-in-inference.html#cb185-24" tabindex="-1"></a>size_table <span class="ot">&lt;-</span> <span class="fu">data.table</span>(<span class="at">Method =</span> <span class="fu">c</span>(<span class="st">&quot;lm&quot;</span>, <span class="st">&quot;perm&quot;</span>),</span>
+<span id="cb185-25"><a href="errors-in-inference.html#cb185-25" tabindex="-1"></a>                         <span class="at">Size =</span> <span class="fu">c</span>(size_t, size_perm))</span>
+<span id="cb185-26"><a href="errors-in-inference.html#cb185-26" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(size_table, <span class="at">digits =</span> <span class="dv">4</span>)</span></code></pre></div>
 <table>
 <thead>
-<tr>
-<th style="text-align:left;">
-Method
-</th>
-<th style="text-align:right;">
-Power
-</th>
+<tr class="header">
+<th align="left">Method</th>
+<th align="right">Size</th>
 </tr>
 </thead>
 <tbody>
-<tr>
-<td style="text-align:left;">
-lm
-</td>
-<td style="text-align:right;">
-0.554
-</td>
+<tr class="odd">
+<td align="left">lm</td>
+<td align="right">0.0438</td>
 </tr>
-<tr>
-<td style="text-align:left;">
-perm
-</td>
-<td style="text-align:right;">
-0.554
-</td>
+<tr class="even">
+<td align="left">perm</td>
+<td align="right">0.0504</td>
 </tr>
 </tbody>
 </table>
 </div>
-<div id="power-example-2-the-power-of-a-t-test-vs.-a-permutation-test-when-the-data-look-like-typical-count-data" class="section level4 hasAnchor" number="7.1.2.2">
-<h4><span class="header-section-number">7.1.2.2</span> Power example 2: the power of a <em>t</em>-test vs. a permutation test, when the data look like typical count data<a href="errors-in-inference.html#power-example-2-the-power-of-a-t-test-vs.-a-permutation-test-when-the-data-look-like-typical-count-data" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div id="size-example-3-the-size-of-a-t-test-vs.-a-permutation-test-when-the-data-have-heterogenous-variance-and-the-sample-size-is-unequal" class="section level4 hasAnchor" number="7.1.1.3">
+<h4><span class="header-section-number">7.1.1.3</span> Size example 3: the size of a <em>t</em>-test vs. a permutation test, when the data have heterogenous variance and the sample size is unequal<a href="errors-in-inference.html#size-example-3-the-size-of-a-t-test-vs.-a-permutation-test-when-the-data-have-heterogenous-variance-and-the-sample-size-is-unequal" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <div class="sourceCode" id="cb186"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb186-1"><a href="errors-in-inference.html#cb186-1" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
-<span id="cb186-2"><a href="errors-in-inference.html#cb186-2" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">10</span></span>
-<span id="cb186-3"><a href="errors-in-inference.html#cb186-3" tabindex="-1"></a>n_iter <span class="ot">&lt;-</span> <span class="dv">10000</span></span>
-<span id="cb186-4"><a href="errors-in-inference.html#cb186-4" tabindex="-1"></a>p_t <span class="ot">&lt;-</span> <span class="fu">numeric</span>(n_iter)</span>
-<span id="cb186-5"><a href="errors-in-inference.html#cb186-5" tabindex="-1"></a>p_perm <span class="ot">&lt;-</span> <span class="fu">numeric</span>(n_iter)</span>
-<span id="cb186-6"><a href="errors-in-inference.html#cb186-6" tabindex="-1"></a></span>
-<span id="cb186-7"><a href="errors-in-inference.html#cb186-7" tabindex="-1"></a>treatment <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">&quot;cn&quot;</span>, <span class="st">&quot;tr&quot;</span>), <span class="at">each =</span> n)</span>
-<span id="cb186-8"><a href="errors-in-inference.html#cb186-8" tabindex="-1"></a></span>
+<span id="cb186-2"><a href="errors-in-inference.html#cb186-2" tabindex="-1"></a>n1 <span class="ot">&lt;-</span> <span class="dv">10</span></span>
+<span id="cb186-3"><a href="errors-in-inference.html#cb186-3" tabindex="-1"></a>n2 <span class="ot">&lt;-</span> n1<span class="sc">/</span><span class="dv">2</span></span>
+<span id="cb186-4"><a href="errors-in-inference.html#cb186-4" tabindex="-1"></a>n_iter <span class="ot">&lt;-</span> <span class="dv">10000</span></span>
+<span id="cb186-5"><a href="errors-in-inference.html#cb186-5" tabindex="-1"></a>p_t <span class="ot">&lt;-</span> <span class="fu">numeric</span>(n_iter)</span>
+<span id="cb186-6"><a href="errors-in-inference.html#cb186-6" tabindex="-1"></a>p_perm <span class="ot">&lt;-</span> <span class="fu">numeric</span>(n_iter)</span>
+<span id="cb186-7"><a href="errors-in-inference.html#cb186-7" tabindex="-1"></a></span>
+<span id="cb186-8"><a href="errors-in-inference.html#cb186-8" tabindex="-1"></a>treatment <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">&quot;cn&quot;</span>, <span class="st">&quot;tr&quot;</span>), <span class="at">times =</span> <span class="fu">c</span>(n1, n2))</span>
 <span id="cb186-9"><a href="errors-in-inference.html#cb186-9" tabindex="-1"></a><span class="cf">for</span>(iter <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n_iter){</span>
 <span id="cb186-10"><a href="errors-in-inference.html#cb186-10" tabindex="-1"></a>  <span class="co">#  qplot(rnegbin(n = 10^4, mu = 100, theta = 1))</span></span>
-<span id="cb186-11"><a href="errors-in-inference.html#cb186-11" tabindex="-1"></a>  sample_1 <span class="ot">&lt;-</span> <span class="fu">rnegbin</span>(n, <span class="at">mu =</span> <span class="dv">100</span>, <span class="at">theta =</span> <span class="dv">1</span>)</span>
-<span id="cb186-12"><a href="errors-in-inference.html#cb186-12" tabindex="-1"></a>  sample_2 <span class="ot">&lt;-</span> <span class="fu">rnegbin</span>(n, <span class="at">mu =</span> <span class="dv">300</span>, <span class="at">theta =</span> <span class="dv">1</span>)</span>
+<span id="cb186-11"><a href="errors-in-inference.html#cb186-11" tabindex="-1"></a>  sample_1 <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n1, <span class="at">mean =</span> <span class="dv">10</span>, <span class="at">sd =</span> <span class="fl">0.5</span>)</span>
+<span id="cb186-12"><a href="errors-in-inference.html#cb186-12" tabindex="-1"></a>  sample_2 <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n2, <span class="at">mean =</span> <span class="dv">10</span>, <span class="at">sd =</span> <span class="dv">1</span>)</span>
 <span id="cb186-13"><a href="errors-in-inference.html#cb186-13" tabindex="-1"></a>  y <span class="ot">&lt;-</span> <span class="fu">c</span>(sample_1, sample_2)</span>
 <span id="cb186-14"><a href="errors-in-inference.html#cb186-14" tabindex="-1"></a>  <span class="co"># qplot(x=treatment, y = y)</span></span>
 <span id="cb186-15"><a href="errors-in-inference.html#cb186-15" tabindex="-1"></a>  m1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> treatment) <span class="co"># no data statement necessary because both variables in workspace</span></span>
@@ -1192,38 +1048,123 @@ perm
 <span id="cb186-20"><a href="errors-in-inference.html#cb186-20" tabindex="-1"></a>            <span class="at">settings =</span> <span class="cn">FALSE</span>)</span>
 <span id="cb186-21"><a href="errors-in-inference.html#cb186-21" tabindex="-1"></a>  p_perm[iter] <span class="ot">&lt;-</span> <span class="fu">coef</span>(<span class="fu">summary</span>(m2))[<span class="st">&quot;treatment1&quot;</span>, <span class="st">&quot;Pr(Prob)&quot;</span>]</span>
 <span id="cb186-22"><a href="errors-in-inference.html#cb186-22" tabindex="-1"></a>}</span>
-<span id="cb186-23"><a href="errors-in-inference.html#cb186-23" tabindex="-1"></a>power_t <span class="ot">&lt;-</span> <span class="fu">sum</span>(p_t <span class="sc">&lt;</span> <span class="fl">0.05</span>)<span class="sc">/</span>n_iter</span>
-<span id="cb186-24"><a href="errors-in-inference.html#cb186-24" tabindex="-1"></a>power_perm <span class="ot">&lt;-</span> <span class="fu">sum</span>(p_perm <span class="sc">&lt;</span> <span class="fl">0.05</span>)<span class="sc">/</span>n_iter</span>
-<span id="cb186-25"><a href="errors-in-inference.html#cb186-25" tabindex="-1"></a>power_table_count <span class="ot">&lt;-</span> <span class="fu">data.table</span>(<span class="at">Method =</span> <span class="fu">c</span>(<span class="st">&quot;lm&quot;</span>, <span class="st">&quot;perm&quot;</span>),</span>
-<span id="cb186-26"><a href="errors-in-inference.html#cb186-26" tabindex="-1"></a>                         <span class="at">Power =</span> <span class="fu">c</span>(power_t, power_perm))</span>
-<span id="cb186-27"><a href="errors-in-inference.html#cb186-27" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(power_table_count, <span class="at">digits =</span> <span class="dv">3</span>)</span></code></pre></div>
+<span id="cb186-23"><a href="errors-in-inference.html#cb186-23" tabindex="-1"></a>size_t <span class="ot">&lt;-</span> <span class="fu">sum</span>(p_t <span class="sc">&lt;</span> <span class="fl">0.05</span>)<span class="sc">/</span>n_iter</span>
+<span id="cb186-24"><a href="errors-in-inference.html#cb186-24" tabindex="-1"></a>size_perm <span class="ot">&lt;-</span> <span class="fu">sum</span>(p_perm <span class="sc">&lt;</span> <span class="fl">0.05</span>)<span class="sc">/</span>n_iter</span>
+<span id="cb186-25"><a href="errors-in-inference.html#cb186-25" tabindex="-1"></a>size_table <span class="ot">&lt;-</span> <span class="fu">data.table</span>(<span class="at">Method =</span> <span class="fu">c</span>(<span class="st">&quot;lm&quot;</span>, <span class="st">&quot;perm&quot;</span>),</span>
+<span id="cb186-26"><a href="errors-in-inference.html#cb186-26" tabindex="-1"></a>                         <span class="at">Size =</span> <span class="fu">c</span>(size_t, size_perm))</span>
+<span id="cb186-27"><a href="errors-in-inference.html#cb186-27" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(size_table, <span class="at">digits =</span> <span class="dv">4</span>)</span></code></pre></div>
 <table>
 <thead>
-<tr>
-<th style="text-align:left;">
-Method
-</th>
-<th style="text-align:right;">
-Power
-</th>
+<tr class="header">
+<th align="left">Method</th>
+<th align="right">Size</th>
 </tr>
 </thead>
 <tbody>
-<tr>
-<td style="text-align:left;">
-lm
-</td>
-<td style="text-align:right;">
-0.516
-</td>
+<tr class="odd">
+<td align="left">lm</td>
+<td align="right">0.1150</td>
 </tr>
-<tr>
-<td style="text-align:left;">
-perm
-</td>
-<td style="text-align:right;">
-0.586
-</td>
+<tr class="even">
+<td align="left">perm</td>
+<td align="right">0.1211</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="power" class="section level3 hasAnchor" number="7.1.2">
+<h3><span class="header-section-number">7.1.2</span> Power<a href="errors-in-inference.html#power" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>In classical Neyman-Pearson hypothesis testing, an important property of a hypothesis test is the <strong>power of a test</strong>. “Power” is the probability of rejecting the null when the null is false. A common way to think about power is, power is a test’s ability to “detect” an effect if it exists. This makes sense using Neyman-Pearson but not Fisher (Using Fisher, a <em>p</em>-value is not a detector of an effect – a reasoning brain is). Using Fisher, we could say that power is the sensitivity of a test (it takes less sample to provide the same signal).</p>
+<div id="power-example-1-the-power-of-a-t-test-vs.-a-permutation-test-when-the-data-meet-the-assumptions" class="section level4 hasAnchor" number="7.1.2.1">
+<h4><span class="header-section-number">7.1.2.1</span> Power example 1: the power of a <em>t</em>-test vs. a permutation test, when the data meet the assumptions<a href="errors-in-inference.html#power-example-1-the-power-of-a-t-test-vs.-a-permutation-test-when-the-data-meet-the-assumptions" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div class="sourceCode" id="cb187"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb187-1"><a href="errors-in-inference.html#cb187-1" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
+<span id="cb187-2"><a href="errors-in-inference.html#cb187-2" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">10</span></span>
+<span id="cb187-3"><a href="errors-in-inference.html#cb187-3" tabindex="-1"></a>n_iter <span class="ot">&lt;-</span> <span class="dv">10000</span></span>
+<span id="cb187-4"><a href="errors-in-inference.html#cb187-4" tabindex="-1"></a>p_t <span class="ot">&lt;-</span> <span class="fu">numeric</span>(n_iter)</span>
+<span id="cb187-5"><a href="errors-in-inference.html#cb187-5" tabindex="-1"></a>p_perm <span class="ot">&lt;-</span> <span class="fu">numeric</span>(n_iter)</span>
+<span id="cb187-6"><a href="errors-in-inference.html#cb187-6" tabindex="-1"></a></span>
+<span id="cb187-7"><a href="errors-in-inference.html#cb187-7" tabindex="-1"></a>treatment <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">&quot;cn&quot;</span>, <span class="st">&quot;tr&quot;</span>), <span class="at">each =</span> n)</span>
+<span id="cb187-8"><a href="errors-in-inference.html#cb187-8" tabindex="-1"></a><span class="cf">for</span>(iter <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n_iter){</span>
+<span id="cb187-9"><a href="errors-in-inference.html#cb187-9" tabindex="-1"></a>  sample_1 <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n, <span class="at">mean =</span> <span class="dv">10</span>, <span class="at">sd =</span> <span class="dv">1</span>)</span>
+<span id="cb187-10"><a href="errors-in-inference.html#cb187-10" tabindex="-1"></a>  sample_2 <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n, <span class="at">mean =</span> <span class="dv">11</span>, <span class="at">sd =</span> <span class="dv">1</span>)</span>
+<span id="cb187-11"><a href="errors-in-inference.html#cb187-11" tabindex="-1"></a>  y <span class="ot">&lt;-</span> <span class="fu">c</span>(sample_1, sample_2)</span>
+<span id="cb187-12"><a href="errors-in-inference.html#cb187-12" tabindex="-1"></a>  m1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> treatment) <span class="co"># no data statement necessary because both variables in workspace</span></span>
+<span id="cb187-13"><a href="errors-in-inference.html#cb187-13" tabindex="-1"></a>  p_t[iter] <span class="ot">&lt;-</span> <span class="fu">coef</span>(<span class="fu">summary</span>(m1))[<span class="st">&quot;treatmenttr&quot;</span>, <span class="st">&quot;Pr(&gt;|t|)&quot;</span>]</span>
+<span id="cb187-14"><a href="errors-in-inference.html#cb187-14" tabindex="-1"></a>  </span>
+<span id="cb187-15"><a href="errors-in-inference.html#cb187-15" tabindex="-1"></a>  m2 <span class="ot">&lt;-</span> <span class="fu">lmp</span>(y <span class="sc">~</span> treatment,</span>
+<span id="cb187-16"><a href="errors-in-inference.html#cb187-16" tabindex="-1"></a>            <span class="at">perm =</span> <span class="st">&quot;Prob&quot;</span>,</span>
+<span id="cb187-17"><a href="errors-in-inference.html#cb187-17" tabindex="-1"></a>            <span class="at">settings =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb187-18"><a href="errors-in-inference.html#cb187-18" tabindex="-1"></a>  p_perm[iter] <span class="ot">&lt;-</span> <span class="fu">coef</span>(<span class="fu">summary</span>(m2))[<span class="st">&quot;treatment1&quot;</span>, <span class="st">&quot;Pr(Prob)&quot;</span>]</span>
+<span id="cb187-19"><a href="errors-in-inference.html#cb187-19" tabindex="-1"></a>}</span>
+<span id="cb187-20"><a href="errors-in-inference.html#cb187-20" tabindex="-1"></a>power_t <span class="ot">&lt;-</span> <span class="fu">sum</span>(p_t <span class="sc">&lt;</span> <span class="fl">0.05</span>)<span class="sc">/</span>n_iter</span>
+<span id="cb187-21"><a href="errors-in-inference.html#cb187-21" tabindex="-1"></a>power_perm <span class="ot">&lt;-</span> <span class="fu">sum</span>(p_perm <span class="sc">&lt;</span> <span class="fl">0.05</span>)<span class="sc">/</span>n_iter</span>
+<span id="cb187-22"><a href="errors-in-inference.html#cb187-22" tabindex="-1"></a>power_table_normal <span class="ot">&lt;-</span> <span class="fu">data.table</span>(<span class="at">Method =</span> <span class="fu">c</span>(<span class="st">&quot;lm&quot;</span>, <span class="st">&quot;perm&quot;</span>),</span>
+<span id="cb187-23"><a href="errors-in-inference.html#cb187-23" tabindex="-1"></a>                         <span class="at">Power =</span> <span class="fu">c</span>(power_t, power_perm))</span>
+<span id="cb187-24"><a href="errors-in-inference.html#cb187-24" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(power_table_normal, <span class="at">digits =</span> <span class="dv">3</span>)</span></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Method</th>
+<th align="right">Power</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">lm</td>
+<td align="right">0.554</td>
+</tr>
+<tr class="even">
+<td align="left">perm</td>
+<td align="right">0.554</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="power-example-2-the-power-of-a-t-test-vs.-a-permutation-test-when-the-data-look-like-typical-count-data" class="section level4 hasAnchor" number="7.1.2.2">
+<h4><span class="header-section-number">7.1.2.2</span> Power example 2: the power of a <em>t</em>-test vs. a permutation test, when the data look like typical count data<a href="errors-in-inference.html#power-example-2-the-power-of-a-t-test-vs.-a-permutation-test-when-the-data-look-like-typical-count-data" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div class="sourceCode" id="cb188"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb188-1"><a href="errors-in-inference.html#cb188-1" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
+<span id="cb188-2"><a href="errors-in-inference.html#cb188-2" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">10</span></span>
+<span id="cb188-3"><a href="errors-in-inference.html#cb188-3" tabindex="-1"></a>n_iter <span class="ot">&lt;-</span> <span class="dv">10000</span></span>
+<span id="cb188-4"><a href="errors-in-inference.html#cb188-4" tabindex="-1"></a>p_t <span class="ot">&lt;-</span> <span class="fu">numeric</span>(n_iter)</span>
+<span id="cb188-5"><a href="errors-in-inference.html#cb188-5" tabindex="-1"></a>p_perm <span class="ot">&lt;-</span> <span class="fu">numeric</span>(n_iter)</span>
+<span id="cb188-6"><a href="errors-in-inference.html#cb188-6" tabindex="-1"></a></span>
+<span id="cb188-7"><a href="errors-in-inference.html#cb188-7" tabindex="-1"></a>treatment <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">&quot;cn&quot;</span>, <span class="st">&quot;tr&quot;</span>), <span class="at">each =</span> n)</span>
+<span id="cb188-8"><a href="errors-in-inference.html#cb188-8" tabindex="-1"></a></span>
+<span id="cb188-9"><a href="errors-in-inference.html#cb188-9" tabindex="-1"></a><span class="cf">for</span>(iter <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n_iter){</span>
+<span id="cb188-10"><a href="errors-in-inference.html#cb188-10" tabindex="-1"></a>  <span class="co">#  qplot(rnegbin(n = 10^4, mu = 100, theta = 1))</span></span>
+<span id="cb188-11"><a href="errors-in-inference.html#cb188-11" tabindex="-1"></a>  sample_1 <span class="ot">&lt;-</span> <span class="fu">rnegbin</span>(n, <span class="at">mu =</span> <span class="dv">100</span>, <span class="at">theta =</span> <span class="dv">1</span>)</span>
+<span id="cb188-12"><a href="errors-in-inference.html#cb188-12" tabindex="-1"></a>  sample_2 <span class="ot">&lt;-</span> <span class="fu">rnegbin</span>(n, <span class="at">mu =</span> <span class="dv">300</span>, <span class="at">theta =</span> <span class="dv">1</span>)</span>
+<span id="cb188-13"><a href="errors-in-inference.html#cb188-13" tabindex="-1"></a>  y <span class="ot">&lt;-</span> <span class="fu">c</span>(sample_1, sample_2)</span>
+<span id="cb188-14"><a href="errors-in-inference.html#cb188-14" tabindex="-1"></a>  <span class="co"># qplot(x=treatment, y = y)</span></span>
+<span id="cb188-15"><a href="errors-in-inference.html#cb188-15" tabindex="-1"></a>  m1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> treatment) <span class="co"># no data statement necessary because both variables in workspace</span></span>
+<span id="cb188-16"><a href="errors-in-inference.html#cb188-16" tabindex="-1"></a>  p_t[iter] <span class="ot">&lt;-</span> <span class="fu">coef</span>(<span class="fu">summary</span>(m1))[<span class="st">&quot;treatmenttr&quot;</span>, <span class="st">&quot;Pr(&gt;|t|)&quot;</span>]</span>
+<span id="cb188-17"><a href="errors-in-inference.html#cb188-17" tabindex="-1"></a>  </span>
+<span id="cb188-18"><a href="errors-in-inference.html#cb188-18" tabindex="-1"></a>  m2 <span class="ot">&lt;-</span> <span class="fu">lmp</span>(y <span class="sc">~</span> treatment,</span>
+<span id="cb188-19"><a href="errors-in-inference.html#cb188-19" tabindex="-1"></a>            <span class="at">perm =</span> <span class="st">&quot;Prob&quot;</span>,</span>
+<span id="cb188-20"><a href="errors-in-inference.html#cb188-20" tabindex="-1"></a>            <span class="at">settings =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb188-21"><a href="errors-in-inference.html#cb188-21" tabindex="-1"></a>  p_perm[iter] <span class="ot">&lt;-</span> <span class="fu">coef</span>(<span class="fu">summary</span>(m2))[<span class="st">&quot;treatment1&quot;</span>, <span class="st">&quot;Pr(Prob)&quot;</span>]</span>
+<span id="cb188-22"><a href="errors-in-inference.html#cb188-22" tabindex="-1"></a>}</span>
+<span id="cb188-23"><a href="errors-in-inference.html#cb188-23" tabindex="-1"></a>power_t <span class="ot">&lt;-</span> <span class="fu">sum</span>(p_t <span class="sc">&lt;</span> <span class="fl">0.05</span>)<span class="sc">/</span>n_iter</span>
+<span id="cb188-24"><a href="errors-in-inference.html#cb188-24" tabindex="-1"></a>power_perm <span class="ot">&lt;-</span> <span class="fu">sum</span>(p_perm <span class="sc">&lt;</span> <span class="fl">0.05</span>)<span class="sc">/</span>n_iter</span>
+<span id="cb188-25"><a href="errors-in-inference.html#cb188-25" tabindex="-1"></a>power_table_count <span class="ot">&lt;-</span> <span class="fu">data.table</span>(<span class="at">Method =</span> <span class="fu">c</span>(<span class="st">&quot;lm&quot;</span>, <span class="st">&quot;perm&quot;</span>),</span>
+<span id="cb188-26"><a href="errors-in-inference.html#cb188-26" tabindex="-1"></a>                         <span class="at">Power =</span> <span class="fu">c</span>(power_t, power_perm))</span>
+<span id="cb188-27"><a href="errors-in-inference.html#cb188-27" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(power_table_count, <span class="at">digits =</span> <span class="dv">3</span>)</span></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Method</th>
+<th align="right">Power</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">lm</td>
+<td align="right">0.508</td>
+</tr>
+<tr class="even">
+<td align="left">perm</td>
+<td align="right">0.578</td>
 </tr>
 </tbody>
 </table>
@@ -1234,77 +1175,41 @@ perm
 <h2><span class="header-section-number">7.2</span> A non-Neyman-Pearson concept of power<a href="errors-in-inference.html#a-non-neyman-pearson-concept-of-power" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>Size and power are concepts specific to the Neyman-Pearson hypothesis testing framework. Size and power also have limited (or no) use in a research program in which the null hypothesis is never (or rarely) strictly true. That said, the concept of size and power are useful. For example, what if we framed power as the distribution of <em>p</em>-values instead of the frequency of <em>p</em>-values less than <span class="math inline">\(\alpha\)</span>.</p>
 <p>Table <a href="#tab:error-power-dis"><strong>??</strong></a> shows the <em>p</em>-value at the 10th, 25th, 50th, 75th, and 90th percentile of the set of <em>p</em>-values computed in Power Example 2 above (count data). The <em>n</em>th percentile is the value in an ordered set of numbers in which <em>n</em> % are less than the value and 100 - <em>n</em>% are greater than the value. The 50th percentile is the median. The table shows that at all percentiles except the 90th, the permutation <em>p</em>-value is smaller than the <em>t</em>-test <em>p</em>-value. And, importantly, the value at 75% for both is ~ 0.12. This means that for experiments that generate data something like the fake data generated in Power Example 2, the permutation test is more sensistive to the incompatibility between the null model and the data than the <em>t</em>-test, except in the random samples when both methods fail.</p>
-<div class="sourceCode" id="cb187"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb187-1"><a href="errors-in-inference.html#cb187-1" tabindex="-1"></a>quantile_list <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.1</span>, <span class="fl">0.25</span>, <span class="fl">0.5</span>, <span class="fl">0.75</span>, <span class="fl">0.9</span>)</span>
-<span id="cb187-2"><a href="errors-in-inference.html#cb187-2" tabindex="-1"></a>percentiles_t <span class="ot">&lt;-</span> <span class="fu">quantile</span>(p_t, quantile_list)</span>
-<span id="cb187-3"><a href="errors-in-inference.html#cb187-3" tabindex="-1"></a>percentiles_perm <span class="ot">&lt;-</span> <span class="fu">quantile</span>(p_perm, quantile_list)</span>
-<span id="cb187-4"><a href="errors-in-inference.html#cb187-4" tabindex="-1"></a></span>
-<span id="cb187-5"><a href="errors-in-inference.html#cb187-5" tabindex="-1"></a>alt_power_table <span class="ot">&lt;-</span> <span class="fu">data.table</span>(<span class="at">method =</span> <span class="fu">c</span>(<span class="st">&quot;t-test&quot;</span>, <span class="st">&quot;permutation&quot;</span>),</span>
-<span id="cb187-6"><a href="errors-in-inference.html#cb187-6" tabindex="-1"></a>                              (<span class="fu">rbind</span>(percentiles_t,</span>
-<span id="cb187-7"><a href="errors-in-inference.html#cb187-7" tabindex="-1"></a>                                     percentiles_perm)))</span>
-<span id="cb187-8"><a href="errors-in-inference.html#cb187-8" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(alt_power_table, <span class="at">digits =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">4</span>, <span class="dv">3</span>, <span class="dv">3</span>, <span class="dv">2</span>, <span class="dv">2</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb189"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb189-1"><a href="errors-in-inference.html#cb189-1" tabindex="-1"></a>quantile_list <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.1</span>, <span class="fl">0.25</span>, <span class="fl">0.5</span>, <span class="fl">0.75</span>, <span class="fl">0.9</span>)</span>
+<span id="cb189-2"><a href="errors-in-inference.html#cb189-2" tabindex="-1"></a>percentiles_t <span class="ot">&lt;-</span> <span class="fu">quantile</span>(p_t, quantile_list)</span>
+<span id="cb189-3"><a href="errors-in-inference.html#cb189-3" tabindex="-1"></a>percentiles_perm <span class="ot">&lt;-</span> <span class="fu">quantile</span>(p_perm, quantile_list)</span>
+<span id="cb189-4"><a href="errors-in-inference.html#cb189-4" tabindex="-1"></a></span>
+<span id="cb189-5"><a href="errors-in-inference.html#cb189-5" tabindex="-1"></a>alt_power_table <span class="ot">&lt;-</span> <span class="fu">data.table</span>(<span class="at">method =</span> <span class="fu">c</span>(<span class="st">&quot;t-test&quot;</span>, <span class="st">&quot;permutation&quot;</span>),</span>
+<span id="cb189-6"><a href="errors-in-inference.html#cb189-6" tabindex="-1"></a>                              (<span class="fu">rbind</span>(percentiles_t,</span>
+<span id="cb189-7"><a href="errors-in-inference.html#cb189-7" tabindex="-1"></a>                                     percentiles_perm)))</span>
+<span id="cb189-8"><a href="errors-in-inference.html#cb189-8" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(alt_power_table, <span class="at">digits =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">4</span>, <span class="dv">3</span>, <span class="dv">3</span>, <span class="dv">2</span>, <span class="dv">2</span>))</span></code></pre></div>
 <table>
 <thead>
-<tr>
-<th style="text-align:left;">
-method
-</th>
-<th style="text-align:right;">
-10%
-</th>
-<th style="text-align:right;">
-25%
-</th>
-<th style="text-align:right;">
-50%
-</th>
-<th style="text-align:right;">
-75%
-</th>
-<th style="text-align:right;">
-90%
-</th>
+<tr class="header">
+<th align="left">method</th>
+<th align="right">10%</th>
+<th align="right">25%</th>
+<th align="right">50%</th>
+<th align="right">75%</th>
+<th align="right">90%</th>
 </tr>
 </thead>
 <tbody>
-<tr>
-<td style="text-align:left;">
-t-test
-</td>
-<td style="text-align:right;">
-0.0047
-</td>
-<td style="text-align:right;">
-0.016
-</td>
-<td style="text-align:right;">
-0.047
-</td>
-<td style="text-align:right;">
-0.12
-</td>
-<td style="text-align:right;">
-0.27
-</td>
+<tr class="odd">
+<td align="left">t-test</td>
+<td align="right">0.0048</td>
+<td align="right">0.016</td>
+<td align="right">0.048</td>
+<td align="right">0.13</td>
+<td align="right">0.28</td>
 </tr>
-<tr>
-<td style="text-align:left;">
-permutation
-</td>
-<td style="text-align:right;">
-0.0012
-</td>
-<td style="text-align:right;">
-0.007
-</td>
-<td style="text-align:right;">
-0.031
-</td>
-<td style="text-align:right;">
-0.12
-</td>
-<td style="text-align:right;">
-0.32
-</td>
+<tr class="even">
+<td align="left">permutation</td>
+<td align="right">0.0012</td>
+<td align="right">0.007</td>
+<td align="right">0.034</td>
+<td align="right">0.12</td>
+<td align="right">0.33</td>
 </tr>
 </tbody>
 </table>
