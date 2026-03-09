@@ -1,0 +1,2069 @@
+\documentclass[]{book}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+\fi
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{%
+\usepackage{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\usepackage{hyperref}
+\hypersetup{unicode=true,
+            pdftitle={Quantitative Human Physiology},
+            pdfauthor={Jeffrey A. Walker},
+            pdfborder={0 0 0},
+            breaklinks=true}
+\urlstyle{same}  % don't use monospace font for urls
+\usepackage{natbib}
+\bibliographystyle{apalike}
+\usepackage{longtable,booktabs}
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\IfFileExists{parskip.sty}{%
+\usepackage{parskip}
+}{% else
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{5}
+% Redefines (sub)paragraphs to behave more like sections
+\ifx\paragraph\undefined\else
+\let\oldparagraph\paragraph
+\renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+\let\oldsubparagraph\subparagraph
+\renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+
+%%% Use protect on footnotes to avoid problems with footnotes in titles
+\let\rmarkdownfootnote\footnote%
+\def\footnote{\protect\rmarkdownfootnote}
+
+%%% Change title format to be more compact
+\usepackage{titling}
+
+% Create subtitle command for use in maketitle
+\providecommand{\subtitle}[1]{
+  \posttitle{
+    \begin{center}\large#1\end{center}
+    }
+}
+
+\setlength{\droptitle}{-2em}
+
+  \title{Quantitative Human Physiology}
+    \pretitle{\vspace{\droptitle}\centering\huge}
+  \posttitle{\par}
+    \author{Jeffrey A. Walker}
+    \preauthor{\centering\large\emph}
+  \postauthor{\par}
+      \predate{\centering\large\emph}
+  \postdate{\par}
+    \date{2020-02-15}
+
+\usepackage{booktabs}
+\usepackage{amsthm}
+\makeatletter
+\def\thm@space@setup{%
+  \thm@preskip=8pt plus 2pt minus 4pt
+  \thm@postskip=\thm@preskip
+}
+\makeatother
+
+\begin{document}
+\maketitle
+
+{
+\setcounter{tocdepth}{1}
+\tableofcontents
+}
+\chapter*{Directions}\label{directions}
+\addcontentsline{toc}{chapter}{Directions}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  Create a Google Sheets file that you will share with me. Name the
+  sheet ``last name BIO 22x'', for example ``Walker BIO 221'' or ``Smith
+  BIO 223''
+\item
+  Create one sheet for each assignment. These can be created as you do
+  each
+\item
+  Name each sheet using the assignment name. For example ``1.
+  Diffusion''
+\end{enumerate}
+
+Do not create separate Google Sheets files for each assignment. Do not
+spread a single assignment over multiple sheets.
+
+\chapter*{BIO 221}\label{bio-221}
+\addcontentsline{toc}{chapter}{BIO 221}
+
+\chapter{Diffusion}\label{diffusion}
+
+Goals: approximation, standard curve, scale, spreadsheet best practices,
+google search
+
+The main goal of this exercise is to use \emph{approximation} to
+demonstrate that diffusion is too ``slow'' to be an effective transport
+process at any scale larger than microscopic (microns). \textbf{Scale}
+roughly means size but typically size means something fairly precise
+(132.5 cm) while scale is more general. ``At the scale of individual
+molecules'' means something with a size of 1 nm or 10 nm or even 100 nm
+but certainly no 10\^{}5 nm. When using scale, our precision is
+generally only at the \textbf{order of magnitude}, which are multiples
+of 10 (The range 1 nm to 100 nm is over two orders of magntidue).
+
+\section{Approximation}\label{approximation}
+
+At some point, scientists are confronted with the recognition that some
+math problems do not have exact answers. This is very different than the
+math we learn in high school and college, which typically represents
+math as a construction that only has exact answers (2 + 2 = 4 and not
+any other number).
+
+What is the expected time of diffusion of biologically important
+molecules at different scales? There is no exact answer to a question
+like ``how long does it take for oxygen to diffuse across the
+respiratory membrane''. Instead there are better answers and worse
+answers. The reason there isn't an exact answer is because
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  the question is about a system of particles that are in diffusion. The
+  motion of individual particles is random and the time an individual
+  particle travels a certain net distance is a function of its
+  individual history of elastic collisions with other particles. But we
+  can compute \emph{expected} (or the average) time for diffusion over a
+  specified distance using a simple diffusion model (see below)
+\item
+  The rate of diffusion is a function of the medium such as pure water,
+  air, cytosol, or lipid bilayer. The diffusion coefficient in the table
+  below is measured using water as the medium but in the questions below
+  the media might include cytosol, extracellular fluid, and phospholipid
+  membrane, so the water-based coefficient will only give us a close (or
+  approximate) answer.
+\item
+  The final reason is the one that makes students the most
+  uncomfortable. The goal of this exercise is to compare time of
+  transport by diffusion over distances that differ by many orders of
+  magnitude--from a few nm to a few meters (so one billion times or 9
+  orders of magnitude). While it is true that skeletal muscle cells vary
+  in diameter and the epidermis varies in thickness, the question is
+  looking for a answer only at a reasonable order of magnitude. Two
+  meters is a reasonable answer to the question, what is the height of
+  humans? 0.2 or 20 meters is not.
+\end{enumerate}
+
+\section{Problems}\label{problems}
+
+A simple formula to calculate the approximate time of diffusion (t) over
+a distance (x) is
+
+\begin{equation}
+t \approx \frac{x^2}{2D}
+\end{equation}
+
+where D is a diffusion coefficient. The symbol \(\approx\) means
+``approximately equal to''.
+
+\subsection{Compute diffusion times for chemicals with known diffusion
+coefficients}\label{compute-diffusion-times-for-chemicals-with-known-diffusion-coefficients}
+
+Create a table in your sheet that looks like this:
+
+\begin{center}\includegraphics[width=0.6\linewidth]{images/diffusion_table} \end{center}
+
+The first column lists diffusion ``events'', for example, the diffusion
+of a sodium ion (Na\(^+\)) through a Na\(^+\) channel. Use Google search
+to find the distance traveled by the chemical in each event. Use this
+distance, the molecular weight of the molecule (see the table below),
+and the function above to compute the approximate time for transport of
+this molecule across this distance via diffusion. Compute this time in
+seconds, minutes, hours, and days. See Problem 2 below for actylcholine.
+
+Spreadsheet best practices that must be followed to receive full points;
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  \textbf{Use functions for all math}; that is, don't do the math in
+  your head or on a calculator and input the result. Do the math in the
+  spreadsheet. The reason for doing the math in this worksheet is that
+  this is good practice. If we do math on a calculator and then insert
+  the result here, we have no record of the computation. Having a record
+  of all computations is a best practice for reproducible science.
+\item
+  \textbf{Keep cells with numeric values (such as the diffusion
+  distance) numeric}. For example, do not add units to the diffusion
+  distance in the cell containing the numeric value. If the diffusion
+  distance is 1 meter, enter ``1'' into the cell and not ``1 meter''.
+  The reason is, you can't do math on words (that is, the value in the
+  cell won't work in simple equations). But, it is good to record the
+  units so add these to the adjacent column (Original units).
+\end{enumerate}
+
+\begin{figure}
+
+{\centering \includegraphics[width=0.6\linewidth]{images/molecular_weights} 
+
+}
+
+\caption{Molecular weights of common biological molecules}\label{fig:diffusion-molecular-weights-table}
+\end{figure}
+
+\subsection{Compute diffusion time for a chemical with an unknown
+diffusion
+coefficient}\label{compute-diffusion-time-for-a-chemical-with-an-unknown-diffusion-coefficient}
+
+Diffusion data for acetylcholine is not given in the table above. You
+might be able to find the coefficient with a google search but I want
+you to use the table of above to 1) generate a standard curve and 2) use
+the generated curve to estimate the diffusion coefficient for
+acetylcholine. Remember that diffusion is a function of the \emph{size
+of the molecule} -- bigger molecules diffuse more slowly. In other
+words, the diffusion coefficient gets smaller as the size of the
+molecule gets bigger. Use the table above to create a \emph{standard
+curve}, which shows the relationship between known X and known Y.
+Standard curves are everywhere in science research and recognizing that
+you can solve a problem, without asking for help, by generating a
+standard curve will make your future boss very happy. So, instead of
+trying to look up the diffusion coefficient of acetylcholine, look up
+its molecular weight with a quick google search (or test your chemical
+skills and compute its weight using acetylcholine's chemical formula)
+and compute its expected (or predicted value) given the standard curve.
+
+In a traditional standard curve done on graph paper, one can predict the
+expected value of Y (which has not been directly measured) from the
+known value of X. Here, I want you to do this by generating the mapping
+function (a function that maps a value of X to a value of Y)
+
+\begin{equation}
+D = b_0 + b_1 MW
+\end{equation}
+
+which is the equation for a line (recognize how it is simply Y = mX + b
+with b and mX re-arranged?) so \(b_0\) is the intercept and \(b_1\) is
+the slope. Use the data in the table to estimate the slope and intercept
+of the mapping function and then use this slope and intercept to compute
+the estimated diffusion coefficient for acetylcholine. When computing
+the slope and intercept, temember that we want to predict D from MW.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  log transform the weights and the diffusion coefficients-- this will
+  make the relationship between the two linear.
+\item
+  plot log(D) on the Y-axis aganst log(MW) on the X-axis. Show the
+  ``trend line'', also called the regression line and formula, which
+  gives the slope and intercept
+\item
+  In seperate cells, use spreadsheet functions (google these) to compute
+  the slope and intercept
+\item
+  use the equation for the regression line to compute the predicted
+  log(diffusion coefficient) given a the log(molecular weight of
+  acetylcholine). Use the cells with the slope and intercept in this
+  function. ** Do not hardcode the slope and intercept in your formula
+  **.
+\item
+  back transform the answer to get the right units (not log units) - the
+  back-transformation is the inverse or anti-log. Make sure you know the
+  base for the log function that you are using!
+\end{enumerate}
+
+\chapter{Nernst Potential}\label{nernst-potential}
+
+Goals: quantitative thinking, spreadsheet best practices
+
+\section{Electrical potentials}\label{electrical-potentials}
+
+Diffusion of an ion across a membrane differs from that of an
+electrically neutral chemical such as glucose because the dynamics of
+ion diffusion is driven by both a \textbf{chemical gradient} and an
+\textbf{electrical gradient}. The chemical gradient is due to a
+difference in the concentration of the chemical on either side of the
+membrane. The electrical gradient is a due to a difference in charge
+across the membrane. This difference in charge is largely due to
+differences in the concentration of electrolytes (especially Na+, K+,
+Cl-, Ca++) on either side of the membrane. The difference in charge
+gives rise to an \textbf{electrical potential} across the membrane,
+known as the \textbf{membrane potential}. The units of the membrane
+potential is milivolts (mV). If the inside of a membrane has more
+negative and fewer positive charges relative to the outside of the
+membrane we say the membrane potential is negative (so the sign of the
+potential is arbitrarily assigned as the inside relative to outside).
+
+A cell can regulate its membrane potential by making the membrane more
+or less permeable to ions, which changes the distribution of charges on
+either side of a membrane. The membrane potential in a resting neuron
+(when it is not conducting a current) is called the \textbf{resting
+membrane potential} or simply ``resting potential''. The resting
+potential is an equilibrium potential in the sense that there is no net
+transport of charge across the membrane. This equilibrium is only at the
+level of all ions taken together -- individual ion species are not in
+equilbrium and there is net transport (diffusion) of these but the rate
+of positive charges moving in equals the rate of positive charges moving
+out and the rate of negative charges moving in equals the rate of
+negative charges moving out. A neuron has a \textbf{resting membrane
+potential} of around -70 mV, meaning that the inside of the membrane has
+more negative and fewer positive charges relative to the outside.
+
+When the membrane potential is negative, the electrical gradient for a
+cation is directed ``into'' (this is the ``downhill'' direction). This
+makes sense, the positively charged cations are attracted to the inside
+(notice that there is no sense of attraction and repulsion in diffusion
+of electrically neutral chemicals). By contrast, the electrical gradient
+for an ion is directed ``out of'' the cell -- anions are attracted to
+the more positively charged outside of the membrane. The magnitude of
+the electrical gradient is proportional to the membrane potential.
+
+Why ``potential''? A potential is a difference in potential energy over
+some space. A chemical gradient is a \textbf{chemical potential}. An
+electrical gradient is an electrical potential, and an electrochemica
+gradient is an \textbf{electrochemical potential}. A potential can be
+used to power (provide the energy for) something such as rotating a
+turbine or lighting a light bulb. The chemical potential of Na+ is used
+to transport molecules such as glucose up their chemical gradient. The
+membrane potential is used for numerous cell functions such as
+generating a current that runs down the membrane of neuron or muscle
+cell.
+
+\section{The Nernst potential}\label{the-nernst-potential}
+
+For an ion, the chemical and electrical gradients add together to create
+an electrochemical gradient, or \textbf{electrochemical potential}. The
+rate of diffusion of an ion is proportional to its electrochemical
+gradient and this gradient is the difference between the membrane
+potential and the ion's \textbf{equilibrium potential}. The equilibrium
+potential of an ion is the membrane potential at which there is no net
+transport (diffusion) of the ion across the membrane (despite the
+membrane being permeable to the ion). There is no net transport - that
+is, the ion is at equilibrium, because the ion's electrical and chemical
+gradients are equal in magnitude but opposite in direction. The
+equilibrium potential for an ion is the ion's \textbf{Nernst potential}.
+
+The Equilibrium (Nernst) potential of an ion is
+
+\begin{equation}
+E_{ion} = \frac{62 \mathrm{mV}}{z} \mathrm{log}_{10} \frac{[\mathrm{ion}]_{\mathrm{out}}}{[\mathrm{ion}]_{\mathrm{in}}}
+\end{equation}
+
+where \(Z\) is the valence of the ion.
+
+\begin{table}
+
+\caption{\label{tab:unnamed-chunk-1}Concentrations of major ions in a neuron}
+\centering
+\begin{tabular}[t]{l|l|l}
+\hline
+Ion & Intracellular concentration & Extracellular concentration\\
+\hline
+Sodium (Na+) & 15 mM & 145 mM\\
+\hline
+Potassium (K+) & 150 mM & 4 mM\\
+\hline
+Calcium (Ca2+) & 70 nM & 2 mM\\
+\hline
+Hydrogen ion (proton, H+) & 63 nM (pH 7.2) & 40 nM (pH 7.4)\\
+\hline
+Magnesium (Mg2+) & 0.5 mM & 1 mM\\
+\hline
+Chloride (Cl−) & 10 mM & 110 mM\\
+\hline
+Bicarbonate (HCO3−) & 15 mM & 24 mM\\
+\hline
+\end{tabular}
+\end{table}
+
+\section{Electrochemical potential}\label{electrochemical-potential}
+
+If the membrane potential is not at an ion's equilibrium potential,
+there will be diffusion of the ion down it's electrochemical gradient if
+the membrane is permeable to the ion. This electrochemical potential of
+an ion is
+
+\begin{equation}
+\Delta E_{ion} = E_{membrane} - E_{ion}
+\end{equation}
+
+The greek letter \(\Delta\) (``delta'') is often used in math and
+science for ``difference''. For a cell membrane, the direction of a
+negative \(\Delta E_{ion}\) is into the cell and the direction of a
+positive \(\Delta E_{ion}\) is out of the cell. Sometimes
+\(\Delta E_{ion}\) is called the ``driving force'' but a phrase like the
+electrochemical potential ``drives'' Na+ into the cell can lead to the
+misconception that all Na+ ions are moving into the cell. This is
+diffusion and diffusion is the net transport.
+
+\section{Problem Set}\label{problem-set}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Use the table of ion concentrations above to compute the Nernst
+  potential for the ions Na+, K+, Ca++, and Cl-. Set up the table in
+  google sheets to look like this:
+\end{enumerate}
+
+\includegraphics{images/nernst-output_table_1.png}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{1}
+\tightlist
+\item
+  Use your computations of equilibrium coefficients for Na+ and K+ to
+  compute the electrochemical difference (``driving force'') of each ion
+  at different membrane potentials. Describe the consequence on the
+  initial rate and direction of diffusion of the ion using something
+  like ``fast and into the cell''. Set up the table in google sheets to
+  look like this
+\end{enumerate}
+
+\includegraphics{images/nernst-output_table_2.png}
+
+\section{Diving deeper}\label{diving-deeper}
+
+The electrochemical potential (driving force) given above is in units of
+voltage (mV). If you reinforce your learning of this material with
+\href{https://en.wikipedia.org/wiki/Electrochemical_potential}{Wikipedia}
+(\href{https://en.wikipedia.org/wiki/Electrochemical_gradient}{presented
+more biologically here}), you'll see a more general way to think about
+electrochemical potential is in units of energy (joules per mole). I'm
+working out the math here for myself, but follow along because its fun!
+
+A more general equation than that above for the equilibirum (Nernst)
+potential of an ion is
+
+\begin{equation}
+E_{ion} = \frac{RT}{zF} \mathrm{ln} \frac{[\mathrm{ion}]_{\mathrm{out}}}{[\mathrm{ion}]_{\mathrm{in}}}
+\end{equation}
+
+\(R\) is the \href{https://en.wikipedia.org/wiki/Gas_constant}{gas
+constant} in units of Joules K\(^{-1}\) mole\(^{-1}\) (energy per unit
+temperature per mole). \(F\) is the
+\href{https://en.wikipedia.org/wiki/Faraday_constant}{Faraday constant}.
+Note that this is using the natural log and not base 10 log.
+
+And the electrochemical potential (driving force) of an ion in units of
+energy (per mole) is
+
+\begin{equation}
+\Delta G = RT \mathrm{ln} \frac{[\mathrm{ion}]_{\mathrm{out}}}{[\mathrm{ion}]_{\mathrm{in}}} + zFE_{membrane}
+\end{equation}
+
+How do we go back and forth between the driving force in units of
+voltage to the driving force in units of energy? Simple -- divide all
+parts by \(zF\).
+
+\begin{equation}
+\frac{\Delta G}{zF} = \frac{RT \mathrm{ln} \frac{[\mathrm{ion}]_{\mathrm{out}}}{[\mathrm{ion}]_{\mathrm{in}}}}{zF} + \frac{zFE_{membrane}}{zF}
+\end{equation}
+
+Note that the ratio of concentrations is the reciprocal to that used
+above so flip-flop the concentrations and remember that
+\(\mathrm{log}(a/b) = -\mathrm{log}(b/a)\).
+
+\begin{equation}
+\frac{\Delta G}{zF} = -\frac{RT \mathrm{ln} \frac{[\mathrm{ion}]_{\mathrm{in}}}{[\mathrm{ion}]_{\mathrm{out}}}}{zF} + \frac{zFE_{membrane}}{zF}
+\end{equation}
+
+Now just make the right hand side (rhs) a - b instead of -b + a
+
+\begin{equation}
+\frac{\Delta G}{zF} = \frac{zFE_{membrane}}{zF} - \frac{RT \mathrm{ln}\frac{[\mathrm{ion}]_{\mathrm{out}}}{[\mathrm{ion}]_{\mathrm{in}}}}{zF}
+\end{equation}
+
+Cancel the \(zF\) in first part of the rhs and note that the second part
+of the rhs is \(E_{ion}\) (see above!) so, voila!
+
+\begin{equation}
+\frac{\Delta G}{zF} = E_{membrane} - E_{ion}
+\end{equation}
+
+This means that
+
+\begin{equation}
+\frac{\Delta G}{zF} = \Delta E_{ion}
+\end{equation}
+
+\chapter{Muscle}\label{muscle}
+
+Goals: modeling, spreadsheet best practices, google search
+
+Create a new google sheet. In the sheet you will create two columns, the
+first is a list of variable names and the second is the values you look
+up or compute. In the variable name include the units. The table should
+start like this\ldots{}
+
+\includegraphics{images/muscle_computation_table.png}
+
+I would encourage you to add multiple versions of the same variable,
+each in different units. For example, the units of ``work (pN nm)'' is
+not standard. An additional row with ``work'' in SI units might be
+helpful to other computations. The value under Q is the numbered step
+below. Some steps require multiple computations and each computation
+should have its own variable so there will be more than 19 rows in your
+table.
+
+Below this table, create the table described in step 14 below.
+
+\section{A bottom-up model of muscle
+efficiency}\label{a-bottom-up-model-of-muscle-efficiency}
+
+ATP hydrolysis is an exergonic reaction, meaning the products have more
+free energy than the reactants. The difference in the free energy
+between the reactants and the products (\(\Delta G\)) can be used to
+``do something'' such as pump ions up their gradient. In muscle
+contraction, myosin hydrolyzes ATP and the energy from this reaction is
+used to pivot the myosin head into its ``high energy'' position. In this
+position, myosin heads bind to actin and ``pulls'' the thin filament
+toward the center of the sarcomere. The energy for this pull comes from
+the stored \textbf{elastic strain energy} in the pivoted head. This is
+very much like the stored elastic strain energy in a stretched rubber
+band, which can be used to launch objects (the mechanism of a sling
+shot).
+
+This transfer of energy from the ATP to the pivoted myosin head and from
+the pivoted myosin head to the pull on the thin filament is not perfect
+-- some is lost as heat.
+
+Energy from ATP hydrolysis = Energy to pull thin filament + Energy lost
+as heat
+
+The ratio
+
+\begin{equation}
+\frac{Energy\_to\_pull\_thin\_filament}{Energy\_from\_ATP\_hydrolysis}
+\label{eq:efficiency}
+\end{equation}
+
+is the thermodynamic efficiency of muscle contraction. More generally,
+efficiency is a measure of the effectiveness of energy transfer -- if
+there is little wasted energy in the transfer then efficiency is near
+100\%. If there is lots of wasted energy then efficiency is closer to
+0\%. And a more general way of thinking about efficiency is
+\(\frac{useful\_energy}{total\_energy}\)
+
+What is the efficiency of muscle contraction? There are many ways of
+estimating this, here we estimate it from the ``bottom up'' -- that is
+using measures of the numerator and denominator in equation
+\eqref{eq:efficiency}.
+
+The numerator, the energy to pull the thin filament, is the \emph{work
+done by the myosin on the thin filament}. Remember that Work = Force
+\(\times\) distance. To estimate this, we need a measure of the active
+force that a single myosin head applies to a thin filament and the
+displacement of the thin filament when the head pulls it toward the
+center of the sarcomere. And for the denominator, we need the change in
+free energy (\(\Delta G\)) of the hydrolysis of ATP \emph{in working
+muscle} (that is, the conditions in a muscle cell and not ``standard''
+conditions used to calculate textbook \(\Delta G\))
+
+In your Google sheet, compute this efficiency. You will need to
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  do a Google search to find measures of the force of a single myosin
+  head. There will be a range of answers. The units will probably be in
+  pN (picoNewtons). In your Google sheet, insert the source (web page)
+  for your number. Also make sure to note the units.
+\item
+  do a Google search to find measures of the displacement of a thin
+  filament by a single myosin head. The units will probably be in nm
+  (nanonmeters). In your Google sheet, insert the source (web page) for
+  your number. Also make sure to note the units.
+\item
+  Compute the work done on the thin filament. In a new cell, convert
+  this to SI units.
+\item
+  do a Google search to find \(\Delta G\) for ATP hyrolysis. Try to find
+  a value relevant to the conditions in a cell and even a muscle cell.
+  In your Google sheet, insert the source (web page) for your number.
+  Also make sure to note the units.
+\item
+  Use the Google sheet to compute the efficiency. Make sure your units
+  for the computation cancel correctly! This may require extra
+  attention. You should get an answer between about 7\% and about 50\%
+  depending on your inputs.
+\end{enumerate}
+
+\section{A bottom-up model of whole-muscle
+force}\label{a-bottom-up-model-of-whole-muscle-force}
+
+The maximum force that a whole muscle can generate is proportional to
+its cross-sectional area (a concept covered in many physiology
+textbooks). Let's build a bottom-up model the \emph{actual} force a
+muscle generates given its cross-sectional area.
+
+\begin{figure}
+\centering
+\includegraphics{images/sarcomere-force-proportional-to-area.png}
+\caption{\label{fig:force}Why the force of a myofibril is equal to the force
+of a single sarcomere and not the sum of the forces over all sarcomeres.
+The force on each side of non-edge Z discs cancel. Consequently, only
+the force on the two edge Z discs contribute to the total force.}
+\end{figure}
+
+Some background. A muscle fiber is a bundle of myofibrils. The many
+thick and thin filaments in a myofibril are serially arranged in the
+sarcomeres. Even though there are thousands of sarcomeres in series
+along a myofibril, and all the sarcomeres generate force, the force
+generated by a myofibril is the force generated by a single sarcomere.
+This is because the force on the thin filaments on either side of a
+z-disc cancel due to the sarcomeres on each side pulling the thin
+filaments in opposite directions (see figure above). And this is why the
+maximum whole muscle force is proportional to the cross-sectional area.
+We can estimate the maximum force of a myofibril if we know the number
+of myosin heads occurring in a single sarcomere. Or we can estimate the
+maximum force of a whole muscle fiber or whole muscle if we know the
+number of myofibrils in a transverse section of the fiber or whole
+muscle.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{5}
+\tightlist
+\item
+  Model a muscle that is square in cross-section and that is 5 cm wide
+  and 15 cm long. Compute the cross-sectional area.
+\item
+  Google search the number of thick filaments per area. Or
+  alternatively, Google search the diameter of a thick filament and the
+  geometry of the arrangement of thick and thin filaments in a section
+  (these are beautiful images) and estimate the number of thick
+  filaments per area. In your Google sheet, insert the source (web page)
+  for your number. Also make sure to note the units.
+\item
+  Google search the number of myosin molecules in a thick filament. In
+  your Google sheet, insert the source (web page) for your number.
+\item
+  Given 6-8, compute the number of myosins that would occur in the cross
+  section of the modeled muscle. Use units of µm\(^2\) for your area
+  measures to make sure that units match.
+\item
+  Google search the \textbf{duty cycle} (or duty ratio), which is the
+  percent of a cross-bridge cycle that a myosin head is in a bound
+  state. In your Google sheet, insert the source (web page) for your
+  number. Also make sure to note the units.
+\item
+  Given your value for the force of a single myosin head, use 9-10 to
+  compute the maximum force of the muscle \emph{in Newtons}. Assume: 1)
+  complete overlap of thick and thin filaments and 2) a Ca++ that makes
+  probability of ``open'' myosin binding site near 100\%. In a new cell,
+  convert to pounds and ponder if your result seems reasonable.
+\item
+  Compute the muscle tension, or \textbf{specific tension}, which is the
+  force per unit area. Use units of Pa, because you will use this below.
+  In a new cell, convert this to kPa and Google search muscle force per
+  area for a fiber or myofibril and see if your number is close. My
+  answer ranged from 150 kPa to 850kPa depending on the head force and
+  displacement.
+\end{enumerate}
+
+\section{Compute the effect of muscle architecture on whole muscle
+force}\label{compute-the-effect-of-muscle-architecture-on-whole-muscle-force}
+
+Muscle fibers can be arranged in parallel with the main axis of the
+muscle or at an oblique angle. A pinnate muscle is one with oblique
+fibers on either side of a central line. Oblique angles allow more
+fibers in the same muscle volume -- the consequence is more force. What
+is the effect of pinnation angle (\(\alpha\) -- the Greek letter alpha)
+on whole muscle force and displacement?
+
+The force that a fiber generates is directed parallel to the fiber. The
+working force of a muscle is parallel to its long axis. If fibers are
+oblique, the working force will be the axial component of the total
+force generated by the fibers.
+
+\begin{equation}
+F_{axial} = F_{fiber} \times cos(\alpha)
+\end{equation}
+
+where \(F_{axial}\) is the working force and \(F_{fiber}\) is the total
+force generated in the direction of the fibers.
+
+To model the effect of fiber angle on whole muscle force, we need to
+distinguish
+
+\begin{enumerate}
+\def\labelenumi{\alph{enumi}.}
+\item
+  Anatomical Cross Sectional Area (\emph{ACSA}) is simply the area of
+  the section perpendicular to the long axis of the muscle
+\item
+  Physiological Cross Sectional Area (\emph{PCSA}) is the area of the
+  section perpendicular to the fibers
+\end{enumerate}
+
+\(PCSA\) is typically modeled as
+
+\begin{equation}
+PCSA = \frac{muscle\_volume}{mean\_fiber\_length}
+\end{equation}
+
+where
+
+\begin{equation}
+muscle\_volume = ACSA \times muscle\_length
+\end{equation}
+
+and
+
+\begin{equation}
+mean\_fiber\_length = \frac{0.5 \times muscle\_width}{\mathrm{SIN(\alpha)}}
+\end{equation}
+
+This model for mean fiber length doesn't work at all when \(\alpha=0\)
+and doesn't work well until \(\alpha\) is larger than about 10 degrees.
+
+The muscle force in the direction of the fibers is
+
+\begin{equation}
+F_{fiber} = specific\_tension \times PCSA
+\end{equation}
+
+Model a muscle that is 15 cm long.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{12}
+\tightlist
+\item
+  Use the cross-sectional area computed in step 6 (which is \(ACSA\)) to
+  compute muscle volume
+\item
+  Create a table with columns Angle, mean fiber length, PCSA, F\_fiber
+  and F\_axial
+\item
+  In the Angle column, insert values 0-90° incrementing by 15°
+\item
+  Use the equations above to compute mean fiber length and \(PCSA\). For
+  \(\alpha = 0\), insert the muscle length for mean fiber length instead
+  of the formula.
+\item
+  Use the specific tension from step 12 above to compute F\_fiber, the
+  whole muscle force in the direction of the fiber
+\item
+  Compute F\_axial, the axial component of the whole muscle force.
+\item
+  Plot F\_axial (y axis) vs. \(\alpha\). Which muscle architecture can
+  be stronger, parallel or pinnate? What is the optimal fiber angle?
+\end{enumerate}
+
+\includegraphics{images/muscle.png}
+
+\chapter{Skeleton}\label{skeleton}
+
+\chapter*{BIO 223}\label{bio-223}
+\addcontentsline{toc}{chapter}{BIO 223}
+
+\chapter{Blood}\label{blood}
+
+Goals: back-of-the-envelope estimation, scale, google search
+
+Many complex problems in biology can be broken down into a series of
+smaller problems and a common smaller problem is the \textbf{estimation}
+of some number, such as the number of bacteria per cell. Estimation
+problems range from \textbf{back-of-the-envelope estimations} that are
+imprecise but useful in that they give one a general sense of the
+\textbf{magnitude} of a phenomenon to more precisely modeled estimates
+that are used for making \textbf{decisions under uncertainty}.
+Back-of-the-envelope estimations are called that because most can,
+literally, be done with a pencil and the back of an envelope. They can
+be done with pencil because the computations uses rounded instead of
+exact numbers like 10 or 300 that are easily multiplied/divided. In this
+module, you will compute some back-of-the-envelope estimations.
+
+A problem like ``how many bacteria can colonize a cell'' depends on the
+distribution of the sizes of the bacteria, the size of the cell, and how
+packed the cell is with its own molecules and organelles. Here, I simply
+want to get you started on addressing a problem like this with very
+simple models of the problem. Along the way, solving the problem should
+give you a sense of scale of what it is like to be a bacterium or a
+virus living in a cellular world.
+
+\section{How to solve an estimation
+problem}\label{how-to-solve-an-estimation-problem}
+
+I'll solve an analogous problem: How many beach balls can fit in a barn?
+If a barn has Volume \(V_{barn}\) and a beach ball has volume
+\(V_{ball}\) then the number of balls that could fit into the barn would
+be approximately, \(N_{balls} = \frac{V_{barn}}{V_{ball}}\). To solve
+this, I need to \textbf{paramaterize the model} by assigning numbers to
+these variables. And, the answer is dependent on what numbers I choose
+for the size of the beach balls and the shape and size of the barn and
+how filled the barn is with hay (or furniture or horses or whatever) --
+that is how much of the volume of the barn is available for beach balls.
+A back-of-the-envelope calculation simply uses a \emph{reasonable} value
+for the parameters. So, here are my numbers.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  the barn is a typical vermont barn. I have a sense of what ``typical''
+  is because I live in New England and see barns every day. But what if
+  I were a martian, and had never seen a barn? Then I would need to find
+  this information from a reliable source. So, to find ``typical'', I
+  used a google search and found what looks like a reputable source that
+  says a typical hay barn is 30 feet wide by 40 feet long. I estimated
+  wall height from the figure as half the width and I used a 12/12 pitch
+  for the roof, so the peak is centered and 15 feet (half of the width)
+  high.
+\end{enumerate}
+
+Again -- if you don't have to look up information to parameterize your
+model, don't!
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{1}
+\item
+  I used a big beach ball of 2 feet in diameter (because big beach balls
+  are fun). I didn't need to look this up!
+\item
+  10\% of the barn is filled with hay.
+\end{enumerate}
+
+I use Google Sheets to compute the number of balls for each room (the
+main room and the attic) and then add these. Here is my sheet
+
+\begin{figure}
+
+{\centering \includegraphics[width=0.8\linewidth]{images/balls} 
+
+}
+
+\caption{Estimation of maximum number of beach balls that could colonize a barn. Cells in red are computed.}\label{fig:balls}
+\end{figure}
+
+My column labels include the units of the measure. \textbf{Do not add
+units to the measure itself} because this makes the format of the cell
+``text'' instead of ``number'' and you cannot refer to the cell in an
+equation. I also cite the source of the parameterization below the table
+(I cite the source for the size of the barn. The size of the beach ball
+I just made up).
+
+\section{Problem set}\label{problem-set-1}
+
+Do these on the same sheet. Name the sheet ``1. Blood''.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  How many red blood cells in a drop of blood? Note, I don't want you to
+  look up how many RBCs are in a drop, I want you to estimate it using a
+  back-of-the-envelope estimation. You don't need to look up the volume
+  of a drop of water if you are able to use available information in
+  your head to derive a reasonable volume for a drop of water.
+\end{enumerate}
+
+For the next three questions, assume the host cell is ``empty'', that
+is, it contains no organelles or molecules that take up space.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{1}
+\item
+  How many bacteria could colonize a red blood cell?
+\item
+  How many bacteria could colonize a macrophage?
+\item
+  How many virus particles could colonize a red blood cell?
+\end{enumerate}
+
+-- These should all be on the same google sheet.
+
+-- \textbf{Do not hardcode parameters}, that is, if a virus is 30 feet
+wide do not put ``30'' in an equation but instead make your equations
+reference the cell with this information.
+
+-- You may need to google search information to parameterize the model,
+such as, how big a virus is. Part of the goal of this is for you to
+develop your skills finding reliable information using a google search.
+There is variation in virus size or cell size so use something in the
+middle or ``typical''. Again -- these are back-of-the-envelope estimates
+so you don't need to be very precise -- in fact all of these problems
+could be computed by most working biologists without looking up any
+information. We all have a pretty good sense for how big a virus, a
+bacterium, a blood cell, and a drop of water is. But you can look up
+this information because you are at the beginning of your biology
+career.
+
+-- Cite a webpage giving the source of the information, as I've done for
+the barns. There is no ``right'' or ``wrong'' place to get this
+information, only more or less reliable. I'm not grading you on where
+you get it, but I want to see where you get it! And all I want for a
+citation is the webpage, this is not a formal citation that you put in a
+scientific paper.
+
+\chapter{Immune}\label{immune}
+
+Goals: combinations
+
+How many kinds of antibody can a human make by V(D)J recombination?
+
+An individual human produces many different antibody proteins, where
+``different'' is amino acid sequence. How is this possible given that
+there are only a few ``antibody'' genes? Part of the answer is V(D)J
+recombination. An antibody is constructed from two pairs of
+polypeptides. Each pair consists of a light chain and a heavy chain.
+Each chain has a ``variable'' region and a ``constant'' region. The
+heavy chain is constructed from one gene (located on chromosome 14)
+while the light chain is constructed from two genes: the light chain
+locus \(\lambda\) (``lambda'') located on chromosome 22 and the light
+chain locus \(\kappa\) (``kappa'') located on chromosome 2. The variable
+region of both light chain loci is composed of a V part and a J part.
+The variable region of the heavy chain locus is composed of V, D, and J
+parts. A V, D, or J part consists of multiple copies of the exon that
+will be spliced into the mRNA but each of these copies has a slightly
+different nucleotide sequence and some of the copies do not produce
+functional mRNA.
+
+To make the heavy chain mRNA for the antibody
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  Choose one of the copies of the V region of the heavy chain locus.
+\item
+  Choose one of the copies of the D region of the heavy chain locus.
+\item
+  Choose one of the copies of the J region of the heavy chain locus.
+\end{enumerate}
+
+combine with the C (constant) region to make the heavy chain mRNA
+
+To make the light chain mRNA for the antibody
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  Choose one of the copies of the V region of one (either \(\lambda\) or
+  \(\kappa\)) light chain locus.
+\item
+  Choose one of the copies of the J region of the same light chain
+  locus.
+\end{enumerate}
+
+combine with the C region to make the light chain mRNA.
+
+Finally, combine the light and heavy chains (these are actually
+translated independently and then joined into the protein but the math
+is the same).
+
+So an antibody is a combination of combinations. It is a combination
+(light + heavy combined) of combinations (V, J, and D combined)
+
+\section{Combinations}\label{combinations}
+
+If there are n1 elements in set 1 and n2 elements in set 2, how many
+combinations of 1 element of each set are there? Answer: n1 x n2
+
+In the table below, I use this math to compute the number of antibodies
+that could be made using only V(D)J recombination. The
+
+\begin{figure}
+
+{\centering \includegraphics[width=0.8\linewidth]{images/vdj} 
+
+}
+
+\caption{How many kinds of antibodies}\label{fig:vdj}
+\end{figure}
+
+\section{Problem set}\label{problem-set-2}
+
+Do these on the same sheet. Name the sheet ``2. Immune''
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  (Ken, Jeff, David, and Doug) is the set of male faculty members in the
+  Biology department. (Chris, Terry, Rachel1, Rachel2, and Rachel3) is
+  the set of female faculty members in the Biology department. If the
+  biology department has a square dance, how many combinations of
+  male-female partners could there be? Write all of these out to confirm
+  (write this in a column of your google sheet)
+\item
+  Figure 4.3 in this
+  \href{https://www.ncbi.nlm.nih.gov/books/NBK27140/}{online textbook}
+  is a table containing the number of copies of each of the gene
+  segments. Use this table to compute the number of different antibodies
+  that can be synthesized using V(D)J recombination alone.
+\end{enumerate}
+
+\chapter{Cardiovascular}\label{cardiovascular}
+
+\section{Background}\label{background}
+
+This exercise explores equations 12-1 and 12-2 from Vander's Physiology.
+
+Regulation of blood flow is critical to increase or decrease delivery of
+blood to organs as they need more or less blood. Blood flow can be
+modeled with the equation for fluid flow used in almost any system
+(rivers, wind, etc)
+
+\begin{equation}
+F = \frac{\Delta P}{R} \quad \small{(12.1)}
+\end{equation}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \(F\) is flow
+\item
+  \(P\) is pressure. Here, and almost everywhere you'll see it,
+  \(\Delta\) (the greek letter ``delta'') means ``change'', so
+  \(\Delta P\) (``delta p'') is a \emph{difference} in pressure between
+  two points in space. Here this is two points along the length of a
+  blood vessel. It is the difference in pressure that is driving the
+  blood to flow.
+\item
+  \(R\) is the resistance to flow due to friction. Friction sucks
+  kinetic energy from moving objects (the lost kinetic energy is
+  transformed to heat).
+\end{enumerate}
+
+Resistance is an important concept in understanding human physiology.
+Resistance can be modeled using the Poiseuille equation
+
+\begin{equation}
+R = \frac{8L\eta}{\pi r^4} \quad \small{(12.2)}
+\end{equation}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \(L\) is the length of section of blood vessel
+\item
+  \(\eta\) (the greek letter ``eta'') is the viscosity of the fluid (or
+  more specifically, the dynamic viscosity)
+\item
+  \(r\) is the radius of the lumen of the vessel.
+\end{enumerate}
+
+\section{Problems}\label{problems-1}
+
+Create a sheet named ``3. cardiovascular''
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Create a table like that below. Write down the units of each of the
+  terms. There is no ``right'' answer, because units can be written
+  different ways. For example I could write the units of volume as L
+  (``liter'') or gallon or L\(^3\) (here ``L'' is length). Write down a
+  definition of each term. Write a formal definition and then add your
+  own interpretation of that definition. For example, Wikipedia defines
+  density as the ``mass per unit volume'' which I'll interpret as ``the
+  amount of matter in given amount of space'', which doesn't quite
+  capture the nuances but is helpful for understanding. Also notice that
+  wikipedia's definition of density here is an equation expressed as
+  words, this can help with thinking about units.
+\end{enumerate}
+
+\includegraphics{images/flow_table.png}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{1}
+\tightlist
+\item
+  The typical units of viscosity, \(\mathrm{Pa}\cdot \mathrm{s}\) is not
+  very intuitive. Wikipedia gives a nice way to think about viscosity:
+\end{enumerate}
+
+\begin{quote}
+Viscosity is the material property which relates the viscous stresses in
+a material to the rate of change of a deformation (the strain rate)
+\end{quote}
+
+Using your knowledge of stress and strain from last semester, how would
+you express this in units? To answer this 1) write
+``Viscosity\ldots{}relates the viscous stresses in a material to the
+rate of change of a deformation'' as an equation, and then 2) determine
+the units from this equation. Show how the units expressed this way
+equals \(\mathrm{Pa}\cdot \mathrm{s}\). Do this with pencil and paper,
+snap a photo, and insert it below the table in your Google sheet.
+
+Here is an example to follow: While the equation for flow is useful for
+understanding how variation in pressure and resistance cause variation
+in flow, if I use the equation to define flow, I would get something
+like ``the change in pressure of the fluid per unit resistance'', which
+isn't very helpful in thinking about flow. Flow is ``the volume of fluid
+that moves past a point per unit time''. So how do I get from the
+equation to this definition? I worked this out, snapped a photo,
+re-sized the image to 800 pixels wide, then inserted the image in my
+google sheet.
+
+\includegraphics{images/flow-units.png}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{2}
+\tightlist
+\item
+  The radius of the lumen of an arteriole leading into a capilary
+  increases 50\%. What is the change in blood flow to the capillary? Use
+  the google sheet to show your work, including \emph{all} calculations.
+\end{enumerate}
+
+\chapter{Resipiratory -- Why we need
+Hemoglobin}\label{resipiratory-why-we-need-hemoglobin}
+
+We need hemoglobin because our blood cannot carry enough dissolved O2 to
+support our cell activity. That's the short answer. Let's explore a
+quantitative answer.
+
+\section{How much O2 can dissolve into
+blood?}\label{how-much-o2-can-dissolve-into-blood}
+
+We can model what is going on in the alveoli using a beaker filled with
+water. Diffusion of gas molecules from the air into the water (``going
+into solution'') or the reverse (``coming out of solution'') is not
+simply a function of the concentration gradient of the gas between the
+air and the water because \emph{gasses have different solubilities in
+solution}.
+
+Equilibrium (when an equal amount of gas is going into and out of
+solution) is modeled by the following equation
+
+\begin{equation}
+c_\mathrm{O_2} = h_\mathrm{O_2} P_\mathrm{O_2}
+\end{equation}
+
+\begin{itemize}
+\tightlist
+\item
+  \(c_\mathrm{O_2}\) is the concentration of O2 in the water
+\item
+  \(P_\mathrm{O_2}\) is the partial pressure of O2 in air (so a measure
+  of concentration)
+\item
+  \(h_\mathrm{O_2}\) is Henry's solubility coefficient (or ``constant of
+  proportionality'').
+\end{itemize}
+
+Scientists in different fields have different ways of expressing the
+relationship between \(c_\mathrm{O_2}\) and \(P_\mathrm{O_2}\) so you
+may land on a web page or a textbook that expresses the constant in
+something like \(\frac{1}{c_\mathrm{O_2}}\) or even a dimensionless
+constant. I like this way for physiology because it pumps our intuition
+about how \(P_\mathrm{O_2}\) controls our dissolved O2 levels.
+
+This equation tells us how much O2 will dissolve in the water at
+different partial pressures of O2 in the air, or, switching back to the
+lung, how much O2 will dissolve in the blood plasma given the partial
+pressure of O2 in the alveolar air.
+
+Below is a table of \(P_\mathrm{O_2}\) of alveolar air and the resulting
+concentration of dissolved O2 at equilibrium.
+
+\begin{tabular}{r|r}
+\hline
+P\_O2 (mmHg) & c\_O2 (mL O2/dL blood)\\
+\hline
+20 & 0.066\\
+\hline
+30 & 0.091\\
+\hline
+40 & 0.137\\
+\hline
+50 & 0.156\\
+\hline
+60 & 0.195\\
+\hline
+70 & 0.220\\
+\hline
+80 & 0.257\\
+\hline
+90 & 0.281\\
+\hline
+100 & 0.307\\
+\hline
+110 & 0.349\\
+\hline
+\end{tabular}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  Transfer the data into your spreadsheet.
+\item
+  Plot \(c_\mathrm{O_2}\) (y-axis) against \(P_\mathrm{O_2}\) (x-axis)
+\item
+  Compute the slope and and in the cell next to the computation, write
+  the units.
+\item
+  What is this slope? (the concept not the value)
+\item
+  What is \(c_\mathrm{O_2}\) in healthy arterial blood entering an organ
+  (use \(P_\mathrm{O_2} = 97\) mmHg)?
+\item
+  How much dissolved O2 is ejected from our left ventricle each minute?
+  Again, use \(P_\mathrm{O_2} = 97\) mmHg
+\item
+  How much O2 do our tissues need each minute? For this, you need to
+  look up resting O2 consumption, which is usually in units of mL O2 per
+  min per Kg. From this, you use the mass of a person to compute their
+  O2 consumption per minute.
+\item
+  Compare the dissolved O2 sent by the left ventricle to the O2 required
+  at rest? Do we send enough dissolvd O2 to our tissues?
+\end{enumerate}
+
+\chapter{Renal}\label{renal}
+
+\section{A back of the envelope calculation of
+GFR}\label{a-back-of-the-envelope-calculation-of-gfr}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Estimate GFR using a back-of-the-envelope calculation. The calculation
+  is
+\end{enumerate}
+
+GFR = cardiac output X renal fraction X plasma fraction X filtration
+fraction
+
+Look up reasonable values for the four variables to parameterize this
+equation. Do the computation in your Google Sheet. Insert the units of
+GFR in the adjacent cell.
+
+\section{Using renal clearance to measure GFR in an
+indivudal}\label{using-renal-clearance-to-measure-gfr-in-an-indivudal}
+
+\begin{equation}
+C_s = \frac{\dot{M}_s}{P_s}
+\end{equation}
+
+where \(C_s\) is the clearance of solute \(s\), \(M_s\) (``m dot'') is
+the mass of \(s\) excreted in the urine per unit time, and \(P_s\) is
+the plasma concentration of \(s\).
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{1}
+\item
+  What are the units of \(C_s\)? These are the units of what kind of
+  measure (for example Force per Area are the units of a pressure)?
+\item
+  Remember that a dot over a variable is a first derivative; here we
+  assume that this is constant and so
+  \(\dot{M}_s = \frac{\Delta Mass}{\Delta Time}\). What are the units of
+  \(\dot{M}_s\)? This kind of measure is ``kinda like'' the kind of
+  measure in \#2. Google around to see what we call \(\dot{M}_s\).
+\item
+  The clearance of a solute is useful in pharmacology but we can also
+  use the concept to measure the GFR in a person. This is done using a
+  solute \(s\) that is filtered but no amount is either 1) secreted into
+  the nephron, or 2) is not reabsorbed from the nephron). Inulin is an
+  example. We could give a person some inulin and then measure the urine
+  concentration of inulin (\(U_{in}\)), the volume of urine generated
+  per time (\(\dot{V}\)), and the plasma concentration of inulin
+  (\(P_{in}\)) to compute the GFR
+\end{enumerate}
+
+\begin{equation}
+GFR = \frac{U_{in} \dot{V}}{P_{in}}
+\end{equation}
+
+(Note that I use \(\dot{V}\) and not \(V\) to make it crystal clear that
+this is a measure of the volume of urine produced per time not simply a
+volume).
+
+Using this information, compute the GFR for a person in which 1) inulin
+was given continuously to generate a constant plasma concentration of
+1.0 mg/dL. 1.6 L of urine was collected over a 10 hour period. The
+urinary concentration of inulin was 462 mg/L.
+
+\chapter{Digestion, Nutrition, and
+Metabolism}\label{digestion-nutrition-and-metabolism}
+
+\section{Estimating Causal Effects}\label{estimating-causal-effects}
+
+Think about headlines in human health, performance and disease: red wine
+decreases colon cancer, or coffee increases dementia, or oxygenated
+water increases marathon performance. These ``conclusions'' constantly
+seem to be flipping. To understand why, it is important to think about
+the problem with math. The \emph{mathematical} way to think about these
+assertions is X -\textgreater{} Y, or ``X causes Y''. Importantly, if a
+scientist says something like ``X causes Y'', this does not mean that X
+is the only cause of Y -- other things may also cause Y. For example:
+vegetarian diet -\textgreater{} low blood cholesterol AND running
+-\textgreater{} low blood cholesterol AND statins -\textgreater{} low
+blood cholesterol.
+
+Most importantly ``cause'' is not binary (causes v. doesn't cause) but
+has some magnitude (trivially small, or small, or big, or huge). Here,
+we use the greek letter \(\beta\) (``beta'') to indicate effect size.
+
+We are going to use Google Sheets to create fake data that were
+generated by a known causal process (known \(\beta\)), and then use a
+\textbf{statistical model} to estimate the causal process (estimate
+\(\beta\)) from the fake data. The statistical model is
+\textbf{regression}, which is the principle statistical method used in
+the biological sciences to estimate causal effects. We are purposefully
+using abstract notation (X and Y) instead of meaningful variables
+(dietary cholesterol and atherosclerotic plaque development) because it
+is good to be able to think abstractly.
+
+\includegraphics{images/ovb_fig1.png}
+
+\section{Simulation 1}\label{simulation-1}
+
+Open your Google spreadsheet and
+
+\subsection{Step 1. Set up the
+parameters}\label{step-1.-set-up-the-parameters}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  In column A, cells 2-4, insert ``beta\_0'', ``beta\_1'', ``E{[}b1{]}''
+  (see figure above)
+\item
+  In row 1, columns B and C, insert ``True Value'', ``Estimate''
+\item
+  In B2, insert a number (it doesn't matter)
+\item
+  In B3, insert 0.5 (this is the true generating effect of X on Y)
+\item
+  In B4, insert =B3 (this is the expected value of the generating effect
+  of X on Y given the statistical model)
+\end{enumerate}
+
+\subsection{Step 2. Generate fake
+data}\label{step-2.-generate-fake-data}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  In row 9, coumns A-C, insert ``ID'', ``X'', ``Y''
+\item
+  In A10 insert ``1''
+\item
+  In B10 insert \texttt{=normsinv(rand())}
+\item
+  In C10 insert
+  \texttt{=\$B\$2\ +\ \$B\$3*B10\ +\ sqrt(1-\$B\$3\^{}2)*normsinv(rand())}
+\item
+  In A11 insert \texttt{=A10\ +\ 1}
+\item
+  Highlight cells B10 and C10. Click on the handle on the lower right
+  corner of the box and drag down 1 row. Your formulas from row 10
+  should now be in row 11.
+\item
+  Highlight cells A11, B11, C11. Click on the handle on the lower right
+  corner of the box and drag down and down and down until you get to row
+  1000. You should have copied all three formuilas all the way down.
+\end{enumerate}
+
+What is step 2 doing? It is creating fake data. The value is caused by
+three things, the value in Cell B2, the product of B3 and X, and a
+random number. The value in B3 is the contribution of X to Y or how ``X
+causes Y'' or the ``causal effect of X on Y''. If B3 is 0 then there is
+no causal effect. If B3 is 1 or -1, then the random component is zero.
+
+You have just created fake data with a known generating mechanism! But
+it is imperative to check the the equations you entered don't have bugs.
+If the equations were entered correctly, the standard deviation of the X
+and Y columns should both be one. Check this
+
+\subsection{Step 3. Fake data check}\label{step-3.-fake-data-check}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  In A8, insert ``sd''
+\item
+  In B8, insert \texttt{=stdev(B10:B1000)}
+\item
+  Copy B8 and paste in C8.
+\end{enumerate}
+
+These numbers should be close to 1.0 (something is probably wrong if it
+is less than 0.95 or more than 1.05). Refresh the spread sheet by typing
+command-R (Mac) or control-R (Windows)
+
+\subsection{Step 4. Does a statistical model recover the known
+effect?}\label{step-4.-does-a-statistical-model-recover-the-known-effect}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  In C3, insert \texttt{=slope(C10:C1000,\ B10:B1000)}
+\item
+  In C3, round to three places after the decimal
+\end{enumerate}
+
+This is the slope of the regression (the statistical model) of Y on X.
+It is the \textbf{estimate} of the causal effect. The number should be
+very close to the true value.
+
+This slope is the \textbf{regression coefficient} b1. The cell labeled
+``E{[}b1{]}'' is the ``expectation of b1'' or the expected value of b1.
+Your estimate of beta\_1 should also be very close to E(b1) since E(b1)
+is equal to the true generating effect (beta\_1).
+
+\subsection{What you did}\label{what-you-did}
+
+\subsubsection{\ldots{} in a nutshell}\label{in-a-nutshell}
+
+you generated \(Y\) using a ``data generating'' mechanism and then using
+the available data (X and Y), you used a statistical analysis to see if
+you could recover this data generating mechanism. The data generating
+mechanism is the set of two coefficients \(\beta_0\) and \(\beta_1\).
+
+\subsubsection{the data generating mechaniusm in a little more
+detail}\label{the-data-generating-mechaniusm-in-a-little-more-detail}
+
+The fake data are two variables, X and Y. Y is caused by three things:
+
+\begin{equation}
+y_i = \beta_0 + \beta_1 x_i + \sigma_i
+\end{equation}
+
+the subscript is the ``\(i\)th'' individual (if ID=7 then i=7). The
+three components generating \(y_i\) are
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \(\beta_0\) is ``the intercept''; it is common to all \(i\)
+\item
+  \(\beta_1 x_i\) is the product of the effect (\(\beta_1\)) and an
+  individuals value of \(x\). \(\beta_1\) is the same for all \(i\) but
+  the product is unique to each \(i\).
+\item
+  \(\sigma_i\) is ``the error''; this is the random variation due to
+  other factors that ``cause'' Y but are unique to each \(i\). That is,
+  these factors are \textbf{not correlated} with \(X\).
+\end{enumerate}
+
+\subsection{The model you fit is}\label{the-model-you-fit-is}
+
+\begin{equation}
+y_i = b_0 + b_1 x_i + e_i
+\end{equation}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \(b_0\) is the intercept
+\item
+  \(b_1\) is the slope
+\item
+  \(e_i\) is the residual (the difference between the modeled value and
+  the actual value)
+\end{enumerate}
+
+Notice that the statistical model is the same as the generating model.
+It is not at all surprising that the statistical model ``recovers'' the
+data generating mechanism (or the ``true values''). \textbf{The problem
+in science is, we don't know the data generating model so we don't know
+the correct statistical model}. This will hopefully make more sense in
+the next exercise.
+
+\section{Simulation 2}\label{simulation-2}
+
+\subsection{Step 5. Set up the
+parameters}\label{step-5.-set-up-the-parameters}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  In column E, rows 2-6, insert the labels ``beta\_0'', ``beta\_1'',
+  ``beta\_2'', ``r'', ``E(b\_1)''
+\item
+  In row 1, columns F and G, insert the labels ``True Value'',
+  ``Estimate''
+\item
+  In F2, insert a number (it doesn't matter) (this is the baseline value
+  of generating model)
+\item
+  In F3, insert 0.5 (this is the true generating effect of \(X_1\) on Y)
+\item
+  In F4, insert -0.7 (this is the true generating effect of \(X_2\) on
+  Y)
+\item
+  In F5, insert 0.7 (this is the true correlation between \(X_1\) and
+  \(X_2\))
+\end{enumerate}
+
+\subsection{Step 6. Generate fake
+data}\label{step-6.-generate-fake-data}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  In row 9, coumns E-H, insert ``Z'', ``X1'', ``X2'', ``Y''
+\item
+  In E10 insert \texttt{=normsinv(rand())}
+\item
+  In F10 insert
+  \texttt{=sqrt(\$F\$5)*\$E10\ +\ sqrt(1-\$F\$5)*normsinv(rand())}
+\item
+  In G10, copy the equation from F10 and insert into G10
+\item
+  In H10, insert
+  \texttt{=\$F\$2\ +\ \$F\$3*F10\ +\ \$F\$4*G10\ +\ sqrt(1-\$F\$3\^{}2\ -\ \$F\$4\^{}2\ -\ 2*\$F\$3*\$F\$4*\$F\$5)*normsinv(rand())}
+\item
+  Highlight cells E10 through H10. Click on the handle on the lower
+  right corner of the box and drag down and down and down until you get
+  to row 1000. You should have copied all four formuilas all the way
+  down.
+\end{enumerate}
+
+What is step 6 doing? Like Step 2 in Simulation 1 above, it is creating
+fake data. But here the \(Y\) value is caused by five things:
+
+\begin{equation}
+y_i = \beta_0 + \beta_1 x_{1i} + \beta_2 x_{2i} + \sigma_i
+\end{equation}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \(\beta_0\) is ``the intercept''; it is common to all \(i\)
+\item
+  \(\beta_1 x_{1i}\) is the product of the effect (\(\beta_1\)) and an
+  individuals value of \(x_1\). \(\beta_1\) is the same for all \(i\)
+  but the product is unique to each \(i\). This is the causal or
+  generating effect of \(X_1\) on \(Y\)
+\item
+  \(\beta_2 x_{2i}\) is the product of the effect (\(\beta_2\)) and an
+  individuals value of \(x_2\). \(\beta_2\) is the same for all \(i\)
+  but the product is unique to each \(i\). This is the causal or
+  generating effect of \(X_2\) on \(Y\)
+\item
+  \(\sigma_i\) is ``the error''; this is the random variation due to
+  other factors that ``cause'' \(Y\) but are unique to each \(i\). That
+  is, these factors are \textbf{not correlated} with \(X\).
+\end{enumerate}
+
+what is the 5th cause of \(Y\)?
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{4}
+\tightlist
+\item
+  \(r\) -- the correlation between \(X_1\) and \(X_2\). A correlation is
+  a measures of association and is always between -1 and 1
+\end{enumerate}
+
+\subsection{Step 7. Fake data check}\label{step-7.-fake-data-check}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Check the standard deviation of \(X_1\), \(X_2\), and \(Y\) as in Step
+  3 above. All of these should be close to 1.0
+\item
+  insert \texttt{=correl(F10:F1000,\ G10:G1000)} in G5. This should be
+  close to the true correlation in F5 (The starting correlation is 0.7,
+  so the estimate should be 0.67-0.73)
+\end{enumerate}
+
+\subsection{Step 8. Does a statistical model recover the known
+effect?}\label{step-8.-does-a-statistical-model-recover-the-known-effect}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  In G3, insert \texttt{=slope(H10:H1000,\ F10:F1000)}
+\item
+  In G3, round to three places after the decimal
+\item
+  In F6, insert \texttt{=F3\ +\ F4*F5}
+\end{enumerate}
+
+As in Step 4 in Siumulation 1 above, this is the slope of the regression
+(the statistical model) of \(Y\) on X. It is the \textbf{estimate} of
+the causal effect. The number will not be very close to the true
+generating value (\(\beta_1\)), at least using the default values
+specified in Step 5. But it should be close to E(b1) (the expected value
+of b1), given the statistical model. But, unlike simulation 1, E(b1) is
+not similar to \(\beta_1\), the true generating effect. Huh?
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  E(b1) should not equal the true value of beta\_1 (at least using
+  default values in Step 5), unlike in Simulation 1.
+\item
+  Your estimate of beta\_1 should be very close to E(b1) but not to
+  beta\_1
+\end{enumerate}
+
+\subsection{What's going on is the whole point of this
+exercise}\label{whats-going-on-is-the-whole-point-of-this-exercise}
+
+You have measured \(Y\) and \(X_1\) but have not measured \(X_2\).
+Because you haven't measured \(X_2\), it is \emph{not} in your
+statistical model, so your statistical model is just like that in
+Simulation 1.
+
+\begin{equation}
+y_i = b_0 + b_1 x1_i + e_i
+\end{equation}
+
+But the generating model for \(Y\) is
+
+\begin{equation}
+y_i = \beta_0 + \beta_1 x_{1i} + \beta_2 x_{2i} + \sigma_i
+\end{equation}
+
+That is, your statistical model has an \textbf{omitted causal variable}
+(\(X_2\)) and your estimate of the effect of \(X_1\) is \textbf{biased}.
+This kind of bias is called \textbf{omitted variable bias}. The true
+effect of \(X_1\) on \(Y\) is \(\beta_1\) but you are actually
+estimating E(b1) with the regression coefficient! Researchers often
+think their result will get closer to the truth as the sample size
+increases but if an causal effect is missing from a statistical model,
+the estimate of the effects of the factors in the model will never ever
+get closer to the truth - instead it gets closer to the wrong thing (the
+biased expectation of the effect given the model).
+
+\section{Questions}\label{questions}
+
+\subsection{Simulation 1}\label{simulation-1-1}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Given the default parameters specified above, what is the estimated
+  effect of \(X_1\) on \(Y\) in Simulation 1?
+\item
+  What is the true effect of \(X_1\) on \(Y\) in Simulation 1?
+\item
+  If you increase your sample size, will the estimated effect of \(X_1\)
+  on \(Y\) move toward the true effect of \(X_1\) on \(Y\) in Simulation
+  1?
+\end{enumerate}
+
+\subsection{Simulation 2}\label{simulation-2-1}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{3}
+\tightlist
+\item
+  Given the default parameters specified above, what is the estimated
+  effect of \(X_1\) on \(Y\) in Simulation 2?
+\item
+  What is the true effect of \(X_1\) on \(Y\) in Simulation 2?
+\item
+  If you increase your sample size, will the estimated effect of \(X_1\)
+  on \(Y\) move toward the true effect of \(X_1\) on \(Y\) in Simulation
+  2?
+\item
+  If you did a study of \(X_1\) on \(Y\) and the true generating model
+  of \(Y\) is that in Simulation 2, what would you conclude about the
+  effect of \(X_1\) on \(Y\)?
+\end{enumerate}
+
+\subsection{Simulation 2 with new
+parameters}\label{simulation-2-with-new-parameters}
+
+Redo Simulation 2 with the parameters: \(\beta_1 = 0.0\). Leave
+\(\beta_2 = -0.7\) and \(r=0.7\).
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{7}
+\tightlist
+\item
+  What is the estimated effect of \(X_1\) on \(Y\)?
+\item
+  What is the true effect of \(X_1\) on \(Y\) in Simulation 2?
+\item
+  If you did a study of \(X_1\) on \(Y\) and the true generating model
+  of \(Y\) is these new parameters in Simulation 2, what would you
+  conclude about the effect of \(X_1\) on \(Y\)?
+\end{enumerate}
+
+\chapter{Cancer}\label{cancer}
+
+\section{Numerical Self-Discovery}\label{numerical-self-discovery}
+
+Students in Biology are inundated with equations both from Biology
+classes and from classes such as Physics and Chemistry. For most of us,
+these equations are pretty hard to really understand, even if we can do
+the math. By ``understand'', I mean, to treat the equation as a
+function, with inputs (the parameters) and outputs (what the function
+equates to given the parameters) and to have a picture in one's head of
+how this function behaves. By ``behave'', I mean what the function looks
+like and how ``what it looks like'' depends on the parameters. A
+spreadsheet is a terrific way to self-discover the behavior of a
+function (A scripting language like R is even better). This worksheet is
+a step-by-step guide on how to do this. The skills learned here should
+be transferable to any function, although a spreadsheet might not be the
+perfect tool for more complex functions.
+
+The major feature of a tumor is the abnormal growth of the tumorogenic
+cell population. Physiologists are interested in the \textbf{dynamics}
+of tumor cell growth, which means \emph{how} the cell population (or a
+proxy such as tumor volume) increases in size over time. How the growth
+occurs can give insights into the mechanisms driving the growth.
+
+The beginning of tumor growth, when there are few cells, will probably
+be approximately exponential, which looks like this.
+
+\includegraphics{quant-physiology_files/figure-latex/exponential-1.pdf}
+
+Exponential growth cannot continue for long. A growth model that might
+better describe the longer term growth of a tumor is the logistic model,
+which looks something like this
+
+\includegraphics{quant-physiology_files/figure-latex/logistic-1.pdf}
+
+The logistic model is
+
+\begin{equation}
+\frac{\Delta N}{\Delta T} = rN(\frac{K-N}{K})
+\end{equation}
+
+Here we aren't concerned with deriving the logistic equation or with the
+assumptions of using this function to model tumor growth. We are
+concerned only with \textbf{how to explore the behavior} of the function
+itself. I'll leave derivation and assumptions to other worksheets.
+
+You see this function in your textbook or on the blackboard. How do you
+use a spreadsheet to self-discover? That is, how do you get the equation
+into a spreadsheet? First, what is all the stuff in the equation? The
+parameters are \(r\) (the ``intrinsic'' growth rate), \(N\) (population
+size, that is the number of cells), and \(K\) (the maximum size of the
+tumor that can be sustained. This is sometimes called the ``carrying
+capacity''). \(r\), \(N\), and \(k\) are on the right hand side (rhs) of
+the equal sign and variables on the rhs are the \textbf{inputs} to the
+function. The left hand side (lhs) of the equation is the output. The
+output is just a single number but there are three things on the lhs,
+\(\Delta\), \(N\) (population size, again), and \(T\) (time). The
+\(\Delta\) is not a variable it is a symbol meaning ``change in'' and
+used to specify how one variable changes given change in another
+variable. So \(\frac{\Delta N}{\Delta T}\), which is read as ``delta en
+over delta tee'' is the \textbf{change in population size over time}.
+The unit of time (minutes, days, generations) isn't specified and
+doesn't matter here.
+
+To explore how the rate of population growth changes over time, We want
+to create a plot with \(N\) on the \(y\)-axis and \(Time\) on the
+\(x\)-axis. The rate is then the tangent to the curve for any time,
+\(T\). In order to do this, we need to \textbf{find the solution to the
+equation} by solving for \(N\). First, remembering that
+
+\begin{equation}
+\frac{\Delta N}{\Delta T} = N_{t+1} - N_t
+\end{equation}
+
+so substitute this in on the lhs
+
+\begin{equation}
+N_{t+1} - N_t  = rN_t(\frac{K-N_t}{K})
+\end{equation}
+
+and re-arrange \ldots{}
+
+\begin{equation}
+N_{t+1} = N_t  + rN_t(\frac{K-N_t}{K})
+\label{eq:logistic}
+\end{equation}
+
+Equation \eqref{eq:logistic} is function we can work with in a
+spreadsheet! So open your Google Sheet project and\ldots{}
+
+\subsection{Step 1}\label{step-1}
+
+\begin{figure}
+
+{\centering \includegraphics[width=0.8\linewidth]{images/logistic1} 
+
+}
+
+\caption{Step 1: Set up the header row of parameter labels}\label{fig:cancer-fig1}
+\end{figure}
+
+First set up a row of column labels containing all the variables that we
+care about (Fig \ref{fig:cancer-fig1}). This includes a column \(T\) for
+\(Time\) that is not explicitly on the rhs but is there implicitly!
+
+\subsection{Step 2}\label{step-2}
+
+\begin{figure}
+
+{\centering \includegraphics[width=0.8\linewidth]{images/logistic2} 
+
+}
+
+\caption{Step 2: Initialize $T$ and $N$ and parameterize $r$ and $K$}\label{fig:cancer-fig2}
+\end{figure}
+
+Now add an initial value for \(T\) and \(N\) and some value for the
+parameters \(r\) and \(K\) (Fig \ref{fig:cancer-fig2}). I inserted ``1''
+for \(T\), ``100'' for \(N\), ``.5'' for \(r\) and ``500'' for \(K\).
+Don't worry about the values you insert because the beauty of using a
+spreadsheet for self-discovery is that you \emph{will} change these
+later!
+
+\subsection{Step 3}\label{step-3}
+
+\begin{figure}
+
+{\centering \includegraphics[width=0.8\linewidth]{images/logistic3} 
+
+}
+
+\caption{Step 3: Add a formula to generate a column of $T$ values}\label{fig:cancer-fig3}
+\end{figure}
+
+Now you need to add some formula to the spreadsheet. Google sheets or MS
+Excel recognize a formula of the text you enter starts with ``=''. The
+first formula you want to enter is for \(T\) and you want to enter this
+in the cell immediately below the initial value for \(T\) (Fig
+\ref{fig:cancer-fig3}). If you've followed how I've input the header row
+and intial value row, then the formula goes into cell A3. As you type,
+the formula appears in the formula editor. Type ``='' then either type
+``A2'' (referring to the cell containing \(T-1\) or simply click in cell
+A2, which inserts ``A2'' into the formula editor. Then click back into
+the formula editor and added ``+1'' then hit ``return''.
+
+\subsection{Step 4}\label{step-4}
+
+\begin{figure}
+
+{\centering \includegraphics[width=0.8\linewidth]{images/logistic4} 
+
+}
+
+\caption{Step 4: Add the formula for $N$. This is step is the key step and the whole focus of the activity}\label{fig:cancer-fig4}
+\end{figure}
+
+Now you need to enter a formula for ``N'' in cell B3 (Fig
+\ref{fig:cancer-fig4}). This formula is of course the function that
+we're focusing on (Equation \eqref{eq:logistic}). The key is knowing how
+to translate a formula in the form you see it written in a textbook to a
+spreadsheet formula. In a textbook, you see \(rN\) for the product of
+\(r\) and \(N\) but if you type ``=rN'' into a spreadsheet you'll get an
+error because it doesn't know what \(r\), \(N\) or \(rN\) is. So instead
+of entering ``r'' you need to type in the cell that contains \(r\), and
+instead of ``N'' you need to type in the cell that contains \(N\) and
+finally you need to tell the spreadsheet to multiply the values of the
+two cells (\(r\) and \(N\)) using the product symbol ``\emph{``. So the
+\(rN\) part of the function is entered into the spreadsheet
+as''=C2}B2''. Hopefully the rest of the formula makes sense.
+
+\subsection{Step 5}\label{step-5}
+
+\begin{figure}
+
+{\centering \includegraphics[width=0.8\linewidth]{images/logistic5} 
+
+}
+
+\caption{Step 5: Make the reference to the cells containing the values for $r$ and $K$ constant using the dollar sign}\label{fig:cancer-fig5}
+\end{figure}
+
+The next step is a spreadsheet power tip. You want to compute \(N\) for
+many values of \(T\). You could just keep re-typing in the formula but
+the more efficient method is to simply copy the formula down. The
+formula in row 3 refers to the values of cells in row 2. When a formula
+is copied from row 3 to row 4, all the row referents in the formula are
+increased by 1, so now the formula in row 4 refers to cells in row 3.
+This is beautiful. Except when it isn't. Some parts of the formula that
+you entered in cell B3 are ``constant'', that is we do not want these to
+``move down'' with the formula. So to keep the row constant, simply add
+a dollar sign in front of the number (=row) part of the cell address
+(Fig \ref{fig:cancer-fig5}). For example, \(r\), in cell C2 is a
+constant, so you need to add a dollar sign in front of the 2 in ``C2''.
+The paramter \(K\) (cell D2) is also a constant so any part of the
+formula that refers to D2 should be kept constant by adding a dollar
+sign in front of the 2 in ``D2''. Sweet!
+
+\subsection{Step 6}\label{step-6}
+
+\begin{figure}
+
+{\centering \includegraphics[width=0.8\linewidth]{images/logistic6} 
+
+}
+
+\caption{Step 6: Highlight then click-and-drag the little box in the bottom-right corner to copy the formula down}\label{fig:cancer-fig6}
+\end{figure}
+
+Now, the formula is ready to copy ``down''. This can be done several
+ways. The way I usually do it is by highlighting the cells that I want
+to copy down and click-and-drag (down) the bold little square in the
+bottom right corner of the bounding box of the highlighted cells (Fig
+\ref{fig:cancer-fig6}). Bam! You should have multiple rows with \(T\)
+increasing from 1 to however many rows you copied the formula and Values
+of \(N\) for each value of \(T\).
+
+\subsection{Step 7}\label{step-7}
+
+\begin{figure}
+
+{\centering \includegraphics[width=0.8\linewidth]{images/logistic7} 
+
+}
+
+\caption{Step 7: Make a figure}\label{fig:cancer-fig7}
+\end{figure}
+
+Now just plot the data. Click-and-drag to highlight the columns T and N
+including the labels ``T'' and ``N''. Now choose the menu ``Insert'' and
+the item ``Chart''. A default chart might appear. In the chart editor
+window, click on chart type and click on the \textbf{Line Chart} with
+the smooth lines (this is the chart icon highlighted in Fig
+\ref{fig:cancer-fig7} by the light blue line). Then click ``Use column A
+as labels'' which makes the values in the column labeled ``T'' the
+x-axis. The column labeled \(N\) will be the y-axis. Now you have a plot
+of the function. Now it's time to explore the function (Equation
+\eqref{eq:logistic}) by changing \(r\) or changing \(K\) or changing the
+initial \(N\). The plot will immediately re-draw in response to these
+changes. Explore around then come back to the sections below.
+
+\section{Stuff to explore}\label{stuff-to-explore}
+
+\subsection{Getting to know the model}\label{getting-to-know-the-model}
+
+Set the initial \(T\) to 1, the initial \(N\) to 100, \(r\) to 0.6, and
+\(K\) to 500.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  how does the function change if you set \(r\) to .8? What about
+  setting \(r\) to -.5? Can \(r\) take the value -.5?
+\item
+  how does the function change if you set \(K\) to something different,
+  say to 1000? What about to something less than the initial \(N\), say
+  50. Does setting \(K\) to something less than the initial \(N\) make
+  sense. Think about a scenario that it does. If you cannot, then maybe
+  it doesn't make sense. Or maybe it does, but you just cannot think of
+  a scenario! can \(K\) be a negative value?
+\end{enumerate}
+
+\subsection{A wee bit more to explore}\label{a-wee-bit-more-to-explore}
+
+Set the initial \(T\) to 1, the initial \(N\) to 1, \(r\) to 0.6, and
+\(K\) to 500.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{2}
+\tightlist
+\item
+  \(r\) is the intrinsic rate of growth. Is \(r\) the rate of growth at
+  \(T=10\)? What about at \(T=1\)
+\item
+  If not, what is the rate of growth at \(T=10\) or \(T=1\)?
+\end{enumerate}
+
+The answer is \(r(\frac{K-N}{K})\) for the value of \(N\) associated
+with \(T=1\) or \(T=10\). Call this actual rate of growth \(R\). Think
+of \(R\) as \(r\) penalized by density. Create a new column that
+computes \(R\) for each value of \(T\). Make sure that you have about 30
+rows of data (so \(T\) going from 1 to 30).
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{4}
+\tightlist
+\item
+  Create a plot with \(R\) on the y-axis and \(N\) on the x-axis.
+\item
+  How does \(R\) change as time goes by?
+\item
+  What is the y-intercept equal to? (hint, it's a parameter in Equation
+  \eqref{eq:logistic}
+\item
+  What is the x-intercept equal to? (hint, it's also a parameter in
+  Equation \eqref{eq:logistic}
+\end{enumerate}
+
+\subsection{Yet more stuff to explore}\label{yet-more-stuff-to-explore}
+
+Set the initial \(T\) to 1, the initial \(N\) to 1, \(r\) to 0.6, and
+\(K\) to 500. Remember that we started with the function for
+\(\frac{\Delta N}{\Delta T}\)
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{8}
+\tightlist
+\item
+  Create a column that computes \(\frac{\Delta N}{\Delta T}\) for each
+  value of \(T\). Hint: you cannot do this for the first row (\(T=1\)),
+  why?
+\item
+  Create a plot with \(\frac{\Delta N}{\Delta T}\) on the y-axis and
+  \(T\) on the x-axis.
+\item
+  How does \(\frac{\Delta N}{\Delta T}\) change as time goes by (as
+  \(T\) gets bigger)?
+\item
+  Why?
+\end{enumerate}
+
+\bibliography{book.bib,packages.bib}
+
+
+\end{document}
